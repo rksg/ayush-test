@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
-import { useIntl }                                             from 'react-intl'
-import { useParams }                                           from 'react-router-dom'
+import { Checkbox, Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
+import { useIntl }                                                       from 'react-intl'
+import { useParams }                                                     from 'react-router-dom'
 
 import { Drawer, PasswordInput, Tooltip }    from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
@@ -41,6 +41,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const { visible, isEditMode, setVisible, editData, setSelected } = props
   const [providerType, setProviderType] = useState<SmsProviderType>()
   const [form] = Form.useForm()
+  const { useWatch } = Form
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
   const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
   const [isValidAccountSID, setIsValidAccountSID] = useState<boolean>()
@@ -59,6 +60,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
   const [getTwiliosIncomingServices] = useLazyGetTwiliosMessagingServicesQuery()
 
+  const enableWhatsapp = useWatch<string>('enableWhatsapp', form)
+
+  // eslint-disable-next-line max-len
+  const twilioUrl = <a href='https://console.twilio.com/' target='_blank' rel='noreferrer' >Twilio</a>
+
   useEffect(() => {
     if(isEditMode && editData?.providerType ) {
       setProviderType(editData?.providerType)
@@ -72,12 +78,17 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         if(isEditMode) {
           form.validateFields(['accountSid','authToken'])
           const fromNumber = editData?.providerData.fromNumber ?? ''
+          const enableWhatsapp = editData?.providerData.enableWhatsapp ?? false
           const messageMethod = isTwilioFromNumber(fromNumber)
             ? MessageMethod.PhoneNumber
             : MessageMethod.MessagingService
           setMessageMethod(messageMethod)
           setTwilioEditMethod(messageMethod)
-          form.setFieldValue('messageMethod', messageMethod)
+          form.setFieldsValue({
+            messageMethod,
+            enableWhatsapp,
+            templateSid: editData?.providerData.templateSid ?? ''
+          })
         }
         else if (isValidAccountSID === false && isValidAuthToken === false) {
           // If add twilio form was touched and provider was changed, validate sid and token again
@@ -168,6 +179,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const onSubmit = async () => {
     try {
       await form.validateFields()
+      const whatsappConfig = enableWhatsapp ? {
+        enableWhatsapp: form.getFieldValue('enableWhatsapp'),
+        templateSid: form.getFieldValue('templateSid')
+      } : {}
       const providerData: NotificationSmsConfig =
         providerType === SmsProviderType.TWILIO
           ? isSmsMessagingServiceEnabled && messageMethod === MessageMethod.MessagingService ?
@@ -175,14 +190,16 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               // twilio with messaging service
               accountSid: form.getFieldValue('accountSid'),
               authToken: form.getFieldValue('authToken'),
-              fromNumber: form.getFieldValue('messagingService')
+              fromNumber: form.getFieldValue('messagingService'),
+              ...whatsappConfig
             }
             :
             {
             // twilio with phone number
               accountSid: form.getFieldValue('accountSid'),
               authToken: form.getFieldValue('authToken'),
-              fromNumber: form.getFieldValue('phoneNumber')
+              fromNumber: form.getFieldValue('phoneNumber'),
+              ...whatsappConfig
             }
           : {
             // esendex, other
@@ -351,6 +368,57 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
              disabled={!isValidTwiliosNumber}
            />}
          />}
+    </>}
+    {providerType === SmsProviderType.TWILIO && messageMethod && <>
+      <Form.Item
+        name='enableWhatsapp'
+        valuePropName='checked'
+        children={
+          <Checkbox
+            children={<div style={{ display: 'flex', gap: '5px' }}>
+              <div>{$t({ defaultMessage: 'Enabled WhatsApp' })}</div>
+              <Tooltip.Question
+                title={$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'WhatsApp is used to enable WhatsApp functionalities for the Captive Portal Self Sign-In network. Ensure that your selected messaging service or phone number is configured to support WhatsApp through {twilioUrl}.'
+                }, { twilioUrl: twilioUrl }
+                )}
+                placement='right'
+                iconStyle={{
+                  width: 16,
+                  height: 16
+                }}
+              />
+            </div>}
+          />
+        }
+      />
+      {enableWhatsapp && (<Form.Item
+        name='templateSid'
+        label={<>
+          {$t({ defaultMessage: 'WhatsApp Authentication Template SID' })}
+          <Tooltip.Question
+            title={$t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'The template SID is available in your {twilioUrl} Content Template Builder.'
+            }, { twilioUrl: twilioUrl }
+            )}
+            placement='right'
+            iconStyle={{
+              width: 16,
+              height: 16
+            }}
+          />
+        </>}
+        initialValue={isEditMode ? editData?.providerData.templateSid ?? '' : ''}
+        rules={[
+          { required: true },
+          { validator: () => {
+            return Promise.resolve()}
+          }
+        ]}
+        children={<Input />}
+      />)}
     </>}
     {providerType === SmsProviderType.ESENDEX &&
       <Form.Item

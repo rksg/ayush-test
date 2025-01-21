@@ -1,4 +1,4 @@
-
+/* eslint-disable max-len */
 import { useState, useContext, useEffect } from 'react'
 
 import {
@@ -7,7 +7,7 @@ import {
   Form,
   Select,
   Space,
-  Input
+  Input, Button
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -17,13 +17,13 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useGetNotificationSmsQuery }                      from '@acx-ui/rc/services'
+import { useGetNotificationSmsQuery }                                         from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
+  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { validationMessages }    from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -58,6 +58,7 @@ export function SelfSignInForm () {
     socialDomains,
     enableSmsLogin,
     enableEmailLogin,
+    enableWhatsappLogin,
     facebook,
     google,
     twitter,
@@ -67,6 +68,7 @@ export function SelfSignInForm () {
     useWatch(['guestPortal', 'socialDomains']),
     useWatch(['guestPortal', 'enableSmsLogin']),
     useWatch(['guestPortal', 'enableEmailLogin']),
+    useWatch(['guestPortal', 'enableWhatsappLogin']),
     useWatch(['guestPortal', 'socialIdentities', 'facebook']),
     useWatch(['guestPortal', 'socialIdentities', 'google']),
     useWatch(['guestPortal', 'socialIdentities', 'twitter']),
@@ -96,9 +98,11 @@ export function SelfSignInForm () {
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
+  // const isEnabledWhatsApp = useIsSplitOn(Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
   const provider = smsUsage?.data?.provider ?? SmsProviderType.RUCKUS_ONE
   const usedSMS = smsUsage?.data?.ruckusOneUsed ?? 0
@@ -170,6 +174,9 @@ export function SelfSignInForm () {
       if (data.guestPortal?.enableEmailLogin) {
         allowedSignValueTemp.push('enableEmailLogin')
       }
+      if (data.guestPortal?.enableWhatsappLogin) {
+        allowedSignValueTemp.push('enableWhatsappLogin')
+      }
       if (data.guestPortal?.socialIdentities?.facebook) {
         allowedSignValueTemp.push('facebook')
       }
@@ -231,8 +238,39 @@ export function SelfSignInForm () {
                 </Tooltip>
               </>
             </Form.Item>
-
             }
+            {<Form.Item name={['guestPortal', 'enableWhatsappLogin']}
+              initialValue={false}
+              style={SelfSignInAppStyle}>
+              <>
+                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
+                  ['guestPortal', 'enableWhatsappLogin'])}
+                disabled={isTemplate || provider !== SmsProviderType.TWILIO}
+                checked={enableWhatsappLogin}>
+                  <UI.WhatsApp style={{ opacity: isTemplate ? 0.5 : 1 }}/>
+                  {$t({ defaultMessage: 'WhatsApp' })}
+                </UI.Checkbox>
+                <Tooltip title={isTemplate
+                  ? $t({
+                    defaultMessage: 'Captive Portal Self-sign-in via WhatsApp One-time Passcode. To enable this functionality, please configure a Twilio SMS provider for End Customers.'
+                  })
+                  : $t({
+                    defaultMessage: 'Captive Portal self-sign-in via WhatsApp One-Time Passcode is supported through the Twilio SMS provider. To enable this functionality, navigate to <Settings></Settings> and add the Twilio SMS provider.'
+                  }, {
+                    Settings: () => <TenantLink to='/administration/accountSettings'>
+                      <Button
+                        data-testid='button-has-pool'
+                        type='link'
+                        style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
+                        { $t({ defaultMessage: 'Administration > Settings' }) }
+                      </Button>
+                    </TenantLink>
+                  })}
+                placement='bottom'>
+                  <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+                </Tooltip>
+              </>
+            </Form.Item>}
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
               initialValue={false}
               style={SelfSignInAppStyle}>
@@ -388,7 +426,7 @@ export function SelfSignInForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip></>
         </Form.Item>
-        {(enableSmsLogin || enableEmailLogin) &&
+        {(enableSmsLogin || enableEmailLogin || enableWhatsappLogin) &&
         <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
           <Space align='start'>
             <Form.Item

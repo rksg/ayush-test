@@ -407,6 +407,8 @@ export interface NotificationSmsConfig
   accountSid?: string,
   authToken?: string,
   fromNumber?: string,
+  enableWhatsapp?: boolean,
+  templateSid?: string,
   // esendex
   apiKey?: string,
   // others
