@@ -541,3 +541,10 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     portsProfileVlans: portsProfileVlans
   }
 }
+
+export const ptToPtMacActionMessages = {
+  AUTO: defineMessage({ defaultMessage: 'Auto' }),
+  DISABLE: defineMessage({ defaultMessage: 'Disable' }),
+  ENABLE: defineMessage({ defaultMessage: 'Enable' }),
+  NONE: defineMessage({ defaultMessage: 'None' })
+}
