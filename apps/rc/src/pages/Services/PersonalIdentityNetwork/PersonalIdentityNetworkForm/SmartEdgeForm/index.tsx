@@ -211,9 +211,10 @@ export const SmartEdgeForm = () => {
             label={$t({ defaultMessage: 'Number of Segments' })}
             rules={[
               { required: true },
-              { type: 'number', min: 1, max: MAX_SEGMENT_PER_VENUE, message: $t({
-                defaultMessage: 'Number of Segments must be between 1 and {max}'
-              }, { max: MAX_SEGMENT_PER_VENUE }) }
+              { type: 'integer', transform: Number, min: 1, max: MAX_SEGMENT_PER_VENUE,
+                message: $t({
+                  defaultMessage: 'Number of Segments must be an integer between 1 and {max}'
+                }, { max: MAX_SEGMENT_PER_VENUE }) }
             ]}
             children={<InputNumber />}
           />
@@ -226,9 +227,11 @@ export const SmartEdgeForm = () => {
             label={$t({ defaultMessage: 'Number of devices per Segment' })}
             rules={[
               { required: true },
-              { type: 'number', min: 1, max: MAX_DEVICE_PER_SEGMENT, message: $t({
-                defaultMessage: 'Number of devices per Segment must be between 1 and {max}'
-              }, { max: MAX_DEVICE_PER_SEGMENT }) }
+              { type: 'integer', transform: Number, min: 1, max: MAX_DEVICE_PER_SEGMENT,
+                message: $t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Number of devices per Segment must be an integer between 1 and {max}'
+                }, { max: MAX_DEVICE_PER_SEGMENT }) }
             ]}
             children={<InputNumber />}
           />

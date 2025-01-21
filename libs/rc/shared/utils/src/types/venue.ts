@@ -783,7 +783,7 @@ export interface VenueApSmartMonitor {
 }
 
 export interface VenueApRebootTimeout {
-	gwLossTimeout: number,
+	gatewayLossTimeout: number,
 	serverLossTimeout: number
 }
 

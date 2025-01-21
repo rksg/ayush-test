@@ -51,9 +51,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   useAnalyticsFilter: jest.fn()
 }))
 
+const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  useDateRange: jest.fn()
+  useDateRange: jest.fn(),
+  Banner: () => <div data-testid={bannerTestId} />
 }))
 
 jest.mock('@acx-ui/config', () => ({
@@ -151,6 +153,7 @@ describe('IntentAITabContent', () => {
     expect(screen.getByText('Venue')).toBeVisible()
     expect(screen.queryByText('Zone')).toBeNull()
     expect(screen.getAllByRole('checkbox')).toHaveLength(4)
+    expect(screen.getByTestId(bannerTestId)).toBeVisible()
   })
 
   it('should render read only intentAI table for R1 when wifi-u is missing', async () => {

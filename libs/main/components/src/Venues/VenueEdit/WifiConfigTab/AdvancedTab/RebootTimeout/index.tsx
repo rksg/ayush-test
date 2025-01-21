@@ -93,8 +93,8 @@ export function RebootTimeout () {
   const {
     editContextData,
     setEditContextData,
-    editNetworkingContextData,
-    setEditNetworkingContextData
+    editAdvancedContextData,
+    setEditAdvancedContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
@@ -113,13 +113,13 @@ export function RebootTimeout () {
 
   const rebootTimeoutGwLossHourFieldName = [
     'rebootTimeout',
-    'gwLossTimeout',
+    'gatewayLossTimeout',
     'hour'
   ]
 
   const rebootTimeoutGwLossMinuteFieldName = [
     'rebootTimeout',
-    'gwLossTimeout',
+    'gatewayLossTimeout',
     'minute'
   ]
 
@@ -143,13 +143,13 @@ export function RebootTimeout () {
     if (venueApRebootTimeoutData) {
       // form.setFieldsValue({ rebootTimeout: venueApRebootTimeoutData })
       form.setFieldsValue({
-        gatewayEnabled: venueApRebootTimeoutData.gwLossTimeout > 0,
+        gatewayEnabled: venueApRebootTimeoutData.gatewayLossTimeout > 0,
         serverEnabled: venueApRebootTimeoutData.serverLossTimeout > 0,
         rebootTimeout: {
-          gwLossTimeout: {
-            hour: Math.floor(venueApRebootTimeoutData.gwLossTimeout / 3600),
+          gatewayLossTimeout: {
+            hour: Math.floor(venueApRebootTimeoutData.gatewayLossTimeout / 3600),
             // eslint-disable-next-line max-len
-            minute: venueApRebootTimeoutData.gwLossTimeout > 0 ? Math.floor((venueApRebootTimeoutData.gwLossTimeout % 3600) / 60) : 30
+            minute: venueApRebootTimeoutData.gatewayLossTimeout > 0 ? Math.floor((venueApRebootTimeoutData.gatewayLossTimeout % 3600) / 60) : 30
           },
           serverLossTimeout: {
             // eslint-disable-next-line max-len
@@ -159,11 +159,11 @@ export function RebootTimeout () {
         }
       })
 
-      if (venueApRebootTimeoutData.gwLossTimeout === 0) {
+      if (venueApRebootTimeoutData.gatewayLossTimeout === 0) {
         setOptions([MinuteTypeOptions[1]])
-      } else if (venueApRebootTimeoutData.gwLossTimeout === 1800) {
+      } else if (venueApRebootTimeoutData.gatewayLossTimeout === 1800) {
         setOptions([MinuteTypeOptions[1]])
-      } else if (venueApRebootTimeoutData.gwLossTimeout === 86400) {
+      } else if (venueApRebootTimeoutData.gatewayLossTimeout === 86400) {
         setOptions([MinuteTypeOptions[0]])
       } else {
         setOptions(MinuteTypeOptions)
@@ -187,7 +187,7 @@ export function RebootTimeout () {
       const serverEnabled = form.getFieldsValue().serverEnabled
       let payload: VenueApRebootTimeout = {
         // eslint-disable-next-line max-len
-        gwLossTimeout: gatewayEnabled ? formData.gwLossTimeout.hour * 60 * 60 + formData.gwLossTimeout.minute * 60 : 0,
+        gatewayLossTimeout: gatewayEnabled ? formData.gatewayLossTimeout.hour * 60 * 60 + formData.gatewayLossTimeout.minute * 60 : 0,
         // eslint-disable-next-line max-len
         serverLossTimeout: serverEnabled ? formData.serverLossTimeout.hour * 60 * 60 + formData.serverLossTimeout.minute * 60 : 0
       }
@@ -205,14 +205,14 @@ export function RebootTimeout () {
     setEditContextData &&
       setEditContextData({
         ...editContextData,
-        unsavedTabKey: 'networking',
-        tabTitle: $t({ defaultMessage: 'Networking' }),
+        unsavedTabKey: 'settings',
+        tabTitle: $t({ defaultMessage: 'Advanced' }),
         isDirty: true
       })
 
-    setEditNetworkingContextData &&
-      setEditNetworkingContextData({
-        ...editNetworkingContextData,
+    setEditAdvancedContextData &&
+      setEditAdvancedContextData({
+        ...editAdvancedContextData,
         updateRebootTimeout: handleUpdateRebootTimeout
       })
   }
@@ -221,7 +221,7 @@ export function RebootTimeout () {
     if (hour === '24') {
       form.setFieldsValue({
         rebootTimeout: {
-          gwLossTimeout: {
+          gatewayLossTimeout: {
             minute: 0
           }
         }
@@ -233,7 +233,7 @@ export function RebootTimeout () {
     if (hour === '0') {
       form.setFieldsValue({
         rebootTimeout: {
-          gwLossTimeout: {
+          gatewayLossTimeout: {
             minute: 30
           }
         }
