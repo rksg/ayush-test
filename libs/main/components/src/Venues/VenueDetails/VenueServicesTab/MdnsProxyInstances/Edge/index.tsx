@@ -5,9 +5,10 @@ import { Switch }                            from 'antd'
 import { useIntl }                           from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }                  from '@acx-ui/components'
-import { MdnsProxyForwardingRulesTable, useEdgeMdnsActions, ToolTipTableStyle } from '@acx-ui/rc/components'
+import { MdnsProxyForwardingRulesTable, ToolTipTableStyle, useEdgeMdnsActions } from '@acx-ui/rc/components'
 import { useGetEdgeMdnsProxyViewDataListQuery }                                 from '@acx-ui/rc/services'
 import {
+  EdgeMdnsProxyUrls,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   getServiceDetailsLink,
@@ -18,13 +19,13 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { EdgeScopes }            from '@acx-ui/types'
 import { hasPermission }         from '@acx-ui/user'
+import { getOpsApi }             from '@acx-ui/utils'
 
 import { TableTitle } from '../styledComponents'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
 import { EdgeMdnsProxyInstance }  from './types'
-
 
 export const EdgeMdnsTab = () => {
   const { $t } = useIntl()
@@ -102,6 +103,7 @@ export const EdgeMdnsTab = () => {
     {
       label: $t({ defaultMessage: 'Change' }),
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster)],
       onClick: (rows: EdgeMdnsProxyInstance[]) => {
         setSelectedRow(rows[0])
       }
@@ -109,6 +111,7 @@ export const EdgeMdnsTab = () => {
     {
       label: $t({ defaultMessage: 'Remove' }),
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)],
       onClick: (rows: EdgeMdnsProxyInstance[], clearSelection) => {
         doDeactivate(rows[0], clearSelection)
       }
@@ -177,7 +180,9 @@ export const EdgeMdnsTab = () => {
       render: function (_, row) {
         return <Switch
           checked={true}
-          disabled={!hasPermission({ scopes: [EdgeScopes.DELETE] })}
+          disabled={!hasPermission({
+            scopes: [EdgeScopes.DELETE],
+            rbacOpsIds: [getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)] })}
           onClick={(_, event) => {
             event.stopPropagation()
           }}
@@ -207,7 +212,9 @@ export const EdgeMdnsTab = () => {
           actions={filterByAccessForServicePolicyMutation([{
             label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction,
-            scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
+            scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT),
+            // eslint-disable-next-line max-len
+            rbacOpsIds: [getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster)]
           }])}
           rowKey='edgeClusterId'
           rowActions={filterByAccessForServicePolicyMutation(rowActions)}

@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }                         from '@acx-ui/components'
+import { AnchorLayout, StepsFormLegacy }           from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
 import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
@@ -14,6 +14,7 @@ import { AccessPointLED }   from './AccessPointLED'
 import { AccessPointUSB }   from './AccessPointUSB'
 import { ApManagementVlan } from './ApManagementVlan'
 import { BssColoring }      from './BssColoring'
+import { RebootTimeout }    from './RebootTimeout'
 
 
 export interface ModelOption {
@@ -25,7 +26,8 @@ export interface AdvanceSettingContext {
   updateAccessPointLED?: (() => void),
   updateAccessPointUSB?: (() => void),
   updateBssColoring?: (() => void),
-  updateApManagementVlan?: (() => void)
+  updateApManagementVlan?: (() => void),
+  updateRebootTimeout?: (() => void)
 }
 
 export function AdvancedTab () {
@@ -35,6 +37,7 @@ export function AdvancedTab () {
   const { isTemplate } = useConfigTemplate()
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const isRebootTimeoutFFEnabled = useIsSplitOn(Features.WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE)
 
   const {
     editContextData,
@@ -73,6 +76,14 @@ export function AdvancedTab () {
         <ApManagementVlan />,
         'apMgmtVlan'
       )
+    ] : []),
+    ...(isRebootTimeoutFFEnabled? [
+      createAnchorSectionItem(
+        $t({ defaultMessage: 'AP Auto-Reboot on GW Timeout' }),
+        'ap-auto-reboot-on-gw-timeout',
+        <RebootTimeout />,
+        'apAutoRebootOnGwTimeout'
+      )
     ] : [])
   ]
 
@@ -84,6 +95,7 @@ export function AdvancedTab () {
       await editAdvancedContextData?.updateAccessPointUSB?.()
       await editAdvancedContextData?.updateBssColoring?.()
       await editAdvancedContextData?.updateApManagementVlan?.()
+      await editAdvancedContextData?.updateRebootTimeout?.()
 
       setEditContextData({
         ...editContextData,
@@ -97,6 +109,7 @@ export function AdvancedTab () {
         delete newData.updateAccessPointUSB
         delete newData.updateBssColoring
         delete newData.updateApManagementVlan
+        delete newData.updateRebootTimeout
         setEditAdvancedContextData(newData)
       }
 
@@ -114,15 +127,7 @@ export function AdvancedTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        {/*
         <AnchorLayout items={anchorItems} offsetTop={60} />
-        */}
-        {
-          anchorItems.map(item => (
-            <div key={item.key} style={{ paddingBottom: '50px' }}>
-              {item.content}
-            </div>))
-        }
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )
