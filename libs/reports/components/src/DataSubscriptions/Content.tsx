@@ -19,11 +19,14 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
+  const breadCrumb = isRAI ? [
+    { text: $t({ defaultMessage: 'Business Insights' }) }
+  ]: generateBreadcrumb({ isRAI, isList: true })
 
   return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Data Subscriptions' })}
-      breadcrumb={generateBreadcrumb({ isRAI, isList: true })}
+      breadcrumb={breadCrumb}
       extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <>
         <Button
           type='primary'
@@ -38,7 +41,8 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
           type='default'
           onClick={() => navigate({
             ...basePath,
-            pathname: `${basePath.pathname}/cloudStorage`
+            // to test new storage route use ${basePath.pathname}/cloudStorage/create
+            pathname: `${basePath.pathname}/cloudStorage/edit/storageId`
           })}
         >{$t({ defaultMessage: 'Cloud Storage: Azure' })}</Button>
       </> : []}
