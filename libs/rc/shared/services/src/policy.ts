@@ -2019,7 +2019,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             })
             return acc
           }, {})
-          console.log(apsGroupByVenueData)
+
           // Collect AP names by serial numbers
           let apMapping: { [key: string]: string } = {}
           const apSerialNumbersSet = Object.values(apsGroupByVenueData).reduce((all, venueSet) => {
