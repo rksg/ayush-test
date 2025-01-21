@@ -24,11 +24,12 @@ import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
-export function BssColoring () {
+export function BssColoring (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+  const { isAllowEdit } = props
 
   const {
     editContextData,
@@ -112,6 +113,7 @@ export function BssColoring () {
           />
           <Switch
             data-testid='bss-coloring-switch'
+            disabled={!isAllowEdit}
             checked={enableBssColoring}
             onClick={(checked) => {
               handleChanged(checked)

@@ -5,16 +5,30 @@ import { useIntl } from 'react-intl'
 import { AnchorLayout, StepsFormLegacy }                                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
-import { ConfigTemplateType, redirectPreviousPage, useConfigTemplate }    from '@acx-ui/rc/utils'
-import { useNavigate }                                                    from '@acx-ui/react-router-dom'
+import {
+  ApSnmpRbacUrls,
+  ConfigTemplateType,
+  LbsServerProfileUrls,
+  PoliciesConfigTemplateUrlsInfo,
+  redirectPreviousPage,
+  SyslogUrls,
+  useConfigTemplate,
+  VenueConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { useNavigate }          from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import { VenueEditContext, createAnchorSectionItem } from '../..'
+import { useVenueConfigTemplateOpsApiSwitcher }      from '../../../venueConfigTemplateApiSwitcher'
 
 import { ApSnmp }               from './ApSnmp'
 import { IotController }        from './IotController'
 import { LocationBasedService } from './LocationBasedService'
 import { MdnsFencing }          from './MdnsFencing/MdnsFencing'
 import { Syslog }               from './Syslog'
+
 
 export interface ServerSettingContext {
   updateSyslog?: (() => void),
@@ -40,6 +54,34 @@ export function ServerTab () {
   const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
 
+
+  const syslogApiUrlInfo = (!isTemplate)? SyslogUrls : PoliciesConfigTemplateUrlsInfo
+
+  // eslint-disable-next-line max-len
+  const mDnsFencingOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueMdnsFencingPolicy,
+    VenueConfigTemplateUrlsInfo.updateVenueMdnsFencingPolicyRbac)
+
+  const iotOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueIot,
+    VenueConfigTemplateUrlsInfo.updateVenueApIotSettings
+  )
+
+  const [
+    allowEditVenueSyslog,
+    allowEditVenueMDnsFencing,
+    allowEditVenueApSnmp,
+    allowEditVenueIot,
+    allowEditVenueLbs
+  ] = [
+    // eslint-disable-next-line max-len
+    hasAllowedOperations([[getOpsApi(syslogApiUrlInfo.bindVenueSyslog ), getOpsApi(syslogApiUrlInfo.unbindVenueSyslog )]]),
+    hasAllowedOperations([mDnsFencingOpsApi]),
+    hasAllowedOperations([getOpsApi(ApSnmpRbacUrls.updateVenueApSnmpSettings)]),
+    hasAllowedOperations([iotOpsApi]),
+    hasAllowedOperations([getOpsApi(LbsServerProfileUrls.activateLbsServerProfileOnVenue)])
+  ]
+
   const {
     previousPath,
     editContextData,
@@ -52,24 +94,25 @@ export function ServerTab () {
 
   if (!isTemplate || isSyslogTemplateEnabled) {
     // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog isAllowEdit={allowEditVenueSyslog} />))
   }
 
   // eslint-disable-next-line max-len
-  items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing />))
+  items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing isAllowEdit={allowEditVenueMDnsFencing} />))
 
   if (!isTemplate) {
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp',
+      <ApSnmp isAllowEdit={allowEditVenueApSnmp} />))
   }
 
   if (isIotFeatureEnabled && !isTemplate) {
     // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }), 'iotController', <IotController />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }), 'iotController', <IotController isAllowEdit={allowEditVenueIot} />))
   }
 
   if (supportLbs && !isTemplate) {
     // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService isAllowEdit={allowEditVenueLbs} />))
   }
 
   const handleUpdateSetting = async () => {

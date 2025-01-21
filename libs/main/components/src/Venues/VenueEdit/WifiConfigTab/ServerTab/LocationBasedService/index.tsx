@@ -14,11 +14,12 @@ import {
 import { hasPolicyPermission, PolicyOperation, PolicyType, VenueLbsActivationType } from '@acx-ui/rc/utils'
 import { useParams }                                                                from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 
-export function LocationBasedService () {
+export function LocationBasedService (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit } = props
   const profileIdRef = useRef<string>('')
 
   const activateLbsServerProfile = useLbsServerProfileActivation()
@@ -195,6 +196,7 @@ export function LocationBasedService () {
           <span>{$t({ defaultMessage: 'Use LBS Server' })}</span>
           <Switch
             data-testid='lbs-switch'
+            disabled={!isAllowEdit}
             checked={stateOfEnableLbs}
             onClick={(newState) => {
               handleLbsSwitchEnableChange(newState)
@@ -205,6 +207,7 @@ export function LocationBasedService () {
         {stateOfEnableLbs && <Form.Item style={{ margin: '0' }}>
           <Select
             data-testid='lbs-select'
+            disabled={!isAllowEdit}
             value={stateOfLbsServerProfileId}
             options={[
               { label: $t({ defaultMessage: 'Select...' }), value: '' },

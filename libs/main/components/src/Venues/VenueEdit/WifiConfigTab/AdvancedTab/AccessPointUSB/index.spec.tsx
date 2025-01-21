@@ -1,10 +1,10 @@
 import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react'
 import { rest }                                         from 'msw'
 
-import { venueApi }                             from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, VenueApUsbStatus } from '@acx-ui/rc/utils'
-import { Provider, store }                      from '@acx-ui/store'
-import { mockServer, render }                   from '@acx-ui/test-utils'
+import { venueApi }                                               from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, VenueApUsbStatus, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
+import { mockServer, render }                                     from '@acx-ui/test-utils'
 
 import { AdvanceSettingContext }         from '..'
 import { VenueUtilityContext }           from '../..'
@@ -75,7 +75,7 @@ const mockAdvancedApUsb = (
     venueApCaps: mockVenueApCap,
     isLoadingVenueApCaps: false
   }}>
-    <AccessPointUSB />
+    <AccessPointUSB isAllowEdit={true} />
   </VenueUtilityContext.Provider>
 )
 
@@ -85,9 +85,9 @@ describe('AdvancedTab - Access Point USB', () => {
     mockServer.use(
       rest.get(CommonRbacUrlsInfo.getVenueApModels.url,
         (_, res, ctx) => res(ctx.json(mockVenueWithoutApModels))),
-      rest.get(CommonRbacUrlsInfo.getVenueApUsbStatus.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApUsbStatus.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.put(CommonRbacUrlsInfo.updateVenueApUsbStatus.url,
+      rest.put(WifiRbacUrlsInfo.updateVenueApUsbStatus.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -126,7 +126,7 @@ describe('AdvancedTab - Access Point USB', () => {
     mockServer.use(
       rest.get(CommonRbacUrlsInfo.getVenueApModels.url,
         (_, res, ctx) => res(ctx.json(mockVenueWithApModels))),
-      rest.get(CommonRbacUrlsInfo.getVenueApUsbStatus.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApUsbStatus.url,
         (_, res, ctx) => res(ctx.json(mockVenueApUsbData)))
     )
 

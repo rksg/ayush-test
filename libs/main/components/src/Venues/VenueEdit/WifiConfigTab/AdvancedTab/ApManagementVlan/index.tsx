@@ -9,11 +9,12 @@ import { InformationSolid }                                                     
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
 import { validateVlanId }                                                           from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
-export function ApManagementVlan () {
+export function ApManagementVlan (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit } = props
   const form = Form.useFormInstance()
 
   const {
@@ -121,6 +122,7 @@ export function ApManagementVlan () {
                   children={
                     <InputNumber
                       data-testid='venue-ap-mgmt-vlan'
+                      disabled={!isAllowEdit}
                       onChange={onFormDataChanged}
                       style={{ width: '86px' }}
                     />

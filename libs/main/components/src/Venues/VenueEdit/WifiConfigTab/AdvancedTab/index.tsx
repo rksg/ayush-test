@@ -2,11 +2,13 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
-import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useNavigate }                             from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }                                                           from '@acx-ui/rc/components'
+import { redirectPreviousPage, useConfigTemplate, VenueConfigTemplateUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { useNavigate }                                                                            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                                                                   from '@acx-ui/user'
+import { getOpsApi }                                                                              from '@acx-ui/utils'
 
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 
@@ -37,6 +39,28 @@ export function AdvancedTab () {
   const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
 
   const {
+    updateVenueLedOn,
+    updateVenueApUsbStatus,
+    updateVenueBssColoring,
+    updateVenueApManagementVlan
+  } = WifiRbacUrlsInfo
+
+  const { updateVenueBssColoringRbac } = VenueConfigTemplateUrlsInfo
+
+  const [
+    allowEditVenueLed,
+    allowEditVenueUsb,
+    allowEditVenueBssColoring,
+    allowEditVenueMgmtVlan
+  ] = [
+    hasAllowedOperations([getOpsApi(updateVenueLedOn)]),
+    hasAllowedOperations([getOpsApi(updateVenueApUsbStatus)]),
+    hasAllowedOperations(
+      [getOpsApi(!isTemplate? updateVenueBssColoring : updateVenueBssColoringRbac)]),
+    hasAllowedOperations([getOpsApi(updateVenueApManagementVlan)])
+  ]
+
+  const {
     editContextData,
     setEditContextData,
     editAdvancedContextData,
@@ -48,7 +72,7 @@ export function AdvancedTab () {
       createAnchorSectionItem(
         $t({ defaultMessage: 'Access Point LEDs' }),
         'access-point-led',
-        <div style={{ maxWidth: '465px' }}><AccessPointLED /></div>,
+        <div style={{ maxWidth: '465px' }}><AccessPointLED isAllowEdit={allowEditVenueLed}/></div>,
         'apLed'
       )
     ] : []),
@@ -56,21 +80,21 @@ export function AdvancedTab () {
       createAnchorSectionItem(
         $t({ defaultMessage: 'Access Point USB Support' }),
         'access-point-usb',
-        <div style={{ maxWidth: '465px' }}><AccessPointUSB /></div>,
+        <div style={{ maxWidth: '465px' }}><AccessPointUSB isAllowEdit={allowEditVenueUsb}/></div>,
         'apUsb'
       )
     ] : []),
     createAnchorSectionItem(
       $t({ defaultMessage: 'BSS Coloring' }),
       'bss-coloring',
-      <BssColoring />,
+      <BssColoring isAllowEdit={allowEditVenueBssColoring} />,
       'bssColoring'
     ),
     ...((supportApMgmgtVlan && !isTemplate) ? [
       createAnchorSectionItem(
         $t({ defaultMessage: 'Access Point Management VLAN' }),
         'ap-mgmt-vlan',
-        <ApManagementVlan />,
+        <ApManagementVlan isAllowEdit={allowEditVenueMgmtVlan} />,
         'apMgmtVlan'
       )
     ] : [])

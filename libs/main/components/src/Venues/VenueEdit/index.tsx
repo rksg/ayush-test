@@ -38,6 +38,11 @@ const tabs = {
   property: PropertyManagementTab
 }
 
+export type VenueWifiConfigItemProps = {
+  isAllowEdit?: boolean,
+  isAllowAdd?: boolean
+}
+
 export interface EditContext {
   tabTitle: string,
   tabKey?: string,

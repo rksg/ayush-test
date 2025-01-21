@@ -25,14 +25,15 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 
-export function ApSnmp () {
+export function ApSnmp (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
   const profileIdRef = useRef<string>('')
+  const { isAllowEdit } = props
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line
@@ -165,6 +166,7 @@ export function ApSnmp () {
         <span>{$t({ defaultMessage: 'Use AP SNMP' })}</span>
         <Switch
           data-testid='snmp-switch'
+          disabled={!isAllowEdit}
           checked={stateOfEnableApSnmp}
           onClick={(newState) => {
             handleApSnmpSwitchEnableChange(newState)
@@ -175,6 +177,7 @@ export function ApSnmp () {
       {stateOfEnableApSnmp && <Form.Item style={{ margin: '0' }}>
         <Select
           data-testid='snmp-select'
+          disabled={!isAllowEdit}
           defaultValue={RetrievedVenueApSnmpAgentProfileId}
           options={[
             { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },

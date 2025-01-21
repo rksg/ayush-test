@@ -15,18 +15,16 @@ import {
 import { VenueLed }               from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }           from '../..'
-import { VenueEditContext, EditContext } from '../../../index'
+import { ModelOption }                                             from '..'
+import { VenueUtilityContext }                                     from '../..'
+import { VenueEditContext, EditContext, VenueWifiConfigItemProps } from '../../../index'
 
-export interface ModelOption {
-    label: string
-    value: string
-  }
 
-export function AccessPointLED () {
+export function AccessPointLED (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
+  const { isAllowEdit } = props
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
@@ -52,6 +50,7 @@ export function AccessPointLED () {
   const [selectedModels, setSelectedModels] = useState([] as string[])
   const [modelOptions, setModelOptions] = useState(defaultOptionArray)
   const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
+
 
 
 
@@ -153,6 +152,7 @@ export function AccessPointLED () {
     key: 'ledEnabled',
     render: function (data, row) {
       return <Switch
+        disabled={!isAllowEdit}
         checked={!!data}
         onClick={(checked) => {
           setTableData([
@@ -171,7 +171,7 @@ export function AccessPointLED () {
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (data, row) => row.manual ? <Button
+    render: (data, row) => (row.manual && isAllowEdit)? <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
@@ -251,6 +251,7 @@ export function AccessPointLED () {
           onClick={handleAdd}
           type='link'
           disabled={venueLed.isLoading
+                  || !isAllowEdit
                   || !modelOptions.length
                   || !!tableData?.find((item) => !item.model)
           }

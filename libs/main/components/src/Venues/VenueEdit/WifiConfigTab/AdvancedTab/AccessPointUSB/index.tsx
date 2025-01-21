@@ -15,8 +15,8 @@ import {
 } from '@acx-ui/rc/services'
 import { usbTooltipInfo, VenueApUsbStatus } from '@acx-ui/rc/utils'
 
-import { VenueUtilityContext } from '../..'
-import { VenueEditContext }    from '../../..'
+import { VenueUtilityContext }                        from '../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 
 
 type VenueApUsbStatusEntry = VenueApUsbStatus & {
@@ -26,10 +26,12 @@ type VenueApUsbStatusEntry = VenueApUsbStatus & {
 const defaultArray: VenueApUsbStatusEntry[] = []
 const emptyOptions: LabeledValue[] = []
 
-export function AccessPointUSB () {
+export function AccessPointUSB (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
   const initDataRef = useRef<VenueApUsbStatus[]>([])
+  // eslint-disable-next-line max-len
+  const { isAllowEdit } = props
 
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
@@ -153,6 +155,7 @@ export function AccessPointUSB () {
     key: 'usbPortEnable',
     render: function (data, row) {
       return <Switch
+        disabled={!isAllowEdit}
         checked={!!data}
         onClick={(checked) => {
           setTableData([
@@ -167,7 +170,7 @@ export function AccessPointUSB () {
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (_, row) => !row.hasExist ? <Button
+    render: (_, row) => (!row.hasExist && isAllowEdit) ? <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
@@ -223,6 +226,7 @@ export function AccessPointUSB () {
           onClick={handleAdd}
           type='link'
           disabled={venueApStatusList.isLoading
+                    || !isAllowEdit
                     || !modelOptions.length
                     || !!tableData?.find((item) => !item.model)
           }

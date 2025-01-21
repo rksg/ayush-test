@@ -194,6 +194,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueMeshRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apMeshSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apMeshSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -249,6 +250,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueDirectedMulticastRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apDirectedMulticastSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apDirectedMulticastSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -277,6 +279,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadiusOptionsRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apRadiusOptions',
+    opsApi: 'PUT:/templates/venues/{id}/apRadiusOptions',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -305,6 +308,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateDenialOfServiceProtectionRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apDosProtectionSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apDosProtectionSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -333,6 +337,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueMdnsFencingPolicyRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apMulticastDnsFencingSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apMulticastDnsFencingSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -347,6 +352,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueBssColoringRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apBssColoringSettings',
+    opsApi: 'GET:/templates/venues/{id}/apBssColoringSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -361,6 +367,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueBssColoringRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apBssColoringSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apBssColoringSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -609,6 +616,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueApSmartMonitorSettings: {
     method: 'put',
     url: '/templates/venues/:venueId/apSmartMonitorSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apSmartMonitorSettings',
     newApi: true
   },
   getVenueApRebootTimeoutSettings: {
@@ -619,6 +627,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueApRebootTimeoutSettings: {
     method: 'put',
     url: '/templates/venues/:venueId/apRebootTimeoutSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apRebootTimeoutSettings',
     newApi: true
   },
   getVenueApIotSettings: {
@@ -629,6 +638,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueApIotSettings: {
     method: 'put',
     url: '/templates/venues/:venueId/apIotSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apIotSettings',
     newApi: true
   }
 }
