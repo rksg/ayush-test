@@ -2,24 +2,22 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip, Button }                                          from '@acx-ui/components'
+import { Loader, TableProps, Table, Tooltip, Banner }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
-import bannerImg from '../../../assets/banner_bkg.png'
-
-import { Icon }                                        from './common/IntentIcon'
-import { AiFeatures, codes, IntentListItem }           from './config'
-import { getStatusTooltip, useIntentAITableQuery }     from './services'
-import { DisplayStates, Statuses }                     from './states'
-import * as UI                                         from './styledComponents'
-import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
-import { Actions, getDefaultTime, isVisibledByAction } from './utils'
+import { Icon }                                       from './common/IntentIcon'
+import { AiFeatures, codes, IntentListItem }          from './config'
+import { getStatusTooltip, useIntentAITableQuery }    from './services'
+import { DisplayStates, Statuses }                    from './states'
+import * as UI                                        from './styledComponents'
+import { IntentAIDateTimePicker, useIntentAIActions } from './useIntentAIActions'
+import { Actions, getDefaultTime, isVisibleByAction } from './utils'
 
 import type { Filters } from './services'
 
@@ -124,33 +122,6 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
   </UI.FeatureIcon>)
 }
 
-export function Banner ({ helpUrl } : { helpUrl: string | undefined }) {
-  const { $t } = useIntl()
-  const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
-  const subTitle1 = $t({
-    defaultMessage: `Automate configuration and
-    monitoring tasks aligned with your network priorities, while enhancing`
-  })
-  const subTitle2 = $t({
-    defaultMessage: 'performance through IntentAI\'s advanced AI/ML technologies.'
-  })
-  return (<UI.BannerWrapper>
-    <UI.BannerBG src={bannerImg}/>
-    <UI.Banner>
-      <b className='title'>{bannerTitle}</b> <span className='br-size'></span>
-      {subTitle1} <span className='br-size'></span>
-      {subTitle2} <span className='br-size'></span>
-      <Button
-        style={{ marginTop: '15px' }}
-        onClick={() => {
-          window.open(helpUrl, '_blank')
-        }}>
-        <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
-      </Button>
-    </UI.Banner>
-  </UI.BannerWrapper>)
-}
-
 export function IntentAITable (
   { pathFilters, helpUrl }: { pathFilters: PathFilter, helpUrl: string | undefined }
 ) {
@@ -189,14 +160,14 @@ export function IntentAITable (
     {
       key: getShowWithoutRbacCheckKey(Actions.One_Click_Optimize),
       label: $t({ defaultMessage: '1-Click Optimize' }),
-      visible: rows => isVisibledByAction(rows, Actions.One_Click_Optimize),
+      visible: rows => isVisibleByAction(rows, Actions.One_Click_Optimize),
       onClick: (rows) => intentActions.showOneClickOptimize(rows, clearSelection)
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Optimize),
       label: selectedRows?.[0]?.displayStatus === DisplayStates.new ?
         $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
-      visible: rows => isVisibledByAction(rows, Actions.Optimize),
+      visible: rows => isVisibleByAction(rows, Actions.Optimize),
       onClick: (rows) => {
         const row = rows[0]
         const editPath = get('IS_MLISA_SA')
@@ -211,27 +182,27 @@ export function IntentAITable (
     {
       key: getShowWithoutRbacCheckKey(Actions.Revert),
       label: getRevertPickerJSX() as unknown as string,
-      visible: rows => isVisibledByAction(rows, Actions.Revert),
+      visible: rows => isVisibleByAction(rows, Actions.Revert),
       onClick: () => {}
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Pause),
       label: $t({ defaultMessage: 'Pause' }),
-      visible: rows => isVisibledByAction(rows, Actions.Pause),
+      visible: rows => isVisibleByAction(rows, Actions.Pause),
       onClick: (rows) =>
         intentActions.handleTransitionIntent(Actions.Pause, rows, () => clearSelection())
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Cancel),
       label: $t({ defaultMessage: 'Cancel' }),
-      visible: rows => isVisibledByAction(rows, Actions.Cancel),
+      visible: rows => isVisibleByAction(rows, Actions.Cancel),
       onClick: (rows) =>
         intentActions.handleTransitionIntent(Actions.Cancel, rows, () => clearSelection())
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Resume),
       label: $t({ defaultMessage: 'Resume' }),
-      visible: rows => isVisibledByAction(rows, Actions.Resume),
+      visible: rows => isVisibleByAction(rows, Actions.Resume),
       onClick: (rows) =>
         intentActions.handleTransitionIntent(Actions.Resume, rows, () => clearSelection())
     }
@@ -333,11 +304,13 @@ export function IntentAITable (
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />
-      <UI.AlertNote
-        data-testid='intent-ai-alert-note'
-        message={Banner({ helpUrl })}
-        type='info'
-      />
+      <Banner
+        title={$t({ defaultMessage: 'Revolutionize your Network Optimization' })}
+        subTitles={[$t({
+          defaultMessage: `Automate configuration and
+        monitoring tasks aligned with your network priorities, while enhancing`
+        }), $t({ defaultMessage: 'performance through IntentAI\'s advanced AI/ML technologies.' })]}
+        helpUrl={helpUrl} />
       <Table<IntentListItem>
         key={JSON.stringify(selectedFilters)}
         className='intentai-table'

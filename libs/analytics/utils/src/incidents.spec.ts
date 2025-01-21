@@ -122,6 +122,8 @@ describe('nodeTypes', () => {
     expect(nodeTypes('controller')).toEqual('Controller')
     expect(nodeTypes('domains')).toEqual('Domain')
     expect(nodeTypes('domain')).toEqual('Domain')
+    expect(nodeTypes('wlan')).toEqual('WLAN')
+    expect(nodeTypes('wlanGroup')).toEqual('WLAN Group')
     expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
   })
 

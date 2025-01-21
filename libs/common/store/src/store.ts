@@ -1,6 +1,5 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore, createDynamicMiddleware }        from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
 
 import {
   baseAdministrationApi as administrationApi,
@@ -54,8 +53,11 @@ import {
   baseRuckusAiChatApi as ruckusAiChatApi,
   baseClientIsolationApi as clientIsolationApi
 } from './baseApi'
+import { cancelMiddleware } from './cancelMiddleware'
 
 const isDev = process.env['NODE_ENV'] === 'development'
+
+export const dynamicMiddleware = createDynamicMiddleware()
 
 export const store = configureStore({
   reducer: {
@@ -116,7 +118,8 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
-      dynamicMiddlewares,
+      cancelMiddleware,
+      dynamicMiddleware.middleware,
       commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
