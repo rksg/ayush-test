@@ -60,7 +60,6 @@ describe('DataSubscriptionsContent', () => {
       expect(screen.getByText('New Subscription')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
         pathname: '/ai/dataSubscriptions/create',
         hash: '',
         search: ''
@@ -68,8 +67,7 @@ describe('DataSubscriptionsContent', () => {
       expect(screen.getByText(/Cloud Storage:/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage:/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
-        pathname: '/ai/dataSubscriptions/cloudStorage',
+        pathname: '/ai/dataSubscriptions/cloudStorage/create',
         hash: '',
         search: ''
       })
