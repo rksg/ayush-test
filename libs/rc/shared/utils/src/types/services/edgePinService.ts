@@ -46,6 +46,7 @@ export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetwork
   networkNames: string[]
   originalAccessSwitchInfos: AccessSwitch[]
   dhcpRelay: boolean
+  networkTopologyType?: string
 }
 
 export interface EdgePinTunneledWlan {

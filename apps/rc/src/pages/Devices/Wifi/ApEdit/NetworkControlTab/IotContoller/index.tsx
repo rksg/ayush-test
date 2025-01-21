@@ -249,7 +249,10 @@ export function IotController () {
                   style={{ display: 'inline-block', width: '230px' }}
                   // noStyle
                   rules={[
-                    { required: true },
+                    { required: true,
+                      // eslint-disable-next-line max-len
+                      message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
+                    },
                     { validator: (_, value) => domainNameRegExp(value) }
                   ]}
                   label={

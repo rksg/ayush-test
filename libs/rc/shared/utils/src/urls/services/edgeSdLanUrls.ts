@@ -4,7 +4,8 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
   getEdgeSdLanViewDataList: {
     method: 'post',
     url: '/edgeSdLanServices/query',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/edgeSdLanServices/query'
   },
   getEdgeSdLanList: {
     method: 'get',
@@ -19,12 +20,14 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
   addEdgeSdLan: {
     method: 'post',
     url: '/edgeSdLanServices',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/edgeSdLanServices'
   },
   updateEdgeSdLan: {
     method: 'put',
     url: '/edgeSdLanServices/:serviceId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/edgeSdLanServices/{id}'
   },
   updateEdgeSdLanPartial: {
     method: 'PATCH',
@@ -34,7 +37,8 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
   deleteEdgeSdLan: {
     method: 'delete',
     url: '/edgeSdLanServices/:serviceId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/edgeSdLanServices/{id}'
   },
   batchDeleteEdgeSdLan: {
     method: 'delete',
@@ -74,12 +78,14 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
   activateEdgeMvSdLanNetwork: {
     method: 'put',
     url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/edgeSdLanServices/{id}/venues/{id}/wifiNetworks/{id}'
   },
   deactivateEdgeMvSdLanNetwork: {
     method: 'delete',
     url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/edgeSdLanServices/{id}/venues/{id}/wifiNetworks/{id}'
   },
   toggleEdgeSdLanDmz: {
     method: 'PATCH',
