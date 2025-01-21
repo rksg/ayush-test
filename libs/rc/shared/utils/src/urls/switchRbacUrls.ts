@@ -17,6 +17,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAaaServer: {
     method: 'delete',
     url: '/venues/:venueId/aaaServers/:aaaServerId',
+    opsApi: 'DELETE:/venues/{id}/aaaServers/{id}',
     newApi: true
   },
   bulkDeleteAaaServer: {
@@ -255,6 +256,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addStaticRoute: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
+    opsApi: 'POST:/venues/{id}/switches/{id}/staticRoutes',
     newApi: true
   },
   updateStaticRoute: {
@@ -265,6 +267,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteStaticRoutes: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/staticRoutes',
     newApi: true
   },
   reboot: {

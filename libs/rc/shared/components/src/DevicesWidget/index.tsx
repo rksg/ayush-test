@@ -7,10 +7,11 @@ import { Card, DonutChart,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
 import type { DonutChartData }                             from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { ChartData }                                       from '@acx-ui/rc/utils'
+import { ChartData, SwitchRbacUrlsInfo }                   from '@acx-ui/rc/utils'
 import { TenantLink, useNavigateToPath, useParams }        from '@acx-ui/react-router-dom'
 import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { filterByAccess, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                                       from '@acx-ui/utils'
 
 import { useIsEdgeReady } from '../useEdgeActions'
 
@@ -205,7 +206,8 @@ export function DevicesWidgetv2 (props: {
                     {filterByAccess([
                       <TenantLink
                         to={'/devices/switch/add'}
-                        scopeKey={[SwitchScopes.CREATE]}>
+                        scopeKey={[SwitchScopes.CREATE]}
+                        rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.addSwitch)]}>
                         {$t({ defaultMessage: 'Add Switch' })}
                       </TenantLink>
                     ])}

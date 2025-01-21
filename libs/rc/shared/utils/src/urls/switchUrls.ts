@@ -29,6 +29,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aaaServers/:aaaServerId',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
+    opsApi: 'PUT:/venues/{id}/aaaServers/{id}',
     newApi: true
   },
   deleteAaaServer: {

@@ -137,7 +137,10 @@ export function VenueEdit () {
       const navigateTo =
       hasDetailsPermission ? 'details' :
         hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
-          hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? 'switch' :
+          hasPermission({
+            scopes: [SwitchScopes.UPDATE],
+            rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+          }) ? 'switch' :
             enablePropertyManagement ? 'property' : notFound
       navigate(navigateTo, { replace: true })
       return
@@ -150,7 +153,10 @@ export function VenueEdit () {
 
     const hasNoPermissions
     = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
-    || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
+    || (!hasPermission({
+      scopes: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+    }) && activeTab === 'switch')
     || (!hasDetailsPermission && activeTab === 'details')
     || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'property')
 

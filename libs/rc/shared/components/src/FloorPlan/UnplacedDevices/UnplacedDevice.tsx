@@ -9,6 +9,7 @@ import { DeviceOutlined, DevicesOutlined, SignalUp }    from '@acx-ui/icons'
 import { APMeshRole, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { SwitchScopes, WifiScopes }                     from '@acx-ui/types'
 import { hasPermission }                                from '@acx-ui/user'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 import { NetworkDeviceContext } from '..'
 import { getDeviceName }        from '../NetworkDevices/utils'
@@ -34,7 +35,10 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
     if(device?.networkDeviceType === NetworkDeviceType.ap) {
       return hasPermission({ scopes: [WifiScopes.UPDATE] })
     } else if(device?.networkDeviceType === NetworkDeviceType.switch) {
-      return hasPermission({ scopes: [SwitchScopes.UPDATE] })
+      return hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)]
+      })
     }
     return true
   }
