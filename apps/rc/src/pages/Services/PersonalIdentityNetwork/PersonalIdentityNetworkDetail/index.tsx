@@ -16,6 +16,7 @@ import {
   filterByAccessForServicePolicyMutation,
   genDhcpConfigByPinSetting,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
@@ -121,6 +122,7 @@ const PersonalIdentityNetworkDetail = () => {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId! })}
             scopeKey={getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.EDIT)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
