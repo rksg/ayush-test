@@ -369,7 +369,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
            />}
          />}
     </>}
-    {providerType === SmsProviderType.TWILIO && messageMethod && <>
+    {providerType === SmsProviderType.TWILIO && messageMethod !== undefined && <>
       <Form.Item
         name='enableWhatsapp'
         valuePropName='checked'

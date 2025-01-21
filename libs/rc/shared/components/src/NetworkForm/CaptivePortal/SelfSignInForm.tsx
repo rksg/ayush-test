@@ -247,7 +247,7 @@ export function SelfSignInForm () {
                   ['guestPortal', 'enableWhatsappLogin'])}
                 disabled={isTemplate || provider !== SmsProviderType.TWILIO}
                 checked={enableWhatsappLogin}>
-                  <UI.WhatsApp style={{ opacity: isTemplate ? 0.5 : 1 }}/>
+                  <UI.WhatsApp style={{ opacity: (isTemplate || provider !== SmsProviderType.TWILIO) ? 0.5 : 1 }}/>
                   {$t({ defaultMessage: 'WhatsApp' })}
                 </UI.Checkbox>
                 <Tooltip title={isTemplate
