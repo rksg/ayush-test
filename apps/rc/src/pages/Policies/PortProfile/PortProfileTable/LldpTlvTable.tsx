@@ -10,7 +10,7 @@ import {
   useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
-  LldpTlvMatchingTitle,
+  LldpTlvMatchingType,
   LldpTlvs,
   SwitchPortProfiles,
   useTableQuery
@@ -19,11 +19,13 @@ import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
-import { LldpTlvDrawer } from '../PortProfileForm/LldpTlvDrawer'
+import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
+import { LldpTlvDrawer }              from '../PortProfileForm/LldpTlvDrawer'
 
 type PortProfileMap = {
   [key: string]: string
 }
+
 
 export default function LldpTlvTable () {
   const { $t } = useIntl()
@@ -88,9 +90,8 @@ export default function LldpTlvTable () {
       dataIndex: 'nameMatchingType',
       sorter: true,
       render: (_, row) => {
-        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingTitle
-        return $t({ defaultMessage: '{nameMatchingType}' },
-          { nameMatchingType: LldpTlvMatchingTitle[nameMatchingType] })
+        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingType
+        return $t(lldpTlvMatchingTypeTextMap[nameMatchingType])
       }
     },
     {
@@ -105,9 +106,8 @@ export default function LldpTlvTable () {
       dataIndex: 'descMatchingType',
       sorter: true,
       render: (_, row) => {
-        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingTitle
-        return $t({ defaultMessage: '{descMatchingType}' },
-          { descMatchingType: LldpTlvMatchingTitle[descMatchingType] })
+        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingType
+        return $t(lldpTlvMatchingTypeTextMap[descMatchingType])
       }
     },
     {

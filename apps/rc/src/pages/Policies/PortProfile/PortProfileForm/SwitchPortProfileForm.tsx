@@ -19,7 +19,7 @@ import {
   checkVlanMember,
   getDefaultPortSpeedOption,
   getPolicyListRoutePath,
-  LldpTlvMatchingTitle,
+  LldpTlvMatchingType,
   LldpTlvs,
   MacOuis,
   PORT_SPEED,
@@ -32,6 +32,8 @@ import {
   validateVlanExcludingReserved
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
 
 import * as UI from './styledComponents'
 
@@ -177,9 +179,8 @@ export default function SwitchPortProfileForm () {
       dataIndex: 'nameMatchingType',
       sorter: true,
       render: (_, row) => {
-        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingTitle
-        return $t({ defaultMessage: '{nameMatchingType}' },
-          { nameMatchingType: LldpTlvMatchingTitle[nameMatchingType] })
+        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingType
+        return $t(lldpTlvMatchingTypeTextMap[nameMatchingType])
       }
     },
     {
@@ -194,9 +195,8 @@ export default function SwitchPortProfileForm () {
       dataIndex: 'descMatchingType',
       sorter: true,
       render: (_, row) => {
-        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingTitle
-        return $t({ defaultMessage: '{descMatchingType}' },
-          { descMatchingType: LldpTlvMatchingTitle[descMatchingType] })
+        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingType
+        return $t(lldpTlvMatchingTypeTextMap[descMatchingType])
       }
     }
   ]
