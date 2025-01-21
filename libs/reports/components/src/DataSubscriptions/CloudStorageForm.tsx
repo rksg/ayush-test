@@ -50,6 +50,10 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
       name: $t({ defaultMessage: 'FTP server IP/hostname' }),
       component: <Input />
     }, {
+      id: 'ftpPort',
+      name: $t({ defaultMessage: 'FTP port' }),
+      component: <Input />
+    }, {
       id: 'ftpUserName',
       name: $t({ defaultMessage: 'FTP username' }),
       component: <Input />
@@ -57,14 +61,14 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
       id: 'ftpPassword',
       name: $t({ defaultMessage: 'FTP password' }),
       component: <Input type='password' />
-    }, {
-      id: 'ftpPort',
-      name: $t({ defaultMessage: 'FTP port' }),
-      component: <Input />
     }],
     sftp: [{
       id: 'sftpHost',
       name: $t({ defaultMessage: 'SFTP server IP/hostname' }),
+      component: <Input />
+    }, {
+      id: 'sftpPort',
+      name: $t({ defaultMessage: 'SFTP port' }),
       component: <Input />
     }, {
       id: 'sftpUserName',
@@ -74,10 +78,6 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
       id: 'sftpPassword',
       name: $t({ defaultMessage: 'SFTP password' }),
       component: <Input type='password' />
-    }, {
-      id: 'sftpPort',
-      name: $t({ defaultMessage: 'SFTP port' }),
-      component: <Input />
     }, {
       id: 'sftpPrivateKey',
       name: $t({ defaultMessage: 'SFTP private key' }),
