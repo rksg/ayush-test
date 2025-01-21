@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting,
-  VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher, 
+  VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   SwitchUrlsInfo, SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
