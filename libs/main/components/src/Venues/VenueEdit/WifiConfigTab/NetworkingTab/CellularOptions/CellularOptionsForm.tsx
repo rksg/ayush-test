@@ -36,7 +36,7 @@ export function CellularOptionsForm (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId, venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const formRef = useRef<StepsFormLegacyInstance>()
   const form = Form.useFormInstance()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)

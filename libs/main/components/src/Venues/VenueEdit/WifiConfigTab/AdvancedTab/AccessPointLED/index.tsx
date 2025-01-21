@@ -24,7 +24,7 @@ export function AccessPointLED (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)

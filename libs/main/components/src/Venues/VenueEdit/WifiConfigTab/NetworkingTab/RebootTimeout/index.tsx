@@ -87,7 +87,7 @@ export function RebootTimeout (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const [options, setOptions] = useState(MinuteTypeOptions)
   const [serverOptions, setServerOptions] = useState(MinuteTypeOptions)
 

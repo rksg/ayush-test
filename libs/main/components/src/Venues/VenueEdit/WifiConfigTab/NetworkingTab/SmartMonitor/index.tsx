@@ -26,7 +26,7 @@ export function SmartMonitor (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
 
   const { isTemplate } = useConfigTemplate()

@@ -14,7 +14,7 @@ import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 export function ApManagementVlan (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const form = Form.useFormInstance()
 
   const {

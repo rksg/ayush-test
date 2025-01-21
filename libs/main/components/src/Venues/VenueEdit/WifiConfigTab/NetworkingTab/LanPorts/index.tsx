@@ -103,7 +103,7 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
 export function LanPorts (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,

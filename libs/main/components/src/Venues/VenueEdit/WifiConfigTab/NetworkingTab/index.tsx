@@ -117,8 +117,7 @@ export function NetworkingTab () {
     isAllowEditRebootTimeout,
     isAllowEditRADIUSOptions
   ] = [
-    false,
-    //hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueLanPorts)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueLanPorts)]),
     hasAllowedOperations([meshOpsApi]),
     hasAllowedOperations([dMulticastOpsApi]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueCellularSettings)]),

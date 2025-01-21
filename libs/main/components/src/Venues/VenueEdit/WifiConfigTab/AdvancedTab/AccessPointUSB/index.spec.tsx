@@ -75,7 +75,7 @@ const mockAdvancedApUsb = (
     venueApCaps: mockVenueApCap,
     isLoadingVenueApCaps: false
   }}>
-    <AccessPointUSB isAllowEdit={true} />
+    <AccessPointUSB />
   </VenueUtilityContext.Provider>
 )
 

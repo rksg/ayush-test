@@ -29,7 +29,7 @@ import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 export function BssColoring (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,

@@ -86,6 +86,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadioCustomizationRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apRadioSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apRadioSettings',
     newApi: true
   },
   getVenueLoadBalancing: {
@@ -110,6 +111,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueLoadBalancingRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apLoadBalancingSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apLoadBalancingSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -138,6 +140,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueClientAdmissionControlRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apClientAdmissionControlSettings',
+    opsApi: 'PUT:/templates/venues/{id}/apClientAdmissionControlSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -166,6 +169,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueExternalAntennaRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apModelExternalAntennaSettings',
+    opsApi: 'PUT:/template/venues/{id}/apModelExternalAntennaSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

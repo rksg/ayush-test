@@ -31,7 +31,7 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
   const { tenantId, venueId } = useParams()
   const initDataRef = useRef<VenueApUsbStatus[]>([])
   // eslint-disable-next-line max-len
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
 
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
