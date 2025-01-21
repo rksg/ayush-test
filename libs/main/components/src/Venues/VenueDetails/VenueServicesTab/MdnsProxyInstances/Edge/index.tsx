@@ -182,7 +182,7 @@ export const EdgeMdnsTab = () => {
           checked={true}
           disabled={!hasPermission({
             scopes: [EdgeScopes.DELETE],
-            rbacOpsIds: [getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsCluster)] })}
+            rbacOpsIds: [getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)] })}
           onClick={(_, event) => {
             event.stopPropagation()
           }}
