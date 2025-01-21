@@ -154,6 +154,7 @@ function Card (props: CardProps) {
           >
             <div className='card-actions'>
               <div
+                data-testid='increaseCard'
                 className={`icon ${
                   card.currentSizeIndex+1 >= card.sizes?.length ? 'disabled' : ''}`}
                 onClick={() => {
@@ -163,6 +164,7 @@ function Card (props: CardProps) {
                 <Plus />
               </div>
               <div
+                data-testid='decreaseCard'
                 className={`icon ${card.currentSizeIndex <= 0 ? 'disabled' : ''}`}
                 onClick={() => {
                   decreaseCard()
@@ -174,6 +176,7 @@ function Card (props: CardProps) {
                 <EditOutlined />
               </div>
               <div
+                data-testid='deleteCard'
                 className='icon'
                 onClick={() => {
                   deleteCard(id, groupIndex)

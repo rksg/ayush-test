@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 import _ from 'lodash'
 
-import { Tabs } from '@acx-ui/components'
+// import { Tabs } from '@acx-ui/components'
 
 import { Section, Group, LayoutConfig, CardInfo } from '../Canvas'
 import utils                                      from '../utils'
@@ -171,9 +171,9 @@ export default function Layout (props: LayoutProps) {
   return (
     <div>
       {
-        sections.map((s) => <div className='section'>
+        sections.map((s) => <div className='section' key={s.id}>
           {/* <h2>Section {s.id}</h2> */}
-          {
+          {/* {
             s.hasTab ?
               <Tabs type='card'
                 stickyTop={false}
@@ -203,29 +203,29 @@ export default function Layout (props: LayoutProps) {
                 }
               </Tabs>
               :
-              <>
-                {
-                  groups.map((g, i) => g.sectionId == s.id ? <GroupItem
-                    key={g.id}
-                    id={g.id}
-                    type={g.type}
-                    index={i}
-                    cards={g.cards}
-                    length={groups.length}
-                    groups={groups}
-                    moveCardInGroupItem={moveCardInGroupItem}
-                    onCardDropInGroupItem={onCardDropInGroupItem}
-                    layout={layout}
-                    defaultLayout={defaultLayout}
-                    shadowCard={shadowCard}
-                    updateShadowCard={setShadowCard}
-                    updateGroupList={setGroups}
-                    handleLoad={handleLoad}
-                    deleteCard={deleteCard}
-                  /> : <></>)
-                }
-              </>
+              <> */}
+          {
+            groups.map((g, i) => g.sectionId == s.id ? <GroupItem
+              key={g.id}
+              id={g.id}
+              type={g.type}
+              index={i}
+              cards={g.cards}
+              length={groups.length}
+              groups={groups}
+              moveCardInGroupItem={moveCardInGroupItem}
+              onCardDropInGroupItem={onCardDropInGroupItem}
+              layout={layout}
+              defaultLayout={defaultLayout}
+              shadowCard={shadowCard}
+              updateShadowCard={setShadowCard}
+              updateGroupList={setGroups}
+              handleLoad={handleLoad}
+              deleteCard={deleteCard}
+            /> : <></>)
           }
+          {/* </>
+          } */}
         </div>)
       }
     </div>

@@ -90,7 +90,7 @@ export default function GroupItem (props: GroupProps) {
   })
 
   return (
-    <div className='rglb_group-item' ref={dropRef} id={'group' + id}>
+    <div className='rglb_group-item' ref={dropRef} id={'group' + id} data-testid='dropGroup'>
       <div className='group-item-container'>
         <section
           id='card-container'

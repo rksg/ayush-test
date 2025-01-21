@@ -28,7 +28,7 @@ export const calColWidth = (containerWidth, col, containerPadding, margin) => {
       (containerWidth - containerPadding[0] * 2 - margin[0] * (col + 1)) / col
     )
   }
-  return (containerWidth - containerPadding[0] * 2 - 0 * (col + 1)) / col
+  return (containerWidth - containerPadding[0] * 2) / col
 }
 
 /**
