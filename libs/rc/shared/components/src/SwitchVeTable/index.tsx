@@ -23,11 +23,13 @@ import {
   VenueMessages,
   useTableQuery,
   VeViewModel,
-  SwitchViewModel
+  SwitchViewModel,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 // TODO: Wait for support venue level
@@ -199,6 +201,7 @@ export function SwitchVeTable (props: {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateVePort)],
       onClick: (selectedRows) => {
         setIsEditMode(true)
         setEditData(selectedRows[0])
@@ -208,6 +211,7 @@ export function SwitchVeTable (props: {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteVePorts)],
       disabled: disabledDelete || cliApplied,
       tooltip: deleteButtonTooltip || $t(VenueMessages.CLI_APPLIED),
       onClick: (rows, clearSelection) => {
@@ -263,7 +267,11 @@ export function SwitchVeTable (props: {
   const [editData, setEditData] = useState({} as VeViewModel)
 
   const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE],
+    rbacOpsIds: [
+      getOpsApi(SwitchRbacUrlsInfo.updateVePort),
+      getOpsApi(SwitchRbacUrlsInfo.deleteVePorts)
+    ]
   })
 
   const isActionHidden = (data?: VeViewModel[]) => {
@@ -294,6 +302,7 @@ export function SwitchVeTable (props: {
         filterByAccess([{
           label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addVePort)],
           disabled: cliApplied,
           tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
           onClick: () => {
