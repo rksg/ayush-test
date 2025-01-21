@@ -4,7 +4,7 @@ import { Col, Form, FormInstance, Input, Row, Select, Space, Switch } from 'antd
 import { useIntl }                                                    from 'react-intl'
 
 import { Button, Card, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { InformationSolid }                           from '@acx-ui/icons'
 import {
   useGetPersonaGroupByIdQuery,
@@ -19,6 +19,7 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
 import { TemplateSelector }                       from '../TemplateSelector'
@@ -37,6 +38,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const { form, venueId, initialValues } = props
   const { $t } = useIntl()
   const msgTemplateEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const dpskRequireIdentityGroupEnabled = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const hasAddPersonaGroupPermission = hasCrossVenuesPermission({ needGlobalPermission: true })
   const hasAddResidentPortalPermission = hasServicePermission({
     type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
   })
@@ -111,7 +114,20 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               />
           }
         </Form.Item>
-
+        { hasAddPersonaGroupPermission && !dpskRequireIdentityGroupEnabled &&
+          <Form.Item
+            noStyle
+            hidden={personaGroupHasBound}
+          >
+            <Button
+              type={'link'}
+              size={'small'}
+              onClick={() => setPersonaGroupVisible(true)}
+            >
+              {$t({ defaultMessage: 'Add Identity Group' })}
+            </Button>
+          </Form.Item>
+        }
 
         <Form.Item noStyle name={['unitConfig', 'type']}>
           <Input type='hidden' />
