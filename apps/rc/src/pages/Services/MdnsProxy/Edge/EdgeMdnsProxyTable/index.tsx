@@ -27,7 +27,8 @@ import {
   EdgeMdnsProxyViewData,
   defaultSort,
   MdnsProxyFeatureTypeEnum,
-  EdgeServiceCompatibility
+  EdgeServiceCompatibility,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -70,7 +71,8 @@ export function EdgeMdnsProxyTable () {
           })
         })
       },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -89,7 +91,8 @@ export function EdgeMdnsProxyTable () {
           }
         })
       },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE)
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE)
     }
   ]
 
@@ -116,6 +119,8 @@ export function EdgeMdnsProxyTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.CREATE })}
           >

@@ -6,6 +6,7 @@ import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
+  CommonUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
@@ -17,7 +18,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { WifiScopes, EdgeScopes, SwitchScopes }       from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }                              from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }                   from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
@@ -66,6 +67,7 @@ function VenuePageHeader () {
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
+          rbacOpsIds={[getOpsApi(CommonUrlsInfo.updateVenue)]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {
