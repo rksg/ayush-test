@@ -83,7 +83,7 @@ export default function BaseStepNode (props: NodeProps
           size={'small'}
           type={'link'}
           rbacOpsIds={[getOpsApi(WorkflowUrls.patchAction)]}
-          disabled={hasAllowedOperations([getOpsApi(WorkflowUrls.patchAction)])}
+          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.patchAction)])}
           icon={<EditorToolbarIcon><EditOutlined/></EditorToolbarIcon>}
           onClick={onEditClick}
         />
@@ -101,7 +101,7 @@ export default function BaseStepNode (props: NodeProps
           size={'small'}
           type={'link'}
           rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
-          disabled={hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
+          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
           icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
           onClick={onDeleteClick}
         />
