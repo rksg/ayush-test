@@ -14,7 +14,9 @@ import {
   LocationExtended,
   PersonalIdentityNetworkFormData,
   redirectPreviousPage,
-  EdgeClusterInfo
+  EdgeClusterInfo,
+  DistributionSwitch,
+  AccessSwitch
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { RequestPayload }                                 from '@acx-ui/types'
@@ -90,6 +92,11 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
 
   // eslint-disable-next-line max-len
   const doSwitchValidation = async (formData: PersonalIdentityNetworkFormData, payload: RequestPayload, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
+    // skip when topology type is wireless
+    if (formData.networkTopologyType === NetworkTopologyType.Wireless) {
+      return Promise.resolve()
+    }
+
     if (formData.distributionSwitchInfos?.length > 0 && (
       formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
         as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
@@ -180,23 +187,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
 
   // eslint-disable-next-line max-len
   const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    const payload = {
-      id: formData.id,
-      name: formData.name,
-      vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      edgeClusterInfo: {
-        edgeClusterId: formData.edgeClusterId,
-        segments: formData.segments,
-        devices: formData.devices,
-        dhcpInfoId: formData.dhcpId,
-        dhcpPoolId: formData.poolId
-      },
-      networkIds: formData.networkIds,
-      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
-        ds, ['accessSwitches', 'name'])),
-      accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
-        as, ['name', 'familyId', 'firmwareVersion', 'model']))
-    }
+    const payload = getSubmitPayload(formData)
 
     try {
       await doEdgeClusterValidation(payload)
@@ -316,4 +307,39 @@ export const getStepsByTopologyType = (type: string) => {
       break
   }
   return steps
+}
+
+export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
+  // `networkTopologyType` have value only when PIN enhancement FF is enabled
+  const networkTopologyType = formData.networkTopologyType
+
+  const payload = {
+    id: formData.id,
+    name: formData.name,
+    vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
+    edgeClusterInfo: {
+      edgeClusterId: formData.edgeClusterId,
+      segments: formData.segments,
+      devices: formData.devices,
+      dhcpInfoId: formData.dhcpId,
+      dhcpPoolId: formData.poolId
+    },
+    networkIds: [] as string[],
+    distributionSwitchInfos: [] as DistributionSwitch[],
+    accessSwitchInfos: [] as AccessSwitch[]
+  }
+
+  if (networkTopologyType !== NetworkTopologyType.Wireless) {
+    payload.distributionSwitchInfos = formData.distributionSwitchInfos?.map(ds => omit(
+      ds, ['accessSwitches', 'name']))
+
+    payload.accessSwitchInfos = formData.accessSwitchInfos?.map(as => omit(
+      as, ['name', 'familyId', 'firmwareVersion', 'model']))
+  }
+
+  if (networkTopologyType !== NetworkTopologyType.TwoTier) {
+    payload.networkIds = formData.networkIds
+  }
+
+  return payload
 }
