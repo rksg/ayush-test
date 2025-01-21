@@ -10,7 +10,8 @@ import { useIntl }       from 'react-intl'
 import { SystemMap, useSystems }                                         from '@acx-ui/analytics/services'
 import { showToast, TableProps, useStepFormContext }                     from '@acx-ui/components'
 import { get }                                                           from '@acx-ui/config'
-import { useWifiNetworkListQuery }                                       from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { useWifiNetworkListQuery, useNetworkListQuery }                  from '@acx-ui/rc/services'
 import { Network, TableResult }                                          from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 import { serviceGuardApi }                                               from '@acx-ui/store'
@@ -355,19 +356,24 @@ export function useServiceGuardTestResults () {
   }
 }
 
-const payload = {
-  fields: ['id', 'name', 'venueApGroups', 'apCount'],
-  sortField: 'name',
-  sortOrder: 'ASC',
-  page: 1,
-  pageSize: 10_000 // TODO: handle client with networks more than this
-}
+
 export function useNetworks (skipR1 = false) {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const payload = {
+    fields: isWifiRbacEnabled
+      ? ['id', 'name', 'venueApGroups', 'apCount']
+      : ['id', 'name', 'venues', 'aps'],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 10_000 // TODO: handle client with networks more than this
+  }
   const { form } = useStepFormContext<ServiceGuardFormDto>()
   const clientType = Form.useWatch('clientType', form)
   const wlans = useWlansQuery(clientType, { skip: !clientType })
 
-  const networks = useWifiNetworkListQuery({ payload, params: useParams() }, {
+  const networkQuery = isWifiRbacEnabled ? useWifiNetworkListQuery : useNetworkListQuery
+  const networks = networkQuery({ payload, params: useParams() }, {
     skip: Boolean(get('IS_MLISA_SA')) || skipR1,
     selectFromResult: (response) => {
       const data = response.isUninitialized

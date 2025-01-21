@@ -3,6 +3,7 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { get }                   from '@acx-ui/config'
+import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { networkApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo }        from '@acx-ui/rc/utils'
 import {
@@ -63,6 +64,7 @@ describe('WlanName', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('renders field', async () => {
@@ -148,13 +150,7 @@ describe('WlanName', () => {
           isAllApGroup: true
         }
       ] },
-      { id: 'h-1', name: 'No Venues', apCount: 1, venueApGroups: [
-        {
-          venueId: 'v-1',
-          apGroupIds: ['ap-1'],
-          isAllApGroup: true
-        }
-      ] }
+      { id: 'h-1', name: 'No Venues', apCount: 1, venueApGroups: [] }
     ])
     mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
