@@ -18,6 +18,10 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
             {
               title: $t({ defaultMessage: 'Property Management' }),
               key: 'wifi.venue.property_management'
+            },
+            {
+              title: $t({ defaultMessage: 'Property Management - Units' }),
+              key: 'wifi.venue.property_management_units'
             }
           ]
         },
@@ -72,6 +76,18 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
             {
               title: $t({ defaultMessage: 'Resident Portal' }),
               key: 'wifi.network_control_services.resident_portal'
+            },
+            {
+              title: $t({ defaultMessage: 'Certificate Authority' }),
+              key: 'wifi.network_control_services.certificate_authority'
+            },
+            {
+              title: $t({ defaultMessage: 'Certificate Tempaltes' }),
+              key: 'wifi.network_control_services.certificate_tempaltes'
+            },
+            {
+              title: $t({ defaultMessage: 'MDNS Proxy' }),
+              key: 'wifi.network_control_services.mdns_proxy'
             }
           ]
         },
@@ -118,6 +134,10 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
             {
               title: $t({ defaultMessage: 'Syslog Server' }),
               key: 'wifi.network_control_policies.syslog_server'
+            },
+            {
+              title: $t({ defaultMessage: 'Tunneling' }),
+              key: 'wifi.network_control_policies.tunneling'
             },
             {
               title: $t({ defaultMessage: 'VLAN Pool' }),
@@ -176,20 +196,36 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
       ]
     } as TreeDataNode,
     {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
+      title: $t({ defaultMessage: 'Gateways' }),
       key: 'edge',
       children: [
         {
-          title: $t({ defaultMessage: 'Edge' }),
-          key: 'smartedge.edge',
+          title: $t({ defaultMessage: 'RUCKUS Edge' }),
+          key: 'getways.ruckusEdge',
           children: [
             {
-              title: $t({ defaultMessage: 'RUCKUS Edge' }),
-              key: 'smartedge.edge.ruckus_edge'
+              title: $t({ defaultMessage: 'RWG' }),
+              key: 'getways.ruckusEdge.rwg'
             },
             {
-              title: $t({ defaultMessage: 'Network Assurance' }),
-              key: 'smartedge.edge.network_assurance'
+              title: $t({ defaultMessage: 'DHCP' }),
+              key: 'getways.ruckusEdge.dhcp'
+            },
+            {
+              title: $t({ defaultMessage: 'QoS' }),
+              key: 'getways.ruckusEdge.qos'
+            },
+            {
+              title: $t({ defaultMessage: 'PIN' }),
+              key: 'getways.ruckusEdge.pin'
+            },
+            {
+              title: $t({ defaultMessage: 'SDLAN' }),
+              key: 'getways.ruckusEdge.sdlan'
+            },
+            {
+              title: $t({ defaultMessage: 'MDNS Proxy' }),
+              key: 'getways.ruckusEdge.mdsProxy'
             }
           ]
         }
