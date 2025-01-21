@@ -566,7 +566,7 @@ export function RadioSettings () {
 
   const validateRadioChannels = ( data: VenueRadioCustomization ) => {
     const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
-    const validateChannels = (channels: unknown[] | undefined, method: string | undefined,
+    const validateChannels = (channels: unknown[] | undefined, method: ScanMethodEnum | undefined,
       title: string, dual5GName?: string) => {
 
       const content = dual5GName?
@@ -574,10 +574,10 @@ export function RadioSettings () {
           // eslint-disable-next-line max-len
           { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
           { dual5GName, br: <br /> }
-        ): (method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?
+        ): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
           $t({ defaultMessage: 'Please select one channel' }):
           $t({ defaultMessage: 'Please select at least two channels' })
-      if (Array.isArray(channels) && ((method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
+      if (Array.isArray(channels) && ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
         showActionModal({
           type: 'error',
           title: title,
