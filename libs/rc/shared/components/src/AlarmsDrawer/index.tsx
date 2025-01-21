@@ -177,7 +177,7 @@ export function AlarmsDrawer (props: AlarmsType) {
 
     if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
       const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
-      if(paginationValue.page > totalPage){
+      if(paginationValue.page >= totalPage){
         const pagination = {
           current: totalPage,
           pageSize: paginationValue.pageSize
