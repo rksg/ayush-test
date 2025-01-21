@@ -63,6 +63,7 @@ import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
+import { useEnforcedStatus }                                                    from '../../configTemplates'
 import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
 import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
@@ -121,7 +122,8 @@ const defaultRbacPayload = {
   fields: [
     ...basePayload.fields,
     'venueApGroups',
-    'incompatible'
+    'incompatible',
+    'isEnforced'
   ]
 }
 
@@ -291,6 +293,8 @@ export function NetworkVenuesTab () {
     },
     enableRbac: isPolicyRbacEnabled
   })
+
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   useEffect(() => {
     if (instanceListResult?.data) {
@@ -543,6 +547,8 @@ export function NetworkVenuesTab () {
       label: $t({ defaultMessage: 'Activate' }),
       scopeKey: [WifiScopes.UPDATE],
       visible: activation,
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows, clearSelection) => {
         const networkVenues = activateSelected(rows)
         handleAddNetworkVenues(networkVenues, clearSelection)
@@ -552,6 +558,8 @@ export function NetworkVenuesTab () {
       label: $t({ defaultMessage: 'Deactivate' }),
       scopeKey: [WifiScopes.UPDATE],
       visible: activation,
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows, clearSelection) => {
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, rows.map(item => item.id), () => {
           const deActivateNetworkVenueIds = deActivateSelected(rows)
@@ -631,8 +639,12 @@ export function NetworkVenuesTab () {
           } else if (systemNetwork) {
             disabled = true
             title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
+          } else if (hasEnforcedItem(row)) {
+            disabled = true
+            title = getEnforcedActionMsg(row)
           }
         }
+
         return <Tooltip
           title={title}
           placement='bottom'>

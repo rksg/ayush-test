@@ -122,7 +122,8 @@ export interface VenueSyslogPolicyType {
     enabled: boolean
   },
   activate?: boolean,
-  rogueAps?: number
+  rogueAps?: number,
+  isEnforced?: boolean // For Config Template Enforcement feature, it indicates whether the venue template/instance is enforced
 }
 
 export enum SyslogActionTypes {

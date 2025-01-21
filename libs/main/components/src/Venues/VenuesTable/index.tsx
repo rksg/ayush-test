@@ -255,7 +255,8 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'latitude',
       'longitude',
       'status',
-      'id'
+      'id',
+      'isEnforced'
     ],
     searchTargetFields: ['name'],
     filters: {},
