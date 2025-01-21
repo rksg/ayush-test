@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { Form, FormInstance, Input, Select } from 'antd'
 import { useIntl }                           from 'react-intl'
 
-import { Button, showToast }                              from '@acx-ui/components'
-import { useWebhookSendSampleEventMutation }              from '@acx-ui/rc/services'
-import { URLProtocolRegExp, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+import { Button, showToast }                      from '@acx-ui/components'
+import { useWebhookSendSampleEventMutation }      from '@acx-ui/rc/services'
+import { URLRegExp, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
 
 import * as UI                         from './styledComponents'
 import { getWebhookPayloadEnumString } from './webhookConfig'
@@ -106,7 +106,7 @@ const SettingsTab = (props: SettingsTabProps) => {
           }
           return Promise.resolve()}
         },
-        { validator: (_, value) => URLProtocolRegExp(value) }
+        { validator: (_, value) => URLRegExp(value) }
       ]}
       children={<Input type='url' onChange={() => updateButtonEnabled('url')} />}
     />

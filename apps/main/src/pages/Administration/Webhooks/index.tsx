@@ -37,6 +37,12 @@ const R1Webhooks = (props: R1WebhooksProps) => {
 
   const [deleteWebhook] = useDeleteWebhookMutation()
 
+  const isDisabledCreate = () => {
+    const MAX_WEBHOOK_ALLOWED = 20
+    const count = tableQuery.data?.totalCount || 0
+    return count >= MAX_WEBHOOK_ALLOWED
+  }
+
   useEffect(() => setTitleCount(tableQuery.data?.totalCount || 0), [tableQuery.data])
 
   const columns: TableProps<Webhook>['columns'] = [{
@@ -103,6 +109,7 @@ const R1Webhooks = (props: R1WebhooksProps) => {
 
   const actions: TableProps<Webhook>['actions'] = [{
     label: $t({ defaultMessage: 'Create Webhook' }),
+    disabled: isDisabledCreate(),
     scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     onClick: () => {
       setSelectedWebhook(undefined)
