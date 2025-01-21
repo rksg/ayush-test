@@ -88,7 +88,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
             label={$t({ defaultMessage: 'Data-set columns' })}
             rules={[{
               required: true,
-              message: $t({ defaultMessage: 'Atleast one Data-set column is required!' })
+              message: $t({ defaultMessage: 'At least one Data-set column is required!' })
             }]}
           >
             <Select
