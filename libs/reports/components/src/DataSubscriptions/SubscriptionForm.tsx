@@ -58,7 +58,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
         >
           <Form.Item
             name='subscriptionName'
-            label={$t({ defaultMessage: 'Subscription Name' })}
+            label={$t({ defaultMessage: 'Subscription name' })}
             rules={[{
               required: true,
               message: $t({ defaultMessage: 'Subscription name is required!' })
