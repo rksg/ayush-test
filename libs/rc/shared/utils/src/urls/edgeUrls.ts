@@ -5,7 +5,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges',
     newApi: true,
-    opsApi: 'POST:/venues/{venueId}/edgeClusters/{clusterId}/edges'
+    opsApi: 'POST:/venues/{id}/edgeClusters/{id}/edges'
   },
   getEdge: {
     method: 'get',
@@ -288,7 +288,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/edgeClusters',
     newApi: true,
-    opsApi: 'POST:/venues/{venueId}/edgeClusters'
+    opsApi: 'POST:/venues/{id}/edgeClusters'
   },
   deleteEdgeCluster: {
     method: 'delete',

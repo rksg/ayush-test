@@ -5,7 +5,8 @@ import { useMemo, useState } from 'react'
 import { map }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { defaultSort, Incident, overlapsRollup, sortProp }                                from '@acx-ui/analytics/utils'
+import { Incident, overlapsRollup, sortProp }                                             from '@acx-ui/analytics/utils'
+import type { SortResult }                                                                from '@acx-ui/analytics/utils'
 import { Card, Loader, NoGranularityText, Table, Button, TableProps, Tooltip, showToast } from '@acx-ui/components'
 import { CopyOutlined }                                                                   from '@acx-ui/icons-new'
 
@@ -50,6 +51,7 @@ export function useDrawer (init: boolean) {
   return { visible, vlan, onOpen, onClose }
 }
 
+export const vlanSorter = (a: unknown, b: unknown) => Math.sign(Number(a) - Number(b)) as SortResult
 
 function ImpactedVLANsTable (props: {
   data: ImpactedVlan[],
@@ -65,7 +67,7 @@ function ImpactedVLANsTable (props: {
       dataIndex: 'vlanId',
       width: 80,
       title: $t({ defaultMessage: 'VLAN ID' }),
-      sorter: { compare: sortProp('vlanId', defaultSort) },
+      sorter: { compare: sortProp('vlanId', vlanSorter) },
       searchable: true,
       render: function (_, row) {
         return <Button
@@ -127,3 +129,4 @@ function ImpactedVLANsTable (props: {
     /> }
   </>
 }
+
