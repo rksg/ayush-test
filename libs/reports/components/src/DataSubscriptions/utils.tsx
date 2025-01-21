@@ -3,6 +3,7 @@ import { getIntl } from '@acx-ui/utils'
 export function generateBreadcrumb ({ isRAI, isList }: { isRAI?: boolean, isList?: boolean }) {
   const { $t } = getIntl()
 
+  // R1 menu not confirmed to be adjusted later
   const breadcrumb = isRAI ? [
     { text: $t({ defaultMessage: 'Business Insights' }) },
     { text: $t({ defaultMessage: 'DataSubscriptions' }), link: '/dataSubscriptions' }
