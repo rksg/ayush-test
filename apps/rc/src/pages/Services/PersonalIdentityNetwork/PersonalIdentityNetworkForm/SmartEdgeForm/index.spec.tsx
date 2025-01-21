@@ -262,8 +262,8 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
 
     await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
     const alerts = await screen.findAllByRole('alert')
-    expect(alerts[0]).toHaveTextContent('Number of Segments must be between 1 and 10000')
-    expect(alerts[1]).toHaveTextContent('Number of devices per Segment must be between 1 and 10')
+    expect(alerts[0]).toHaveTextContent('Number of Segments must be an integer between 1 and 10000')
+    expect(alerts[1]).toHaveTextContent('Number of devices per Segment must be an integer between 1 and 10')
   })
 
   it('Step2 - Should navigate to detail page when in edit mode and click "service details page"', async () => {

@@ -363,4 +363,55 @@ describe('MacRegistrationListForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(selectPath.current)
   })
+
+  it('should create list with identity error', async () => {
+    render(
+      <Provider>
+        <MacRegistrationListForm/>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: mockedTenantId },
+          path: createPath
+        }
+      })
+
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: /name/i }),
+      'test'
+    )
+
+    const expirationModeElem = screen.getByRole('radio', { name: /After/i })
+    await userEvent.click(expirationModeElem)
+
+    const inputNumberElems = await screen.findAllByRole('spinbutton')
+    const expirationOffsetElem = inputNumberElems[0]
+    expect(expirationOffsetElem).toBeInTheDocument()
+
+    const comboboxElems = await screen.findAllByRole('combobox')
+    const expirationTypeElem = comboboxElems[0]
+    expect(expirationTypeElem).toBeInTheDocument()
+
+    const identityGroup = comboboxElems[1]
+    expect(identityGroup).toBeInTheDocument()
+    fireEvent.mouseDown(identityGroup)
+    const groupOption = await screen.findAllByText(groupList.content[0].name)
+    await userEvent.click(groupOption[0])
+
+    // eslint-disable-next-line max-len
+    const useSingleIdentityElem = await screen.findByText('Use Single Identity for all connections')
+    await userEvent.click(useSingleIdentityElem)
+
+    await userEvent.type(expirationOffsetElem, mockedCreateFormData.expirationOffset!.toString())
+    await userEvent.click(expirationTypeElem)
+    await userEvent.click(screen.getByText('Days'))
+
+    const policySet = comboboxElems[2]
+    fireEvent.mouseDown(policySet)
+    const option = await screen.findAllByText(policySetList.content[0].name)
+    await userEvent.click(option[0])
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(mockedUseNavigate).toBeCalledTimes(0))
+  })
 })
