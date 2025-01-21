@@ -474,10 +474,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     updateEnforcementStatus: build.mutation<CommonResult, RequestPayload<{ enabled: boolean }>>({
       query: ({ params, payload }) => {
-        const apiInfo = payload?.enabled
-          ? ConfigTemplateUrlsInfo.updateEnforcement
-          : ConfigTemplateUrlsInfo.deleteEnforcement
-        return { ...createHttpRequest(apiInfo, params) }
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.updateEnforcement, params),
+          body: JSON.stringify({ isEnforced: payload?.enabled })
+        }
       }
     }),
     getConfigTemplateInstanceEnforced: build.query<
