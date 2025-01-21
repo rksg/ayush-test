@@ -1974,7 +1974,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const activationPayload = { filters: { id: [tableChangePayload.id] } }
           const res = await fetchWithBQ({ ...req, body: JSON.stringify(activationPayload) })
           if (res.error) return defaultRes
-          console.log(res)
           const activationData = res.data as TableResult<ClientIsolationViewModel>
           const networkIds = Array.from(
             new Set(
