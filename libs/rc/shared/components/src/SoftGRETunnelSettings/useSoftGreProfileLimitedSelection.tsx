@@ -43,26 +43,29 @@ export const useSoftGreProfileLimitedSelection = (
           return { label: softGreProfile.name, value: softGreProfile.id }
         }))
         setVoteTallyBoard(softGreProfileList.map((softGreProfile) => {
-          let vote = softGreProfile.activations.filter(act=> act.venueId === venueId).length
-              + softGreProfile.venueActivations.filter(venue => venue.venueId === venueId).length
-              + softGreProfile.apActivations.filter(ap => ap.venueId === venueId).length
+
+          let vote = 0
+          const activations = softGreProfile.activations?.filter(act=> act.venueId === venueId)
+          const venueActivations = softGreProfile.venueActivations?.filter((venue) => {
+            return venue.venueId === venueId
+          }) ?? []
+          const apActivations = softGreProfile.apActivations?.filter((ap) => {
+            return ap.venueId === venueId
+          }) ?? []
+          vote = activations.length + venueActivations.length + apActivations.length
           const voters = [] as Voter[]
-          softGreProfile.venueActivations
-            .filter(venue => venue.venueId === venueId)
-            .forEach((venue) => {
-              voters.push({
-                model: venue.apModel,
-                portId: String(venue.portId)
-              })
+          venueActivations.forEach((venue) => {
+            voters.push({
+              model: venue.apModel,
+              portId: String(venue.portId)
             })
-          softGreProfile.apActivations
-            .filter(ap => ap.venueId === venueId)
-            .forEach((ap) => {
-              voters.push({
-                serialNumber: ap.apSerialNumber,
-                portId: String(ap.portId)
-              })
+          })
+          apActivations.forEach((ap) => {
+            voters.push({
+              serialNumber: ap.apSerialNumber,
+              portId: String(ap.portId)
             })
+          })
           let FQDNAddresses = [softGreProfile.primaryGatewayAddress]
           if (softGreProfile.secondaryGatewayAddress) {
             FQDNAddresses.push(softGreProfile.secondaryGatewayAddress)
