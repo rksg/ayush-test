@@ -109,7 +109,7 @@ export function LanPortSettings (props: {
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
   const isR370UnsupportFeatureEnabled = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isModelSupportSoftGRE = selectedModelCaps?.model !== 'R370' ||
-    (isR370UnsupportFeatureEnabled && selectedModelCaps.supportSGRE)
+    (isR370UnsupportFeatureEnabled && selectedModelCaps.supportSoftGRE)
 
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
