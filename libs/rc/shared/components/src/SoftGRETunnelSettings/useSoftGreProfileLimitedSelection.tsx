@@ -39,22 +39,21 @@ export const useSoftGreProfileLimitedSelection = (
           return { label: softGreProfile.name, value: softGreProfile.id }
         }))
         setVoteTallyBoard(softGreProfileList.map((softGreProfile) => {
-          let vote = 0
-          vote = softGreProfile.activations?.filter(act=> act.venueId === venueId).length
-              + softGreProfile.venueActivations?.filter(venue => venue.venueId === venueId).length
-              + softGreProfile.apActivations?.filter(ap => ap.venueId === venueId).length
+          let vote = softGreProfile.activations.filter(act=> act.venueId === venueId).length
+              + softGreProfile.venueActivations.filter(venue => venue.venueId === venueId).length
+              + softGreProfile.apActivations.filter(ap => ap.venueId === venueId).length
           const voters = [] as Voter[]
           softGreProfile.venueActivations
-            ?.filter(venue => venue.venueId === venueId)
-            ?.forEach((venue) => {
+            .filter(venue => venue.venueId === venueId)
+            .forEach((venue) => {
               voters.push({
                 model: venue.apModel,
                 portId: String(venue.portId)
               })
             })
           softGreProfile.apActivations
-            ?.filter(ap => ap.venueId === venueId)
-            ?.forEach((ap) => {
+            .filter(ap => ap.venueId === venueId)
+            .forEach((ap) => {
               voters.push({
                 serialNumber: ap.apSerialNumber,
                 portId: String(ap.portId)
