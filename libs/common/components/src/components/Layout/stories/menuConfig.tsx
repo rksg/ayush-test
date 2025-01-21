@@ -207,6 +207,10 @@ const config: LayoutProps['menuConfig'] = [
         label: 'Data Studio'
       },
       {
+        uri: '/dataSubscriptions',
+        label: 'Data Subscriptions'
+      },
+      {
         uri: '/reports/overview',
         label: 'Reports'
       }
