@@ -101,13 +101,18 @@ export function DistributionSwitchForm () {
     setOpenDrawer(false)
 
     saveToContext(newList)
+
+    if (isEdgePinEnhanceReady) {
+    // trigger validation
+      form.validateFields(['distributionSwitchInfos'])
+    }
   }
 
   return (<>
     <StepsForm.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
     </StepsForm.Title>
-    <Typography.Paragraph type='secondary'>{$t({ defaultMessage:
+    <Typography.Paragraph>{$t({ defaultMessage:
       `Please add distribution switches and connected access switches to the list below,
       and then configure the VLAN range and loopback settings.`
     })}</Typography.Paragraph>
@@ -125,7 +130,14 @@ export function DistributionSwitchForm () {
           setSelected(selectedRows[0])
         }
       }} />
-    <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
+    <Form.Item
+      name='distributionSwitchInfos'
+      rules={isEdgePinEnhanceReady
+        ? [{
+          required: true, message: $t({ defaultMessage: 'Please setup distribution switches' })
+        }] : undefined}
+      children={<Input type='hidden'/>}
+    />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
