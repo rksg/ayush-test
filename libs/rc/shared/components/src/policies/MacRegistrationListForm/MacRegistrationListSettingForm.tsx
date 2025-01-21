@@ -178,6 +178,10 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           <Form.Item
             name='identityId'
             label={$t({ defaultMessage: 'Identity' })}
+            rules={[
+              { required: isUseSingleIdentity },
+              { message: $t({ defaultMessage: 'Please select Identity' }) }
+            ]}
           >
             <Select
               placeholder={$t({ defaultMessage: 'Choose ...' })}
