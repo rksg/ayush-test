@@ -41,8 +41,20 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
 
   const granularity = calculateGranularity(start, end, 'PT3M', granularities)
 
-  const binMins = granularity === 'PT15M' ? 15 : granularity === 'PT30M' ? 30 : 3
-  const noOfBinsForBuffer = granularity === 'PT15M' ? 5 : granularity === 'PT30M' ? 8 : 3
+  const binMinsMap: Record<string, number> = {
+    PT3M: 3,
+    PT15M: 15,
+    PT30M: 30
+  }
+
+  const noOfBinsForBufferMap: Record<string, number> = {
+    PT3M: 40,
+    PT15M: 24,
+    PT30M: 12
+  }
+
+  const binMins = binMinsMap[granularity] ?? 60 // 60 minutes as default when rollup happens
+  const noOfBinsForBuffer = noOfBinsForBufferMap[granularity] ?? 6 // 6 bins as default for 60 minutes granularity when rollup happens
 
   const buffer = {
     front: { value: binMins * noOfBinsForBuffer, unit: 'minutes' as unitOfTime.Base },
