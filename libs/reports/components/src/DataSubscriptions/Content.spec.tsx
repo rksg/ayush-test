@@ -67,7 +67,7 @@ describe('DataSubscriptionsContent', () => {
       expect(screen.getByText(/Cloud Storage:/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage:/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/cloudStorage/create',
+        pathname: '/ai/dataSubscriptions/cloudStorage/edit/storageId',
         hash: '',
         search: ''
       })
