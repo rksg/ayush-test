@@ -42,13 +42,19 @@ const params = { tenantId: 't-id' }
 const [wlans, items] = _(Array(5))
   .map((_, i) => [
     { name: `Network ${i}`, authMethods: [] },
-    { id: `n-${i}`, name: `Network ${i}`, aps: 1, venues: { count: 1 } }
+    { id: `n-${i}`, name: `Network ${i}`, apCount: 1, venueApGroups: [
+      {
+        venueId: 'v-1',
+        apGroupIds: ['ap-1'],
+        isAllApGroup: true
+      }
+    ] }
   ])
   .unzip()
   .value()
 
 const mockNetworksQuery = (data = items) => mockServer.use(
-  rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+  rest.post(CommonUrlsInfo.getWifiNetworksList.url, (_, res, ctx) =>
     res(ctx.json({ data, totalCount: data.length }))
   )
 )
@@ -135,8 +141,20 @@ describe('WlanName', () => {
   it('hide networks not associate with any APs and venues', async () => {
     mockNetworksQuery([
       ...items,
-      { id: 'h-1', name: 'No APs', aps: 0, venues: { count: 1 } },
-      { id: 'h-1', name: 'No Venues', aps: 1, venues: { count: 0 } }
+      { id: 'h-1', name: 'No APs', apCount: 0, venueApGroups: [
+        {
+          venueId: 'v-1',
+          apGroupIds: ['ap-1'],
+          isAllApGroup: true
+        }
+      ] },
+      { id: 'h-1', name: 'No Venues', apCount: 1, venueApGroups: [
+        {
+          venueId: 'v-1',
+          apGroupIds: ['ap-1'],
+          isAllApGroup: true
+        }
+      ] }
     ])
     mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
@@ -166,7 +184,13 @@ describe('WlanName', () => {
 
   it('update authenticationMethod if historical data available', async () => {
     const name = 'Auto Suggest'
-    mockNetworksQuery([ ...items, { id: 'X', name, aps: 1, venues: { count: 1 } }])
+    mockNetworksQuery([ ...items, { id: 'X', name, apCount: 1, venueApGroups: [
+      {
+        venueId: 'v-1',
+        apGroupIds: ['ap-1'],
+        isAllApGroup: true
+      }
+    ] }])
     mockGraphqlQuery(apiUrl, 'Wlans', {
       data: {
         wlans: [...wlans, {

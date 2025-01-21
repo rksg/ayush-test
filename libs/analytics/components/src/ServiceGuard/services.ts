@@ -10,7 +10,7 @@ import { useIntl }       from 'react-intl'
 import { SystemMap, useSystems }                                         from '@acx-ui/analytics/services'
 import { showToast, TableProps, useStepFormContext }                     from '@acx-ui/components'
 import { get }                                                           from '@acx-ui/config'
-import { useNetworkListQuery }                                           from '@acx-ui/rc/services'
+import { useWifiNetworkListQuery }                                       from '@acx-ui/rc/services'
 import { Network, TableResult }                                          from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 import { serviceGuardApi }                                               from '@acx-ui/store'
@@ -356,7 +356,7 @@ export function useServiceGuardTestResults () {
 }
 
 const payload = {
-  fields: ['id', 'name', 'venues', 'aps'],
+  fields: ['id', 'name', 'venueApGroups', 'apCount'],
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
@@ -367,13 +367,12 @@ export function useNetworks (skipR1 = false) {
   const clientType = Form.useWatch('clientType', form)
   const wlans = useWlansQuery(clientType, { skip: !clientType })
 
-  const networks = useNetworkListQuery({ payload, params: useParams() }, {
+  const networks = useWifiNetworkListQuery({ payload, params: useParams() }, {
     skip: Boolean(get('IS_MLISA_SA')) || skipR1,
     selectFromResult: (response) => {
       const data = response.isUninitialized
         ? { data: [], page: 1, totalCount: 0 } as TableResult<Network>
         : response.data
-
 
       return {
         ...response,
