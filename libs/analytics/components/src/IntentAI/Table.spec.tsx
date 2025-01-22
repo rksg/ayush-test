@@ -3,22 +3,24 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Tooltip }                   from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
-import { TenantLink }                from '@acx-ui/react-router-dom'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { Tooltip }        from '@acx-ui/components'
+import { get }            from '@acx-ui/config'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
+import { type NodeType }  from '@acx-ui/utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { Icon }                                                                                                                                   from './common/IntentIcon'
 import { AiFeatures }                                                                                                                             from './config'
 import { DisplayStates, Statuses, StatusReasons }                                                                                                 from './states'
 import * as UI                                                                                                                                    from './styledComponents'
-import { AIFeature, Banner, iconTooltips }                                                                                                        from './Table'
+import { AIFeature, iconTooltips }                                                                                                                from './Table'
 import { Actions, isVisibleByAction }                                                                                                             from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+
 const mockGet = jest.mocked(get)
 
 describe('AIFeature component', () => {
@@ -176,6 +178,7 @@ describe('AIFeature component', () => {
       aiFeature: AiFeatures.RRM,
       root: 'root',
       sliceId: 'sliceId',
+      sliceType: 'network' as NodeType,
       intent: 'Client Density vs. Throughput for 5 GHz radio',
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
@@ -183,7 +186,12 @@ describe('AIFeature component', () => {
       status: Statuses.new,
       statusLabel: 'New',
       statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
-      statusTrail: []
+      statusTrail: [],
+      metadata: {
+        appliedAt: '',
+        scheduledAt: '',
+        dataEndTime: '2024-04-19T07:30:00.000Z'
+      }
     }
     const makeRow = (status: Statuses, displayStatus: DisplayStates) => ({
       ...mockAIDrivenRow, ...extractItem, displayStatus, status, statusReason: StatusReasons.byDefault
@@ -192,13 +200,13 @@ describe('AIFeature component', () => {
     const activeRow = makeRow(Statuses.active, DisplayStates.active)
     const activeRowAfterApply = {
       ...makeRow(Statuses.active, DisplayStates.active),
-      metadata: { appliedAt: '2024-04-19T07:30:00.000Z' }
+      metadata: { ...extractItem.metadata, appliedAt: '2024-04-19T07:30:00.000Z' }
     }
     const pausedApplyFailedRow = makeRow(Statuses.paused, DisplayStates.pausedApplyFailed)
     const scheduledOneClickRow = makeRow(Statuses.scheduled, DisplayStates.scheduledOneClick)
     const revertScheduledRow = {
       ...makeRow(Statuses.revertScheduled, DisplayStates.revertScheduled),
-      metadata: { appliedAt: '2024-04-19T07:30:00.000Z' }
+      metadata: { ...extractItem.metadata, appliedAt: '2024-04-19T07:30:00.000Z' }
     }
     it('should return true for all actions', () => {
       expect(isVisibleByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
@@ -213,26 +221,10 @@ describe('AIFeature component', () => {
       expect(isVisibleByAction([scheduledOneClickRow, revertScheduledRow], Actions.Cancel)).toBeTruthy()
       expect(isVisibleByAction([newRow, revertScheduledRow], Actions.Cancel)).toBeFalsy()
     })
-
   })
 
   it('should trigger click tooltip for R1', async () => {
     render(iconTooltips[AiFeatures.RRM])
     await userEvent.click(await screen.findByTestId('featureTooltip'))
-  })
-})
-
-describe('Banner Component', () => {
-  it('should open the documentation link when the button is clicked', () => {
-    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {return null})
-    const helpUrl = 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/userguide/GUID-CAAC695C-6740-499D-8C42-AB521CEE65F6.html'
-
-    render(<Banner helpUrl={helpUrl} />)
-
-    const button = screen.getByRole('button', { name: /Learn More/i })
-    fireEvent.click(button)
-    expect(openSpy).toHaveBeenCalledWith(helpUrl, '_blank')
-
-    openSpy.mockRestore()
   })
 })

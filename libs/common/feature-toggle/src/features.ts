@@ -170,6 +170,7 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
   VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
+  WEBHOOK_TOGGLE = 'acx-ui-webhook-toggle',
   VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
@@ -191,6 +192,7 @@ export enum Features {
   WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
+  WIFI_DPSK3_NON_PROXY_MODE_TOGGLE='wifi-dpsk3-non-proxy-mode-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -264,6 +266,8 @@ export enum Features {
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
   ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle',
   WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network',
+  ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE = 'acx-ui-data-subscriptions-toggle',
+  RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle'
 }
 
