@@ -146,6 +146,8 @@ export function ApEdit () {
       venueId: targetVenueId
     } }, { skip: !targetVenueId } )
 
+  // this is a workaround
+  // TODO: wait for AP team add this to rpmkey
   const {
     data: compatibilitiesResponse
   } = useGetApCompatibilitiesQuery({
@@ -166,6 +168,8 @@ export function ApEdit () {
       if (modelName && capabilities) {
         setApData(getedApData)
         setApCapabilities(capabilities)
+        // this is a workaround
+        // TODO: wait for AP team add this to rpmkey
         setApCompatibilitiesResponse(compatibilitiesResponse)
 
         setIsLoaded(true)
