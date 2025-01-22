@@ -4,48 +4,51 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import {
+  Drawer,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { AlarmsTable } from './AlarmsTable'
-import * as UI         from './styledComponents'
 
 import { AlarmsType } from '.'
 
 export function NewAlarmsDrawer (props: AlarmsType) {
   const { $t } = useIntl()
   const { visible, setVisible } = props
-  const isFilterProductToggleEnabled = useIsSplitOn(Features.ALARM_WITH_PRODUCT_FILTER_TOGGLE)
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     let filters = e.detail.data.name && e.detail.data.name !== 'all' ?
       { severity: [e.detail.data.name] } : {}
-    if (isFilterProductToggleEnabled && e.detail.data.product && e.detail.data.product !== 'all') {
+    if (e.detail.data.product && e.detail.data.product !== 'all') {
       filters = { ...filters, ...{ product: [e.detail.data.product] } }
     }
     setVenueId(e.detail.data.venueId ?? '')
     setSerialNumber(e.detail.data.serialNumber ?? '')
     setSelectedNewAlarmFilters(filters)
     setSelectedClearedAlarmFilters(filters)
+    setNewKey('new' + (e.detail.data.name ?? '') + (e.detail.data.product ?? '') +
+      (e.detail.data.venueId ?? '') + (e.detail.data.serialNumber ?? ''))
+    setClearedKey('clear' + (e.detail.data.name ?? '') + (e.detail.data.product ?? '') +
+      (e.detail.data.venueId ?? '') + (e.detail.data.serialNumber ?? ''))
   }) as EventListener)
 
   const [venueId, setVenueId] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
   const [selectedNewAlarmFilters, setSelectedNewAlarmFilters] = useState({})
   const [selectedClearedAlarmFilters, setSelectedClearedAlarmFilters] = useState({})
+  const [newKey, setNewKey] = useState('')
+  const [clearedKey, setClearedKey] = useState('')
   const [currentTab, setCurrentTab] = useState('new')
 
   const tabs = [
     {
       key: 'new',
       title: $t({ defaultMessage: 'New Alarms' }),
-      component: <AlarmsTable key='new'
+      component: <AlarmsTable key={newKey}
         newAlarmType={true}
         venueId={venueId}
         serialNumber={serialNumber}
-        filterProductEnabled={isFilterProductToggleEnabled}
         selectedFilters={selectedNewAlarmFilters}
         setSelectedFilters={setSelectedNewAlarmFilters} />
     },
@@ -53,11 +56,10 @@ export function NewAlarmsDrawer (props: AlarmsType) {
       key: 'clear',
       title: $t({ defaultMessage: 'Cleared Alarms' }),
       component:
-      <AlarmsTable key='clear'
+      <AlarmsTable key={clearedKey}
         newAlarmType={false}
         venueId={venueId}
         serialNumber={serialNumber}
-        filterProductEnabled={isFilterProductToggleEnabled}
         selectedFilters={selectedClearedAlarmFilters}
         setSelectedFilters={setSelectedClearedAlarmFilters} />
     }
@@ -81,7 +83,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
     {ActiveTabPane}
   </>
 
-  return <UI.Drawer
+  return <Drawer
     width={765}
     title={$t({ defaultMessage: 'Alarms' })}
     visible={visible}
@@ -89,7 +91,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
     onClose={() => {
       setVisible(false)
       setCurrentTab('new')
-    }}
-    children={tabContent}
-  />
+    }} >
+    {tabContent}
+  </Drawer>
 }

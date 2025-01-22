@@ -26,8 +26,6 @@ import { hasRoles }              from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
-
-
 const defaultPayload: {
   url: string
   fields: string[]
@@ -65,7 +63,6 @@ interface AlarmsTableProps {
   newAlarmType: boolean
   venueId?: string
   serialNumber?: string
-  filterProductEnabled: boolean
   selectedFilters: { severity?: (boolean | Key)[],product?: (boolean | Key)[] },
   setSelectedFilters:
     (selectedFilters: { severity?: (boolean | Key)[],product?: (boolean | Key)[] }) => void
@@ -75,8 +72,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
   const params = useParams()
   const { $t } = useIntl()
 
-  const { newAlarmType, venueId, serialNumber, filterProductEnabled,
-    selectedFilters, setSelectedFilters } = props
+  const { newAlarmType, venueId, serialNumber, selectedFilters, setSelectedFilters } = props
 
   const venuesListPayload = {
     fields: ['name', 'country', 'id'],
@@ -187,7 +183,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Alarm' }),
       key: 'message',
       dataIndex: 'message',
-      width: 350,
+      width: 290,
       render: function (_, row) {
         return (<UI.ListItem>
           <UI.Meta
@@ -205,6 +201,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Generated on' }),
       key: 'startTime',
       dataIndex: 'startTime',
+      width: 140,
       render: function (_, row) {
         return formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startTime)
       }
@@ -219,6 +216,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: '',
       key: 'clearBtn',
       dataIndex: 'clearBtn',
+      width: 30,
       render: function (_, row) {
         return (<Tooltip placement='topLeft'
           title={$t({ defaultMessage: 'Clear this alarm' })}
@@ -248,7 +246,8 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     } : {
       title: $t({ defaultMessage: 'Cleared By' }),
       key: 'clearedBy',
-      dataIndex: 'clearedBy'
+      dataIndex: 'clearedBy',
+      width: 100
     }, {
       key: 'severity',
       dataIndex: 'severity',
@@ -265,16 +264,17 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       key: 'product',
       dataIndex: 'product',
       filterKey: 'product',
-      filterable: filterProductEnabled ? [
+      filterable: [
         { key: 'WIFI', value: $t({ defaultMessage: 'Wi-Fi' }) },
         { key: 'SWITCH', value: $t({ defaultMessage: 'Switch' }) },
         { key: 'EDGE', value: $t({ defaultMessage: 'RUCKUS Edge' }) }
-      ] : false,
+      ],
       filterPlaceholder: 'Products',
       filterableWidth: 135,
       filterMultiple: false,
       show: false
-    }]
+    }
+  ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const severityFilter =
@@ -349,7 +349,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     tableQuery,{ isLoading: false,
       isFetching: newAlarmType && (isAlarmCleaning || isAlarmByVenueCleaning) }
   ]}>
-    <Table<Alarm>
+    <Table
       rowKey='id'
       columns={columns}
       dataSource={tableQuery.data?.data}
@@ -358,7 +358,8 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       actions={newAlarmType ? actions : []}
       onChange={tableQuery.handleTableChange}
       onFilterChange={handleFilterChange}
-      type={'compact'}
+      // type={'compactTallHeader'}
+      stickyHeaders={true}
       enableApiFilter={true}
       selectedFilters={selectedFilters}
     />
