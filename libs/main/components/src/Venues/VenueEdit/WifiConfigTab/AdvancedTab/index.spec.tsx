@@ -84,7 +84,7 @@ describe('AdvancedTab', () => {
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
       rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
       rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({}))),
