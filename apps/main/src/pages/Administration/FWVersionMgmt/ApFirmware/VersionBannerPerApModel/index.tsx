@@ -90,9 +90,9 @@ export function VersionBannerPerApModel () {
             return hasAlpha && isLaterThanGA
           })
           // eslint-disable-next-line max-len
-          if (resultAlpha.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
+          if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
           // eslint-disable-next-line max-len
-          if (resultBeta.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
+          if (apFirmwareContext.isBetaFlag && resultBeta.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
           if (latestGA) updateGroups.push(extractLatestVersionToUpdateGroup([latestGA]))
         } else {
           updateGroups.push(tenantLatestVersionUpdateGroup)
@@ -105,26 +105,28 @@ export function VersionBannerPerApModel () {
           updateGroups.unshift(tenantLatestVersionUpdateGroup)
         }
 
-        // ACX-76973: for EA/IEA firmware, also need to display the latest version information in the banner
-        const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
-        const resultAlpha = data.filter(firmware => {
-          const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+        if (isApFwMgmtEarlyAccess) {
+          // ACX-76973: for EA/IEA firmware, also need to display the latest version information in the banner
+          const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
+          const resultAlpha = data.filter(firmware => {
+            const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+            // eslint-disable-next-line max-len
+            const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
+            const hasAlpha = isAlphaFilter(firmware.labels)
+            return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
+          })
+          const resultBeta = data.filter(firmware => {
+            const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+            // eslint-disable-next-line max-len
+            const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
+            const hasAlpha = isBetaFilter(firmware.labels)
+            return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
+          })
           // eslint-disable-next-line max-len
-          const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
-          const hasAlpha = isAlphaFilter(firmware.labels)
-          return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
-        })
-        const resultBeta = data.filter(firmware => {
-          const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+          if (apFirmwareContext.isBetaFlag && resultBeta.length > 0) updateGroups.unshift(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
           // eslint-disable-next-line max-len
-          const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
-          const hasAlpha = isBetaFilter(firmware.labels)
-          return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
-        })
-        // eslint-disable-next-line max-len
-        if (resultBeta.length > 0) updateGroups.unshift(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
-        // eslint-disable-next-line max-len
-        if (resultAlpha.length > 0) updateGroups.unshift(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
+          if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0) updateGroups.unshift(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
+        }
       }
 
       const updateGroupsWithLatestVersion = updateGroups
