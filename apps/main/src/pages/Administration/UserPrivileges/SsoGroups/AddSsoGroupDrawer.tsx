@@ -91,7 +91,7 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
           { validator: (_, value) => {
             if(groupData?.map((item) => { return item.name}).includes(value)) {
               return Promise.reject(
-                `${$t({ defaultMessage: 'Name already exists' })} `
+                `${$t({ defaultMessage: 'The Group Name already exists' })} `
               )
             }
             return Promise.resolve()}
