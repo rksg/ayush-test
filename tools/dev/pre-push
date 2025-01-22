@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# Run flaky test detector before pushing
-./tools/dev/run-flaky-test-detector.sh
