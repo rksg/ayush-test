@@ -1871,6 +1871,7 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetEnhanceApFeatureSetsQuery,
+  useGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,
