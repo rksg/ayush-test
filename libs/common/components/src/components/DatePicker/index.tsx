@@ -96,12 +96,9 @@ export const RangePicker = ({
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const { acx_account_tier: accountTier } = getJwtTokenPayload()
-  const allowedDateRange = isReport
-    ? dateRangeForLast(12,'months')
-    : (accountTier === AccountTier.GOLD
-      ? dateRangeForLast(1,'month')
-      : dateRangeForLast(3,'months')
-    )
+  const allowedDateRange = accountTier === AccountTier.GOLD
+    ? dateRangeForLast(1, 'month')
+    : dateRangeForLast(isReport ? 12 : 3, 'months')
 
   const disabledDate = useCallback(
     (current: Moment) => (
