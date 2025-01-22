@@ -3,16 +3,19 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy }                                         from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                from '@acx-ui/feature-toggle'
+import { ApSnmpRbacUrls, MdnsProxyUrls, redirectPreviousPage, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                         from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                                                  from '@acx-ui/user'
+import { getOpsApi }                                                             from '@acx-ui/utils'
 
 import { ApEditContext } from '..'
 
 import { ApSnmp }        from './ApSnmp'
 import { IotController } from './IotContoller'
 import { MdnsProxy }     from './MdnsProxy/MdnsProxy'
+
 
 
 
@@ -33,6 +36,20 @@ export function NetworkControlTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
+
+  const activateMdnsProxyApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+  const deactivateMdnsProxyApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
+
+  const [
+    isAllowEditMdnsPorxy,
+    isAllowEditApSnmp,
+    isAllowEditApIot
+  ] = [
+    // eslint-disable-next-line max-len
+    hasAllowedOperations([[getOpsApi(activateMdnsProxyApiInfo), getOpsApi(deactivateMdnsProxyApiInfo)]]),
+    hasAllowedOperations([getOpsApi(ApSnmpRbacUrls.updateApSnmpSettings)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApIot)])
+  ]
 
   const {
     previousPath,
@@ -55,7 +72,7 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { mPorxyTitle }
           </StepsFormLegacy.SectionTitle>
-          <MdnsProxy />
+          <MdnsProxy isAllowEdit={isAllowEditMdnsPorxy} />
         </>
       )
     },
@@ -66,7 +83,7 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { apSnmpTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApSnmp />
+          <ApSnmp isAllowEdit={isAllowEditApSnmp} />
         </>
       )
     },
@@ -77,7 +94,7 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { apIotTitle }
           </StepsFormLegacy.SectionTitle>
-          <IotController />
+          <IotController isAllowEdit={isAllowEditApIot} />
         </>
       )
     }]: [])

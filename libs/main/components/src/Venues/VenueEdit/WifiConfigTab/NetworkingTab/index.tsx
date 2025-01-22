@@ -111,7 +111,7 @@ export function NetworkingTab () {
   const [
     isAllowEditLanPort,
     isAllowEditMesh,
-    isAlloweEditDMulticast,
+    isAllowEditDMulticast,
     isAllowEditCellular,
     isAllowEditSmartMonitor,
     isAllowEditRebootTimeout,
@@ -169,7 +169,7 @@ export function NetworkingTab () {
         </Space>
         }
       </StepsFormLegacy.SectionTitle>
-      <DirectedMulticast isAllowEdit={isAlloweEditDMulticast} />
+      <DirectedMulticast isAllowEdit={isAllowEditDMulticast} />
     </> },
   ...(hasCellularAps? [{
     title: $t({ defaultMessage: 'Cellular Options' }),

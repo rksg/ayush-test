@@ -983,7 +983,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
               <SingleRadioSettings
                 testId='radio-24g-tab'
                 radioType={ApRadioTypeEnum.Radio24G}
-                disable={!isAllowEdit}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings} />
             </div>
@@ -991,7 +991,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
               <SingleRadioSettings
                 testId='radio-5g-tab'
                 radioType={ApRadioTypeEnum.Radio5G}
-                disable={!isAllowEdit}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings} />
             </div>
@@ -1001,7 +1001,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
               <SingleRadioSettings
                 testId='radio-6g-tab'
                 radioType={ApRadioTypeEnum.Radio6G}
-                disable={!isAllowEdit}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings}
                 afcProps={afcProps} />
@@ -1040,7 +1040,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
                   testId='radio-l5g-tab'
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
-                  disable={!isAllowEdit}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
@@ -1075,7 +1075,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
                   testId='radio-u5g-tab'
                   inherit5G={isUpper5gInherit}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
-                  disable={!isAllowEdit}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>

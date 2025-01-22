@@ -39,8 +39,7 @@ const tabs = {
 }
 
 export type VenueWifiConfigItemProps = {
-  isAllowEdit?: boolean,
-  isAllowAdd?: boolean
+  isAllowEdit?: boolean
 }
 
 export interface EditContext {
