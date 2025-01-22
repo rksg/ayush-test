@@ -1,18 +1,19 @@
 /* eslint-disable max-len */
 import { useEffect } from 'react'
 
-import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
-import { useIntl }                                    from 'react-intl'
+import { Col, Form, FormInstance, InputNumber, Row, Space, Switch } from 'antd'
+import { useIntl }                                                  from 'react-intl'
 
 import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { ApCompatibilityToolTip }                         from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterArpTerminationSettingsQuery,
   useGetEdgeFeatureSetsQuery,
-  useGetVenueEdgeFirmwareListQuery
+  useGetVenueEdgeFirmwareListQuery,
+  useUpdateEdgeClusterArpTerminationSettingsMutation
 } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { compareVersions }                            from '@acx-ui/utils'
+import { ClusterArpTerminationSettings, EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { compareVersions }                                                           from '@acx-ui/utils'
 
 import { StyledFormItem, tooltipIconStyle } from '../styledComponents'
 
@@ -144,4 +145,46 @@ export const ArpTerminationFormItem = (props: {
       </Col>
     </Row>
   </>
+}
+
+export const useHandleApplyArpTermination = (form: FormInstance, venueId?: string, clusterId?: string) => {
+  const [updateEdgeArpTermination] = useUpdateEdgeClusterArpTerminationSettingsMutation()
+
+  const handleApplyArpTermination = async () => {
+    const originalArpSettings = form.getFieldValue('originalArpSettings')
+    if (!clusterId || !venueId || !originalArpSettings) return
+
+    const currentArpSettings: ClusterArpTerminationSettings = {
+      enabled: form.getFieldValue('arpTerminationSwitch'),
+      agingTimerEnabled: form.getFieldValue('arpAgingTimerSwitch'),
+      agingTimeSec: form.getFieldValue('agingTimeSec')
+    }
+
+    const needUpdate =
+        originalArpSettings.enabled !== currentArpSettings.enabled ||
+        originalArpSettings.agingTimerEnabled !== currentArpSettings.agingTimerEnabled ||
+        originalArpSettings.agingTimeSec !== currentArpSettings.agingTimeSec
+
+    if (needUpdate) {
+      if (!currentArpSettings.enabled) {
+        currentArpSettings.agingTimerEnabled = originalArpSettings.agingTimerEnabled
+        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
+      } else if (!currentArpSettings.agingTimerEnabled) {
+        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
+      }
+    }
+
+    if (needUpdate) {
+      const requestPayload = {
+        params: {
+          venueId: venueId,
+          edgeClusterId: clusterId
+        },
+        payload: currentArpSettings
+      }
+      await updateEdgeArpTermination(requestPayload).unwrap()
+    }
+  }
+
+  return handleApplyArpTermination
 }

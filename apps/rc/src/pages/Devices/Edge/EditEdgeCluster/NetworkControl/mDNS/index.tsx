@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 
-import { Col, Form, Row, Space, Switch } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
+import { useIntl }                                     from 'react-intl'
 
-import { Loader, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { ApCompatibilityToolTip }                from '@acx-ui/rc/components'
-import { useGetEdgeMdnsProxyViewDataListQuery }  from '@acx-ui/rc/services'
-import { IncompatibilityFeatures }               from '@acx-ui/rc/utils'
+import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
+import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
+import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
+import { IncompatibilityFeatures }                    from '@acx-ui/rc/utils'
 
 import EdgeMdnsProfileSelectionForm from './EdgeMdnsProfileSelectionForm'
 
@@ -81,4 +81,38 @@ export const MdnsProxyFormItem = (props: {
       </Col>
     </Row>
   </>
+}
+
+export const useHandleApplyMdns = (form: FormInstance, venueId?: string, clusterId?: string) => {
+  const { activateEdgeMdnsCluster, deactivateEdgeMdnsCluster } = useEdgeMdnsActions()
+
+  const handleApplyMdns = async () => {
+    const isEdgeMdnsActive = form.getFieldValue('edgeMdnsSwitch')
+    const originMdnsId = form.getFieldValue('originEdgeMdnsId')
+    const selectedMdnsId = form.getFieldValue('edgeMdnsId')
+
+    if (!clusterId || !venueId || (!originMdnsId && !selectedMdnsId)) return
+
+    if (!isEdgeMdnsActive) {
+      if (originMdnsId) {
+        await deactivateEdgeMdnsCluster(
+          originMdnsId,
+          venueId,
+          clusterId
+        )
+      }
+      return
+    } else {
+      if (selectedMdnsId === originMdnsId){
+        return
+      }
+      await activateEdgeMdnsCluster(
+        selectedMdnsId,
+        venueId,
+        clusterId
+      )
+    }
+  }
+
+  return handleApplyMdns
 }
