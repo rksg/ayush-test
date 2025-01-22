@@ -3,12 +3,12 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy }               from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { redirectPreviousPage, CompatibilityResponse } from '@acx-ui/rc/utils'
+import { useTenantLink }                               from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '..'
+import { ApDataContext, ApEditContext } from '..'
 
 import { ApSnmp }        from './ApSnmp'
 import { IotController } from './IotContoller'
@@ -46,6 +46,25 @@ export function NetworkControlTab () {
   const apSnmpTitle = $t({ defaultMessage: 'AP SNMP' })
   const apIotTitle = $t({ defaultMessage: 'IoT Controller' })
 
+  const { apCompatibilitiesResponse } = useContext(ApDataContext)
+
+  const containsFeature = (
+    data: CompatibilityResponse,
+    featureName: string
+  ) => {
+    for (const compatibility of data?.compatibilities ?? []) {
+      for (const feature of compatibility?.incompatibleFeatures ?? []) {
+        if (feature.featureName === featureName) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  const featureToCheck = 'AP IoT'
+  // eslint-disable-next-line max-len
+  const isIotInCompatible = containsFeature(apCompatibilitiesResponse as CompatibilityResponse, featureToCheck)
 
   const anchorItems = [
     {
@@ -70,7 +89,7 @@ export function NetworkControlTab () {
         </>
       )
     },
-    ...(isIotFeatureEnabled? [{
+    ...((isIotFeatureEnabled && !isIotInCompatible) ? [{
       title: apIotTitle,
       content: (
         <>
