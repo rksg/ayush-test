@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event'
 import { BulbOutlined }                       from '@acx-ui/icons'
 import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
+import { DrawerTypes } from './styledComponents'
+
 import { Drawer } from '.'
 
 const onClose = jest.fn()
@@ -22,6 +24,30 @@ describe('Drawer', () => {
       children={content}
     />)
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
+  })
+
+  it('should match snapshot for full height drawer', async () => {
+    render(<Drawer
+      drawerType={DrawerTypes.FullHeight}
+      title={'Full Height Drawer'}
+      visible={true}
+      onClose={onClose}
+      children={content}
+    />)
+    expect(await screen.findByText('Full Height Drawer')).toBeVisible()
+    expect(await screen.findByText('some content')).toBeVisible()
+  })
+
+  it('should match snapshot for left drawer', async () => {
+    render(<Drawer
+      drawerType={DrawerTypes.Left}
+      title={'Left Drawer'}
+      visible={true}
+      onClose={onClose}
+      children={content}
+    />)
+    expect(await screen.findByText('Left Drawer')).toBeVisible()
+    expect(await screen.findByText('some content')).toBeVisible()
   })
 
   it('should match snapshot for custom drawer', () => {
