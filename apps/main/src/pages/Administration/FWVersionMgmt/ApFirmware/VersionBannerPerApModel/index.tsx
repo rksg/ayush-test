@@ -79,13 +79,20 @@ export function VersionBannerPerApModel () {
       if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant
         if (isApFwMgmtEarlyAccess) { // if ea/iea firmware exists and larger than GA, display it
           const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
-          const result = data.filter(firmware => {
+          const resultAlpha = data.filter(firmware => {
             const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
-            const hasBetaOrAlpha = isAlphaFilter(firmware.labels) || isBetaFilter(firmware.labels)
-            return hasBetaOrAlpha && isLaterThanGA
+            const hasAlpha = isAlphaFilter(firmware.labels)
+            return hasAlpha && isLaterThanGA
+          })
+          const resultBeta = data.filter(firmware => {
+            const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+            const hasAlpha = isBetaFilter(firmware.labels)
+            return hasAlpha && isLaterThanGA
           })
           // eslint-disable-next-line max-len
-          if (result.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(result.slice(0, 1)))
+          if (resultAlpha.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
+          // eslint-disable-next-line max-len
+          if (resultBeta.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
           if (latestGA) updateGroups.push(extractLatestVersionToUpdateGroup([latestGA]))
         } else {
           updateGroups.push(tenantLatestVersionUpdateGroup)
@@ -97,6 +104,27 @@ export function VersionBannerPerApModel () {
         if (!existingGroup) {
           updateGroups.unshift(tenantLatestVersionUpdateGroup)
         }
+
+        // ACX-76973: for EA/IEA firmware, also need to display the latest version information in the banner
+        const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
+        const resultAlpha = data.filter(firmware => {
+          const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+          // eslint-disable-next-line max-len
+          const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
+          const hasAlpha = isAlphaFilter(firmware.labels)
+          return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
+        })
+        const resultBeta = data.filter(firmware => {
+          const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+          // eslint-disable-next-line max-len
+          const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
+          const hasAlpha = isBetaFilter(firmware.labels)
+          return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
+        })
+        // eslint-disable-next-line max-len
+        if (resultBeta.length > 0) updateGroups.unshift(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
+        // eslint-disable-next-line max-len
+        if (resultAlpha.length > 0) updateGroups.unshift(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
       }
 
       const updateGroupsWithLatestVersion = updateGroups
