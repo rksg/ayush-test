@@ -93,8 +93,8 @@ export function RebootTimeout () {
   const {
     editContextData,
     setEditContextData,
-    editNetworkingContextData,
-    setEditNetworkingContextData
+    editAdvancedContextData,
+    setEditAdvancedContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
@@ -205,14 +205,14 @@ export function RebootTimeout () {
     setEditContextData &&
       setEditContextData({
         ...editContextData,
-        unsavedTabKey: 'networking',
-        tabTitle: $t({ defaultMessage: 'Networking' }),
+        unsavedTabKey: 'settings',
+        tabTitle: $t({ defaultMessage: 'Advanced' }),
         isDirty: true
       })
 
-    setEditNetworkingContextData &&
-      setEditNetworkingContextData({
-        ...editNetworkingContextData,
+    setEditAdvancedContextData &&
+      setEditAdvancedContextData({
+        ...editAdvancedContextData,
         updateRebootTimeout: handleUpdateRebootTimeout
       })
   }
