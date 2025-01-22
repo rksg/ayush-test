@@ -69,7 +69,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         else {
           expiration.setToNever()
         }
-        form.setFieldsValue(editData)
+        form.setFieldsValue({
+          identityId: undefined,  // reset the identityId to prevent the legacy id still in the form
+          ...editData
+        })
         form.setFieldValue('expiration', expiration)
       } else {
         // Single identity case: apply the default identityId into the form for creation

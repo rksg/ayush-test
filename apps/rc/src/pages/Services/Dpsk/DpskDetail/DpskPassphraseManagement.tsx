@@ -132,7 +132,9 @@ export default function DpskPassphraseManagement () {
     },
     {
       key: 'username',
-      title: $t({ defaultMessage: 'Identity' }),
+      title: isIdentityGroupRequired
+        ? $t({ defaultMessage: 'Identity' })
+        : $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
       searchable: true,
