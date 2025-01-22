@@ -189,14 +189,16 @@ export interface PersonaTableProps {
   onChange?: (persona?: Persona) => void
   personaGroupId?: string,
   colProps: PersonaTableColProps,
-  settingsId?: string
+  settingsId?: string,
+  disableAddDevices?: boolean
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const {
     mode, personaGroupId,
-    colProps, settingsId = 'base-persona-table', onChange
+    colProps, settingsId = 'base-persona-table', onChange,
+    disableAddDevices
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
@@ -427,6 +429,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         data={drawerState.data}
         isEdit={drawerState.isEdit}
         onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
+        disableAddDevices={disableAddDevices}
       />}
       {uploadCsvDrawerVisible && <ImportFileDrawer
         title={$t({ defaultMessage: 'Import from file' })}
