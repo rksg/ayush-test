@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table }                  from '@acx-ui/components'
+import { StepsForm, Table }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
@@ -73,6 +73,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
+      width: 180,
+      align: 'center' as const,
       render: function (_: ReactNode, row: Venue) {
         if (!networkId || !row.activated?.isActivated) return null
 
@@ -90,32 +92,34 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
 
-        return <><NetworkTunnelSwitchBtn
-          tunnelType={tunnelType}
-          venueSdLanInfo={venueSdLanInfo}
-          onClick={(checked) => {
-            if (checked) {
-              handleClickNetworkTunnel(row, network)()
-            } else {
-              const formValues = {
-                tunnelType: NetworkTunnelTypeEnum.None,
-                softGre: {
-                  oldProfileId: targetSoftGre?.[0].profileId
-                }
-              } as NetworkTunnelActionForm
+        return <StepsForm.FieldLabel width='50px'>
+          <div><NetworkTunnelSwitchBtn
+            tunnelType={tunnelType}
+            venueSdLanInfo={venueSdLanInfo}
+            onClick={(checked) => {
+              if (checked) {
+                handleClickNetworkTunnel(row, network)()
+              } else {
+                const formValues = {
+                  tunnelType: NetworkTunnelTypeEnum.None,
+                  softGre: {
+                    oldProfileId: targetSoftGre?.[0].profileId
+                  }
+                } as NetworkTunnelActionForm
 
-              // deactivate depending on current tunnel type
-              deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
-            }
-          }}
-        />
-        <NetworkTunnelInfoLabel
-          network={networkInfo}
-          isVenueActivated={Boolean(row.activated?.isActivated)}
-          venueSdLan={venueSdLanInfo}
-          venueSoftGre={targetSoftGre?.[0]}
-          venuePin={venuePinInfo}
-        /></>
+                // deactivate depending on current tunnel type
+                deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+              }
+            }}
+          /></div>
+          <NetworkTunnelInfoLabel
+            network={networkInfo}
+            isVenueActivated={Boolean(row.activated?.isActivated)}
+            venueSdLan={venueSdLanInfo}
+            venueSoftGre={targetSoftGre?.[0]}
+            venuePin={venuePinInfo}
+          />
+        </StepsForm.FieldLabel>
       }
     }]
     : [...(((isEdgeMvSdLanReady || isSoftGreEnabled) && !isEdgePinHaReady) ? [{

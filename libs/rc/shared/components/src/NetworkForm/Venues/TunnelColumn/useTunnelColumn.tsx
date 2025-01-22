@@ -4,7 +4,7 @@ import { Form }      from 'antd'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Table }                     from '@acx-ui/components'
+import { StepsForm, Table }          from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   NetworkSaveData,
@@ -126,6 +126,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
+      width: 180,
+      align: 'center' as const,
       render: function (_: ReactNode, row: Venue) {
         if (!network || !row.activated?.isActivated) return null
 
@@ -142,25 +144,27 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
 
-        return <><NetworkTunnelSwitch
-          currentVenue={row}
-          currentNetwork={{
-            ...network,
-            id: networkId
-          }}
-          cachedVenueSdLanInfo={cachedVenueSdLanInfo}
-          venueSdLanInfo={venueSdLanInfo}
-          venuePinInfo={venuePinInfo}
-          venueSoftGre={cachedSoftGre}
-          onClick={handleClickNetworkTunnel}
-        />
-        <NetworkTunnelInfoLabel
-          network={networkInfo}
-          isVenueActivated={Boolean(row.activated?.isActivated)}
-          venueSdLan={venueSdLanInfo}
-          venueSoftGre={cachedSoftGre?.[0]}
-          venuePin={venuePinInfo}
-        /></>
+        return <StepsForm.FieldLabel width='50px'>
+          <div><NetworkTunnelSwitch
+            currentVenue={row}
+            currentNetwork={{
+              ...network,
+              id: networkId
+            }}
+            cachedVenueSdLanInfo={cachedVenueSdLanInfo}
+            venueSdLanInfo={venueSdLanInfo}
+            venuePinInfo={venuePinInfo}
+            venueSoftGre={cachedSoftGre}
+            onClick={handleClickNetworkTunnel}
+          /></div>
+          <NetworkTunnelInfoLabel
+            network={networkInfo}
+            isVenueActivated={Boolean(row.activated?.isActivated)}
+            venueSdLan={venueSdLanInfo}
+            venueSoftGre={cachedSoftGre?.[0]}
+            venuePin={venuePinInfo}
+          />
+        </StepsForm.FieldLabel>
       }
     }]
     : [ ...(!isEdgePinHaEnabled && (isEdgeSdLanMvEnabled || isSoftGreEnabled) ? [{
