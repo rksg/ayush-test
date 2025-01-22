@@ -440,8 +440,8 @@ export function Venues (props: VenuesProps) {
           ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
           : ''
 
-        const isEnforcedByTemplate = hasEnforcedItem(row)
-        const enforcedActionMsg = getEnforcedActionMsg(row)
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
 
         return <Tooltip
           title={dhcpDisabledMsg || enforcedActionMsg}

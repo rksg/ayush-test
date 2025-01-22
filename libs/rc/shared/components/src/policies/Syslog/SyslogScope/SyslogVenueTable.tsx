@@ -109,8 +109,8 @@ const SyslogVenueTable = () => {
       key: 'activate',
       align: 'center',
       render: (_, row) => {
-        const isEnforcedByTemplate = hasEnforcedItem(row)
-        const enforcedActionMsg = getEnforcedActionMsg(row)
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
 
         return <Tooltip
           title={enforcedActionMsg}

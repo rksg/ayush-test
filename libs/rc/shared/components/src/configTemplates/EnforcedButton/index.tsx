@@ -41,19 +41,13 @@ export function useEnforcedStatus () {
   const { isTemplate } = useConfigTemplate()
   const isConfigTemplateEnforcedEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const hasEnforcedItem = (target?: any): boolean => {
+  const hasEnforcedItem = (target: Array<{ isEnforced?: boolean }> | undefined): boolean => {
     if (!target || !isConfigTemplateEnforcedEnabled || isTemplate) return false
 
-    if (Array.isArray(target)) {
-      return target.some(item => item.isEnforced ?? false)
-    }
-
-    return target.isEnforced ?? false
+    return target.some(item => item.isEnforced ?? false)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getEnforcedActionMsg = (target?: any): string => {
+  const getEnforcedActionMsg = (target: Array<{ isEnforced?: boolean }> | undefined): string => {
     return hasEnforcedItem(target) ? $t(enforcedActionMsg) : ''
   }
 

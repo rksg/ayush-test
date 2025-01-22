@@ -80,8 +80,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       dataIndex: 'activate',
       key: 'activate',
       render: (_, row) => {
-        const isEnforcedByTemplate = hasEnforcedItem(row)
-        const enforcedActionMsg = getEnforcedActionMsg(row)
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
 
         return <Tooltip
           title={enforcedActionMsg}

@@ -639,9 +639,9 @@ export function NetworkVenuesTab () {
           } else if (systemNetwork) {
             disabled = true
             title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
-          } else if (hasEnforcedItem(row)) {
+          } else if (hasEnforcedItem([row])) {
             disabled = true
-            title = getEnforcedActionMsg(row)
+            title = getEnforcedActionMsg([row])
           }
         }
 

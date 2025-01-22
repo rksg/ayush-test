@@ -72,14 +72,14 @@ export interface Network extends BaseNetwork{
   owePairNetworkId?: string,
   certificateTemplateId?: string
   apSerialNumbers?: string[]
+  isEnforced?: boolean // For Config Template Enforcement feature, it indicates whether the network template/instance is enforced
 }
 
 export interface WifiNetwork extends Network{
   apCount: number, // RBAC API only: replace the aps field
   clientCount: number,  // RBAC API only: replace the client field
   venueApGroups: VenueApGroup[], // RBAC API only: replace the venues field
-  tunnelWlanEnable?: boolean,
-  isEnforced?: boolean // For Config Template Enforcement feature, it indicates whether the network template/instance is enforced
+  tunnelWlanEnable?: boolean
 }
 
 export interface NetworkExtended extends Network {

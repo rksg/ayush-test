@@ -102,7 +102,7 @@ describe('EnforcedButton', () => {
         // eslint-disable-next-line max-len
         wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
       })
-      expect(result.current.hasEnforcedItem({ isEnforced: true })).toBe(false)
+      expect(result.current.hasEnforcedItem([{ isEnforced: true }])).toBe(false)
     })
 
     it('should return false when isTemplate is true', () => {
@@ -113,7 +113,7 @@ describe('EnforcedButton', () => {
         wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: true }} children={children}/>
       })
 
-      expect(result.current.hasEnforcedItem({ isEnforced: true })).toBe(false)
+      expect(result.current.hasEnforcedItem([{ isEnforced: true }])).toBe(false)
     })
 
     it('should return true for a single object with isEnforced true', () => {
@@ -124,7 +124,7 @@ describe('EnforcedButton', () => {
         wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
       })
 
-      expect(result.current.hasEnforcedItem({ isEnforced: true })).toBe(true)
+      expect(result.current.hasEnforcedItem([{ isEnforced: true }])).toBe(true)
     })
 
     it('should return true if any item in the array has isEnforced true', () => {
@@ -160,7 +160,7 @@ describe('EnforcedButton', () => {
       })
 
       // eslint-disable-next-line max-len
-      expect(result.current.getEnforcedActionMsg({ isEnforced: true })).toBe('Action is disabled due to enforcement from the template')
+      expect(result.current.getEnforcedActionMsg([{ isEnforced: true }])).toBe('Action is disabled due to enforcement from the template')
     })
 
     it('should return empty string if condition is not met', () => {
@@ -171,7 +171,7 @@ describe('EnforcedButton', () => {
         wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
       })
 
-      expect(result.current.getEnforcedActionMsg({ isEnforced: false })).toBe('')
+      expect(result.current.getEnforcedActionMsg([{ isEnforced: false }])).toBe('')
     })
   })
 })
