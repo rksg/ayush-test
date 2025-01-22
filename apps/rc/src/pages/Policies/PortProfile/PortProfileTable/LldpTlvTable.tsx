@@ -43,7 +43,7 @@ export default function LldpTlvTable () {
     useQuery: useSwitchPortProfileLldpTlvsListQuery,
     defaultPayload,
     sorter: {
-      sortField: 'id',
+      sortField: 'systemName',
       sortOrder: 'ASC'
     },
     search: {
