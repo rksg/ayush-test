@@ -9,6 +9,7 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useLazyGetTwiliosMessagingServicesQuery,
+  useLazyGetTwiliosWhatsappServicesQuery,
   useUpdateNotificationSmsProviderMutation
 } from '@acx-ui/rc/services'
 import {
@@ -16,7 +17,8 @@ import {
   NotificationSmsConfig,
   URLRegExp,
   ErrorsResult,
-  ErrorDetails
+  ErrorDetails,
+  TwiliosWhatsappServices
 } from '@acx-ui/rc/utils'
 
 import { SmsProviderData, getProviderQueryParam, isTwilioFromNumber } from '.'
@@ -59,6 +61,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
   const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
   const [getTwiliosIncomingServices] = useLazyGetTwiliosMessagingServicesQuery()
+  const [getTwiliosWhatsappServices] = useLazyGetTwiliosWhatsappServicesQuery()
 
   const enableWhatsapp = useWatch<string>('enableWhatsapp', form)
 
@@ -87,7 +90,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           form.setFieldsValue({
             messageMethod,
             enableWhatsapp,
-            templateSid: editData?.providerData.templateSid ?? ''
+            authTemplateSid: editData?.providerData.authTemplateSid ?? ''
           })
         }
         else if (isValidAccountSID === false && isValidAuthToken === false) {
@@ -181,7 +184,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       await form.validateFields()
       const whatsappConfig = enableWhatsapp ? {
         enableWhatsapp: form.getFieldValue('enableWhatsapp'),
-        templateSid: form.getFieldValue('templateSid')
+        authTemplateSid: form.getFieldValue('authTemplateSid')
       } : {}
       const providerData: NotificationSmsConfig =
         providerType === SmsProviderType.TWILIO
@@ -394,7 +397,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         }
       />
       {enableWhatsapp && (<Form.Item
-        name='templateSid'
+        name='authTemplateSid'
         label={<>
           {$t({ defaultMessage: 'WhatsApp Authentication Template SID' })}
           <Tooltip.Question
@@ -410,10 +413,43 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             }}
           />
         </>}
-        initialValue={isEditMode ? editData?.providerData.templateSid ?? '' : ''}
+        initialValue={isEditMode ? editData?.providerData.authTemplateSid ?? '' : ''}
         rules={[
           { required: true },
-          { validator: () => {
+          { validator: async (_, value) => {
+            try {
+              const payload = {
+                accountSid: form.getFieldValue('accountSid'),
+                authToken: form.getFieldValue('authToken'),
+                contentSid: value
+              }
+              const templateStatus = await getTwiliosWhatsappServices({
+                params: params, payload: payload
+              })
+
+              if (templateStatus.error) {
+                const error = templateStatus.error as ErrorsResult<ErrorDetails>
+                console.log(error) // eslint-disable-line no-console
+                // eslint-disable-next-line max-len
+                return Promise.reject(
+                  $t({ defaultMessage: 'There is an error when fetching authTemplateSid status.' })
+                )
+              }
+
+              if ((templateStatus as TwiliosWhatsappServices).approvalFetch?.sid === value
+                // eslint-disable-next-line max-len
+                && (templateStatus as TwiliosWhatsappServices).approvalFetch?.accountSid === form.getFieldValue('accountSid')
+                // eslint-disable-next-line max-len
+                && (templateStatus as TwiliosWhatsappServices).approvalFetch?.whatsapp.status === 'approved') {
+                return Promise.resolve()
+              } else {
+                return Promise.reject(
+                  $t({ defaultMessage: 'This authTemplateSid is not approved.' })
+                )
+              }
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            }
             return Promise.resolve()}
           }
         ]}

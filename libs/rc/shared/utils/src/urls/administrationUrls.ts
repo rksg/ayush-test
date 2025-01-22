@@ -342,6 +342,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/notifications/sms/providers/twilios/messagingServices',
     newApi: true
   },
+  getTwiliosWhatsappServices: {
+    method: 'post',
+    url: '/notifications/sms/providers/twilios/templateApprovalStatus',
+    newApi: true
+  },
   getWebhooks: {
     method: 'post',
     url: '/webhooks/query',
