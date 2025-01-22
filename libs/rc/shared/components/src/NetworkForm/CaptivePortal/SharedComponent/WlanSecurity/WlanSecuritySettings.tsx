@@ -172,9 +172,12 @@ export const WlanSecurityFormItems = () => {
     if (value === WlanSecurityEnum.OWE) {
       networkSec = 'OWE'
       protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
+      // eslint-disable-next-line max-len
+      form.setFieldValue(['wlan', 'managementFrameProtection'], ManagementFrameProtectionEnum.Required)
     } else if (value === WlanSecurityEnum.None) {
       networkSec = 'NONE'
     }
+    form.setFieldValue(['wlan', 'wlanSecurity'], value)
     setData && setData({
       ...data,
       ...{
