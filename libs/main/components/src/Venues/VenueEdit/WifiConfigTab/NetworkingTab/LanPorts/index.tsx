@@ -16,7 +16,6 @@ import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileActivation,
   useSoftGreProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
@@ -177,7 +176,6 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const { dispatch } = useSoftGreProfileActivation(selectedModel)
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
