@@ -46,33 +46,39 @@ export const MdnsProxyFormItem = (props: {
     })
   }, [currentEdgeMdns])
 
-  return <Row gutter={20}>
-    <Col span={7}>
-      <Loader states={[{ isLoading: isMdnsLoading }]}>
-        <StepsForm.FieldLabel width='50%'>
-          <Space>
-            {$t({ defaultMessage: 'mDNS Proxy' })}
-            <ApCompatibilityToolTip
-              title=''
-              showDetailButton
-              onClick={() => setEdgeFeatureName(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
-            />
-          </Space>
-          <Space>
-            <Form.Item
-              name='edgeMdnsSwitch'
-              valuePropName='checked'
-            >
-              <Switch />
-            </Form.Item>
-          </Space>
-        </StepsForm.FieldLabel>
+  return <>
+    <Row gutter={20}>
+      <Col flex='250px'>
+        <Loader states={[{ isLoading: isMdnsLoading }]}>
+          <StepsForm.FieldLabel width='90%'>
+            <Space>
+              {$t({ defaultMessage: 'mDNS Proxy' })}
+              <ApCompatibilityToolTip
+                title=''
+                showDetailButton
+                onClick={() => setEdgeFeatureName(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+              />
+            </Space>
+            <Space>
+              <Form.Item
+                name='edgeMdnsSwitch'
+                valuePropName='checked'
+              >
+                <Switch />
+              </Form.Item>
+            </Space>
+          </StepsForm.FieldLabel>
+        </Loader>
+      </Col>
+    </Row>
+    <Row gutter={20}>
+      <Col>
         <Form.Item dependencies={['edgeMdnsSwitch']}>
           {({ getFieldValue }) => {
             return getFieldValue('edgeMdnsSwitch') && <EdgeMdnsProfileSelectionForm />
           }}
         </Form.Item>
-      </Loader>
-    </Col>
-  </Row>
+      </Col>
+    </Row>
+  </>
 }

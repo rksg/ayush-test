@@ -129,6 +129,7 @@ export function IotController () {
     } else {
       if (!isEmpty(apIot)) {
         formRef?.current?.setFieldsValue(apIot)
+        setIotEnabled(apIot.enabled)
       }
     }
 
