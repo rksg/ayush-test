@@ -21,6 +21,7 @@ import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
+import { useEnforcedStatus }     from '../../../configTemplates'
 import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
@@ -107,6 +108,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   const { $t } = useIntl()
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const [detailDrawerVisible, setDetailDrawerOpenVisible] = useState(false)
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
@@ -118,7 +120,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         'name',
         'nwSubType',
         'vlanPool', // for GUI trigger vlan pooling API in RBAC version
-        'dsaeOnboardNetwork'
+        'dsaeOnboardNetwork',
+        'isEnforced'
       ],
       filters: {
         'venueApGroups.venueId': [venueId]
@@ -173,12 +176,15 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         tooltip = disabled(venueId, row, false)?.tooltip
       }
 
+      const isEnforcedByTemplate = hasEnforcedItem(row)
+      const enforcedActionMsg = getEnforcedActionMsg(row)
+
       return <ActivateNetworkSwitchButtonP2
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
-        disabled={(isDisabled as boolean) || disabledInfo.disabled}
-        tooltip={tooltip || disabledInfo.tooltip}
+        disabled={(isDisabled as boolean) || disabledInfo.disabled || isEnforcedByTemplate}
+        tooltip={tooltip || disabledInfo.tooltip || enforcedActionMsg}
         onChange={onActivateChange}
       />
     }
@@ -204,13 +210,16 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         tooltip = disabled(venueId, row, true)?.tooltip
       }
 
+      const isEnforcedByTemplate = hasEnforcedItem(row)
+      const enforcedActionMsg = getEnforcedActionMsg(row)
+
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
         ? <ActivateNetworkSwitchButtonP2
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
-          disabled={(isDisabled as boolean) || disabledInfo.disabled}
-          tooltip={tooltip || disabledInfo.tooltip}
+          disabled={(isDisabled as boolean) || disabledInfo.disabled || isEnforcedByTemplate}
+          tooltip={tooltip || disabledInfo.tooltip || enforcedActionMsg}
           onChange={onActivateChange}
         />
         : ''
