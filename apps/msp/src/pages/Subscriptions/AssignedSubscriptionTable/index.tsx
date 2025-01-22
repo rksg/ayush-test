@@ -175,7 +175,8 @@ export function AssignedSubscriptionTable () {
         return {
           ...response,
           name: (response?.isTrial
-            ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' ' + type
+            ? $t({ defaultMessage: 'Trial {type}' }, { type })
+            : $t({ defaultMessage: 'Paid {type}' }, { type }))
         }
       })
       : queryResults.data?.map(response => {
@@ -184,7 +185,8 @@ export function AssignedSubscriptionTable () {
         return {
           ...response,
           name: isDeviceAgnosticEnabled ? (response?.trialAssignment
-            ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' ' + type
+            ? $t({ defaultMessage: 'Trial {type}' }, { type })
+            : $t({ defaultMessage: 'Paid {type}' }, { type }))
             : type
         }
       }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)

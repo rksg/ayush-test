@@ -51,13 +51,13 @@ export default function SolutionTokenLicenses () {
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
 
   const _statusFilterOptions = [{ key: MspEcAccountType.TRIAL,
-    value: 'MSP ECs in Trial Mode' },
+    value: $t({ defaultMessage: 'MSP ECs in Trial Mode' }) },
   { key: MspEcAccountType.PAID,
-    value: 'MSP ECs in Paid Mode' }]
+    value: $t({ defaultMessage: 'MSP ECs in Paid Mode' }) }]
 
   const statusFilterOptions = tenantDetailsData?.extendedTrial
     ? [..._statusFilterOptions, { key: MspEcAccountType.EXTENDED_TRIAL,
-      value: 'MSP ECs in Extended Trial Mode' }] : _statusFilterOptions
+      value: $t({ defaultMessage: 'MSP ECs in Extended Trial Mode' }) }] : _statusFilterOptions
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -93,7 +93,7 @@ export default function SolutionTokenLicenses () {
         if (nextExpirationDate === noDataDisplay)
           return nextExpirationDate
         const formattedDate = formatter(DateFormatEnum.DateFormat)(nextExpirationDate)
-        const expiredOnString = `${$t({ defaultMessage: 'Expired on' })} ${formattedDate}`
+        const expiredOnString = $t({ defaultMessage: 'Expired on {date}' }, { date: formattedDate })
         const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
         const TimeLeftWrapper = remainingDays < 0
           ? UI.Expired
