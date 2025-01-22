@@ -1,20 +1,21 @@
-import { collision, layoutCheck }                from './collision'
-import { calColWidth, setPropertyValueForCards } from './utils'
+import { collision, layoutCheck }                                        from './collision'
+import { compactLayout }                                                 from './compact'
+import { calColCount, calColWidth, calGridXY, setPropertyValueForCards } from './utils'
 
+const a = {
+  gridx: 0,
+  gridy: 4,
+  width: 1,
+  height: 4
+}
+const b = {
+  gridx: 0,
+  gridy: 0,
+  width: 1,
+  height: 4
+}
 describe('Canvas Utils', () => {
   it('should execute collision correctly', () => {
-    const a = {
-      gridx: 0,
-      gridy: 4,
-      width: 1,
-      height: 4
-    }
-    const b = {
-      gridx: 0,
-      gridy: 0,
-      width: 1,
-      height: 4
-    }
     expect(collision(a, b)).toBe(false)
   })
   it('should execute layoutCheck correctly', () => {
@@ -67,5 +68,23 @@ describe('Canvas Utils', () => {
   })
   it('should execute calColWidth correctly', () => {
     expect(calColWidth(500, 4, [10, 10], 0)).toEqual(120)
+  })
+  it('should execute calColCount correctly', () => {
+    expect(calColCount()).toEqual(4)
+  })
+  it('should execute calGridXY correctly', () => {
+    expect(calGridXY(20, -30, 120, [0, 0], 500, 4, 100)).toEqual({
+      gridX: 0,
+      gridY: 0
+    })
+  })
+  it('should execute calGridXY with margin correctly', () => {
+    expect(calGridXY(260, 200, 100, [5, 5], 500, 4, 100)).toEqual({
+      gridX: 0,
+      gridY: 1
+    })
+  })
+  it('should execute compactLayout correctly', () => {
+    expect(compactLayout([a,b])).toEqual([b,a])
   })
 })

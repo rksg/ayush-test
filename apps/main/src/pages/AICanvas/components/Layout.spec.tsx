@@ -4,8 +4,10 @@ import { rest }        from 'msw'
 import { DndProvider } from 'react-dnd'
 import { TestBackend } from 'react-dnd-test-backend'
 
-import { RuckusAiChatUrlInfo } from '@acx-ui/rc/utils'
-import { Provider }            from '@acx-ui/store'
+import { BarChartData, TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { DonutChartData }                    from '@acx-ui/components'
+import { RuckusAiChatUrlInfo, TableData }    from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
 import {
   render,
   screen,
@@ -15,7 +17,8 @@ import {
 
 import { Group, LayoutConfig, Section } from '../Canvas'
 
-import Layout from './Layout'
+import Layout             from './Layout'
+import { getChartConfig } from './WidgetChart'
 
 const DEFAULT_CANVAS = [
   {
@@ -525,4 +528,32 @@ describe('Layout', () => {
     expect(mockedSetGroups).toBeCalled()
   })
 
+  it('should execute getChartConfig correctly', () => {
+    expect(getChartConfig( {
+      id: '123',
+      chatId: '456',
+      sessionId: '789',
+      chartType: 'pie',
+      chartOption: [] as unknown as DonutChartData[] & TimeSeriesChartData[]
+        & BarChartData & TableData
+    })).toEqual({
+      width: 1,
+      height: 4,
+      currentSizeIndex: 0,
+      sizes: [
+        {
+          width: 1,
+          height: 4
+        },
+        {
+          width: 2,
+          height: 8
+        },
+        {
+          width: 4,
+          height: 12
+        }
+      ]
+    })
+  })
 })

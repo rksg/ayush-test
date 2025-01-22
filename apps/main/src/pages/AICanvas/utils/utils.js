@@ -40,19 +40,16 @@ export const calColWidth = (containerWidth, col, containerPadding, margin) => {
  * @returns {Number} column number
  */
 export const calColCount = (
-  defaultCalWidth,
-  containerWidth,
-  containerPadding,
-  margin
+  // defaultCalWidth,
+  // containerWidth,
+  // containerPadding,
+  // margin
 ) => {
-  if (margin) {
-    return 4 // Fixed by design
-    const colByWindowsWidth = Math.floor(
-      (containerWidth - containerPadding[0] * 2 - margin[0]) /
-        (defaultCalWidth + margin[0])
-    )
-    return colByWindowsWidth
-  }
+  return 4 // for the canvas requirement
+  // return Math.floor(
+  //   (containerWidth - containerPadding[0] * 2 - (margin? margin[0] : 0)) /
+  //     (defaultCalWidth + margin[0])
+  // )
 }
 
 /**
@@ -70,20 +67,6 @@ export const layoutBottom = (layout) => {
   return max
 }
 
-/**
- * Calculate the bottom-most x-coordinate
- * @param {Array} layout
- * @returns {Number} the maximum x-coordinate
- */
-export const layoutHorizontalRowLength = (layout) => {
-  let max = 0
-  let rowX
-  for (let i = 0, len = layout.length; i < len; i++) {
-    rowX = layout[i].gridx + layout[i].width
-    if (rowX > max) max = rowX
-  }
-  return max
-}
 /**
  * Calculates the maximum height of a container based on the layout of its cards.
  * @param {Array} cards

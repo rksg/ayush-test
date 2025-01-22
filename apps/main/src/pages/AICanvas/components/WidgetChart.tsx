@@ -31,7 +31,7 @@ interface WidgetCategory {
   sizes?: { width: number, height:number }[]
 }
 
-const getChartConfig = (data: WidgetListData) => {
+export const getChartConfig = (data: WidgetListData) => {
   const ChartConfig:{ [key:string]: WidgetCategory } = {
     pie: {
       width: 1,

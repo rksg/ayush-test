@@ -102,7 +102,7 @@ function Card (props: CardProps) {
       if(item.id === cardTmp.id) {
         groupsTmp[groupIndex].cards[index] = cardTmp
         // eslint-disable-next-line max-len
-        let compactedLayout = compactLayoutHorizontal(groupsTmp[groupIndex].cards, props.layout.col, cardTmp.id)
+        let compactedLayout = compactLayoutHorizontal(groupsTmp[groupIndex].cards, props.layout.col, null)
         groupsTmp[groupIndex].cards = compactedLayout
         return true
       }

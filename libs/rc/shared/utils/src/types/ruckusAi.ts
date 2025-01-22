@@ -23,7 +23,7 @@ export enum RuckusAiConfigurationStepsEnum {
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface TableData {
+export interface TableData {
   columns: TableColumn<any, 'text'>[]
   dataSource: any[]
 }
