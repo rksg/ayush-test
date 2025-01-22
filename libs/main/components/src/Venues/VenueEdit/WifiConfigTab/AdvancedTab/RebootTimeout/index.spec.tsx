@@ -64,7 +64,7 @@ describe('Venue Reboot Timeout', () => {
           ...defaultValue,
           editContextData: {} as EditContext,
           setEditContextData: jest.fn(),
-          setEditNetworkingContextData: jest.fn()
+          setEditAdvancedContextData: jest.fn()
         }}>
           <Form>
             <RebootTimeout />

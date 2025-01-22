@@ -130,6 +130,7 @@ export function IotController (props: ApEditItemProps) {
     } else {
       if (!isEmpty(apIot)) {
         formRef?.current?.setFieldsValue(apIot)
+        setIotEnabled(apIot.enabled)
       }
     }
 

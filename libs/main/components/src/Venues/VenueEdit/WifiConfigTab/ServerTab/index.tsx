@@ -68,11 +68,11 @@ export function ServerTab () {
   )
 
   const [
-    allowEditVenueSyslog,
-    allowEditVenueMDnsFencing,
-    allowEditVenueApSnmp,
-    allowEditVenueIot,
-    allowEditVenueLbs
+    isAllowEditVenueSyslog,
+    isAllowEditVenueMDnsFencing,
+    isAllowEditVenueApSnmp,
+    isAllowEditVenueIot,
+    isAllowEditVenueLbs
   ] = [
     // eslint-disable-next-line max-len
     hasAllowedOperations([[getOpsApi(syslogApiUrlInfo.bindVenueSyslog ), getOpsApi(syslogApiUrlInfo.unbindVenueSyslog )]]),
@@ -94,25 +94,34 @@ export function ServerTab () {
 
   if (!isTemplate || isSyslogTemplateEnabled) {
     // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog isAllowEdit={allowEditVenueSyslog} />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }),
+      'syslog-server',
+      <Syslog isAllowEdit={isAllowEditVenueSyslog} />))
   }
 
   // eslint-disable-next-line max-len
-  items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing isAllowEdit={allowEditVenueMDnsFencing} />))
+  items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }),
+    'mdns-fencing',
+    <MdnsFencing isAllowEdit={isAllowEditVenueMDnsFencing} />))
 
   if (!isTemplate) {
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp',
-      <ApSnmp isAllowEdit={allowEditVenueApSnmp} />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }),
+      'ap-snmp',
+      <ApSnmp isAllowEdit={isAllowEditVenueApSnmp} />))
   }
 
   if (isIotFeatureEnabled && !isTemplate) {
     // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }), 'iotController', <IotController isAllowEdit={allowEditVenueIot} />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }),
+      'iotController',
+      <IotController isAllowEdit={isAllowEditVenueIot} />))
   }
 
   if (supportLbs && !isTemplate) {
     // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService isAllowEdit={allowEditVenueLbs} />))
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }),
+      'locationBasedService',
+      <LocationBasedService isAllowEdit={isAllowEditVenueLbs} />))
   }
 
   const handleUpdateSetting = async () => {
