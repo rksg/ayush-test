@@ -8,6 +8,10 @@ import {
 
 export const Wrapper = styled(AntSpace).attrs({ style: { justifyContent: 'space-between' } })`
   padding-bottom: 15px;
+  position: sticky;
+  top: 210.6px;
+  z-index: 5;
+  background-color: var(--acx-primary-white);
 `
 
 export const Space = styled(AntSpace).attrs({ size: 12 })``
