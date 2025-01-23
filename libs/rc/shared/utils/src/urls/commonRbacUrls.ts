@@ -102,6 +102,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addGateway: {
     method: 'post',
     url: '/venues/:venueId/rwgs',
+    opsApi: 'POST:/venues/{id}/rwgs',
     newApi: true
   },
   updateGateway: {

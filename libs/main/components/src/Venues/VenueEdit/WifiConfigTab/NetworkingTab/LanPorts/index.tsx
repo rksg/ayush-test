@@ -16,7 +16,6 @@ import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileActivation,
   useSoftGreProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
@@ -178,7 +177,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const { dispatch } = useSoftGreProfileActivation(selectedModel)
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
@@ -707,7 +705,6 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
-                    dispatch={dispatch}
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
                     validateIsFQDNDuplicate={validateIsFQDNDuplicate}
