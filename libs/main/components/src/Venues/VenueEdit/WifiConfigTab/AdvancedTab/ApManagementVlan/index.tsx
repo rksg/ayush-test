@@ -4,7 +4,13 @@ import { InputNumber, Form, Space, Row, Col } from 'antd'
 import { useIntl }                            from 'react-intl'
 import { useParams }                          from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, cssStr, showActionModal }                         from '@acx-ui/components'
+import {
+  Loader,
+  StepsFormLegacy,
+  cssStr,
+  showActionModal,
+  AnchorContext
+}                         from '@acx-ui/components'
 import { InformationSolid }                                                         from '@acx-ui/icons'
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
 import { validateVlanId }                                                           from '@acx-ui/rc/utils'
@@ -23,6 +29,7 @@ export function ApManagementVlan (props: VenueWifiConfigItemProps) {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const { data: venueApMgmtData, isLoading: isVenueApMgmtLoading } =
     useGetVenueApManagementVlanQuery({ params: { venueId } })
@@ -33,9 +40,11 @@ export function ApManagementVlan (props: VenueWifiConfigItemProps) {
     if (!isVenueApMgmtLoading && venueApMgmtData) {
       const { vlanId } = venueApMgmtData
       form.setFieldValue('vlanId', vlanId)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Access-Point-Management-VLAN')))])
     }
 
-  }, [form, venueApMgmtData, isVenueApMgmtLoading])
+  }, [form, venueApMgmtData, isVenueApMgmtLoading, setReadyToScroll])
 
   const onFormDataChanged = () => {
 

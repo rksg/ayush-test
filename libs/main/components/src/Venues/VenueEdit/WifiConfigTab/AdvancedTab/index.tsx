@@ -156,14 +156,14 @@ export function AdvancedTab () {
 
   return (
     <StepsFormLegacy
-      onFinish={() => handleUpdateAllSettings()}
+      onFinish={handleUpdateAllSettings}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} offsetTop={60} />
+        <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

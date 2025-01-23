@@ -69,7 +69,7 @@ export function LocationBasedService (props: VenueWifiConfigItemProps) {
       setStateOfVenueLbs({ enableLbs, lbsServerProfileId })
       setStateOfLbsServerProfileId(lbsServerProfileId)
     }
-    setReadyToScroll?.(r => [...(new Set(r.concat('Location Based Service')))])
+    setReadyToScroll?.(r => [...(new Set(r.concat('Location-Based-Service')))])
   }, [enableLbs, lbsServerProfileId])
 
   const handleLbsSwitchEnableChange = (newState: boolean) => {

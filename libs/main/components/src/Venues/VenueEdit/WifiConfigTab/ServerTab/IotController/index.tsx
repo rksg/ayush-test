@@ -63,7 +63,7 @@ export function IotController (props: VenueWifiConfigItemProps) {
 
       setIotEnabled(venueApIotData.enabled)
 
-      setReadyToScroll?.((r) => [...new Set(r.concat('IoT Controller'))])
+      setReadyToScroll?.((r) => [...new Set(r.concat('IoT-Controller'))])
     }
   }, [form, venueApIot, setReadyToScroll])
 

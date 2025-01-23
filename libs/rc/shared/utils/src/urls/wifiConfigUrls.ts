@@ -352,20 +352,6 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
 
-  // ===== RebootTimeout (Venue only) =====
-  getVenueRebootTimeout: {
-    method: 'get',
-    url: '/venues/:venueId/apRebootTimeoutSettings',
-    opsApi: 'GET:/venues/{id}/apRebootTimeoutSettings',
-    newApi: true
-  },
-  updateVenueRebootTimeout: {
-    method: 'put',
-    url: '/venues/:venueId/apRebootTimeoutSettings',
-    opsApi: 'PUT:/venues/{id}/apRebootTimeoutSettings',
-    newApi: true
-  },
-
   // ===== RADIUS Option (Venue only) =====
   getVenueRadiusOptions: {
     method: 'get',
@@ -616,6 +602,20 @@ export const WifiConfigUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     opsApi: 'PUT:/venues/{id}/aps/{id}/managementTrafficVlanSettings',
+    newApi: true
+  },
+
+  // ===== RebootTimeout (Venue only) =====
+  getVenueRebootTimeout: {
+    method: 'get',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    opsApi: 'GET:/venues/{id}/apRebootTimeoutSettings',
+    newApi: true
+  },
+  updateVenueRebootTimeout: {
+    method: 'put',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    opsApi: 'PUT:/venues/{id}/apRebootTimeoutSettings',
     newApi: true
   }
 }

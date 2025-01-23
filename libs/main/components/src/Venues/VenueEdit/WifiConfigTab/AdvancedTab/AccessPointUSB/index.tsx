@@ -6,8 +6,15 @@ import { isEqual, omit } from 'lodash'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Button, Loader, Select, Table, TableProps } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                        from '@acx-ui/icons'
+import {
+  AnchorContext,
+  Button,
+  Loader,
+  Select,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { DeleteOutlinedIcon }         from '@acx-ui/icons'
 import {
   useGetVenueApModelsQuery,
   useGetVenueApUsbStatusQuery,
@@ -29,18 +36,18 @@ const emptyOptions: LabeledValue[] = []
 export function AccessPointUSB (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-  const initDataRef = useRef<VenueApUsbStatus[]>([])
-  // eslint-disable-next-line max-len
   const { isAllowEdit=true } = props
+
+  const initDataRef = useRef<VenueApUsbStatus[]>([])
 
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
-  const { venueApNames } = useGetVenueApModelsQuery({
+  const { venueApModels } = useGetVenueApModelsQuery({
     params: { tenantId, venueId },
     enableRbac: true
   }, {
     selectFromResult: ({ data }) => ({
-      venueApNames: data?.models?.map( model => model.toUpperCase())
+      venueApModels: data?.models?.map( model => model.toUpperCase())
     })
   })
 
@@ -52,6 +59,7 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
 
   const [tableData, setTableData] = useState<VenueApUsbStatusEntry[]>(defaultArray)
@@ -82,7 +90,7 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
 
             venueApUsbSettings.push({
               ...item,
-              hasExist: venueApNames?.includes(model)
+              hasExist: venueApModels?.includes(model)
             })
           })
         }
@@ -97,22 +105,16 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
 
         setModelOptions(availableModelsOptions)
       }
+      setReadyToScroll?.(r => [...(new Set(r.concat('Access-Point-USB-Support')))])
     }
-  }, [venueApStatusList.data, venueApCaps])
+  }, [venueApStatusList.data, venueApCaps, setReadyToScroll])
 
 
   useEffect(() => {
     const newData = tableData.filter(d => d.model).map(({ hasExist, ...others }) => others)
-    const isDirty = !isEqual(newData, initDataRef.current)
+    const hasChanged = !isEqual(newData, initDataRef.current)
 
-    setEditContextData && setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced' }),
-      isDirty: isDirty
-    })
-
-    const newEditAdvancedContextData = (isDirty) ? {
+    const newEditAdvancedContextData = (hasChanged) ? {
       ...editAdvancedContextData,
       updateAccessPointUSB: () => updateAccessPointUSB(newData)
     } : {
@@ -120,6 +122,13 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
     }
 
     setEditAdvancedContextData && setEditAdvancedContextData(newEditAdvancedContextData)
+
+    setEditContextData && setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'settings',
+      tabTitle: $t({ defaultMessage: 'Advanced' }),
+      isDirty: Object.keys(newEditAdvancedContextData).length > 0
+    })
 
   }, [tableData])
 
@@ -170,10 +179,11 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (_, row) => (!row.hasExist && isAllowEdit) ? <Button
+    render: (_, row) => (!row.hasExist) ? <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
+      disabled={isAllowEdit}
       icon={<DeleteOutlinedIcon />}
       style={{ height: '16px' }}
       onClick={() => handleDelete(row.model)}
@@ -200,7 +210,7 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
       ...tableData.map((item, index) => {
         if (index === tableData.length - 1) {
           item.model = model
-          item.hasExist = venueApNames?.includes(model)
+          item.hasExist = venueApModels?.includes(model)
         }
         return item
       })

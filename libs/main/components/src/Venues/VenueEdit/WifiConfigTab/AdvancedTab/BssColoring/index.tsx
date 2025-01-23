@@ -4,8 +4,12 @@ import { Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Loader, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import {
+  AnchorContext,
+  Loader,
+  StepsFormLegacy
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApCompatibilityToolTip,
   ApCompatibilityDrawer,
@@ -37,6 +41,7 @@ export function BssColoring (props: VenueWifiConfigItemProps) {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   /* eslint-disable-next-line max-len */
   const tooltipInfo = $t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })
@@ -62,8 +67,10 @@ export function BssColoring (props: VenueWifiConfigItemProps) {
     const { data } = getVenueBssColoring
     if (!getVenueBssColoring?.isLoading) {
       setEnableBssColoring(data?.bssColoringEnabled ?? false)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('BSS-Coloring')))])
     }
-  }, [getVenueBssColoring])
+  }, [getVenueBssColoring, setReadyToScroll])
 
   const handleChanged = (checked: boolean) => {
     const newData = { enabled: checked }

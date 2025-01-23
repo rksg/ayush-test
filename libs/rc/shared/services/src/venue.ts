@@ -1115,7 +1115,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'VENUE_LED_SETTINGS' }]
     }),
     updateVenueLedOn: build.mutation<VenueLed[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1128,7 +1129,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'VENUE_LED_SETTINGS' }]
     }),
     getVenueApUsbStatus: build.query<VenueApUsbStatus[], RequestPayload>({
       query: ({ params }) => {

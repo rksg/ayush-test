@@ -1,10 +1,9 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { isEmpty }   from 'lodash'
-import { IntlShape } from 'react-intl'
+import { isEmpty } from 'lodash'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
-import { VenueLed,
+import {
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
@@ -51,11 +50,10 @@ export interface EditContext {
   oldData: unknown,
   newData: unknown,
   previousPath?: string,
-  updateChanges: () => void,
+  updateChanges?: () => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setData: (data: any) => void,
   tempData?: {
-    settings?: VenueLed[],
     general?: VenueSwitchConfiguration
   }
 }
@@ -78,7 +76,7 @@ export interface RadioContext {
   updateClientAdmissionControl?: ((callback?: () => void) => void)
 }
 
-export const VenueEditContext = createContext({} as {
+export type VenueEditContextProps = {
   editContextData: EditContext,
   setEditContextData: (data: EditContext) => void
 
@@ -96,10 +94,14 @@ export const VenueEditContext = createContext({} as {
 
   editAdvancedContextData: AdvanceSettingContext,
   setEditAdvancedContextData: (data: AdvanceSettingContext) => void
+}
 
+export type VenueEditContextExtendedProps = VenueEditContextProps & {
   previousPath: string
   setPreviousPath: (data: string) => void
-})
+}
+
+export const VenueEditContext = createContext({} as VenueEditContextExtendedProps)
 
 export function VenueEdit () {
   const navigate = useNavigate()
@@ -175,8 +177,8 @@ export function VenueEdit () {
       setEditSecurityContextData,
       editServerContextData,
       setEditServerContextData,
-      editAdvancedContextData: editAdvancedContextData,
-      setEditAdvancedContextData: setEditAdvancedContextData,
+      editAdvancedContextData,
+      setEditAdvancedContextData,
       previousPath,
       setPreviousPath
     }}>
@@ -211,14 +213,16 @@ export function getAntennaTypePayload (antTypeModels: { [index: string]: VeuneAp
   return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
 }
 
-function processWifiTab (
-  editContextData: EditContext,
-  editNetworkingContextData: NetworkingSettingContext,
-  editSecurityContextData: SecuritySettingContext,
-  editServerContextData: ServerSettingContext,
-  editRadioContextData: RadioContext,
-  editAdvancedContextData: AdvanceSettingContext
-){
+function processWifiTab (props: VenueEditContextProps) {
+  const {
+    editContextData,
+    editNetworkingContextData,
+    editSecurityContextData,
+    editServerContextData,
+    editRadioContextData,
+    editAdvancedContextData
+  } = props
+
   switch(editContextData?.unsavedTabKey){
     case 'settings':
       editAdvancedContextData?.updateAccessPointLED?.()
@@ -279,18 +283,56 @@ function processWifiTab (
   }
 }
 
-export function showUnsavedModal (
-  editContextData: EditContext,
-  setEditContextData: (data: EditContext) => void,
-  editNetworkingContextData: NetworkingSettingContext,
-  editRadioContextData: RadioContext,
-  editSecurityContextData: SecuritySettingContext,
-  editServerContextData: ServerSettingContext,
-  editAdvancedContextData: AdvanceSettingContext,
-  intl: IntlShape,
+const resetVenueEditContextData = (props: VenueEditContextProps) => {
+  const { editContextData,
+    setEditContextData,
+    setEditRadioContextData,
+    setEditNetworkingContextData,
+    setEditSecurityContextData,
+    setEditServerContextData,
+    setEditAdvancedContextData
+  } = props
+
+  const newEditContextData = {
+    ...editContextData,
+    isDirty: false,
+    hasError: false
+  }
+  delete newEditContextData.updateChanges
+
+  setEditContextData(newEditContextData)
+
+  switch(editContextData?.unsavedTabKey){
+    case 'radio':
+      setEditRadioContextData({} as RadioContext)
+      break
+    case 'networking':
+      setEditNetworkingContextData({} as NetworkingSettingContext)
+      break
+    case 'servers':
+      setEditServerContextData({} as ServerSettingContext)
+      break
+    case 'security':
+      setEditSecurityContextData({} as SecuritySettingContext)
+      break
+    case 'settings':
+      setEditAdvancedContextData({} as AdvanceSettingContext)
+      break
+  }
+}
+
+export function showUnsavedModal (props: VenueEditContextProps & {
   callback?: () => void
-) {
+}) {
   const { $t } = getIntl()
+  const { callback, ...venueEditContextProps } = props
+  const {
+    editContextData, setEditContextData,
+    editRadioContextData,
+    editNetworkingContextData,
+    editServerContextData
+  } = venueEditContextProps
+
   const title = editContextData?.tabTitle ?? ''
   const hasError = editContextData?.hasError ?? false
   const btns = [{
@@ -346,6 +388,7 @@ export function showUnsavedModal (
         })
         setData && oldData && setData(oldData)
       }
+      resetVenueEditContextData(venueEditContextProps)
       callback?.()
     }
   }, {
@@ -357,17 +400,11 @@ export function showUnsavedModal (
       const wifiTab = ['radio', 'networking', 'security', 'servers', 'settings']
 
       if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
-        processWifiTab(
-          editContextData,
-          editNetworkingContextData,
-          editSecurityContextData,
-          editServerContextData,
-          editRadioContextData,
-          editAdvancedContextData
-        )
-      }else{
+        processWifiTab(venueEditContextProps)
+      } else {
         editContextData?.updateChanges?.()
       }
+      resetVenueEditContextData(venueEditContextProps)
       callback?.()
     }
   }]

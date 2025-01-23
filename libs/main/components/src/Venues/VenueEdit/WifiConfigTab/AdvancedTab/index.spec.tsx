@@ -91,7 +91,7 @@ describe('AdvancedTab', () => {
       // RBAC API
       rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),
-      rest.put(CommonRbacUrlsInfo.updateVenueLedOn.url,
+      rest.put(WifiRbacUrlsInfo.updateVenueLedOn.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
