@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -89,7 +89,7 @@ describe('AdvancedTab', () => {
       rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({}))),
       // RBAC API
-      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+      rest.get(WifiRbacUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),
       rest.put(WifiRbacUrlsInfo.updateVenueLedOn.url,
         (_, res, ctx) => res(ctx.json({}))),

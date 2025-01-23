@@ -260,15 +260,30 @@ export function SecurityTab () {
       }
 
       if(triggerRogueAPDetection){
+        const { rogueApEnabled, roguePolicyId, reportThreshold } = data ?? {}
+        const {
+          roguePolicyId: currentRoguePolicyId,
+          reportThreshold: currentReportThreshold
+        } = venueRogueApData ?? {}
+
         const rogueApPayload = {
-          enabled: data?.rogueApEnabled,
-          reportThreshold: data?.reportThreshold,
-          roguePolicyId: data?.roguePolicyId,
-          currentRoguePolicyId: venueRogueApData?.roguePolicyId,
-          currentReportThreshold: venueRogueApData?.reportThreshold
+          enabled: rogueApEnabled,
+          reportThreshold,
+          roguePolicyId,
+          currentRoguePolicyId,
+          currentReportThreshold
         }
+
+        /**
+         * Avoid the API error when calling the updateVenueRogueAp API
+         * When rogueAP is enabld, the roguePolicyId must have value
+         * When rogueAP is disabld, the currentRoguePolicyId must have value
+         */
+        const isCorrectPaylod = rogueApEnabled? !!roguePolicyId : !!currentRoguePolicyId
+        if (isCorrectPaylod) {
         // eslint-disable-next-line max-len
-        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: resolvedServicePolicyRbacEnabled })
+          await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: resolvedServicePolicyRbacEnabled })
+        }
         setTriggerRogueAPDetection(false)
       }
 

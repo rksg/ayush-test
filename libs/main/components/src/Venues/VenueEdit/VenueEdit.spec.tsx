@@ -2,10 +2,25 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi, policyApi }                                                                                                    from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                        from '@acx-ui/store'
-import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved }                                      from '@acx-ui/test-utils'
+import { venueApi, policyApi } from '@acx-ui/rc/services'
+import {
+  AdministrationUrlsInfo,
+  CommonUrlsInfo,
+  SwitchUrlsInfo,
+  SyslogUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
+import {
+  render,
+  screen,
+  fireEvent,
+  mockServer,
+  waitFor,
+  within,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import {
   configProfiles,
@@ -277,16 +292,16 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))
         ),
-        rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+        rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))
         ),
         rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
-        rest.put(CommonRbacUrlsInfo.updateVenueLanPorts.url,
+        rest.put(WifiRbacUrlsInfo.updateVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
-        rest.get(CommonUrlsInfo.getVenueBssColoring.url,
+        rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
         rest.get(

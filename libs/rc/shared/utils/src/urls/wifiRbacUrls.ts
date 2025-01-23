@@ -80,14 +80,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/wifiNetworks/:networkId',
     newApi: true
   },
-  /*
-  // no longer supported after v1, use addNetworkVenue loop as replacement
-  addNetworkVenues: {
-    method: 'post',
-    url: '/networkActivations/mappings',
-    newApi: true
-  },
-  */
   updateNetworkVenue: {
     method: 'put',
     //url: '/networkActivations/:networkVenueId?quickAck=true',
@@ -98,35 +90,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  /*
-  // no longer supported after v1, use updateNetworkVenue loop as replacement
-  updateNetworkVenues: {
-    method: 'put',
-    url: '/networkActivations/mappings',
-    newApi: true
-  },
-  */
   deleteNetworkVenue: {
     method: 'delete',
     //url: '/networkActivations/:networkVenueId',
     url: '/venues/:venueId/wifiNetworks/:networkId',
     newApi: true
   },
-  /*
-  // no longer supported after v1, use deleteNetworkVenue loop as replacement
-  deleteNetworkVenues: {
-    method: 'delete',
-    url: '/networkActivations',
-    newApi: true
-  },
-  */
   getVenueApCapabilities: {
     method: 'get',
     //url: '/venues/:venueId/aps/capabilities',
     url: '/venues/:venueId/apModelCapabilities',
     newApi: true
   },
-
   getAp: {
     method: 'get',
     // url: '/venues/aps/:serialNumber?operational=false',
@@ -183,13 +158,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/importResults',
     newApi: true
   },
-  /*
-  // no longer supported after v1, use getApGroupsList as replacement
-  getVenueDefaultApGroup: {
-    method: 'get',
-    url: '/venues/:venueId/apGroups',
-    newApi: true
-  },*/
   getApGroupsList: {
     method: 'post',
     // url: '/apGroups/query',
@@ -210,13 +178,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
-  /*
-  getApsByApGroup: {
-    method: 'get',
-    url: '/venues/apGroups/:apGroupId/aps',
-    newApi: true
-  },
-  */
   getApGroup: {
     method: 'get',
     url: '/venues/:venueId/apGroups/:apGroupId',
@@ -246,14 +207,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'DELETE:/venues/{id}/apGroups/{id}',
     newApi: true
   },
-  /*
-  // deprecated. loop call the deleteApGroup to replace
-  deleteApGroups: {
-    method: 'delete',
-    url: '/venues/apGroups',
-    newApi: true
-  },
-  */
+
   // deprecated. use the getDhcpAps to replace
   getDhcpAp: {
     method: 'get',
@@ -273,26 +227,12 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'DELETE:/venues/{id}/aps/{id}',
     newApi: true
   },
-  /*
-  // deprecated. loop call the deleteAp to replace
-  deleteAps: {
-    method: 'delete',
-    url: '/venues/aps',
-    newApi: true
-  },*/
   deleteSoloAp: {
     method: 'delete',
     // url: '/venues/aps/:serialNumber?resetFirmware=true',
     url: '/venues/:venueId/aps/:serialNumber?resetFirmware=true',
     newApi: true
   },
-  /*
-  // deprecated. loop call the deleteSoloAp to replace
-  deleteSoloAps: {
-    method: 'delete',
-    url: '/venues/aps/?resetFirmware=true',
-    newApi: true
-  },*/
   downloadApLog: {
     method: 'get',
     // url: '/venues/aps/:serialNumber/logs',
@@ -380,31 +320,12 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/capabilities',
     newApi: true
   },
-  /*
-  getDpskPassphraseByQuery: {
-    method: 'post',
-    url: '/dpskPassphrasePools/query',
-    newApi: true
-  },
-  */
 
   getApNeighbors: {
     method: 'post',
     url: '/venues/:venueId/aps/:serialNumber/neighbors/query',
     newApi: true
   },
-  /*
-  getApRfNeighbors: { deprecate
-    method: 'get',
-    url: '/venues/aps/:serialNumber/rfNeighbors',
-    newApi: true
-  },
-  getApLldpNeighbors: { deprecate
-    method: 'get',
-    url: '/venues/aps/:serialNumber/lldpNeighbors',
-    newApi: true
-  },
-  */
   detectApNeighbors: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber/neighbors',
@@ -434,18 +355,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //OldUrl: '/wifiFeatureSets/:featureName',
     newApi: true
   },
-  /*
-  getApCompatibilitiesVenue: {
-    method: 'post',
-    url: '/venues/:venueId/apCompatibilities/query',
-    newApi: true
-  },
-  getApCompatibilitiesNetwork: {
-    method: 'post',
-    url: '/wifiNetworks/:networkId/apCompatibilities/query',
-    newApi: true
-  },
-  */
   // replace the getApCompatibilitiesVenue
   getVenueApCompatibilities: {
     method: 'post',

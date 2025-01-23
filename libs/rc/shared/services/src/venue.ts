@@ -1183,7 +1183,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       query: ({ params }) => {
         const rbacApiVersion = ApiVersionEnum.v1
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const req = createHttpRequest(CommonRbacUrlsInfo.getDefaultVenueLanPorts, params, apiCustomHeader)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getDefaultVenueLanPorts, params, apiCustomHeader)
         return{
           ...req
         }
