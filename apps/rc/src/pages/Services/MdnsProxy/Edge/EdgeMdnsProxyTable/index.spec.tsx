@@ -36,13 +36,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  CountAndNamesTooltip: ({ data }:{ data:CountAndNames }) => <>
-    <div data-testid='venue-count'>count:{data.count}</div>
-    <div data-testid='venue-names'>names:{data.names.join(',')}</div>
-  </>
-}))
+jest.mock('@acx-ui/rc/components', () => {
+  const rcComponents = jest.requireActual('@acx-ui/rc/components')
+  return {
+    ToolTipTableStyle: rcComponents.ToolTipTableStyle,
+    useEdgeMdnssCompatibilityData: rcComponents.useEdgeMdnssCompatibilityData,
+    MdnsProxyForwardingRulesTable: rcComponents.MdnsProxyForwardingRulesTable,
+    EdgeTableCompatibilityWarningTooltip: rcComponents.EdgeTableCompatibilityWarningTooltip,
+    CountAndNamesTooltip: ({ data }:{ data:CountAndNames }) => <>
+      <div data-testid='venue-count'>count:{data.count}</div>
+      <div data-testid='venue-names'>names:{data.names.join(',')}</div>
+    </> }
+})
 
 const { click } = userEvent
 

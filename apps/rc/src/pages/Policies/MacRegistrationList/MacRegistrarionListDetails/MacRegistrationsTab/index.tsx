@@ -164,7 +164,9 @@ export function MacRegistrationsTab () {
       searchable: true
     },
     {
-      title: $t({ defaultMessage: 'Identity' }),
+      title: isIdentityRequired
+        ? $t({ defaultMessage: 'Identity' })
+        : $t({ defaultMessage: 'Username' }),
       key: 'username',
       dataIndex: 'username',
       sorter: true,
