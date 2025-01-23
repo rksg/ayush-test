@@ -61,7 +61,7 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
-  if (isIotFeatureEnabled && !isTemplate) {
+  if (isIotFeatureEnabled) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }), 'iotController', <IotController />))
   }
