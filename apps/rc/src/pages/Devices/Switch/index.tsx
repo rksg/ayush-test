@@ -9,6 +9,7 @@ import useSwitchesTable from './SwitchesTable'
 
 export enum SwitchTabsEnum {
   LIST = 'switch',
+  OPTICAL = 'optical',
   WIRED_REPORT = 'switch/reports/wired'
 }
 
@@ -29,11 +30,19 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
-  }, {
+  },
+  ...(isEdgeOltMgmtEnabled ? [{
+    key: SwitchTabsEnum.OPTICAL,
+    title: $t({ defaultMessage: 'Optical' }),
+    component: <OpticalTable />
+    // headerExtra: usePageHeaderExtra(ReportType.OPTICAL)
+  }] : []),
+  {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
     component: <EmbeddedReport
