@@ -39,6 +39,9 @@ export interface CardInfo {
   currentSizeIndex: number
   sizes: Size[]
   chartType?: string
+  widgetId?: string
+  chatId?: string
+  canvasId?: string
 }
 export interface Group {
   id: string
@@ -176,6 +179,7 @@ export default function Canvas () {
             setGroups={setGroups}
             compactType={compactType}
             layout={layout}
+            canvasId={canvasId}
           />
         </UI.Grid>
       </div>

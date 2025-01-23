@@ -181,7 +181,7 @@ export default function AICanvas () {
       /> }
       {
         chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-          {moment(chat.created).format('h:m A')}
+          {moment(chat.created).format('hh:mm A')}
         </div>
       }
     </div>

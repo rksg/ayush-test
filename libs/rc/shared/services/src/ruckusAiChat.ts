@@ -89,6 +89,32 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getWidget: build.query<WidgetListData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getWidget, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    createWidget: build.mutation<{id: string}, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.createWidget, params)
+        return {
+          ...req,
+        body: payload
+        }
+      }
+    }),
+    updateWidget: build.mutation<WidgetListData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.updateWidget, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -104,5 +130,8 @@ export const {
   useChatAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
-  useChatChartQuery
+  useChatChartQuery,
+  useGetWidgetQuery,
+  useCreateWidgetMutation,
+  useUpdateWidgetMutation
 } = ruckusAiChatApi
