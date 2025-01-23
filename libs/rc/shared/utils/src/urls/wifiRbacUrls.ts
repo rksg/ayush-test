@@ -26,7 +26,8 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     //url: '/networks',
     url: '/wifiNetworks',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/wifiNetworks'
   },
   updateNetworkDeep: {
     method: 'put',
