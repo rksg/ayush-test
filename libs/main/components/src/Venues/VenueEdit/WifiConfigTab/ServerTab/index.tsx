@@ -110,7 +110,7 @@ export function ServerTab () {
       <ApSnmp isAllowEdit={isAllowEditVenueApSnmp} />))
   }
 
-  if (isIotFeatureEnabled && !isTemplate) {
+  if (isIotFeatureEnabled) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }),
       'iotController',
