@@ -124,11 +124,7 @@ export default function AdaptivePolicySetDetail () {
       networkCount: pool.networkCount ?? 0
     })
 
-    const identityGroupIds = policySetData?.externalAssignments
-      .filter((assignment) => assignment.identityName === 'IdentityGroup')
-      .flatMap((assignment) => assignment.identityId) || []
-
-    const fetchMacRegList = () =>
+    const fetchMacRegList = async () =>
       macRegList({
         params: { tenantId, size: '100000', page: '1', sort: 'name,desc' },
         payload: {
@@ -148,7 +144,7 @@ export default function AdaptivePolicySetDetail () {
         return []
       })
 
-    const fetchDpskList = () =>
+    const fetchDpskList = async () =>
       dpskList({ params: { size: '100000', page: '0', sort: 'name,desc' } }).then((result) => {
         if (result.data) {
           if (isIdentityGroupIntegration) {
@@ -165,7 +161,7 @@ export default function AdaptivePolicySetDetail () {
         return []
       })
 
-    const fetchCertificateTemplate = () =>
+    const fetchCertificateTemplate = async () =>
       queryCertificateTemplate({
         payload: { page: 1, pageSize: MAX_CERTIFICATE_PER_TENANT }
       }).then((result) => {
@@ -177,8 +173,12 @@ export default function AdaptivePolicySetDetail () {
         return []
       })
 
-    const fetchIdentityGroup = () => {
-      if (identityGroupIds.length === 0) {
+    const fetchIdentityGroup = async () => {
+      const identityGroupIds = policySetData?.externalAssignments
+        .filter((assignment) => assignment.identityName === 'IdentityGroup')
+        .flatMap((assignment) => assignment.identityId) || []
+
+      if (!isIdentityGroupIntegration || identityGroupIds.length === 0) {
         return Promise.resolve([])
       }
       return queryIdentityGroup({
