@@ -28,17 +28,10 @@ const StyledRequirementWrapperCss = css`
   background-color: var(--acx-neutrals-10);
   border-radius: 4px;
   padding: 15px 10px 5px 10px;
-  &:last-child {
-    margin-bottom: 10px;
-  }
+
 `
 export const StyledRequirementWrapper = styled.div<{ $hasBackground?: boolean }>`
  ${props => props.$hasBackground !== false ? StyledRequirementWrapperCss : ''}
-`
-
-export const VerticalFlexDiv = styled.div`
-  display: flex;
-  flex-direction: column;
 `
 
 export const StyledApModelFamilyWrapper = styled.div<{ tagWidth: string }>`
