@@ -114,7 +114,6 @@ function SettingsForm () {
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
-  const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
     form.setFieldValue(e.target.value ? 'dpskServiceProfileId' : 'cloudpathServerId', '')
@@ -130,7 +129,7 @@ function SettingsForm () {
   },[data?.id])
 
   useEffect(() => {
-    if (!isSupportDpsk3NonProxyMode && dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
+    if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
       form.setFieldValue('isCloudpathEnabled', false)
   }, [dpskWlanSecurity])
 
@@ -175,10 +174,7 @@ function SettingsForm () {
               </Radio>
               <Radio
                 value={true}
-                disabled={
-                  (!isSupportDpsk3NonProxyMode &&
-                    dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) || editMode
-                }>
+                disabled={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed || editMode}>
                 { $t({ defaultMessage: 'Use RADIUS Server' }) }
               </Radio>
             </Space>
