@@ -203,14 +203,18 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       dataIndex: 'startTime',
       width: 140,
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startTime)
+        return (<UI.ListItem>
+          <UI.Meta title={formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startTime)} />
+        </UI.ListItem>)
       }
     }, {
       title: $t({ defaultMessage: 'Device Type' }),
       key: 'entityType',
       dataIndex: 'entityType',
       render: function (_, row) {
-        return getDeviceType(row.entityType)
+        return (<UI.ListItem>
+          <UI.Meta title={getDeviceType(row.entityType)} />
+        </UI.ListItem>)
       }
     }, newAlarmType ? {
       title: '',
@@ -218,36 +222,47 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       dataIndex: 'clearBtn',
       width: 30,
       render: function (_, row) {
-        return (<Tooltip placement='topLeft'
-          title={$t({ defaultMessage: 'Clear this alarm' })}
-          arrowPointAtCenter>
-          <UI.ClearButton
-            ghost={true}
-            disabled={!hasPermission}
-            icon={<UI.AcknowledgeCircle/>}
-            onClick={async ()=>{
-              await clearAlarm({ params: { ...params, alarmId: row.id } })
-              //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
-              setTimeout(() => {
-                store.dispatch(
-                  eventAlarmApi.util.invalidateTags([
-                    { type: 'Alarms', id: 'LIST' },
-                    { type: 'Alarms', id: 'OVERVIEW' }
-                  ]))
-                store.dispatch(
-                  networkApi.util.invalidateTags([
-                    { type: 'Network', id: 'Overview' }
-                  ]))
-              }, 1000)
-            }}
-          />
-        </Tooltip>)
+        return (<UI.ListItem>
+          <UI.Meta style={{ marginTop: '-5px' }}
+            avatar={
+              <Tooltip placement='topLeft'
+                title={$t({ defaultMessage: 'Clear this alarm' })}
+                arrowPointAtCenter>
+                <UI.ClearButton
+                  ghost={true}
+                  disabled={!hasPermission}
+                  icon={<UI.AcknowledgeCircle/>}
+                  onClick={async ()=>{
+                    await clearAlarm({ params: { ...params, alarmId: row.id } })
+                    //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
+                    setTimeout(() => {
+                      store.dispatch(
+                        eventAlarmApi.util.invalidateTags([
+                          { type: 'Alarms', id: 'LIST' },
+                          { type: 'Alarms', id: 'OVERVIEW' }
+                        ]))
+                      store.dispatch(
+                        networkApi.util.invalidateTags([
+                          { type: 'Network', id: 'Overview' }
+                        ]))
+                    }, 1000)
+                  }}
+                />
+              </Tooltip>
+            } />
+
+        </UI.ListItem>)
       }
     } : {
       title: $t({ defaultMessage: 'Cleared By' }),
       key: 'clearedBy',
       dataIndex: 'clearedBy',
-      width: 100
+      width: 100,
+      render: function (_, row) {
+        return (<UI.ListItem>
+          <UI.Meta title={row.clearedBy} />
+        </UI.ListItem>)
+      }
     }, {
       key: 'severity',
       dataIndex: 'severity',
@@ -273,8 +288,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       filterableWidth: 135,
       filterMultiple: false,
       show: false
-    }
-  ]
+    }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const severityFilter =
@@ -349,18 +363,20 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     tableQuery,{ isLoading: false,
       isFetching: newAlarmType && (isAlarmCleaning || isAlarmByVenueCleaning) }
   ]}>
-    <Table
-      rowKey='id'
-      columns={columns}
-      dataSource={tableQuery.data?.data}
-      pagination={{ ...tableQuery.pagination, defaultPageSize: 0, showSizeChanger: false }}
-      enablePagination={true}
-      actions={newAlarmType ? actions : []}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={handleFilterChange}
-      type={'compact'}
-      enableApiFilter={true}
-      selectedFilters={selectedFilters}
-    />
+    <UI.TableWrapper>
+      <Table<Alarm>
+        className='alarms-table'
+        rowKey='id'
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={{ ...tableQuery.pagination, defaultPageSize: 0, showSizeChanger: false }}
+        enablePagination={true}
+        actions={newAlarmType ? actions : []}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
+        selectedFilters={selectedFilters}
+      />
+    </UI.TableWrapper>
   </Loader>
 }
