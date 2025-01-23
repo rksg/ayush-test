@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Drawer, Loader, cssStr }                                   from '@acx-ui/components'
 import {  ApCompatibility, Compatibility, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
-import { FeatureCrossDeviceTypeCompatibility } from '../CompatibilityDrawer/FeatureCrossDeviceTypeCompatibility'
+import { FeatureCrossDeviceTypeCompatibility } from '../../CompatibilityDrawer/FeatureCrossDeviceTypeCompatibility'
 
 export type EdgeDetailCompatibilityDrawerProps = {
   visible: boolean,
