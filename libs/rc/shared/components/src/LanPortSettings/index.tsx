@@ -17,7 +17,6 @@ import {
   LanPort,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
-  SoftGreProfileDispatcher,
   useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
@@ -70,7 +69,6 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
-  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   softGREProfileOptionList?: DefaultOptionType[]
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
