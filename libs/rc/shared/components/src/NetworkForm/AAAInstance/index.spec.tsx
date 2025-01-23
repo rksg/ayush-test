@@ -3,12 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { AaaUrls, CertificateUrls, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, ConfigTemplateUrlsInfo, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
+  renderHook,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
@@ -182,6 +183,59 @@ describe('AAA Instance Page', () => {
       mockRadSecAAAPolicyNewCreateResponse.primary.ip + ':'
         + mockRadSecAAAPolicyNewCreateResponse.primary.port
     ))).toBeVisible()
+  })
+
+  it('should exclude RadSec when edit PSK network', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        authRadiusId: mockRadSecAAAPolicyNewCreateResponse.id,
+        authRadius: mockRadSecAAAPolicyNewCreateResponse
+      })
+      return form
+    })
+
+    render(<Provider><NetworkFormContext.Provider value={{
+      editMode: true, cloneMode: false, isRuckusAiMode: false,
+      data: {}
+    }}><Form form={formRef.current} >
+        <AAAInstance serverLabel='' type='authRadius' networkType={NetworkTypeEnum.PSK}/>
+      </Form></NetworkFormContext.Provider></Provider>,
+    {
+      route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
+    })
+
+    expect((screen.queryByText(mockRadSecAAAPolicyNewCreateResponse.name))).toBeNull()
+  })
+
+  it('should not exclude non-RadSec when edit OPEN network', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        authRadiusId: '1',
+        authRadius: {
+          name: 'test1',
+          type: 'AUTHENTICATION',
+          primary: '1.1.1.2:1812',
+          id: '1'
+        }
+      })
+      return form
+    })
+
+    render(<Provider><NetworkFormContext.Provider value={{
+      editMode: true, cloneMode: false, isRuckusAiMode: false,
+      data: {}
+    }}><Form form={formRef.current} >
+        <AAAInstance serverLabel='' type='authRadius' networkType={NetworkTypeEnum.PSK}/>
+      </Form></NetworkFormContext.Provider></Provider>,
+    {
+      route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
+    })
+
+    expect((await screen.findByText('test1'))).toBeVisible()
   })
 
   it('should render template page', async () => {

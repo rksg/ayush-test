@@ -55,7 +55,8 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     aaaList?: AAAViewModalType[]
   ) => {
     let cloneList = _.cloneDeep(aaaList)
-    if (supportRadsec && (
+    // The case needs to be skipped when `cloneList` is undefined during initialization.
+    if (supportRadsec && cloneList && (
       props.networkType === NetworkTypeEnum.PSK ||
       (props.networkType === NetworkTypeEnum.DPSK && radiusType === 'ACCOUNTING') ||
       props.excludeRadSec
