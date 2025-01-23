@@ -127,7 +127,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
 
     const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subsciptions' })
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
     await userEvent.click(licenseManagementButton)
     expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
