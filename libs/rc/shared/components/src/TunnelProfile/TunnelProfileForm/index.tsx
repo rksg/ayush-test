@@ -180,7 +180,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                   {<ApCompatibilityToolTip
                     title={$t(MessageMapping.nat_traversal_support_tooltip)}
                     placement='bottom'
-                    visible
+                    showDetailButton
                     // eslint-disable-next-line max-len
                     onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.NAT_TRAVERSAL)}
                   />}

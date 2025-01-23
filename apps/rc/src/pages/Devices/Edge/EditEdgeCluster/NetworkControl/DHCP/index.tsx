@@ -66,7 +66,7 @@ export const DhcpFormItem = (props: {
                 {$t({ defaultMessage: 'DHCP Service' })}
                 <ApCompatibilityToolTip
                   title=''
-                  visible
+                  showDetailButton
                   onClick={() => setEdgeFeatureName(IncompatibilityFeatures.DHCP)}
                 />
               </Space>

@@ -58,7 +58,7 @@ export const HQoSBandwidthFormItem = (props: {
                 {$t({ defaultMessage: 'Hierarchical QoS' })}
                 <ApCompatibilityToolTip
                   title=''
-                  visible
+                  showDetailButton
                   onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
                 />
               </Space>

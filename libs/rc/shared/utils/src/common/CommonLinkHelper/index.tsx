@@ -32,15 +32,18 @@ export function IdentityDetailsLink (
   props: {
     personaGroupId?: string,
     personaId?: string,
-    name?: string })
+    name?: string,
+    disableLink?: boolean })
 {
-  const { personaGroupId, personaId, name } = props
+  const { personaGroupId, personaId, name, disableLink = false } = props
   return (
-    <TenantLink
-      to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
-    >
-      {name ?? personaId}
-    </TenantLink>
+    disableLink
+      ? <>{name}</>
+      : <TenantLink
+        to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
+      >
+        {name ?? personaId}
+      </TenantLink>
   )
 }
 

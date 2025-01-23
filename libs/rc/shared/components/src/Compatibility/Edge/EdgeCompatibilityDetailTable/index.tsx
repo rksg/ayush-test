@@ -13,8 +13,8 @@ import { EdgeScopes }                                                           
 import { filterByAccess, hasPermission }                                                                                                                                                                                                                                            from '@acx-ui/user'
 import { compareVersions }                                                                                                                                                                                                                                                          from '@acx-ui/utils'
 
-import { EdgeChangeScheduleDialog } from '../../EdgeFirmware/ChangeScheduleDialog'
-import { EdgeUpdateNowDialog }      from '../../EdgeFirmware/UpdateNowDialog'
+import { EdgeChangeScheduleDialog } from '../../../EdgeFirmware/ChangeScheduleDialog'
+import { EdgeUpdateNowDialog }      from '../../../EdgeFirmware/UpdateNowDialog'
 
 interface EdgeCompatibilityDetailTableData {
   featureName: string,
