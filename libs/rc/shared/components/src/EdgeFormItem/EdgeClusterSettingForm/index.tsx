@@ -24,7 +24,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
-import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/EdgeCompatibilityDrawer'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { showDeleteModal, useIsEdgeFeatureReady }         from '../../useEdgeActions'
 
 import { HaModeRadioGroupFormItem } from './HaModeRadioGroupFormItem'
