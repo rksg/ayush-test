@@ -49,7 +49,7 @@ describe('NetworkingTab', () => {
         CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(
-        CommonRbacUrlsInfo.getVenueLanPorts.url,
+        WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,
@@ -86,7 +86,7 @@ describe('NetworkingTab', () => {
       ),
       // rbac
       rest.get(
-        CommonRbacUrlsInfo.getVenueRadiusOptions.url,
+        WifiRbacUrlsInfo.getVenueRadiusOptions.url,
         (_, res, ctx) => res(ctx.json(mockRadiusOptions))
       ),
       rest.get(WifiRbacUrlsInfo.getVenueDirectedMulticast.url,

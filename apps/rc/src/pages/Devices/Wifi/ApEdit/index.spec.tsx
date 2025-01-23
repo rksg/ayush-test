@@ -3,10 +3,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                                                    from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                    from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -396,7 +396,7 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json(venueSetting))),
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))),
-        rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+        rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))),
         rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
           (_, res, ctx) => res(ctx.json([]))),
