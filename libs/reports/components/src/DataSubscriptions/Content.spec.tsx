@@ -37,6 +37,11 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useRaiR1HelpPageLink: () => ''
 }))
 
+const quotaUsageTestId = 'test-quota-usage'
+jest.mock('./QuotaUsageBar', () => ({
+  QuotaUsageBar: () => <div data-testid={quotaUsageTestId}/>
+}))
+
 describe('DataSubscriptionsContent', () => {
   describe('RAI', () => {
     const params = {
@@ -57,6 +62,7 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
+      expect(screen.getByTestId(quotaUsageTestId)).toBeVisible()
       expect(screen.getByText('New Subscription')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({

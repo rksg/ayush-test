@@ -444,3 +444,136 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`ProgressBarV2 should match usage - snapshot 1`] = `
+<DocumentFragment>
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
+    class="ant-progress-wrapper"
+  >
+    <div
+      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      style="height: 8px; line-height: 8px;"
+    >
+      <div
+        class="ant-progress-outer"
+      >
+        <div
+          class="ant-progress-inner"
+          style="background-color: rgb(212, 212, 212);"
+        >
+          <div
+            class="ant-progress-bg"
+            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
+    class="ant-progress-wrapper"
+  >
+    <div
+      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      style="height: 8px; line-height: 8px;"
+    >
+      <div
+        class="ant-progress-outer"
+      >
+        <div
+          class="ant-progress-inner"
+          style="background-color: rgb(212, 212, 212);"
+        >
+          <div
+            class="ant-progress-bg"
+            style="width: 25%; height: 10px; background: rgb(35, 171, 54);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
+    class="ant-progress-wrapper"
+  >
+    <div
+      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      style="height: 8px; line-height: 8px;"
+    >
+      <div
+        class="ant-progress-outer"
+      >
+        <div
+          class="ant-progress-inner"
+          style="background-color: rgb(212, 212, 212);"
+        >
+          <div
+            class="ant-progress-bg"
+            style="width: 50%; height: 10px; background: rgb(249, 195, 75);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
+    class="ant-progress-wrapper"
+  >
+    <div
+      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      style="height: 8px; line-height: 8px;"
+    >
+      <div
+        class="ant-progress-outer"
+      >
+        <div
+          class="ant-progress-inner"
+          style="background-color: rgb(212, 212, 212);"
+        >
+          <div
+            class="ant-progress-bg"
+            style="width: 75%; height: 10px; background: rgb(237, 28, 36);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

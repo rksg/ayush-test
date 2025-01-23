@@ -8,6 +8,7 @@ import { useRaiR1HelpPageLink }                         from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                             from '@acx-ui/user'
 
+import { QuotaUsageBar }      from './QuotaUsageBar'
 import { generateBreadcrumb } from './utils'
 
 type DataSubscriptionsContentProps = {
@@ -56,6 +57,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
           helpUrl={helpUrl} />
+        <QuotaUsageBar total={50000000000} used={234000000} onClick={() => {}}/>
       </GridCol>
     </GridRow>
   </>)
