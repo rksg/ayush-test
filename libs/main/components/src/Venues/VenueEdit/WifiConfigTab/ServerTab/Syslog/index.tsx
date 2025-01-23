@@ -53,7 +53,7 @@ export function Syslog (props: VenueWifiConfigItemProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const toPolicyPath = usePathBasedOnConfigTemplate('')
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const {
     editContextData,
     setEditContextData,
@@ -212,7 +212,7 @@ export function Syslog (props: VenueWifiConfigItemProps) {
               })}
               style={{ width: '200px' }}
             />
-            { hasAddProfilePermission &&
+            { isAllowEdit && hasAddProfilePermission &&
             <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {

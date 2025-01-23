@@ -498,9 +498,10 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                <RogueApModal
+                { isAllowEditRogueAp && <RogueApModal
                   setPolicyId={setRogueApPolicyId}
                 />
+                }
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}

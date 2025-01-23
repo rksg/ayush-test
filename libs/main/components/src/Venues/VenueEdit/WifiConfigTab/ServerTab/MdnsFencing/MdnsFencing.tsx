@@ -46,7 +46,7 @@ export function MdnsFencing (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi

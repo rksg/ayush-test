@@ -136,7 +136,8 @@ export function AdvancedTab () {
       setEditContextData({
         ...editContextData,
         unsavedTabKey: 'settings',
-        isDirty: false
+        isDirty: false,
+        hasError: false
       })
 
       if (editAdvancedContextData) {

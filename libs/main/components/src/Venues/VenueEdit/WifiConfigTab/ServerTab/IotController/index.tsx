@@ -32,7 +32,7 @@ export function IotController (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const [iotEnabled, setIotEnabled] = useState(false)
 
   const {

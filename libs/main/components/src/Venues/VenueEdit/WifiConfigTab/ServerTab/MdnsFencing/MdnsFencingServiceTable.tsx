@@ -38,7 +38,7 @@ export const MdnsFencingServiceContext = createContext({} as MdnsFencingServiceC
 export function MdnsFencingServiceTable (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const params = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { mdnsFencingServices, setMdnsFencingServices } = useContext(MdnsFencingContext)

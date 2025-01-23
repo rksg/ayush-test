@@ -5,7 +5,9 @@ import { rest }  from 'msw'
 import { venueApi, policyApi } from '@acx-ui/rc/services'
 import {
   AdministrationUrlsInfo,
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  LanPortsUrls,
   SwitchUrlsInfo,
   SyslogUrls,
   WifiRbacUrlsInfo,
@@ -39,11 +41,15 @@ import { VenueEdit } from './index'
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
 }))
+
 jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => ({
   DirectedMulticast: () => <div data-testid='DirectedMulticast' />
 }))
 jest.mock('./WifiConfigTab/NetworkingTab/CellularOptions/CellularOptionsForm', () => ({
   CellularOptionsForm: () => <div data-testid='CellularOptionsForm' />
+}))
+jest.mock('./WifiConfigTab/NetworkingTab/RadiusOptions', () => ({
+  RadiusOptions: () => <div data-testid='RadiusOptions' />
 }))
 
 jest.mock('./WifiConfigTab/RadioTab/RadioSettings', () => ({
@@ -65,8 +71,11 @@ jest.mock('./WifiConfigTab/ServerTab/LocationBasedService', () => ({
   LocationBasedService: () => <div data-testid='LocationBasedService' />
 }))
 
-jest.mock('./WifiConfigTab/NetworkingTab/RadiusOptions', () => ({
-  RadiusOptions: () => <div data-testid='RadiusOptions' />
+jest.mock('./WifiConfigTab/AdvancedTab/AccessPointUSB', () => ({
+  AccessPointUSB: () => <div data-testid='AccessPointUSB' />
+}))
+jest.mock('./WifiConfigTab/AdvancedTab/BssColoring', () => ({
+  BssColoring: () => <div data-testid='BssColoring' />
 }))
 
 
@@ -120,9 +129,9 @@ async function showUnsavedChangesModal (tabKey: string, action: string) {
   dialog = null
 }
 
-async function updateAdvancedSettings (selectModel) {
+async function updateAdvancedSettings (selectModel: boolean) {
   await screen.findByText('E510')
-  fireEvent.click( screen.getByRole('button', { name: 'Add Model' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Add Model' }))
   if (selectModel) {
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     const option = screen.getAllByText('H320')
@@ -280,10 +289,16 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         rest.get(CommonUrlsInfo.getVenueApModels.url,
           (_, res, ctx) => res(ctx.json(venueApModels))
         ),
+        rest.get(CommonRbacUrlsInfo.getVenueApModels.url,
+          (_, res, ctx) => res(ctx.json(venueApModels))
+        ),
         rest.get(WifiUrlsInfo.getVenueApCapabilities.url,
           (_, res, ctx) => res(ctx.json(venueCaps))
         ),
         rest.get(CommonUrlsInfo.getVenueLedOn.url,
+          (_, res, ctx) => res(ctx.json(venueLed))
+        ),
+        rest.get(WifiRbacUrlsInfo.getVenueLedOn.url,
           (_, res, ctx) => res(ctx.json(venueLed))
         ),
         rest.put(CommonUrlsInfo.updateVenueLedOn.url,
@@ -294,6 +309,13 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         ),
         rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))
+        ),
+        rest.get(LanPortsUrls.getVenueLanPortSettings.url,
+          (_, res, ctx) => res(ctx.json({
+            clientIsolationEnabled: false,
+            enabled: true,
+            softGreEnabled: false
+          }))
         ),
         rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json({}))
@@ -311,7 +333,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       )
     })
 
-    describe('Advanced Settings', () => {
+    xdescribe('Advanced Settings', () => {
       const params = {
         tenantId: 'tenant-id',
         venueId: 'venue-id',

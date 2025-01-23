@@ -19,7 +19,7 @@ import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 export function LocationBasedService (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
   const profileIdRef = useRef<string>('')
 
   const activateLbsServerProfile = useLbsServerProfileActivation()
@@ -218,7 +218,7 @@ export function LocationBasedService (props: VenueWifiConfigItemProps) {
             })}
             style={{ width: '200px' }}
           />
-          {hasPolicyPermission(
+          {isAllowEdit && hasPolicyPermission(
             { type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE }) &&
           <Button
             disabled={selectOptions.length >= LBS_SERVER_PROFILE_MAX_COUNT}

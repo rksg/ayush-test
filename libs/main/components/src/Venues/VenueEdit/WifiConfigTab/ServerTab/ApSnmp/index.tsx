@@ -33,7 +33,7 @@ export function ApSnmp (props: VenueWifiConfigItemProps) {
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
   const profileIdRef = useRef<string>('')
-  const { isAllowEdit } = props
+  const { isAllowEdit=true } = props
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   // eslint-disable-next-line
@@ -189,6 +189,7 @@ export function ApSnmp (props: VenueWifiConfigItemProps) {
           style={{ width: '200px' }}
         />
         {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64 &&
+          isAllowEdit &&
           hasPolicyPermission({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })) &&
           <Button
             data-testid='use-push'

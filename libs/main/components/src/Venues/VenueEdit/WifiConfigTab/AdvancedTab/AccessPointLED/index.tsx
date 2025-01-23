@@ -5,9 +5,9 @@ import { LabeledValue }          from 'antd/lib/select'
 import { isEqual, omit }         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Table, TableProps, Loader, AnchorContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon }                               from '@acx-ui/icons'
+import { Button, Table, TableProps, Loader, AnchorContext, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon }                                                from '@acx-ui/icons'
 import {
   useGetVenueLedOnQuery,
   useGetVenueApModelsQuery,
@@ -103,8 +103,10 @@ export function AccessPointLED (props: VenueWifiConfigItemProps) {
   }, [venueLed, venueApCaps, setReadyToScroll])
 
   useEffect(() => {
-    const newData = tableData.filter(d => d.model).map(({ manual, ...others }) => others)
+    //const newData = tableData.filter(d => d.model).map(({ manual, ...others }) => others)
+    const newData = tableData.map(({ manual, ...others }) => others)
     const hasChanged = !isEqual(newData, initDataRef.current)
+    const hasError = tableData.filter(item => !item.model).length > 0
 
     const newEditAdvancedContextData = (hasChanged) ? {
       ...editAdvancedContextData,
@@ -118,12 +120,23 @@ export function AccessPointLED (props: VenueWifiConfigItemProps) {
       ...editContextData,
       unsavedTabKey: 'settings',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
-      isDirty: Object.keys(newEditAdvancedContextData).length > 0
+      isDirty: Object.keys(newEditAdvancedContextData).length > 0,
+      hasError
     })
 
   }, [tableData])
 
   const handleUpdateSetting = async (data: VenueLed[]) => {
+    const isValid = !tableData.find(data => !data.model)
+    if (!isValid) {
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Access Point LEDs' }),
+        content: $t({ defaultMessage: 'Please select a model' })
+      })
+
+      return
+    }
     try {
       await updateVenueLedOn({
         params: { tenantId, venueId },
@@ -143,6 +156,7 @@ export function AccessPointLED (props: VenueWifiConfigItemProps) {
     render: function (data) {
       return (data ? data : <Select
         size='small'
+        status={editContextData.hasError ? 'error' : undefined}
         options={modelOptions}
         placeholder={$t({ defaultMessage: 'Select Model...' })}
         onChange={handleChange}
