@@ -55,6 +55,11 @@ jest.mock('./AccessPointUSB', () => ({
   AccessPointUSB: () => <div data-testid='mocked-AP-USB'></div>
 }))
 
+jest.mock('./RebootTimeout', () => ({
+  ...jest.requireActual('./AccessPointUSB'),
+  RebootTimeout: () => <div data-testid='mocked-Reboot-Timeout'></div>
+}))
+
 const mockAdvancedTab = (
   <VenueUtilityContext.Provider value={{
     venueApCaps: venueCaps,
@@ -84,11 +89,11 @@ describe('AdvancedTab', () => {
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
       rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({}))),
+      // RBAC API
       rest.get(WifiRbacUrlsInfo.getVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
-      rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
+      rest.put(WifiRbacUrlsInfo.updateVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({}))),
-      // RBAC API
       rest.get(WifiRbacUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),
       rest.put(WifiRbacUrlsInfo.updateVenueLedOn.url,

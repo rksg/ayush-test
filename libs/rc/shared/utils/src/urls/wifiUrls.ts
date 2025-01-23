@@ -501,28 +501,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/clientConnectionDiagnosis',
     newApi: true
   },
-  /*
-  getVenueApManagementVlan: {
-    method: 'get',
-    url: '/venues/:venueId/apManagementTrafficVlanSettings',
-    newApi: true
-  },
-  updateVenueApManagementVlan: {
-    method: 'put',
-    url: '/venues/:venueId/apManagementTrafficVlanSettings',
-    newApi: true
-  },
-  getApManagementVlan: {
-    method: 'get',
-    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
-  updateApManagementVlan: {
-    method: 'put',
-    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
-  */
   getApFeatureSets: {
     method: 'get',
     url: '/wifiFeatureSets/:featureName',

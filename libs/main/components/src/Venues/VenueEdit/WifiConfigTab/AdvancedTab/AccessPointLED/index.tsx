@@ -220,6 +220,7 @@ export function AccessPointLED (props: VenueWifiConfigItemProps) {
           columns={columns}
           dataSource={tableData}
           type='form'
+          rowKey='model'
         />
         <Button
           onClick={handleAdd}

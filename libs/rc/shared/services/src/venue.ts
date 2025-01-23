@@ -534,7 +534,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         const newPayload = JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
 
-        const apListReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const apListReq = createHttpRequest(WifiRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
         const apListRes = await fetchWithBQ({ ...apListReq, body: newPayload })
         const rbacApListData = apListRes.data as TableResult<RbacAPMesh>
         const apMeshData = [] as FloorPlanMeshAP[]

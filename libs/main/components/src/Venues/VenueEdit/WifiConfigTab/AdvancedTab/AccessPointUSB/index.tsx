@@ -183,7 +183,7 @@ export function AccessPointUSB (props: VenueWifiConfigItemProps) {
       key='delete'
       role='deleteBtn'
       ghost={true}
-      disabled={isAllowEdit}
+      disabled={!isAllowEdit}
       icon={<DeleteOutlinedIcon />}
       style={{ height: '16px' }}
       onClick={() => handleDelete(row.model)}
