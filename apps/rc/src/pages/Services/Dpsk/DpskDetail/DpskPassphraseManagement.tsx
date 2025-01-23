@@ -399,9 +399,7 @@ export default function DpskPassphraseManagement () {
       maxSize={CsvSize['20MB']}
       maxEntries={5000}
       acceptType={['csv']}
-      templateLink={isIdentityGroupRequired
-        ? 'assets/templates/DPSK_import_template_v2.csv'
-        : 'assets/templates/DPSK_import_template_expiration.csv'}
+      templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={true}
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
