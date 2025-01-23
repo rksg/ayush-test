@@ -5,8 +5,8 @@ import { render } from '@testing-library/react'
 import {
   DataSubscriptionsAuditLog,
   DataSubscriptionsContent,
-  DataSubscriptionsForm,
-  DataSubscriptionsCloudStorage
+  SubscriptionForm,
+  CloudStorageForm
 } from '.'
 
 const bannerTestId = 'banner-test'
@@ -59,7 +59,7 @@ describe('Lazy-Loaded DataSubscriptions Components', () => {
   it('should render DataSubscriptionsForm correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
-        <DataSubscriptionsForm />
+        <SubscriptionForm />
       </React.Suspense>
     )
     expect(container).toBeInTheDocument()
@@ -67,7 +67,7 @@ describe('Lazy-Loaded DataSubscriptions Components', () => {
   it('should render DataSubscriptionsCloudStorage correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
-        <DataSubscriptionsCloudStorage />
+        <CloudStorageForm />
       </React.Suspense>
     )
     expect(container).toBeInTheDocument()
