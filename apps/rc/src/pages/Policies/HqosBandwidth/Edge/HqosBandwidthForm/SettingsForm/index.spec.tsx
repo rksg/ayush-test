@@ -1,9 +1,4 @@
 /* eslint-disable max-len */
-
-import {
-  renderHook,
-  within
-} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
@@ -15,7 +10,9 @@ import {
 import { Provider } from '@acx-ui/store'
 import {
   render,
-  screen
+  screen,
+  renderHook,
+  within
 } from '@acx-ui/test-utils'
 
 import { SettingsForm } from '.'

@@ -6,9 +6,15 @@ import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
 import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
-import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                 from '@acx-ui/react-router-dom'
+import {
+  redirectPreviousPage,
+  VenueConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }   from '@acx-ui/user'
 
+import { useVenueConfigTemplateOpsApiSwitcher }                               from '../../../venueConfigTemplateApiSwitcher'
 import { getAntennaTypePayload, getExternalAntennaPayload, VenueEditContext } from '../../index'
 
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
@@ -16,11 +22,45 @@ import { ExternalAntennaSection }         from './ExternalAntennaSection'
 import { LoadBalancing }                  from './LoadBalancing'
 import { RadioSettings }                  from './RadioSettings'
 
+
 export function RadioTab () {
   const { $t } = useIntl()
   const params = useParams()
   const { venueId } = params
   const navigate = useNavigate()
+
+  const radioSettingsOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueRadioCustomization,
+    VenueConfigTemplateUrlsInfo.updateVenueRadioCustomizationRbac
+  )
+
+  const LoadBalancingOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueLoadBalancing,
+    VenueConfigTemplateUrlsInfo.updateVenueLoadBalancingRbac
+  )
+
+  const clientAdmissControlOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueClientAdmissionControl,
+    VenueConfigTemplateUrlsInfo.updateVenueClientAdmissionControlRbac
+  )
+
+  const antennaOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueExternalAntenna,
+    VenueConfigTemplateUrlsInfo.updateVenueExternalAntennaRbac
+  )
+
+  const [
+    isAllowEditRadio,
+    isAllowEditLoadBalancing,
+    isAllowEditClientAdmissionControl,
+    isAllowEditAntenna
+  ] = [
+    hasAllowedOperations([radioSettingsOpsApi]),
+    hasAllowedOperations([LoadBalancingOpsApi]),
+    hasAllowedOperations([clientAdmissControlOpsApi]),
+    hasAllowedOperations([antennaOpsApi])
+  ]
+
   const {
     previousPath,
     editContextData,
@@ -49,7 +89,7 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='radio-settings'>
           { wifiSettingTitle }
         </StepsFormLegacy.SectionTitle>
-        <RadioSettings />
+        <RadioSettings isAllowEdit={isAllowEditRadio} />
       </>
     )
   },
@@ -60,7 +100,10 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='load-balancing'>
           { loadBalancingTitle }
         </StepsFormLegacy.SectionTitle>
-        <LoadBalancing setIsLoadOrBandBalaningEnabled={setIsLoadOrBandBalaningEnabled} />
+        <LoadBalancing
+          isAllowEdit={isAllowEditLoadBalancing}
+          setIsLoadOrBandBalaningEnabled={setIsLoadOrBandBalaningEnabled}
+        />
       </>
     )
   },
@@ -79,7 +122,9 @@ export function RadioTab () {
             />
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
-        <ClientAdmissionControlSettings isLoadOrBandBalaningEnabled={isLoadOrBandBalaningEnabled}/>
+        <ClientAdmissionControlSettings
+          isAllowEdit={isAllowEditClientAdmissionControl}
+          isLoadOrBandBalaningEnabled={isLoadOrBandBalaningEnabled}/>
       </>
     )
   },
@@ -90,7 +135,7 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='external-antenna'>
           { externalTitle }
         </StepsFormLegacy.SectionTitle>
-        <ExternalAntennaSection />
+        <ExternalAntennaSection isAllowEdit={isAllowEditAntenna} />
       </>
     )
   }]

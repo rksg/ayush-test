@@ -144,7 +144,7 @@ export function DistributionSwitchForm () {
       availableSwitches={availableSwitches || []}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
-    { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
+    {!isEdgePinEnhanceReady && distributionSwitchInfos?.length > 0 && <Alert type='info'
       showIcon
       message={$t({ defaultMessage:
         `Attention Required: Please ensure to configure Static Route on RUCKUS Edge {edgeNames}

@@ -18,15 +18,19 @@ import { useGetApQuery }                                             from '@acx-
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
 import { useParams }                                                 from '@acx-ui/react-router-dom'
 
-import { ApDataContext, ApEditContext } from '../..'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 import * as UI from './styledComponents'
 
-const MdnsProxyFormField = styled((props: { className?: string, serviceId?: string }) => {
+const MdnsProxyFormField = styled((props: {
+  className?: string,
+  serviceId?: string,
+  disabled?: boolean
+}) => {
   const form = Form.useFormInstance()
   const serviceEnabled = Form.useWatch<boolean>('serviceEnabled', form)
   const { $t } = useIntl()
-  const { className, serviceId } = props
+  const { className, serviceId, disabled } = props
 
   return (
     <div className={className}>
@@ -39,7 +43,8 @@ const MdnsProxyFormField = styled((props: { className?: string, serviceId?: stri
           valuePropName='checked'
           initialValue={!!serviceId}
         >
-          <Switch style={{ marginLeft: '20px' }}/>
+          <Switch disabled={disabled}
+            style={{ marginLeft: '20px' }}/>
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
       {serviceEnabled &&
@@ -61,11 +66,13 @@ interface MdnsProxyFormFieldType {
   serviceId?: string
 }
 
-export function MdnsProxy () {
+export function MdnsProxy (props: ApEditItemProps) {
   const formRef = useRef<StepsFormLegacyInstance<MdnsProxyFormFieldType>>()
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
+  const { isAllowEdit=true } = props
+
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -181,7 +188,9 @@ export function MdnsProxy () {
           >
             <GridRow>
               <GridCol col={{ span: 7 }} style={{ minWidth: 400 }}>
-                <MdnsProxyFormField serviceId={apDetail.multicastDnsProxyServiceProfileId} />
+                <MdnsProxyFormField
+                  disabled={!isAllowEdit}
+                  serviceId={apDetail.multicastDnsProxyServiceProfileId} />
               </GridCol>
             </GridRow>
           </StepsFormLegacy.StepForm>

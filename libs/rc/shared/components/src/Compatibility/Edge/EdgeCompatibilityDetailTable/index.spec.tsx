@@ -35,6 +35,8 @@ jest.spyOn(Date, 'now').mockImplementation(() => {
 
 const mockedUpdateNow = jest.fn()
 const mockedUpdateSchedule = jest.fn()
+const mockData = mockEdgeCompatibilitiesVenue.compatibilities?.[0].incompatibleFeatures!
+
 describe('EdgeCompatibilityDetailTable', () => {
   let params: { tenantId: string }
   beforeEach(() => {
@@ -76,7 +78,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     render(
       <Provider>
         <EdgeCompatibilityDetailTable
-          data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+          data={mockData}
           venueId='mock_venue_id'
         />
       </Provider>
@@ -96,7 +98,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     render(
       <Provider>
         <EdgeCompatibilityDetailTable
-          data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+          data={mockData}
           venueId='mock_venue_id'
         />
       </Provider>
@@ -123,7 +125,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     render(
       <Provider>
         <EdgeCompatibilityDetailTable
-          data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+          data={mockData}
           venueId='mock_venue_id'
         />
       </Provider>
@@ -176,7 +178,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     render(
       <Provider>
         <EdgeCompatibilityDetailTable
-          data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+          data={mockData}
           venueId='mock_venue_id'
         />
       </Provider>
@@ -198,7 +200,7 @@ describe('EdgeCompatibilityDetailTable', () => {
     render(
       <Provider>
         <EdgeCompatibilityDetailTable
-          data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+          data={mockData}
           requirementOnly
         />
       </Provider>, {
@@ -249,7 +251,7 @@ describe('EdgeCompatibilityDetailTable', () => {
       render(
         <Provider>
           <EdgeCompatibilityDetailTable
-            data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+            data={mockData}
             venueId='mock_venue_id'
           />
         </Provider>
@@ -278,7 +280,7 @@ describe('EdgeCompatibilityDetailTable', () => {
       render(
         <Provider>
           <EdgeCompatibilityDetailTable
-            data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+            data={mockData}
             venueId='mock_venue_id'
           />
         </Provider>
