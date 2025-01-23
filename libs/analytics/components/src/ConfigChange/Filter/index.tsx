@@ -9,7 +9,8 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   TableProps,
-  Tooltip
+  Tooltip,
+  useLayoutContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                 from '@acx-ui/icons'
@@ -153,7 +154,9 @@ export const Download = () => {
 }
 
 export const Filter = () => {
-  return <UI.Wrapper>
+  const layout = useLayoutContext()
+  return <UI.Wrapper style={
+    { '--sticky-offset': `${layout.pageHeaderY}px` } as React.CSSProperties}>
     <UI.Space>
       <Search/>
       <EntityTypeFilter/>
