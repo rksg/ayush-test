@@ -35,7 +35,6 @@ jest.mock('@acx-ui/rc/services', () => ({
   }))
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={onClick} />
 }))
@@ -83,7 +82,7 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
     )
   })
 
-  it('renders correctly when isArpControllable is true', () => {
+  it('renders correctly when isArpControllable is true', async () => {
     const mockVenueId = 'mock_venue_3'
     const mockClusterId= params.clusterId
     const props = {
@@ -110,14 +109,14 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
       }
     })
 
-    expect(screen.getByText('ARP Termination')).toBeInTheDocument()
+    expect(await screen.findByText('ARP Termination')).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: 'ARP Termination' })).toBeChecked()
     expect(screen.getByText('ARP Termination Aging Timer')).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: 'ARP Termination Aging Timer' })).toBeChecked()
     expect(screen.getByRole('spinbutton')).toHaveValue('600')
   })
 
-  it('renders correctly when isArpControllable is false', () => {
+  it('renders correctly when isArpControllable is false', async () => {
     const mockVenueId = 'mock_venue_2'
     const mockClusterId= params.clusterId
     const props = {
@@ -144,7 +143,7 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
       }
     })
 
-    expect(screen.getByText('ARP Termination')).toBeInTheDocument()
+    expect(await screen.findByText('ARP Termination')).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: 'ARP Termination' })).toBeDisabled()
   })
 

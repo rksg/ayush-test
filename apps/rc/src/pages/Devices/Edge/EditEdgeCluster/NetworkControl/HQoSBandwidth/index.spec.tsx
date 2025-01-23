@@ -14,7 +14,6 @@ jest.mock('../../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm
   EdgeHqosProfileSelectionForm: () => <div data-testid='EdgeHqosProfileSelectionForm' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={onClick} />
 }))
