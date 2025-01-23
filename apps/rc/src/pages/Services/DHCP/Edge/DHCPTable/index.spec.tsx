@@ -37,8 +37,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />,
-  CompatibilityWarningTriangleIcon: () => <div data-testid='CompatibilityWarningTriangleIcon' />,
+  // eslint-disable-next-line max-len
+  EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />,
   SimpleListTooltip: ({ displayText }: { displayText: string }) =>
     <div data-testid='SimpleListTooltip' >{displayText}</div>,
   EdgeServiceStatusLight: () => <div data-testid='EdgeServiceStatusLight' />,
@@ -99,7 +99,7 @@ describe('EdgeDhcpTable', () => {
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
     await waitFor(() => expect(test123).toBeCalled())
-    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    await screen.findAllByTestId('EdgeTableCompatibilityWarningTooltip')
   })
 
   it('should render breadcrumb correctly', async () => {
