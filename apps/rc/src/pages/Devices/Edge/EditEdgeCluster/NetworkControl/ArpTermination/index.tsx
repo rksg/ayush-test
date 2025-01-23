@@ -29,25 +29,27 @@ export const ArpTerminationFormItem = (props: {
   const { currentClusterStatus, setEdgeFeatureName } = props
   const { form } = useStepFormContext()
 
-  const { arpRequiredFw } = useGetEdgeFeatureSetsQuery({
+  const { arpRequiredFw, isArpRequiredFwLoading } = useGetEdgeFeatureSetsQuery({
     payload: {
       filters: {
         featureNames: [IncompatibilityFeatures.ARP_TERMINATION]
       } }
   }, {
-    selectFromResult: ({ data }) => {
+    selectFromResult: ({ data, isLoading }) => {
       return {
         arpRequiredFw: data?.featureSets
-          ?.find(item => item.featureName === IncompatibilityFeatures.ARP_TERMINATION)?.requiredFw
+          ?.find(item => item.featureName === IncompatibilityFeatures.ARP_TERMINATION)?.requiredFw,
+        isArpRequiredFwLoading: isLoading
       }
     }
   })
 
-  const { venueEdgeFw } = useGetVenueEdgeFirmwareListQuery({}, {
+  const { venueEdgeFw, isVenueEdgeFwLoading } = useGetVenueEdgeFirmwareListQuery({}, {
     skip: !Boolean(currentClusterStatus.venueId),
-    selectFromResult: ({ data }) => {
+    selectFromResult: ({ data, isLoading }) => {
       return {
-        venueEdgeFw: data?.filter(fw => fw.id === currentClusterStatus.venueId)?.[0].versions?.[0].id
+        venueEdgeFw: data?.filter(fw => fw.id === currentClusterStatus.venueId)?.[0].versions?.[0].id,
+        isVenueEdgeFwLoading: isLoading
       }
     }
   })
@@ -74,10 +76,12 @@ export const ArpTerminationFormItem = (props: {
     })
   }, [arpTerminationSettings])
 
+  const isLoading = isArpTerminationSettingsLoading || isArpRequiredFwLoading || isVenueEdgeFwLoading
+
   return <>
     <Row gutter={20}>
       <Col flex='250px'>
-        <Loader states={[{ isLoading: isArpTerminationSettingsLoading }]}>
+        <Loader states={[{ isLoading }]}>
           <StepsForm.FieldLabel width='90%'>
             <Space>
               {$t({ defaultMessage: 'ARP Termination' })}
