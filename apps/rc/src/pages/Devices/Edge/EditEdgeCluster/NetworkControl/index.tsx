@@ -292,7 +292,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
                       {$t({ defaultMessage: 'DHCP Service' })}
                       <ApCompatibilityToolTip
                         title=''
-                        visible
+                        showDetailButton
                         onClick={() => setEdgeFeatureName(IncompatibilityFeatures.DHCP)}
                       />
                     </Space>
@@ -332,7 +332,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
                         isEdgeCompatibilityEnabled &&
                           <ApCompatibilityToolTip
                             title=''
-                            visible
+                            showDetailButton
                             onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
                           />
                       }

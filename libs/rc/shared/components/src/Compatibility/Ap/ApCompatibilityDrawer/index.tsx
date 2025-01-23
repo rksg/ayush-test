@@ -26,8 +26,8 @@ import {
   CompatibilitySelectedApInfo
 } from '@acx-ui/rc/utils'
 
-import { CompatibilityDrawer }                                  from '../CompatibilityDrawer'
-import { mergeFilterApCompatibilitiesResultByRequiredFeatures } from '../utils'
+import { CompatibilityDrawer }                                  from '../../CompatibilityDrawer'
+import { mergeFilterApCompatibilitiesResultByRequiredFeatures } from '../../utils'
 
 export enum ApCompatibilityType {
   NETWORK = 'Network',

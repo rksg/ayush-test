@@ -9,8 +9,8 @@ import { Provider, store }                                                    fr
 import { act, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 
-import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
-import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
+import { CompatibilityItemProps } from '../../CompatibilityDrawer/CompatibilityItem'
+import { FeatureItemProps }       from '../../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 
 import {
   mockApCompatibilitiesVenue,
@@ -20,8 +20,8 @@ import {
 
 import { ApGeneralCompatibilityDrawer, ApCompatibilityType } from '.'
 
-jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
-  const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
+jest.mock('../../CompatibilityDrawer/CompatibilityItem', () => {
+  const CompatibilityItemComp = jest.requireActual('../../CompatibilityDrawer/CompatibilityItem')
   return {
     ...CompatibilityItemComp,
     CompatibilityItem: (props: CompatibilityItemProps) => <div data-testid='CompatibilityItem'>
@@ -29,8 +29,8 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
     </div>
   }
 })
-jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
-  const FeatureItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem/FeatureItem')
+jest.mock('../../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
+  const FeatureItemComp = jest.requireActual('../../CompatibilityDrawer/CompatibilityItem/FeatureItem')
   return {
     ...FeatureItemComp,
     FeatureItem: (props: FeatureItemProps) => <div data-testid='FeatureItem'>

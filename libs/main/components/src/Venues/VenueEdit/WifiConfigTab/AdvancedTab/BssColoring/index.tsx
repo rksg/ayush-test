@@ -114,7 +114,7 @@ export function BssColoring (props: VenueWifiConfigItemProps) {
           <div style={{ margin: '2px' }}></div>
           <ApCompatibilityToolTip
             title={tooltipInfo}
-            visible={true}
+            showDetailButton
             placement='bottom'
             onClick={() => setDrawerVisible(true)}
           />

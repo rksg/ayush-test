@@ -1,3 +1,5 @@
+import { DefaultOptionType } from 'antd/lib/select'
+
 import { APMeshRole, ApDeviceStatusEnum } from '../constants'
 import {
   ApAntennaTypeEnum,
@@ -1031,7 +1033,8 @@ export enum SoftGreDuplicationChangeState {
   TurnOnLanPort,
   TurnOffLanPort,
   ResetToDefault,
-  FindTheOnlyVoter
+  FindTheOnlyVoter,
+  ReloadOptionList
 }
 
 export interface SoftGreDuplicationChangeDispatcher {
@@ -1039,6 +1042,13 @@ export interface SoftGreDuplicationChangeDispatcher {
   softGreProfileId?: string
   voter?: Voter
   voters?: Voter[]
+  index?: string,
+  candidate?: SoftGreOptionCandidate
+}
+
+export interface SoftGreOptionCandidate {
+  option: DefaultOptionType
+  gatewayIps:string[]
 }
 
 export interface SoftGreProfileDispatcher {
