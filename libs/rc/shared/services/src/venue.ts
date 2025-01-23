@@ -718,6 +718,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apGroupNetworkListPayload = {
           isTemplate: isTemplate,
           apGroupIds: apGroupIds,
+          fields: ['id', 'venueApGroups'],
+          pageSize: 10000,
           filters: { 'venueApGroups.apGroupIds': apGroupIds }
         }
 
@@ -800,6 +802,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apGroupNetworkListPayload = {
           isTemplate: isTemplate,
           apGroupIds: apGroupIds,
+          fields: ['id', 'venueApGroups'],
+          pageSize: 10000,
           filters: { 'venueApGroups.apGroupIds': apGroupIds }
         }
 
@@ -2067,7 +2071,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req,
           body: payload,
-          responseHandler: async (response) => {
+          responseHandler: async (response: Response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]

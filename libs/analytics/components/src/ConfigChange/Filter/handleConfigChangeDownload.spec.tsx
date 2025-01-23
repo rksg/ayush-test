@@ -7,15 +7,14 @@ import { PathFilter }                                                 from '@acx
 
 import { configChanges } from '../__tests__/fixtures'
 
-import { genDownloadConfigChange } from './download'
+import { handleConfigChangeDownload } from './handleConfigChangeDownload'
 
 const mockGet = jest.mocked(get)
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-describe('CSV Functions', () => {
-
+describe('handleConfigChangeDownload', () => {
   const columns: TableProps<ConfigChange>['columns'] = [
     {
       title: 'Timestamp',
@@ -93,7 +92,7 @@ describe('CSV Functions', () => {
     const anchorMock = document.createElement('a')
     jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
     anchorMock.click = downloadSpy
-    genDownloadConfigChange(data, columns, getConfigChangeEntityTypeMapping(true), {
+    handleConfigChangeDownload(data, columns, getConfigChangeEntityTypeMapping(true), {
       startDate: '2023-08-22T10:19:00+08:00',
       endDate: '2023-08-23T10:19:00+08:00'
     } as PathFilter)

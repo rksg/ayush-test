@@ -2,10 +2,10 @@
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { ServiceType }                                                         from '../../constants'
-import { getPolicyDetailsLink, MacRegistrationDetailsTabKey, PolicyOperation } from '../../features/policy/policyRouteUtils'
-import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation }          from '../../features/service/serviceRouteUtils'
-import { PolicyType }                                                          from '../../types/policies/common'
+import { ServiceOperation, ServiceType }                       from '../../constants'
+import { getPolicyDetailsLink, MacRegistrationDetailsTabKey  } from '../../features/policy/policyRouteUtils'
+import { DpskDetailsTabKey, getServiceDetailsLink }            from '../../features/service/serviceRouteUtils'
+import { PolicyType, PolicyOperation }                         from '../../types/policies/common'
 
 
 export function VenueLink (props: { venueId?: string, name?: string, showNoData?: boolean }) {
@@ -32,15 +32,18 @@ export function IdentityDetailsLink (
   props: {
     personaGroupId?: string,
     personaId?: string,
-    name?: string })
+    name?: string,
+    disableLink?: boolean })
 {
-  const { personaGroupId, personaId, name } = props
+  const { personaGroupId, personaId, name, disableLink = false } = props
   return (
-    <TenantLink
-      to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
-    >
-      {name ?? personaId}
-    </TenantLink>
+    disableLink
+      ? <>{name}</>
+      : <TenantLink
+        to={`users/identity-management/identity-group/${personaGroupId}/identity/${personaId}`}
+      >
+        {name ?? personaId}
+      </TenantLink>
   )
 }
 

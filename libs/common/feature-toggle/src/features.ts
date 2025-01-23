@@ -170,6 +170,8 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
   VIEWMODEL_TP_LOGIN_ADMIN_COUNT = 'viewmodel-query-tenantadmindelegation-tp-login',
+  WEBHOOK_TOGGLE = 'acx-ui-webhook-toggle',
+  VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE = 'viewmodel-mspec-query-two-filters-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -190,6 +192,7 @@ export enum Features {
   WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
+  WIFI_DPSK3_NON_PROXY_MODE_TOGGLE='wifi-dpsk3-non-proxy-mode-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -221,6 +224,7 @@ export enum Features {
   WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
   IOT_MQTT_BROKER_TOGGLE = 'iot-mqtt-broker-toggle',
   WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE = 'wifi-ap-reboot-timeout-wlan-toggle',
+  WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE = 'wifi-ap-default-6g-enablement-toggle',
   WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE = 'wifi-smart-monitor-disable-wlan-toggle',
   SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE = 'switch-consumer-icx7850-48c-support-port-speed-toggle',
   WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
@@ -241,6 +245,7 @@ export enum Features {
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
   ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
   POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
+  SWITCH_CONSUMER_PORT_PROFILE_TOGGLE = 'switch-consumer-port-profile-toggle',
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
@@ -256,10 +261,19 @@ export enum Features {
   ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
+  VENUE_TABLE_ADD_STATUS_COLUMN = 'acx-ui-venue-table-add-status-column-toggle',
   NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
   ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle',
-  WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network'
+  WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network',
+  ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE = 'acx-ui-data-subscriptions-toggle',
+  RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
+  ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
+  ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE='entitlement-adaptive-policy-toggle',
+  ENTITLEMENT_PERSONAL_IDENTITY_NETWORK_TOGGLE='entitlement-personal-identity-network-toggle',
+  ENTITLEMENT_PMS_INTEGRATION_TOGGLE='entitlement-pms-integration-toggle',
+  ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
+  ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

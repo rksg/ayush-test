@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
-import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce, uniq }                                       from 'lodash'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { reduce, uniq }                                                         from 'lodash'
 
 import { Filter }        from '@acx-ui/components'
 import {
@@ -97,8 +95,9 @@ import {
   APLanPortSettings,
   mergeLanPortSettings
 } from '@acx-ui/rc/utils'
-import { baseApApi }      from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseApApi } from '@acx-ui/store'
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
 import {
   ApiInfo,
   batchApi,
@@ -1872,6 +1871,7 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetEnhanceApFeatureSetsQuery,
+  useGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,

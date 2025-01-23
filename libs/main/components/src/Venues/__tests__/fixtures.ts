@@ -3586,7 +3586,7 @@ export const mockedRogueApPolicyRbac = {
 }
 
 export const mockedRebootTimeout = {
-  gwLossRebootTimeout: 7200,
+  gatewayLossTimeout: 7200,
   serverLossTimeout: 7200
 }
 

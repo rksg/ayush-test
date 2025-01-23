@@ -235,6 +235,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/venues/aps',
     url: '/venues/:venueId/apGroups/:apGroupId/aps',
+    opsApi: 'POST:/venues/{id}/apGroups/{id}/aps',
     newApi: true
   },
   addApWithDefaultGroup: {

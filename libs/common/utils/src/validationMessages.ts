@@ -207,6 +207,11 @@ export const validationMessages = {
     defaultMessage: 'Cannot move AP to another <venueSingular></venueSingular> in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
+  diffApGpsWithVenueCountry: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Cannot set AP GPS coordinates to a location in a different country code or country than the <venueSingular></venueSingular>',
+    description: 'Validation - AP GPS Country checks'
+  }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
       be moved to the <venueSingular></venueSingular> which doesn’t enable DHCP service`,
@@ -481,6 +486,11 @@ export const validationMessages = {
   DirectoryServerNotSelected: defineMessage({
     defaultMessage: 'Must select one directory server.',
     description: 'Validation - Directory server'
+  }),
+  SwitchPortProfilesDuplicateInvalid: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Duplicate MAC OUI and LLDP TLV values are being used. Please ensure that the MAC OUI and LLDP TLV are not duplicated across the profiles.',
+    description: 'Validation - Switch Port Profiles Duplicate Invalid'
   })
 }
 

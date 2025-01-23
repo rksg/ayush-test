@@ -293,6 +293,25 @@ describe('errorMiddleware', () => {
       expect(screen.queryByText('Server Error')).toBeNull()
     })
   })
+  it('should not show modal when custom error', async () => {
+    const thunk = createAsyncThunk<string>('apApi/executeQuery', (_, { rejectWithValue }) => {
+      return rejectWithValue({ error: 'rejectWithValue!' })
+    })
+    const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
+    act(() => {
+      errorMiddleware({ dispatch: jest.fn((x) => x), getState: jest.fn(() => ({})) })(jest.fn())({
+        ...rejectedWithValueAction,
+        meta: {
+          ...rejectedWithValueAction.meta,
+          arg: { endpointName: 'addAp' },
+          baseQueryMeta: { response: { errors: [{ extensions: { code: 'RDA-413' } }] } }
+        }
+      })
+    })
+    await waitFor(()=>{
+      expect(screen.queryByText('Server Error')).toBeNull()
+    })
+  })
   it('should call next', async () => {
     const next = jest.fn()
     act(() => { errorMiddleware({ dispatch: Object({}), getState: jest.fn() })(next)({}) })

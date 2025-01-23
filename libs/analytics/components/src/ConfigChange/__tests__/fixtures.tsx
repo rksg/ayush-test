@@ -7,7 +7,11 @@ export const configChanges = [
     name: 'Config_change_WLAN2',
     key: 'initialState.ccmZone.management_identifiers.map_entries.venueName',
     oldValues: ['Config_change_WLAN'],
-    newValues: ['Config_change_WLAN2']
+    newValues: ['Config_change_WLAN2'],
+    path: [
+      { type: 'zone', name: 'testname' }
+    ],
+    sliceValue: 'Config_change_WLAN2'
   },
   {
     timestamp: '1685427082200',
@@ -17,7 +21,11 @@ export const configChanges = [
     name: '94:B3:4F:3D:21:80',
     key: 'initialState.ccmAp.radio24g.radio.channel_select_mode',
     oldValues: [],
-    newValues: [ 'BACKGROUND_SCANNING' ]
+    newValues: [ 'BACKGROUND_SCANNING' ],
+    path: [
+      { type: 'ap', name: '94:B3:4F:3D:21:80' }
+    ],
+    sliceValue: 'RuckusAP1'
   },
   {
     timestamp: '1685427082300',
@@ -27,7 +35,11 @@ export const configChanges = [
     name: '94:B3:4F:3D:21:80',
     key: 'initialState.ccmAp.radio24g.radio.channel_width',
     oldValues: [],
-    newValues: [ '_AUTO']
+    newValues: [ '_AUTO'],
+    path: [
+      { type: 'ap', name: '94:B3:4F:3D:21:80' }
+    ],
+    sliceValue: 'RuckusAP1'
   },
   {
     timestamp: '1685427082400',
@@ -37,7 +49,11 @@ export const configChanges = [
     name: '!!R770_url_sanity',
     key: 'initialState.CcmWlan.firewall.firewall_url_filtering_policy.enabled',
     oldValues: [ 'false' ],
-    newValues: [ 'true' ]
+    newValues: [ 'true' ],
+    path: [
+      { type: 'wlan', name: '!!R770_url_sanity' }
+    ],
+    sliceValue: '!!R770_url_sanity'
   },
   {
     timestamp: '1685427082500',
@@ -47,7 +63,11 @@ export const configChanges = [
     name: 'ER-12560_1',
     key: 'initialState.CcmWlan.bss_min_rate',
     oldValues: [ '__12_MBPS' ],
-    newValues: [ '__DEFAULT' ]
+    newValues: [ '__DEFAULT' ],
+    path: [
+      { type: 'wlan', name: 'ER-12560_1' }
+    ],
+    sliceValue: 'ER-12560_1'
   },
   {
     timestamp: '1685427082600',
@@ -57,7 +77,11 @@ export const configChanges = [
     name: '23A-IND-BNG-D23-Home',
     key: 'initialState.ccmZone.radio24g.radio.bg_scan',
     oldValues: [ 'Disabled' ],
-    newValues: [ 'Enabled' ]
+    newValues: [ 'Enabled' ],
+    path: [
+      { type: 'zone', name: '23A-IND-BNG-D23-Home' }
+    ],
+    sliceValue: '23A-IND-BNG-D23-Home'
   },
   {
     timestamp: '1685427082700',
@@ -67,7 +91,11 @@ export const configChanges = [
     name: '23A-IND-BNG-D23-Home',
     key: 'initialState.ccmZone.radio5g.indoor_channel_range',
     oldValues: [ '149', '153', '157', '161', '36', '40', '44', '48' ],
-    newValues: [ '100', '104', '108', '112', '116', '120', '124', '128', '132' ]
+    newValues: [ '100', '104', '108', '112', '116', '120', '124', '128', '132' ],
+    path: [
+      { type: 'zone', name: '23A-IND-BNG-D23-Home' }
+    ],
+    sliceValue: '23A-IND-BNG-D23-Home'
   },
   {
     timestamp: '1685427082800',
@@ -77,7 +105,11 @@ export const configChanges = [
     name: 'someTest',
     key: 'unknown',
     oldValues: [],
-    newValues: []
+    newValues: [],
+    path: [
+      { type: 'zone', name: 'someTest' }
+    ],
+    sliceValue: 'someTest'
   },
   {
     timestamp: '1685427082900',
@@ -87,7 +119,11 @@ export const configChanges = [
     name: '94:B3:4F:3D:21:80',
     key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
     oldValues: [],
-    newValues: ['480']
+    newValues: ['480'],
+    path: [
+      { type: 'ap', name: '94:B3:4F:3D:21:80' }
+    ],
+    sliceValue: 'RuckusAP1'
   },
   {
     timestamp: '1685427082100',
@@ -97,7 +133,11 @@ export const configChanges = [
     name: 'Config_change_WLAN2',
     key: 'intentAi.c-bgscan24g-enable',
     oldValues: [ ],
-    newValues: [ 'Apply' ]
+    newValues: [ 'Apply' ],
+    path: [
+      { type: 'zone', name: 'Config_change_WLAN2' }
+    ],
+    sliceValue: 'Config_change_WLAN2'
   },
   {
     timestamp: '1685427082200',
@@ -107,7 +147,11 @@ export const configChanges = [
     name: '94:B3:4F:3D:21:80',
     key: 'intentAi.c-bgscan5g-enable',
     oldValues: [ ],
-    newValues: [ 'Apply' ]
+    newValues: [ 'Apply' ],
+    path: [
+      { type: 'zone', name: '94:B3:4F:3D:21:80' }
+    ],
+    sliceValue: 'RuckusAP1'
   }
 ]
 
