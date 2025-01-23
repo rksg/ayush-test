@@ -30,8 +30,8 @@ export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButton
    || hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE })
   const isPermiited = hasServiceOpsPermission && hasPermission({
     scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
-    rbacOpsIds: [getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
-      getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)]
+    rbacOpsIds: [[getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
+      getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)]]
   })
   let newSelected = cloneDeep(activated)
 
