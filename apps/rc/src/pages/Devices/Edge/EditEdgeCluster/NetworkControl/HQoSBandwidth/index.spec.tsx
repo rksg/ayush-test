@@ -13,6 +13,11 @@ import { HQoSBandwidthFormItem, useHandleApplyHqos } from '.'
 jest.mock('../../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm', () => ({
   EdgeHqosProfileSelectionForm: () => <div data-testid='EdgeHqosProfileSelectionForm' />
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
+    <div data-testid='ApCompatibilityToolTip' onClick={onClick} />
+}))
 
 const mockedActivateHqospApi = jest.fn()
 const mockedDeactivateHqosApi = jest.fn()
@@ -35,18 +40,20 @@ const MockComponentForHookTest = ({ formValues }: { formValues: Store }) => {
 
 describe('Edge Cluster Network Control Tab > HQoS Bandwidth', () => {
   beforeEach(() => {
+    mockedActivateHqospApi.mockReset()
+    mockedDeactivateHqosApi.mockReset()
     mockServer.use(
       rest.put(
         EdgeHqosProfilesUrls.activateEdgeCluster.url,
-        (_, res, ctx) => {
-          mockedActivateHqospApi()
+        (req, res, ctx) => {
+          mockedActivateHqospApi(req.url.pathname)
           return res(ctx.status(202))
         }
       ),
       rest.delete(
         EdgeHqosProfilesUrls.deactivateEdgeCluster.url,
-        (_, res, ctx) => {
-          mockedDeactivateHqosApi()
+        (req, res, ctx) => {
+          mockedDeactivateHqosApi(req.url.pathname)
           return res(ctx.status(202))
         }
       )
@@ -145,6 +152,36 @@ describe('Edge Cluster Network Control Tab > HQoS Bandwidth', () => {
     expect(await screen.findByTestId('EdgeHqosProfileSelectionForm')).toBeVisible()
   })
 
+  it('should invoke setEdgeFeatureName correctly when click compatibility tooltip', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
+    )
+    const mockSetEdgeFeatureName = jest.fn()
+    const props = {
+      currentClusterStatus: {
+        clusterId: 'mockClusterId',
+        venueId: 'mockVenueId',
+        edgeList: [{ cpuCores: 4 }]
+      } as unknown as EdgeStatus,
+      setEdgeFeatureName: mockSetEdgeFeatureName
+    }
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <HQoSBandwidthFormItem {...props}/>
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+    )
+    const compatibilityToolTip = await screen.findByTestId('ApCompatibilityToolTip')
+    await userEvent.click(compatibilityToolTip)
+    expect(mockSetEdgeFeatureName).toBeCalled()
+  })
+
   it('Test apply HQoS', async () => {
     render(
       <Provider>
@@ -157,7 +194,8 @@ describe('Edge Cluster Network Control Tab > HQoS Bandwidth', () => {
       </Provider>
     )
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
-    await waitFor(() => expect(mockedActivateHqospApi).toBeCalled())
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(mockedActivateHqospApi).toBeCalledWith('/edgeHqosProfiles/testHqosId/venues/testVenueId/edgeClusters/testClusterId'))
   })
 
   it('Test deactivate HQoS', async () => {
@@ -172,6 +210,24 @@ describe('Edge Cluster Network Control Tab > HQoS Bandwidth', () => {
       </Provider>
     )
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
-    await waitFor(() => expect(mockedDeactivateHqosApi).toBeCalled())
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(mockedDeactivateHqosApi).toBeCalledWith('/edgeHqosProfiles/testHqosId/venues/testVenueId/edgeClusters/testClusterId'))
+  })
+
+  it('should not trigger API when there is no change', async () => {
+    render(
+      <Provider>
+        <MockComponentForHookTest
+          formValues={{
+            hqosSwitch: true,
+            hqosId: 'testHqosId',
+            originHqosId: 'testHqosId'
+          }}
+        />
+      </Provider>
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+    expect(mockedActivateHqospApi).not.toBeCalled()
+    expect(mockedDeactivateHqosApi).not.toBeCalled()
   })
 })
