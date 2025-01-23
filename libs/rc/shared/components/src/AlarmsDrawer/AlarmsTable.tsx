@@ -358,8 +358,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       actions={newAlarmType ? actions : []}
       onChange={tableQuery.handleTableChange}
       onFilterChange={handleFilterChange}
-      // type={'compactTallHeader'}
-      stickyHeaders={true}
+      type={'compact'}
       enableApiFilter={true}
       selectedFilters={selectedFilters}
     />

@@ -16,6 +16,7 @@ export default function AlarmsHeaderButton () {
   const params = useParams()
   const payload = { filters: { } }
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
+  const isFilterProductToggleEnabled = useIsSplitOn(Features.ALARM_WITH_PRODUCT_FILTER_TOGGLE)
   const isAlarmClearAlarmToggleEnabled = useIsSplitOn(Features.ALARM_CLEAR_ALARM_TOGGLE)
 
   const query = isNewAlarmQueryEnabled ? useGetAlarmsCountQuery : useGetAlarmCountQuery
@@ -56,7 +57,7 @@ export default function AlarmsHeaderButton () {
         }}
       />}
     />
-    {isAlarmClearAlarmToggleEnabled
+    {(isAlarmClearAlarmToggleEnabled && isFilterProductToggleEnabled)
       ? <NewAlarmsDrawer visible={visible} setVisible={setVisible}/>
       : <AlarmsDrawer visible={visible} setVisible={setVisible}/>}
   </>
