@@ -282,82 +282,87 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         }}
       >
         <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={7}>
-              {
-                isEdgeDhcpHaReady &&
-                <StepsForm.FieldLabel width='50%'>
-                  <Space>
-                    {$t({ defaultMessage: 'DHCP Service' })}
-                    <ApCompatibilityToolTip
-                      title=''
-                      visible
-                      onClick={() => setEdgeFeatureName(IncompatibilityFeatures.DHCP)}
-                    />
-                  </Space>
-                  <Form.Item
-                    name='dhcpSwitch'
-                    valuePropName='checked'
-                    children={<Switch disabled={hasPin} />}
-                  />
-                </StepsForm.FieldLabel>
-              }
-              {
-                isEdgeDhcpHaReady &&
-                <Form.Item
-                  dependencies={['dhcpSwitch']}
-                >
-                  {
-                    ({ getFieldValue }) => {
-                      // eslint-disable-next-line max-len
-                      return getFieldValue('dhcpSwitch') && <EdgeDhcpSelectionForm hasPin={hasPin} />
-                    }
-                  }
-                </Form.Item>
-              }
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={7}>
-              {
-                isEdgeHqosEnabled &&
-                <StepsForm.FieldLabel width='50%'>
-                  <Space>
-                    {$t({ defaultMessage: 'Hierarchical QoS' })}
-                    {
-                      isEdgeCompatibilityEnabled &&
+          {
+            isEdgeDhcpHaReady &&
+            <>
+              <Row gutter={20}>
+                <Col flex='250px'>
+                  <StepsForm.FieldLabel width='90%'>
+                    <Space>
+                      {$t({ defaultMessage: 'DHCP Service' })}
                       <ApCompatibilityToolTip
                         title=''
-                        visible
-                        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+                        showDetailButton
+                        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.DHCP)}
                       />
+                    </Space>
+                    <Form.Item
+                      name='dhcpSwitch'
+                      valuePropName='checked'
+                      children={<Switch disabled={hasPin} />}
+                    />
+                  </StepsForm.FieldLabel>
+                </Col>
+              </Row>
+              <Row gutter={20}>
+                <Col>
+                  <Form.Item
+                    dependencies={['dhcpSwitch']}
+                  >
+                    {
+                      ({ getFieldValue }) => {
+                      // eslint-disable-next-line max-len
+                        return getFieldValue('dhcpSwitch') && <EdgeDhcpSelectionForm hasPin={hasPin} />
+                      }
                     }
-                  </Space>
-                  <Space>
-                    <Tooltip title={hqosReadOnlyToolTipMessage}>
-                      <Form.Item
-                        name='hqosSwitch'
-                        valuePropName='checked'
-                      >
-                        <Switch disabled={hqosReadOnly} />
-                      </Form.Item>
-                    </Tooltip>
-                  </Space>
-
-                </StepsForm.FieldLabel>
-              }
-              {
-                isEdgeHqosEnabled &&
-                <Form.Item
-                  dependencies={['hqosSwitch']}
-                >
-                  {({ getFieldValue }) => {
-                    return getFieldValue('hqosSwitch') && <EdgeQosProfileSelectionForm />
-                  }}
-                </Form.Item>
-              }
-            </Col>
-          </Row>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </>
+          }
+          {
+            isEdgeHqosEnabled &&
+            <>
+              <Row gutter={20}>
+                <Col flex='250px'>
+                  <StepsForm.FieldLabel width='90%'>
+                    <Space>
+                      {$t({ defaultMessage: 'Hierarchical QoS' })}
+                      {
+                        isEdgeCompatibilityEnabled &&
+                          <ApCompatibilityToolTip
+                            title=''
+                            showDetailButton
+                            onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
+                          />
+                      }
+                    </Space>
+                    <Space>
+                      <Tooltip title={hqosReadOnlyToolTipMessage}>
+                        <Form.Item
+                          name='hqosSwitch'
+                          valuePropName='checked'
+                        >
+                          <Switch disabled={hqosReadOnly} />
+                        </Form.Item>
+                      </Tooltip>
+                    </Space>
+                  </StepsForm.FieldLabel>
+                </Col>
+              </Row>
+              <Row gutter={20}>
+                <Col>
+                  <Form.Item
+                    dependencies={['hqosSwitch']}
+                  >
+                    {({ getFieldValue }) => {
+                      return getFieldValue('hqosSwitch') && <EdgeQosProfileSelectionForm />
+                    }}
+                  </Form.Item>
+                </Col>
+              </Row>
+            </>
+          }
 
           {isEdgeMdnsReady && <MdnsProxyFormItem
             venueId={currentClusterStatus?.venueId}

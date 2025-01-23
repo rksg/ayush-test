@@ -270,7 +270,7 @@ export const RbacSubscriptionTable = () => {
 
   const actions: TableProps<Entitlement>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      label: $t({ defaultMessage: 'Manage Subscriptions' }),
       rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
