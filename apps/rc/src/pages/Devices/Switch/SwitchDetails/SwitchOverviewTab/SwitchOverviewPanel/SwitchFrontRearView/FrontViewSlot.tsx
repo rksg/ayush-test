@@ -39,7 +39,9 @@ export function FrontViewSlot (props:{
       return 'lightgray'
     }
 
-    if (status === 'Up') {
+    if (!!port.errorDisableStatus && port.errorDisableStatus !== 'None') {
+      return 'red'
+    } else if (status === 'Up') {
       return 'green'
     } else if (status === 'Down') {
       return 'gray'

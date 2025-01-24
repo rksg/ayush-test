@@ -108,21 +108,19 @@ export function FrontViewTooltip () {
         <div className='ports-description'>
           { $t({ defaultMessage: 'PoE' }) }
         </div>
-        <div className='ports offline'>
+        <div className='ports'>
           <FrontViewPort
             labelText={''}
             labelPosition='top'
-            portColor='lightgray'
+            portColor='red'
             portIcon=''
             tooltipEnable={false}
-            portData={{
-              ...editablePort,
-              deviceStatus: SwitchStatusEnum.DISCONNECTED
-            }}
+            portData={editablePort}
+            disabledClick={true}
           />
         </div>
-        <div className='ports-description' >
-          { $t({ defaultMessage: 'Switch is not operational' }) }
+        <div className='ports-description'>
+          { $t({ defaultMessage: 'Error' }) }
         </div>
         <div className='ports'>
           <FrontViewPort
@@ -146,6 +144,22 @@ export function FrontViewTooltip () {
         </div>
         <div className='ports-description'>
           { $t({ defaultMessage: 'Uplink' }) }
+        </div>
+        <div className='ports offline'>
+          <FrontViewPort
+            labelText={''}
+            labelPosition='top'
+            portColor='lightgray'
+            portIcon=''
+            tooltipEnable={false}
+            portData={{
+              ...editablePort,
+              deviceStatus: SwitchStatusEnum.DISCONNECTED
+            }}
+          />
+        </div>
+        <div className='ports-description' >
+          { $t({ defaultMessage: 'Switch is not operational' }) }
         </div>
         <div className='ports right'>
           <FrontViewPort

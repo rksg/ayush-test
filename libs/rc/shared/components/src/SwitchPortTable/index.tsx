@@ -146,6 +146,45 @@ export function SwitchPortTable (props: {
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 
+  const getErrorDisableStatus = (portErrorDisableStatus: string) => {
+    switch (portErrorDisableStatus) {
+      case 'None':
+        return '--'
+      case 'ERRDISABLE_BPDUGUARD':
+        return 'BPDU GUARD'
+      case 'ERRDISABLE_LOOP_DETECTION':
+        return 'Loop Detection'
+      case 'ERRDISABLE_INVALID_LICENSE':
+        return 'Invalid License'
+      case 'ERRDISABLE_PACKET_INERROR':
+        return 'Packet InError'
+      case 'ERRDISABLE_LOAM_REM_CRITICAL_EVENT':
+        return 'LOAM Remote Critical Event'
+      case 'ERRDISABLE_NEEDS_REBOOT':
+        return 'Needs Reboot'
+      case 'ERRDISABLE_BCAST_THRESHOLD_EXCEEDED':
+        return 'BCAST Threshold Exceeded'
+      case 'ERRDISABLE_MCAST_THRESHOLD_EXCEEDED':
+        return 'MCAST Threshold Exceeded'
+      case 'ERRDISABLE_UNKNOWN_UCAST_THRESHOLD_EXCEEDED':
+        return 'UNKNOWN UCAST Threshold Exceeded'
+      case 'ERRDISABLE_STK_PORT_PROBLEM':
+        return 'Stack Port Problem'
+      case 'ERRDISABLE_SPX_INVALID_TOPO':
+        return 'SPX Invalid TOPO'
+      case 'ERRDISABLE_PVST_PROTECT':
+        return 'PVST Protect'
+      case 'ERRDISABLE_BPDU_TUN_THRESHOLD_EXCEEDED':
+        return 'BPDU Threshold Exceeded'
+      case 'ERRDISABLE_LAG_OPER_SPEED_MISMATCH':
+        return 'LAG OPER Speed Mismatch'
+      case 'ERRDISABLE_CAUSE_CNT':
+        return 'Cause Counter'
+      default:
+        return portErrorDisableStatus
+    }
+  }
+
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
     key: 'portIdentifierFormatted',
     title: $t({ defaultMessage: 'Port Number' }),
@@ -178,6 +217,17 @@ export function SwitchPortTable (props: {
     title: $t({ defaultMessage: 'Admin Status' }),
     dataIndex: 'adminStatus',
     sorter: true
+  }, {
+    key: 'errorType',
+    title: $t({ defaultMessage: 'Error Type' }),
+    dataIndex: 'errorDisableStatus',
+    sorter: true,
+    render: (_, row) => {
+      if (!row.errorDisableStatus) {
+        return '--'
+      }
+      return getErrorDisableStatus(row.errorDisableStatus)
+    }
   }, {
     key: 'portSpeed',
     title: $t({ defaultMessage: 'Speed' }),

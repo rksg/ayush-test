@@ -4,7 +4,7 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                from '@acx-ui/components'
+import { Tooltip, cssStr }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { getInactiveTooltip }     from '@acx-ui/rc/components'
 import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
@@ -72,6 +72,51 @@ export function FrontViewPort (props:{
     const poeUsed = Math.round(port.poeUsed / 1000)
     const poeTotal = Math.round(port.poeTotal / 1000)
 
+    const incompatibleIconStyle = {
+      height: '16px',
+      width: '16px',
+      marginBottom: '-4px',
+      color: cssStr('--acx-semantics-red-50'),
+      borderColor: cssStr('--acx-accents-red-30')
+    }
+
+    const getErrorDisableStatus = (portErrorDisableStatus: string) => {
+      switch (portErrorDisableStatus) {
+        case 'ERRDISABLE_BPDUGUARD':
+          return 'BPDU GUARD'
+        case 'ERRDISABLE_LOOP_DETECTION':
+          return 'Loop Detection'
+        case 'ERRDISABLE_INVALID_LICENSE':
+          return 'Invalid License'
+        case 'ERRDISABLE_PACKET_INERROR':
+          return 'Packet InError'
+        case 'ERRDISABLE_LOAM_REM_CRITICAL_EVENT':
+          return 'LOAM Remote Critical Event'
+        case 'ERRDISABLE_NEEDS_REBOOT':
+          return 'Needs Reboot'
+        case 'ERRDISABLE_BCAST_THRESHOLD_EXCEEDED':
+          return 'BCAST Threshold Exceeded'
+        case 'ERRDISABLE_MCAST_THRESHOLD_EXCEEDED':
+          return 'MCAST Threshold Exceeded'
+        case 'ERRDISABLE_UNKNOWN_UCAST_THRESHOLD_EXCEEDED':
+          return 'UNKNOWN UCAST Threshold Exceeded'
+        case 'ERRDISABLE_STK_PORT_PROBLEM':
+          return 'Stack Port Problem'
+        case 'ERRDISABLE_SPX_INVALID_TOPO':
+          return 'SPX Invalid TOPO'
+        case 'ERRDISABLE_PVST_PROTECT':
+          return 'PVST Protect'
+        case 'ERRDISABLE_BPDU_TUN_THRESHOLD_EXCEEDED':
+          return 'BPDU Threshold Exceeded'
+        case 'ERRDISABLE_LAG_OPER_SPEED_MISMATCH':
+          return 'LAG OPER Speed Mismatch'
+        case 'ERRDISABLE_CAUSE_CNT':
+          return 'Cause Counter'
+        default:
+          return portErrorDisableStatus
+      }
+    }
+
     return <div>
       <UI.TooltipStyle labelWidthPercent={50}>
         <UI.TooltipStyle.Item
@@ -97,6 +142,20 @@ export function FrontViewPort (props:{
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Port State' })}
           children={port.status}
+        />
+        <UI.TooltipStyle.Item
+          label={$t({ defaultMessage: 'Error Type' })}
+          children={
+            !port.errorDisableStatus || port.errorDisableStatus === 'None' ? '--' :
+              <>
+                <Tooltip.Warning
+                  isFilled
+                  isTriangle
+                  iconStyle={incompatibleIconStyle}
+                />
+                {getErrorDisableStatus(port.errorDisableStatus)}
+              </>
+          }
         />
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
