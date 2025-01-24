@@ -1,5 +1,6 @@
 import { useEffect, useState, useReducer } from 'react'
 
+import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { omit, isEqual }     from 'lodash'
 
@@ -8,8 +9,10 @@ import { useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
+  SoftGreOptionCandidate,
   Voter,
-  VoteTallyBoard } from '@acx-ui/rc/utils'
+  VoteTallyBoard
+} from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 export const useSoftGreProfileLimitedSelection = (
@@ -20,6 +23,7 @@ export const useSoftGreProfileLimitedSelection = (
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
+  const form = Form.useFormInstance()
 
   const [ softGREProfileOptionList, setSoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ voteTallyBoard, setVoteTallyBoard ] = useState<VoteTallyBoard[]>([])
@@ -39,26 +43,29 @@ export const useSoftGreProfileLimitedSelection = (
           return { label: softGreProfile.name, value: softGreProfile.id }
         }))
         setVoteTallyBoard(softGreProfileList.map((softGreProfile) => {
-          let vote = softGreProfile.activations.filter(act=> act.venueId === venueId).length
-              + softGreProfile.venueActivations.filter(venue => venue.venueId === venueId).length
-              + softGreProfile.apActivations.filter(ap => ap.venueId === venueId).length
+
+          let vote = 0
+          const activations = softGreProfile.activations?.filter(act=> act.venueId === venueId)
+          const venueActivations = softGreProfile.venueActivations?.filter((venue) => {
+            return venue.venueId === venueId
+          }) ?? []
+          const apActivations = softGreProfile.apActivations?.filter((ap) => {
+            return ap.venueId === venueId
+          }) ?? []
+          vote = activations.length + venueActivations.length + apActivations.length
           const voters = [] as Voter[]
-          softGreProfile.venueActivations
-            .filter(venue => venue.venueId === venueId)
-            .forEach((venue) => {
-              voters.push({
-                model: venue.apModel,
-                portId: String(venue.portId)
-              })
+          venueActivations.forEach((venue) => {
+            voters.push({
+              model: venue.apModel,
+              portId: String(venue.portId)
             })
-          softGreProfile.apActivations
-            .filter(ap => ap.venueId === venueId)
-            .forEach((ap) => {
-              voters.push({
-                serialNumber: ap.apSerialNumber,
-                portId: String(ap.portId)
-              })
+          })
+          apActivations.forEach((ap) => {
+            voters.push({
+              serialNumber: ap.apSerialNumber,
+              portId: String(ap.portId)
             })
+          })
           let FQDNAddresses = [softGreProfile.primaryGatewayAddress]
           if (softGreProfile.secondaryGatewayAddress) {
             FQDNAddresses.push(softGreProfile.secondaryGatewayAddress)
@@ -169,6 +176,45 @@ export const useSoftGreProfileLimitedSelection = (
     })
   }
 
+  const addCandidate = async (
+    index: string = '0',
+    candidate: SoftGreOptionCandidate = {
+      option: { label: '', value: '' },
+      gatewayIps: []
+    },
+    voter: Voter = { portId: '0' }
+  ) => {
+
+    const deleted = deleteVoter(voteTallyBoard, voter)
+    const { isFoundTheOnlyVoter } = findVoter(voter)
+    const isLock = !!softGREProfileOptionList.find((option) => {
+      return option.disabled === true
+    }) && !isFoundTheOnlyVoter
+
+    const profileId = String(candidate.option.value ?? '')
+
+    setSoftGREProfileOptionList([...softGREProfileOptionList, {
+      ...candidate.option,
+      ...(isLock ? { disabled: true } : {})
+    }])
+    setVoteTallyBoard([...deleted, {
+      softGreProfileId: profileId,
+      name: candidate.option.label?.toString(),
+      FQDNAddresses: candidate.gatewayIps,
+      vote: (isLock ? 0 : 1),
+      voters: (isLock ? [] : [voter])
+    }])
+
+    if (!isLock) {
+      form.setFieldValue(['lan', index, 'softGreProfileId'], profileId)
+      try {
+        await form.validateFields()
+      } catch (error) {// Leave blank }
+        setIsTheOnlyVoter(isFoundTheOnlyVoter)
+      }
+    }
+  }
+
   const validateIsFQDNDuplicate = (softGreProfileId: string) => {
 
     let isDuplicate = false
@@ -220,7 +266,6 @@ export const useSoftGreProfileLimitedSelection = (
           )
           break
         case SoftGreDuplicationChangeState.TurnOffLanPort:
-          // 縣刪除原本的board資料
           setVoteTallyBoard(deleteVoter(voteTallyBoard, next.voter))
           break
         case SoftGreDuplicationChangeState.ResetToDefault:
@@ -229,6 +274,10 @@ export const useSoftGreProfileLimitedSelection = (
         case SoftGreDuplicationChangeState.FindTheOnlyVoter:
           const { isFoundTheOnlyVoter } = findVoter(next.voter)
           setIsTheOnlyVoter(isFoundTheOnlyVoter)
+          break
+        case SoftGreDuplicationChangeState.ReloadOptionList:
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          addCandidate(next?.index, next?.candidate, next?.voter)
           break
       }
       return next

@@ -10,15 +10,17 @@ import { Features, useIsSplitOn }                                               
 import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
 import { ApBssColoringSettings, VenueBssColoring }                                                   from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { FieldLabel }                   from '../../styledComponents'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { FieldLabel }                                    from '../../styledComponents'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function BssColoring () {
+export function BssColoring (props: ApEditItemProps) {
 
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
+
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -158,6 +160,7 @@ export function BssColoring () {
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
         <VenueSettingsHeader venue={venueData}
+          disabled={!isAllowEdit}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>
@@ -172,7 +175,7 @@ export function BssColoring () {
                   ?<span data-testid='ApBssColoring-text'>
                     {venueBssColoring?.bssColoringEnabled ? $t({ defaultMessage: 'On' })
                       : $t({ defaultMessage: 'Off' })}</span>
-                  :<Switch data-testid='ApBssColoring-switch'/>
+                  :<Switch data-testid='ApBssColoring-switch' disabled={!isAllowEdit} />
                 }
               />
             </FieldLabel>

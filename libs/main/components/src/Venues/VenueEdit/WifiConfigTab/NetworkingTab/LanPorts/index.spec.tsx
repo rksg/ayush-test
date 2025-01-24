@@ -5,11 +5,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                             from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                                                           from '@acx-ui/rc/services'
-import { AaaUrls, ClientIsolationUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, LanPortsUrls, SoftGreUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                    from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook }                                      from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                               from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                                                                             from '@acx-ui/rc/services'
+import { AaaUrls, ClientIsolationUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, LanPortsUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook }                                                        from '@acx-ui/test-utils'
 
 import { NetworkingSettingContext } from '..'
 import { VenueUtilityContext }      from '../..'
@@ -86,7 +86,7 @@ describe('LanPortsForm', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))
       ),
       rest.get(
-        CommonRbacUrlsInfo.getVenueLanPorts.url,
+        WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))
       ),
       rest.get(
