@@ -341,5 +341,35 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/notifications/sms/providers/twilios/messagingServices',
     newApi: true
+  },
+  getWebhooks: {
+    method: 'post',
+    url: '/webhooks/query',
+    newApi: true
+  },
+  getWebhookEntry: {
+    method: 'get',
+    url: '/webhooks/:webhookId',
+    newApi: true
+  },
+  addWebhook: {
+    method: 'post',
+    url: '/webhooks',
+    newApi: true
+  },
+  updateWebhook: {
+    method: 'put',
+    url: '/webhooks/:webhookId',
+    newApi: true
+  },
+  deleteWebhook: {
+    method: 'delete',
+    url: '/webhooks/:webhookId',
+    newApi: true
+  },
+  webhookSendSampleEvent: {
+    method: 'post',
+    url: '/webhooks/sendSampleEvents',
+    newApi: true
   }
 }

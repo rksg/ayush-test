@@ -63,6 +63,7 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
   const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
+  const isDataSubscriptionsEnabled = useIsSplitOn(Features.RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE)
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
     uri: '/incidents',
@@ -213,7 +214,13 @@ export function useMenuConfig () {
       permission: 'READ_DATA_STUDIO',
       uri: '/dataStudio',
       label: $t({ defaultMessage: 'Data Studio' })
-    }, {
+    },
+    ...(isDataSubscriptionsEnabled ? [{
+      permission: 'READ_DATA_SUBSCRIPTIONS' as RaiPermission,
+      uri: '/dataSubscriptions',
+      label: $t({ defaultMessage: 'Data Subscriptions' })
+    }] : []),
+    {
       permission: 'READ_REPORTS',
       uri: '/reports',
       label: $t({ defaultMessage: 'Reports' })

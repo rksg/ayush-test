@@ -2,16 +2,14 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip, Button }                                          from '@acx-ui/components'
+import { Loader, TableProps, Table, Tooltip, Banner }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
-
-import bannerImg from '../../../assets/banner_bkg.png'
 
 import { Icon }                                       from './common/IntentIcon'
 import { AiFeatures, codes, IntentListItem }          from './config'
@@ -122,33 +120,6 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       </TenantLink>
     }
   </UI.FeatureIcon>)
-}
-
-export function Banner ({ helpUrl } : { helpUrl: string | undefined }) {
-  const { $t } = useIntl()
-  const bannerTitle = $t({ defaultMessage: 'Revolutionize your Network Optimization' })
-  const subTitle1 = $t({
-    defaultMessage: `Automate configuration and
-    monitoring tasks aligned with your network priorities, while enhancing`
-  })
-  const subTitle2 = $t({
-    defaultMessage: 'performance through IntentAI\'s advanced AI/ML technologies.'
-  })
-  return (<UI.BannerWrapper>
-    <UI.BannerBG src={bannerImg}/>
-    <UI.Banner>
-      <b className='title'>{bannerTitle}</b> <span className='br-size'></span>
-      {subTitle1} <span className='br-size'></span>
-      {subTitle2} <span className='br-size'></span>
-      <Button
-        style={{ marginTop: '15px' }}
-        onClick={() => {
-          window.open(helpUrl, '_blank')
-        }}>
-        <b>{$t({ defaultMessage: 'Learn More' })}</b>{<ChatbotLink />}
-      </Button>
-    </UI.Banner>
-  </UI.BannerWrapper>)
 }
 
 export function IntentAITable (
@@ -333,11 +304,13 @@ export function IntentAITable (
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />
-      <UI.AlertNote
-        data-testid='intent-ai-alert-note'
-        message={Banner({ helpUrl })}
-        type='info'
-      />
+      <Banner
+        title={$t({ defaultMessage: 'Revolutionize your Network Optimization' })}
+        subTitles={[$t({
+          defaultMessage: `Automate configuration and
+        monitoring tasks aligned with your network priorities, while enhancing`
+        }), $t({ defaultMessage: 'performance through IntentAI\'s advanced AI/ML technologies.' })]}
+        helpUrl={helpUrl} />
       <Table<IntentListItem>
         key={JSON.stringify(selectedFilters)}
         className='intentai-table'

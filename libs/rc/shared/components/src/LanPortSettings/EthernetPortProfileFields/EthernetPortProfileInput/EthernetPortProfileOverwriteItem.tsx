@@ -101,7 +101,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
           name={inputFieldName}
           rules={rules}
         >
-          <Input width={'100px'} />
+          <Input width={'100px'} style={{ minWidth: '60px' }} />
         </Form.Item>
         <Button
           type='link'
