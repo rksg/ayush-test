@@ -144,7 +144,7 @@ export function CloudpathServerForm () {
         {enableAccountingService && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'
-            excludeRadSec={true}/>
+            excludeRadSec={data?.type === NetworkTypeEnum.DPSK}/>
           {(data?.type && accountingProxyNetworkTypes.includes(data.type))&&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
