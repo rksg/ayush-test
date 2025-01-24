@@ -24,7 +24,7 @@ import {
   VenueMdnsFencingPolicy
 } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }               from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -42,10 +42,11 @@ export interface MdnsFencingContextType {
 export const MdnsFencingContext = createContext({} as MdnsFencingContextType)
 
 
-export function MdnsFencing () {
+export function MdnsFencing (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const { isAllowEdit=true } = props
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
@@ -225,6 +226,7 @@ export function MdnsFencing () {
                 valuePropName='checked'
                 children={
                   <Switch
+                    disabled={!isAllowEdit}
                     checked={enableMdnsFencing}
                     onClick={(checked) => {
                       handleEnableChanged(checked)
@@ -241,7 +243,7 @@ export function MdnsFencing () {
               <Form.Item required
                 label={$t({ defaultMessage: 'Manage Fencing services' })}
                 children={
-                  <MdnsFencingServiceTable />
+                  <MdnsFencingServiceTable isAllowEdit={isAllowEdit}/>
                 }
               />
             </Col>
