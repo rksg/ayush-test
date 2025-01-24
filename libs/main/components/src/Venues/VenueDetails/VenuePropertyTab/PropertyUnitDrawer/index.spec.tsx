@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                    from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                                              from '@acx-ui/test-utils'
-import { EdgeScopes, RolesEnum, WifiScopes }                                                                  from '@acx-ui/types'
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                                                  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }                                            from '@acx-ui/test-utils'
+import { EdgeScopes, RolesEnum, WifiScopes }                                                                from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
@@ -117,7 +117,7 @@ describe('Property Unit Drawer', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))
       ),
       rest.get(
-        CommonRbacUrlsInfo.getVenueLanPorts.url,
+        WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))
       ),
       rest.get(

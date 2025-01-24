@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 
 import { Divider, Menu } from 'antd'
 import moment            from 'moment-timezone'
@@ -363,6 +363,10 @@ function EdgeWidgets () {
 
 function CommonDashboardWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <GridRow>
