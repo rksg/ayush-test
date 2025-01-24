@@ -141,6 +141,7 @@ export enum Features {
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   RUCKUS_ONBOARDING_ASSISTANT_TOGGLE = 'ruckus-gen-ai-onboarding-assistant',
+  SUBSCRIPTIONS_PAGESIZE_TOGGLE = 'acx-ui-subscriptions-pagesize-toggle',
   SSO = 'ADMN-SSO',
   SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
