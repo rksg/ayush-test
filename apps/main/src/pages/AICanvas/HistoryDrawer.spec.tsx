@@ -111,6 +111,8 @@ describe('HistoryDrawer', () => {
     expect(mockedDelete).toBeCalledTimes(1)
     const editButton = screen.getAllByTestId('edit')
     await userEvent.click(editButton[0])
+    const confirmButton = screen.getAllByTestId('confirm')
+    await userEvent.click(confirmButton[0])
     expect(mockedUpdate).toBeCalledTimes(1)
   })
 })
