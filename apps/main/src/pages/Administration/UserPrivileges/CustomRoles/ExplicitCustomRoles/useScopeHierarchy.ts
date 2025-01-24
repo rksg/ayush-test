@@ -16,6 +16,10 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
               key: 'wifi.venue.wifi'
             },
             {
+              title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Management' }),
+              key: 'wifi.venue.venue_management'
+            },
+            {
               title: $t({ defaultMessage: 'Property Management' }),
               key: 'wifi.venue.property_management'
             },
@@ -88,6 +92,10 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
             {
               title: $t({ defaultMessage: 'MDNS Proxy' }),
               key: 'wifi.network_control_services.mdns_proxy'
+            },
+            {
+              title: $t({ defaultMessage: 'DHCP' }),
+              key: 'wifi.network_control_services.dhcp'
             }
           ]
         },
@@ -192,7 +200,18 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
               key: 'wired.clients.wired'
             }
           ]
+        },
+        {
+          title: $t({ defaultMessage: 'Network Control (Services)' }),
+          key: 'wired.network_control_services',
+          children: [
+            {
+              title: $t({ defaultMessage: 'Web Authority' }),
+              key: 'wired.network_control_services.web.authority'
+            }
+          ]
         }
+
       ]
     } as TreeDataNode,
     {
@@ -204,28 +223,38 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
           key: 'getways.ruckusEdge',
           children: [
             {
-              title: $t({ defaultMessage: 'RWG' }),
-              key: 'getways.ruckusEdge.rwg'
+              title: $t({ defaultMessage: 'Edge Management' }),
+              key: 'getways.ruckusEdge.edge_anagement'
             },
             {
+              title: $t({ defaultMessage: 'RWG' }),
+              key: 'getways.ruckusEdge.rwg'
+            }
+          ]
+        },
+        {
+          title: $t({ defaultMessage: 'Network Control (Services)' }),
+          key: 'getways.network_control_services)',
+          children: [
+            {
               title: $t({ defaultMessage: 'DHCP' }),
-              key: 'getways.ruckusEdge.dhcp'
+              key: 'getways.network_control_services.dhcp'
             },
             {
               title: $t({ defaultMessage: 'QoS' }),
-              key: 'getways.ruckusEdge.qos'
+              key: 'getways.network_control_services.qos'
             },
             {
               title: $t({ defaultMessage: 'PIN' }),
-              key: 'getways.ruckusEdge.pin'
+              key: 'getways.network_control_services.pin'
             },
             {
               title: $t({ defaultMessage: 'SDLAN' }),
-              key: 'getways.ruckusEdge.sdlan'
+              key: 'getways.network_control_services.sdlan'
             },
             {
               title: $t({ defaultMessage: 'MDNS Proxy' }),
-              key: 'getways.ruckusEdge.mdsProxy'
+              key: 'getways.network_control_services.mdsProxy'
             }
           ]
         }

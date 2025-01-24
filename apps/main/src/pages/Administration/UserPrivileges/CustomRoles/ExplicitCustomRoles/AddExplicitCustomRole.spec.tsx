@@ -122,7 +122,7 @@ describe('Add Explicit Custom Role', () => {
     await userEvent.click(screen.getAllByRole('checkbox')[2])
     await userEvent.click(screen.getAllByRole('checkbox')[3])
     await userEvent.click(screen.getAllByRole('button', { name: 'Expand row' })[0])
-    const row = await screen.findByRole('row', { name: /Property Management/i })
+    const row = await screen.findByRole('row', { name: /Venue Management/i })
     await userEvent.click(within(row).getAllByRole('checkbox')[1])
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))

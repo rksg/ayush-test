@@ -431,7 +431,7 @@ export const fakedCustomRoleLsit = [
   }
 ]
 
-export const fakedExplicitCustomRoleLsit = [
+export const fakedExplicitCustomRoleList = [
   {
     description: 'Admin Role',
     id: '1765e98c7b9446e2a5bdd4720e0e8911',

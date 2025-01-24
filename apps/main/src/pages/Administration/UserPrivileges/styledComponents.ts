@@ -114,6 +114,7 @@ export const PermissionCheckbox = styled(Checkbox)`
   }
 `
 export const PermissionTableWrapper = styled.div`
+  padding-bottom: 80px;
   .grid-item.ant-form-item {
     display: flex;
     flex-direction: row;
