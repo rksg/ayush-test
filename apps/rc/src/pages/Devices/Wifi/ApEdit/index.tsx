@@ -31,6 +31,10 @@ const tabs = {
   advanced: AdvancedTab
 }
 
+export type ApEditItemProps = {
+  isAllowEdit?: boolean
+}
+
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
   apCapabilities?: CapabilitiesApModel,

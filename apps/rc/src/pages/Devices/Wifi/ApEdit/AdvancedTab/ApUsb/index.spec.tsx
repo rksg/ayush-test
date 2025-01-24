@@ -1,10 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, WifiRbacUrlsInfo }                           from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi, venueApi }    from '@acx-ui/rc/services'
+import { WifiRbacUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 
@@ -104,7 +110,7 @@ describe('AP USB', () => {
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(CommonRbacUrlsInfo.getVenueApUsbStatus.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApUsbStatus.url,
         (_, res, ctx) => res(ctx.json(mockVenueUsb))),
       rest.get(WifiRbacUrlsInfo.getApUsb.url,
         (_, res, ctx) => res(ctx.json(mockApUsbSettings))),

@@ -191,3 +191,29 @@ const identifyExistKey = (entityType: EntityType) => {
       return entityType
   }
 }
+
+export const getDetail = (data: Event) => {
+  try {
+    // eslint-disable-next-line max-len
+    let detailedDescription = data.detailedDescription && JSON.parse(data.detailedDescription).message_template
+    const template = replaceStrings(detailedDescription, data, (key) => `<entity>${key}</entity>`)
+    if (!template) return null
+
+    // rename to prevent it being parse by extraction process
+    const FormatMessage = FormattedMessage
+    return <FormatMessage
+      id='events-detailedDescription-template'
+      // escape ' by replacing with '' as it is special character of formatjs
+      defaultMessage={template.replaceAll("'", "''")}
+      values={{
+        entity: (chunks) => <EntityLink
+          entityKey={String(chunks[0]) as keyof Event}
+          data={data}
+        />,
+        b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
+      }}
+    />
+  } catch {
+    return null
+  }
+}
