@@ -1,14 +1,12 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { eventAlarmApi, networkApi } from '@acx-ui/rc/services'
+import { eventAlarmApi, getAggregatedList, networkApi } from '@acx-ui/rc/services'
 import {
   Alarm,
-  CommonRbacUrlsInfo,
-  CommonUrlsInfo
+  AlarmMeta
 } from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
-import {  mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Provider, store }                             from '@acx-ui/store'
+import {  fireEvent, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { venuelist } from '../ApGroupEdit/__tests__/fixtures'
 
@@ -31,6 +29,7 @@ const alarmList = {
       severity: 'Major',
       serialNumber: 'FEK3224R08J',
       entityType: 'AP',
+      venueName: 'My-Venue',
       startTime: 1657686000000,
       entityId: 'FEK3224R08J',
       id: 'FEK3224R08J_ap_status',
@@ -45,7 +44,9 @@ const alarmList = {
       id: 'FEK3224R08Q_edge_status',
       message: '{ "message_template": "@@edgeName disconnected." }'
     }
-  ] as Alarm[]
+  ] as Alarm[],
+  page: 1,
+  totalCount: 3
 }
 
 const alarmListMeta = {
@@ -60,60 +61,48 @@ const alarmListMeta = {
       id: 'FEK3224R08J_ap_status'
     },
     {
-      egdeName: 'Some_Edge',
-      id: 'FEK3224R08Q_edge_status'
+      edgeName: 'Some_Edge',
+      id: 'FEK3224R08Q_edge_status',
+      isSwitchExists: false,
+      switchName: '',
+      apName: ''
     }
-  ],
-  fields: [
-    'venueName',
-    'apName',
-    'switchName',
-    'edgeName'
-  ]
+  ] as AlarmMeta[],
+  page: 1,
+  totalCount: 3
 }
+const alarmResult = getAggregatedList(alarmList, alarmListMeta)
 const services = require('@acx-ui/rc/services')
+const mockClearAlarmMutation = jest.fn().mockImplementation(() => Promise.resolve())
+const mockClearAlarmByVenueMutation = jest.fn().mockImplementation(() => Promise.resolve())
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useClearAlarmMutation: () => ([ mockClearAlarmMutation, { isLoading: false } ]),
+  useClearAlarmByVenueMutation: () => ([ mockClearAlarmByVenueMutation, { isLoading: false } ])
+}))
 
 describe('NewAlarmsDrawer', () => {
-  const requestMetasSpy = jest.fn()
-  const deleteByVenue = jest.fn()
-  const deleteAlarm = jest.fn()
   beforeEach(async () => {
     store.dispatch(eventAlarmApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
-    jest.spyOn(services, 'useAlarmsListQuery')
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json(venuelist))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAlarmsList.url,
-        (_, res, ctx) => res(ctx.json(alarmList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAlarmsListMeta.url,
-        (_, res, ctx) => {
-          requestMetasSpy()
-          return res(ctx.json(alarmListMeta))}
-      ),
-      rest.delete(
-        CommonRbacUrlsInfo.clearAlarmByVenue.url,
-        (_, res, ctx) => {
-          deleteByVenue()
-          return res(ctx.json({}))}
-      ),
-      rest.patch(
-        CommonUrlsInfo.clearAlarm.url,
-        (_, res, ctx) => {
-          deleteAlarm()
-          return res(ctx.json({}))}
-      )
-    )
-    requestMetasSpy.mockClear()
-    deleteByVenue.mockClear()
-    deleteAlarm.mockClear()
-  })
-  afterEach(() => {
+    services.useAlarmsListQuery = jest.fn().mockImplementation((arg) => {
+      let result = alarmResult
+      if (arg.payload?.filters?.venueId) {
+        const venueName = venuelist.data.find(v =>
+          arg.payload?.filters?.venueId.includes(v.id))?.name ?? ''
+        const data = result.data?.filter(a => a.venueName === venueName)
+        result.data = data
+      }
+      if (arg.payload?.filters?.serialNumber) {
+        const data = result.data?.filter(a =>
+          arg.payload?.filters?.serialNumber.includes(a.serialNumber))
+        result.data = data
+      }
+      return { data: result }
+    })
+    services.useGetVenuesQuery = jest.fn().mockImplementation(() => {
+      return { data: venuelist }
+    })
   })
   it('should show alarms drawer', async () => {
     render(
@@ -131,7 +120,6 @@ describe('NewAlarmsDrawer', () => {
     ))
 
     await waitFor(() => expect(screen.getByText('Some_Switch')).toBeVisible())
-    await waitFor(() => expect(requestMetasSpy).toBeCalledTimes(2))
 
     expect(await screen.findByRole('tab', { name: 'New Alarms' })).toBeVisible()
     expect(await screen.findByRole('tab', { name: 'Cleared Alarms' })).toBeVisible()
@@ -139,11 +127,37 @@ describe('NewAlarmsDrawer', () => {
     expect(await screen.findByText('Products')).toBeVisible()
     expect(await screen.findByText('Some_Switch')).toBeVisible()
 
-    await userEvent.click((await screen.findByText('Clear all alarms')))
-
-    await waitFor(() => expect(deleteByVenue).toBeCalled())
     const cancelButton = await screen.findByRole('button', { name: 'Close' })
     await userEvent.click(cancelButton)
+  })
+  it('should clear alarms correctly', async () => {
+    render(
+      <Provider>
+        <NewAlarmsDrawer visible={true} setVisible={jest.fn()}/>
+      </Provider>, {
+        route: { params: {
+          tenantId: 'tenant-id'
+        } }
+      }
+    )
+
+    window.dispatchEvent(new CustomEvent('showAlarmDrawer',
+      { detail: { data: { name: 'all' } } }
+    ))
+
+    expect(await screen.findByText('Some_Switch')).toBeVisible()
+    expect(await screen.findByText('Some_AP')).toBeVisible()
+    expect(await screen.findByText('Some_Edge')).toBeVisible()
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const clearBtn = await within(tbody).findAllByRole('button')
+    fireEvent.click(clearBtn[0])
+    await waitFor(() => expect(mockClearAlarmMutation).toBeCalled())
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Clear all alarms' }))
+    await waitFor(() => expect(mockClearAlarmByVenueMutation).toBeCalled())
   })
   it('should set selected filters in alarms drawer correctly', async () => {
     render(
@@ -161,7 +175,6 @@ describe('NewAlarmsDrawer', () => {
     ))
 
     await waitFor(() => expect(screen.getByText('Major')).toBeVisible())
-    await waitFor(() => expect(requestMetasSpy).toBeCalledTimes(3))
 
     expect(await screen.findByText('Some_Switch')).toBeVisible()
     expect(await screen.findAllByRole('combobox')).toHaveLength(2)
@@ -179,7 +192,7 @@ describe('NewAlarmsDrawer', () => {
     expect(screen.queryByText('Major')).toBeNull()
     expect(screen.getByText('Wi-Fi')).toBeVisible()
   })
-  it('should clear alarm correctly', async () => {
+  it('should filter data correctly', async () => {
     render(
       <Provider>
         <NewAlarmsDrawer visible={true} setVisible={jest.fn()}/>
@@ -198,16 +211,5 @@ describe('NewAlarmsDrawer', () => {
     await waitFor(() => expect(screen.queryByText('Some_AP')).toBeNull())
     await waitFor(() => expect(screen.queryByText('Some_Edge')).toBeNull())
     expect(await screen.findByText('Some_Switch')).toBeVisible()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Clear all alarms' }))
-
-    // eslint-disable-next-line testing-library/no-node-access
-    const tbody = screen.getByRole('table').querySelector('tbody')!
-    expect(tbody).toBeVisible()
-    const clearBtn = await within(tbody).findAllByRole('button')
-    await userEvent.click(clearBtn[0])
-
-    await waitFor(() => expect(deleteAlarm).toBeCalled())
-    await waitFor(() => expect(screen.queryByTestId('Some_Switch')).toBeNull())
   })
 })
