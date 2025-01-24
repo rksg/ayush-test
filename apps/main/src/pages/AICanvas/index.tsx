@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Spin }         from 'antd'
 import { debounce }     from 'lodash'
@@ -8,7 +8,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button, Loader, Tooltip }               from '@acx-ui/components'
+import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery } from '@acx-ui/rc/services'
@@ -31,13 +31,13 @@ export default function AICanvas () {
   const [loading, setLoading] = useState(false)
   const [isChatLoading, setIsChatLoading] = useState(true)
   const [historyVisible, setHistoryVisible] = useState(false)
+  const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[])
   const [ searchText, setSearchText ] = useState('')
   const [ isNewChat, setIsNewChat ] = useState(false)
 
-
-  const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
+  const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
   const questions = [
@@ -141,6 +141,57 @@ export default function AICanvas () {
     setChats(response.messages)
   }
 
+  const onClickClose = () => {
+    if (canvasHasChanges) {
+      showActionModal({
+        type: 'confirm',
+        width: 400,
+        title: $t({ defaultMessage: 'Unsaved Canvas Changes' }),
+        content: $t({ defaultMessage: 'Are you sure you want to cancel the chatbot?' +
+            ' Unsaved changes to the canvas will be lost.' }),
+        onOk: handleSaveCanvas,
+        onCancel: () => {},
+        customContent: {
+          action: 'CUSTOM_BUTTONS',
+          buttons: [{
+            text: $t({ defaultMessage: 'Cancel' }),
+            type: 'default',
+            key: 'cancel'
+          }, {
+            text: $t({ defaultMessage: 'Save Canvas' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true
+          }, {
+            text: $t({ defaultMessage: 'Discard Changes' }),
+            type: 'primary',
+            key: 'discard',
+            closeAfterAction: true,
+            handler: handleDiscardChanges
+          }]
+        }
+      })
+    } else {
+      onClose()
+    }
+  }
+
+  const handleCanvasChange = useCallback((hasChanges: boolean) => {
+    setCanvasHasChanges(hasChanges)
+  }, [])
+
+  const handleSaveCanvas = async () => {
+    // TODO: implement save canvas logic
+    setCanvasHasChanges(false)
+    onClose()
+  }
+
+  const handleDiscardChanges = () => {
+    // TODO: implement discard changes logic
+    setCanvasHasChanges(false)
+    onClose()
+  }
+
   const onClose = () => {
     navigate(linkToDashboard)
   }
@@ -201,7 +252,7 @@ export default function AICanvas () {
                     <Tooltip
                       placement='right'
                       title={historyData && historyData.length >= 10
-                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10). 
+                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
                         : ''}
                     >
@@ -221,7 +272,7 @@ export default function AICanvas () {
                 <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <Close onClick={()=>{onClose()}}/>
+                <Close onClick={onClickClose}/>
               </div>
             </div>
             <div className='content'>
@@ -269,7 +320,7 @@ export default function AICanvas () {
             </div>
           </div>
         </div>
-        <Canvas />
+        <Canvas onCanvasChange={handleCanvasChange} />
         <HistoryDrawer
           visible={historyVisible}
           onClose={onHistoryDrawer}

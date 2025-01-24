@@ -81,7 +81,9 @@ const DEFAULT_CANVAS = [
   }
 ] as unknown as Section[]
 
-export default function Canvas () {
+export default function Canvas ({ onCanvasChange }: {
+  onCanvasChange?: (hasChanges: boolean) => void
+}) {
   const { $t } = useIntl()
   // const [widgets, setWidgets] = useState([])
   const [groups, setGroups] = useState([] as Group[])
@@ -98,26 +100,38 @@ export default function Canvas () {
     getDefaultCanvas()
   }, [])
 
+  useEffect(() => {
+    // TODO: check for changes
+    notifyChange(true)
+  }, [groups, sections])
+
   // const getFromLS = () => {
   //   let ls = localStorage.getItem('acx-ui-canvas') ?
   //     JSON.parse(localStorage.getItem('acx-ui-canvas') || '') : DEFAULT_CANVAS // mockData
   //   return ls
   // }
 
-  const getDefaultCanvas = async ()=>{
+  const notifyChange = (hasChanges: boolean) => {
+    if (onCanvasChange) {
+      onCanvasChange(hasChanges)
+    }
+  }
+
+  const getDefaultCanvas = async () => {
     const response = await getCanvas({}).unwrap()
-    if(response?.length && response[0].content){
+    if (response?.length && response[0].content) {
       setCanvasId(response[0].id)
       const data = JSON.parse(response[0].content)
       setSections(data)
       const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
       setGroups(group)
     } else {
-      if(response?.length && response[0].id){
+      if (response?.length && response[0].id) {
         setCanvasId(response[0].id)
       }
       emptyCanvas()
     }
+    notifyChange(false)
   }
 
   const onSave = async () => {
@@ -126,12 +140,12 @@ export default function Canvas () {
     tmp.forEach(s => {
       s.groups = groups.filter(g => g.sectionId === s.id)
       s.groups.forEach(g => {
-        if(g.cards.length && !hasCard) {
+        if (g.cards.length && !hasCard) {
           hasCard = true
         }
       })
     })
-    if(canvasId) {
+    if (canvasId) {
       await updateCanvas({
         params: { canvasId },
         payload: {
@@ -139,6 +153,7 @@ export default function Canvas () {
         }
       })
     }
+    notifyChange(false)
     // localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
 
