@@ -46,6 +46,9 @@ export interface RecipientDrawerProps {
 interface RecipientSaveModel {
   id?: string;    // editMode used
   description: string;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean;
+  privilegeGroupId?: string
   endpoints: {
     id?: string;  // editMode used
     active: boolean;
@@ -55,8 +58,8 @@ interface RecipientSaveModel {
 }
 
 enum RecipientType {
-  GlobalRecipient,
-  AdminRecipient
+  GlobalRecipient = 'GlobalRecipient',
+  AdminRecipient = 'AdminRecipient'
 }
 
 export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
@@ -73,7 +76,7 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   } = props
   const [isChanged, setIsChanged] = useState(false)
   const [isValid, setIsValid] = useState(false)
-  const [recipientType, setRecipientType] = useState<RecipientType.GlobalRecipient>()
+  const [recipientType, setRecipientType] = useState(RecipientType.AdminRecipient)
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
 
@@ -82,17 +85,45 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   const groupList = privilegeGroupList?.map((item) => ({
     label: roleStringMap[item.name as RolesEnum]
       ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
-    value: item.name
+    value: item.id
   }))
 
+  // sample payload for privilege group
+  // const pgPayload :
+  // {
+  //     description: 'Admin Contextual 22',
+  //     emailPreferences: true,
+  //     smsPreferences: false,
+  //     privilegeGroupId: '2765e98c7b9446e2a5bdd4720e0e8914'
+  // }
+  // sample payload for global recipient
+  // const GlobalPayload :
+  // {
+  //     description: 'Admin Contextual 23',
+  //     endpoints: [
+  //     {
+  //         type: 'EMAIL',
+  //         destination: 'est2@abc.com',
+  //         active: true,
+  //         status: 'OK'
+  //     }
+  //     ]
+  // }
   const getSavePayload = (data: NotificationRecipientUIModel) => {
     let dataToSave = {
       description: data.description,
       endpoints: []
     } as RecipientSaveModel
 
+    // recipientType == RecipientType.AdminRecipient
+    dataToSave.privilegeGroupId = data.privilegeGroup
+    dataToSave.smsPreferences = data.smsPreferences
+    dataToSave.emailPreferences = data.emailPreferences
+
+    // recipientType == RecipientType.GlobalRecipient
     const emailVal = data.email?.trim()
     const mobileVal = data.mobile?.trim()
+
     if (editMode) {
       dataToSave.id = data.id
 
@@ -196,6 +227,11 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   const handleSubmit = async () => {
     const allData = form.getFieldsValue(true)
     const payload = getSavePayload(allData)
+    try {
+      await form.validateFields()
+    } catch(err) {
+      return
+    }
 
     try {
       if (editMode) {
@@ -256,7 +292,7 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     form.validateFields(['mobile'])
   }
 
-  const handleMessageMethodChange = (e: RadioChangeEvent) => {
+  const handleRecipientTypeChange = (e: RadioChangeEvent) => {
     setRecipientType(e.target.value)
   }
 
@@ -264,13 +300,16 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     if (editData && visible) {
       form.setFieldsValue(editData)
     }
+    setRecipientType(editData?.privilegeGroup
+      ? RecipientType.AdminRecipient
+      : RecipientType.GlobalRecipient)
   }, [form, editData, visible])
 
   const isLoading = addState.isLoading || updateState.isLoading
   const disableSave = !(isChanged && isValid)
 
-  const GlobalRecipientContent = () => {
-    return ( <>
+  const GlobalRecipientContent =
+    <>
       <Subtitle level={5}>
         {$t({ defaultMessage: 'Delivery Preference' })}
       </Subtitle>
@@ -338,58 +377,55 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
             </Form.Item>
           </Col>
         </Row>
-      </Form.Item></>
-    )}
+      </Form.Item>
+    </>
 
-  const AdminRecipientContent = () => {
-    return (
-      <>
-        <Form.Item
-          name='role'
-          label={$t({ defaultMessage: 'Privilege Group Name' })}
-          rules={[{ required: true }]}
-        >
-          <Select
-            options={groupList}
-            // onChange={handleChange}
-            placeholder={$t({ defaultMessage: 'Select Group' })}
-          />
-        </Form.Item>
-
-        <Subtitle level={5}>
-          {$t({ defaultMessage: 'Delivery Preference' })}
-        </Subtitle>
-        <Form.Item
-          required
-          label={$t({ defaultMessage: 'At least one delivery method must be defined.' })}
-          className='email_mobile_help'
+  const AdminRecipientContent =
+    <>
+      <Form.Item
+        name='privilegeGroup'
+        label={$t({ defaultMessage: 'Privilege Group Name' })}
+        rules={[{ required: true }]}
+      >
+        <Select
+          options={groupList}
+          placeholder={$t({ defaultMessage: 'Select Group' })}
         />
+      </Form.Item>
 
-        <UI.FieldLabel width={'45px'}>
-          <Form.Item
-            name={'portProtected'}
-            initialValue={false}
-            valuePropName='checked'
-            children={<Switch data-testid='portProtected'/>}
-          />
-          <Space align='start'>
-            { $t({ defaultMessage: 'Enable Email Nortifications' }) }
-          </Space>
-        </UI.FieldLabel>
+      <Subtitle level={5}>
+        {$t({ defaultMessage: 'Delivery Preference' })}
+      </Subtitle>
+      <Form.Item
+        required
+        label={$t({ defaultMessage: 'At least one delivery method must be defined.' })}
+        className='email_mobile_help'
+      />
 
-        <UI.FieldLabel width={'45px'}>
-          <Form.Item
-            name={'portProtected'}
-            initialValue={false}
-            valuePropName='checked'
-            children={<Switch data-testid='portProtected'/>}
-          />
-          <Space align='start'>
-            { $t({ defaultMessage: 'Enable SMS Notifications' }) }
-          </Space>
-        </UI.FieldLabel>
-      </>
-    )}
+      <UI.FieldLabel width={'45px'}>
+        <Form.Item
+          name={'enableEmailNotification'}
+          initialValue={false}
+          valuePropName='checked'
+          children={<Switch data-testid='enableEmailNotification'/>}
+        />
+        <Space align='start'>
+          { $t({ defaultMessage: 'Enable Email Nortifications' }) }
+        </Space>
+      </UI.FieldLabel>
+
+      <UI.FieldLabel width={'45px'}>
+        <Form.Item
+          name={'enableSmsNotification'}
+          initialValue={false}
+          valuePropName='checked'
+          children={<Switch data-testid='enableSmsNotification'/>}
+        />
+        <Space align='start'>
+          { $t({ defaultMessage: 'Enable SMS Notifications' }) }
+        </Space>
+      </UI.FieldLabel>
+    </>
 
   return (
     <Drawer
@@ -415,18 +451,11 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
         />
       }
 
-    //   okText={$t({ defaultMessage: 'Save' })}
-    //   keyboard={false}
-    //   maskClosable={false}
-    //   onOk={() => form.submit()}
-    //   onCancel={handleClose}
-    //   okButtonProps={{ disabled: disableSave || isLoading }}
-    //   destroyOnClose={true}
     >
       <Form
         form={form}
         layout='vertical'
-        onFinish={handleSubmit}
+        // onFinish={handleSubmit}
         onFieldsChange={handleInputChange}
       >
         <Form.Item
@@ -437,7 +466,7 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
           ]}
         >
           <Radio.Group
-            onChange={handleMessageMethodChange}
+            onChange={handleRecipientTypeChange}
             value={recipientType}
           >
             <Space direction='vertical'>
@@ -461,9 +490,9 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
         >
           <Input/>
         </Form.Item>
-        {recipientType === RecipientType.GlobalRecipient
-          ? <GlobalRecipientContent />
-          : <AdminRecipientContent />}
+        {recipientType as RecipientType === RecipientType.GlobalRecipient
+          ? GlobalRecipientContent
+          : AdminRecipientContent}
       </Form>
     </Drawer>
   )

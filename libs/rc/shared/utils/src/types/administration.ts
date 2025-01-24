@@ -185,7 +185,7 @@ export interface NotificationRecipientUIModel {
   recipientType: NotificationRecipientType;
   emailPreferences?: boolean;
   smsPreferences?: boolean,
-  privilegeGroup?: { id: string };
+  privilegeGroup?: string;
   endpoints: NotificationEndpoint[];
   email: string;
   emailEnabled: boolean;
