@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                 from '@acx-ui/store'
+import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -193,7 +193,7 @@ describe('AAA Instance Page', () => {
       editMode: true, cloneMode: false, isRuckusAiMode: false,
       data: {}
     }}><Form form={formRef.current} >
-        <AAAInstance serverLabel='' type='authRadius' networkType={NetworkTypeEnum.PSK}/>
+        <AAAInstance serverLabel='' type='authRadius' excludeRadSec={true}/>
       </Form></NetworkFormContext.Provider></Provider>,
     {
       route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
@@ -228,7 +228,7 @@ describe('AAA Instance Page', () => {
       editMode: true, cloneMode: false, isRuckusAiMode: false,
       data: {}
     }}><Form form={formRef.current} >
-        <AAAInstance serverLabel='' type='authRadius' networkType={NetworkTypeEnum.PSK}/>
+        <AAAInstance serverLabel='' type='authRadius' excludeRadSec={true}/>
       </Form></NetworkFormContext.Provider></Provider>,
     {
       route: { params: { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' } }
