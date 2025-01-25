@@ -385,6 +385,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             description: data.description,
             emailPreferences: data.emailPreferences,
             smsPreferences: data.smsPreferences,
+            privilegeGroup: data.privilegeGroup,
             recipientType: data.privilegeGroup
               ? NotificationRecipientType.PRIVILEGEGROUP : NotificationRecipientType.GLOBAL,
             endpoints: data.endpoints

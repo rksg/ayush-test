@@ -208,7 +208,7 @@ export interface NotificationRecipientResponse {
   description: string;
   emailPreferences?: boolean;
   smsPreferences?: boolean,
-  privilegeGroup?: { id: string };
+  privilegeGroup?: string;
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
