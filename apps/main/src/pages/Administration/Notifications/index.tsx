@@ -33,7 +33,7 @@ import {
 } from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { AddRecipientDrawer }   from './AddRecipientDrawer'
+import AddRecipientDrawer       from './AddRecipientDrawer'
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
 import RecipientDialog          from './RecipientDialog'

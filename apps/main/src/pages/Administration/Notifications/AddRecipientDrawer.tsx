@@ -13,9 +13,10 @@ import {
 import _             from 'lodash'
 import { FieldData } from 'rc-field-form/lib/interface'
 import { useIntl }   from 'react-intl'
+import styled        from 'styled-components'
 
-import { Drawer, Select, showToast, Subtitle } from '@acx-ui/components'
-import { PhoneInput }                          from '@acx-ui/rc/components'
+import { Button, Drawer, Select, showToast, Subtitle } from '@acx-ui/components'
+import { PhoneInput }                                  from '@acx-ui/rc/components'
 import {
   useAddRecipientMutation,
   useGetPrivilegeGroupsQuery,
@@ -43,26 +44,38 @@ export interface RecipientDrawerProps {
   isDuplicated: (type: string, value: string) => boolean;
 }
 
-interface RecipientSaveModel {
-  id?: string;    // editMode used
-  description: string;
-  emailPreferences?: boolean;
-  smsPreferences?: boolean;
-  privilegeGroupId?: string
-  endpoints: {
-    id?: string;  // editMode used
-    active: boolean;
-    destination: string;
-    type: string;
-  }[];
+interface Recipient {
+    id?: string;    // editMode used
+    description: string;
 }
+
+interface GlobalRecipient extends Recipient {
+    emailPreferences?: never;
+    smsPreferences?: never;
+    privilegeGroupId?: never;
+    endpoints: {
+        id?: string;  // editMode used
+        active: boolean;
+        destination: string;
+        type: string;
+    }[];
+}
+
+interface AdminRecipient extends Recipient {
+    emailPreferences: boolean;
+    smsPreferences: boolean;
+    privilegeGroupId: string
+    endpoints?: never;
+}
+
+type RecipientSaveModel = GlobalRecipient | AdminRecipient
 
 enum RecipientType {
   GlobalRecipient = 'GlobalRecipient',
   AdminRecipient = 'AdminRecipient'
 }
 
-export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
+const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
@@ -74,9 +87,15 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     editData,
     isDuplicated
   } = props
-  const [isChanged, setIsChanged] = useState(false)
   const [isValid, setIsValid] = useState(false)
-  const [recipientType, setRecipientType] = useState(RecipientType.AdminRecipient)
+  const [loading, setLoading] = useState(false)
+  const [recipientType, setRecipientType] = useState(RecipientType.GlobalRecipient)
+  const [emailEnabled, setEmailEnabled] = useState(false)
+  const [mobileEnabled, setMobileEnabled] = useState(false)
+  const [emailSwitchDisabled, setEmailSwitchDisabled] = useState(true)
+  const [mobileSwitchDisabled, setMobileSwitchDisabled] = useState(true)
+  const [emailPreferences, setEmailPreferences] = useState(false)
+  const [smsPreferences, setSmsPreferences] = useState(false)
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
 
@@ -87,6 +106,27 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
     value: item.id
   }))
+
+  useEffect(()=>{
+    if (editData && visible) {
+      form.setFieldsValue(editData)
+      setEmailEnabled(editData.emailEnabled)
+      setMobileEnabled(editData.mobileEnabled)
+      setEmailSwitchDisabled(!editData.emailEnabled)
+      setMobileSwitchDisabled(!editData.mobileEnabled)
+      setEmailPreferences(editData.emailPreferences ?? false)
+      setSmsPreferences(editData.smsPreferences ?? false)
+    }
+    const recipient = editData?.privilegeGroup
+      ? RecipientType.AdminRecipient
+      : RecipientType.GlobalRecipient
+    setRecipientType(recipient)
+    form.setFieldValue('recipientType', recipient)
+  }, [form, editData, visible])
+
+  useEffect(() => {
+    setLoading(addState.isLoading || updateState.isLoading)
+  }, [addState.isLoading, updateState.isLoading])
 
   // sample payload for privilege group
   // const pgPayload :
@@ -111,75 +151,79 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   // }
   const getSavePayload = (data: NotificationRecipientUIModel) => {
     let dataToSave = {
-      description: data.description,
-      endpoints: []
+      description: data.description
     } as RecipientSaveModel
 
-    // recipientType == RecipientType.AdminRecipient
-    dataToSave.privilegeGroupId = data.privilegeGroup
-    dataToSave.smsPreferences = data.smsPreferences
-    dataToSave.emailPreferences = data.emailPreferences
-
-    // recipientType == RecipientType.GlobalRecipient
-    const emailVal = data.email?.trim()
-    const mobileVal = data.mobile?.trim()
-
-    if (editMode) {
-      dataToSave.id = data.id
-
-      // need endpoint "id", it will tell API do endpint update
-      // without it API will try to create new endpoint
-      dataToSave.endpoints = data.endpoints.map((point) =>
-        _.pick(point, ['id', 'active', 'destination', 'type'])
-      )
-
-      let endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.email)
-      if (endpoint) {
-        endpoint.destination = emailVal
-        endpoint.active = data.emailEnabled
-      } else if (emailVal) {
-        dataToSave.endpoints.push({
-          active: data.emailEnabled,
-          destination: emailVal,
-          type: NotificationEndpointType.email
-        })
+    if (recipientType === RecipientType.AdminRecipient) {
+      if (editMode) {
+        dataToSave.id = data.id
       }
+      dataToSave.privilegeGroupId = data.privilegeGroup
+      dataToSave.smsPreferences = smsPreferences
+      dataToSave.emailPreferences = emailPreferences
+    }
+    else if (recipientType === RecipientType.GlobalRecipient) {
+      dataToSave.endpoints = []
+      const emailVal = data.email?.trim()
+      const mobileVal = data.mobile?.trim()
 
-      endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.sms)
-      if (endpoint) {
-        endpoint.destination = mobileVal
-        endpoint.active = data.mobileEnabled
-      } else if (mobileVal) {
-        dataToSave.endpoints.push({
-          active: data.mobileEnabled,
-          destination: mobileVal,
-          type: NotificationEndpointType.sms
-        })
-      }
+      if (editMode) {
+        dataToSave.id = data.id
 
-      // clear empty endpoints
-      for (let i = 0; i < dataToSave.endpoints.length; i++) {
-        if (dataToSave.endpoints[i].destination === '') {
-          dataToSave.endpoints.splice(i, 1)
+        // need endpoint "id", it will tell API do endpoint update
+        // without it API will try to create new endpoint
+        dataToSave.endpoints = data.endpoints.map((point) =>
+          _.pick(point, ['id', 'active', 'destination', 'type'])
+        )
+
+        let endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.email)
+        if (endpoint) {
+          endpoint.destination = emailVal
+          endpoint.active = emailEnabled
+        } else if (emailVal) {
+          dataToSave.endpoints.push({
+            active: emailEnabled,
+            destination: emailVal,
+            type: NotificationEndpointType.email
+          })
+        }
+
+        endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.sms)
+        if (endpoint) {
+          endpoint.destination = mobileVal
+          endpoint.active = mobileEnabled
+        } else if (mobileVal) {
+          dataToSave.endpoints.push({
+            active: mobileEnabled,
+            destination: mobileVal,
+            type: NotificationEndpointType.sms
+          })
+        }
+
+        // clear empty endpoints
+        for (let i = 0; i < dataToSave.endpoints.length; i++) {
+          if (dataToSave.endpoints[i].destination === '') {
+            dataToSave.endpoints.splice(i, 1)
+          }
         }
       }
-    } else {
-      if (emailVal) {
-        dataToSave.endpoints.push({
-          active: data.emailEnabled,
-          destination: emailVal,
-          type: NotificationEndpointType.email
-        })
-      }
-      if (mobileVal) {
-        dataToSave.endpoints.push({
-          active: data.mobileEnabled,
-          destination: mobileVal,
-          type: NotificationEndpointType.sms
-        })
+      else {
+        if (emailVal) {
+          dataToSave.endpoints?.push({
+            active: emailEnabled,
+            destination: emailVal,
+            type: NotificationEndpointType.email
+          })
+        }
+        if (mobileVal) {
+          dataToSave.endpoints?.push({
+            active: mobileEnabled,
+            destination: mobileVal,
+            type: NotificationEndpointType.sms
+          })
+        }
       }
     }
-
     return dataToSave
   }
 
@@ -190,39 +234,40 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     }
   }
 
-  const handleInputChange = (changedFields: FieldData[]) => {
-    const changedField = changedFields[0]
-    const changedFieldName = changedField.name.toString()
-    const value = changedField.value
-    const { email, mobile } = form.getFieldsValue()
-
+  const getIsValid = () => {
     const errors = form.getFieldsError()
     const hasErrors = errors.some((field) => field.errors.length > 0)
-    let isEmpty = true
+    const { description, privilegeGroup } = form.getFieldsValue()
+    if (recipientType === RecipientType.GlobalRecipient) {
+      return !hasErrors && description && (emailEnabled || mobileEnabled)
+    }
+    if (recipientType === RecipientType.AdminRecipient) {
+      return !hasErrors && description && privilegeGroup
+        && (emailPreferences || smsPreferences)
+    }
+    return false
+  }
 
-    if ((changedFieldName === 'emailEnabled' || changedFieldName === 'mobileEnabled')) {
-      isEmpty = _.isEmpty(changedFieldName === 'emailEnabled' ? email.trim() : mobile.trim())
+  const handleInputChange = (changedFields: FieldData[]) => {
+    const changedFieldName = changedFields[0].name.toString()
+    const { email, mobile } = form.getFieldsValue()
 
-      if (value === true)
-        form.setFieldValue(changedFieldName, !isEmpty)
-
-    } else {
-      isEmpty = _.isEmpty(value?.trim())
-
+    if (recipientType === RecipientType.GlobalRecipient) {
       if (changedFieldName === 'email') {
-        if (changedField.errors?.length === 0)
-          form.setFieldValue('emailEnabled', !isEmpty)
+        setEmailEnabled(!_.isEmpty(email?.trim()))
+        setEmailSwitchDisabled(_.isEmpty(email?.trim()))
       }
-
       if (changedFieldName === 'mobile') {
-        if (changedField.errors?.length === 0)
-          form.setFieldValue('mobileEnabled', !isEmpty)
+        setMobileEnabled(!_.isEmpty(mobile?.trim()))
+        setMobileSwitchDisabled(_.isEmpty(mobile?.trim()))
       }
     }
-
-    setIsValid(!hasErrors && (email?.trim() || mobile?.trim()))
-    setIsChanged(true)
+    setIsValid(getIsValid())
   }
+
+  useEffect(() => {
+    setIsValid(getIsValid())
+  }, [emailEnabled, mobileEnabled, emailPreferences, smsPreferences])
 
   const handleSubmit = async () => {
     const allData = form.getFieldsValue(true)
@@ -280,11 +325,20 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     }
   }
 
-  const handleClose = () => {
-    setIsChanged(false)
+  const resetValues = () => {
     setIsValid(false)
-    setVisible(false)
+    setEmailEnabled(false)
+    setMobileEnabled(false)
+    setEmailSwitchDisabled(true)
+    setMobileSwitchDisabled(true)
+    setEmailPreferences(false)
+    setSmsPreferences(false)
     form.resetFields()
+  }
+
+  const handleClose = () => {
+    setVisible(false)
+    resetValues()
   }
 
   const setPhoneValue = (phoneNumber: string) => {
@@ -295,18 +349,6 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   const handleRecipientTypeChange = (e: RadioChangeEvent) => {
     setRecipientType(e.target.value)
   }
-
-  useEffect(()=>{
-    if (editData && visible) {
-      form.setFieldsValue(editData)
-    }
-    setRecipientType(editData?.privilegeGroup
-      ? RecipientType.AdminRecipient
-      : RecipientType.GlobalRecipient)
-  }, [form, editData, visible])
-
-  const isLoading = addState.isLoading || updateState.isLoading
-  const disableSave = !(isChanged && isValid)
 
   const GlobalRecipientContent =
     <>
@@ -338,14 +380,9 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
             </Form.Item>
           </Col>
           <Col span={4}>
-            <Form.Item
-              noStyle
-              name='emailEnabled'
-              valuePropName='checked'
-              initialValue={false}
-            >
-              <Switch />
-            </Form.Item>
+            <Switch checked={emailEnabled}
+              onChange={setEmailEnabled}
+              disabled={emailSwitchDisabled}/>
           </Col>
         </Row>
       </Form.Item>
@@ -364,17 +401,15 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
               initialValue=''
               validateFirst
             >
-              <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
+              <UI.PhoneInputWrapper>
+                <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
+              </UI.PhoneInputWrapper>
             </Form.Item>
           </Col>
           <Col span={4}>
-            <Form.Item
-              name='mobileEnabled'
-              valuePropName='checked'
-              initialValue={false}
-            >
-              <Switch />
-            </Form.Item>
+            <Switch checked={mobileEnabled}
+              onChange={setMobileEnabled}
+              disabled={mobileSwitchDisabled}/>
           </Col>
         </Row>
       </Form.Item>
@@ -403,24 +438,22 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       />
 
       <UI.FieldLabel width={'45px'}>
-        <Form.Item
-          name={'enableEmailNotification'}
-          initialValue={false}
-          valuePropName='checked'
-          children={<Switch data-testid='enableEmailNotification'/>}
-        />
+        <Col span={4}>
+          <Switch data-testid='enableEmailNotification'
+            checked={emailPreferences}
+            onChange={setEmailPreferences}/>
+        </Col>
         <Space align='start'>
-          { $t({ defaultMessage: 'Enable Email Nortifications' }) }
+          { $t({ defaultMessage: 'Enable Email Notifications' }) }
         </Space>
       </UI.FieldLabel>
 
       <UI.FieldLabel width={'45px'}>
-        <Form.Item
-          name={'enableSmsNotification'}
-          initialValue={false}
-          valuePropName='checked'
-          children={<Switch data-testid='enableSmsNotification'/>}
-        />
+        <Col span={4}>
+          <Switch data-testid='enableSmsNotification'
+            checked={smsPreferences}
+            onChange={setSmsPreferences}/>
+        </Col>
         <Space align='start'>
           { $t({ defaultMessage: 'Enable SMS Notifications' }) }
         </Space>
@@ -439,28 +472,30 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       visible={visible}
       onClose={handleClose}
       footer={
-        <Drawer.FormFooter
-          buttonLabel={{
-            save: editMode
-              ? $t({ defaultMessage: 'Save' })
-              : $t({ defaultMessage: 'Add' })
-          }}
-          showSaveButton={disableSave || isLoading ? true : undefined}
-          onCancel={handleClose}
-          onSave={handleSubmit}
-        />
+        <div>
+          <Button
+            disabled={!isValid || loading}
+            onClick={handleSubmit}
+            type='primary'
+          >
+            {editMode ? $t({ defaultMessage: 'Save' })
+              : $t({ defaultMessage: 'Add' }) }
+          </Button>
+          <Button onClick={handleClose}>
+            {$t({ defaultMessage: 'Cancel' })}
+          </Button>
+        </div>
       }
 
     >
       <Form
         form={form}
         layout='vertical'
-        // onFinish={handleSubmit}
         onFieldsChange={handleInputChange}
       >
         <Form.Item
           name='recipientType'
-          initialValue={RecipientType.GlobalRecipient}
+          initialValue={recipientType}
           rules={[
             { required: true, message: $t({ defaultMessage: 'Please select a recipient type' }) }
           ]}
@@ -497,3 +532,4 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     </Drawer>
   )
 }
+export default styled(AddRecipientDrawer)`${UI.dialogStyles}`

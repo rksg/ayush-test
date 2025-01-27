@@ -84,3 +84,8 @@ export const FieldLabel = styled.div<{ width: string }>`
   line-height: 32px;
   grid-template-columns: ${props => props.width} 1fr;
 `
+export const PhoneInputWrapper = styled.div`
+  .ant-form-item {
+    margin-bottom: 0px;
+  }
+`
