@@ -82,14 +82,6 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
               key: 'wifi.network_control_services.resident_portal'
             },
             {
-              title: $t({ defaultMessage: 'Certificate Authority' }),
-              key: 'wifi.network_control_services.certificate_authority'
-            },
-            {
-              title: $t({ defaultMessage: 'Certificate Tempaltes' }),
-              key: 'wifi.network_control_services.certificate_tempaltes'
-            },
-            {
               title: $t({ defaultMessage: 'MDNS Proxy' }),
               key: 'wifi.network_control_services.mdns_proxy'
             },
@@ -114,6 +106,14 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
             {
               title: $t({ defaultMessage: 'Client Isolation' }),
               key: 'wifi.network_control_policies.client_isolation'
+            },
+            {
+              title: $t({ defaultMessage: 'Certificate Authority' }),
+              key: 'wifi.network_control_policies.certificate_authority'
+            },
+            {
+              title: $t({ defaultMessage: 'Certificate Templates' }),
+              key: 'wifi.network_control_policies.certificate_templates'
             },
             {
               title: $t({ defaultMessage: 'Identity Provider' }),
@@ -144,8 +144,8 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
               key: 'wifi.network_control_policies.syslog_server'
             },
             {
-              title: $t({ defaultMessage: 'Tunneling' }),
-              key: 'wifi.network_control_policies.tunneling'
+              title: $t({ defaultMessage: 'Tunnelling' }),
+              key: 'wifi.network_control_policies.tunnelling'
             },
             {
               title: $t({ defaultMessage: 'VLAN Pool' }),
@@ -220,41 +220,41 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
       children: [
         {
           title: $t({ defaultMessage: 'RUCKUS Edge' }),
-          key: 'getways.ruckusEdge',
+          key: 'gateways.ruckus_edge',
           children: [
             {
               title: $t({ defaultMessage: 'Edge Management' }),
-              key: 'getways.ruckusEdge.edge_anagement'
+              key: 'gateways.ruckus_edge.edge_management'
             },
             {
               title: $t({ defaultMessage: 'RWG' }),
-              key: 'getways.ruckusEdge.rwg'
+              key: 'gateways.ruckus_edge.rwg'
             }
           ]
         },
         {
           title: $t({ defaultMessage: 'Network Control (Services)' }),
-          key: 'getways.network_control_services)',
+          key: 'gateways.network_control_services)',
           children: [
             {
               title: $t({ defaultMessage: 'DHCP' }),
-              key: 'getways.network_control_services.dhcp'
+              key: 'gateways.network_control_services.dhcp'
             },
             {
               title: $t({ defaultMessage: 'QoS' }),
-              key: 'getways.network_control_services.qos'
+              key: 'gateways.network_control_services.qos'
             },
             {
               title: $t({ defaultMessage: 'PIN' }),
-              key: 'getways.network_control_services.pin'
+              key: 'gateways.network_control_services.pin'
             },
             {
               title: $t({ defaultMessage: 'SDLAN' }),
-              key: 'getways.network_control_services.sdlan'
+              key: 'gateways.network_control_services.sdlan'
             },
             {
               title: $t({ defaultMessage: 'MDNS Proxy' }),
-              key: 'getways.network_control_services.mdsProxy'
+              key: 'gateways.network_control_services.mdns_proxy'
             }
           ]
         }
