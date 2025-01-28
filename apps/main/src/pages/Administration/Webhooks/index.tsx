@@ -1,4 +1,4 @@
-import { useEffect, useState, Dispatch, SetStateAction } from 'react'
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -16,12 +16,7 @@ import { filterByAccess, hasCrossVenuesPermission, hasPermission }           fro
 import { getWebhookPayloadEnumString } from './webhookConfig'
 import { WebhookForm }                 from './WebhookForm'
 
-interface R1WebhooksProps {
-  setTitleCount: Dispatch<SetStateAction<number>>
-}
-
-const R1Webhooks = (props: R1WebhooksProps) => {
-  const { setTitleCount } = props
+const R1Webhooks = () => {
   const { $t } = useIntl()
 
   // string    = existing record
@@ -42,8 +37,6 @@ const R1Webhooks = (props: R1WebhooksProps) => {
     const count = tableQuery.data?.totalCount || 0
     return count >= MAX_WEBHOOK_ALLOWED
   }
-
-  useEffect(() => setTitleCount(tableQuery.data?.totalCount || 0), [tableQuery.data])
 
   const columns: TableProps<Webhook>['columns'] = [{
     key: 'name',
