@@ -48,7 +48,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
   const isDogfood = userProfileData?.dogfood
 
-
   const isPrimeAdminUser = isPrimeAdmin()
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
@@ -59,8 +58,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
-
-
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
