@@ -18,13 +18,14 @@ import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext } from '../../../index'
-import { FieldLabel }       from '../../styledComponents'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
+import { FieldLabel }                                 from '../../styledComponents'
 
-export function DirectedMulticast () {
+export function DirectedMulticast (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const { isAllowEdit=true } = props
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
@@ -154,6 +155,7 @@ export function DirectedMulticast () {
             children={
               <Switch
                 data-testid={key+'-switch'}
+                disabled={!isAllowEdit}
                 checked={value}
                 onClick={(checked) => onToggleDirectedMulticast(checked, key)}
               />

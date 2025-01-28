@@ -24,7 +24,7 @@ import {
   TimeoutMinuteEnum
 } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }               from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -83,10 +83,11 @@ const MinuteTypeOptions = [
 ]
 
 
-export function RebootTimeout () {
+export function RebootTimeout (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit=true } = props
   const [options, setOptions] = useState(MinuteTypeOptions)
   const [serverOptions, setServerOptions] = useState(MinuteTypeOptions)
 
@@ -292,6 +293,7 @@ export function RebootTimeout () {
               children={
                 <Switch
                   data-testid='gateway-switch'
+                  disabled={!isAllowEdit}
                   onChange={handleChanged}
                 />
               }
@@ -324,6 +326,7 @@ export function RebootTimeout () {
                 >
                   <Select
                     style={{ width: '60px' }}
+                    disabled={!isAllowEdit}
                     onChange={handleGatewayHourChanged}>{HourTypeOptions.map(option => {
                       const { value, label } = option
                       return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
@@ -338,6 +341,7 @@ export function RebootTimeout () {
                 >
                   <Select
                     style={{ width: '60px' }}
+                    disabled={!isAllowEdit}
                     onChange={handleChanged}>{options.map(option => {
                       const { value, label } = option
                       return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
@@ -363,6 +367,7 @@ export function RebootTimeout () {
               children={
                 <Switch
                   data-testid='server-switch'
+                  disabled={!isAllowEdit}
                   onChange={handleChanged}
                 />
               }
@@ -395,6 +400,7 @@ export function RebootTimeout () {
                 >
                   <Select
                     style={{ width: '60px' }}
+                    disabled={!isAllowEdit}
                     onChange={handleServerHourChanged}>{ServerHourTypeOptions.map(option => {
                       const { value, label } = option
                       return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
@@ -409,6 +415,7 @@ export function RebootTimeout () {
                 >
                   <Select
                     style={{ width: '60px' }}
+                    disabled={!isAllowEdit}
                     onChange={handleChanged}>{serverOptions.map(option => {
                       const { value, label } = option
                       return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
