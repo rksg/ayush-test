@@ -10,7 +10,7 @@ import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
-import { isDelegationMode, useTenantId } from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
@@ -48,6 +48,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
   const isDogfood = userProfileData?.dogfood
 
+  const { tenantType } = getJwtTokenPayload()
+
   const isPrimeAdminUser = isPrimeAdmin()
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
@@ -59,8 +61,12 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
-  const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && canMSPDelegation && !isMspEc
+
+  const isTechPartner =
+      tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+
+  const showSsoSupport = (isPrimeAdminUser && isIdmDecoupling && !isDogfood
+    && canMSPDelegation && !isMspEc) || (isTechPartner && isIdmDecoupling && !isDogfood)
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
