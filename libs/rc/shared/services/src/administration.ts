@@ -385,13 +385,13 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             description: data.description,
             emailPreferences: data.emailPreferences,
             smsPreferences: data.smsPreferences,
-            privilegeGroup: data.privilegeGroup,
-            recipientType: data.privilegeGroup
+            privilegeGroup: data.privilegeGroupId,
+            recipientType: data.privilegeGroupId
               ? NotificationRecipientType.PRIVILEGEGROUP : NotificationRecipientType.GLOBAL,
             endpoints: data.endpoints
           } as NotificationRecipientUIModel
 
-          data.endpoints.forEach((endpoint: NotificationEndpoint) => {
+          data.endpoints?.forEach((endpoint: NotificationEndpoint) => {
             switch (endpoint.type) {
               case (NotificationEndpointType.email):
                 result.email = endpoint.destination

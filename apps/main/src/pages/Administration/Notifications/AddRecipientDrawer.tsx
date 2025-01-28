@@ -128,27 +128,6 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     setLoading(addState.isLoading || updateState.isLoading)
   }, [addState.isLoading, updateState.isLoading])
 
-  // sample payload for privilege group
-  // const pgPayload :
-  // {
-  //     description: 'Admin Contextual 22',
-  //     emailPreferences: true,
-  //     smsPreferences: false,
-  //     privilegeGroupId: '2765e98c7b9446e2a5bdd4720e0e8914'
-  // }
-  // sample payload for global recipient
-  // const GlobalPayload :
-  // {
-  //     description: 'Admin Contextual 23',
-  //     endpoints: [
-  //     {
-  //         type: 'EMAIL',
-  //         destination: 'est2@abc.com',
-  //         active: true,
-  //         status: 'OK'
-  //     }
-  //     ]
-  // }
   const getSavePayload = (data: NotificationRecipientUIModel) => {
     let dataToSave = {
       description: data.description
