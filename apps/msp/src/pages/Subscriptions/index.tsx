@@ -33,8 +33,8 @@ import {
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
 import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                      from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }               from '@acx-ui/rc/services'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                                   from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                            from '@acx-ui/rc/services'
 import {
   AdminRbacUrlsInfo,
   dateSort,
@@ -47,10 +47,10 @@ import {
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
-import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { filterByAccess, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasRoles }                                         from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                                    from '@acx-ui/utils'
+import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasRoles } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                                                 from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -98,9 +98,11 @@ export function Subscriptions () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/mspLicenses', 'v')
   const { rbacOpsApiEnabled } = getUserProfile()
-  const hasPermission = rbacOpsApiEnabled ?
-    hasAllowedOperations([getOpsApi(MspUrlsInfo.addMspAssignment), getOpsApi(MspUrlsInfo.updateMspAssignment),
-       getOpsApi(MspUrlsInfo.deleteMspAssignment)]) : hasCrossVenuesPermission()    
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspUrlsInfo.addMspAssignment),
+      getOpsApi(MspUrlsInfo.updateMspAssignment),
+      getOpsApi(MspUrlsInfo.deleteMspAssignment)])
+    : hasCrossVenuesPermission()
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)

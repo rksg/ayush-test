@@ -182,6 +182,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   patchEntitlementsActivations: {
     method: 'PATCH',
     url: '/entitlements/orders/:orderId',
+    opsApi: 'PATCH:/entitlements/orders/:orderId',
     newApi: true
   },
   refreshLicensesData: {
