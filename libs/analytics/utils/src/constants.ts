@@ -12,6 +12,7 @@ export enum IncidentToggle {
   AirtimeIncidents = 'airtime-incidents',
   SwitchDDoSIncidents = 'switch-ddos-incidents',
   SwitchLoopDetectionIncidents = 'switch-loop-detection-incidents',
+  SwitchLLDPStatusIncidents = 'switch-lldp-status-incidents',
   SwitchPortCongestionIncidents = 'switch-port-congestion-incidents',
   SwitchUplinkPortCongestionIncidents = 'switch-uplink-port-congestion-incidents',
 }
@@ -41,6 +42,7 @@ const allIncidentCodes = [
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
   'i-switch-loop-detection',
+  'i-switch-lldp-status',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -81,8 +83,12 @@ const incidentsToggleMap: Record<
     code: ['s-switch-tcp-syn-ddos']
   },
   [IncidentToggle.SwitchLoopDetectionIncidents]: {
-    categories: ['all', 'security'],
+    categories: ['all', 'infrastructure'],
     code: ['i-switch-loop-detection']
+  },
+  [IncidentToggle.SwitchLLDPStatusIncidents]: {
+    categories: ['all', 'infrastructure'],
+    code: ['i-switch-lldp-status']
   },
   [IncidentToggle.SwitchPortCongestionIncidents]: {
     categories: ['all', 'performance'],
@@ -201,6 +207,7 @@ export const categoryCodeMap = {
       'i-switch-vlan-mismatch',
       'i-switch-poe-pd',
       'i-switch-loop-detection',
+      'i-switch-lldp-status',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]

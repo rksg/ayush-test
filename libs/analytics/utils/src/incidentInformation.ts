@@ -224,6 +224,17 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  'i-switch-lldp-status': {
+    category: defineMessage({ defaultMessage: 'Infrastructure' }),
+    subCategory: defineMessage({ defaultMessage: 'LLDP Status' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'LLDP status of {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'LLDP status of {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-port-congestion': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Congestion' }),
