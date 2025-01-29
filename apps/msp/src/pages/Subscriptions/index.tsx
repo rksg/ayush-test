@@ -32,10 +32,11 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary } from '@acx-ui/msp/utils'
+import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspUrlsInfo } from '@acx-ui/msp/utils'
 import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                      from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }               from '@acx-ui/rc/services'
 import {
+  AdminRbacUrlsInfo,
   dateSort,
   defaultSort,
   EntitlementDeviceType,
@@ -48,8 +49,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                        from '@acx-ui/types'
-import { filterByAccess, hasRoles }                                         from '@acx-ui/user'
-import { noDataDisplay }                                                    from '@acx-ui/utils'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasRoles }                                         from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                                    from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -96,6 +97,10 @@ export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/mspLicenses', 'v')
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(MspUrlsInfo.addMspAssignment), getOpsApi(MspUrlsInfo.updateMspAssignment),
+       getOpsApi(MspUrlsInfo.deleteMspAssignment)]) : hasCrossVenuesPermission()    
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
@@ -283,6 +288,7 @@ export function Subscriptions () {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         refreshEntitlement({ params: { tenantId }, payload: entitlementRefreshPayload,
           enableRbac: isEntitlementRbacApiEnabled })
@@ -556,7 +562,7 @@ export function Subscriptions () {
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive || !isAdmin}
+              hidden={!isAssignedActive || !isAdmin || !hasPermission}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           !isHspSupportEnabled ? <TenantLink to='/dashboard'>
