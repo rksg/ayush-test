@@ -35,7 +35,8 @@ import {
   TwiliosIncommingPhoneNumbers,
   TwiliosMessagingServices,
   Webhook,
-  TableResult
+  TableResult,
+  ScopeFeature
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -759,6 +760,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getCustomRoleFeatures: build.query<ScopeFeature[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getCustomRoleFeatures, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getMspEcPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
       query: ({ params }) => {
         const CUSTOM_HEADER = {
@@ -1055,6 +1065,7 @@ export const {
   useAddCustomRoleMutation,
   useUpdateCustomRoleMutation,
   useDeleteCustomRoleMutation,
+  useGetCustomRoleFeaturesQuery,
   useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,

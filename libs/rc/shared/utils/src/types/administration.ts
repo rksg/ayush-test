@@ -508,3 +508,11 @@ export enum PermissionType {
   update = 'u',
   delete = 'd'
 }
+
+export interface ScopeFeature {
+  id: string,
+  name: string,
+  description: string,
+  category: string,
+  subFeatures?: ScopeFeature[]
+}
