@@ -323,6 +323,7 @@ export interface CustomRole {
   createdDate?: string,
   updatedDate?: string,
   scopes?: string[],
+  features?: string[],
   preDefinedRole?: string
 }
 
@@ -502,4 +503,20 @@ export interface Webhook {
   incident: Record<string, string[]>,
   activity: Record<string, string[]>,
   event: Record<string, string[]>
+}
+
+export interface ScopePermission extends Record<string, string|boolean> {
+  name: string
+  id: string
+  read: boolean
+  create: boolean
+  update: boolean
+  delete: boolean
+}
+
+export enum PermissionType {
+  read = 'r',
+  create = 'c',
+  update = 'u',
+  delete = 'd'
 }
