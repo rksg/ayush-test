@@ -19,5 +19,6 @@
   "MIB_FILES": "https://docs.ruckus.cloud/mib/",
   "DRUID_ROLLUP_DAYS": "36500",
   "DRUID_RETAIN_PERIOD_DAYS": "90",
+  "DRUID_COLD_TIER_DAYS": "31",
   "AFC_FEATURE_ENABLED": "true"
 }

@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import { Alert, Form, Space, Switch } from 'antd'
-import { useIntl }                    from 'react-intl'
+import { Form, Space, Switch } from 'antd'
+import { useIntl }             from 'react-intl'
 
-import { Button, Drawer, Select, StepsForm, Tooltip }                                    from '@acx-ui/components'
+import { Button, Drawer, Select, StepsForm, Tooltip, Alert }                             from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
 import { useGetClientIsolationListQuery }                                                from '@acx-ui/rc/services'
 import { ClientIsolationMessages, IsolatePacketsTypeEnum, getIsolatePacketsTypeOptions } from '@acx-ui/rc/utils'
 import { useParams }                                                                     from '@acx-ui/react-router-dom'
 
 import { ClientIsolationForm } from '../../policies/ClientIsolationForm/ClientIsolationForm'
+import { FieldLabel }          from '../styledComponents'
 
 import ClientIsolationAllowListDetailsDrawer from './ClientIsolationListDetailsDrawer'
 
@@ -72,24 +73,27 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
 
   return (
     <>
-      <StepsForm.FieldLabel width={'220px'}>
-        <Space>
-          {$t({ defaultMessage: 'Client Isolation' })}
-          <Tooltip.Question
-            title={$t(ClientIsolationMessages.ENABLE_TOGGLE)}
-            placement='bottom'
-            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+      <StepsForm.StepForm>
+        <FieldLabel width='220px'>
+          <Space>
+            {$t({ defaultMessage: 'Client Isolation' })}
+            <Tooltip.Question
+              title={$t(ClientIsolationMessages.ENABLE_TOGGLE)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['lan', index, 'clientIsolationEnabled']}
+            valuePropName='checked'
+            children={<Switch
+              data-testid={'client-isolation-switch'}
+              disabled={readOnly}
+              onChange={() => onGUIChanged?.('clientIsolationEnabled')}
+            />}
           />
-        </Space>
-        <Form.Item
-          name={['lan', index, 'clientIsolationEnabled']}
-          valuePropName='checked'
-          children={<Switch
-            disabled={readOnly}
-            onChange={() => onGUIChanged?.('clientIsolationEnabled')}
-          />}
-        />
-      </StepsForm.FieldLabel>
+        </FieldLabel>
+      </StepsForm.StepForm>
       {isClientIsolationEnabled && <>
         <Alert
           showIcon={true}

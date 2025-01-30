@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                         from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonRbacUrlsInfo, CommonUrlsInfo, SyslogUrls, LbsServerProfileUrls, ApSnmpRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                       from '@acx-ui/rc/services'
+import { ApSnmpUrls, CommonUrlsInfo, SyslogUrls, LbsServerProfileUrls, ApSnmpRbacUrls, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
 
 
 import {
@@ -39,6 +39,10 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('./ApSnmp', () => ({
   ApSnmp: () => <div>ApSnmp Component</div>
+}))
+
+jest.mock('./IotController', () => ({
+  IotController: () => <div>IotController Component</div>
 }))
 
 describe('ServerTab', () => {
@@ -77,7 +81,7 @@ describe('ServerTab', () => {
         ApSnmpRbacUrls.getApSnmpFromViewModel.url,
         (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings))),
       // rbac
-      rest.get(CommonRbacUrlsInfo.getVenueMdnsFencingPolicy.url,
+      rest.get(WifiRbacUrlsInfo.getVenueMdnsFencingPolicy.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         LbsServerProfileUrls.getLbsServerProfileList.url,

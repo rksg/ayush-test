@@ -88,6 +88,16 @@ describe('getErrorContent', () => {
       payload: { originalStatus: 429 }
     } as unknown as ErrorAction).title).toBe('Too Many Requests')
   })
+  it('should handle 502', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 502 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Bad Gateway')
+    expect(getErrorContent({
+      meta: {},
+      payload: { originalStatus: 502 }
+    } as unknown as ErrorAction).title).toBe('Bad Gateway')
+  })
   it('should handle 503', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 503 } } },
@@ -276,6 +286,25 @@ describe('errorMiddleware', () => {
         meta: {
           ...rejectedWithValueAction.meta,
           arg: { endpointName: 'addAp' }
+        }
+      })
+    })
+    await waitFor(()=>{
+      expect(screen.queryByText('Server Error')).toBeNull()
+    })
+  })
+  it('should not show modal when custom error', async () => {
+    const thunk = createAsyncThunk<string>('apApi/executeQuery', (_, { rejectWithValue }) => {
+      return rejectWithValue({ error: 'rejectWithValue!' })
+    })
+    const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
+    act(() => {
+      errorMiddleware({ dispatch: jest.fn((x) => x), getState: jest.fn(() => ({})) })(jest.fn())({
+        ...rejectedWithValueAction,
+        meta: {
+          ...rejectedWithValueAction.meta,
+          arg: { endpointName: 'addAp' },
+          baseQueryMeta: { response: { errors: [{ extensions: { code: 'RDA-413' } }] } }
         }
       })
     })

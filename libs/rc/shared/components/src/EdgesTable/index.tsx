@@ -37,7 +37,7 @@ import { filterByAccess }                         from '@acx-ui/user'
 import { exportMessageMapping }                   from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
-import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { seriesMappingAP }                                from '../DevicesWidget'
 import { useEdgeActions, useIsEdgeFeatureReady }          from '../useEdgeActions'
 
@@ -130,7 +130,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     { payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data }) => {
         return {
-          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+          venueOptions: data?.data?.map(item => ({ value: item.name, key: item.id }))
         }
       }
     })

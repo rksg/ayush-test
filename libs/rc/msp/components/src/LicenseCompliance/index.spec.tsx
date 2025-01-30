@@ -34,6 +34,44 @@ const compliances = {
       totalActiveTrialAssignedLicenseCount: 0,
       totalActiveTrialLicenseCount: 0
     }
+  },{
+    licenseType: 'SLTN_TOKEN',
+    self: {
+      deviceCompliances: [
+        {
+          deviceType: 'SLTN_ADAPT_POLICY',
+          installedDeviceCount: 10,
+          usedLicenseCount: 0
+        },
+        {
+          deviceType: 'SLTN_PMS_INT',
+          installedDeviceCount: 20,
+          usedLicenseCount: 30
+        },
+        {
+          deviceType: 'SLTN_SIS_INT',
+          installedDeviceCount: 10,
+          usedLicenseCount: 0
+        },
+        {
+          deviceType: 'SLTN_PI_NET',
+          installedDeviceCount: 100,
+          usedLicenseCount: 0
+        }
+      ],
+      licenseGap: 0,
+      licenseType: 'SLTN_TOKEN',
+      licensesUsed: 3,
+      nextPaidExpirationDate: '2024-07-26',
+      nextTotalPaidExpiringLicenseCount: 1000,
+      nextTotalTrialExpiringLicenseCount: 0,
+      tenantId: 'eb76e2f9e7174c7aa317aaee5f84541b',
+      tenantName: 'Dog Company 951',
+      totalActivePaidAssignedLicenseCount: 0,
+      totalActivePaidLicenseCount: 1180,
+      totalActiveTrialAssignedLicenseCount: 0,
+      totalActiveTrialLicenseCount: 0
+    }
   }]
 }
 
@@ -263,5 +301,46 @@ describe('LicenseCompliance', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     // eslint-disable-next-line testing-library/no-node-access
     expect(document.querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+
+  it('should render device networking card with solution token FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+    render(
+      <Provider>
+        <LicenseCompliance isMsp={false}/>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/t/administration/subscriptions/compliance' }
+      })
+
+    expect(screen.getByText('Device Networking Licenses')).toBeVisible()
+
+    const tabMaxLiceses = screen.getAllByRole('tab', { name: 'Summary' })[0]
+    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
+    const tabMaxPeriod = screen.getAllByRole('tab', { name: 'My Account' })[0]
+    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
+  })
+
+  it('should render solution token card with solution token FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+    render(
+      <Provider>
+        <LicenseCompliance isMsp={false}/>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/t/administration/subscriptions/compliance' }
+      })
+
+    expect(screen.getByText('Solution Token Licenses')).toBeVisible()
+
+    const tabMaxLiceses = screen.getAllByRole('tab', { name: 'Summary' })[1]
+    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
+    const tabMaxPeriod = screen.getAllByRole('tab', { name: 'My Account' })[1]
+    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
+
+    await userEvent.click(tabMaxPeriod)
+    expect(screen.getByText('Adaptive Policy')).toBeVisible()
   })
 })

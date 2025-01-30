@@ -4,17 +4,19 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }               from '@acx-ui/rc/components'
-import { useLazyApListQuery }                         from '@acx-ui/rc/services'
-import { VenueApModelCellular, redirectPreviousPage } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                     from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                      from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                                from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }                                                              from '@acx-ui/rc/components'
+import { useLazyApListQuery }                                                                        from '@acx-ui/rc/services'
+import { VenueApModelCellular, redirectPreviousPage, WifiRbacUrlsInfo, VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                                                                    from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                                                                      from '@acx-ui/user'
+import { directedMulticastInfo, getOpsApi }                                                          from '@acx-ui/utils'
 
-import { VenueUtilityContext } from '..'
-import { VenueEditContext }    from '../../index'
+import { VenueUtilityContext }                  from '..'
+import { useVenueConfigTemplateOpsApiSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                     from '../../index'
 
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { DirectedMulticast }   from './DirectedMulticast'
@@ -42,7 +44,6 @@ export function NetworkingTab () {
   const { tenantId, venueId } = useParams()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
@@ -81,6 +82,40 @@ export function NetworkingTab () {
     }
   }, [venueApCaps])
 
+  const meshOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueMesh,
+    VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
+  )
+  const dMulticastOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueMesh,
+    VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
+  )
+  const smartMonitorOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueSmartMonitor,
+    VenueConfigTemplateUrlsInfo.updateVenueApSmartMonitorSettings
+  )
+
+  const radiusOptionsOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueRadiusOptions,
+    VenueConfigTemplateUrlsInfo.updateVenueRadiusOptionsRbac
+  )
+
+  const [
+    isAllowEditLanPort,
+    isAllowEditMesh,
+    isAllowEditDMulticast,
+    isAllowEditCellular,
+    isAllowEditSmartMonitor,
+    isAllowEditRADIUSOptions
+  ] = [
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueLanPorts)]),
+    hasAllowedOperations([meshOpsApi]),
+    hasAllowedOperations([dMulticastOpsApi]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueCellularSettings)]),
+    hasAllowedOperations([smartMonitorOpsApi]),
+    hasAllowedOperations([radiusOptionsOpsApi])
+  ]
+
   const {
     previousPath,
     editContextData,
@@ -95,7 +130,7 @@ export function NetworkingTab () {
       <StepsFormLegacy.SectionTitle id='lan-ports'>
         { $t({ defaultMessage: 'LAN Ports' }) }
       </StepsFormLegacy.SectionTitle>
-      <LanPorts />
+      <LanPorts isAllowEdit={isAllowEditLanPort}/>
     </>
   }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
@@ -103,7 +138,7 @@ export function NetworkingTab () {
       <StepsFormLegacy.SectionTitle id='mesh-network'>
         { $t({ defaultMessage: 'Mesh Network' }) }
       </StepsFormLegacy.SectionTitle>
-      <MeshNetwork />
+      <MeshNetwork isAllowEdit={isAllowEditMesh}/>
     </>
   },
   {
@@ -124,7 +159,7 @@ export function NetworkingTab () {
         </Space>
         }
       </StepsFormLegacy.SectionTitle>
-      <DirectedMulticast />
+      <DirectedMulticast isAllowEdit={isAllowEditDMulticast} />
     </> },
   ...(hasCellularAps? [{
     title: $t({ defaultMessage: 'Cellular Options' }),
@@ -132,7 +167,7 @@ export function NetworkingTab () {
       <StepsFormLegacy.SectionTitle id='cellular-options'>
         { $t({ defaultMessage: 'Cellular Options' }) }
       </StepsFormLegacy.SectionTitle>
-      <CellularOptionsForm />
+      <CellularOptionsForm isAllowEdit={isAllowEditCellular} />
     </> }] : []),
   ...(isSmartMonitorFFEnabled? [{
     title: $t({ defaultMessage: 'Smart Monitor' }),
@@ -140,16 +175,15 @@ export function NetworkingTab () {
       <StepsFormLegacy.SectionTitle id='smart-monitor'>
         { $t({ defaultMessage: 'Smart Monitor' }) }
       </StepsFormLegacy.SectionTitle>
-      <SmartMonitor />
-    </>
-  }]: []),
+      <SmartMonitor isAllowEdit={isAllowEditSmartMonitor} />
+    </> }] : []),
   {
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='radius-options'>
         { $t({ defaultMessage: 'RADIUS Options' }) }
       </StepsFormLegacy.SectionTitle>
-      <RadiusOptions />
+      <RadiusOptions isAllowEdit={isAllowEditRADIUSOptions} />
     </>
   }]
 

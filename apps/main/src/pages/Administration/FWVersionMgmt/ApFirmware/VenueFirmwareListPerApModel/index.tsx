@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal, Filter } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps, Tooltip, showActionModal, Filter }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import {
   renderCurrentFirmwaresColumn,
   useChangeScheduleVisiblePerApModel,
@@ -14,7 +14,7 @@ import {
   UpdateNowPerApModelDialog,
   ChangeSchedulePerApModelDialog,
   useUpdateEarlyAccessNowPerApModel,
-  UpdateEarlyAccessNowDialog
+  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData, isAlphaFilter, isBetaFilter
 } from '@acx-ui/rc/components'
 import {
   compareVersions,
@@ -24,11 +24,21 @@ import {
   toUserDate
 } from '@acx-ui/rc/components'
 import {
+  useGetAllApModelFirmwareListQuery,
   useGetVenueApModelFirmwareListQuery, useGetVenueApModelFirmwareSchedulesListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
-import { dateSort, defaultSort, FirmwareType, FirmwareVenuePerApModel, sortProp, SortResult } from '@acx-ui/rc/utils'
-import { RolesEnum, WifiScopes }                                                              from '@acx-ui/types'
+import {
+  ApModelFirmware,
+  dateSort,
+  defaultSort, FirmwareLabel,
+  FirmwareType,
+  FirmwareVenuePerApModel,
+  sortProp,
+  SortResult,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess,
   hasPermission,
@@ -47,15 +57,65 @@ export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const apFirmwareContext = useContext(ApFirmwareContext)
   const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
-  const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState('')
   const [filterString, setFilterString] = useState('')
-  const { data, isLoading } = useGetVenueApModelFirmwareSchedulesListQuery({
-    payload: {
-      firmwareVersion: filterString,
-      search: searchString
-    }
+
+  const { data: apModelFirmwares } = useGetAllApModelFirmwareListQuery({}, {
+    refetchOnMountOrArgChange: 300
   })
+
+  const useGetVenueApModelFirmwareListData = () => {
+    const tableQuery = useTableQuery<FirmwareVenuePerApModel>({
+      useQuery: useGetVenueApModelFirmwareListQuery,
+      defaultPayload: {
+        // eslint-disable-next-line max-len
+        fields: ['name', 'id', 'isApFirmwareUpToDate', 'currentApFirmwares', 'lastApFirmwareUpdate', 'nextApFirmwareSchedules']
+      },
+      search: {
+        searchTargetFields: ['name']
+      },
+      option: {
+        skip: isApFwMgmtEarlyAccess
+      }
+    })
+
+    const { data, isLoading } = useGetVenueApModelFirmwareSchedulesListQuery({
+      payload: {
+        firmwareVersion: filterString,
+        search: searchString
+      }
+    }, {
+      skip: !isApFwMgmtEarlyAccess
+    })
+
+    const pagination = { pageSize: 10, defaultPageSize: 10 }
+    const onFilterChange = (filter: Filter, search: { searchString?: string }) => {
+      if (search.searchString !== searchString) {
+        setSearchString(search.searchString || '')
+      }
+      if ((filter['currentApFirmwares.firmware']?.length ?? 0) > 0) {
+        setFilterString((filter['currentApFirmwares.firmware'] || [''])[0] as string)
+      } else {
+        setFilterString('')
+      }
+    }
+
+    return {
+      data: isApFwMgmtEarlyAccess ? data : tableQuery.data?.data,
+      onChange: isApFwMgmtEarlyAccess ? () => {} : tableQuery.handleTableChange,
+      pagination: isApFwMgmtEarlyAccess ? pagination : tableQuery.pagination,
+      onFilterChange: isApFwMgmtEarlyAccess ? onFilterChange : tableQuery.handleFilterChange,
+      isLoading: isApFwMgmtEarlyAccess ? { isLoading } : tableQuery
+    }
+  }
+
+  const {
+    data,
+    pagination,
+    onChange,
+    onFilterChange,
+    isLoading
+  } = useGetVenueApModelFirmwareListData()
   const isEarlyAccess = (apFirmwareContext.isAlphaFlag || apFirmwareContext.isBetaFlag) as boolean
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
@@ -72,16 +132,7 @@ export function VenueFirmwareListPerApModel () {
   } = useUpgradePerferences()
   const [ skipVenueSchedulesUpgrade ] = useSkipVenueSchedulesPerApModelMutation()
 
-  const onFilterChange = (filter: Filter, search: { searchString?: string }) => {
-    if (search.searchString !== searchString) {
-      setSearchString(search.searchString || '')
-    }
-    if ((filter['currentApFirmwares.firmware']?.length ?? 0) > 0) {
-      setFilterString((filter['currentApFirmwares.firmware'] || [''])[0] as string)
-    } else {
-      setFilterString('')
-    }
-  }
+
 
   const clearSelection = () => {
     setSelectedRowKeys([])
@@ -108,11 +159,74 @@ export function VenueFirmwareListPerApModel () {
     })
   }
 
+  // eslint-disable-next-line max-len
+  const genUpdateDisplayData = useCallback((apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
+    let eaApModelFirmwares = [] as ApModelFirmware[]
+    let updateAlphaGroups = apModelFirmwares.filter(data => isAlphaFilter(data.labels))
+    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels))
+
+    eaApModelFirmwares = [
+      ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
+      ...((apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
+    ]
+
+    eaApModelFirmwares.sort((a, b) => compareVersions(b.id, a.id))
+
+    const gaApModelFirmwares = apModelFirmwares
+      .filter(apModelFirmware => apModelFirmware.labels?.includes(FirmwareLabel.GA))
+
+    eaApModelFirmwares = eaApModelFirmwares.map(eaApModelFirmware => {
+      const eaVersion = eaApModelFirmware.id
+      const filteredApModels = eaApModelFirmware.supportedApModels?.filter(apModel => {
+        return !gaApModelFirmwares.some(gaApModelFirmware => {
+          return compareVersions(gaApModelFirmware.id, eaVersion) > 0
+            && gaApModelFirmware.supportedApModels?.includes(apModel)
+        })
+      })
+
+      return {
+        ...eaApModelFirmware,
+        supportedApModels: filteredApModels
+      }
+    })
+
+    const filterApModelFirmwares = isApFwMgmtEarlyAccess
+      ? ( forEarlyAccess ? eaApModelFirmwares : gaApModelFirmwares )
+      : apModelFirmwares
+    return convertToApModelIndividualDisplayData(
+      filterApModelFirmwares,
+      selectedRows,
+      undefined,
+      true
+    )
+    // eslint-disable-next-line max-len
+  }, [apModelFirmwares, apFirmwareContext.isBetaFlag, apFirmwareContext.isAlphaFlag, selectedRows, isApFwMgmtEarlyAccess])
+
+  // eslint-disable-next-line max-len
+  const hasAvailableUpdateDisplayData = (rows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false) => {
+    const updatedDisplayData = genUpdateDisplayData(
+      apModelFirmwares || [],
+      rows,
+      forEarlyAccess,
+      isApFwMgmtEarlyAccess
+    )
+    // eslint-disable-next-line max-len
+    if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
+      return false
+    }
+
+    return true
+  }
+
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
-      // eslint-disable-next-line max-len
-      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      visible: (rows) => {
+        if (!hasAvailableUpdateDisplayData(rows)) {
+          return false
+        }
+        return rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate))
+      },
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -121,8 +235,14 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      // eslint-disable-next-line max-len
-      visible: (rows) => isApFwMgmtEarlyAccess && isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      visible: (rows) => {
+        const forEarlyAccess = true
+        if (!hasAvailableUpdateDisplayData(rows, forEarlyAccess)) {
+          return false
+        }
+        // eslint-disable-next-line max-len
+        return isApFwMgmtEarlyAccess && isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate))
+      },
       label: $t({ defaultMessage: 'Update with Early Access Now' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -131,8 +251,13 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      // eslint-disable-next-line max-len
-      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      visible: (rows) => {
+        if (!hasAvailableUpdateDisplayData(rows)) {
+          return false
+        }
+
+        return rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate))
+      },
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -160,11 +285,12 @@ export function VenueFirmwareListPerApModel () {
   ]
 
   return (<>
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[isLoading]}>
       <Table
         columns={useColumns()}
         dataSource={data}
         pagination={pagination}
+        {...(isApFwMgmtEarlyAccess ? {} : { onChange })}
         onFilterChange={onFilterChange}
         enableApiFilter={true}
         rowKey='id'
@@ -252,8 +378,8 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      key: 'isApFirmwareUpToDate',
-      dataIndex: 'isApFirmwareUpToDate',
+      key: 'isFirmwareUpToDate',
+      dataIndex: 'isFirmwareUpToDate',
       sorter: { compare: (a, b) => {
         const aDesc = getApFirmwareStatusDescription(a)
         const bDesc = getApFirmwareStatusDescription(b)
@@ -268,7 +394,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextApFirmwareSchedules',
       dataIndex: 'nextApFirmwareSchedules',
-      sorter: { compare: sortProp('nextApFirmwareSchedules', dateSort) },
+      sorter: { compare: sortProp('nextApFirmwareSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const schedules = getApSchedules(row.nextApFirmwareSchedules)

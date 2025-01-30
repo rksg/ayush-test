@@ -1,5 +1,4 @@
-import { UseMutation }        from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition } from '@reduxjs/toolkit/query'
+import { TypedUseMutation } from '@reduxjs/toolkit/query/react'
 
 import {
   useGetVenueQuery,
@@ -9,9 +8,11 @@ import {
   UseConfigTemplateQueryFnSwitcherProps,
   VenueExtended,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { ApiInfo, getOpsApi } from '@acx-ui/utils'
 
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
   props: UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload>
@@ -25,11 +26,11 @@ export function useVenueConfigTemplateQueryFnSwitcher<ResultType, Payload = unkn
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type VenueMutationDefinition = MutationDefinition<any, any, any, any>
 export function useVenueConfigTemplateMutationFnSwitcher (
-  useMutationFn: UseMutation<VenueMutationDefinition>,
-  useTemplateMutationFn: UseMutation<VenueMutationDefinition>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useMutationFn: TypedUseMutation<any, any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useTemplateMutationFn: TypedUseMutation<any, any, any>
 ) {
   return useConfigTemplateMutationFnSwitcher({ useMutationFn, useTemplateMutationFn })
 }
@@ -39,4 +40,10 @@ export function useGetVenueInstance () {
     useQueryFn: useGetVenueQuery,
     useTemplateQueryFn: useGetVenueTemplateQuery
   })
+}
+
+export function useVenueConfigTemplateOpsApiSwitcher (apiInfo: ApiInfo, templateApiInfo: ApiInfo) {
+  const { isTemplate } = useConfigTemplate()
+
+  return !isTemplate? getOpsApi(apiInfo) : getOpsApi(templateApiInfo)
 }

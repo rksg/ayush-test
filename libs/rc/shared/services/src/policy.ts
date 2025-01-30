@@ -1315,9 +1315,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if(arg.enableRbac) {
           const res = (response as TableResult<ClientIsolationViewModel>)
           each(res.data, data => {
-            const venueIds = [...new Set(data.activations?.map(act => act.venueId))]
-            data.venueIds = venueIds
-            data.venueCount = venueIds.length
+            let venueIds: Set<string> = new Set()
+            data?.activations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data.venueIds = [...venueIds]
+            data.venueCount = venueIds.size
           })
         }
         return response as TableResult<ClientIsolationViewModel>
@@ -1953,7 +1956,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // query venue info
           const venueQueryPayload = {
             fields: ['name', 'id', 'addressLine'],
-            ...(tableChangePayload.searchVenueNameString ? { filters: { name: [tableChangePayload.searchVenueNameString] } } : {}),
+            ...(tableChangePayload.searchVenueNameString ? {
+              searchString: tableChangePayload.searchVenueNameString,
+              searchTargetFields: ['name', 'addressLine']
+            } : {}),
             page: 1,
             pageSize: 10000
           }
@@ -1965,14 +1971,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
           // query activations
           const req = createHttpRequest(ClientIsolationUrls.queryClientIsolation, params)
-          const activationPayload = { filters: { id: [tableChangePayload.id],
-            ...(tableChangePayload.searchVenueNameString && venueIds.length > 0 ? { venueIds } : {}) } }
+          const activationPayload = { filters: { id: [tableChangePayload.id] } }
           const res = await fetchWithBQ({ ...req, body: JSON.stringify(activationPayload) })
           if (res.error) return defaultRes
           const activationData = res.data as TableResult<ClientIsolationViewModel>
           const networkIds = Array.from(
             new Set(
-              activationData.data.flatMap(item => item.activations?.map(activation => activation.wifiNetworkId))
+              activationData.data.flatMap(
+                item => item.activations?.filter(
+                  activation => venueIds.includes(activation.venueId)
+                )
+                  .map(activation => activation.wifiNetworkId)
+              )
             )
           )
 
@@ -1990,13 +2000,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
           // apSerialNumbers group by venueId
           const apsGroupByVenueData = activationData.data.reduce((acc:{ [key: string]: Set<string> }, item) => {
-            item.venueActivations.forEach(va => {
+            item.venueActivations.filter(
+              activation => venueIds.includes(activation.venueId)
+            ).forEach(va => {
               if (!acc[va.venueId]) {
                 acc[va.venueId] = new Set<string>()
               }
               va.apSerialNumbers?.forEach(serial => acc[va.venueId].add(serial))
             })
-            item.apActivations.forEach(aa => {
+            item.apActivations.filter(
+              activation => venueIds.includes(activation.venueId)
+            ).forEach(aa => {
               if (!acc[aa.venueId]) {
                 acc[aa.venueId] = new Set<string>()
               }
@@ -2032,7 +2046,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // merge network data
           const venuesMap: { [key: string]: VenueUsageByClientIsolation }= {}
           activationData.data.forEach(item => {
-            item.activations?.forEach(activation => {
+            item.activations?.filter(
+              activation => venueIds.includes(activation.venueId)
+            ).forEach(activation => {
               const { venueId, wifiNetworkId } = activation
               if (venueIds.includes(venueId)) {
                 if (!venuesMap[venueId]) {

@@ -4,18 +4,18 @@ import { IntlShape } from 'react-intl'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  firmwareTypeTrans,
-  FirmwareCategory,
-  FirmwareVersion,
-  FirmwareVenue,
-  FirmwareSwitchVenue,
-  FirmwareVenueVersion,
-  FirmwareType,
-  Schedule,
-  LatestEdgeFirmwareVersion,
   EolApFirmware,
+  FirmwareCategory,
+  FirmwareLabel,
+  FirmwareSwitchVenue,
   FirmwareSwitchVenueV1002,
-  FirmwareLabel
+  FirmwareType,
+  firmwareTypeTrans,
+  FirmwareVenue,
+  FirmwareVenueVersion,
+  FirmwareVersion,
+  LatestEdgeFirmwareVersion,
+  Schedule
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -124,9 +124,7 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(
-    version?.labels?.includes(FirmwareLabel.ALPHA) || version?.labels?.includes(FirmwareLabel.BETA)
-      ? FirmwareCategory.EARLY_ACCESS
-      : version?.category
+    isAlphaOrBetaFilter(version?.labels) ? FirmwareCategory.EARLY_ACCESS : version?.category
   )
   const displayDate = version.releaseDate ?? version.onboardDate
   const versionDate = displayDate
@@ -135,6 +133,25 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
+}
+
+export const isAlphaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.ALPHA)
+}
+
+export const isBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && !labels.includes(FirmwareLabel.ALPHA) && labels.includes(FirmwareLabel.BETA)
+}
+
+export const isAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (labels.includes(FirmwareLabel.ALPHA) || labels.includes(FirmwareLabel.BETA))
+}
+
+export const isLegacyAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (labels.includes(FirmwareLabel.LEGACYALPHA) || labels.includes(FirmwareLabel.LEGACYBETA))
 }
 
 export const toUserDate = (date: string): string => {

@@ -4,13 +4,24 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
+import {
+  ApSnmpRbacUrls,
+  CompatibilityResponse,
+  MdnsProxyUrls,
+  redirectPreviousPage,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { useTenantLink }        from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
-import { ApEditContext } from '..'
+import { ApDataContext, ApEditContext } from '..'
 
-import { ApSnmp }    from './ApSnmp'
-import { MdnsProxy } from './MdnsProxy/MdnsProxy'
+import { ApSnmp }        from './ApSnmp'
+import { IotController } from './IotContoller'
+import { MdnsProxy }     from './MdnsProxy/MdnsProxy'
+
 
 
 
@@ -20,6 +31,9 @@ export interface ApNetworkControlContext {
 
   updateApSnmp?: (data?: unknown) => void | Promise<void>
   discardApSnmpChanges?: (data?: unknown) => void | Promise<void>
+
+  updateApIot?: (data?: unknown) => void | Promise<void>
+  discardApIotChanges?: (data?: unknown) => void | Promise<void>
 }
 
 export function NetworkControlTab () {
@@ -27,6 +41,21 @@ export function NetworkControlTab () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
+
+  const activateMdnsProxyApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+  const deactivateMdnsProxyApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
+
+  const [
+    isAllowEditMdnsPorxy,
+    isAllowEditApSnmp,
+    isAllowEditApIot
+  ] = [
+    // eslint-disable-next-line max-len
+    hasAllowedOperations([[getOpsApi(activateMdnsProxyApiInfo), getOpsApi(deactivateMdnsProxyApiInfo)]]),
+    hasAllowedOperations([getOpsApi(ApSnmpRbacUrls.updateApSnmpSettings)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApIot)])
+  ]
 
   const {
     previousPath,
@@ -38,7 +67,27 @@ export function NetworkControlTab () {
 
   const mPorxyTitle = $t({ defaultMessage: 'mDNS Proxy' })
   const apSnmpTitle = $t({ defaultMessage: 'AP SNMP' })
+  const apIotTitle = $t({ defaultMessage: 'IoT Controller' })
 
+  const { apCompatibilitiesResponse } = useContext(ApDataContext)
+
+  const containsFeature = (
+    data: CompatibilityResponse,
+    featureName: string
+  ) => {
+    for (const compatibility of data?.compatibilities ?? []) {
+      for (const feature of compatibility?.incompatibleFeatures ?? []) {
+        if (feature.featureName === featureName) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  const featureToCheck = 'AP IoT'
+  // eslint-disable-next-line max-len
+  const isIotInCompatible = containsFeature(apCompatibilitiesResponse as CompatibilityResponse, featureToCheck)
 
   const anchorItems = [
     {
@@ -48,7 +97,7 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { mPorxyTitle }
           </StepsFormLegacy.SectionTitle>
-          <MdnsProxy />
+          <MdnsProxy isAllowEdit={isAllowEditMdnsPorxy} />
         </>
       )
     },
@@ -59,11 +108,21 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { apSnmpTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApSnmp />
+          <ApSnmp isAllowEdit={isAllowEditApSnmp} />
         </>
       )
-
-    }
+    },
+    ...((isIotFeatureEnabled && !isIotInCompatible) ? [{
+      title: apIotTitle,
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle>
+            { apIotTitle }
+          </StepsFormLegacy.SectionTitle>
+          <IotController isAllowEdit={isAllowEditApIot} />
+        </>
+      )
+    }]: [])
   ]
 
   const resetEditContextData = () => {
@@ -79,6 +138,8 @@ export function NetworkControlTab () {
       delete newData.discardMdnsProxyChanges
       delete newData.updateApSnmp
       delete newData.discardApSnmpChanges
+      delete newData.updateApIot
+      delete newData.discardApIotChanges
 
       setEditNetworkControlContextData(newData)
     }
@@ -89,6 +150,7 @@ export function NetworkControlTab () {
     try {
       await editNetworkControlContextData.updateMdnsProxy?.()
       await editNetworkControlContextData.updateApSnmp?.()
+      await editNetworkControlContextData.updateApIot?.()
 
       resetEditContextData()
 
@@ -107,6 +169,7 @@ export function NetworkControlTab () {
     try {
       await editNetworkControlContextData.discardMdnsProxyChanges?.()
       await editNetworkControlContextData.discardApSnmpChanges?.()
+      await editNetworkControlContextData.discardApIotChanges?.()
 
       resetEditContextData()
 

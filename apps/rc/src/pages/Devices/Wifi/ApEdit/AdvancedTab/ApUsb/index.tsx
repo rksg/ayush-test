@@ -12,16 +12,17 @@ import {
   useLazyGetVenueApUsbStatusQuery,
   useUpdateApUsbMutation
 } from '@acx-ui/rc/services'
-import { ApUsbSettings, VenueApUsbStatus } from '@acx-ui/rc/utils'
+import { ApUsbSettings, usbTooltipInfo, VenueApUsbStatus } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { FieldLabel }                   from '../../styledComponents'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { FieldLabel }                                    from '../../styledComponents'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function ApUsb () {
+export function ApUsb (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
 
 
   const {
@@ -30,9 +31,6 @@ export function ApUsb () {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(ApEditContext)
-
-  // eslint-disable-next-line max-len
-  const usbInfoMessage = $t({ defaultMessage: 'Enable or disable the USB port for IoT-connected devices. When enabled, the port supports IoT device connectivity and data transfer' })
 
   const { apData: apDetails, venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
@@ -156,6 +154,7 @@ export function ApUsb () {
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
         <VenueSettingsHeader venue={venueData}
+          disabled={!isAllowEdit}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>
@@ -163,7 +162,7 @@ export function ApUsb () {
             <FieldLabel width='180px' >
               <Space>
                 {$t({ defaultMessage: 'USB Support' })}
-                <Tooltip title={usbInfoMessage} placement='bottom'>
+                <Tooltip title={$t(usbTooltipInfo, { br: <br/> })} placement='bottom'>
                   <QuestionMarkCircleOutlined style={{
                     height: '14px',
                     marginBottom: -3,
@@ -179,7 +178,7 @@ export function ApUsb () {
                   ?<span data-testid='ApUsb-text'>
                     {venueUsb?.usbPortEnable ? $t({ defaultMessage: 'On' })
                       : $t({ defaultMessage: 'Off' })}</span>
-                  :<Switch data-testid='ApUsb-switch'/>
+                  :<Switch data-testid='ApUsb-switch' disabled={!isAllowEdit} />
                 }
               />
             </FieldLabel>

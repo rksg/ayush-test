@@ -22,12 +22,14 @@ import {
 import { RequestPayload }     from '@acx-ui/types'
 import { CatchErrorResponse } from '@acx-ui/utils'
 
-import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
+import { edgeClusterConfigValidationFailed } from '../__tests__/fixtures'
+import { afterSubmitMessage }                from '../PersonalIdentityNetworkForm'
 
 import EditPersonalIdentityNetwork from '.'
 
 const { mockPinSwitchInfoData, mockPinData, mockPinStatsList } = EdgePinFixtures
 
+const mockValidateEdgePinSwitchConfigMutation = jest.fn()
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
@@ -47,7 +49,8 @@ jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
   useGetEdgePinByIdQuery: jest.fn(),
-  useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false })
+  useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false }),
+  useValidateEdgePinSwitchConfigMutation: jest.fn().mockImplementation(() => [mockValidateEdgePinSwitchConfigMutation])
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
@@ -55,7 +58,6 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   useEdgePinActions: () => ({
     editPin: (_originData: unknown, req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
@@ -78,30 +80,34 @@ jest.mock('react-router-dom', () => ({
 const updatePinPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
 describe('Edit PersonalIdentityNetwork', () => {
-  let params: { tenantId: string, serviceId: string }
-  jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-    data: mockPinData, isLoading: false, refetch: jest.fn() }))
+  const params: { tenantId: string, serviceId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    serviceId: 'testServiceId'
+  }
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serviceId: 'testServiceId'
-    }
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockPinData, isLoading: false, refetch: jest.fn() }))
+
+    mockedUsedNavigate.mockClear()
+    mockValidateEdgePinSwitchConfigMutation.mockClear()
 
     mockServer.use(
       rest.put(
         EdgePinUrls.updateEdgePin.url,
+        (_req, res, ctx) => res(ctx.status(202))),
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
         (_req, res, ctx) => res(ctx.status(202)))
-
     )
   })
 
   it('cancel and go back to device list', async () => {
-    const user = userEvent.setup()
     render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: updatePinPath }
     })
-    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -110,7 +116,12 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 
   it('should update PersonalIdentityNetwork successfully', async () => {
-    const user = userEvent.setup()
+    const mockPinData_noSwitch = cloneDeep(mockPinData)
+    mockPinData_noSwitch.distributionSwitchInfos = []
+    mockPinData_noSwitch.accessSwitchInfos = []
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockPinData_noSwitch, isLoading: false, refetch: jest.fn() }))
+
     render(
       <Provider>
         <EditPersonalIdentityNetwork />
@@ -119,19 +130,19 @@ describe('Edit PersonalIdentityNetwork', () => {
       })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByText('RUCKUS Edge'))
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByText('Wireless Network'))
+    await userEvent.click(await screen.findByText('Wireless Network'))
     // step 3
     await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByText('Dist. Switch'))
+    await userEvent.click(await screen.findByText('Dist. Switch'))
     // step 4
     await screen.findByTestId('DistributionSwitchForm')
-    await user.click((await screen.findAllByText('Access Switch'))[0])
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
     // step 5
     await screen.findByTestId('AccessSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -139,30 +150,77 @@ describe('Edit PersonalIdentityNetwork', () => {
     }))
   })
 
-  it('should render breadcrumb correctly', async () => {
+  it('should be blocked by switch config validation', async () => {
+    render(
+      <Provider>
+        <EditPersonalIdentityNetwork />
+      </Provider>, {
+        route: { params, path: updatePinPath }
+      })
+    // step 1
+    await screen.findByTestId('GeneralSettingsForm')
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
+    // step 2
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByText('Wireless Network'))
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByText('Dist. Switch'))
+    // step 4
+    await screen.findByTestId('DistributionSwitchForm')
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
+    // step 5
+    await screen.findByTestId('AccessSwitchForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    // should go back step 5
+    await screen.findByTestId('AccessSwitchForm')
+    expect(mockedUsedNavigate).toBeCalledTimes(0)
+  })
+
+  it('should popup edge cluster config validation failed message', async () => {
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => res(ctx.status(422), ctx.json(edgeClusterConfigValidationFailed)))
+    )
+
     render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: updatePinPath }
     })
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Personal Identity Network'
-    })).toBeVisible()
+
+    // step 1
+    await screen.findByTestId('GeneralSettingsForm')
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
+    // step 2
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByText('Wireless Network'))
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByText('Dist. Switch'))
+    // step 4
+    await screen.findByTestId('DistributionSwitchForm')
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
+    // step 5
+    await screen.findByTestId('AccessSwitchForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    await screen.findByRole('dialog')
+    expect(await screen.findByText('Validation Error')).toBeVisible()
+    expect(mockedUsedNavigate).toBeCalledTimes(0)
   })
 })
 
 describe('Enhanced PersonalIdentityNetwork', () => {
-  let params: { tenantId: string, serviceId: string }
+  const params: { tenantId: string, serviceId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    serviceId: 'testServiceId'
+  }
   beforeEach(() => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serviceId: 'testServiceId'
-    }
+
+    mockValidateEdgePinSwitchConfigMutation.mockClear()
 
     mockServer.use(
       rest.put(
@@ -201,7 +259,7 @@ describe('Enhanced PersonalIdentityNetwork', () => {
 
   it('should show correct steps with 2-Tier data', async () => {
     const mockModifiedPinData = cloneDeep(mockPinData)
-    mockModifiedPinData.vxlanTunnelProfileId = undefined as unknown as string
+    mockModifiedPinData.tunneledWlans = []
     jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
       data: mockModifiedPinData, isLoading: false, refetch: jest.fn() }))
 
@@ -252,6 +310,27 @@ describe('Enhanced PersonalIdentityNetwork', () => {
     await user.click(screen.getByText('Wireless Network'))
     // step 5
     expect(await screen.findByTestId('WirelessNetworkForm')).toBeVisible()
+  })
+
+  it('should skip switch validation when topology is wireless', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EditPersonalIdentityNetwork />
+      </Provider>, {
+        route: { params, path: updatePinPath }
+      })
+    // step 1
+    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
+    await user.click(await screen.findByText('RUCKUS Edge'))
+    // step 2
+    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
+    await userEvent.click(await screen.findByText('Wireless Network'))
+
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(mockValidateEdgePinSwitchConfigMutation).toBeCalledTimes(0)
   })
 })
 

@@ -15,17 +15,13 @@ import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFo
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
-interface SmartEdgeFormProps {
-  editMode?: boolean
-}
-
-export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
+export const SmartEdgeForm = () => {
 
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath = useTenantLink('')
-  const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
+  const { form, editMode } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     clusterOptions,
     isClusterOptionsLoading,
@@ -156,7 +152,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     }
 
     values={{
-      detailPage: props.editMode ?
+      detailPage: editMode ?
         <Button
           type='link'
           size='small'
@@ -195,7 +191,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                 children={
                   <Select
                     loading={isClusterOptionsLoading}
-                    disabled={props.editMode}
+                    disabled={editMode}
                     placeholder={$t({ defaultMessage: 'Select...' })}
                     onChange={onEdgeChange}
                     options={[
@@ -215,9 +211,10 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
             label={$t({ defaultMessage: 'Number of Segments' })}
             rules={[
               { required: true },
-              { type: 'number', min: 1, max: MAX_SEGMENT_PER_VENUE, message: $t({
-                defaultMessage: 'Number of Segments must be between 1 and {max}'
-              }, { max: MAX_SEGMENT_PER_VENUE }) }
+              { type: 'integer', transform: Number, min: 1, max: MAX_SEGMENT_PER_VENUE,
+                message: $t({
+                  defaultMessage: 'Number of Segments must be an integer between 1 and {max}'
+                }, { max: MAX_SEGMENT_PER_VENUE }) }
             ]}
             children={<InputNumber />}
           />
@@ -230,9 +227,11 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
             label={$t({ defaultMessage: 'Number of devices per Segment' })}
             rules={[
               { required: true },
-              { type: 'number', min: 1, max: MAX_DEVICE_PER_SEGMENT, message: $t({
-                defaultMessage: 'Number of devices per Segment must be between 1 and {max}'
-              }, { max: MAX_DEVICE_PER_SEGMENT }) }
+              { type: 'integer', transform: Number, min: 1, max: MAX_DEVICE_PER_SEGMENT,
+                message: $t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Number of devices per Segment must be an integer between 1 and {max}'
+                }, { max: MAX_DEVICE_PER_SEGMENT }) }
             ]}
             children={<InputNumber />}
           />
@@ -285,7 +284,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                       : $t({ defaultMessage: 'No Pool selected' })
                   }
                   {
-                    !props.editMode &&
+                    !editMode &&
                   <Button
                     type='link'
                     onClick={openDrawer}

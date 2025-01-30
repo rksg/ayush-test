@@ -1,12 +1,18 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { CustomButtonProps, Loader, showActionModal }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { useApViewModelQuery, useGetApQuery, useGetVenueQuery }    from '@acx-ui/rc/services'
-import { ApDeep, ApViewModel, CapabilitiesApModel, VenueExtended } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
-import { goToNotFound }                                            from '@acx-ui/user'
-import { getIntl }                                                 from '@acx-ui/utils'
+import { CustomButtonProps, Loader, showActionModal }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApQuery, useGetVenueQuery, useGetApCompatibilitiesQuery } from '@acx-ui/rc/services'
+import { ApDeep,
+  ApViewModel,
+  CapabilitiesApModel,
+  VenueExtended,
+  IncompatibleFeatureLevelEnum,
+  CompatibilityResponse
+} from '@acx-ui/rc/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
+import { getIntl }      from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -25,10 +31,15 @@ const tabs = {
   advanced: AdvancedTab
 }
 
+export type ApEditItemProps = {
+  isAllowEdit?: boolean
+}
+
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
   apCapabilities?: CapabilitiesApModel,
-  venueData?: VenueExtended
+  venueData?: VenueExtended,
+  apCompatibilitiesResponse?: CompatibilityResponse
 })
 
 export interface ApEditContextType {
@@ -98,6 +109,8 @@ export function ApEdit () {
 
   const [apData, setApData] = useState<ApDeep>()
   const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
+  // eslint-disable-next-line max-len
+  const [apCompatibilitiesResponse, setApCompatibilitiesResponse] = useState<CompatibilityResponse>()
   const [isLoaded, setIsLoaded] = useState(false)
 
   const apViewModelPayload = {
@@ -137,6 +150,21 @@ export function ApEdit () {
       venueId: targetVenueId
     } }, { skip: !targetVenueId } )
 
+  // this is a workaround
+  // TODO: wait for AP team add this to rpmkey
+  const {
+    data: compatibilitiesResponse
+  } = useGetApCompatibilitiesQuery({
+    params: {},
+    payload: {
+      filters: {
+        apIds: [serialNumber],
+        venueIds: [targetVenueId],
+        featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+      },
+      page: 1,
+      pageSize: 10
+    } }, { skip: !targetVenueId || !serialNumber } )
 
   useEffect(() => {
     if (!isGetApLoading && !isGetApCapsLoading) {
@@ -144,11 +172,15 @@ export function ApEdit () {
       if (modelName && capabilities) {
         setApData(getedApData)
         setApCapabilities(capabilities)
+        // this is a workaround
+        // TODO: wait for AP team add this to rpmkey
+        setApCompatibilitiesResponse(compatibilitiesResponse)
 
         setIsLoaded(true)
       }
     }
-  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
+  // eslint-disable-next-line max-len
+  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities, compatibilitiesResponse])
 
   useEffect(() => {
     if (apViewmodel) {
@@ -161,7 +193,8 @@ export function ApEdit () {
   // need to wait venueData ready, venueData.id is using inside all tabs.
   const isLoading = !venueData
 
-  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
+  // eslint-disable-next-line max-len
+  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData, apCompatibilitiesResponse }}>
     <ApEditContext.Provider value={{
       editContextData,
       setEditContextData,

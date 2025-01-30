@@ -1,5 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { formatGraphQLErrors , isGraphQLError } from './errorUtil'
+import { formatGraphQLErrors, hasGraphQLErrorCode, isGraphQLAction, isGraphQLError, Meta } from './errorUtil'
+
+describe('isGraphQLAction', () => {
+  it('returns false when type is undefined', () => {
+    expect(isGraphQLAction({ type: undefined })).toBe(false)
+  })
+
+  it('returns false when type does not include any reducer paths', () => {
+    expect(isGraphQLAction({ type: 'other-type' })).toBe(false)
+  })
+
+  it.each(
+    ['data-api', 'network-health']
+  )('returns true when type includes a reducer path: %s', (path) => {
+    expect(isGraphQLAction({ type: path })).toBe(true)
+  })
+})
 
 describe('isGraphQLError', () => {
   it('returns false when type is undefined', () => {
@@ -102,5 +118,18 @@ describe('formatGraphQLErrors', () => {
       requestId: '123',
       errors: [{ code: 'ERROR_CODE', message: undefined }]
     })
+  })
+})
+
+describe('hasGraphQLErrorCode', () => {
+  it('should return true when error code matches', () => {
+    const code = 'TEST_ERROR_CODE'
+    const meta = {
+      baseQueryMeta: {
+        response: { errors: [ { extensions: { code: 'TEST_ERROR_CODE' } } ]
+        }
+      }
+    }
+    expect(hasGraphQLErrorCode(code, meta as Meta)).toBe(true)
   })
 })

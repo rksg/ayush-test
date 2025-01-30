@@ -20,13 +20,14 @@ import {
   configTemplatePolicyTypeMap
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { ScopeKeys }                                                              from '@acx-ui/types'
+import { RbacOpsIds, ScopeKeys }                                                  from '@acx-ui/types'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 
 type GeneralConfigTemplateLinkProps<T> = T & {
   children: ReactNode
   attachCurrentPathToState?: boolean
+  rbacOpsIds?: RbacOpsIds
 }
 
 interface ConfigTemplateLinkProps extends Omit<LinkProps, 'to'> {
@@ -72,6 +73,7 @@ export function PolicyConfigTemplateDetailsLink (props: GeneralConfigTemplateLin
 // eslint-disable-next-line max-len
 interface PolicyConfigTemplateLinkSwitcherProps extends React.PropsWithChildren<PolicyDetailsLinkProps> {
   scopeKey?: ScopeKeys
+  rbacOpsIds?: RbacOpsIds
 }
 // eslint-disable-next-line max-len
 export function PolicyConfigTemplateLinkSwitcher (props: PolicyConfigTemplateLinkSwitcherProps) {
@@ -112,6 +114,7 @@ export function ServiceConfigTemplateDetailsLink (props: GeneralConfigTemplateLi
 // eslint-disable-next-line max-len
 interface ServiceConfigTemplateLinkSwitcherProps extends React.PropsWithChildren<ServiceDetailsLinkProps> {
   scopeKey?: ScopeKeys
+  rbacOpsIds?: RbacOpsIds
 }
 // eslint-disable-next-line max-len
 export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateLinkSwitcherProps) {

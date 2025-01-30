@@ -108,7 +108,7 @@ describe('Subscriptions', () => {
     await screen.findByRole('columnheader', { name: 'Device Count' })
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
+    expect(screen.queryByRole('row', { name: /Wi-Fi .* Expired/i })).toBeNull()
     expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
   })
 
@@ -127,7 +127,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
 
     const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subsciptions' })
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
     await userEvent.click(licenseManagementButton)
     expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
@@ -199,6 +199,7 @@ describe('Subscriptions', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
+    await userEvent.click(screen.getByRole('button', { name: 'Clear Filters' }))
     const wifiRow = await screen.findByRole('row', { name: /Wi-Fi/i })
     const wifiRowCells = await within(wifiRow as HTMLTableRowElement).findAllByRole('cell')
     expect((wifiRowCells[1] as HTMLTableCellElement).innerHTML).toBe('Trial')
@@ -233,6 +234,7 @@ describe('Subscriptions', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
+    await userEvent.click(screen.getByRole('button', { name: 'Clear Filters' }))
     await screen.findByRole('row', { name: /Wi-Fi/i })
     expect(screen.queryByRole('row', { name: /RUCKUS Edge/i })).toBeNull()
     expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()

@@ -21,8 +21,8 @@ import { get }                                          from '@acx-ui/config'
 import { formatter }                                    from '@acx-ui/formatter'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { ConfigChangeContext, KPIFilterContext } from '../context'
-import { useKPIChangesQuery }                    from '../services'
+import { ConfigChangeContext } from '../context'
+import { useKPIChangesQuery }  from '../services'
 
 import { Statistic, TransparentTrend, TrendPill, DropDownWrapper } from './styledComponents'
 
@@ -44,9 +44,10 @@ type KPIProps = ConfigChangeKPIConfig & {
 
 const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) => {
   const { $t } = useIntl()
+
   const { trend, value } =
     kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
-  const { kpiFilter, setKpiFilter } = useContext(KPIFilterContext)
+  const { kpiFilter, setKpiFilter } = useContext(ConfigChangeContext)
   return <div onClick={() => setKpiFilter?.(kpiKey)}>
     <Statistic
       className={kpiFilter.includes(kpiKey) ? 'statistic-selected' : undefined}

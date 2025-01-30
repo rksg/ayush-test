@@ -13,10 +13,10 @@ import { Rule }                      from 'antd/lib/form'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
-import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
+import { Tooltip, PasswordInput }                               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector, IdentitySelector, PhoneInput } from '@acx-ui/rc/components'
+import { useGetDpskPassphraseQuery, useGetDpskQuery }           from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
   emailRegExp,
@@ -55,6 +55,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
     ? NEW_MAX_DEVICES_PER_PASSPHRASE
@@ -63,13 +64,14 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
     { params: { ...params, passphraseId: editMode.passphraseId } },
     { skip: !editMode.isEdit }
   )
-  const { poolDeviceCount } = useGetDpskQuery({
+  const { poolDeviceCount, identityGroupId } = useGetDpskQuery({
     params: { ...params }
   }, {
     skip: !isCloudpathEnabled,
     selectFromResult ({ data }) {
       return {
-        poolDeviceCount: data?.deviceCountLimit
+        poolDeviceCount: data?.deviceCountLimit,
+        identityGroupId: data?.identityId
       }
     }
   })
@@ -117,6 +119,15 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
 
   return (
     <Form layout='vertical' form={form}>
+      {
+        (editMode.isEdit && isIdentityGroupRequired) && (
+          <IdentitySelector
+            identityGroupId={identityGroupId}
+            readonly={true}
+            isEdit={editMode.isEdit}
+          />
+        )
+      }
       <Form.Item name='id' initialValue='' noStyle>
         <Input type='hidden' />
       </Form.Item>
@@ -366,6 +377,7 @@ function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPas
   }
 
   return {
+    identityId: undefined,  // reset the identityId to prevent the legacy id still in the form
     ...rest,
     numberOfPassphrases: 1,
     expiration,

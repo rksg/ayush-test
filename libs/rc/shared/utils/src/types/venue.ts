@@ -277,7 +277,8 @@ export interface VenueLanPorts {
 	model: string,
 	lanPorts: LanPort[],
 	poeMode?: string,
-	poeOut?: boolean
+	poeOut?: boolean,
+	isSettingsLoaded?: boolean
 }
 
 export interface Address {
@@ -781,6 +782,16 @@ export interface VenueApSmartMonitor {
 	threshold: number
 }
 
+export interface VenueApRebootTimeout {
+	gatewayLossTimeout: number,
+	serverLossTimeout: number
+}
+
+export interface VenueIot {
+	enabled: boolean,
+	mqttBrokerAddress: string
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
@@ -896,7 +907,8 @@ export type FeatureSetResponse = {
 }
 
 export type IncompatibleFeature = FeatureSet & {
-  incompatibleDevices?: ApIncompatibleDevice[],
+  incompatibleDevices?: ApIncompatibleDevice[]
+  children?: IncompatibleFeature[]
 }
 
 export type Compatibility = {

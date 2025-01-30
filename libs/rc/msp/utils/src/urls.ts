@@ -6,7 +6,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/mspecs/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/mspecs/query'
   },
   getMspECList: {
     method: 'post',

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                    from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
@@ -27,22 +27,23 @@ import {
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
-  useGetDirectoryServerViewDataListQuery
+  useGetDirectoryServerViewDataListQuery,
+  useSwitchPortProfilesCountQuery
 } from '@acx-ui/rc/services'
 import {
+  AddProfileButton,
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
-  filterByAccessForServicePolicyMutation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
+  hasSomePoliciesPermission,
   isPolicyCardEnabled,
   policyTypeDescMapping,
   policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
-  TenantLink,
   useNavigate,
   useParams,
   useTenantLink
@@ -64,14 +65,14 @@ export default function MyPolicies () {
     find(policies, { type: PolicyType.TUNNEL_PROFILE })!.helpIcon = isEdgeCompatibilityEnabled
       ? <ApCompatibilityToolTip
         title=''
-        visible
+        showDetailButton
         onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
       />
       : undefined
     find(policies, { type: PolicyType.HQOS_BANDWIDTH })!.helpIcon = isEdgeCompatibilityEnabled
       ? <ApCompatibilityToolTip
         title=''
-        visible
+        showDetailButton
         onClick={() => setEdgeFeatureName(IncompatibilityFeatures.HQOS)}
       />
       : undefined
@@ -82,11 +83,11 @@ export default function MyPolicies () {
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink to={getSelectPolicyRoutePath(true)}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
-          </TenantLink>
-        ])}
+        extra={<AddProfileButton
+          hasSomeProfilesPermission={() => hasSomePoliciesPermission(PolicyOperation.CREATE)}
+          linkText={$t({ defaultMessage: 'Add Policy or Profile' })}
+          targetPath={getSelectPolicyRoutePath(true)}
+        />}
       />
       <GridRow>
         {
@@ -167,6 +168,7 @@ function useCardData (): PolicyCardData[] {
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   return [
     {
@@ -328,7 +330,7 @@ function useCardData (): PolicyCardData[] {
       totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEthernetPortProfileEnabled
+      disabled: !isEthernetPortProfileEnabled || isSwitchPortProfileEnabled
     },
     {
       type: PolicyType.HQOS_BANDWIDTH,
@@ -365,6 +367,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })),
       disabled: !isDirectoryServerEnabled
+    },
+    {
+      type: PolicyType.PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      // eslint-disable-next-line max-len
+      totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink('/policies/portProfile/wifi'),
+      disabled: !isSwitchPortProfileEnabled
     }
   ]
 }

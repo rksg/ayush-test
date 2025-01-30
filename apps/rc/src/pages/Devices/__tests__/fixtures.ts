@@ -1,4 +1,4 @@
-import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType } from '@acx-ui/rc/utils'
+import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType, IsolatePacketsTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
@@ -599,6 +599,65 @@ export const r650ap = {
     yPercent: 0.0
   },
   updatedDate: '2022-11-22T08:53:27.329+0000'
+}
+
+export const iotCompatibilites = {
+  compatibilities: [
+    {
+      id: '132322011893',
+      incompatibleFeatures: [
+        {
+          featureName: '6G outdoor channels',
+          requirements: [
+            {
+              firmware: '7.0.0.200.0',
+              models: [
+                'H670',
+                'R770',
+                'R760',
+                'R560',
+                'R670',
+                'T670',
+                'T670SN'
+              ]
+            }
+          ],
+          wifiNetworkIds: [
+            'ce0ae757a7594e56a9a1cf08759c40c6'
+          ],
+          featureType: 'WIFI',
+          featureLevel: 'VENUE'
+        },
+        {
+          featureName: 'AFC',
+          requirements: [
+            {
+              firmware: '7.0.0.104.1304',
+              models: [
+                'R770',
+                'R760',
+                'R560'
+              ]
+            },
+            {
+              firmware: '7.0.0.200.0',
+              models: [
+                'T670',
+                'R670'
+              ]
+            }
+          ],
+          wifiNetworkIds: [
+            'ce0ae757a7594e56a9a1cf08759c40c6'
+          ],
+          featureType: 'WIFI',
+          featureLevel: 'VENUE'
+        }
+      ]
+    }
+  ],
+  page: 1,
+  totalCount: 1
 }
 
 export const r650Cap = {
@@ -1562,6 +1621,34 @@ export const venueLanPorts = [
       }
     ],
     model: 'T750',
+    poeMode: 'Auto',
+    poeOut: false
+  },
+  {
+    lanPorts: [
+      {
+        type: 'TRUNK',
+        untagId: 1,
+        vlanMembers: '1-4094',
+        portId: '1',
+        enabled: true
+      },
+      {
+        type: 'TRUNK',
+        untagId: 1,
+        vlanMembers: '1-4094',
+        portId: '2',
+        enabled: true
+      },
+      {
+        type: EthernetPortType.ACCESS,
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '3',
+        enabled: true
+      }
+    ],
+    model: 'T750SE',
     poeMode: 'Auto',
     poeOut: false
   }
@@ -4250,6 +4337,17 @@ export const portlistData = {
   totalCount: 2
 }
 
+export const resultOfGetApIotSettings = {
+  mqttBrokerAddress: '1234.ruckus.com',
+  useVenueSettings: true,
+  enabled: true
+}
+
+export const resultOfGetVenueApIotSettings = {
+  mqttBrokerAddress: '1234.ruckus.com',
+  enabled: true
+}
+
 export const resultOfGetApSnmpAgentSettings = {
   apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
   useVenueSettings: true,
@@ -4522,4 +4620,48 @@ export const lanPortSettingPort1 = {
   enabled: true,
   overwriteUntagId: 1,
   overwriteVlanMembers: '1-4094'
+}
+export const mockedAPLanPortSettings1 = {
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094',
+  clientIsolationEnabled: true,
+  clientIsolationSettings: {
+    packetsType: 'UNICAST',
+    autoVrrp: false
+  },
+  useVenueSettings: false,
+  enabled: true
+}
+
+
+
+export const mockedAPLanPortSettings2 = {
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094',
+  useVenueSettings: false,
+  enabled: true
+}
+
+export const mockedAPLanPortSettings3 = {
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094',
+  useVenueSettings: false,
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings1 = {
+  clientIsolationEnabled: true,
+  clientIsolationSettings: {
+    packetsType: IsolatePacketsTypeEnum.UNICAST,
+    autoVrrp: false
+  },
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings2 = {
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings3 = {
+  enabled: true
 }

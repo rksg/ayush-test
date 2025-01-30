@@ -23,9 +23,12 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  filterDpskOperationsByPermission,
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }  from '@acx-ui/utils'
 
 export interface ManageDeviceDrawerProps {
   visible: boolean;
@@ -140,6 +143,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const actions = [
     {
+      rbacOpsIds: [getOpsApi(DpskUrls.updatePassphraseDevices)],
       label: $t({ defaultMessage: 'Add Device' }),
       // eslint-disable-next-line max-len
       disabled: !!(passphraseInfo.numberOfDevices && devicesData && devicesData.length >= passphraseInfo.numberOfDevices),
@@ -151,6 +155,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const rowActions: TableProps<DPSKDeviceInfo>['rowActions'] = [
     {
+      rbacOpsIds: [getOpsApi(DpskUrls.deletePassphraseDevices)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: async (rows, clearSelection) => {
         await deleteDevicesData({
@@ -213,18 +218,20 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     }
   }
 
+  const allowedRowActions = filterDpskOperationsByPermission(rowActions)
+
   const deviceTable = <Table<DPSKDeviceInfo>
     onFilterChange={handleFilterChange}
     columns={columns}
-    actions={actions}
+    actions={filterDpskOperationsByPermission(actions)}
     dataSource={devicesData?.filter(data => {
       return searchString ? data.mac.toLowerCase().includes(searchString) : true
     })}
     enableApiFilter={false}
     pagination={{ defaultPageSize: 10000, hideOnSinglePage: true }}
     rowKey='mac'
-    rowActions={rowActions}
-    rowSelection={{ type: 'checkbox' }}
+    rowActions={allowedRowActions}
+    rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
   />
 
   const footer = [

@@ -38,6 +38,7 @@ export interface DpskSaveData {
   deviceCountLimit?: number;
   policyDefaultAccess?: boolean;
   policySetId?: string;
+  networkCount?: number;
 }
 export interface NewDpskPassphrase {
   id: string;
@@ -68,6 +69,7 @@ export interface CreateDpskPassphrasesFormFields {
   email?: string;
   phoneNumber?: string;
   revocationReason?: string;
+  identityId?: string;
 }
 
 export interface DpskPassphrasesSaveData {

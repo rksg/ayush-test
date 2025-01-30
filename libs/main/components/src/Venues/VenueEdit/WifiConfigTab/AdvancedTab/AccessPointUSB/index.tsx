@@ -6,17 +6,24 @@ import { isEqual, omit } from 'lodash'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Button, Loader, Select, Table, TableProps } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                        from '@acx-ui/icons'
+import {
+  AnchorContext,
+  Button,
+  Loader,
+  Select,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { DeleteOutlinedIcon }         from '@acx-ui/icons'
 import {
   useGetVenueApModelsQuery,
   useGetVenueApUsbStatusQuery,
   useUpdateVenueApUsbStatusMutation
 } from '@acx-ui/rc/services'
-import { VenueApUsbStatus } from '@acx-ui/rc/utils'
+import { usbTooltipInfo, VenueApUsbStatus } from '@acx-ui/rc/utils'
 
-import { VenueUtilityContext } from '../..'
-import { VenueEditContext }    from '../../..'
+import { VenueUtilityContext }                        from '../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 
 
 type VenueApUsbStatusEntry = VenueApUsbStatus & {
@@ -26,25 +33,21 @@ type VenueApUsbStatusEntry = VenueApUsbStatus & {
 const defaultArray: VenueApUsbStatusEntry[] = []
 const emptyOptions: LabeledValue[] = []
 
-export function AccessPointUSB () {
+export function AccessPointUSB (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-  const initDataRef = useRef<VenueApUsbStatus[]>([])
-  //const navigate = useNavigate()
+  const { isAllowEdit=true } = props
 
-  const usbTooltipInfo = $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'Enable or disable the USB port for IoT-connected devices. When enabled, the port supports IoT device connectivity and data transfer'
-  })
+  const initDataRef = useRef<VenueApUsbStatus[]>([])
 
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
-  const { venueApNames } = useGetVenueApModelsQuery({
+  const { venueApModels } = useGetVenueApModelsQuery({
     params: { tenantId, venueId },
     enableRbac: true
   }, {
     selectFromResult: ({ data }) => ({
-      venueApNames: data?.models?.map( model => model.toUpperCase())
+      venueApModels: data?.models?.map( model => model.toUpperCase())
     })
   })
 
@@ -56,6 +59,7 @@ export function AccessPointUSB () {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
 
   const [tableData, setTableData] = useState<VenueApUsbStatusEntry[]>(defaultArray)
@@ -86,7 +90,7 @@ export function AccessPointUSB () {
 
             venueApUsbSettings.push({
               ...item,
-              hasExist: venueApNames?.includes(model)
+              hasExist: venueApModels?.includes(model)
             })
           })
         }
@@ -101,22 +105,16 @@ export function AccessPointUSB () {
 
         setModelOptions(availableModelsOptions)
       }
+      setReadyToScroll?.(r => [...(new Set(r.concat('Access-Point-USB-Support')))])
     }
-  }, [venueApStatusList.data, venueApCaps])
+  }, [venueApStatusList.data, venueApCaps, setReadyToScroll])
 
 
   useEffect(() => {
     const newData = tableData.filter(d => d.model).map(({ hasExist, ...others }) => others)
-    const isDirty = !isEqual(newData, initDataRef.current)
+    const hasChanged = !isEqual(newData, initDataRef.current)
 
-    setEditContextData && setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced' }),
-      isDirty: isDirty
-    })
-
-    const newEditAdvancedContextData = (isDirty) ? {
+    const newEditAdvancedContextData = (hasChanged) ? {
       ...editAdvancedContextData,
       updateAccessPointUSB: () => updateAccessPointUSB(newData)
     } : {
@@ -124,6 +122,13 @@ export function AccessPointUSB () {
     }
 
     setEditAdvancedContextData && setEditAdvancedContextData(newEditAdvancedContextData)
+
+    setEditContextData && setEditContextData({
+      ...editContextData,
+      unsavedTabKey: 'settings',
+      tabTitle: $t({ defaultMessage: 'Advanced' }),
+      isDirty: Object.keys(newEditAdvancedContextData).length > 0
+    })
 
   }, [tableData])
 
@@ -154,11 +159,12 @@ export function AccessPointUSB () {
     }
   }, {
     title: $t({ defaultMessage: 'USB Status' }),
-    tooltip: usbTooltipInfo,
+    tooltip: $t(usbTooltipInfo, { br: <br/> }),
     dataIndex: 'usbPortEnable',
     key: 'usbPortEnable',
     render: function (data, row) {
       return <Switch
+        disabled={!isAllowEdit}
         checked={!!data}
         onClick={(checked) => {
           setTableData([
@@ -173,10 +179,11 @@ export function AccessPointUSB () {
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (_, row) => !row.hasExist ? <Button
+    render: (_, row) => (!row.hasExist) ? <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
+      disabled={!isAllowEdit}
       icon={<DeleteOutlinedIcon />}
       style={{ height: '16px' }}
       onClick={() => handleDelete(row.model)}
@@ -203,7 +210,7 @@ export function AccessPointUSB () {
       ...tableData.map((item, index) => {
         if (index === tableData.length - 1) {
           item.model = model
-          item.hasExist = venueApNames?.includes(model)
+          item.hasExist = venueApModels?.includes(model)
         }
         return item
       })
@@ -229,6 +236,7 @@ export function AccessPointUSB () {
           onClick={handleAdd}
           type='link'
           disabled={venueApStatusList.isLoading
+                    || !isAllowEdit
                     || !modelOptions.length
                     || !!tableData?.find((item) => !item.model)
           }

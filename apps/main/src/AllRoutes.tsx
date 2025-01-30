@@ -9,7 +9,7 @@ import { AuthRoute, hasRoles }               from '@acx-ui/user'
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
 import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
-import { AddCustomRole }                                    from './pages/Administration/UserPrivileges/CustomRoles/AddCustomRole'
+import { AddNewCustomRole }                                 from './pages/Administration/UserPrivileges/CustomRoles/AddNewCustomRole'
 import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
 import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
 import AnalyticsBase                                        from './pages/Analytics'
@@ -155,8 +155,9 @@ function AdministrationRoutes () {
       <Route
         path='userPrivileges/privilegeGroups/:action/:groupId'
         element={<EditPrivilegeGroup />} />
-      <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
-      <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
+      <Route path='userPrivileges/customRoles/create' element={<AddNewCustomRole />} />
+      <Route path='userPrivileges/customRoles/:action/:customRoleId'
+        element={<AddNewCustomRole />} />
       <Route path='onpremMigration/add'
         element={
           <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>

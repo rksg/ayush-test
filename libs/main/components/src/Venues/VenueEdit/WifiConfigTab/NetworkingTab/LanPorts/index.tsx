@@ -11,12 +11,12 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileActivation
+  useSoftGreProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
 import {
@@ -34,7 +34,10 @@ import {
   useUpdateVenueLanPortSpecificSettingsMutation,
   useUpdateVenueLanPortSettingsMutation,
   useActivateClientIsolationOnVenueMutation,
-  useDeleteClientIsolationOnVenueMutation
+  useDeleteClientIsolationOnVenueMutation,
+  useLazyGetVenueLanPortSettingsByModelQuery,
+  useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnVenueMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -47,7 +50,10 @@ import {
   useConfigTemplate,
   VenueLanPorts,
   VenueSettings,
-  WifiNetworkMessages
+  WifiNetworkMessages,
+  SoftGreDuplicationChangeState,
+  Voter,
+  mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -59,7 +65,7 @@ import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
 const { useWatch } = Form
 
@@ -93,9 +99,10 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
     : venueSettings?.dhcpServiceSetting?.enabled ?? false
 }
 
-export function LanPorts () {
+export function LanPorts (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,
@@ -151,12 +158,16 @@ export function LanPorts () {
   const [updateActivateEthernetPortProfile] =
     useActivateEthernetPortProfileOnVenueApModelPortIdMutation()
 
+  const [updateActivateSoftGreProfile] = useActivateSoftGreProfileOnVenueMutation()
+  const [updateDeactivateSoftGreProfile] = useDeactivateSoftGreProfileOnVenueMutation()
   const [updateActivateClientIsolationPolicy] = useActivateClientIsolationOnVenueMutation()
   const [updateDeactivateClientIsolationPolicy] = useDeleteClientIsolationOnVenueMutation()
   const [updateLanPortSetting] = useUpdateVenueLanPortSettingsMutation()
 
   const [updateLanPortSpecificSetting] =
     useUpdateVenueLanPortSpecificSettingsMutation()
+
+  const [getVanueLanportSettingsByModel] = useLazyGetVenueLanPortSettingsByModelQuery()
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [activeTabIndex, setActiveTabIndex] = useState(0)
@@ -166,7 +177,11 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
+  const {
+    softGREProfileOptionList,
+    duplicationChangeDispatch,
+    validateIsFQDNDuplicate
+  } = useSoftGreProfileLimitedSelection(venueId!)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -187,7 +202,6 @@ export function LanPorts () {
 
   useEffect(() => {
     const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
-
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChagedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -212,7 +226,6 @@ export function LanPorts () {
         updateLanPorts: () => handleUpdateLanPorts(newData),
         discardLanPorts: () => handleDiscardLanPorts(lanPortOrinData)
       })
-
       setLanPortData(newData)
       setSelectedModel(getSelectedModelData(newData, apModel))
 
@@ -226,24 +239,68 @@ export function LanPorts () {
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
   }
 
-  const handleModelChange = (value: string) => {
+  const handleModelChange = async (value: string) => {
     const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
     const lanPortsCap = modelCaps?.lanPorts || []
     // eslint-disable-next-line max-len
     const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
-
     const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
     const tabIndex = 0
-    const selectedModel = getModelWithDefaultEthernetPortProfile(selected, lanPortsCap, tenantId)
-    setSelectedModel(selectedModel)
+    const selectedModel = cloneDeep(selected)
+    if(selectedModel && !selectedModel.isSettingsLoaded) {
+      const lanPortSettings = await getVanueLanportSettingsByModel({
+        params: {
+          venueId: venueId,
+          apModel: selectedModel.model,
+          lanPortCount: (selectedModel.lanPorts?.length || 0).toString()
+        }
+      }).unwrap()
+
+      handleModelWithRelativeSettings(selectedModel, lanPortSettings)
+    }
+
+    const selectedModelWithDefault =
+      getModelWithDefaultEthernetPortProfile(selectedModel, lanPortsCap, tenantId)
+
+    setSelectedModel(selectedModelWithDefault)
     setSelectedModelCaps(modelCaps as CapabilitiesApModel)
     setActiveTabIndex(tabIndex)
     setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
     form?.setFieldsValue({
-      ...selectedModel,
+      ...selectedModelWithDefault,
       poeOut: poeOutFormData,
-      lan: selectedModel?.lanPorts
+      lan: selectedModelWithDefault?.lanPorts
     })
+  }
+
+  const handleModelWithRelativeSettings = (
+    selected: VenueLanPorts,
+    lanPortSettings: VenueLanPortSettings[]
+  ) => {
+
+    if((isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) && lanPortSettings?.length) {
+      selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
+    }
+
+    selected.isSettingsLoaded = true
+
+    const newLanPortData = cloneDeep(lanPortData)
+    const newLanPortOrinData = cloneDeep(lanPortOrinData)
+
+    newLanPortData?.forEach((item, index) => {
+      if(item.model === selected.model) {
+        newLanPortData[index] = selected
+      }
+    })
+
+    newLanPortOrinData?.forEach((item, index) => {
+      if(item.model === selected.model) {
+        newLanPortOrinData[index] = selected
+      }
+    })
+
+    setLanPortData(newLanPortData)
+    setLanPortOrinData(newLanPortOrinData)
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
@@ -318,13 +375,39 @@ export function LanPorts () {
     }
   }
 
+  const handleDeactivateSoftGreProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+    const originId = originLanPort?.softGreProfileId
+    if(!originId) {
+      return
+    }
+
+    const isLanPortDisabled = !lanPort.enabled
+    const isSoftGreDisabled = !!!lanPort.softGreEnabled
+    const isSoftGreProfileChanged = originId !== lanPort.softGreProfileId
+
+    if(isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged) {
+      await updateDeactivateSoftGreProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: originId
+        }
+      }).unwrap()
+    }
+  }
+
   const handleDeactivateClientIsolationPolicy = async (
     model:string,
     lanPort:LanPort,
     originLanPort?:LanPort
   ) => {
     const originClientIsolationId = originLanPort?.clientIsolationProfileId
-    if(!originClientIsolationId) {
+    if(!originClientIsolationId || originClientIsolationId === lanPort.clientIsolationProfileId) {
       return
     }
 
@@ -339,11 +422,38 @@ export function LanPorts () {
       }).unwrap()
     }
   }
+
+  const handleActivateSoftGreProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+
+    const isLanPortEnabled = lanPort.enabled
+    const isSoftGreEnabled = lanPort.softGreEnabled
+    const isSoftGreProfileChanged = originLanPort?.softGreProfileId !== lanPort.softGreProfileId
+
+    if(isLanPortEnabled && isSoftGreEnabled && isSoftGreProfileChanged) {
+      await updateActivateSoftGreProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: lanPort.softGreProfileId
+        }
+      }).unwrap()
+    }
+  }
+
   const handleUpdateClientIsolationPolicy = async (
     model:string,
-    lanPort:LanPort
+    lanPort:LanPort,
+    originLanPort?:LanPort
   ) => {
     const clientIsolationId = lanPort.clientIsolationProfileId
+    if(clientIsolationId === originLanPort?.clientIsolationProfileId) {
+      return
+    }
 
     if(clientIsolationId && lanPort.clientIsolationEnabled) {
       await updateActivateClientIsolationPolicy({
@@ -375,11 +485,6 @@ export function LanPorts () {
         },
         payload: venueLanPortSetting
       }).unwrap()
-    }
-
-    // Activate Client Isolation must wait Lan settings enable client isolation saved
-    if(isEthernetClientIsolationEnabled) {
-      handleUpdateClientIsolationPolicy(model, lanPort)
     }
   }
 
@@ -438,6 +543,22 @@ export function LanPorts () {
     records.push(apModel)
     setResetModels([...new Set(records)])
 
+    let voters = [] as Voter[]
+
+    defaultLanPortsData.lanPorts.forEach((lanPort) => {
+      voters.push({
+        portId: (lanPort.portId ?? '0'),
+        model: apModel
+      })
+
+    })
+
+    duplicationChangeDispatch({
+      state: SoftGreDuplicationChangeState.ResetToDefault,
+      voters: voters
+    })
+
+
     customGuiChagedRef.current = true
   }
 
@@ -459,41 +580,59 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
-    if (isEthernetPortProfileEnabled) {
+    if (isEthernetPortProfileEnabled && !isTemplate) {
       payload.forEach((venueLanPort) => {
-        const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
-          return oldVenueLanPort.model === venueLanPort.model
-        })
-
-        if (originVenueLanPort) {
-          // Uppdate Lan port specific settings
-          handleUpdateLanPortSpecificSettings(venueLanPort.model, venueLanPort, originVenueLanPort)
-        }
-
-        venueLanPort.lanPorts.forEach((lanPort) => {
-          const originLanPort = originVenueLanPort?.lanPorts.find((oldLanPort)=> {
-            return oldLanPort.portId === lanPort.portId
+        if(venueLanPort.isSettingsLoaded) {
+          const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
+            return oldVenueLanPort.model === venueLanPort.model
           })
-          // Update ethernet port profile
-          handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
-          // Update SoftGre Profile
-          handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
 
-          // Before disable Client Isolation must deacticvate Client Isolation policy
-          if(isEthernetClientIsolationEnabled) {
-            handleDeactivateClientIsolationPolicy(venueLanPort.model, lanPort, originLanPort)
+          if (originVenueLanPort) {
+            // Uppdate Lan port specific settings
+            handleUpdateLanPortSpecificSettings(
+              venueLanPort.model, venueLanPort, originVenueLanPort
+            )
           }
 
-          // Update Lan settings
-          handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
-        })
+          venueLanPort.lanPorts.forEach(async (lanPort) => {
+            const originLanPort = originVenueLanPort?.lanPorts.find((oldLanPort)=> {
+              return oldLanPort.portId === lanPort.portId
+            })
+
+            if(isEthernetSoftgreEnabled) {
+              await handleDeactivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            }
+
+            // Update ethernet port profile
+            await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+
+            // Before disable Client Isolation must deacticvate Client Isolation policy
+            if(isEthernetClientIsolationEnabled) {
+              await handleDeactivateClientIsolationPolicy(
+                venueLanPort.model, lanPort, originLanPort
+              )
+            }
+
+            // Update Lan settings
+            await handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
+
+            if(isEthernetSoftgreEnabled) {
+              await handleActivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            }
+
+            // Activate Client Isolation must wait Lan settings enable client isolation saved
+            if(isEthernetClientIsolationEnabled) {
+              handleUpdateClientIsolationPolicy(venueLanPort.model, lanPort, originLanPort)
+            }
+          })
+        }
       })
     }
 
     setLanPortData(payload)
     setLanPortOrinData(payload)
 
-    if (!isEthernetPortProfileEnabled) {
+    if (!isEthernetPortProfileEnabled || isTemplate) {
       await updateVenueLanPorts({
         params: { tenantId, venueId },
         payload,
@@ -526,13 +665,14 @@ export function LanPorts () {
         <LanPortPoeSettings
           selectedModel={selectedModel}
           selectedModelCaps={selectedModelCaps}
+          disabled={!isAllowEdit}
           onGUIChanged={handleGUIChanged}
         />
       </Col>
       {!isTemplate && isLanPortResetEnabled && apModel &&
       <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
         <Tooltip title={$t(WifiNetworkMessages.LAN_PORTS_RESET_TOOLTIP)} >
-          <Button type='link' onClick={handleResetDefaultSettings}>
+          <Button type='link' disabled={!isAllowEdit} onClick={handleResetDefaultSettings}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button>
         </Tooltip>
@@ -555,6 +695,7 @@ export function LanPorts () {
               <Row>
                 <Col span={8}>
                   <LanPortSettings
+                    readOnly={!isAllowEdit}
                     selectedPortCaps={selectedPortCaps}
                     selectedModel={selectedModel}
                     setSelectedPortCaps={setSelectedPortCaps}
@@ -564,7 +705,9 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
-                    dispatch={dispatch}
+                    softGREProfileOptionList={softGREProfileOptionList}
+                    optionDispatch={duplicationChangeDispatch}
+                    validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                   />
                 </Col>
               </Row>
@@ -619,4 +762,3 @@ function getModelWithDefaultEthernetPortProfile (selectedModel: VenueLanPorts, l
 
   return model
 }
-

@@ -5,17 +5,21 @@ import { omit }                                from 'lodash'
 import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
-import { useValidateEdgePinNetworkMutation }               from '@acx-ui/rc/services'
+import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
+import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CommonResult,
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
-  redirectPreviousPage
+  redirectPreviousPage,
+  EdgeClusterInfo,
+  DistributionSwitch,
+  AccessSwitch
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
 import { AccessSwitchForm }                         from './AccessSwitchForm'
@@ -83,26 +87,14 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
+  const [validateEdgePinSwitchConfig] = useValidateEdgePinSwitchConfigMutation()
+  const [validateEdgePinClusterConfig] = useValidateEdgePinClusterConfigMutation()
 
   // eslint-disable-next-line max-len
-  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    const payload = {
-      id: formData.id,
-      name: formData.name,
-      vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      edgeClusterInfo: {
-        edgeClusterId: formData.edgeClusterId,
-        segments: formData.segments,
-        devices: formData.devices,
-        dhcpInfoId: formData.dhcpId,
-        dhcpPoolId: formData.poolId
-      },
-      networkIds: formData.networkIds,
-      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
-        ds, ['accessSwitches', 'name'])),
-      accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
-        as, ['name', 'familyId', 'firmwareVersion', 'model']))
+  const doSwitchValidation = async (formData: PersonalIdentityNetworkFormData, payload: RequestPayload, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
+    // skip when topology type is wireless
+    if (formData.networkTopologyType === NetworkTopologyType.Wireless) {
+      return Promise.resolve()
     }
 
     if (formData.distributionSwitchInfos?.length > 0 && (
@@ -110,13 +102,13 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
         as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
     )) {
       gotoStep(4)
-      return
+      return Promise.reject()
     }
 
     if (!skipValidation &&
       formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
       try {
-        await validateEdgePinNetwork({
+        await validateEdgePinSwitchConfig({
           params,
           payload: {
             pinId: formData.id || '',
@@ -155,8 +147,53 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           })
         }
 
-        return
+        return Promise.reject()
       }
+    }
+
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line max-len
+  const doEdgeClusterValidation = async (payload: RequestPayload) => {
+    try {
+      await validateEdgePinClusterConfig({
+        payload: {
+          edgeClusterInfo: payload.edgeClusterInfo as EdgeClusterInfo
+        }
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      const errorRes = error as CatchErrorResponse
+
+      // expected error format
+      // eslint-disable-next-line max-len
+      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Validation Error' }),
+          content: <>
+            {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
+          </>
+        })
+      }
+
+      return Promise.reject()
+    }
+
+    return Promise.resolve()
+  }
+
+
+  // eslint-disable-next-line max-len
+  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
+    const payload = getSubmitPayload(formData)
+
+    try {
+      await doEdgeClusterValidation(payload)
+      await doSwitchValidation(formData, payload, gotoStep, skipValidation)
+    } catch (error) {
+      return
     }
 
     try {
@@ -270,4 +307,39 @@ export const getStepsByTopologyType = (type: string) => {
       break
   }
   return steps
+}
+
+export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
+  // `networkTopologyType` have value only when PIN enhancement FF is enabled
+  const networkTopologyType = formData.networkTopologyType
+
+  const payload = {
+    id: formData.id,
+    name: formData.name,
+    vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
+    edgeClusterInfo: {
+      edgeClusterId: formData.edgeClusterId,
+      segments: formData.segments,
+      devices: formData.devices,
+      dhcpInfoId: formData.dhcpId,
+      dhcpPoolId: formData.poolId
+    },
+    networkIds: [] as string[],
+    distributionSwitchInfos: [] as DistributionSwitch[],
+    accessSwitchInfos: [] as AccessSwitch[]
+  }
+
+  if (networkTopologyType !== NetworkTopologyType.Wireless) {
+    payload.distributionSwitchInfos = formData.distributionSwitchInfos?.map(ds => omit(
+      ds, ['accessSwitches', 'name']))
+
+    payload.accessSwitchInfos = formData.accessSwitchInfos?.map(as => omit(
+      as, ['name', 'familyId', 'firmwareVersion', 'model']))
+  }
+
+  if (networkTopologyType !== NetworkTopologyType.TwoTier) {
+    payload.networkIds = formData.networkIds
+  }
+
+  return payload
 }
