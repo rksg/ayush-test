@@ -8,7 +8,7 @@ import { graphqlRequestBaseQuery } from './baseQuery'
 const getApiUrls = () => {
   const r1ApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
   const r1ApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/search`
-  const raApiURL = 'http://localhost:5002/graphql/analytics'
+  const raApiURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/analytics`
   const raApiSearchURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/search`
 
   const isRa = get('IS_MLISA_SA')

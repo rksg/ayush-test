@@ -21,7 +21,7 @@ export const SwitchLLDPStatus = (incident: Incident) => {
   ]
 
   const isEnabled = [
-    !useIsSplitOn(Features.INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE),
+    useIsSplitOn(Features.INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE)
   ].some(Boolean)
 
