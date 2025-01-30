@@ -38,8 +38,6 @@ import { RolesEnum } from '@acx-ui/types'
 
 import { AdvancedPermissionsTab } from './AdvancedPermissionsTab'
 import { PermissionsTab }         from './PermissionsTab'
-// import { scopeTree }              from './scopeHierarchy'
-// import { useScopeHierarchy }      from './useScopeHierarchy'
 
 export function Flat (parent: TreeDataNode | undefined) {
   if (parent) {
@@ -59,7 +57,6 @@ function getHierarchy ($t: IntlShape['$t'], scopeList: ScopeFeature[] | undefine
     return scopeList.map(s => {
       const result = {
         title: $t({ defaultMessage: '{title}' }, { title: s.description }),
-        // title: s.description,
         key: s.name.split('-')[0]
       } as TreeDataNode
       const childrenList = getHierarchy($t, s.subFeatures)
@@ -88,7 +85,6 @@ export function AddExplicitCustomRole () {
 
   const { data: scopeTree } = useGetCustomRoleFeaturesQuery({})
 
-  // const scopeHierarchy = useScopeHierarchy(intl.$t)
   const scopeHierarchy =
     getHierarchy(intl.$t, scopeTree?.filter(s => s.name.split('-')[1] === PermissionType.read))
 
