@@ -2,10 +2,12 @@ import React, { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table }    from '@acx-ui/components'
-import type { TableColumn } from '@acx-ui/components'
-import { get }              from '@acx-ui/config'
-import { TenantLink }       from '@acx-ui/react-router-dom'
+import { formattedPath }          from '@acx-ui/analytics/utils'
+import { Drawer, Table, Tooltip } from '@acx-ui/components'
+import type { TableColumn }       from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import { NetworkPath }            from '@acx-ui/utils'
 
 import { ImpactedVlan, ImpactedSwitch } from './services'
 
@@ -13,45 +15,75 @@ export interface ImpactedDrawerProps {
   vlan: ImpactedVlan
   impactedCount: number
   visible: boolean
+  sliceType: string
+  path: NetworkPath
   onClose: () => void
 }
 
 export const ImpactedSwitchesDrawer: React.FC<ImpactedDrawerProps> = (props) => {
-  const { vlan, impactedCount, visible, onClose } = props
+  const { vlan, impactedCount, visible, sliceType, path, onClose } = props
   const { $t } = useIntl()
   const isMLISA = get('IS_MLISA_SA')
-  const columns = useMemo(() => [
-    {
-      key: 'name',
-      dataIndex: 'name',
-      width: 150,
-      title: $t({ defaultMessage: 'Switch Name' }),
-      render: (_, { mac, name, serial },__,highlightFn) =>
-        <TenantLink
-          to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
-            ? 'reports': 'overview'}`
-          }>
-          {highlightFn(name)}
-        </TenantLink>,
-      searchable: true
-    },
-    {
-      key: 'mac',
-      dataIndex: 'mac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      searchable: true
-    },
-    {
-      key: 'serial',
-      dataIndex: 'serial',
-      title: $t({ defaultMessage: 'Serial Number' }),
-      width: 120,
-      searchable: true
+  const shouldIncludeSwitchGroup = ['system','domain'].includes(sliceType)
+  const columns = useMemo(() => {
+    const tableColumns = [
+      {
+        key: 'name',
+        dataIndex: 'name',
+        width: 150,
+        title: $t({ defaultMessage: 'Switch Name' }),
+        render: (_, { mac, name, serial },__,highlightFn) =>
+          <TenantLink
+            to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
+              ? 'reports': 'overview'}`
+            }>
+            {highlightFn(name)}
+          </TenantLink>,
+        searchable: true
+      },
+      {
+        key: 'mac',
+        dataIndex: 'mac',
+        title: $t({ defaultMessage: 'MAC Address' }),
+        searchable: true
+      },
+      {
+        key: 'serial',
+        dataIndex: 'serial',
+        title: $t({ defaultMessage: 'Serial Number' }),
+        width: 120,
+        searchable: true
+      }
+    ] as TableColumn<ImpactedSwitch>[]
+
+    if (shouldIncludeSwitchGroup) {
+      tableColumns.push(
+        {
+          key: 'switchGroup',
+          dataIndex: 'switchGroup',
+          title: $t({ defaultMessage: 'Switch Group' }),
+          width: 120,
+          searchable: true,
+          render: (_, { switchGroup }, __, highlightFn ) => {
+            const basePath = [...path]
+            basePath.push({ type: 'switchGroup', name: switchGroup })
+            return <Tooltip
+              placement='top'
+              title={formattedPath(basePath, switchGroup)}
+              dottedUnderline={true}
+            >
+              {highlightFn(switchGroup)}
+            </Tooltip>
+          }
+        }
+      )
     }
-  ] as TableColumn<ImpactedSwitch>[], [$t, isMLISA])
+    return tableColumns
+  }, [$t, isMLISA, path, shouldIncludeSwitchGroup])
+  const drawerWidth = shouldIncludeSwitchGroup ? 590 : 470
 
   return <Drawer
-    width={470}
+    width={drawerWidth}
     title={$t(
       {
         defaultMessage: '{count} Impacted {count, plural, one {Switch} other {Switches}}',
