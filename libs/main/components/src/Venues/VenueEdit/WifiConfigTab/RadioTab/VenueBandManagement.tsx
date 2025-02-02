@@ -7,14 +7,14 @@ import { useIntl }         from 'react-intl'
 import { CSSProperties }   from 'styled-components'
 import styled              from 'styled-components/macro'
 
-import { Button, Pill, Table, TableProps }            from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }       from '@acx-ui/icons'
-import { BandModeEnum, VenueApModelBandModeSettings } from '@acx-ui/rc/utils'
+import { Button, Pill, Table, TableProps }                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, EditOutlinedIcon }                                                        from '@acx-ui/icons'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
+import { BandModeEnum, VenueApModelBandModeSettings }                                                  from '@acx-ui/rc/utils'
+import { useParams }                                                                                   from '@acx-ui/react-router-dom'
 
 import { VenueBandManagementDrawer } from './VenueBandManagementDrawer'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
-import { useParams } from '@acx-ui/react-router-dom'
 
 const BandModePill = styled((props: { children: React.ReactNode }) =>
   (<Pill type='color'{...props}/>))`
@@ -141,18 +141,18 @@ export const VenueBandManagement = ({ style,
         <Space>
           {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
           {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={''}
-              visible={true}
-              placement='right'
-              onClick={() => setRfDrawerVisible(true)}
-            />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-              visible={rfDrawerVisible}
-              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
-              venueId={venueId}
-              featureName={InCompatibilityFeatures.SWITCHABLE_RF}
-              onClose={() => setRfDrawerVisible(false)}
-            />}
+            title={''}
+            visible={true}
+            placement='right'
+            onClick={() => setRfDrawerVisible(true)}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={rfDrawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.SWITCHABLE_RF}
+            onClose={() => setRfDrawerVisible(false)}
+          />}
         </Space>
       </Col>
       <Col span={6} style={{ textAlign: 'right' }}>

@@ -41,8 +41,9 @@ export function NetworkingTab (props: {
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
   const bssPriorityTooltipContent = $t({ defaultMessage:
+    // eslint-disable-next-line max-len
     'LOW setting reduces the priority of the WLAN by limiting the throughput to all clients connected to this WLAN.\
-              HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'
+     HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'
   })
 
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
@@ -554,7 +555,6 @@ export function NetworkingTab (props: {
           label={<>
             {$t({ defaultMessage: 'BSS Priority' })}
             {!isR370UnsupportedFeatures && <Tooltip.Question
-              // eslint-disable-next-line max-len
               title={bssPriorityTooltipContent}
               placement='right'
             />}

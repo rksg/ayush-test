@@ -413,23 +413,23 @@ export function RadioSettingsForm (props:{
       <Form.Item
         label={
           <>
-          {$t({ defaultMessage: 'Bandwidth:' })}
-          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-            title={''}
-            visible={true}
-            placement='right'
-            onClick={() => setBand320DrawerVisible(true)}
-            icon={<QuestionMarkCircleOutlined
-              style={{ height: '16px', width: '16px' }}
+            {$t({ defaultMessage: 'Bandwidth:' })}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              placement='right'
+              onClick={() => setBand320DrawerVisible(true)}
+              icon={<QuestionMarkCircleOutlined
+                style={{ height: '16px', width: '16px' }}
+              />}
             />}
-          />}
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-            visible={band320DrawerVisible}
-            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
-            venueId={venueId}
-            featureName={InCompatibilityFeatures.BANDWIDTH_320MHZ}
-            onClose={() => setBand320DrawerVisible(false)}
-          />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={band320DrawerVisible}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.BANDWIDTH_320MHZ}
+              onClose={() => setBand320DrawerVisible(false)}
+            />}
           </>
         }
         name={channelBandwidthFieldName}>

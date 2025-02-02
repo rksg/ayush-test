@@ -5,17 +5,18 @@ import { DefaultOptionType }                from 'antd/lib/select'
 import { useIntl }                          from 'react-intl'
 
 import { Tooltip }                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
 import { useGetSoftGreOptionsQuery, useLazyGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
 import { hasPolicyPermission, PolicyOperation, PolicyType }         from '@acx-ui/rc/utils'
 
-import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import SoftGreDrawer                                                                                   from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
 import * as UI                   from './styledComponents'
 import { NetworkTunnelTypeEnum } from './types'
 import { SoftGreNetworkTunnel }  from './useSoftGreTunnelActions'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+
 
 const defaultPayload = {
   fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress', 'activations',
@@ -50,7 +51,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   const [ getSoftGreOptions ] = useLazyGetSoftGreOptionsQuery()
 
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-  
+
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)

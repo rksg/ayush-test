@@ -1,17 +1,20 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Row, Form, Switch, Space } from 'antd'
-import { isEmpty }                from 'lodash'
-import { useIntl }                from 'react-intl'
+import { isEmpty }                       from 'lodash'
+import { useIntl }                       from 'react-intl'
 
 import { Button, cssStr }                from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
 import { AFCProps, CapabilitiesApModel } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 import { isApFwVersionLargerThan711 }    from '@acx-ui/utils'
 
-import { RadioSettingsChannels }       from '../RadioSettingsChannels'
-import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
-import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { RadioSettingsChannels }                                                                       from '../RadioSettingsChannels'
+import { findIsolatedGroupByChannel }                                                                  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
+import { RadioSettingsChannels320Mhz }                                                                 from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
 import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
@@ -32,9 +35,6 @@ import {
   FirmwareProps
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
-import { useParams } from '@acx-ui/react-router-dom'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 
 const { useWatch } = Form
@@ -98,7 +98,8 @@ export function SingleRadioSettings (props:{
   } = useContext(SupportRadioChannelsContext)
 
   const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-  const isR370Unsupported6gFeatures = isSupportR370ToggleOn && (radioType === ApRadioTypeEnum.Radio6G)
+  const isR370Unsupported6gFeatures = isSupportR370ToggleOn &&
+    (radioType === ApRadioTypeEnum.Radio6G)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
