@@ -75,8 +75,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }            from '..'
-import { VenueEditContext }               from '../..'
+import { VenueUtilityContext }                        from '..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -121,8 +121,9 @@ const RadioLable = styled.div`
   justify-content: center;
 `
 
-export function RadioSettings () {
+export function RadioSettings (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
+  const { isAllowEdit=true } = props
 
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
@@ -922,6 +923,7 @@ export function RadioSettings () {
                   children={<></>}
                 />
                 <VenueBandManagement style={{ paddingBottom: '5em' }}
+                  disabled={!isAllowEdit}
                   triBandApModels={triBandApModels}
                   dual5gApModels={dual5gApModels}
                   bandModeCaps={bandModeCaps}
@@ -989,6 +991,7 @@ export function RadioSettings () {
               <SingleRadioSettings
                 testId='radio-24g-tab'
                 radioType={ApRadioTypeEnum.Radio24G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings} />
             </div>
@@ -996,6 +999,7 @@ export function RadioSettings () {
               <SingleRadioSettings
                 testId='radio-5g-tab'
                 radioType={ApRadioTypeEnum.Radio5G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings} />
             </div>
@@ -1005,6 +1009,7 @@ export function RadioSettings () {
               <SingleRadioSettings
                 testId='radio-6g-tab'
                 radioType={ApRadioTypeEnum.Radio6G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings}
                 afcProps={afcProps} />
@@ -1043,6 +1048,7 @@ export function RadioSettings () {
                   testId='radio-l5g-tab'
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
@@ -1077,6 +1083,7 @@ export function RadioSettings () {
                   testId='radio-u5g-tab'
                   inherit5G={isUpper5gInherit}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>

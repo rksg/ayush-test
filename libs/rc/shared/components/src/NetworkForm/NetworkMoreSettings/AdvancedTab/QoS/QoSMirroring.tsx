@@ -72,7 +72,7 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
           {$t({ defaultMessage: 'QoS Mirroring' })}
           <ApCompatibilityToolTip
             title={tooltipInfo}
-            visible={true}
+            showDetailButton
             onClick={() => setDrawerVisible(true)}
           />
         </Space>
