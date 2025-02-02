@@ -32,7 +32,7 @@ export enum InCompatibilityFeatures {
   QOS_MIRRORING = 'QoS Mirroring',
   SMART_MONITOR = 'Smart Monitor',
   SOFT_GRE = 'Soft GRE',
-  SWITCHABLE_RF = 'Switchable RF',
+  BAND_MANAGEMENT = 'Band Management',
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',

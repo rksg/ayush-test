@@ -150,7 +150,7 @@ export const VenueBandManagement = ({ style,
             visible={rfDrawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.SWITCHABLE_RF}
+            featureName={InCompatibilityFeatures.BAND_MANAGEMENT}
             onClose={() => setRfDrawerVisible(false)}
           />}
         </Space>
