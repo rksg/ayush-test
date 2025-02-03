@@ -36,8 +36,8 @@ jest.mock('../../ApCompatibility/ApCompatibilityToolTip', () => ({
     </div>
 }))
 
-jest.mock('../../Compatibility/EdgeCompatibilityDrawer', () => ({
-  ...jest.requireActual('../../Compatibility/EdgeCompatibilityDrawer'),
+jest.mock('../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
+  ...jest.requireActual('../../Compatibility/Edge/EdgeCompatibilityDrawer'),
   EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
     <div data-testid='EdgeCompatibilityDrawer'>
       <span>Feature:{props.featureName}</span>
