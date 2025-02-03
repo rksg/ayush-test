@@ -36,6 +36,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/stacks/:stackSwitchSerialNumber',
     oldUrl: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber',
+    opsApi: 'DELETE:/venues/{id}/stacks/{id}',
     newApi: true
   },
   acknowledgeSwitch: {
