@@ -10,9 +10,9 @@ import { SwitchImpactedPortsCount } from './SwitchImpactedPortsCount'
 
 describe('SwitchImpactedPortsCount', () => {
   const chart = {
-    ddosAttackOnPortTimeSeries: {
+    timeSeries: {
       time: ['2022-04-07T09:00:00.000Z', '2022-04-08T09:00:00.000Z', '2022-04-08T09:00:00.000Z'],
-      ddos: [0.5, 0.6, 0.7]
+      portCount: [0.5, null, 0.7]
     }
   }
   const incident = {
@@ -46,8 +46,8 @@ describe('SwitchImpactedPortsCount', () => {
         })
       )
       const expectedChart = {
-        ddosAttackOnPortTimeSeries: {
-          ...chart.ddosAttackOnPortTimeSeries
+        timeSeries: {
+          ...chart.timeSeries
         }
       }
       const expectedResult = { network: { hierarchyNode: expectedChart } }

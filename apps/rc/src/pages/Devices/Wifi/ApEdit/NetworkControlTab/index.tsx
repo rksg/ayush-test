@@ -5,14 +5,23 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
 import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import {
+  ApSnmpRbacUrls,
+  CompatibilityResponse,
+  MdnsProxyUrls,
+  redirectPreviousPage,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { useTenantLink }        from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
-import { ApEditContext } from '..'
+import { ApDataContext, ApEditContext } from '..'
 
 import { ApSnmp }        from './ApSnmp'
 import { IotController } from './IotContoller'
 import { MdnsProxy }     from './MdnsProxy/MdnsProxy'
+
 
 
 
@@ -34,6 +43,20 @@ export function NetworkControlTab () {
   const basePath = useTenantLink('/devices/')
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
 
+  const activateMdnsProxyApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+  const deactivateMdnsProxyApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
+
+  const [
+    isAllowEditMdnsPorxy,
+    isAllowEditApSnmp,
+    isAllowEditApIot
+  ] = [
+    // eslint-disable-next-line max-len
+    hasAllowedOperations([[getOpsApi(activateMdnsProxyApiInfo), getOpsApi(deactivateMdnsProxyApiInfo)]]),
+    hasAllowedOperations([getOpsApi(ApSnmpRbacUrls.updateApSnmpSettings)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApIot)])
+  ]
+
   const {
     previousPath,
     editContextData,
@@ -46,6 +69,25 @@ export function NetworkControlTab () {
   const apSnmpTitle = $t({ defaultMessage: 'AP SNMP' })
   const apIotTitle = $t({ defaultMessage: 'IoT Controller' })
 
+  const { apCompatibilitiesResponse } = useContext(ApDataContext)
+
+  const containsFeature = (
+    data: CompatibilityResponse,
+    featureName: string
+  ) => {
+    for (const compatibility of data?.compatibilities ?? []) {
+      for (const feature of compatibility?.incompatibleFeatures ?? []) {
+        if (feature.featureName === featureName) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  const featureToCheck = 'AP IoT'
+  // eslint-disable-next-line max-len
+  const isIotInCompatible = containsFeature(apCompatibilitiesResponse as CompatibilityResponse, featureToCheck)
 
   const anchorItems = [
     {
@@ -55,7 +97,7 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { mPorxyTitle }
           </StepsFormLegacy.SectionTitle>
-          <MdnsProxy />
+          <MdnsProxy isAllowEdit={isAllowEditMdnsPorxy} />
         </>
       )
     },
@@ -66,18 +108,18 @@ export function NetworkControlTab () {
           <StepsFormLegacy.SectionTitle>
             { apSnmpTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApSnmp />
+          <ApSnmp isAllowEdit={isAllowEditApSnmp} />
         </>
       )
     },
-    ...(isIotFeatureEnabled? [{
+    ...((isIotFeatureEnabled && !isIotInCompatible) ? [{
       title: apIotTitle,
       content: (
         <>
           <StepsFormLegacy.SectionTitle>
             { apIotTitle }
           </StepsFormLegacy.SectionTitle>
-          <IotController />
+          <IotController isAllowEdit={isAllowEditApIot} />
         </>
       )
     }]: [])
