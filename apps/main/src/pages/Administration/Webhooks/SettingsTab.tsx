@@ -27,10 +27,9 @@ const SettingsTab = (props: SettingsTabProps) => {
     try {
       await form.validateFields([field])
       const url = form.getFieldValue(['url'])
-      const secret = form.getFieldValue(['secret'])
       const payload = form.getFieldValue(['payload'])
-      const enabled = url && secret && payload &&
-        !form.getFieldsError(['url','secret','payload']).some(({ errors }) => errors.length)
+      const enabled = url && payload &&
+        !form.getFieldsError(['url','payload']).some(({ errors }) => errors.length)
       setTestURLEnabled(enabled)
     }
     catch(error) {
@@ -101,7 +100,7 @@ const SettingsTab = (props: SettingsTabProps) => {
         { validator: (_, value) => {
           if(webhookData?.map((item) => { return item.url}).includes(value)) {
             return Promise.reject(
-              `${$t({ defaultMessage: 'URL already exists' })} `
+              `${$t({ defaultMessage: 'Webhook URL already exists' })} `
             )
           }
           return Promise.resolve()}
@@ -120,7 +119,6 @@ const SettingsTab = (props: SettingsTabProps) => {
   <Form.Item
     name='secret'
     label={$t({ defaultMessage: 'Secret' })}
-    rules={[{ required: true }]}
     children={<Input.Password onChange={() => updateButtonEnabled('secret')} />}
   />
   <Form.Item
