@@ -8,6 +8,7 @@ import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/servi
 
 import Layout  from './components/Layout'
 import * as UI from './styledComponents'
+import { compactLayout } from './utils/compact';
 
 // import mockData from './mock'
 
@@ -112,8 +113,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
     tmp.forEach(s => {
       s.groups = groups.filter(g => g.sectionId === s.id)
     })
-    let hasDiff = !_.isEqual(tmp, sections) //TODO
-    notifyCanvasChange(hasDiff)
+    let hasDiff = !_.isEqual(tmp, sections)
+    setCanvasChange(hasDiff)
   }, [groups, sections])
 
   // const getFromLS = () => {
@@ -122,7 +123,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
   //   return ls
   // }
 
-  const notifyCanvasChange = (hasChanges: boolean) => {
+  const setCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
       onCanvasChange(hasChanges)
     }
@@ -131,18 +132,27 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
   const getDefaultCanvas = async () => {
     const response = await getCanvas({}).unwrap()
     if (response?.length && response[0].content) {
-      setCanvasId(response[0].id)
-      const data = JSON.parse(response[0].content)
+      const canvasId = response[0].id
+      let data = JSON.parse(response[0].content) as Section[]
+      data = data.map(section => ({
+        ...section,
+        groups: section.groups.map(group => ({
+          ...group,
+          cards: compactLayout(group.cards)
+        }))
+      }))
+      const groups = data.flatMap(section => section.groups)
+
+      setCanvasId(canvasId)
       setSections(data)
-      const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
-      setGroups(group)
+      setGroups(groups)
+      setCanvasChange(false)
     } else {
       if (response?.length && response[0].id) {
         setCanvasId(response[0].id)
       }
       emptyCanvas()
     }
-    notifyCanvasChange(false)
   }
 
   const onSave = async () => {
@@ -164,7 +174,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
         }
       })
     }
-    notifyCanvasChange(false)
+    setCanvasChange(false)
     // localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
 
@@ -175,6 +185,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
   const emptyCanvas = () => {
     setSections(DEFAULT_CANVAS)
     setGroups(DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], []))
+    setCanvasChange(false)
   }
 
   return (
