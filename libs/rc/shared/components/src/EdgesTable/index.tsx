@@ -37,7 +37,7 @@ import { filterByAccess }                         from '@acx-ui/user'
 import { exportMessageMapping }                   from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
-import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { seriesMappingAP }                                from '../DevicesWidget'
 import { useEdgeActions, useIsEdgeFeatureReady }          from '../useEdgeActions'
 

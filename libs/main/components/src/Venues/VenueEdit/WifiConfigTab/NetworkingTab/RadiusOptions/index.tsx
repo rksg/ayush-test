@@ -18,7 +18,7 @@ import {
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }               from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -26,10 +26,11 @@ import {
 
 const { useWatch } = Form
 
-export function RadiusOptions () {
+export function RadiusOptions (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const { isAllowEdit=true } = props
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
@@ -124,12 +125,13 @@ export function RadiusOptions () {
         name='overrideEnabled'
         valuePropName={'checked'}
         initialValue={false}
-        children={<Switch onChange={handleChanged} />}
+        children={<Switch disabled={!isAllowEdit} onChange={handleChanged} />}
       />
     </StepsForm.FieldLabel>
     {overrideEnabled &&
       <RadiusOptionsForm
         context='venue'
+        disabled={!isAllowEdit}
         showSingleSessionIdAccounting={true}
         onDataChanged={handleChanged} />
     }
