@@ -5,9 +5,9 @@ import { get, isEmpty }        from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AAAViewModalType, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AAAViewModalType, NetworkTypeEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
@@ -23,6 +23,7 @@ const radiusTypeMap: { [key:string]: string } = {
 interface AAAInstanceProps {
   serverLabel: string
   type: 'authRadius' | 'accountingRadius',
+  networkType?: NetworkTypeEnum,
   excludeRadSec?: boolean
 }
 
@@ -30,7 +31,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const { serverLabel, type, excludeRadSec = false } = props
+  const { serverLabel, type, networkType, excludeRadSec = false } = props
   const radiusType = radiusTypeMap[type]
   const radiusIdName = type + 'Id'
   const watchedRadius = Form.useWatch(type) || form.getFieldValue(type)
@@ -127,8 +128,8 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     <>
       <Form.Item
         label={<>
-          {props.serverLabel}
-          {props.excludeRadSec && props.networkType === NetworkTypeEnum.DPSK &&
+          {serverLabel}
+          {excludeRadSec && networkType === NetworkTypeEnum.DPSK &&
           <Tooltip.Question
             title={
               'For a DPSK network with WPA3/WPA2 mixed mode,'+
@@ -144,7 +145,6 @@ export const AAAInstance = (props: AAAInstanceProps) => {
           <Form.Item
             name={radiusIdName}
             noStyle
-            // label={props.serverLabel}
             rules={[
               { required: true }
             ]}
