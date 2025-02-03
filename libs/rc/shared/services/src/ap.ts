@@ -506,7 +506,7 @@ export const apApi = baseApApi.injectEndpoints({
             const defaultApGroupListRes = await fetchWithBQ({ ...defaultApGroupListReq, body: JSON.stringify(defaultApGroupPayload) })
             const defaultApGroupList = defaultApGroupListRes.data as TableResult<ApGroup>
             const targetDefaultApGroup = defaultApGroupList.data[0]
-            console.log('defaultApGroupList: ', defaultApGroupList)
+            //console.log('defaultApGroupList: ', defaultApGroupList)
             if (targetDefaultApGroup) {
               ap.apGroupId = targetDefaultApGroup.id
             }
