@@ -573,7 +573,9 @@ function Table <RecordType extends Record<string, any>> ({
     </UI.HeaderComps>
   </> : null
 
-  let offsetHeader = layout.pageHeaderY
+  let offsetHeader = (settingsId === 'config-change-table' && enableApiFilter === true)
+    ? (layout.pageHeaderY + 40)
+    : layout.pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
   const sticky = stickyHeaders &&
