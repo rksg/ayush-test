@@ -221,7 +221,7 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       return !hasErrors && description && (emailEnabled || mobileEnabled)
     }
     if (recipientType === RecipientType.AdminRecipient) {
-      return !hasErrors && description && privilegeGroup
+      return !hasErrors && privilegeGroup
         && (emailPreferences || smsPreferences)
     }
     return false
@@ -331,6 +331,17 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
 
   const GlobalRecipientContent =
     <>
+      <Form.Item
+        name='description'
+        label={$t({ defaultMessage: 'Name' })}
+        rules={[
+          { required: true },
+          { max: 255 }
+        ]}
+      >
+        <Input/>
+      </Form.Item>
+
       <Subtitle level={5}>
         {$t({ defaultMessage: 'Delivery Preference' })}
       </Subtitle>
@@ -494,16 +505,6 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item
-          name='description'
-          label={$t({ defaultMessage: 'Name' })}
-          rules={[
-            { required: true },
-            { max: 255 }
-          ]}
-        >
-          <Input/>
-        </Form.Item>
         {recipientType as RecipientType === RecipientType.GlobalRecipient
           ? GlobalRecipientContent
           : AdminRecipientContent}

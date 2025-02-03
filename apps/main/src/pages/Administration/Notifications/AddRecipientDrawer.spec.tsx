@@ -200,8 +200,6 @@ describe('AddRecipientDrawer', () => {
     expect(screen.getByText('Add Recipient')).toBeVisible()
     await userEvent.click(screen.getByRole('radio', { name: 'Add Privilege Group as recipient' }))
     expect(screen.getByRole('radio', { name: 'Add Privilege Group as recipient' })).toBeChecked()
-    const name = screen.getByRole('textbox')
-    await userEvent.type(name, 'recipient_name')
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Privilege Group Name' }))
     await userEvent.click(screen.getByText('Prime Admin'))
     await userEvent.click(screen.getAllByRole('switch')[0])
@@ -257,7 +255,6 @@ describe('AddRecipientDrawer', () => {
       })
 
     expect(screen.getByText('Edit Recipient')).toBeVisible()
-    expect(screen.getByDisplayValue('pg_recipient')).toBeVisible()
     expect(screen.getByText('Prime Admin')).toBeVisible()
     expect(screen.getAllByRole('switch')[0]).toBeChecked()
     await userEvent.click(screen.getAllByRole('switch')[0])
