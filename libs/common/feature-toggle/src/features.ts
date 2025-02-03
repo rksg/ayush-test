@@ -16,6 +16,7 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
+  CANVAS = 'ruckus-gen-ai-customized-canvas',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
@@ -275,7 +276,8 @@ export enum Features {
   ENTITLEMENT_PERSONAL_IDENTITY_NETWORK_TOGGLE='entitlement-personal-identity-network-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE='entitlement-pms-integration-toggle',
   ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
-  ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle'
+  ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle',
+  ACX_UI_SHOW_ADMIN_TYPE_COLUMN_TOGGLE='acx-ui-show-admin-type-column-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
