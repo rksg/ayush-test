@@ -15,12 +15,13 @@ import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery } from '@ac
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
-import Canvas             from './Canvas'
-import { DraggableChart } from './components/WidgetChart'
-import HistoryDrawer      from './HistoryDrawer'
-import * as UI            from './styledComponents'
+import Canvas, { CanvasRef } from './Canvas'
+import { DraggableChart }    from './components/WidgetChart'
+import HistoryDrawer         from './HistoryDrawer'
+import * as UI               from './styledComponents'
 
 export default function AICanvas () {
+  const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scroll = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
@@ -149,8 +150,6 @@ export default function AICanvas () {
         title: $t({ defaultMessage: 'Unsaved Canvas Changes' }),
         content: $t({ defaultMessage: 'Are you sure you want to cancel the chatbot?' +
             ' Unsaved changes to the canvas will be lost.' }),
-        onOk: handleSaveCanvas,
-        onCancel: () => {},
         customContent: {
           action: 'CUSTOM_BUTTONS',
           buttons: [{
@@ -161,13 +160,14 @@ export default function AICanvas () {
             text: $t({ defaultMessage: 'Save Canvas' }),
             type: 'primary',
             key: 'ok',
-            closeAfterAction: true
+            closeAfterAction: true,
+            handler: handleSaveCanvas
           }, {
             text: $t({ defaultMessage: 'Discard Changes' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
-            handler: handleDiscardChanges
+            handler: onClose
           }]
         }
       })
@@ -181,13 +181,7 @@ export default function AICanvas () {
   }, [])
 
   const handleSaveCanvas = async () => {
-    // TODO: implement save canvas logic
-    setCanvasHasChanges(false)
-    onClose()
-  }
-
-  const handleDiscardChanges = () => {
-    // TODO: implement discard changes logic
+    await canvasRef.current?.save()
     setCanvasHasChanges(false)
     onClose()
   }
@@ -320,7 +314,7 @@ export default function AICanvas () {
             </div>
           </div>
         </div>
-        <Canvas onCanvasChange={handleCanvasChange} />
+        <Canvas ref={canvasRef} onCanvasChange={handleCanvasChange} />
         <HistoryDrawer
           visible={historyVisible}
           onClose={onHistoryDrawer}
