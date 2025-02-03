@@ -169,6 +169,14 @@ jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
 
+jest.mock('./pages/Devices/Edge/Olt/OltTable', () => () => {
+  return <div data-testid='EdgeNokiaOltTable' />
+})
+
+jest.mock('./pages/Devices/Edge/Olt/OltDetails', () => () => {
+  return <div data-testid='EdgeNokiaOltDetails' />
+})
+
 jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })
@@ -423,6 +431,55 @@ describe('RcRoutes: Devices', () => {
       }
     })
     expect(screen.getByTestId('EditEdge')).toBeVisible()
+  })
+
+  describe('RcRoutes: Devices > Edge Optical', () => {
+    test('should navigate to devices edge optical list', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/optical',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeNokiaOltTable')).toBeVisible()
+    })
+
+    test('should navigate to devices edge optical details', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/optical/mockOltId',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeNokiaOltDetails')).toBeVisible()
+    })
+
+    describe('FF is off', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
+      afterEach(() => jest.mocked(useIsSplitOn).mockReset())
+
+      test('should be not found when navigate to devices edge optical list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/devices/optical',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.queryByTestId('EdgeNokiaOltTable')).toBeNull()
+        expect(screen.getByText(/Something is going wrong/)).toBeVisible()
+      })
+
+      test('should be not found when navigate to devices edge optical details', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/devices/optical/mockOltId',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.queryByTestId('EdgeNokiaOltDetails')).toBeNull()
+        expect(screen.getByText(/Something is going wrong/)).toBeVisible()
+      })
+    })
   })
 
   describe('RcRoutes: Networks', () => {

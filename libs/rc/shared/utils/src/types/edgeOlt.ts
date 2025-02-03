@@ -22,6 +22,11 @@ export interface EdgeNokiaOltCreateFormData {
   edgeClusterId: string
 }
 
+export interface EdgeNokiaOltCreatePayload {
+  ip: string
+  name: string
+}
+
 export interface EdgeNokiaCageData {
   name: string
   state: EdgeNokiaCageStateEnum
@@ -35,6 +40,7 @@ export interface EdgeNokiaOnuData {
 }
 
 export interface EdgeNokiaOnuPortData {
+  portId: string
   status: EdgeNokiaCageStateEnum
   vlan: string[]
 }

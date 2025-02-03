@@ -5,6 +5,8 @@ import { useNavigate, useTenantLink }                     from '@acx-ui/react-ro
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
+import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
+
 import useSwitchesTable from './SwitchesTable'
 
 export enum SwitchTabsEnum {
@@ -30,18 +32,15 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
-  const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
   },
-  ...(isEdgeOltMgmtEnabled ? [{
+  {
     key: SwitchTabsEnum.OPTICAL,
-    title: $t({ defaultMessage: 'Optical' }),
-    component: <OpticalTable />
-    // headerExtra: usePageHeaderExtra(ReportType.OPTICAL)
-  }] : []),
+    ...useEdgeNokiaOltTable()
+  },
   {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
@@ -62,7 +61,8 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
 
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Switches' })}
+      // eslint-disable-next-line max-len
+      title={tab === SwitchTabsEnum.OPTICAL ? $t({ defaultMessage: 'Wired Devices' }) : $t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

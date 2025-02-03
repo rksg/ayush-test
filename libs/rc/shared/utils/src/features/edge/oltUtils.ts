@@ -1,6 +1,6 @@
 import { getIntl } from '@acx-ui/utils'
 
-import { EdgeNokiaOltStatusEnum } from '../../models/EdgeNokiaOltEnum'
+import { EdgeNokiaCageStateEnum, EdgeNokiaOltStatusEnum } from '../../models/EdgeNokiaOltEnum'
 
 export const getOltStatusConfig = () => {
   const { $t } = getIntl()
