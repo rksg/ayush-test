@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo }                                               from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -42,12 +42,12 @@ describe('ApManagementVlanForm', () => {
     resetApLedSpy.mockClear()
     getVenueApManagementVlanSpy.mockClear()
     mockServer.use(
-      rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApManagementVlan.url,
         (_, res, ctx) => {
           getVenueApManagementVlanSpy()
           return res(ctx.json(mockVenueApManagementVlan))
         }),
-      rest.get(WifiUrlsInfo.getApManagementVlan.url,
+      rest.get(WifiRbacUrlsInfo.getApManagementVlan.url,
         (_, res, ctx) => res(ctx.json(mockApManagementVlan)))
     )
   })

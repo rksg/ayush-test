@@ -33,11 +33,11 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function ApSnmp () {
+export function ApSnmp (props: ApEditItemProps) {
 
   const defaultVenueApSnmpSettings : VenueApSnmpSettings = {
     enableApSnmp: false,
@@ -50,6 +50,7 @@ export function ApSnmp () {
 
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
 
@@ -253,6 +254,7 @@ export function ApSnmp () {
         //layout='horizontal'
         initialValues={apSnmpSettings}>
         <VenueSettingsHeader venue={venueData}
+          disabled={!isAllowEdit}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting}
         />
@@ -270,7 +272,7 @@ export function ApSnmp () {
                   style={{ marginBottom: '3px' }}
                 >
                   <Switch
-                    disabled={isUseVenueSettings}
+                    disabled={!isAllowEdit || isUseVenueSettings}
                     data-testid='snmp-switch'
                     style={{ marginLeft: '20px' }}
                     onChange={(state) => {
@@ -283,7 +285,7 @@ export function ApSnmp () {
                 <Form.Item name='apSnmpAgentProfileId' style={{ margin: '0' }}>
                   <Select
                     data-testid='snmp-select'
-                    disabled={isUseVenueSettings}
+                    disabled={!isAllowEdit || isUseVenueSettings}
                     options={[
                       { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },
                       ...getApSnmpAgentList?.data?.map(
@@ -293,7 +295,7 @@ export function ApSnmp () {
                     style={{ width: '200px' }}
                   />
                 </Form.Item>
-                {((getApSnmpAgentList?.data?.length as number) < 64) &&
+                {((getApSnmpAgentList?.data?.length as number) < 64) && isAllowEdit &&
                   // eslint-disable-next-line max-len
                   hasPolicyPermission({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE }) &&
                   <Button
