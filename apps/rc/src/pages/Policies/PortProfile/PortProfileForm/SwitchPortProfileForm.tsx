@@ -180,7 +180,9 @@ export default function SwitchPortProfileForm () {
       sorter: true,
       render: (_, row) => {
         const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingType
-        return $t(lldpTlvMatchingTypeTextMap[nameMatchingType])
+        return lldpTlvMatchingTypeTextMap[nameMatchingType]
+          ? $t(lldpTlvMatchingTypeTextMap[nameMatchingType])
+          : $t({ defaultMessage: 'Exact' })
       }
     },
     {
@@ -196,7 +198,9 @@ export default function SwitchPortProfileForm () {
       sorter: true,
       render: (_, row) => {
         const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingType
-        return $t(lldpTlvMatchingTypeTextMap[descMatchingType])
+        return lldpTlvMatchingTypeTextMap[descMatchingType]
+          ? $t(lldpTlvMatchingTypeTextMap[descMatchingType])
+          : $t({ defaultMessage: 'Exact' })
       }
     }
   ]
