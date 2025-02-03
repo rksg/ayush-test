@@ -144,6 +144,23 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     top: 110px;
     overflow: auto;
     .chatroom {
+      /* width */
+      &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      /* Track */
+      &::-webkit-scrollbar-track {
+        border-radius: 6px;
+        background: transparent; 
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: var(--acx-neutrals-30);
+        border-radius: 4px;
+      }
       height: calc(100vh - 250px);
       overflow: auto;
       position: relative;
@@ -286,6 +303,23 @@ export const Canvas = styled.div`
     border-left: 1px solid #E5E5E5;
     height: calc(100vh - 110px);
     overflow: auto;
+    /* width */
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      border-radius: 6px;
+      background: transparent; 
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: var(--acx-neutrals-30);
+      border-radius: 4px;
+    }
   }
 `
 
@@ -396,6 +430,23 @@ export const Grid = styled.div`
 export const Widget = styled(Card)`
   &.table .ant-card-body {
     overflow: auto;
+    /* width */
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      border-radius: 6px;
+      background: transparent; 
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: var(--acx-neutrals-30);
+      border-radius: 4px;
+    }
   }
 `
 
