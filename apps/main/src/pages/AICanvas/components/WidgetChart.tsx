@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
 import { CallbackDataParams }                      from 'echarts/types/dist/shared'
 import { useDrag }                                 from 'react-dnd'
 import { getEmptyImage }                           from 'react-dnd-html5-backend'
 import { renderToString }                          from 'react-dom/server'
-import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }                            from 'uuid'
 
 import { BarChartData }                                                                             from '@acx-ui/analytics/utils'
 import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
-import { useChatChartQuery, useGetWidgetQuery }                                                     from '@acx-ui/rc/services'
+import { useGetWidgetQuery }                                                                        from '@acx-ui/rc/services'
 import { WidgetListData }                                                                           from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
@@ -22,7 +21,9 @@ import { ItemTypes }         from './GroupItem'
 
 
 interface WidgetListProps {
-  data: WidgetListData;
+  data: WidgetListData
+  visible?: boolean
+  setVisible?: (v: boolean) => void
 }
 
 interface WidgetCategory {
@@ -154,9 +155,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
   )
 }
 
-export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
-  const { $t } = useIntl()
-  const [visible, setVisible] = useState(false)
+export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
   // const queryResults = useChatChartQuery({
   //   params: {
   //     sessionId: data.sessionId,
@@ -307,6 +306,12 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
             data.chartType, width, height, chartData as WidgetListData)}
         </AutoSizer>
       </UI.Widget>
+      {
+        setVisible && <CustomizeWidgetDrawer
+          visible={visible as boolean}
+          setVisible={setVisible}
+          widget={chartData as WidgetListData} />
+      }
     </Loader>
   )
 }

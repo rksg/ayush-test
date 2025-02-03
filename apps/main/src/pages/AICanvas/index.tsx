@@ -270,13 +270,16 @@ export default function AICanvas () {
           </div>
         </div>
         <Canvas />
-        <HistoryDrawer
-          visible={historyVisible}
-          onClose={onHistoryDrawer}
-          historyData={historyData as ChatHistory[]}
-          sessionId={sessionId}
-          onClickChat={onClickChat}
-        />
+        {
+          historyVisible && <HistoryDrawer
+            visible={historyVisible}
+            onClose={onHistoryDrawer}
+            historyData={historyData as ChatHistory[]}
+            sessionId={sessionId}
+            onClickChat={onClickChat}
+          />
+        }
+
       </UI.Wrapper>
     </DndProvider>
   )

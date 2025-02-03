@@ -1,12 +1,8 @@
-import {
-  Form,
-} from 'antd'
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer }          from '@acx-ui/components'
-import {
-  Switch, WidgetListData
-} from '@acx-ui/rc/utils'
+import { Drawer }         from '@acx-ui/components'
+import { WidgetListData } from '@acx-ui/rc/utils'
 
 export interface CustomizeWidgetDrawerProps {
   widget: WidgetListData,
@@ -17,7 +13,7 @@ export interface CustomizeWidgetDrawerProps {
 export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps) {
   const { $t } = useIntl()
   const { visible, setVisible } = props
-  const [form] = Form.useForm<Switch>()
+  const [form] = Form.useForm()
 
   const onClose = () => {
     setVisible(false)
@@ -36,7 +32,7 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
       footer={
         <Drawer.FormFooter
           buttonLabel={{
-            save: $t({ defaultMessage: 'Add' })
+            save: $t({ defaultMessage: 'OK' })
           }}
           onCancel={onClose}
           onSave={async () => {

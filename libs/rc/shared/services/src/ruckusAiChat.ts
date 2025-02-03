@@ -96,14 +96,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Widget', id: 'DATA' }]
     }),
-    createWidget: build.mutation<{id: string}, RequestPayload>({
+    createWidget: build.mutation<{ id: string }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.createWidget, params)
         return {
           ...req,
-        body: payload
+          body: payload
         }
       }
     }),
@@ -114,7 +115,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Widget', id: 'DATA' }]
     })
   })
 })
