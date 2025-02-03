@@ -4,12 +4,13 @@ import { Button, Space, Tooltip } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useTenantLink }                 from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }         from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy }          from '@acx-ui/components'
+import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { redirectPreviousPage, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                   from '@acx-ui/user'
+import { directedMulticastInfo, getOpsApi }       from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
@@ -43,6 +44,20 @@ export function NetworkingTab () {
   const basePath = useTenantLink('/devices/')
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
   const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+
+  const [
+    isAllowEditIpSettings,
+    isAllowEditLanPort,
+    isAllowEditMesh,
+    isAllowEditDMulticast,
+    isAllowEditSmartMonitor
+  ] = [
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApNetworkSettings)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApLanPorts)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApMeshSettings)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApDirectedMulticast)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApSmartMonitor)])
+  ]
 
   const {
     previousPath,
@@ -78,7 +93,7 @@ export function NetworkingTab () {
           <StepsFormLegacy.SectionTitle id='ip-settings'>
             { ipSettingTitle }
           </StepsFormLegacy.SectionTitle>
-          <IpSettings />
+          <IpSettings isAllowEdit={isAllowEditIpSettings} />
         </>
       )
     },
@@ -89,7 +104,7 @@ export function NetworkingTab () {
           <StepsFormLegacy.SectionTitle id='lan-ports'>
             { lanPortsTitle }
           </StepsFormLegacy.SectionTitle>
-          <LanPorts />
+          <LanPorts isAllowEdit={isAllowEditLanPort} />
         </>
       )
     },
@@ -100,7 +115,7 @@ export function NetworkingTab () {
           <StepsFormLegacy.SectionTitle id='mesh'>
             { meshTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApMesh />
+          <ApMesh isAllowEdit={isAllowEditMesh} />
         </>
       )
 
@@ -124,7 +139,7 @@ export function NetworkingTab () {
             </Space>
             }
           </StepsFormLegacy.SectionTitle>
-          <DirectedMulticast />
+          <DirectedMulticast isAllowEdit={isAllowEditDMulticast} />
         </>
       )
     },
@@ -135,7 +150,7 @@ export function NetworkingTab () {
           <StepsFormLegacy.SectionTitle id='smart-monitor'>
             { smartMonitorTitle }
           </StepsFormLegacy.SectionTitle>
-          <SmartMonitor />
+          <SmartMonitor isAllowEdit={isAllowEditSmartMonitor} />
         </>
       )
     }] : [])
