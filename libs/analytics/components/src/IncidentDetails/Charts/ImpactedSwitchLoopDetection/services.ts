@@ -7,6 +7,7 @@ export interface ImpactedSwitch {
   name: string
   mac: string
   serial: string
+  switchGroup: string
 }
 
 export interface ImpactedVlan {
@@ -28,6 +29,7 @@ const document = gql`
           name
           mac
           serial
+          switchGroup
         }
       }
     }
