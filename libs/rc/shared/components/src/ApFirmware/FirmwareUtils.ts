@@ -124,7 +124,7 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(
-    isAlphaOrBeta(version?.labels) ? FirmwareCategory.EARLY_ACCESS : version?.category
+    isAlphaOrBetaFilter(version?.labels) ? FirmwareCategory.EARLY_ACCESS : version?.category
   )
   const displayDate = version.releaseDate ?? version.onboardDate
   const versionDate = displayDate
@@ -135,20 +135,21 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
 }
 
-export const isAlpha = (labels: FirmwareLabel[] = []): boolean => {
+export const isAlphaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.ALPHA)
 }
 
-export const isBeta = (labels: FirmwareLabel[] = []): boolean => {
-  return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.BETA)
+export const isBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && !labels.includes(FirmwareLabel.ALPHA) && labels.includes(FirmwareLabel.BETA)
 }
 
-export const isAlphaOrBeta = (labels: FirmwareLabel[] = []): boolean => {
+export const isAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA)
     && (labels.includes(FirmwareLabel.ALPHA) || labels.includes(FirmwareLabel.BETA))
 }
 
-export const isLegacyAlphaOrBeta = (labels: FirmwareLabel[] = []): boolean => {
+export const isLegacyAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA)
     && (labels.includes(FirmwareLabel.LEGACYALPHA) || labels.includes(FirmwareLabel.LEGACYBETA))
 }

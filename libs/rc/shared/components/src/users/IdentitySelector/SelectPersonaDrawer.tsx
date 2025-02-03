@@ -12,12 +12,14 @@ interface SelectPersonaDrawerProps {
   identityGroupId?: string,
   identityId?: string,
   onSubmit?: (persona?: Persona) => void,
-  onCancel?: () => void
+  onCancel?: () => void,
+  disableAddDevices?: boolean
 }
 
 export function SelectPersonaDrawer (props: SelectPersonaDrawerProps) {
   const { $t } = useIntl()
-  const { identityGroupId: personaGroupId, identityId, onSubmit, onCancel } = props
+  const { identityGroupId: personaGroupId, identityId, onSubmit, onCancel,
+    disableAddDevices } = props
   const [ selectedPersona, setSelectedPersona ] = useState<Persona>()
 
   return <Drawer
@@ -44,6 +46,7 @@ export function SelectPersonaDrawer (props: SelectPersonaDrawerProps) {
       personaGroupId={personaGroupId}
       settingsId={'select-persona-drawer'}
       onChange={(p) => setSelectedPersona(p)}
+      disableAddDevices={disableAddDevices}
       colProps={{
         name: { searchable: true },
         email: { searchable: true },

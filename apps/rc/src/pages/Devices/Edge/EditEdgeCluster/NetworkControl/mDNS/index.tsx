@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 
-import { Col, Form, Row, Space, Switch } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
+import { useIntl }                                     from 'react-intl'
 
-import { Loader, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { ApCompatibilityToolTip }                from '@acx-ui/rc/components'
-import { useGetEdgeMdnsProxyViewDataListQuery }  from '@acx-ui/rc/services'
-import { IncompatibilityFeatures }               from '@acx-ui/rc/utils'
+import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
+import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
+import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
+import { IncompatibilityFeatures }                    from '@acx-ui/rc/utils'
 
 import EdgeMdnsProfileSelectionForm from './EdgeMdnsProfileSelectionForm'
 
@@ -46,33 +46,73 @@ export const MdnsProxyFormItem = (props: {
     })
   }, [currentEdgeMdns])
 
-  return <Row gutter={20}>
-    <Col span={7}>
-      <Loader states={[{ isLoading: isMdnsLoading }]}>
-        <StepsForm.FieldLabel width='50%'>
-          <Space>
-            {$t({ defaultMessage: 'mDNS Proxy' })}
-            <ApCompatibilityToolTip
-              title=''
-              visible
-              onClick={() => setEdgeFeatureName(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
-            />
-          </Space>
-          <Space>
-            <Form.Item
-              name='edgeMdnsSwitch'
-              valuePropName='checked'
-            >
-              <Switch />
-            </Form.Item>
-          </Space>
-        </StepsForm.FieldLabel>
+  return <>
+    <Row gutter={20}>
+      <Col flex='250px'>
+        <Loader states={[{ isLoading: isMdnsLoading }]}>
+          <StepsForm.FieldLabel width='90%'>
+            <Space>
+              {$t({ defaultMessage: 'mDNS Proxy' })}
+              <ApCompatibilityToolTip
+                title=''
+                showDetailButton
+                onClick={() => setEdgeFeatureName(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+              />
+            </Space>
+            <Space>
+              <Form.Item
+                name='edgeMdnsSwitch'
+                valuePropName='checked'
+              >
+                <Switch />
+              </Form.Item>
+            </Space>
+          </StepsForm.FieldLabel>
+        </Loader>
+      </Col>
+    </Row>
+    <Row gutter={20}>
+      <Col>
         <Form.Item dependencies={['edgeMdnsSwitch']}>
           {({ getFieldValue }) => {
             return getFieldValue('edgeMdnsSwitch') && <EdgeMdnsProfileSelectionForm />
           }}
         </Form.Item>
-      </Loader>
-    </Col>
-  </Row>
+      </Col>
+    </Row>
+  </>
+}
+
+export const useHandleApplyMdns = (form: FormInstance, venueId?: string, clusterId?: string) => {
+  const { activateEdgeMdnsCluster, deactivateEdgeMdnsCluster } = useEdgeMdnsActions()
+
+  const handleApplyMdns = async () => {
+    const isEdgeMdnsActive = form.getFieldValue('edgeMdnsSwitch')
+    const originMdnsId = form.getFieldValue('originEdgeMdnsId')
+    const selectedMdnsId = form.getFieldValue('edgeMdnsId')
+
+    if (!clusterId || !venueId || (!originMdnsId && !selectedMdnsId)) return
+
+    if (!isEdgeMdnsActive) {
+      if (originMdnsId) {
+        await deactivateEdgeMdnsCluster(
+          originMdnsId,
+          venueId,
+          clusterId
+        )
+      }
+      return
+    } else {
+      if (selectedMdnsId === originMdnsId){
+        return
+      }
+      await activateEdgeMdnsCluster(
+        selectedMdnsId,
+        venueId,
+        clusterId
+      )
+    }
+  }
+
+  return handleApplyMdns
 }

@@ -30,11 +30,13 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
   updateVenueApSnmpSettings: { //venue instances
     method: 'put',
     url: '/venues/:venueId/snmpAgentProfiles/:profileId',
+    opsApi: 'PUT:/venues/{id}/snmpAgentProfiles/{id}',
     newApi: true
   },
   resetVenueApSnmpSettings: { //venue instances
     method: 'delete',
     url: '/venues/:venueId/snmpAgentProfiles/:profileId',
+    opsApi: 'DELETE:/venues/{id}/snmpAgentProfiles/{id}',
     newApi: true
   },
   getApSnmpSettings: { //ap instances

@@ -22,13 +22,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { ApModelFamiliesItem } from '../../Compatibility/ApModelFamiliesItem'
+import { ApModelFamiliesItem } from '../../Compatibility/CompatibilityDrawer/CompatibilityItem/ApModelFamiliesItem'
 import {
   StyledFeatureName,
   StyledRequirementWrapper,
   StyledFormItem
 } from '../../Compatibility/CompatibilityDrawer/styledComponents'
 import { getApFirmwareLink }                            from '../../Compatibility/CompatibilityDrawer/utils'
+import { SpaceWrapper }                                 from '../../SpaceWrapper'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
 export type ApModelCompatibilityDrawerProps = {
@@ -248,26 +249,27 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           </StyledFormItem>
         }
 
-        {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
-          <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
-            <StyledFormItem
-              label={$t({ defaultMessage: 'Minimum required version' })}
-            >
-              {requirement?.firmware}
-            </StyledFormItem>
-            <StyledFormItem
-              label={$t({ defaultMessage: 'Supported AP Models' })}
-            >
-              {apModelFamilies && requirement?.models &&
+        <SpaceWrapper size={8} direction='vertical' fullWidth>
+          {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
+            <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
+              <StyledFormItem
+                label={$t({ defaultMessage: 'Minimum required version' })}
+              >
+                {requirement?.firmware}
+              </StyledFormItem>
+              <StyledFormItem
+                label={$t({ defaultMessage: 'Supported AP Models' })}
+              >
+                {apModelFamilies && requirement?.models &&
                 <ApModelFamiliesItem
                   apModelFamilies={apModelFamilies}
                   models={requirement.models}
                 />
-              }
-            </StyledFormItem>
-          </StyledRequirementWrapper>
-        ))}
-
+                }
+              </StyledFormItem>
+            </StyledRequirementWrapper>
+          ))}
+        </SpaceWrapper>
       </div>
     ))
   })

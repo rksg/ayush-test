@@ -377,6 +377,7 @@ function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPas
   }
 
   return {
+    identityId: undefined,  // reset the identityId to prevent the legacy id still in the form
     ...rest,
     numberOfPassphrases: 1,
     expiration,

@@ -21,11 +21,15 @@ import { FieldLabel, RadioDescription }                                         
 
 const { useWatch } = Form
 
-export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoadOrBandBalaningEnabled: boolean) => void }) {
+export function LoadBalancing (props: {
+  setIsLoadOrBandBalaningEnabled?: (isLoadOrBandBalaningEnabled: boolean) => void,
+  isAllowEdit?: boolean
+ }) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const { setIsLoadOrBandBalaningEnabled, isAllowEdit=true } = props
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
@@ -48,7 +52,6 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { setIsLoadOrBandBalaningEnabled } = props
   const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>({
     useQueryFn: useGetVenueLoadBalancingQuery,
     useTemplateQueryFn: useGetVenueTemplateLoadBalancingQuery,
@@ -207,6 +210,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
             style={{ marginTop: '-5px' }}
             children={<Switch
               data-testid='load-balancing-enabled'
+              disabled={!isAllowEdit}
               onChange={(value) => {
                 if (value) {
                   onFormDataChanged()
@@ -260,7 +264,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
           name='loadBalancingMethod'
           label={$t({ defaultMessage: 'Load Balancing Method' })}
         >
-          <Radio.Group onChange={onLoadBalancingMethodChange}>
+          <Radio.Group disabled={!isAllowEdit} onChange={onLoadBalancingMethodChange}>
             <Space direction='vertical'>
               {loadBalancingMethods.map(({ method, text, info }) => (
                 <Radio key={method} value={method}>
@@ -295,6 +299,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
             style={{ marginTop: '-5px' }}
             children={<Switch
               data-testid='sticky-client-steering-enabled'
+              disabled={!isAllowEdit}
               onChange={onFormDataChanged} />}
           />
         </FieldLabel>
@@ -321,6 +326,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               placeholder='5-30'
               min={5}
               max={30}
+              disabled={!isAllowEdit}
               onChange={onFormDataChanged} />} />
           <span className='ant-form-text' style={{ marginLeft: '-8px', marginTop: '8px' }}>
             {$t({ defaultMessage: 'dB' })}
@@ -342,6 +348,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               placeholder='10-40'
               min={10}
               max={40}
+              disabled={!isAllowEdit}
               onChange={onFormDataChanged} />} />
           <span className='ant-form-text' style={{ marginLeft: '-9px', marginTop: '8px' }}>
             {$t({ defaultMessage: '%' })}
@@ -378,6 +385,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
             style={{ marginTop: '-5px' }}
             children={<Switch
               data-testid='band-balancing-enabled'
+              disabled={!isAllowEdit}
               onChange={onFormDataChanged} />}
           />
         </FieldLabel>
@@ -398,6 +406,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
             min={0}
             max={100}
             marks={{ 0: '0%', 100: '100%' }}
+            disabled={!isAllowEdit}
             onChange={onFormDataChanged}
           />
         </Form.Item>
@@ -411,7 +420,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
           name='steeringMode'
           label={$t({ defaultMessage: 'Steering Mode' })}
         >
-          <Radio.Group onChange={onSteeringModeChange}>
+          <Radio.Group disabled={!isAllowEdit} onChange={onSteeringModeChange}>
             <Space direction='vertical'>
               {steeringModes.map(({ mode, text, description }) => (
                 <Radio key={mode} value={mode}>
