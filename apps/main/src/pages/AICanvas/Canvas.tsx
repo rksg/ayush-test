@@ -6,9 +6,9 @@ import { useIntl } from 'react-intl'
 import { Button }                                         from '@acx-ui/components'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
-import Layout  from './components/Layout'
-import * as UI from './styledComponents'
-import { compactLayout } from './utils/compact';
+import Layout            from './components/Layout'
+import * as UI           from './styledComponents'
+import { compactLayout } from './utils/compact'
 
 // import mockData from './mock'
 
