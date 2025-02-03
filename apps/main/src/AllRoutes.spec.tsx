@@ -52,6 +52,9 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
+jest.mock('./pages/AICanvas', () => () => {
+  return <div data-testid='canvas' />
+})
 jest.mock('./routes/AnalyticsRoutes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
@@ -171,6 +174,19 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('networks')
+  })
+
+  test('should navigate to canvas if the feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/canvas',
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByTestId('canvas')).toBeInTheDocument()
   })
 
   test('should navigate to services/* if the feature flag is on', async () => {
