@@ -92,7 +92,7 @@ export default function HistoryDrawer (props: DrawerProps) {
     } else if(historyData?.length === 0) {
       setHistory([])
     }
-  }, [historyData])
+  }, [historyData, updateChat])
 
   const onSubmit = (chat: ChatHistory) => {
     updateChat({
