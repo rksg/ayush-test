@@ -88,18 +88,18 @@ export default function HistoryDrawer (props: DrawerProps) {
 
   useEffect(()=>{
     if(historyData?.length) {
+      handleDrawerClose()
       setHistoryList(historyData)
     } else if(historyData?.length === 0) {
       setHistory([])
     }
-  }, [historyData, updateChat])
+  }, [historyData])
 
   const onSubmit = (chat: ChatHistory) => {
     updateChat({
       params: { sessionId: chat.id },
       payload: form.getFieldValue('chatTitle')
     })
-    handleDrawerClose()
   }
 
   const onDeleteChat = (chat: ChatHistory) => {
@@ -140,22 +140,16 @@ export default function HistoryDrawer (props: DrawerProps) {
   const editChatTitle = (j: ChatHistory) =>
     <div className={'chat' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
       <div className='edit-input'>
-        <Form
-          form={form}
-          layout='vertical'
-          onFinish={onSubmit}
-        >
-          <Form.Item
-            name='chatTitle'
-            rules={[
-              { required: true },
-              { min: 1 },
-              { max: 64 }
-            ]}
-            validateFirst
-            children={<Input/>}
-          />
-        </Form>
+        <Form.Item
+          name='chatTitle'
+          rules={[
+            { required: true },
+            { min: 1 },
+            { max: 64 }
+          ]}
+          validateFirst
+          children={<Input/>}
+        />
       </div>
       <div className='action button-group'>
         <div className='button confirm'
@@ -175,7 +169,7 @@ export default function HistoryDrawer (props: DrawerProps) {
       </div>
     </div>
 
-  const content = <UI.History>
+  const content = <Form form={form} onFinish={onSubmit}><UI.History>
     {
       history.map(i => <div className='duration' key={i.duration}>
         <div className='time'>{i.duration}</div>
@@ -206,7 +200,7 @@ export default function HistoryDrawer (props: DrawerProps) {
         }
       </div>)
     }
-  </UI.History>
+  </UI.History></Form>
 
   return (
     <Drawer
