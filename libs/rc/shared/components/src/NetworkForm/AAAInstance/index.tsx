@@ -86,7 +86,14 @@ export const AAAInstance = (props: AAAInstanceProps) => {
       setAaaDropdownItems(
         convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
-  },[aaaListQuery])
+  },[aaaListQuery, props.excludeRadSec])
+
+  useEffect(()=>{
+    if(aaaDropdownItems.length > 0 &&
+      !aaaDropdownItems.find(m => m.value === form.getFieldValue(radiusIdName)) ){
+      form.setFieldValue(radiusIdName, '')
+    }
+  },[aaaDropdownItems])
 
   useEffect(() => {
     if (!watchedRadius) return
@@ -115,40 +122,54 @@ export const AAAInstance = (props: AAAInstanceProps) => {
       form.setFieldValue(props.type, undefined)
     }
   }, [watchedRadiusId])
-
   return (
     <>
-      <Form.Item label={props.serverLabel} required><Space>
-        <Form.Item
-          name={radiusIdName}
-          noStyle
-          label={props.serverLabel}
-          rules={[
-            { required: true }
-          ]}
-          initialValue={watchedRadiusId ?? ''}
-          children={<Select
-            style={{ width: 210 }}
-            showSearch
-            filterOption={(input, option) =>
-              (option?.label as string).toLowerCase().includes(input.toLowerCase())
+      <Form.Item
+        label={<>
+          {props.serverLabel}
+          {props.excludeRadSec && props.networkType === NetworkTypeEnum.DPSK &&
+          <Tooltip.Question
+            title={
+              'For a DPSK network with WPA3/WPA2 mixed mode,'+
+              ' only Cloudpath RADIUS server configured in non-proxy mode is supported.'
             }
-            options={[
-              { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
-              ...aaaDropdownItems
-            ]}
+            placement='bottom'
           />}
-        />
-        <Tooltip>
-          <AAAPolicyModal updateInstance={(data) => {
-            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-            form.setFieldValue(radiusIdName, data.id)
-            form.setFieldValue(props.type, data)
-          }}
-          aaaCount={aaaDropdownItems.length}
-          type={radiusType}
+        </>
+        }
+        required
+      >
+        <Space>
+          <Form.Item
+            name={radiusIdName}
+            noStyle
+            // label={props.serverLabel}
+            rules={[
+              { required: true }
+            ]}
+            initialValue={watchedRadiusId ?? ''}
+            children={<Select
+              style={{ width: 210 }}
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label as string).toLowerCase().includes(input.toLowerCase())
+              }
+              options={[
+                { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
+                ...aaaDropdownItems
+              ]}
+            />}
           />
-        </Tooltip></Space>
+          <Tooltip>
+            <AAAPolicyModal updateInstance={(data) => {
+              setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+              form.setFieldValue(radiusIdName, data.id)
+              form.setFieldValue(props.type, data)
+            }}
+            aaaCount={aaaDropdownItems.length}
+            type={radiusType}
+            />
+          </Tooltip></Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
