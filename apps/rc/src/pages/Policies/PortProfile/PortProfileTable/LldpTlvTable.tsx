@@ -43,7 +43,7 @@ export default function LldpTlvTable () {
     useQuery: useSwitchPortProfileLldpTlvsListQuery,
     defaultPayload,
     sorter: {
-      sortField: 'id',
+      sortField: 'systemName',
       sortOrder: 'ASC'
     },
     search: {
@@ -86,7 +86,7 @@ export default function LldpTlvTable () {
       title: $t({ defaultMessage: 'Name Match' }),
       key: 'nameMatchingType',
       dataIndex: 'nameMatchingType',
-      sorter: true,
+      sorter: false,
       render: (_, row) => {
         const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingTitle
         return $t({ defaultMessage: '{nameMatchingType}' },
@@ -97,13 +97,13 @@ export default function LldpTlvTable () {
       title: $t({ defaultMessage: 'System Description' }),
       key: 'systemDescription',
       dataIndex: 'systemDescription',
-      sorter: true
+      sorter: false
     },
     {
       title: $t({ defaultMessage: 'Description Match' }),
       key: 'descMatchingType',
       dataIndex: 'descMatchingType',
-      sorter: true,
+      sorter: false,
       render: (_, row) => {
         const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingTitle
         return $t({ defaultMessage: '{descMatchingType}' },
