@@ -12,9 +12,9 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
-import { MspUrlsInfo }                                                              from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                                        from '@acx-ui/formatter'
+import { MspUrlsInfo }                                                               from '@acx-ui/msp/utils'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
@@ -59,6 +59,7 @@ import { getOpsApi }                               from '@acx-ui/utils'
 
 import { AppliedToTenantDrawer }                                                                    from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }                                                                      from './ApplyTemplateDrawer'
+import { ConfigTemplateCloneModal, useCloneConfigTemplate }                                         from './CloneModal'
 import { ShowDriftsDrawer }                                                                         from './ShowDriftsDrawer'
 import { ConfigTemplateDriftStatus, getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
 import { useAddTemplateMenuProps }                                                                  from './useAddTemplateMenuProps'
@@ -70,6 +71,8 @@ export function ConfigTemplateList () {
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
+  // eslint-disable-next-line max-len
+  const { visible: cloneModalVisible, setVisible: setCloneModalVisible, canClone } = useCloneConfigTemplate()
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
@@ -77,6 +80,7 @@ export function ConfigTemplateList () {
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+  const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -118,6 +122,15 @@ export function ConfigTemplateList () {
         }
       }
     },
+    ...(cloneEnabled ? [{
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: ConfigTemplate[]) => canClone(selectedRows[0]?.type),
+      label: $t({ defaultMessage: 'Clone' }),
+      onClick: (rows: ConfigTemplate[]) => {
+        setSelectedTemplates(rows)
+        setCloneModalVisible(true)
+      }
+    }] : []),
     {
       rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
@@ -203,6 +216,11 @@ export function ConfigTemplateList () {
       <AppliedToTenantDrawer
         setVisible={setAppliedToTenantDrawerVisible}
         selectedTemplates={selectedTemplates}
+      />}
+      {cloneModalVisible &&
+      <ConfigTemplateCloneModal
+        selectedTemplate={selectedTemplates[0]}
+        setVisible={setCloneModalVisible}
       />}
       <AccessControlSubPolicyDrawers
         accessControlSubPolicyVisible={accessControlSubPolicyVisible}
