@@ -155,7 +155,11 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
         {enableAccountingService && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'
-            excludeRadSec={data?.type === NetworkTypeEnum.DPSK || dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed}/>
+            excludeRadSec={
+              data?.type === NetworkTypeEnum.DPSK ||
+              dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
+            }
+          />
           {(data?.type && accountingProxyNetworkTypes.includes(data.type))&&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
