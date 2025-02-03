@@ -315,24 +315,27 @@ export function NetworkingTab (props: {
       />
 
       <UI.FieldLabel width={labelWidth}>
-        <Space>
-          {isR370UnsupportedFeatures ?
-            $t({ defaultMessage: 'Airtime Decongestion' }) :
-            $t({ defaultMessage: 'Airtime Decongestion:' }) }
-          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-            title={''}
-            visible={true}
-            placement='right'
-            onClick={() => setAirtimeDrawerVisible(true)}
-          />}
-          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-            visible={airtimeDrawerVisible}
-            type={ApCompatibilityType.ALONE}
-            networkId={wlanData?.id}
-            featureName={InCompatibilityFeatures.AIRTIME_DECONGESTION}
-            onClose={() => setAirtimeDrawerVisible(false)}
-          />}
-        </Space>
+        {isR370UnsupportedFeatures ?
+          <Space>
+            { $t({ defaultMessage: 'Airtime Decongestion' }) }
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              placement='right'
+              onClick={() => setAirtimeDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={airtimeDrawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={wlanData?.id}
+              featureName={InCompatibilityFeatures.AIRTIME_DECONGESTION}
+              onClose={() => setAirtimeDrawerVisible(false)}
+            />}
+          </Space> :
+          <>
+            { $t({ defaultMessage: 'Airtime Decongestion:' }) }
+          </>
+        }
         <Form.Item
           name={['wlan','advancedCustomization','enableAirtimeDecongestion']}
           style={{ marginBottom: '10px' }}
@@ -344,24 +347,27 @@ export function NetworkingTab (props: {
 
       {!enableAirtimeDecongestion &&
         <UI.FieldLabel width={labelWidth}>
-          <Space>
-            {isR370UnsupportedFeatures ?
-              $t({ defaultMessage: 'Join RSSI Threshold' }) :
-              $t({ defaultMessage: 'Join RSSI Threshold:' }) }
-            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={''}
-              visible={true}
-              placement='right'
-              onClick={() => setJoinRssiDrawerVisible(true)}
-            />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-              visible={joinRssiDrawerVisible}
-              type={ApCompatibilityType.ALONE}
-              networkId={wlanData?.id}
-              featureName={InCompatibilityFeatures.JOIN_RSSI_THRESHOLD}
-              onClose={() => setJoinRssiDrawerVisible(false)}
-            />}
-          </Space>
+          {isR370UnsupportedFeatures ?
+            <Space>
+              { $t({ defaultMessage: 'Join RSSI Threshold' }) }
+              {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                title={''}
+                visible={true}
+                placement='right'
+                onClick={() => setJoinRssiDrawerVisible(true)}
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                visible={joinRssiDrawerVisible}
+                type={ApCompatibilityType.ALONE}
+                networkId={wlanData?.id}
+                featureName={InCompatibilityFeatures.JOIN_RSSI_THRESHOLD}
+                onClose={() => setJoinRssiDrawerVisible(false)}
+              />}
+            </Space> :
+            <>
+              { $t({ defaultMessage: 'Join RSSI Threshold:' }) }
+            </>
+          }
           <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>
             <Form.Item
               name={['wlan','advancedCustomization','enableJoinRSSIThreshold']}
