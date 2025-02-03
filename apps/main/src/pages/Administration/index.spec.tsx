@@ -120,6 +120,10 @@ describe('Administration page', () => {
       rest.get(
         AdministrationUrlsInfo.getNotificationRecipients.url,
         (req, res, ctx) => res(ctx.json(fakeNotificationList))
+      ),
+      rest.post(
+        AdministrationUrlsInfo.getWebhooks.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })

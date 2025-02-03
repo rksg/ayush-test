@@ -43,7 +43,7 @@ export const HaModeRadioGroupFormItem = (props: {
             {$t({ defaultMessage: 'Active-Active' })}
             <ApCompatibilityToolTip
               title=''
-              visible
+              showDetailButton
               onClick={() => setEdgeCompatibilityModalFeature(IncompatibilityFeatures.HA_AA)}
             />
             <RadioDescription>{$t(messageMapping.activeActiveMessage)}</RadioDescription>

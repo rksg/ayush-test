@@ -16,7 +16,6 @@ import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileActivation,
   useSoftGreProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
@@ -66,7 +65,7 @@ import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
 const { useWatch } = Form
 
@@ -100,9 +99,10 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
     : venueSettings?.dhcpServiceSetting?.enabled ?? false
 }
 
-export function LanPorts () {
+export function LanPorts (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,
@@ -177,7 +177,6 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const { dispatch } = useSoftGreProfileActivation(selectedModel)
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
@@ -666,13 +665,14 @@ export function LanPorts () {
         <LanPortPoeSettings
           selectedModel={selectedModel}
           selectedModelCaps={selectedModelCaps}
+          disabled={!isAllowEdit}
           onGUIChanged={handleGUIChanged}
         />
       </Col>
       {!isTemplate && isLanPortResetEnabled && apModel &&
       <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
         <Tooltip title={$t(WifiNetworkMessages.LAN_PORTS_RESET_TOOLTIP)} >
-          <Button type='link' onClick={handleResetDefaultSettings}>
+          <Button type='link' disabled={!isAllowEdit} onClick={handleResetDefaultSettings}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button>
         </Tooltip>
@@ -695,6 +695,7 @@ export function LanPorts () {
               <Row>
                 <Col span={8}>
                   <LanPortSettings
+                    readOnly={!isAllowEdit}
                     selectedPortCaps={selectedPortCaps}
                     selectedModel={selectedModel}
                     setSelectedPortCaps={setSelectedPortCaps}
@@ -704,7 +705,6 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
-                    dispatch={dispatch}
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
                     validateIsFQDNDuplicate={validateIsFQDNDuplicate}
