@@ -13,8 +13,8 @@ import {
   getCompatibilityDeviceTypeDisplayName
 } from '@acx-ui/rc/utils'
 
-import { ApCompatibilityDetailTable }   from '../ApCompatibilityDetailTable'
-import { EdgeCompatibilityDetailTable } from '../EdgeCompatibilityDetailTable'
+import { ApCompatibilityDetailTable }   from '../Ap/ApCompatibilityDetailTable'
+import { EdgeCompatibilityDetailTable } from '../Edge/EdgeCompatibilityDetailTable'
 
 import { CompatibilityItem } from './CompatibilityItem'
 import { useDescription }    from './utils'

@@ -14,6 +14,8 @@ import {
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping } from '@acx-ui/rc/utils'
 
+import { VenueWifiConfigItemProps } from '../../..'
+
 import { MdnsFencingContext } from './MdnsFencing'
 import MdnsFencingDrawer      from './MdnsFencingDrawer'
 import { updateRowId }        from './utils'
@@ -33,9 +35,10 @@ export interface MdnsFencingServiceContextType {
 
 export const MdnsFencingServiceContext = createContext({} as MdnsFencingServiceContextType)
 
-export function MdnsFencingServiceTable () {
+export function MdnsFencingServiceTable (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const params = useParams()
+  const { isAllowEdit=true } = props
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { mdnsFencingServices, setMdnsFencingServices } = useContext(MdnsFencingContext)
@@ -207,7 +210,7 @@ export function MdnsFencingServiceTable () {
     {
       label: $t({ defaultMessage: 'Add Service' }),
       onClick: handleAddAction,
-      disabled: drawerVisible
+      disabled: !isAllowEdit || drawerVisible
     }
   ]
 
@@ -287,7 +290,7 @@ export function MdnsFencingServiceTable () {
         actions={actions}
         rowActions={rowActions}
         rowKey='rowId'
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={isAllowEdit && { type: 'checkbox' }}
       />
     </MdnsFencingServiceContext.Provider>
   )

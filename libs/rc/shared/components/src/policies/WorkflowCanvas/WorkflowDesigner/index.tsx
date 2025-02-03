@@ -3,10 +3,12 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }                                    from '@acx-ui/components'
-import { BrushSolid, EyeOpenOutlined, EyeOpenSolid } from '@acx-ui/icons'
-import { useGetWorkflowStepsByIdQuery }              from '@acx-ui/rc/services'
-import { WorkflowPanelMode, InitialEmptyStepsCount } from '@acx-ui/rc/utils'
+import { Button }                                                  from '@acx-ui/components'
+import { BrushSolid, EyeOpenOutlined, EyeOpenSolid }               from '@acx-ui/icons'
+import { useGetWorkflowStepsByIdQuery }                            from '@acx-ui/rc/services'
+import { WorkflowPanelMode, InitialEmptyStepsCount, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                    from '@acx-ui/user'
+import { getOpsApi }                                               from '@acx-ui/utils'
 
 import { EnrollmentPortalDesignModal } from '../../../EnrollmentPortalDesignModal'
 import { WorkflowActionPreviewModal }  from '../../../WorkflowActionPreviewModal'
@@ -37,6 +39,8 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       {$t({ defaultMessage: 'Workflow Designer' })}
       <Space direction={'horizontal'}>
         <Button
+          rbacOpsIds={[getOpsApi(WorkflowUrls.updateWorkflowUIConfig)]}
+          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.updateWorkflowUIConfig)])}
           icon={<BrushSolid/>}
           onClick={() => setIsPortalVisible(true)}
         >

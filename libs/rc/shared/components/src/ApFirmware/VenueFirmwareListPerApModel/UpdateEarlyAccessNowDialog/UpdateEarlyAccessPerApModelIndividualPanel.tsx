@@ -4,13 +4,13 @@ import { Checkbox, Space }     from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useIntl }             from 'react-intl'
 
-import { Loader }                                                  from '@acx-ui/components'
-import { useGetAllApModelFirmwareListQuery }                       from '@acx-ui/rc/services'
-import { ApModelFirmware, FirmwareLabel, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
-import { compareVersions }                                         from '@acx-ui/utils'
+import { Loader }                                   from '@acx-ui/components'
+import { useGetAllApModelFirmwareListQuery }        from '@acx-ui/rc/services'
+import { ApModelFirmware, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { compareVersions }                          from '@acx-ui/utils'
 
 import {
-  convertToPayloadForApModelFirmware,
+  convertToPayloadForApModelFirmware, isAlphaFilter, isBetaFilter,
   patchPayloadForApModelFirmware
 } from '../../FirmwareUtils'
 import * as UI                            from '../styledComponents'
@@ -52,9 +52,9 @@ export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAc
 
     let updateGroups = [] as ApModelFirmware[]
     // eslint-disable-next-line max-len
-    let updateAlphaGroups = apModelFirmwares.filter(data => data.labels?.includes(FirmwareLabel.ALPHA))
+    let updateAlphaGroups = apModelFirmwares.filter(data => isAlphaFilter(data.labels))
     // eslint-disable-next-line max-len
-    let updateBetaGroups = apModelFirmwares.filter(data => data.labels?.includes(FirmwareLabel.BETA))
+    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels))
 
     updateGroups = [
       ...updateGroups,
