@@ -18,6 +18,7 @@ export interface MacRegistrationPool {
   associationIds?: string [],
   identityGroupId?: string,
   identityId?: string
+  networkCount?: number
 }
 
 export interface MacRegistrationPoolFormFields {

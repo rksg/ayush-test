@@ -17,6 +17,9 @@ import LicenseTimelineGraph     from './LicenseTimelineGraph'
 import MspCustomersLicences     from './MspCustomersLicences'
 import MspDeviceNetworkingCard  from './MspDeviceNetworkingCard'
 import RecDeviceNetworkingCard  from './RecDeviceNetworkingCard'
+import MSPSolutionTokenCard     from './SolutionToken/MspSolutionTokenCard'
+import RecSolutionTokenCard     from './SolutionToken/RecSolutionTokenCard'
+import SolutionTokenLicenses    from './SolutionToken/SolutionTokenLicenses'
 import * as UI                  from './styledComponents'
 
 
@@ -29,22 +32,25 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   const params = useParams()
   const { $t } = useIntl()
   const [selfData, setSelfData] = useState(emptyCompliance as ComplianceData)
+  const [selfSolutionTokenData, setSelfSolutionTokenData] =
+    useState(emptyCompliance as ComplianceData)
   const [ecSummaryData, setEcSummaryData] = useState(emptyCompliance as ComplianceData)
+  const [ecSolutionTokenSummaryData, setEcSolutionTokenSummaryData] =
+    useState(emptyCompliance as ComplianceData)
   const [openMspCustLicencesDrawer, setOpenMspCustLicencesDrawer] = useState(false)
   const [openLicenseTimelineDrawer, setOpenLicenseTimelineDrawer] = useState(false)
+  const [openSolutionTokenLicensesDrawer, setOpenSolutionTokenLicensesDrawer] = useState(false)
   const { isMsp, isExtendedTrial } = props
   const showCompliancePhase2UI = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
 
   const RecPayload = {
     filters: {
-      licenseType: ['APSW'],
       complianceType: 'SELF'
     }
   }
   const MspPayload = {
     filters: {
-      licenseType: ['APSW'],
       complianceType: 'MSP_SUMMARY'
     }
   }
@@ -72,6 +78,16 @@ export const LicenseCompliance = (props: ComplianceProps) => {
       setOpenLicenseTimelineDrawer(false)
   }
 
+  function opeSolutionTokenDrawer () {
+    if(!openSolutionTokenLicensesDrawer)
+      setOpenSolutionTokenLicensesDrawer(true)
+  }
+
+  function closeSolutionTokenDrawer () {
+    if(openSolutionTokenLicensesDrawer)
+      setOpenSolutionTokenLicensesDrawer(false)
+  }
+
   useEffect(() => {
     if (queryData?.data?.compliances) {
       const retData = queryData.data.compliances.filter(comp => comp.licenseType === 'APSW')
@@ -79,6 +95,14 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         setSelfData(retData[0].self ?? emptyCompliance as ComplianceData)
         if (isMsp && retData[0].mspEcSummary)
           setEcSummaryData(retData[0].mspEcSummary)
+      }
+
+      const solutionTokenData =
+        queryData.data.compliances.filter(comp => comp.licenseType === 'SLTN_TOKEN')
+      if (solutionTokenData.length > 0) {
+        setSelfSolutionTokenData(solutionTokenData[0].self ?? emptyCompliance as ComplianceData)
+        if (isMsp && solutionTokenData[0].mspEcSummary)
+          setEcSolutionTokenSummaryData(solutionTokenData[0].mspEcSummary)
       }
     }
   }, [queryData?.data])
@@ -116,7 +140,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
               </Button>
             </div> : <></>}
           /></>
-          : <MspDeviceNetworkingCard
+          : <><MspDeviceNetworkingCard
             title={$t({ defaultMessage: 'Device Networking Licenses' })}
             selfData={selfData}
             mspData={ecSummaryData}
@@ -134,6 +158,25 @@ export const LicenseCompliance = (props: ComplianceProps) => {
               </Button>
             </div> : <></>}
           />
+          <MSPSolutionTokenCard
+            title={$t({ defaultMessage: 'Solution Token Licenses' })}
+            selfData={selfSolutionTokenData}
+            mspData={ecSolutionTokenSummaryData}
+            isExtendedTrial={isExtendedTrial}
+            footerContent={
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'end'
+              }}>
+                <Button
+                  size='small'
+                  type={'link'}
+                  onClick={opeSolutionTokenDrawer}>
+                  {$t({ defaultMessage: 'View Details' })}
+                </Button>
+              </div>} />
+          </>
         }
         {
           showCompliancePhase2UI && openMspCustLicencesDrawer && <Drawer
@@ -193,13 +236,30 @@ export const LicenseCompliance = (props: ComplianceProps) => {
             <LicenseTimelineGraph />
           </Drawer>
         }
+        {
+          solutionTokenFFToggled && openSolutionTokenLicensesDrawer && <Drawer
+            title={<>{$t({ defaultMessage: 'Solution Token Licenses' })}
+              {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
+            visible={openSolutionTokenLicensesDrawer}
+            onClose={closeSolutionTokenDrawer}
+            destroyOnClose={true}
+            width={1080}
+          >
+            <SolutionTokenLicenses />
+          </Drawer>
+        }
       </UI.ComplianceContainer>
       : solutionTokenFFToggled
-        ? <RecDeviceNetworkingCard
+        ? <UI.ComplianceContainer><RecDeviceNetworkingCard
           title={$t({ defaultMessage: 'Device Networking Licenses' })}
           data={selfData}
           trialType={TrialType.TRIAL}
         />
+        <RecSolutionTokenCard
+          title={$t({ defaultMessage: 'Solution Token Licenses' })}
+          data={selfSolutionTokenData}
+          trialType={TrialType.TRIAL}
+        /></UI.ComplianceContainer>
         : <DeviceNetworkingCard
           title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
           subTitle={$t({ defaultMessage: 'License Expiration' })}
