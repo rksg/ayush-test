@@ -39,6 +39,12 @@ jest.mock('../utils', () => ({
   })
 }))
 
+jest.mock('../../ApCompatibility', () => ({
+  ...jest.requireActual('../../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 describe('OpenNetwork form', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -84,5 +90,23 @@ describe('OpenNetwork form', () => {
 
     await userEvent.click(await screen.findByLabelText(/MAC Registration list/i))
     expect(screen.queryByText(/mac address format/i)).not.toBeInTheDocument()
+  })
+
+  it('should render OpenNetwork with R370 compatibility tooltip', async () => {
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <OpenSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(1)
+    toolTips.forEach(t => expect(t).toBeVisible())
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
   })
 })

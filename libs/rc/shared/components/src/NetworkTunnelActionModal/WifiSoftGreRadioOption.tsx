@@ -10,8 +10,13 @@ import { QuestionMarkCircleOutlined }                               from '@acx-u
 import { useGetSoftGreOptionsQuery, useLazyGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
 import { hasPolicyPermission, PolicyOperation, PolicyType }         from '@acx-ui/rc/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
-import SoftGreDrawer                                                                                   from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../ApCompatibility'
+import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
 import * as UI                   from './styledComponents'
 import { NetworkTunnelTypeEnum } from './types'
