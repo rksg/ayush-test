@@ -117,6 +117,7 @@ export function MspCustomers () {
     (tenantType === AccountType.MSP_INSTALLER ||
      tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
 
   const allowManageAdmin =
       ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
@@ -249,10 +250,11 @@ export function MspCustomers () {
         key: 'Trial',
         value: $t({ defaultMessage: 'Trial' })
       },
-      {
+      ...(isExtendedTrialEnabled ? [{
         key: 'Extended Trial',
         value: $t({ defaultMessage: 'Extended Trial' })
       }
+      ] : [])
     ]
 
     const expirationDateFilterOpts = ($t: IntlShape['$t']) => [

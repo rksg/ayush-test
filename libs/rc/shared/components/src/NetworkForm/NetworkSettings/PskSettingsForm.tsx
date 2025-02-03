@@ -397,7 +397,6 @@ function MACAuthService () {
   const { data, setData } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const enableAccountingService = useWatch<boolean>(['enableAccountingService'])
-  const networkType = data?.type
 
   useEffect(()=>{
     form.setFieldsValue(data)
@@ -413,7 +412,7 @@ function MACAuthService () {
         <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
           type='authRadius'
-          networkType={networkType}/>
+          excludeRadSec={true}/>
       </div>
       <div>
         <UI.FieldLabel width={labelWidth}>
@@ -428,7 +427,7 @@ function MACAuthService () {
         {enableAccountingService &&
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'
-            networkType={networkType}/>
+            excludeRadSec={true}/>
         }
       </div>
     </Space>
