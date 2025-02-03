@@ -2,15 +2,38 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card, DonutChart,
+import { Card,
+  DonutChart,
   getDeviceConnectionStatusColorsv2,
-  GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { ChartData }                                       from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath, useParams }        from '@acx-ui/react-router-dom'
-import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
-import { filterByAccess, hasRoles, useUserProfileContext } from '@acx-ui/user'
+  GridCol,
+  GridRow,
+  StackedBarChart }    from '@acx-ui/components'
+import type { DonutChartData }    from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  ChartData,
+  CommonRbacUrlsInfo,
+  EdgeUrlsInfo,
+  SwitchRbacUrlsInfo,
+  WifiRbacUrlsInfo
+}                                       from '@acx-ui/rc/utils'
+import {
+  TenantLink,
+  useNavigateToPath,
+  useParams
+}        from '@acx-ui/react-router-dom'
+import {
+  EdgeScopes,
+  RolesEnum,
+  SwitchScopes,
+  WifiScopes
+} from '@acx-ui/types'
+import {
+  filterByAccess,
+  hasRoles,
+  useUserProfileContext
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { useIsEdgeReady } from '../useEdgeActions'
 
@@ -166,6 +189,7 @@ export function DevicesWidgetv2 (props: {
                     {filterByAccess([
                       <TenantLink
                         scopeKey={[WifiScopes.CREATE]}
+                        rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.addAp)]}
                         to={'/devices/wifi/add'}>
                         {$t({ defaultMessage: 'Add Access Point' })}
                       </TenantLink>
@@ -205,6 +229,7 @@ export function DevicesWidgetv2 (props: {
                     {filterByAccess([
                       <TenantLink
                         to={'/devices/switch/add'}
+                        rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.addSwitch)]}
                         scopeKey={[SwitchScopes.CREATE]}>
                         {$t({ defaultMessage: 'Add Switch' })}
                       </TenantLink>
@@ -244,6 +269,12 @@ export function DevicesWidgetv2 (props: {
                       style={{ height: (height/2) - 30 }}>
                       {filterByAccess([<TenantLink
                         scopeKey={[EdgeScopes.CREATE]}
+                        rbacOpsIds={[
+                          [
+                            getOpsApi(EdgeUrlsInfo.addEdge),
+                            getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+                          ]
+                        ]}
                         to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add RUCKUS Edge' })}
                       </TenantLink>])}
@@ -281,9 +312,11 @@ export function DevicesWidgetv2 (props: {
                     : <UI.LinkContainer
                       key='rwg-linkContainer'
                       style={{ height: (height/2) - 30 }}>
-                      {!isCustomRole && filterByAccess([<TenantLink to={'/ruckus-wan-gateway/add'}>
-                        {$t({ defaultMessage: 'Add RWG' })}
-                      </TenantLink>])}
+                      {!isCustomRole && filterByAccess([
+                        <TenantLink to={'/ruckus-wan-gateway/add'}
+                          rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
+                          {$t({ defaultMessage: 'Add RWG' })}
+                        </TenantLink>])}
                     </UI.LinkContainer>
                   }
                 </GridCol>

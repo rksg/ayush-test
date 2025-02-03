@@ -20,12 +20,12 @@ export interface FeatureItemProps {
   data: ApIncompatibleFeature
   incompatible: number
   total: number
-  isCrossDeviceType?: boolean
+  hasBackgroundColor?: boolean
 }
 
 export const FeatureItem = (props: FeatureItemProps) => {
   const { $t } = useIntl()
-  const { isMultiple = false, deviceType, data, incompatible, total, isCrossDeviceType } = props
+  const { isMultiple = false, deviceType, data, incompatible, total, hasBackgroundColor } = props
   const isApCompatibilitiesByModel = 'requirements' in data
 
   const incompatibleInfo = (Boolean(incompatible) && Boolean(total)) &&
@@ -42,7 +42,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
     </UI.StyledFormItem>
 
   // eslint-disable-next-line max-len
-  return <UI.StyledRequirementWrapper $hasBackground={isApCompatibilitiesByModel && isCrossDeviceType}>
+  return <UI.StyledRequirementWrapper $hasBackground={isApCompatibilitiesByModel && hasBackgroundColor}>
     {isMultiple &&
       <Form.Item noStyle>
         <UI.StyledFeatureName>
@@ -55,7 +55,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
     <SupportedFirmwareInfo
       deviceType={deviceType}
       data={data}
-      isCrossDeviceType={isCrossDeviceType}
+      hasBackgroundColor={hasBackgroundColor}
     />
     { !isApCompatibilitiesByModel && incompatibleInfo}
   </UI.StyledRequirementWrapper>

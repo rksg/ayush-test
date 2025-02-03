@@ -28,7 +28,8 @@ import {
   Workflow,
   WorkflowDetailsTabKey,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByPolicy
+  getScopeKeyByPolicy,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import {
   TenantLink
@@ -138,6 +139,7 @@ export default function WorkflowTable () {
   const rowActions: TableProps<Workflow>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.WORKFLOW, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         setPreviewVisible(false)
@@ -160,6 +162,7 @@ export default function WorkflowTable () {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.WORKFLOW, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
 
@@ -228,6 +231,7 @@ export default function WorkflowTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.WORKFLOW, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.WORKFLOW,
               oper: PolicyOperation.CREATE
