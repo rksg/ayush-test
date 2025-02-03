@@ -241,7 +241,7 @@ export function RadioSettingsForm (props:{
             {isUseVenueSettings ?
               LPIButtonText?.buttonText : (isAFCEnabled ?
                 <Switch
-                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  disabled={disabled || !isAFCEnabled || isUseVenueSettings}
                   onChange={() => {
                     onChangedByCustom('enableAfc')
                     form.validateFields()
@@ -252,7 +252,7 @@ export function RadioSettingsForm (props:{
                     <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
                   </div>
                 }>
-                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                  <Switch disabled={disabled || !isAFCEnabled || isUseVenueSettings} />
                 </Tooltip>
               )
             }
@@ -326,6 +326,7 @@ export function RadioSettingsForm (props:{
                   { validator: (_, value) => (isNumber(maxFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Minimum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
+                  disabled={disabled}
                   style={{ width: '150px' }}
                   controls={false}
                   precision={0}
@@ -343,6 +344,7 @@ export function RadioSettingsForm (props:{
                   { validator: (_, value) => (isNumber(minFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Maximum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
+                  disabled={disabled}
                   style={{ width: '150px' }}
                   controls={false}
                   precision={0}

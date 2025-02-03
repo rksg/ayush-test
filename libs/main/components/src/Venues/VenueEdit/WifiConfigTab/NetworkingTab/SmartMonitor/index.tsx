@@ -16,17 +16,18 @@ import {
 } from '@acx-ui/rc/services'
 import { VenueApSmartMonitor, useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }               from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
 import { FieldLabel } from '../../styledComponents'
 
-export function SmartMonitor () {
+export function SmartMonitor (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit=true } = props
   const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)
 
@@ -167,6 +168,7 @@ export function SmartMonitor () {
               initialValue={false}
               children={
                 <Switch
+                  disabled={!isAllowEdit}
                   checked={smartMonitorEnabled}
                   onChange={handleChanged}
                   onClick={toggleSmartMonitor}
@@ -200,6 +202,7 @@ export function SmartMonitor () {
                     min={5}
                     max={60}
                     style={{ width: '75px' }}
+                    disabled={!isAllowEdit}
                     onChange={handleChanged}
                   />
                 }
@@ -226,6 +229,7 @@ export function SmartMonitor () {
                     min={1}
                     max={10}
                     style={{ width: '75px' }}
+                    disabled={!isAllowEdit}
                     onChange={handleChanged}
                   />
                 }

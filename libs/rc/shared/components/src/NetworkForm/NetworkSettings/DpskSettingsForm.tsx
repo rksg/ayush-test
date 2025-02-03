@@ -125,8 +125,8 @@ function SettingsForm () {
   },[data])
 
   useEffect(()=>{
-    supportRadsec && form.setFieldsValue({ ...data })
-  },[data?.id])
+    supportRadsec && form.setFieldsValue({ ...data, wlanSecurity: dpskWlanSecurity })
+  },[data?.id, data?.wlanSecurity, dpskWlanSecurity])
 
   useEffect(() => {
     if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)

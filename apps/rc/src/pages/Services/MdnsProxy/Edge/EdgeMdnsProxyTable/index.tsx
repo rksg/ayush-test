@@ -13,8 +13,14 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable, ToolTipTableStyle, useEdgeMdnssCompatibilityData } from '@acx-ui/rc/components'
-import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery }              from '@acx-ui/rc/services'
+import {
+  CountAndNamesTooltip,
+  MdnsProxyForwardingRulesTable,
+  ToolTipTableStyle,
+  useEdgeMdnssCompatibilityData,
+  EdgeTableCompatibilityWarningTooltip
+} from '@acx-ui/rc/components'
+import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceDetailsLink,
@@ -27,11 +33,11 @@ import {
   EdgeMdnsProxyViewData,
   defaultSort,
   MdnsProxyFeatureTypeEnum,
-  EdgeServiceCompatibility
+  EdgeServiceCompatibility,
+  getServiceAllowedOperation,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
 
 const settingsId = 'services-edge-mdns-proxy-table'
 export function EdgeMdnsProxyTable () {
@@ -70,7 +76,8 @@ export function EdgeMdnsProxyTable () {
           })
         })
       },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -89,7 +96,8 @@ export function EdgeMdnsProxyTable () {
           }
         })
       },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE)
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE)
     }
   ]
 
@@ -116,6 +124,8 @@ export function EdgeMdnsProxyTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.CREATE })}
           >
@@ -180,9 +190,10 @@ function useColumns (compatibilityData?: Record<string, EdgeServiceCompatibility
             })}>
             {row.name}
           </TenantLink>
-          <CompatibilityCheck
+          <EdgeTableCompatibilityWarningTooltip
             serviceId={row.id!}
-            compatibilityData={compatibilityData}
+            featureName={IncompatibilityFeatures.EDGE_MDNS_PROXY}
+            compatibility={compatibilityData}
           />
         </Space>)
       }

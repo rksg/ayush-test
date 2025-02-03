@@ -2,10 +2,14 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                     from '@acx-ui/components'
-import { Features, useIsTierAllowed }               from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }             from '@acx-ui/rc/components'
-import { useConfigTemplate, type LocationExtended } from '@acx-ui/rc/utils'
+import { Tabs }                         from '@acx-ui/components'
+import { Features, useIsTierAllowed }   from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import {
+  CommonUrlsInfo,
+  useConfigTemplate,
+  type LocationExtended
+} from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -13,7 +17,13 @@ import {
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
-import { hasPermission, hasRoles }             from '@acx-ui/user'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission,
+  hasRoles
+}             from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -26,16 +36,8 @@ function VenueEditTabs () {
   const navigate = useNavigate()
   const enablePropertyManagement = usePropertyManagementEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
-  const {
-    editContextData,
-    setEditContextData,
-    editNetworkingContextData,
-    editRadioContextData,
-    editSecurityContextData,
-    editServerContextData,
-    editAdvancedContextData,
-    setPreviousPath
-  } = useContext(VenueEditContext)
+  const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData } = venueEditTabContext
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -48,6 +50,7 @@ function VenueEditTabs () {
     })
   }
 
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { navigator } = useContext(NavigationContext)
   const blockNavigator = navigator as History
   const unblockRef = useRef<Function>()
@@ -64,17 +67,10 @@ function VenueEditTabs () {
           ...editContextData,
           isDirty: false
         })
-        showUnsavedModal(
-          editContextData,
-          setEditContextData,
-          editNetworkingContextData,
-          editRadioContextData,
-          editSecurityContextData,
-          editServerContextData,
-          editAdvancedContextData,
-          intl,
-          tx.retry
-        )
+        showUnsavedModal({
+          ...venueEditTabContext,
+          callback: tx.retry
+        })
       })
     } else {
       unblockRef.current?.()
@@ -87,8 +83,11 @@ function VenueEditTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      {
-        hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+      {(
+        rbacOpsApiEnabled ?
+          hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateVenue)]):
+          hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+      ) &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })}
           key='details' />

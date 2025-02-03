@@ -61,7 +61,7 @@ const showChannelBarRadios = [
 
 export function SingleRadioSettings (props:{
   context?: string,
-  disable?: boolean,
+  disabled?: boolean,
   inherit5G?: boolean,
   radioType: ApRadioTypeEnum,
   handleChanged?: () => void,
@@ -78,7 +78,7 @@ export function SingleRadioSettings (props:{
   const form = Form.useFormInstance()
   const { venueId } = useParams()
   const {
-    disable = false,
+    disabled = false,
     inherit5G = false,
     context = 'venue',
     isUseVenueSettings = false,
@@ -403,7 +403,7 @@ export function SingleRadioSettings (props:{
                 formName={allowedChannelsFieldName}
                 channelBandwidth320MhzGroupFieldName={channelBandwidth320MhzGroupFieldName}
                 channelList={channelList}
-                disabled={inherit5G || disable || isUseVenueSettings}
+                disabled={inherit5G || disabled || isUseVenueSettings}
                 handleChanged={handleChanged}
                 afcProps={afcProps}
                 indoor={!LPIButtonText?.isAPOutdoor}
@@ -419,7 +419,7 @@ export function SingleRadioSettings (props:{
               context={context}
               formName={allowedChannelsFieldName}
               channelList={channelList}
-              disabled={inherit5G || disable || isUseVenueSettings}
+              disabled={inherit5G || disabled || isUseVenueSettings}
               handleChanged={handleChanged}
               afcProps={afcProps}
             />
@@ -436,7 +436,7 @@ export function SingleRadioSettings (props:{
               channelList={channelList}
               displayBarSettings={displayRadioBarSettings}
               channelBars={channelBars}
-              disabled={inherit5G || disable || isUseVenueSettings}
+              disabled={inherit5G || disabled || isUseVenueSettings}
               handleChanged={handleChanged}
               afcProps={afcProps}
             />
@@ -455,7 +455,7 @@ export function SingleRadioSettings (props:{
             <RadioSettingsForm
               radioType={radioType}
               radioDataKey={radioDataKey}
-              disabled={inherit5G || disable}
+              disabled={inherit5G || disabled}
               txPowerOptions={txPowerOptions}
               channelBandwidthOptions={bandwidthOptions}
               context={context}
@@ -465,7 +465,7 @@ export function SingleRadioSettings (props:{
               LPIButtonText={LPIButtonText}
             />
           </Col>
-          { context === 'venue' && !inherit5G && !disable &&
+          { context === 'venue' && !inherit5G && !disabled &&
           <Col offset={4} span={6} style={{ paddingTop: '20px' }}>
             <Button type='link' onClick={resetToDefaule}>
               {$t({ defaultMessage: 'Reset to Default Settings' })}
@@ -551,7 +551,7 @@ export function SingleRadioSettings (props:{
                   channelList={indoorChannelList}
                   displayBarSettings={displayRadioBarSettings}
                   channelBars={indoorChannelBars}
-                  disabled={inherit5G || disable}
+                  disabled={inherit5G || disabled}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 /> :
@@ -559,7 +559,7 @@ export function SingleRadioSettings (props:{
                   context={context}
                   formName={allowedIndoorChannelsFieldName}
                   channelList={indoorChannelList}
-                  disabled={inherit5G || disable || isUseVenueSettings}
+                  disabled={inherit5G || disabled || isUseVenueSettings}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 />
@@ -609,7 +609,7 @@ export function SingleRadioSettings (props:{
                   channelList={outdoorChannelList}
                   displayBarSettings={displayRadioBarSettings}
                   channelBars={outdoorChannelBars}
-                  disabled={inherit5G || disable}
+                  disabled={inherit5G || disabled}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 /> :
@@ -617,7 +617,7 @@ export function SingleRadioSettings (props:{
                   context={context}
                   formName={allowedOutdoorChannelsFieldName}
                   channelList={outdoorChannelList}
-                  disabled={inherit5G || disable || isUseVenueSettings}
+                  disabled={inherit5G || disabled || isUseVenueSettings}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 />
@@ -648,7 +648,7 @@ export function SingleRadioSettings (props:{
                 channelList={indoorChannelList}
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
-                disabled={inherit5G || disable}
+                disabled={inherit5G || disabled}
                 handleChanged={handleChanged}
                 afcProps={afcProps}
               />

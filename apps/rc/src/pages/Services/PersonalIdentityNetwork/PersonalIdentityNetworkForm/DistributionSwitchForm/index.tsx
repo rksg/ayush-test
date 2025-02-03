@@ -4,6 +4,8 @@ import { Form, Input, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { Alert, StepsForm, TableProps, useStepFormContext }                  from '@acx-ui/components'
+import { Features }                                                          from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                             from '@acx-ui/rc/components'
 import { useGetEdgeListQuery }                                               from '@acx-ui/rc/services'
 import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
@@ -15,6 +17,8 @@ import { StaticRouteModal }         from './StaticRouteModal'
 
 export function DistributionSwitchForm () {
   const { $t } = useIntl()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     switchList,
@@ -97,13 +101,18 @@ export function DistributionSwitchForm () {
     setOpenDrawer(false)
 
     saveToContext(newList)
+
+    if (isEdgePinEnhanceReady) {
+    // trigger validation
+      form.validateFields(['distributionSwitchInfos'])
+    }
   }
 
   return (<>
     <StepsForm.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
     </StepsForm.Title>
-    <Typography.Paragraph type='secondary'>{$t({ defaultMessage:
+    <Typography.Paragraph>{$t({ defaultMessage:
       `Please add distribution switches and connected access switches to the list below,
       and then configure the VLAN range and loopback settings.`
     })}</Typography.Paragraph>
@@ -121,14 +130,21 @@ export function DistributionSwitchForm () {
           setSelected(selectedRows[0])
         }
       }} />
-    <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
+    <Form.Item
+      name='distributionSwitchInfos'
+      rules={isEdgePinEnhanceReady
+        ? [{
+          required: true, message: $t({ defaultMessage: 'Please setup distribution switches' })
+        }] : undefined}
+      children={<Input type='hidden'/>}
+    />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
       availableSwitches={availableSwitches || []}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
-    { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
+    {!isEdgePinEnhanceReady && distributionSwitchInfos?.length > 0 && <Alert type='info'
       showIcon
       message={$t({ defaultMessage:
         `Attention Required: Please ensure to configure Static Route on RUCKUS Edge {edgeNames}

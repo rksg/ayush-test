@@ -45,7 +45,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { ApDataContext, ApEditContext } from '../..'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 const useFetchIsVenueDhcpEnabled = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -78,9 +78,10 @@ const useFetchIsVenueDhcpEnabled = () => {
   }
 }
 
-export function LanPorts () {
+export function LanPorts (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const navigate = useNavigate()
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
@@ -156,9 +157,8 @@ export function LanPorts () {
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
 
-  // TODO: rbac
-  const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
-  const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
+  const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
+  const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
@@ -528,6 +528,7 @@ export function LanPorts () {
             <Col span={8}>
               <LanPortPoeSettings
                 context='ap'
+                disabled={!isAllowEdit}
                 selectedModel={selectedModel}
                 selectedModelCaps={selectedModelCaps}
                 useVenueSettings={useVenueSettings}
@@ -550,7 +551,7 @@ export function LanPorts () {
                     <Row>
                       <Col span={8}>
                         <LanPortSettings
-                          readOnly={useVenueSettings}
+                          readOnly={!isAllowEdit || useVenueSettings}
                           selectedPortCaps={selectedPortCaps}
                           selectedModel={selectedModel}
                           setSelectedPortCaps={setSelectedPortCaps}
@@ -612,7 +613,10 @@ export function LanPorts () {
             </Button>
           }} />
         : (isResetLanPortEnabled ? <>{$t({ defaultMessage: 'Custom settings' })}
-          <Button type='link' size='small' onClick={handleResetDefaultLanPorts}>
+          <Button type='link'
+            size='small'
+            disabled={!isAllowEdit}
+            onClick={handleResetDefaultLanPorts}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button></> : $t({ defaultMessage: 'Custom settings' }) )
       }

@@ -11,7 +11,8 @@ export function LanPortPoeSettings (props: {
   selectedModel: VenueLanPorts | WifiApSetting,
   selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
-  useVenueSettings?: boolean
+  useVenueSettings?: boolean,
+  disabled?: boolean
 }) {
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const { $t } = useIntl()
@@ -20,7 +21,8 @@ export function LanPortPoeSettings (props: {
     selectedModel,
     selectedModelCaps,
     onGUIChanged,
-    useVenueSettings
+    useVenueSettings,
+    disabled
   } = props
 
   const poeModeTooltipsInfo = $t({
@@ -50,7 +52,7 @@ export function LanPortPoeSettings (props: {
         options={selectedModelCaps?.poeModeCapabilities?.map(item => ({
           label: toReadablePoeMode(item), value: item
         }))}
-        disabled={useVenueSettings}
+        disabled={disabled || useVenueSettings}
         onChange={() => onChangedByCustom('poeMode')}
       />}
     /> }

@@ -77,5 +77,14 @@ describe('NetworkTunnelActionModal - useEdgePinData', () => {
       expect(result.current).toStrictEqual(undefined)
       expect(mockedReqFn).toBeCalledTimes(0)
     })
+    it('should not trigger API when skip is true', () => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+      const { result } = renderHook(() => useEdgeAllPinData({}, true), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      expect(result.current).toStrictEqual(undefined)
+      expect(mockedReqFn).toBeCalledTimes(0)
+    })
   })
 })

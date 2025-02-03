@@ -12,8 +12,8 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                                       from '@acx-ui/feature-toggle'
-import { CountAndNamesTooltip, EdgeServiceStatusLight, useEdgeSdLansCompatibilityData } from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                                                                                             from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip, EdgeTableCompatibilityWarningTooltip, EdgeServiceStatusLight, useEdgeSdLansCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useDeleteEdgeSdLanMutation,
@@ -35,7 +35,9 @@ import {
   EdgeMvSdLanViewData,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
-  defaultSort
+  defaultSort,
+  getServiceAllowedOperation,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -43,8 +45,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -169,9 +169,10 @@ const EdgeMvSdLanTable = () => {
           >
             {row.name}
           </TenantLink>
-          {isEdgeCompatibilityEnabled && <CompatibilityCheck
+          {isEdgeCompatibilityEnabled && <EdgeTableCompatibilityWarningTooltip
             serviceId={serviceId!}
-            sdLanCompatibilityData={sdLanCompatibilityData.compatibilities}
+            featureName={IncompatibilityFeatures.SD_LAN}
+            compatibility={sdLanCompatibilityData.compatibilities}
           />}
         </Space>
         )
@@ -280,6 +281,7 @@ const EdgeMvSdLanTable = () => {
   const rowActions: TableProps<EdgeMvSdLanViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
@@ -297,6 +299,7 @@ const EdgeMvSdLanTable = () => {
     },
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -345,6 +348,8 @@ const EdgeMvSdLanTable = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}
             to={getServiceRoutePath({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE

@@ -22,11 +22,12 @@ import {
 import { hasPolicyPermission, PolicyOperation, PolicyType, VenueLbsActivationType } from '@acx-ui/rc/utils'
 import { useParams }                                                                from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 
-export function LocationBasedService () {
+export function LocationBasedService (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit=true } = props
   const profileIdRef = useRef<string>('')
 
   const activateLbsServerProfile = useLbsServerProfileActivation()
@@ -79,7 +80,7 @@ export function LocationBasedService () {
       setStateOfVenueLbs({ enableLbs, lbsServerProfileId })
       setStateOfLbsServerProfileId(lbsServerProfileId)
     }
-    setReadyToScroll?.(r => [...(new Set(r.concat('Location Based Service')))])
+    setReadyToScroll?.(r => [...(new Set(r.concat('Location-Based-Service')))])
   }, [enableLbs, lbsServerProfileId])
 
   const handleLbsSwitchEnableChange = (newState: boolean) => {
@@ -213,6 +214,7 @@ export function LocationBasedService () {
           />}
           <Switch
             data-testid='lbs-switch'
+            disabled={!isAllowEdit}
             checked={stateOfEnableLbs}
             onClick={(newState) => {
               handleLbsSwitchEnableChange(newState)
@@ -230,6 +232,7 @@ export function LocationBasedService () {
         {stateOfEnableLbs && <Form.Item style={{ margin: '0' }}>
           <Select
             data-testid='lbs-select'
+            disabled={!isAllowEdit}
             value={stateOfLbsServerProfileId}
             options={[
               { label: $t({ defaultMessage: 'Select...' }), value: '' },
@@ -240,7 +243,7 @@ export function LocationBasedService () {
             })}
             style={{ width: '200px' }}
           />
-          {hasPolicyPermission(
+          {isAllowEdit && hasPolicyPermission(
             { type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE }) &&
           <Button
             disabled={selectOptions.length >= LBS_SERVER_PROFILE_MAX_COUNT}
