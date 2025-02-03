@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -199,6 +200,7 @@ const TunnelProfileTable = () => {
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT),
       // Default Tunnel profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
             && !isDefaultTunnelProfile(selectedRows[0]),
@@ -216,6 +218,7 @@ const TunnelProfileTable = () => {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.TUNNEL_PROFILE, PolicyOperation.DELETE),
       visible: (selectedRows) => !selectedRows.some(row => isDefaultTunnelProfile(row)),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -263,6 +266,8 @@ const TunnelProfileTable = () => {
           <TenantLink scopeKey={getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.CREATE)}
           // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.TUNNEL_PROFILE, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add Tunnel Profile' })}</Button>
           </TenantLink>

@@ -6,17 +6,21 @@ import { useIntl }                 from 'react-intl'
 import { Loader }                     from '@acx-ui/components'
 import { useLazyGetPersonaByIdQuery } from '@acx-ui/rc/services'
 import { Persona }                    from '@acx-ui/rc/utils'
+import { noDataDisplay }              from '@acx-ui/utils'
+
 
 import { SelectPersonaDrawer } from './SelectPersonaDrawer'
 
 export const IdentitySelector = ({
   identityGroupId,
   readonly = false,
-  isEdit = false
+  isEdit = false,
+  disableAddDevices
 }: {
   identityGroupId?: string;
   readonly?: boolean;
   isEdit?: boolean;
+  disableAddDevices?: boolean;
 }) => {
   const formInstance = Form.useFormInstance()
   const selectedIdentityId = Form.useWatch('identityId', formInstance)
@@ -26,6 +30,7 @@ export const IdentitySelector = ({
   const [getPersonaById, result] = useLazyGetPersonaByIdQuery()
   const { data, isLoading, isFetching, error } = result
   const renderIdentityMessage = (): string => {
+    if (!selectedIdentityId) return noDataDisplay
     if (selectedIdentity) return selectedIdentity.name
     if (isLoading || isFetching || (data === undefined && error === undefined) ) {
       return $t({ defaultMessage: 'Loading identity...' })
@@ -101,6 +106,7 @@ export const IdentitySelector = ({
         onCancel={() => setDrawerVisible(false)}
         identityId={selectedIdentityId}
         identityGroupId={identityGroupId}
+        disableAddDevices={disableAddDevices}
       />
     }
   </>
