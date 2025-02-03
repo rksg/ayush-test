@@ -2,13 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
 import { get, isEmpty }        from 'lodash'
-import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AAAViewModalType, NetworkTypeEnum, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AAAViewModalType, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
@@ -24,7 +23,6 @@ const radiusTypeMap: { [key:string]: string } = {
 interface AAAInstanceProps {
   serverLabel: string
   type: 'authRadius' | 'accountingRadius',
-  networkType?: NetworkTypeEnum
   excludeRadSec?: boolean
 }
 
@@ -32,16 +30,16 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const radiusType = radiusTypeMap[props.type]
-  const radiusIdName = props.type + 'Id'
-  const watchedRadius = Form.useWatch(props.type) || form.getFieldValue(props.type)
+  const { serverLabel, type, excludeRadSec = false } = props
+  const radiusType = radiusTypeMap[type]
+  const radiusIdName = type + 'Id'
+  const watchedRadius = Form.useWatch(type) || form.getFieldValue(type)
   const watchedRadiusId = Form.useWatch(radiusIdName) || form.getFieldValue(radiusIdName)
   const { isTemplate } = useConfigTemplate()
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
-  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const isRadSecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE) && !isTemplate
   const primaryRadius = watchedRadius?.[AaaServerOrderEnum.PRIMARY]
   const secondaryRadius = watchedRadius?.[AaaServerOrderEnum.SECONDARY]
 
@@ -49,32 +47,24 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     queryOptions: { refetchOnMountOrArgChange: 10 }
   })
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
+  const isRadSecRadius = canFindRadSecItem(aaaListQuery?.data, form.getFieldValue(radiusIdName))
 
+  const shouldExcludeRadSec = (): boolean => {
+    return isRadSecFeatureEnabled && excludeRadSec
+  }
   const convertAaaListToDropdownItems = (
     targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
     aaaList?: AAAViewModalType[]
   ) => {
-    let cloneList = _.cloneDeep(aaaList)
-    if (supportRadsec && (
-      props.networkType === NetworkTypeEnum.PSK ||
-      (props.networkType === NetworkTypeEnum.DPSK && radiusType === 'ACCOUNTING') ||
-      props.excludeRadSec
-    )) {
-      cloneList = cloneList?.filter(m => m.radSecOptions?.tlsEnabled !== true)
-      if (form.getFieldValue('authRadiusId') &&
-        !cloneList?.find(l => l.id === form.getFieldValue('authRadiusId')) &&
-        props.networkType === NetworkTypeEnum.PSK) {
-        form.setFieldValue('authRadius', null)
-        form.setFieldValue('authRadiusId', '')
-      }
-      if (form.getFieldValue('accountingRadiusId') !== null &&
-        !cloneList?.find(l => l.id === form.getFieldValue('accountingRadiusId'))) {
-        form.setFieldValue('accountingRadius', null)
-        form.setFieldValue('accountingRadiusId', '')
-      }
-    }
-    // eslint-disable-next-line max-len
-    return cloneList?.filter(m => m.type === targetRadiusType).map(m => ({ label: m.name, value: m.id })) ?? []
+    if (!aaaList) return []
+
+    return aaaList
+      .filter(aaa => aaa.type === targetRadiusType)
+      .filter(aaa => {
+        if (shouldExcludeRadSec()) return !aaa.radSecOptions?.tlsEnabled
+        return true
+      })
+      .map(m => ({ label: m.name, value: m.id }))
   }
 
   // eslint-disable-next-line max-len
@@ -83,8 +73,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
-      setAaaDropdownItems(
-        convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
+      setAaaDropdownItems(convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
   },[aaaListQuery, props.excludeRadSec])
 
@@ -96,13 +85,25 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   },[aaaDropdownItems])
 
   useEffect(() => {
+    if (shouldExcludeRadSec() && isRadSecRadius) {
+      form.setFieldValue(type, null)
+      form.setFieldValue(radiusIdName, '')
+      setData && setData({
+        ...data,
+        [type]: null,
+        [radiusIdName]: ''
+      })
+    }
+  }, [isRadSecRadius])
+
+  useEffect(() => {
     if (!watchedRadius) return
 
-    const currentDataAaaProfileId = data && data[props.type]?.id
+    const currentDataAaaProfileId = data && data[type]?.id
     if (watchedRadius.id !== currentDataAaaProfileId) {
       setData && setData({
         ...data,
-        [props.type]: watchedRadius,
+        [type]: watchedRadius,
         [radiusIdName]: watchedRadius.id
       })
     }
@@ -115,11 +116,11 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     if (watchedRadiusId) {
       getAaaPolicy({ params: { ...params, policyId: watchedRadiusId }, enableRbac })
         .unwrap()
-        .then(aaaPolicy => form.setFieldValue(props.type, aaaPolicy))
+        .then(aaaPolicy => form.setFieldValue(type, aaaPolicy))
         // eslint-disable-next-line no-console
         .catch(console.log)
     } else {
-      form.setFieldValue(props.type, undefined)
+      form.setFieldValue(type, undefined)
     }
   }, [watchedRadiusId])
   return (
@@ -164,7 +165,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
             <AAAPolicyModal updateInstance={(data) => {
               setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
               form.setFieldValue(radiusIdName, data.id)
-              form.setFieldValue(props.type, data)
+              form.setFieldValue(type, data)
             }}
             aaaCount={aaaDropdownItems.length}
             type={radiusType}
@@ -206,7 +207,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
                 value={get(watchedRadius, `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
               />}
             />}
-          {supportRadsec &&
+          {isRadSecFeatureEnabled &&
             <Form.Item
               label={$t({ defaultMessage: 'RadSec' })}
               children={$t({ defaultMessage: '{tlsEnabled}' }, {
@@ -216,7 +217,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
         </>}
       </div>
       <Form.Item
-        name={props.type}
+        name={type}
         children={<></>}
         hidden
       />
@@ -225,3 +226,8 @@ export const AAAInstance = (props: AAAInstanceProps) => {
 }
 
 //export default AAAInstance
+
+function canFindRadSecItem (aaaList?: AAAViewModalType[], targetRadiusId?: string): boolean {
+  if (!aaaList || !targetRadiusId) return false
+  return !!aaaList?.find(aaa => aaa.id === targetRadiusId && aaa.radSecOptions?.tlsEnabled)
+}
