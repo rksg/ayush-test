@@ -485,31 +485,20 @@ export const apApi = baseApApi.injectEndpoints({
         if(ap) {
           ap.serialNumber = params?.serialNumber ?? ''
           ap.venueId = params?.venueId ?? ''
-          const apGroupPayload = {
-            fields: ['id'],
+
+          // get AP group ID from the AP list data from the view model
+          const apListQueryPayload = {
+            fields: ['name', 'serialNumber', 'apGroupId'],
             pageSize: 1,
-            filters: { apSerialNumbers: [ap.serialNumber] }
+            filters: { id: [ap.serialNumber] }
           }
-          const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
-          const apGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(apGroupPayload) })
-          const apGroupList = apGroupListRes.data as TableResult<ApGroup>
-          const targetApGroup = apGroupList.data[0]
-          if(targetApGroup) {
-            ap.apGroupId = targetApGroup.id
-          } else {// not AP Group, it's mean that use the default AP Group
-            const defaultApGroupPayload = {
-              pageSize: 1,
-              fields: ['name', 'id', 'isDefault'],
-              filters: { venueId: [ap.venueId], isDefault: [true] }
-            }
-            const defaultApGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
-            const defaultApGroupListRes = await fetchWithBQ({ ...defaultApGroupListReq, body: JSON.stringify(defaultApGroupPayload) })
-            const defaultApGroupList = defaultApGroupListRes.data as TableResult<ApGroup>
-            const targetDefaultApGroup = defaultApGroupList.data[0]
-            //console.log('defaultApGroupList: ', defaultApGroupList)
-            if (targetDefaultApGroup) {
-              ap.apGroupId = targetDefaultApGroup.id
-            }
+          const apListQuery = await fetchWithBQ({
+            ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
+            body: JSON.stringify(apListQueryPayload)
+          })
+          const aps = apListQuery.data as TableResult<NewAPModel>
+          if(aps?.data) {
+            ap.apGroupId = aps.data[0].apGroupId
           }
         }
         return { data: ap }
