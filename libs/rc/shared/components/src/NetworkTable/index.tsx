@@ -50,7 +50,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
         break
       case WlanSecurityEnum.OWETransition:
         _securityProtocol = oweMaster === false ?
-          intl.$t({ defaultMessage: 'OWE' }) : ''
+          intl.$t({ defaultMessage: 'OWE' }) : intl.$t({ defaultMessage: 'Open' })
         break
       case WlanSecurityEnum.WPA3:
         _securityProtocol = intl.$t({ defaultMessage: 'WPA3' })
