@@ -851,6 +851,15 @@ describe('Table component', () => {
       expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
     })
 
+    it('compactWidget Table: custom placeholde-r(Search...)', async () => {
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        type={'compactWidget'}
+      />)
+      expect(await screen.findByPlaceholderText(
+        'Search...')).toBeVisible()
+    })
 
     it('Enabled the flag: alwaysShowFilters', async () => {
       render(<Table
