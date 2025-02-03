@@ -20,7 +20,7 @@ describe('incidentDetailsApi', () => {
       expect(data).toStrictEqual({
         name: 'ICX8200-24P Router',
         mac: '38:45:3B:3C:F1:20',
-        model: 'ICX8200-24P',
+        model: 'ICX8200',
         firmware: 'RDR10020_b237',
         ports: [{
           portNumber: '1/2/3',

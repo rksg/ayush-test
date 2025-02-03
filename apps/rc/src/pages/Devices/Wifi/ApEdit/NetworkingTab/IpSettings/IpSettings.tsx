@@ -9,16 +9,17 @@ import { Features, useIsSplitOn }                                           from
 import { useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
 import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }       from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 enum IpTypeEnum {
   DYNAMIC = 'DYNAMIC',
   STATIC = 'STATIC'
 }
 
-export function IpSettings () {
+export function IpSettings (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -181,7 +182,7 @@ export function IpSettings () {
           name='ipType'
           label={$t({ defaultMessage: 'IP Settings' })}
         >
-          <Radio.Group>
+          <Radio.Group disabled={!isAllowEdit} >
             <Space direction='vertical'>
               {apIpTypes.map(({ type, text }) => (
                 <Radio key={type} value={type}>
@@ -215,7 +216,7 @@ export function IpSettings () {
                   { required: true },
                   { validator: (_, value) => networkWifiIpRegExp(value) }
                 ]}
-                children={<Input />}
+                children={<Input disabled={!isAllowEdit} />}
               />
               <Form.Item
                 name='netmask'
@@ -224,7 +225,7 @@ export function IpSettings () {
                   { required: true },
                   { validator: (_, value) => subnetMaskIpRegExp(value) }
                 ]}
-                children={<Input />}
+                children={<Input disabled={!isAllowEdit} />}
               />
               <Form.Item
                 name='gateway'
@@ -233,7 +234,7 @@ export function IpSettings () {
                   { required: true },
                   { validator: (_, value) => networkWifiIpRegExp(value) }
                 ]}
-                children={<Input />}
+                children={<Input disabled={!isAllowEdit} />}
               />
               <Form.Item
                 name='primaryDnsServer'
@@ -242,7 +243,7 @@ export function IpSettings () {
                   { required: true },
                   { validator: (_, value) => networkWifiIpRegExp(value) }
                 ]}
-                children={<Input />}
+                children={<Input disabled={!isAllowEdit} />}
               />
               <Form.Item
                 name='secondaryDnsServer'
@@ -250,7 +251,7 @@ export function IpSettings () {
                 rules={[
                   { validator: (_, value) => networkWifiIpRegExp(value) }
                 ]}
-                children={<Input />}
+                children={<Input disabled={!isAllowEdit} />}
               />
             </Col>
           </Row>

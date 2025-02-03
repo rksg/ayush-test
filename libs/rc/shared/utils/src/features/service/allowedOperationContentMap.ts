@@ -129,6 +129,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: ['DELETE:/applicationPolicies/{id}'],
     [PolicyOperation.LIST]: ['POST:/applicationPolicies/query']
   },
+  [PolicyType.WORKFLOW]: {
+    [PolicyOperation.CREATE]: ['POST:/workflows'],
+    [PolicyOperation.EDIT]: ['PATCH:/workflows/{id}'],
+    [PolicyOperation.DELETE]: ['DELETE:/workflows/{id}'],
+    [PolicyOperation.LIST]: ['POST:/workflows/query']
+  },
   [PolicyType.TUNNEL_PROFILE]: {
     [PolicyOperation.CREATE]: [getOpsApi(TunnelProfileUrls.createTunnelProfile)],
     [PolicyOperation.EDIT]: [getOpsApi(TunnelProfileUrls.updateTunnelProfile)],

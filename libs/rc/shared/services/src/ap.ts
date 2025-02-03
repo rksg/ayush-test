@@ -1170,6 +1170,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
+    // deprecated! RBAC API will use the updateApLanPorts to replace.
     resetApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLanPorts, params)
@@ -1203,6 +1204,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    // deprecated! RBAC API will use the updateApLed to replace.
     resetApLed: build.mutation<ApLedSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLed, params)
@@ -1673,7 +1675,8 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApManagementVlan, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApManagementVlan, params, customHeaders)
         return {
           ...req
         }
@@ -1692,10 +1695,11 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     updateApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApManagementVlan, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApManagementVlan, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
