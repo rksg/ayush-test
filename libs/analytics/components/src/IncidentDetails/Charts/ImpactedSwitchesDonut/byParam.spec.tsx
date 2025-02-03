@@ -3,9 +3,9 @@ import { dataApi, dataApiURL, Provider, store } from '@acx-ui/store'
 import { mockGraphqlQuery, render,
   screen } from '@acx-ui/test-utils'
 
-import { ImpactedSwitch } from './services'
+import {  DonutChartByParamProps, ImpactedSwitchesByParamDonut } from './byParam'
+import { ImpactedSwitch }                                        from './services'
 
-import {  ImpactedSwitchesDonut } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -16,7 +16,7 @@ jest.mock('@acx-ui/config', () => ({
 }))
 const mockOverlapsRollup = overlapsRollup as jest.Mock
 
-describe('ImpactedSwitchesDonut',()=>{
+describe.each(['model', 'firmware'])('ImpactedSwitchesByParamDonut',(param)=>{
   const sample1:ImpactedSwitch[] = [{
     name: 'ICX7150-C12 Router',
     mac: '58:FB:96:0B:12:CA',
@@ -40,14 +40,15 @@ describe('ImpactedSwitchesDonut',()=>{
     }
   })
 
-  describe('ImpactedSwitch', () => {
+  describe(`(${param})`, () => {
     beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
     it('should render', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       const { asFragment } = render(<Provider>
-        <ImpactedSwitchesDonut incident={fakeIncidentDDoS} />
+        <ImpactedSwitchesByParamDonut incident={fakeIncidentDDoS}
+          param={param as DonutChartByParamProps['param']}/>
       </Provider>)
-      await screen.findByText('Switch Distribution')
+      await screen.findByText(`Impacted Switch ${param}s`)
       expect(asFragment()
         .querySelector('div.ant-card-body > div:nth-child(1) > div > div > div > div:nth-child(1)'))
         .toMatchSnapshot()
@@ -56,9 +57,10 @@ describe('ImpactedSwitchesDonut',()=>{
       jest.mocked(mockOverlapsRollup).mockReturnValue(true)
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(<Provider>
-        <ImpactedSwitchesDonut incident={fakeIncidentDDoS} />
+        <ImpactedSwitchesByParamDonut incident={fakeIncidentDDoS}
+          param={param as DonutChartByParamProps['param']}/>
       </Provider>)
-      await screen.findByText('Switch Distribution')
+      await screen.findByText(`Impacted Switch ${param}`)
       await screen.findByText('Data granularity at this level is not available')
       jest.mocked(mockOverlapsRollup).mockReturnValue(false)
     })
