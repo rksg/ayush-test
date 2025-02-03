@@ -496,6 +496,20 @@ export const apApi = baseApApi.injectEndpoints({
           const targetApGroup = apGroupList.data[0]
           if(targetApGroup) {
             ap.apGroupId = targetApGroup.id
+          } else {// not AP Group, it's mean that use the default AP Group
+            const defaultApGroupPayload = {
+              pageSize: 1,
+              fields: ['name', 'id', 'isDefault'],
+              filters: { venueId: [ap.venueId], isDefault: [true] }
+            }
+            const defaultApGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
+            const defaultApGroupListRes = await fetchWithBQ({ ...defaultApGroupListReq, body: JSON.stringify(defaultApGroupPayload) })
+            const defaultApGroupList = defaultApGroupListRes.data as TableResult<ApGroup>
+            const targetDefaultApGroup = defaultApGroupList.data[0]
+            console.log('defaultApGroupList: ', defaultApGroupList)
+            if (targetDefaultApGroup) {
+              ap.apGroupId = targetDefaultApGroup.id
+            }
           }
         }
         return { data: ap }
