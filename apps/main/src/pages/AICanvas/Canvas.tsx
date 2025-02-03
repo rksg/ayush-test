@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -81,9 +81,15 @@ const DEFAULT_CANVAS = [
   }
 ] as unknown as Section[]
 
-export default function Canvas ({ onCanvasChange }: {
-  onCanvasChange?: (hasChanges: boolean) => void
-}) {
+export interface CanvasRef {
+  save: () => Promise<void>;
+}
+
+interface CanvasProps {
+  onCanvasChange?: (hasChanges: boolean) => void;
+}
+
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
   const { $t } = useIntl()
   // const [widgets, setWidgets] = useState([])
   const [groups, setGroups] = useState([] as Group[])
@@ -101,8 +107,13 @@ export default function Canvas ({ onCanvasChange }: {
   }, [])
 
   useEffect(() => {
-    // TODO: check for changes
-    notifyChange(true)
+    if (!groups.length || !sections.length) return
+    const tmp = _.cloneDeep(sections)
+    tmp.forEach(s => {
+      s.groups = groups.filter(g => g.sectionId === s.id)
+    })
+    let hasDiff = !_.isEqual(tmp, sections) //TODO
+    notifyCanvasChange(hasDiff)
   }, [groups, sections])
 
   // const getFromLS = () => {
@@ -111,7 +122,7 @@ export default function Canvas ({ onCanvasChange }: {
   //   return ls
   // }
 
-  const notifyChange = (hasChanges: boolean) => {
+  const notifyCanvasChange = (hasChanges: boolean) => {
     if (onCanvasChange) {
       onCanvasChange(hasChanges)
     }
@@ -131,7 +142,7 @@ export default function Canvas ({ onCanvasChange }: {
       }
       emptyCanvas()
     }
-    notifyChange(false)
+    notifyCanvasChange(false)
   }
 
   const onSave = async () => {
@@ -153,9 +164,13 @@ export default function Canvas ({ onCanvasChange }: {
         }
       })
     }
-    notifyChange(false)
+    notifyCanvasChange(false)
     // localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
+
+  useImperativeHandle(ref, () => ({
+    save: onSave
+  }))
 
   const emptyCanvas = () => {
     setSections(DEFAULT_CANVAS)
@@ -196,4 +211,6 @@ export default function Canvas ({ onCanvasChange }: {
       </div>
     </UI.Canvas>
   )
-}
+})
+
+export default Canvas
