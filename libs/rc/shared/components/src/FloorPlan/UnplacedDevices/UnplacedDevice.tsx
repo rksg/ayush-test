@@ -4,12 +4,17 @@ import { useDrag }       from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { useIntl }       from 'react-intl'
 
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { DeviceOutlined, DevicesOutlined, SignalUp }                        from '@acx-ui/icons'
-import { APMeshRole, NetworkDevice, NetworkDeviceType, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { SwitchScopes, WifiScopes }                                         from '@acx-ui/types'
-import { hasPermission }                                                    from '@acx-ui/user'
-import { getOpsApi }                                                        from '@acx-ui/utils'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { DeviceOutlined, DevicesOutlined, SignalUp } from '@acx-ui/icons'
+import {
+  APMeshRole,
+  CommonRbacUrlsInfo,
+  NetworkDevice,
+  NetworkDeviceType
+} from '@acx-ui/rc/utils'
+import { SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }            from '@acx-ui/user'
+import { getOpsApi }                from '@acx-ui/utils'
 
 import { NetworkDeviceContext } from '..'
 import { getDeviceName }        from '../NetworkDevices/utils'
@@ -33,11 +38,13 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
 
   const canDrag = () => {
     if(device?.networkDeviceType === NetworkDeviceType.ap) {
-      return hasPermission({ scopes: [WifiScopes.UPDATE] })
+      return hasPermission({ scopes: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.UpdateApPosition)]
+      })
     } else if(device?.networkDeviceType === NetworkDeviceType.switch) {
       return hasPermission({
         scopes: [SwitchScopes.UPDATE],
-        rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)]
+        rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.UpdateSwitchPosition)]
       })
     }
     return true
