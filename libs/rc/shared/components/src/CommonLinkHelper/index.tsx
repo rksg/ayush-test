@@ -29,20 +29,26 @@ export function IdentityGroupLink (props: {
   personaGroupId?: string,
   name?: string,
   enableFetchName?: boolean,
-  showNoData?: boolean
+  showNoData?: boolean,
+  disableLink?: boolean
 }) {
-  const { personaGroupId, name, enableFetchName = false, showNoData = false } = props
+  // eslint-disable-next-line max-len
+  const { personaGroupId, name, enableFetchName = false, showNoData = false, disableLink = false } = props
   const { data: groupData, isLoading } = useGetPersonaGroupByIdQuery(
     { params: { groupId: personaGroupId } },
     { skip: !personaGroupId || !enableFetchName })
+  // eslint-disable-next-line max-len
+  const displayString = name ?? (enableFetchName ? groupData?.name ?? personaGroupId : personaGroupId)
 
   return (
     personaGroupId
       ? (enableFetchName && isLoading)
         ? <></>
-        : <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
-          {name ?? (enableFetchName ? groupData?.name ?? personaGroupId : personaGroupId)}
-        </TenantLink>
+        : disableLink
+          ? <>{displayString}</>
+          : <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
+            {displayString}
+          </TenantLink>
       : <>{showNoData && noDataDisplay}</>
   )
 }

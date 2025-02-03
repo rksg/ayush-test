@@ -36,16 +36,8 @@ function VenueEditTabs () {
   const navigate = useNavigate()
   const enablePropertyManagement = usePropertyManagementEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
-  const {
-    editContextData,
-    setEditContextData,
-    editNetworkingContextData,
-    editRadioContextData,
-    editSecurityContextData,
-    editServerContextData,
-    editAdvancedContextData,
-    setPreviousPath
-  } = useContext(VenueEditContext)
+  const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData } = venueEditTabContext
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -75,17 +67,10 @@ function VenueEditTabs () {
           ...editContextData,
           isDirty: false
         })
-        showUnsavedModal(
-          editContextData,
-          setEditContextData,
-          editNetworkingContextData,
-          editRadioContextData,
-          editSecurityContextData,
-          editServerContextData,
-          editAdvancedContextData,
-          intl,
-          tx.retry
-        )
+        showUnsavedModal({
+          ...venueEditTabContext,
+          callback: tx.retry
+        })
       })
     } else {
       unblockRef.current?.()
