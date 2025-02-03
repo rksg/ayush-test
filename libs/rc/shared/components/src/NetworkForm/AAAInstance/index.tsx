@@ -169,6 +169,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
             }}
             aaaCount={aaaDropdownItems.length}
             type={radiusType}
+            forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
             />
           </Tooltip></Space>
       </Form.Item>
