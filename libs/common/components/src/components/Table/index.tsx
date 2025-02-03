@@ -513,7 +513,7 @@ function Table <RecordType extends Record<string, any>> ({
                 highlightStyle={{
                   fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
                 searchWords={[searchValue]}
-                textToHighlight={textToHighlight}
+                textToHighlight={textToHighlight.toString()}
                 autoEscape
               />
             : textToHighlight

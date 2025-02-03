@@ -190,7 +190,6 @@ export default function AICanvas () {
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
-
         <div className='chat-wrapper'>
           <div className='chat'>
             <div className='header'>
