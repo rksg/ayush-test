@@ -2025,7 +2025,7 @@ export const mockPolicySetList = {
 
 export const mockAAAPolicyListResponse = {
   page: 1,
-  totalCount: 2,
+  totalCount: 3,
   data: [
     {
       name: 'test1',
@@ -2039,6 +2039,20 @@ export const mockAAAPolicyListResponse = {
       primary: '2.3.3.4:101',
       secondary: '2.3.3.4:1187',
       id: '2'
+    },
+    {
+      id: '3',
+      name: 'RadSec AAA',
+      primary: {
+        ip: '123.123.123.2',
+        port: 2083
+      },
+      radSecOptions: {
+        tlsEnabled: true,
+        cnSanIdentity: 'cnSan',
+        ocspUrl: 'aaa.com'
+      },
+      type: 'AUTHENTICATION'
     }
   ]
 }
@@ -2083,7 +2097,7 @@ export const mockCaListResponse = {
 export const mockAAAPolicyTemplateResponse = mockAAAPolicyTemplateListResponse.data[1]
 
 export const mockAAAPolicyNewCreateResponse = {
-  id: '3',
+  id: '4',
   name: 'test 3',
   primary: {
     ip: '123.123.123.1',
@@ -2099,7 +2113,7 @@ export const mockAAAPolicyNewCreateResponse = {
 }
 
 export const mockRadSecAAAPolicyNewCreateResponse = {
-  id: '3',
+  id: '9',
   name: 'test 3',
   primary: {
     ip: '123.123.123.1',
