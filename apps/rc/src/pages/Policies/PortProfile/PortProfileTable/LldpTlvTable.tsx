@@ -10,7 +10,7 @@ import {
   useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
-  LldpTlvMatchingTitle,
+  LldpTlvMatchingType,
   LldpTlvs,
   SwitchPortProfiles,
   useTableQuery
@@ -19,11 +19,13 @@ import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
-import { LldpTlvDrawer } from '../PortProfileForm/LldpTlvDrawer'
+import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
+import { LldpTlvDrawer }              from '../PortProfileForm/LldpTlvDrawer'
 
 type PortProfileMap = {
   [key: string]: string
 }
+
 
 export default function LldpTlvTable () {
   const { $t } = useIntl()
@@ -88,9 +90,10 @@ export default function LldpTlvTable () {
       dataIndex: 'nameMatchingType',
       sorter: false,
       render: (_, row) => {
-        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingTitle
-        return $t({ defaultMessage: '{nameMatchingType}' },
-          { nameMatchingType: LldpTlvMatchingTitle[nameMatchingType] })
+        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingType
+        return lldpTlvMatchingTypeTextMap[nameMatchingType]
+          ? $t(lldpTlvMatchingTypeTextMap[nameMatchingType])
+          : $t({ defaultMessage: 'Exact' })
       }
     },
     {
@@ -105,9 +108,10 @@ export default function LldpTlvTable () {
       dataIndex: 'descMatchingType',
       sorter: false,
       render: (_, row) => {
-        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingTitle
-        return $t({ defaultMessage: '{descMatchingType}' },
-          { descMatchingType: LldpTlvMatchingTitle[descMatchingType] })
+        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingType
+        return lldpTlvMatchingTypeTextMap[descMatchingType]
+          ? $t(lldpTlvMatchingTypeTextMap[descMatchingType])
+          : $t({ defaultMessage: 'Exact' })
       }
     },
     {
@@ -157,7 +161,7 @@ export default function LldpTlvTable () {
                 rows[0].systemName:
                 $t({ defaultMessage: '{count} LLDP TLVs' }, { count: rows.length }) }),
             // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: '{count, plural, one {This} other {These}} OUIs {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this LLDP TLV} other {them}} will result in profiles getting updated: {profilesNames}' }, {
+            content: $t({ defaultMessage: '{count, plural, one {This LLDP TLV} other {These LLDP TLVs}} {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this LLDP TLV} other {them}} will result in profiles getting updated: {profilesNames}' }, {
               count: rows.length,
               profilesNames: <FormattedMessage
                 defaultMessage='{profileNames}'
