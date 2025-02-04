@@ -10,7 +10,7 @@ import { TrialType }                  from '@acx-ui/rc/utils'
 import * as UI from '../styledComponents'
 
 import SolutionTokenMspTabContent      from './SolutionTokenMspTabContent'
-import SolutionTokenSettingsForm       from './SolutionTOkenSettingsForm'
+import SolutionTokenSettingsForm       from './SolutionTokenSettingsForm'
 import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
 
 

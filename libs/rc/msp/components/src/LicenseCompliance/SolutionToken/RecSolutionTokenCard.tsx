@@ -9,7 +9,7 @@ import { LicenseCardProps }           from '@acx-ui/msp/utils'
 import * as UI from '../styledComponents'
 
 import SolutionTokenRecTabContent      from './SolutionTokenRecTabContent'
-import SolutionTokenSettingsForm       from './SolutionTOkenSettingsForm'
+import SolutionTokenSettingsForm       from './SolutionTokenSettingsForm'
 import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
 
 export default function RecSolutionTokenCard (props: LicenseCardProps) {
