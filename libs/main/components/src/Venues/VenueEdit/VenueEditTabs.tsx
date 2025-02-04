@@ -96,7 +96,10 @@ function VenueEditTabs () {
         hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
         <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       }
-      {hasPermission({ scopes: [SwitchScopes.UPDATE] }) &&
+      {hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+      }) &&
         <Tabs.TabPane
           key='switch'
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}

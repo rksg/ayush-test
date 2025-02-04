@@ -39,10 +39,12 @@ import {
   SwitchRow,
   SwitchPortViewModelQueryFields,
   SwitchPortViewModel,
-  SwitchPortStatus } from '@acx-ui/rc/utils'
+  SwitchPortStatus,
+  SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                from '@acx-ui/react-router-dom'
 import { SwitchScopes }                         from '@acx-ui/types'
 import { useUserProfileContext, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                            from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../../../hooks'
 
@@ -143,7 +145,10 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const apPassword = useGetApPassword(currentAP)
 
   const fetchSwitchDetails = async () => {
-    if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
+    if (!portLinkEnabled || !hasPermission({
+      scopes: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+    })) {
       return
     }
 
