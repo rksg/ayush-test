@@ -27,10 +27,10 @@ export const strokeColorsCompletionByPercent = (percent: number) => {
     return Array(5).fill(green)
 }
 
-export const strokeColorssageByPercent = (percent: number) => {
-  if (percent > 0 && percent <= 25)
+export const strokeColorsUsageByPercent = (percent: number) => {
+  if (percent <= 25)
     return Array(1).fill(green)
-  else if (percent > 25 && percent <= 50)
+  else if (percent <= 50)
     return Array(3).fill(yellow)
   else
     return Array(5).fill(red)
@@ -80,7 +80,7 @@ export function ProgressBarV2 ({
       trailColor={cssStr('--acx-neutrals-30')}
       strokeWidth={strokeWidth}
       strokeColor={gradientMode === 'usage' ?
-        strokeColorssageByPercent(percent) : strokeColorsCompletionByPercent(percent)}
+        strokeColorsUsageByPercent(percent) : strokeColorsCompletionByPercent(percent)}
       style={style}
     />
   </Tooltip>

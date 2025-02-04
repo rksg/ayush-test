@@ -473,7 +473,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
         >
           <div
             class="ant-progress-bg"
-            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+            style="width: 0%; height: 10px; background: rgb(35, 171, 54);"
           />
         </div>
       </div>
