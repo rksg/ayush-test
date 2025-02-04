@@ -26,7 +26,7 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
 
   const getTime = () => {
     if(isWifiRbacEnabled) {
-      if(clientStatus !== ClientStatusEnum.CONNECTED) return formatter('durationFormat')(0)
+      if (clientStatus !== ClientStatusEnum.CONNECTED) return formatter('durationFormat')({ value: 0 })
         
       const timeInSeconds = round(divide(Date.parse(connectedTimeStamp), 1000))
       const timestamp = convertEpochToRelativeTime(timeInSeconds)
