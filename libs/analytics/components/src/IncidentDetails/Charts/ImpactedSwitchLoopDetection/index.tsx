@@ -124,6 +124,8 @@ function ImpactedVLANsTable (props: {
     { visible && <ImpactedSwitchesDrawer
       visible={visible}
       vlan={vlan}
+      sliceType={props.incident.sliceType}
+      path={props.incident.path}
       onClose={onClose}
       impactedCount={vlan.switches?.length}
     /> }

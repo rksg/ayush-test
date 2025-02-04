@@ -264,7 +264,7 @@ export const SubscriptionTable = () => {
 
   const actions: TableProps<Entitlement>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
