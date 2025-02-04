@@ -106,6 +106,13 @@ describe('Venues Table', () => {
   })
 
   it('should delete selected row', async () => {
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
     render(
       <Provider>
         <VenuesTable />
