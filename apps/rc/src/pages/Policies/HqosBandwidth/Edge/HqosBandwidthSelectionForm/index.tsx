@@ -10,7 +10,7 @@ import { AddHqosBandwidthModal }     from './AddHqosBandwidthModal'
 import { HqosBandwidthDetailDrawer } from './HqosBandwidthDetailDrawer'
 
 
-export const EdgeQosProfileSelectionForm = () => {
+export const EdgeHqosProfileSelectionForm = () => {
 
   const { $t } = useIntl()
 
@@ -73,5 +73,3 @@ export const EdgeQosProfileSelectionForm = () => {
 
   return content
 }
-
-export default EdgeQosProfileSelectionForm

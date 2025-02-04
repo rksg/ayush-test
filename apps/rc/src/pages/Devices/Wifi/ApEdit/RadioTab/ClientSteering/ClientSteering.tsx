@@ -19,8 +19,8 @@ import {
   ApStickyClientSteering
 } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../../index'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../../index'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 const { useWatch } = Form
 
@@ -38,10 +38,11 @@ const StyledText = styled.p`
   line-height: var(--acx-body-4-line-height);
 `
 
-export const ClientSteering = () => {
+export const ClientSteering = (props: ApEditItemProps) => {
   const { $t } = useIntl()
   const colSpan = 8
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const { venueData, apCapabilities } = useContext(ApDataContext)
   const {
     editContextData,
@@ -199,6 +200,7 @@ export const ClientSteering = () => {
     isFetching: isUpdatingApStickyClientSteering || isResettingStickyClientSteering
   }]}>
     <VenueSettingsHeader venue={venueData}
+      disabled={!isAllowEdit}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <Row>
@@ -260,7 +262,7 @@ export const ClientSteering = () => {
             ]}
             style={{ width: '100px' }}
             children={<InputNumber
-              disabled={isUseVenueSettings}
+              disabled={!isAllowEdit || isUseVenueSettings}
               data-testid='sticky-client-snr-threshold'
               placeholder='5-30'
               min={5}
@@ -282,7 +284,7 @@ export const ClientSteering = () => {
               { type: 'number', max: 40 }
             ]}
             children={<InputNumber
-              disabled={isUseVenueSettings}
+              disabled={!isAllowEdit || isUseVenueSettings}
               data-testid='sticky-client-nbr-percentage-threshold'
               placeholder='10-40'
               min={10}
