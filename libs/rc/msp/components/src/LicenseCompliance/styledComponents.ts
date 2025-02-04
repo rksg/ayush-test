@@ -246,3 +246,18 @@ export const Expired = styled(Space)`
 export const Warning = styled(Space)`
   color: var(--acx-accents-orange-50)
 `
+
+export const FieldLabelSubs3 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 208px 130px;
+  align-items: baseline;
+  line-height: 24px;
+  label {
+    font-size: 12px;
+  }
+  .ant-checkbox-inner {
+    width: 14px;
+    height: 14px;
+  }
+`
