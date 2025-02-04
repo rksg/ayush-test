@@ -17,6 +17,7 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
+import useEdgeNokiaOltTable from './pages/Devices/Edge/Olt/OltTable'
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import RcRoutes             from './Routes'
 
@@ -169,13 +170,15 @@ jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
 
-jest.mock('./pages/Devices/Edge/Olt/OltTable', () => () => {
-  return <div data-testid='EdgeNokiaOltTable' />
-})
+jest.mock('./pages/Devices/Edge/Olt/OltDetails', () => ({
+  EdgeNokiaOltDetails: () => <div data-testid='EdgeNokiaOltDetails' />
+}))
 
-jest.mock('./pages/Devices/Edge/Olt/OltDetails', () => () => {
-  return <div data-testid='EdgeNokiaOltDetails' />
-})
+jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
+  ...jest.requireActual('./pages/Devices/Edge/Olt/OltTable'),
+  __esModule: true,
+  default: jest.fn().mockReturnValue(undefined)
+}))
 
 jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
@@ -434,6 +437,12 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('RcRoutes: Devices > Edge Optical', () => {
+    jest.mocked(useEdgeNokiaOltTable).mockReturnValue({
+      title: 'EdgeOltTab',
+      headerExtra: [],
+      component: <div data-testid='EdgeNokiaOltTable' />
+    })
+
     test('should navigate to devices edge optical list', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {
@@ -447,7 +456,7 @@ describe('RcRoutes: Devices', () => {
     test('should navigate to devices edge optical details', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {
-          path: '/tenantId/t/devices/optical/mockOltId',
+          path: '/tenantId/t/devices/optical/mockOltId/details',
           wrapRoutes: false
         }
       })
@@ -472,7 +481,7 @@ describe('RcRoutes: Devices', () => {
       test('should be not found when navigate to devices edge optical details', async () => {
         render(<Provider><RcRoutes /></Provider>, {
           route: {
-            path: '/tenantId/t/devices/optical/mockOltId',
+            path: '/tenantId/t/devices/optical/mockOltId/details',
             wrapRoutes: false
           }
         })
