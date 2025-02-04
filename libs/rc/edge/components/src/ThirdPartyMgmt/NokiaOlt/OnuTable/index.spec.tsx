@@ -1,32 +1,53 @@
-import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
-import { render, screen }         from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { edgeTnmServiceApi }                                     from '@acx-ui/rc/services'
+import { EdgeOltFixtures, EdgeTnmServiceUrls }                   from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { EdgeNokiaOnuTable } from './index'
-
-jest.mock('@acx-ui/rc/services', () => ({
-  useGetEdgeOnuListQuery: jest.fn()
-}))
-
+const { mockOnuList } = EdgeOltFixtures
 
 describe('EdgeNokiaOnuTable', () => {
-  it('renders with loading state', () => {
-    (useGetEdgeOnuListQuery as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: true
-    })
+  const defaultProps = {
+    oltId: 'oltId',
+    cageName: 'cageName'
+  }
 
-    render(<EdgeNokiaOnuTable onClick={jest.fn()} />)
+  const mockGetOnuList = jest.fn()
+  beforeEach(() => {
+    store.dispatch(edgeTnmServiceApi.util.resetApiState())
+    mockGetOnuList.mockClear()
+
+    mockServer.use(
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeOnuList.url,
+        (_, res, ctx) => {
+          mockGetOnuList()
+          return res(ctx.json(mockOnuList))
+        }))
+  })
+
+  it('renders with data', async () => {
+    render(<Provider>
+      <EdgeNokiaOnuTable {...defaultProps} onClick={jest.fn()} />
+    </Provider>)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByText('ont_9')).toBeInTheDocument()
+  })
+
+  it('renders with loading state', () => {
+    render(<Provider>
+      <EdgeNokiaOnuTable {...defaultProps} onClick={jest.fn()} />
+    </Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
 
-  it('renders with data', () => {
-    const data = [{ id: 1, name: 'ONU 1' }];
-    (useGetEdgeOnuListQuery as jest.Mock).mockReturnValue({
-      data,
-      isLoading: false
-    })
-
-    render(<EdgeNokiaOnuTable onClick={jest.fn()} />)
-    expect(screen.getByText('ONU 1')).toBeInTheDocument()
+  it('should not trigger API when oltId or cageName is not provided', () => {
+    render(<Provider>
+      <EdgeNokiaOnuTable oltId={undefined} cageName={undefined} onClick={jest.fn()} />
+    </Provider>)
+    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    expect(mockGetOnuList).not.toHaveBeenCalled()
   })
 })

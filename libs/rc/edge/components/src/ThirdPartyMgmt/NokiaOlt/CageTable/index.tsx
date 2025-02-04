@@ -15,7 +15,7 @@ import {
 
 import { EdgeNokiaOltStatus } from '../OltStatus'
 
-import { CageDetailsDrawer } from './CageDetailDrawer'
+import { CageDetailsDrawer } from './CageDetailsDrawer'
 
 interface EdgeNokiaCageTableProps {
   venueId: string
@@ -46,6 +46,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
   <CageDetailsDrawer
     visible={visible}
     setVisible={setVisible}
+    oltId={oltId}
     currentCage={currentCage}
   />
   </>

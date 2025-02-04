@@ -23,7 +23,7 @@ export const EdgeNokiaOnuPortTable = (props: EdgeNokiaOnuPortTableProps) => {
   return <Table
     rowKey='portId'
     columns={useColumns(handleVlanIdChange)}
-    dataSource={data}
+    dataSource={data?.map((item, idx) => ({ ...item, portId: `${idx}` }))}
   />
 }
 

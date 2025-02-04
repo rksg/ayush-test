@@ -14,12 +14,13 @@ import { OnuDetailWrapper, StyledPoeClassText } from './styledComponents'
 interface CageDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  oltId: string
   currentCage: EdgeNokiaCageData | undefined,
 }
 
 export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, currentCage } = props
+  const { visible, setVisible, oltId, currentCage } = props
 
   const [currentOnu, setCurrentOnu] = useState<EdgeNokiaOnuData | undefined>(undefined)
 
@@ -42,6 +43,8 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
         <Col span={24}>
           <EdgeNokiaOnuTable
             onClick={handleOnOnuClick}
+            oltId={oltId}
+            cageName={currentCage?.name}
           />
         </Col>
       </Row>

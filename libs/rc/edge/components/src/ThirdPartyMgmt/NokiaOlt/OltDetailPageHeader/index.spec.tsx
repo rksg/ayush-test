@@ -1,47 +1,62 @@
-import React from 'react'
+import userEvent from '@testing-library/user-event'
 
-import { screen, render } from '@acx-ui/test-utils'
+import { EdgeNokiaOltData, EdgeOltFixtures } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
+import { screen, render }                    from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltDetailsPageHeader } from '.'
+const { mockOlt } = EdgeOltFixtures
+
+jest.mock( './DetailsDrawer', () => ({
+  // eslint-disable-next-line max-len
+  OltDetailsDrawer: (props: { visible: boolean, setVisible: () => void, currentOlt?: EdgeNokiaOltData }) =>
+    props.visible && <div data-testid='OltDetailsDrawer'>{JSON.stringify(props.currentOlt)}</div>
+}))
+jest.mock( './PoeUtilizationBox', () => ({
+  // eslint-disable-next-line max-len
+  PoeUtilizationBox: (props: {
+    title: string
+    isOnline: boolean
+    value?: number
+    totalVal?: number
+   }) =>
+    <div data-testid='PoeUtilizationBox'>
+      <div>{props.title}</div>
+      <div data-testid='isOnline'>{props.isOnline}</div>
+      <div data-testid='value'>{props.value}</div>
+      <div data-testid='totalVal'>{props.totalVal}</div>
+    </div>
+}))
 
 describe('EdgeNokiaOltDetailsPageHeader', () => {
-  const props: EdgeNokiaOltDetailsPageHeaderProps = {
-    currentOlt: {
-      name: 'Test OLT',
-      status: 'online'
-    }
+  const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
+  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+
+  const props = {
+    currentOlt: mockOlt as EdgeNokiaOltData
   }
 
-  it('renders component with valid props', () => {
-    render(<EdgeNokiaOltDetailsPageHeader {...props} />)
-    expect(screen.getByText('Test OLT')).toBeInTheDocument()
-  })
-
-  it('test onClickDetailsHandler function', () => {
-    render(<EdgeNokiaOltDetailsPageHeader {...props} />)
-    const button = screen.getByText('Device Details')
-    fireEvent.click(button)
-    expect(props.currentOlt.visible).toBe(true)
-  })
-
-  it('test visible state is updated correctly', () => {
-    const { rerender } = render(<EdgeNokiaOltDetailsPageHeader {...props} />)
-    const button = screen.getByText('Device Details')
-    fireEvent.click(button)
-    rerender(<EdgeNokiaOltDetailsPageHeader {...props} visible={true} />)
-    expect(screen.getByText('Device Details')).toHaveAttribute('aria-expanded', 'true')
-  })
-
   it('test component renders with expected elements', () => {
-    render(<EdgeNokiaOltDetailsPageHeader {...props} />)
-    expect(screen.getByText('Test OLT')).toBeInTheDocument()
+    render(<Provider>
+      <EdgeNokiaOltDetailsPageHeader {...props} />
+    </Provider>, { route: { params, path: mockPath } })
+    expect(screen.getByText('TestOlt')).toBeInTheDocument()
     expect(screen.getByText('Device Details')).toBeInTheDocument()
-    expect(screen.getAllByRole('grid')).toHaveLength(2)
-    expect(screen.getAllByRole('card')).toHaveLength(1)
+  })
+
+  it('should show detail drawer when button is clicked', async () => {
+    render(<Provider>
+      <EdgeNokiaOltDetailsPageHeader {...props} />
+    </Provider>, { route: { params, path: mockPath } })
+    const button = screen.getByText('Device Details')
+    await userEvent.click(button)
+    expect(await screen.findByTestId('OltDetailsDrawer')).toBeVisible()
   })
 
   it('test component renders with expected text', () => {
-    render(<EdgeNokiaOltDetailsPageHeader {...props} />)
+    render(<Provider>
+      <EdgeNokiaOltDetailsPageHeader {...props} />
+    </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('Status')).toBeInTheDocument()
     expect(screen.getByText('Cages')).toBeInTheDocument()
     expect(screen.getByText('PoE Usage')).toBeInTheDocument()

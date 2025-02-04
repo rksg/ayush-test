@@ -1,52 +1,70 @@
-import { EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { render, screen, mockServer }          from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { EdgeNokiaOltData, EdgeOltFixtures, EdgeTnmServiceUrls }         from '@acx-ui/rc/utils'
+import { Provider }                                                      from '@acx-ui/store'
+import { render, screen, mockServer, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltTable } from './index'
 
+jest.mock( './OltFormDrawer', () => ({
+  // eslint-disable-next-line max-len
+  NokiaOltFormDrawer: (props: { visible: boolean, setVisible: () => void, editData: EdgeNokiaOltData }) =>
+    props.visible && <div data-testid='NokiaOltFormDrawer'>{JSON.stringify(props.editData)}</div>
+}))
+const { click } = userEvent
 describe('EdgeNokiaOltTable', () => {
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        EdgeTnmServiceUrls.addEdgeOlt.url,
-        (_, res, ctx) => {
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeTnmServiceUrls.deleteEdgeOlt.url,
-        (_, res, ctx) => {
-          return res(ctx.status(202))
-        }
-      )
-    )
-  })
+  const params = { tenantId: 'mock-tenant-id' }
+  const mockPath = '/:tenantId/devices/optical/olt'
 
   it('renders with loading state', () => {
     render(<Provider>
       <EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} isFetching />
-    </Provider>)
+    </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
 
   it('renders with data', () => {
-    render(<EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />)
+    render(<Provider>
+      <EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />
+    </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('TestOlt')).toBeInTheDocument()
   })
 
-  it('should display OLT data when edit', () => {
-    render(<EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />)
-    expect(screen.getByText('TestOlt')).toBeInTheDocument()
+  it('should open OLT form when edit', async () => {
+    render(<Provider>
+      <EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />
+    </Provider>, { route: { params, path: mockPath } })
+
+    const row = await screen.findByRole('row', { name: /TestOlt/i })
+    await click(within(row).getByRole('radio'))
+    await click(screen.getByRole('button', { name: 'Edit' }))
+    const drawer = await screen.findByTestId('NokiaOltFormDrawer')
+    expect(drawer).toBeVisible()
+    expect(drawer).toHaveTextContent(JSON.stringify(EdgeOltFixtures.mockOltList[0]))
   })
 
-  it('should be able to create OLT', () => {
-    render(<EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />)
-    expect(screen.getByText('Add')).toBeInTheDocument()
-  })
+  it('should delete OLT', async () => {
+    const mockedDeleteReq = jest.fn()
+    mockServer.use(
+      rest.delete(
+        EdgeTnmServiceUrls.deleteEdgeOlt.url,
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }))
 
-  it('should delete OLT', () => {
-    render(<EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />)
-    expect(screen.getByText('TestOlt')).toBeInTheDocument()
+    render(<Provider>
+      <EdgeNokiaOltTable data={EdgeOltFixtures.mockOltList} />
+    </Provider>, { route: { params, path: mockPath } })
+
+    const row = await screen.findByRole('row', { name: /TestOlt/i })
+    await click(within(row).getByRole('radio'))
+    await click(screen.getByRole('button', { name: 'Delete' }))
+    const dialogTitle = await screen.findByText('Delete "TestOlt"?')
+    await click(screen.getByRole('button', { name: 'Delete OLT Device' }))
+    await waitForElementToBeRemoved(dialogTitle)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 })

@@ -6,8 +6,8 @@ describe('EdgeNokiaOnuPortTable', () => {
   it('renders with valid props', () => {
     const props = {
       data: [
-        { portId: '1', status: 'active', vlan: ['1', '2'] },
-        { portId: '2', status: 'inactive', vlan: ['6'] }
+        { status: 'active', vlan: ['1', '2'] },
+        { status: 'inactive', vlan: ['6'] }
       ]
     }
     render(<EdgeNokiaOnuPortTable {...props} />)

@@ -27,7 +27,7 @@ export default function useEdgeNokiaOltTable () {
       title: $t({ defaultMessage: 'Optical ({count})' },
         { count: transformDisplayNumber(data?.length) }),
       headerExtra: filterByAccess([
-        <Button type='primary' onClick={handleAddOlt}>
+        <Button key='add' type='primary' onClick={handleAddOlt}>
           { $t({ defaultMessage: 'Add' }) }
         </Button>
       ]),
@@ -38,5 +38,5 @@ export default function useEdgeNokiaOltTable () {
         isFetching={isFetching}
       />
     }
-    : {}
+    : undefined
 }

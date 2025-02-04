@@ -72,7 +72,7 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
               params: {
                 venueId: row.venueId,
                 edgeClusterId: row.edgeClusterId,
-                oltId: row.id }
+                oltId: row.serialNumber }
             }).unwrap())).then(clearSelection)
           }
         })

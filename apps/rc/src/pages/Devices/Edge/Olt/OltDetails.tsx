@@ -21,11 +21,6 @@ export const EdgeNokiaOltDetails = () => {
   const oltDetails = useLocation().state as EdgeNokiaOltData
 
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
-  // const {
-  //   currentEdgeStatus: currentEdge,
-  //   isEdgeStatusLoading: isLoadingEdgeStatus,
-  //   currentCluster
-  // } = useContext(EdgeDetailsDataContext)
 
   const handleTabChange = (val: string) => {
     setCurrentTab(val)

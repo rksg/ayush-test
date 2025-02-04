@@ -5,7 +5,12 @@ export const mockOlt = {
   vendor: 'Nokia',
   model: 'MF-2',
   firmware: '22.649',
-  ip: '134.242.136.112'
+  ip: '134.242.136.112',
+
+  venueId: 'mock_venue_2',
+  venueName: 'Mock Venue 2',
+  edgeClusterId: 'clusterId_1',
+  edgeClusterName: 'Edge Cluster 1'
 }
 
 export const mockOltList = [
@@ -88,6 +93,16 @@ export const mockOnuList = [
       {
         status: 'up',
         vlan: ['30']
+      }
+    ]
+  }, {
+    name: 'ont_7',
+    ports: 2,
+    usedPorts: 0,
+    portDetails: [
+      {
+        status: 'down',
+        vlan: []
       }
     ]
   }

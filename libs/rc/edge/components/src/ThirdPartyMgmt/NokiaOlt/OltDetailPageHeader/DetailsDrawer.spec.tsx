@@ -1,94 +1,95 @@
-import { render, screen } from '@acx-ui/test-utils'
+import  userEvent from '@testing-library/user-event'
+
+import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum, EdgeOltFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
+import { render, screen }                                            from '@acx-ui/test-utils'
 
 import { OltDetailsDrawer } from './DetailsDrawer'
 
+const { mockOlt } = EdgeOltFixtures
 describe('OltDetailsDrawer', () => {
+  const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
+  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+
   const defaultProps = {
     visible: true,
     setVisible: jest.fn(),
-    currentOlt: {
-      ip: '192.168.1.1',
-      vendor: 'Nokia',
-      model: 'OLT-123',
-      firmware: '1.2.3',
-      venueId: 'venue-123',
-      venueName: 'Venue 123',
-      edgeClusterId: 'edge-cluster-123',
-      edgeClusterName: 'Edge Cluster 123'
-    }
+    currentOlt: mockOlt as EdgeNokiaOltData
   }
 
   it('renders with valid props', () => {
-    render(<OltDetailsDrawer {...defaultProps} />)
+    render(<Provider>
+      <OltDetailsDrawer {...defaultProps} />
+    </Provider>, { route: { params, path: mockPath } })
+
     expect(screen.getByText('Optical Details')).toBeInTheDocument()
     expect(screen.getByText('IP Address')).toBeInTheDocument()
-    expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
+    expect(screen.getByText('134.242.136.112')).toBeInTheDocument()
     expect(screen.getByText('Vendor')).toBeInTheDocument()
     expect(screen.getByText('Nokia')).toBeInTheDocument()
     expect(screen.getByText('Model')).toBeInTheDocument()
-    expect(screen.getByText('OLT-123')).toBeInTheDocument()
+    expect(screen.getByText('MF-2')).toBeInTheDocument()
     expect(screen.getByText('Firmware Version')).toBeInTheDocument()
-    expect(screen.getByText('1.2.3')).toBeInTheDocument()
+    expect(screen.getByText('22.649')).toBeInTheDocument()
     expect(screen.getByText('Venue')).toBeInTheDocument()
-    expect(screen.getByText('Venue 123')).toBeInTheDocument()
+    expect(screen.getByText('Mock Venue 2')).toBeInTheDocument()
     expect(screen.getByText('RUCKUS Edge')).toBeInTheDocument()
-    expect(screen.getByText('Edge Cluster 123')).toBeInTheDocument()
-  })
-
-  it('renders with invalid props (missing visible)', () => {
-    const props = { ...defaultProps, visible: undefined }
-    render(<OltDetailsDrawer {...props} /> )
-    expect(screen.queryByText('Optical Details')).toBeNull()
-  })
-
-  it('renders with invalid props (missing setVisible)', () => {
-    const props = { ...defaultProps, setVisible: undefined }
-    render(<OltDetailsDrawer {...props} /> )
-    expect(screen.queryByText('Optical Details')).toBeNull()
+    expect(screen.getByText('Edge Cluster 1')).toBeInTheDocument()
   })
 
   it('renders with invalid props (missing currentOlt)', () => {
-    const props = { ...defaultProps, currentOlt: undefined }
-    render(<OltDetailsDrawer {...props} />)
-    expect(screen.queryByText('Optical Details')).toBeNull()
+    render(<Provider>
+      <OltDetailsDrawer {...defaultProps} currentOlt={undefined} />
+    </Provider>, { route: { params, path: mockPath } })
+    expect(screen.getByText('Optical Details')).toBeInTheDocument()
+    expect(screen.getByText('IP Address')).toBeInTheDocument()
+    expect(screen.getByText('Vendor')).toBeInTheDocument()
+    expect(screen.getByText('Model')).toBeInTheDocument()
+    expect(screen.getByText('Firmware Version')).toBeInTheDocument()
+    expect(screen.getByText('Venue')).toBeInTheDocument()
+    expect(screen.getByText('RUCKUS Edge')).toBeInTheDocument()
+    expect(screen.getAllByText('--')).toHaveLength(6)
   })
 
   it('calls onClose function when closed', async () => {
-    const props = { ...defaultProps }
-    render(<OltDetailsDrawer {...props} />)
-    const closeButton = screen.getByText('Close')
+    render(<Provider>
+      <OltDetailsDrawer {...defaultProps} />
+    </Provider>, { route: { params, path: mockPath } })
+    const closeButton = screen.getByRole('button', { name: 'Close' })
     await userEvent.click(closeButton)
-    expect(props.setVisible).toHaveBeenCalledTimes(1)
-    expect(props.setVisible).toHaveBeenCalledWith(false)
-  })
-
-  it('renders content with valid currentOlt data', () => {
-    const props = { ...defaultProps }
-    render(<OltDetailsDrawer {...props} />)
-    expect(screen.getByText('IP Address')).toBeInTheDocument()
-    expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
-    expect(screen.getByText('Vendor')).toBeInTheDocument()
-    expect(screen.getByText('Nokia')).toBeInTheDocument()
-    expect(screen.getByText('Model')).toBeInTheDocument()
-    expect(screen.getByText('OLT-123')).toBeInTheDocument()
-    expect(screen.getByText('Firmware Version')).toBeInTheDocument()
-    expect(screen.getByText('1.2.3')).toBeInTheDocument()
-    expect(screen.getByText('Venue')).toBeInTheDocument()
-    expect(screen.getByText('Venue 123')).toBeInTheDocument()
-    expect(screen.getByText('RUCKUS Edge')).toBeInTheDocument()
-    expect(screen.getByText('Edge Cluster 123')).toBeInTheDocument()
+    expect(defaultProps.setVisible).toHaveBeenCalledTimes(1)
+    expect(defaultProps.setVisible).toHaveBeenCalledWith(false)
   })
 
   it('renders content with invalid currentOlt data (missing properties)', () => {
     const props = {
       ...defaultProps,
       currentOlt: {
+        status: EdgeNokiaOltStatusEnum.ONLINE,
         ip: '192.168.1.1'
       }
     }
-    render(<OltDetailsDrawer {...props} />)
+    render(<Provider>
+      <OltDetailsDrawer {...props} />
+    </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('IP Address')).toBeInTheDocument()
     expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
+    expect(screen.getAllByText('--')).toHaveLength(5)
+  })
+
+  it('renders -- when not online', () => {
+    const props = {
+      ...defaultProps,
+      currentOlt: {
+        ...mockOlt,
+        status: EdgeNokiaOltStatusEnum.OFFLINE
+      }
+    }
+    render(<Provider>
+      <OltDetailsDrawer {...props} />
+    </Provider>, { route: { params, path: mockPath } })
+    expect(screen.getByText('Venue')).toBeInTheDocument()
+    expect(screen.getByText('Mock Venue 2')).toBeInTheDocument()
     expect(screen.getAllByText('--')).toHaveLength(5)
   })
 })

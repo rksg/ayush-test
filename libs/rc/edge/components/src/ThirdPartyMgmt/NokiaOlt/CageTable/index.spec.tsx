@@ -1,36 +1,66 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useGetEdgeCageListQuery } from '@acx-ui/rc/services'
-import { screen, render }          from '@acx-ui/test-utils'
+import { edgeTnmServiceApi }                                             from '@acx-ui/rc/services'
+import { EdgeTnmServiceUrls, EdgeOltFixtures, EdgeNokiaCageData }        from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { screen, render, within, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { EdgeNokiaCageTable } from './'
 
-jest.mock('@acx-ui/rc/services', () => ({
-  useGetEdgeCageListQuery: jest.fn()
+const { mockOltCageList } = EdgeOltFixtures
+
+jest.mock( './CageDetailsDrawer', () => ({
+  // eslint-disable-next-line max-len
+  CageDetailsDrawer: (props: { visible: boolean, setVisible: () => void, currentCage?: EdgeNokiaCageData }) =>
+    props.visible
+      ? <div data-testid='CageDetailsDrawer'>{JSON.stringify(props.currentCage)}</div>
+      : ''
 }))
-
-
 describe('EdgeNokiaCageTable', () => {
-  it('renders component with props', () => {
-    const props = {
-      venueId: 'venueId',
-      edgeClusterId: 'edgeClusterId',
-      oltId: 'oltId'
-    }
-    render(<EdgeNokiaCageTable {...props} />)
-    expect(screen.getByText('Cage')).toBeInTheDocument()
+  const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
+  const mockPath = '/:tenantId/devices/optical/:oltId/details'
+
+  beforeEach(() => {
+    store.dispatch(edgeTnmServiceApi.util.resetApiState())
+
+    mockServer.use(
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeCageList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockOltCageList))
+        }))
   })
 
-  it('calls handleRowClick function', async () => {
+  it('should correctly render', async () => {
     const props = {
       venueId: 'venueId',
       edgeClusterId: 'edgeClusterId',
       oltId: 'oltId'
     }
-    render(<EdgeNokiaCageTable {...props} />)
-    const row = screen.getByText('Cage')
-    await userEvent.click(row)
-    expect(props.handleRowClick).toHaveBeenCalledTimes(1)
+    render(<Provider>
+      <EdgeNokiaCageTable {...props} />
+    </Provider>, { route: { params, path: mockPath } })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', { name: /S1\/2 UP/ })
+    expect(row).toBeVisible()
+    screen.getByRole('row', { name: /S1\/1 DOWN/ })
+  })
+
+  it('should show cage details drawer', async () => {
+    const props = {
+      venueId: 'venueId',
+      edgeClusterId: 'edgeClusterId',
+      oltId: 'oltId'
+    }
+    render(<Provider>
+      <EdgeNokiaCageTable {...props} />
+    </Provider>, { route: { params, path: mockPath } })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', { name: /S1\/2 UP/ })
+    await userEvent.click(within(row).getByRole('button', { name: 'S1/2' }))
+    const drawer = await screen.findByTestId('CageDetailsDrawer')
+    expect(drawer).toBeVisible()
   })
 
   it('displays loading state', () => {
@@ -39,35 +69,9 @@ describe('EdgeNokiaCageTable', () => {
       edgeClusterId: 'edgeClusterId',
       oltId: 'oltId'
     }
-    useGetEdgeCageListQuery.mockImplementation(() => ({
-      isLoading: true
-    }))
-    render(<EdgeNokiaCageTable {...props} />)
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
-  })
-
-  it('displays error state', () => {
-    const props = {
-      venueId: 'venueId',
-      edgeClusterId: 'edgeClusterId',
-      oltId: 'oltId'
-    }
-    useGetEdgeCageListQuery.mockImplementation(() => ({
-      error: 'Error message'
-    }))
-    render(<EdgeNokiaCageTable {...props} />)
-    expect(screen.getByText('Error message')).toBeInTheDocument()
-  })
-
-  it('displays CageDetailsDrawer', async () => {
-    const props = {
-      venueId: 'venueId',
-      edgeClusterId: 'edgeClusterId',
-      oltId: 'oltId'
-    }
-    render(<EdgeNokiaCageTable {...props} />)
-    const row = screen.getByText('Cage')
-    await userEvent.click(row)
-    expect(screen.getByText('Cage Details')).toBeInTheDocument()
+    render(<Provider>
+      <EdgeNokiaCageTable {...props} />
+    </Provider>, { route: { params, path: mockPath } })
+    expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
 })

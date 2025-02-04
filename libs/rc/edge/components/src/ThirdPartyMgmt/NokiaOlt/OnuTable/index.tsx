@@ -14,17 +14,20 @@ import {
 } from '@acx-ui/rc/utils'
 
 interface EdgeNokiaOnuTableProps {
+  oltId: string | undefined
+  cageName: string | undefined
   onClick: (onu: EdgeNokiaOnuData) => void
 }
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
+  const { oltId, cageName } = props
   const { data, isLoading } = useGetEdgeOnuListQuery({
-    params: {}
-  })
+    params: { oltId, cageName }
+  }, { skip: !oltId || !cageName })
 
   return <Loader states={[{ isLoading }]}>
     <Table
-      rowKey='id'
+      rowKey='name'
       columns={useColumns(props)}
       dataSource={data}
       rowSelection={{ type: 'radio' }}

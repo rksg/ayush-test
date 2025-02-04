@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { Form, Select, Input } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Drawer }                                                                from '@acx-ui/components'
-import { useVenuesListQuery, useGetEdgeClusterListQuery, useAddEdgeOltMutation } from '@acx-ui/rc/services'
-import { EdgeNokiaOltData, EdgeNokiaOltCreateFormData, networkWifiIpRegExp }     from '@acx-ui/rc/utils'
+import { Drawer }                                                                                          from '@acx-ui/components'
+import { useVenuesListQuery, useGetEdgeClusterListQuery, useAddEdgeOltMutation, useUpdateEdgeOltMutation } from '@acx-ui/rc/services'
+import { EdgeNokiaOltData, EdgeNokiaOltCreateFormData, networkWifiIpRegExp }                               from '@acx-ui/rc/utils'
 
 const venueOptionsDefaultPayload = {
   fields: [ 'name', 'id', 'edges' ],
@@ -34,6 +34,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
   const isEditMode = !!editData
 
   const [addOlt, { isLoading: isCreating }] = useAddEdgeOltMutation()
+  const [updateOlt, { isLoading: isUpdating }] = useUpdateEdgeOltMutation()
 
   const [ form ] = Form.useForm()
   const venueId = Form.useWatch('venueId', form)
@@ -69,10 +70,11 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
 
   const handleFinish = async (formValues: EdgeNokiaOltCreateFormData) => {
     try {
-      await addOlt({
+      await (isEditMode ? updateOlt : addOlt)({
         params: {
           venueId: formValues.venueId,
-          edgeClusterId: formValues.edgeClusterId
+          edgeClusterId: formValues.edgeClusterId,
+          ...(isEditMode ? { oltId: editData?.serialNumber } : {})
         },
         payload: {
           name: formValues.name,
@@ -116,7 +118,11 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
     width={500}
     footer={drawerFooter}
   >
-    <Form form={form} initialValues={editData} onFinish={handleFinish} disabled={isCreating}>
+    <Form form={form}
+      initialValues={editData}
+      onFinish={handleFinish}
+      disabled={isCreating || isUpdating}
+    >
       <Form.Item
         name='name'
         label={$t({ defaultMessage: 'Device Name' })}

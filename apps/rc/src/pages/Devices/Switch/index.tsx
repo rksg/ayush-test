@@ -1,3 +1,4 @@
+import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
@@ -33,14 +34,18 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
+  const edgeOltTabInfo = useEdgeNokiaOltTable()
+
   const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
   },
-  {
-    key: SwitchTabsEnum.OPTICAL,
-    ...useEdgeNokiaOltTable()
-  },
+  ...(isNil(edgeOltTabInfo)
+    ? []
+    : [{
+      key: SwitchTabsEnum.OPTICAL,
+      ...edgeOltTabInfo
+    }]),
   {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
