@@ -20,12 +20,21 @@ import {
   GuestNetworkTypeEnum,
   checkVenuesNotInSetup,
   WlanSecurityEnum,
-  WifiNetwork
+  WifiNetwork,
+  WifiRbacUrlsInfo,
+  useConfigTemplate,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
+import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -325,8 +334,22 @@ export function NetworkTable ({
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const intl = useIntl()
   const { $t } = intl
+  const { isTemplate } = useConfigTemplate()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
+
+  const addNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkDeep)
+
+  const updateNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkDeep)
+
+  const deleteNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetwork)
 
 
   useEffect(() => {
@@ -361,6 +384,7 @@ export function NetworkTable ({
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [updateNetworkOpsApi],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
@@ -370,6 +394,7 @@ export function NetworkTable ({
     {
       label: $t({ defaultMessage: 'Clone' }),
       scopeKey: [WifiScopes.CREATE],
+      rbacOpsIds: [addNetworkOpsApi],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
@@ -379,6 +404,7 @@ export function NetworkTable ({
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
+      rbacOpsIds: [deleteNetworkOpsApi],
       onClick: async ([selected], clearSelection) => {
         const isDeletingDPSK = isSelectedDpskNetwork([selected])
         const isDeletingGuestPass = isSelectedGuestNetwork([selected])
@@ -427,9 +453,12 @@ export function NetworkTable ({
     expandedRowKeys
   }
 
-  const showRowSelection = (selectable
-    && hasCrossVenuesPermission()
+  const hasAddNetworkPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([ addNetworkOpsApi, updateNetworkOpsApi, deleteNetworkOpsApi ])
+    : (hasCrossVenuesPermission()
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+
+  const showRowSelection = (selectable && hasAddNetworkPermission)
 
   return (
     <Loader states={[

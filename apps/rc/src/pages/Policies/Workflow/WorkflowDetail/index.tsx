@@ -5,12 +5,13 @@ import { Space, Typography }      from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                  from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                            from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }  from '@acx-ui/rc/services'
-import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                                                        from '@acx-ui/react-router-dom'
-import { hasPermission }                                                                                                                                                    from '@acx-ui/user'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }                                                                                                                                           from '@acx-ui/components'
+import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowComparator, WorkflowDesigner, WorkflowPanel }                                                                                                     from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery, useGetWorkflowStepsByIdQuery, useLazySearchWorkflowsVersionListQuery, useUpdateWorkflowIgnoreErrorsMutation, useUpdateWorkflowMutation }                                           from '@acx-ui/rc/services'
+import { getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, PolicyOperation, PolicyType, PublishStatus, Workflow, WorkflowPanelMode, InitialEmptyStepsCount, getPolicyAllowedOperation, WorkflowUrls } from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                                                                                                                 from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                                                                                                                                             from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                                                                                 from '@acx-ui/utils'
 
 
 
@@ -151,12 +152,26 @@ export default function WorkflowDetails () {
       extra={
         [
           // eslint-disable-next-line max-len
-          ...(hasPermission({ scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT) }) ?
+          ...(hasPermission({
+            scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT),
+            rbacOpsIds: [
+              getOpsApi(WorkflowUrls.updateWorkflowUIConfig),
+              getOpsApi(WorkflowUrls.createAction),
+              getOpsApi(WorkflowUrls.patchAction),
+              getOpsApi(WorkflowUrls.deleteAction)
+            ]
+          }) ?
             [
               <Button
                 key='configure'
                 type='default'
                 scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
+                rbacOpsIds={[
+                  getOpsApi(WorkflowUrls.updateWorkflowUIConfig),
+                  getOpsApi(WorkflowUrls.createAction),
+                  getOpsApi(WorkflowUrls.patchAction),
+                  getOpsApi(WorkflowUrls.deleteAction)
+                ]}
                 onClick={()=> {
                   setPreviewVisible(false)
                   openWorkflowDesigner()
@@ -228,12 +243,27 @@ export default function WorkflowDetails () {
                 </Typography.Text>
                 {
                   // eslint-disable-next-line max-len
-                  hasPermission({ scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT) }) &&
+                  hasPermission({
+                    scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT),
+                    rbacOpsIds: [
+                      getOpsApi(WorkflowUrls.updateWorkflowUIConfig),
+                      getOpsApi(WorkflowUrls.createAction),
+                      getOpsApi(WorkflowUrls.patchAction),
+                      getOpsApi(WorkflowUrls.deleteAction)
+                    ]
+                  }) &&
                   <Button
                     key='configure'
                     type='default'
                     size={'small'}
                     scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
+                    // eslint-disable-next-line max-len
+                    rbacOpsIds={[
+                      getOpsApi(WorkflowUrls.updateWorkflowUIConfig),
+                      getOpsApi(WorkflowUrls.createAction),
+                      getOpsApi(WorkflowUrls.patchAction),
+                      getOpsApi(WorkflowUrls.deleteAction)
+                    ]}
                     style={{ marginLeft: '4px', top: '5px' }}
                     onClick={()=> {
                       setPreviewVisible(false)
@@ -259,11 +289,15 @@ export default function WorkflowDetails () {
         <Space direction='horizontal' style={{ marginTop: '10px' }}>
           {
             // eslint-disable-next-line max-len
-            hasPermission({ scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT) }) &&
+            hasPermission({
+              scopes: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT),
+              rbacOpsIds: getPolicyAllowedOperation(PolicyType.WORKFLOW, PolicyOperation.EDIT)
+            }) &&
               <Button
                 key='publish'
                 type='primary'
                 disabled={!publishable}
+                rbacOpsIds={getPolicyAllowedOperation(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
                 scopeKey={getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.EDIT)}
                 onClick={()=>handlePublishWorkflow()}
               >

@@ -215,6 +215,7 @@ export const {
   RocketSolid,
   RotateMobileOutlined,
   RouterOutlined,
+  RuckusAiDog,
   SNRSolid,
   SearchFitOutlined,
   SearchFullOutlined,

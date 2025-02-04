@@ -80,8 +80,9 @@ export function RadioSettingsForm (props:{
   const maxFloorFieldName = [...radioDataKey, 'venueHeight', 'maxFloor']
 
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
-  const channelSelectionOpts = (context === 'venue') ?
+  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && context === 'venue') ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
@@ -213,7 +214,7 @@ export function RadioSettingsForm (props:{
             {isUseVenueSettings ?
               LPIButtonText?.buttonText : (isAFCEnabled ?
                 <Switch
-                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  disabled={disabled || !isAFCEnabled || isUseVenueSettings}
                   onChange={() => {
                     onChangedByCustom('enableAfc')
                     form.validateFields()
@@ -224,7 +225,7 @@ export function RadioSettingsForm (props:{
                     <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
                   </div>
                 }>
-                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                  <Switch disabled={disabled || !isAFCEnabled || isUseVenueSettings} />
                 </Tooltip>
               )
             }
@@ -298,6 +299,7 @@ export function RadioSettingsForm (props:{
                   { validator: (_, value) => (isNumber(maxFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Minimum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
+                  disabled={disabled}
                   style={{ width: '150px' }}
                   controls={false}
                   precision={0}
@@ -315,6 +317,7 @@ export function RadioSettingsForm (props:{
                   { validator: (_, value) => (isNumber(minFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Maximum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
+                  disabled={disabled}
                   style={{ width: '150px' }}
                   controls={false}
                   precision={0}
@@ -336,7 +339,7 @@ export function RadioSettingsForm (props:{
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
         <RadioFormSelect
-          disabled={disabled || (context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
+          disabled={disabled || (!isVenueChannelSelectionManualEnabled && context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}
