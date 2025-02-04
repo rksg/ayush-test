@@ -29,6 +29,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aaaServers/:aaaServerId',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
+    opsApi: 'PUT:/venues/{id}/aaaServers/{id}',
     newApi: true
   },
   deleteAaaServer: {
@@ -304,12 +305,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchProfiles/:profileId/acls',
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/acl',
+    opsApi: 'POST:/switchProfiles/{id}/acls',
     newApi: true
   },
   addVlan: {
     method: 'post',
     url: '/switchProfiles/:profileId/vlans',
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/vlan',
+    opsApi: 'POST:/switchProfiles/{id}/vlans',
     newApi: true
   },
   addVePort: {
@@ -437,6 +440,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   blinkLeds: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
+    opsApi: 'POST:/venues/{id}/switches/{id}/debugRequests',
     newApi: true
   },
   ping: {
@@ -516,12 +520,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchProfiles',
     oldUrl: '/api/switch/tenant/:tenantId/profile',
+    opsApi: 'POST:/switchProfiles',
     newApi: true
   },
   updateSwitchConfigProfile: {
     method: 'put',
     url: '/switchProfiles/:profileId',
     oldUrl: '/api/switch/tenant/:tenantId/profile',
+    opsApi: 'PUT:/switchProfiles/{id}',
     newApi: true
   },
   getSwitchFrontView: {
@@ -540,6 +546,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/cliTemplates',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    opsApi: 'POST:/cliTemplates',
     newApi: true
   },
   getCliConfigExamples: {
@@ -570,6 +577,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/switchProfiles',
     oldUrl: '/api/switch/tenant/:tenantId/profiles',
+    opsApi: 'DELETE:/switchProfiles',
     newApi: true
   },
   getCliTemplates: {
@@ -582,6 +590,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/cliTemplates',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    opsApi: 'DELETE:/cliTemplates',
     newApi: true
   },
   getCliTemplate: {
@@ -594,6 +603,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/cliTemplates/:templateId',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    opsApi: 'PUT:/cliTemplates/{id}',
     newApi: true
   },
   getLagList: {

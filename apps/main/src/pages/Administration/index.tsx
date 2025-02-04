@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { useWebhooks } from '@acx-ui/analytics/components'
@@ -17,9 +15,9 @@ import {
   useGetNotificationRecipientsQuery,
   useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { hasAdministratorTab, useTableQuery, Webhook } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                       from '@acx-ui/user'
+import { hasAdministratorTab, transformDisplayNumber, useTableQuery, Webhook } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                               from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -40,7 +38,6 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
-  const [webhookCount, setWebhookCount] = useState(0)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 
   const defaultPayload = {
@@ -69,12 +66,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
-
-  useEffect(() => {
-    if (webhookData.data) {
-      setWebhookCount(webhookData?.data?.totalCount)
-    }
-  }, [webhookData])
+  const webhookCount = transformDisplayNumber(webhookData?.data?.totalCount)
 
   return [
     {
@@ -119,7 +111,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           defaultMessage: 'Webhooks {webhookCount, select, null {} other {({webhookCount})}}',
           description: 'Translation string - Webhooks'
         }, { webhookCount }),
-        component: <R1Webhooks setTitleCount={setWebhookCount}/>
+        component: <R1Webhooks/>
       }
       : {
         key: 'webhooks',

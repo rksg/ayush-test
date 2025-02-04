@@ -4,14 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { getInactiveTooltip }     from '@acx-ui/rc/components'
-import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
-import { Lag, SwitchPortStatus }  from '@acx-ui/rc/utils'
-import { useParams }              from '@acx-ui/react-router-dom'
-import { SwitchScopes }           from '@acx-ui/types'
-import { hasPermission }          from '@acx-ui/user'
+import { Tooltip }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { getInactiveTooltip }                        from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery }                    from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { useParams }                                 from '@acx-ui/react-router-dom'
+import { SwitchScopes }                              from '@acx-ui/types'
+import { hasPermission }                             from '@acx-ui/user'
+import { getOpsApi }                                 from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -114,7 +115,9 @@ export function FrontViewPort (props:{
     </div>
   }
 
-  const editable = hasPermission({ scopes: [SwitchScopes.UPDATE] })
+  const editable = hasPermission({
+    scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)] })
 
   const showEditIcon = () => {
     if(!editable) {
