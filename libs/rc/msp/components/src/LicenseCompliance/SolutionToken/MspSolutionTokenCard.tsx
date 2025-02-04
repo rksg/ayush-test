@@ -10,6 +10,7 @@ import { TrialType }                  from '@acx-ui/rc/utils'
 import * as UI from '../styledComponents'
 
 import SolutionTokenMspTabContent      from './SolutionTokenMspTabContent'
+import SolutionTokenSettingsForm       from './SolutionTOkenSettingsForm'
 import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
 
 
@@ -112,9 +113,19 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
             visible={openSettingsDrawer}
             onClose={closeSolutionTokenSettings}
             destroyOnClose={true}
-            width={1080}
+            width={610}
+            footer={
+              <div><Button
+                type='primary'
+                onClick={() => {}}>
+                {$t({ defaultMessage: 'Save' })}
+              </Button>
+              <Button type='default' onClick={() => {}}>
+                {$t({ defaultMessage: 'Close' })}
+              </Button></div>
+            }
           >
-            <div>TODO: Edit Solution Usage Cap</div>
+            <SolutionTokenSettingsForm />
           </Drawer>
         }
       </div>

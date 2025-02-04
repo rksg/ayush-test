@@ -9,6 +9,7 @@ import { LicenseCardProps }           from '@acx-ui/msp/utils'
 import * as UI from '../styledComponents'
 
 import SolutionTokenRecTabContent      from './SolutionTokenRecTabContent'
+import SolutionTokenSettingsForm       from './SolutionTOkenSettingsForm'
 import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
 
 export default function RecSolutionTokenCard (props: LicenseCardProps) {
@@ -86,18 +87,18 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
           </div>
         </div>
         { currentTab === 'settings' &&
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'end'
-                    }}>
-                      <Button
-                        size='small'
-                        type={'link'}
-                        onClick={openSolutionTokenSettings}>
-                        {$t({ defaultMessage: 'Edit Settings' })}
-                      </Button>
-                    </div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'end'
+          }}>
+            <Button
+              size='small'
+              type={'link'}
+              onClick={openSolutionTokenSettings}>
+              {$t({ defaultMessage: 'Edit Settings' })}
+            </Button>
+          </div>
         }
         {
           openSettingsDrawer && <Drawer
@@ -105,9 +106,19 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
             visible={openSettingsDrawer}
             onClose={closeSolutionTokenSettings}
             destroyOnClose={true}
-            width={1080}
+            width={610}
+            footer={
+              <div><Button
+                type='primary'
+                onClick={() => {}}>
+                {$t({ defaultMessage: 'Save' })}
+              </Button>
+              <Button type='default' onClick={() => {}}>
+                {$t({ defaultMessage: 'Close' })}
+              </Button></div>
+            }
           >
-            <div>TODO: Edit Solution Usage Cap</div>
+            <SolutionTokenSettingsForm />
           </Drawer>
         }
       </div>
