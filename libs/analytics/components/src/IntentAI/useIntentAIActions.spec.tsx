@@ -202,6 +202,9 @@ describe('useIntentAIActions', () => {
     })
 
     describe('r1 - EquiFlex', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+      })
       it('should handle mutation correctly  - single', async () => {
         const selectedRow = [{ ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem }] as unknown as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
@@ -250,6 +253,19 @@ describe('useIntentAIActions', () => {
           fetchWlans(selectedRow)
         })
         await waitFor(() => expect(mockedVenueWifiRadioActiveNetworksQuery).toBeCalledTimes(1))
+      })
+
+      it('should handle fetchWlans correctly when FF is off', async () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
+        const selectedRow = { ...mockEquiFlexRows[0], aiFeature: AiFeatures.EquiFlex, ...extractItem } as unknown as IntentListItem
+        const { result } = renderHook(() => useIntentAIActions(), {
+          wrapper: ({ children }) => <BrowserRouter><Provider children={children} /></BrowserRouter>
+        })
+        const { fetchWlans } = result.current
+        act(() => {
+          fetchWlans(selectedRow)
+        })
+        await waitFor(() => expect(mockedVenueRadioActiveNetworksQuery).toBeCalledTimes(1))
       })
     })
 
