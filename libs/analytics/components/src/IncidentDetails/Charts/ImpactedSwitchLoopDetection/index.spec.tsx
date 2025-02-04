@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react'
 import { act }        from 'react-dom/test-utils'
 
-import { fakeIncidentLoopDetection, overlapsRollup }                      from '@acx-ui/analytics/utils'
+import { fakeIncidentLoopDetection, fakeIncidentLoopDetectionOnSzCluster,
+  overlapsRollup } from '@acx-ui/analytics/utils'
 import { get }                                                            from '@acx-ui/config'
 import { dataApi, dataApiURL, Provider, store }                           from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, fireEvent } from '@acx-ui/test-utils'
@@ -28,7 +29,8 @@ describe('ImpactedVlanTable',()=>{
         {
           name: 'babyrdn_24p',
           mac: '5C:83:6C:3F:B2:C2',
-          serial: 'FNY4828V00B'
+          serial: 'FNY4828V00B',
+          switchGroup: 'switch grp 0'
         }
       ]
     },
@@ -38,12 +40,14 @@ describe('ImpactedVlanTable',()=>{
         {
           name: 'ROD-135',
           mac: 'C0:C5:20:82:57:AE',
-          serial: 'FNL4308T00K'
+          serial: 'FNL4308T00K',
+          switchGroup: 'switch grp 1'
         },
         {
           name: 'MM-126',
           mac: 'D4:C1:9E:17:90:97',
-          serial: 'FLW3331P01Z'
+          serial: 'FLW3331P01Z',
+          switchGroup: 'switch grp 2'
         }
       ]
     }
@@ -135,8 +139,7 @@ describe('ImpactedVlanTable',()=>{
       expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
       fireEvent.click(await screen.findByRole('button', { name: /98/i }))
       expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
-
-      //expect(writeText).toHaveBeenCalledWith('ROD-135, MM-126')
+      expect(screen.queryByText(/switch group/i)).not.toBeInTheDocument()
     })
 
     it('should open the drawer with impacted switches in RA', async () => {
@@ -153,8 +156,42 @@ describe('ImpactedVlanTable',()=>{
       expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
       fireEvent.click(await screen.findByRole('button', { name: /98/i }))
       expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
+      expect(screen.queryByText(/switch group/i)).not.toBeInTheDocument()
+    })
 
-      //expect(writeText).toHaveBeenCalledWith('ROD-135, MM-126')
+    it('should open the drawer with impacted switches in R1 - Incident on System', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+      render(<Provider><ImpactedVlanTable
+        incident={fakeIncidentLoopDetectionOnSzCluster} /></Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
+      expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
+      fireEvent.click(await screen.findByRole('button', { name: /98/i }))
+      expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
+      expect(await screen.findByText(/switch group/i)).toBeVisible()
+    })
+
+    it('should open the drawer with impacted switches in RA - Incident on System', async () => {
+      jest.mocked(get).mockReturnValueOnce('true')
+      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+      render(<Provider><ImpactedVlanTable
+        incident={fakeIncidentLoopDetectionOnSzCluster} /></Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
+      expect(await screen.findByText(/1 impacted switch/i)).toBeVisible()
+      fireEvent.click(await screen.findByRole('button', { name: /98/i }))
+      expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
+      expect(await screen.findByText(/switch group/i)).toBeVisible()
     })
 
     describe('useDrawer', () => {
@@ -168,7 +205,7 @@ describe('ImpactedVlanTable',()=>{
     })
 
 
-    it('shoul`d hide table when under druidRollup', async () => {
+    it('should hide table when under druidRollup', async () => {
       jest.mocked(mockOverlapsRollup).mockReturnValue(true)
       mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
       render(<Provider>

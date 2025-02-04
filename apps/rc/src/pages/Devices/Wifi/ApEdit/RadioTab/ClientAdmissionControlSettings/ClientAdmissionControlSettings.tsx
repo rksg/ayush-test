@@ -21,8 +21,8 @@ import {
 } from '@acx-ui/rc/services'
 import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
 const { useWatch } = Form
@@ -33,9 +33,10 @@ export const FieldGroup = styled.div`
   margin: 10px;
 `
 
-export function ClientAdmissionControlSettings () {
+export function ClientAdmissionControlSettings (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const form = Form.useFormInstance()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -189,13 +190,14 @@ export function ClientAdmissionControlSettings () {
     isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
   }]}>
     <VenueSettingsHeader venue={venueData}
+      disabled={!isAllowEdit}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <ClientAdmissionControlForm
       key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
       level={ClientAdmissionControlLevelEnum.AP_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_24G}
-      readOnly={isUseVenueSettings}
+      readOnly={!isAllowEdit || isUseVenueSettings}
       isEnabled={enable24G}
       isMutuallyExclusive={false}
       enabledFieldName={enable24GFieldName}
@@ -209,7 +211,7 @@ export function ClientAdmissionControlSettings () {
       key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
       level={ClientAdmissionControlLevelEnum.AP_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_5G}
-      readOnly={isUseVenueSettings}
+      readOnly={!isAllowEdit || isUseVenueSettings}
       isEnabled={enable50G}
       isMutuallyExclusive={false}
       enabledFieldName={enable50GFieldName}
