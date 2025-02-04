@@ -160,6 +160,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
 
   const onSave = async () => {
     const tmp = _.cloneDeep(sections)
+    let widgetIds = [] as string[]
     let hasCard = false
     tmp.forEach(s => {
       s.groups = groups.filter(g => g.sectionId === s.id)
@@ -167,13 +168,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
         if (g.cards.length && !hasCard) {
           hasCard = true
         }
+        const groupWidgets = g.cards.map(i => i.widgetId) as string[]
+        widgetIds = widgetIds.concat(groupWidgets)
       })
     })
     if (canvasId) {
       await updateCanvas({
         params: { canvasId },
         payload: {
-          content: hasCard ? JSON.stringify(tmp) : ''
+          content: hasCard ? JSON.stringify(tmp) : '',
+          widgetIds
         }
       })
     }
