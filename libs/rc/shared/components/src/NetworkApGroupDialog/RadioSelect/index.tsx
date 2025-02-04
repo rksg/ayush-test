@@ -1,12 +1,12 @@
 import { memo, useEffect, useState } from 'react'
 
 import { Input, SelectProps } from 'antd'
-import _                      from 'lodash'
+import { DefaultOptionType }  from 'antd/lib/select'
 import { useIntl }            from 'react-intl'
 
-import { Select }        from '@acx-ui/components'
-import { RadioTypeEnum } from '@acx-ui/rc/utils'
-
+import { Select }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { RadioTypeEnum }          from '@acx-ui/rc/utils'
 const radioTypeEnumToString = (radioType: RadioTypeEnum) => {
   return radioType.replace(/-/g, ' ') //FIXME: useIntl
 }
@@ -18,29 +18,33 @@ type RadioSelectProps = SelectProps & {
 
 export const RadioSelect = memo((props: RadioSelectProps) => {
   const { $t } = useIntl()
-  const { isSupport6G, isSelected = true, ...otherProps } = props
+  const { isSupport6G, isSelected = true, value = [], onChange, ...otherProps } = props
   // eslint-disable-next-line max-len
   const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
-  const [selectedValues, setSelectedValues] = useState<string[]>([])
+  const [selectedValues, setSelectedValues] = useState<string[]>(Array.isArray(value) ? value : [])
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
+
+  useEffect(() => {
+    setSelectedValues(Array.isArray(value) ? value : [])
+  }, [value])
 
   useEffect(() => {
     setSelectedValues((prev) => {
-      if (isSupport6G && !prev.includes(RadioTypeEnum._6_GHz)) {
-        return [...prev, RadioTypeEnum._6_GHz]
+      const updatedValues = new Set(prev)
+
+      if (isSupport6G && default6gEnablementToggle) {
+        updatedValues.add(RadioTypeEnum._6_GHz)
+      } else {
+        updatedValues.delete(RadioTypeEnum._6_GHz)
       }
-      if (!isSupport6G) {
-        return prev.filter((v) => v !== RadioTypeEnum._6_GHz)
-      }
-      return prev
+
+      return Array.from(updatedValues)
     })
-  }, [isSupport6G])
+  }, [isSupport6G, default6gEnablementToggle])
 
-  const handleChange = (newValues: string[]) => {
+  const handleChange = (newValues: string[], option: DefaultOptionType | DefaultOptionType[]) => {
     setSelectedValues(newValues)
-  }
-
-  if (!isSupport6G) {
-    _.remove(otherProps.value, (v) => v === RadioTypeEnum._6_GHz)
+    onChange?.(newValues, option)
   }
 
   if (!isSelected) {
