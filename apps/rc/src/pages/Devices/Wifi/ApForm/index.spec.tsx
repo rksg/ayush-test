@@ -3,10 +3,16 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { administrationApi, apApi, firmwareApi, venueApi }                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { administrationApi, apApi, firmwareApi, venueApi } from '@acx-ui/rc/services'
+import {
+  AdministrationUrlsInfo,
+  CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -197,7 +203,7 @@ describe('AP Form - Add', () => {
         } }))
       ),
       rest.get(
-        WifiUrlsInfo.getVenueApManagementVlan.url,
+        WifiRbacUrlsInfo.getVenueApManagementVlan.url,
         (_req, res, ctx) => res(ctx.json({ vlanId: null }))
       ),
       rest.get(

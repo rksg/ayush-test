@@ -115,7 +115,8 @@ export interface AlarmBase {
   entityType: string
   entityId: string
   sourceType: string,
-  switchMacAddress: string
+  switchMacAddress: string,
+  clearedBy?: string
 }
 
 export interface AlarmMeta {

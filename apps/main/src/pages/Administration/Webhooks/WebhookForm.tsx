@@ -35,6 +35,7 @@ export function WebhookForm (props: {
   visible: boolean
   setVisible: (visible: boolean) => void
   selected?: Webhook
+  webhookData?: Webhook[]
 }) {
   const { $t } = useIntl()
   const [form] = Form.useForm<Webhook>()
@@ -129,7 +130,10 @@ export function WebhookForm (props: {
     {
       key: 'settings',
       title: $t({ defaultMessage: 'Settings' }),
-      component: <SettingsTab form={form} isEditMode={props.selected ? true : false} />
+      component: <SettingsTab
+        form={form}
+        webhookData={props.webhookData}
+        isEditMode={props.selected ? true : false} />
     },
     {
       key: 'incidents',
