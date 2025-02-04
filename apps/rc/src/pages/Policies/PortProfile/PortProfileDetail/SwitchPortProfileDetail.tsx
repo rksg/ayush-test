@@ -10,9 +10,9 @@ import {
   PolicyOperation,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { SwitchScopes }          from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import SwitchPortProfileWidget from './SwitchPortProfileWidget'
 
@@ -124,7 +124,7 @@ export default function SwitchPortProfileDetail () {
           }
         ]}
 
-        extra={filterByAccess([getConfigureButton()])}
+        extra={hasCrossVenuesPermission() && filterByAccess([getConfigureButton()])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

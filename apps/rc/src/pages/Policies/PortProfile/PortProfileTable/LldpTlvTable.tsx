@@ -20,6 +20,7 @@ import { useParams }    from '@acx-ui/react-router-dom'
 import { SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
+  hasCrossVenuesPermission,
   getUserProfile,
   hasAllowedOperations,
   hasPermission
@@ -211,13 +212,13 @@ export default function LldpTlvTable () {
       getOpsApi(SwitchUrlsInfo.editSwitchPortProfileLldpTlv),
       getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfileLldpTlv)
     ])
-    : hasPermission({
+    : hasCrossVenuesPermission() && hasPermission({
       scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
     })
 
   const hasCreatePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([ getOpsApi(SwitchUrlsInfo.addSwitchPortProfileLldpTlv) ])
-    : hasPermission({ scopes: [SwitchScopes.CREATE] })
+    : hasCrossVenuesPermission() && hasPermission({ scopes: [SwitchScopes.CREATE] })
 
   return (
     <Loader states={[tableQuery]}>

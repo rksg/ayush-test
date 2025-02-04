@@ -9,7 +9,6 @@ import {
 }from '@acx-ui/rc/services'
 import {
   FILTER,
-  filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   getPolicyAllowedOperation,
   GROUPBY,
@@ -21,6 +20,10 @@ import {
   vlanPortsParser
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import {
+  filterByAccess,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
 
 export default function SwitchPortProfileTable () {
   const { $t } = useIntl()
@@ -231,8 +234,7 @@ export default function SwitchPortProfileTable () {
     }
   ]
 
-  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
-
+  const allowedRowActions = hasCrossVenuesPermission() ? filterByAccess(rowActions) : []
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)

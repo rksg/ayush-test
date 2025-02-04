@@ -32,10 +32,10 @@ import {
   getPolicyRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { SwitchScopes }          from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
-import { noDataDisplay }         from '@acx-ui/utils'
+import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
 import { getItemTooltip } from '../FlexibleAuthenticationTable'
 
@@ -179,7 +179,7 @@ const FlexibleAuthenticationDetail = () => {
           })
         }
       ]}
-      extra={filterByAccess([
+      extra={hasCrossVenuesPermission() && filterByAccess([
         <TenantLink
           scopeKey={[SwitchScopes.UPDATE]}
           rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}

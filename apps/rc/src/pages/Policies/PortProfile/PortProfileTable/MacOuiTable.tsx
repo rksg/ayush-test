@@ -20,6 +20,7 @@ import { SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
   getUserProfile,
+  hasCrossVenuesPermission,
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
@@ -187,13 +188,13 @@ export default function MacOuiTable () {
       getOpsApi(SwitchUrlsInfo.editSwitchPortProfileMacOui),
       getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfileMacOui)
     ])
-    : hasPermission({
+    : hasCrossVenuesPermission() && hasPermission({
       scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
     })
 
   const hasCreatePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([ getOpsApi(SwitchUrlsInfo.addSwitchPortProfileMacOui) ])
-    : hasPermission({ scopes: [SwitchScopes.CREATE] })
+    : hasCrossVenuesPermission() && hasPermission({ scopes: [SwitchScopes.CREATE] })
 
   return (
     <Loader states={[tableQuery]}>

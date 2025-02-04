@@ -27,6 +27,7 @@ import {
   filterByAccess,
   getUserProfile,
   hasAllowedOperations,
+  hasCrossVenuesPermission,
   hasPermission
 }                from '@acx-ui/user'
 import { noDataDisplay, getOpsApi } from '@acx-ui/utils'
@@ -156,7 +157,7 @@ const FlexibleAuthenticationTable = () => {
       getOpsApi(SwitchUrlsInfo.updateFlexAuthenticationProfile),
       getOpsApi(SwitchUrlsInfo.deleteFlexAuthenticationProfile)
     ])
-    : hasPermission({
+    : hasCrossVenuesPermission() && hasPermission({
       scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
     })
 
@@ -176,7 +177,7 @@ const FlexibleAuthenticationTable = () => {
         }
       ]}
 
-      extra={filterByAccess([<TenantLink
+      extra={hasCrossVenuesPermission() && filterByAccess([<TenantLink
         scopeKey={[SwitchScopes.CREATE]}
         rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}
         to={getPolicyRoutePath({
@@ -192,7 +193,7 @@ const FlexibleAuthenticationTable = () => {
       <Table
         rowKey='id'
         columns={columns}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={hasCrossVenuesPermission() ? filterByAccess(rowActions) : []}
         rowSelection={isSelectionVisible && { type: 'radio' }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

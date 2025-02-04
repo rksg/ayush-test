@@ -55,6 +55,7 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  getScopeKeyByPolicy,
   hasSomePoliciesPermission,
   hasSomeServicesPermission,
   PolicyAuthRoute,
@@ -1446,9 +1447,10 @@ function PolicyRoutes () {
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.LIST}>
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.LIST)}>
               <FlexibleAuthenticationTable />
-            </PolicyAuthRoute>
+            </AuthRoute>
           }
         />
         <Route
@@ -1457,9 +1459,10 @@ function PolicyRoutes () {
             oper: PolicyOperation.CREATE
           })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.CREATE}>
-              <AddFlexibleAuthentication/>
-            </PolicyAuthRoute>
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}>
+              <AddFlexibleAuthentication />
+            </AuthRoute>
           }
         />
         <Route
@@ -1468,9 +1471,10 @@ function PolicyRoutes () {
             oper: PolicyOperation.EDIT
           })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.EDIT}>
-              <EditFlexibleAuthentication/>
-            </PolicyAuthRoute>
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}>
+              <EditFlexibleAuthentication />
+            </AuthRoute>
           }
         />
         <Route
@@ -1478,9 +1482,10 @@ function PolicyRoutes () {
             type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
           })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.DETAIL}>
-              <FlexibleAuthenticationDetail/>
-            </PolicyAuthRoute>
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.DETAIL)}>
+              <FlexibleAuthenticationDetail />
+            </AuthRoute>
           }
         />
       </>
@@ -1545,9 +1550,9 @@ function PolicyRoutes () {
           path='policies/portProfile/create'
           element={
             // eslint-disable-next-line max-len
-            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.CREATE}>
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <CreatePortProfile />
-            </PolicyAuthRoute>
+            </AuthRoute>
           }
         />
         <Route
@@ -1562,27 +1567,27 @@ function PolicyRoutes () {
           path='policies/portProfile/switch/profiles/add'
           element={
             // eslint-disable-next-line max-len
-            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.CREATE}>
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <SwitchPortProfileForm />
-            </PolicyAuthRoute>
+            </AuthRoute>
           }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/edit'
           element={
             // eslint-disable-next-line max-len
-            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.EDIT}>
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
               <SwitchPortProfileForm />
-            </PolicyAuthRoute>
+            </AuthRoute>
           }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/detail'
           element={
-            // eslint-disable-next-line max-len
-            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.DETAIL}>
+          // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
               <SwitchPortProfileDetail />
-            </PolicyAuthRoute>
+            </AuthRoute>
           }
         />
       </>

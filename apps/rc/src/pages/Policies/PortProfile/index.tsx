@@ -15,6 +15,7 @@ import {
   PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 
 import EthernetPortProfileTable from '../EthernetPortProfile/EthernetPortProfileTable'
 
@@ -68,7 +69,7 @@ export default function PortProfile () {
 
 
   const getAddButton = () => {
-    return filterByAccessForServicePolicyMutation(activeTab === PortProfileTabsEnum.WIFI ? [
+    return activeTab === PortProfileTabsEnum.WIFI ? filterByAccessForServicePolicyMutation([
       <TenantLink
         scopeKey={
           getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
@@ -77,7 +78,7 @@ export default function PortProfile () {
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
       </TenantLink>
-    ]: [
+    ]) : hasCrossVenuesPermission() && filterByAccess([
       <TenantLink
         scopeKey={
           getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)
