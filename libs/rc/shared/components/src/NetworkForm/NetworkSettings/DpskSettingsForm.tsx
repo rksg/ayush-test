@@ -80,6 +80,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
       enableAccountingService: data.enableAccountingService,
       authRadius: data.authRadius,
       enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
       accountingRadius: data.accountingRadius,
       accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
       authRadiusId: data.authRadiusId||data.authRadius?.id
@@ -125,8 +126,8 @@ function SettingsForm () {
   },[data])
 
   useEffect(()=>{
-    supportRadsec && form.setFieldsValue({ ...data })
-  },[data?.id])
+    supportRadsec && form.setFieldsValue({ ...data, wlanSecurity: dpskWlanSecurity })
+  },[data?.id, data?.wlanSecurity, dpskWlanSecurity])
 
   useEffect(() => {
     if (dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
