@@ -83,6 +83,7 @@ export const History = styled.div`
         text-overflow: ellipsis;
         padding: 6px 5px 6px 0;
         cursor: pointer;
+        font-size: var(--acx-body-4-font-size);
       }
       .action {
         display: none;
