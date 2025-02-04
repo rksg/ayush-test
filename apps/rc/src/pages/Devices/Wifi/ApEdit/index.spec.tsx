@@ -3,10 +3,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                                                    from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                    from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -31,6 +31,7 @@ import {
   venueSetting,
   venueVersionList,
   deviceAps,
+  iotCompatibilites,
   r650Cap
 } from '../../__tests__/fixtures'
 
@@ -144,6 +145,10 @@ describe('ApEdit', () => {
       rest.post(
         WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({ data: dhcpAp[0].response }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApCompatibilities.url,
+        (req, res, ctx) => res(ctx.json(iotCompatibilites))
       ),
       rest.get(
         WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -391,7 +396,7 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json(venueSetting))),
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))),
-        rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+        rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))),
         rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
           (_, res, ctx) => res(ctx.json([]))),

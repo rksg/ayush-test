@@ -1,8 +1,17 @@
-import { PageNotFound }                               from '@acx-ui/components'
-import { get }                                        from '@acx-ui/config'
-import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router-dom'
-import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
-import { Provider }                                   from '@acx-ui/store'
+import { PageNotFound }                       from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { rootRoutes, Route, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import {
+  ReportType,
+  Report,
+  ReportList,
+  DataStudio,
+  DataSubscriptionsContent,
+  SubscriptionForm,
+  DataSubscriptionsAuditLog,
+  CloudStorageForm
+} from '@acx-ui/reports/components'
+import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
@@ -35,6 +44,18 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
+      {isRa ? (<>
+        <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI />} />
+        <Route path='dataSubscriptions/create' element={<SubscriptionForm isRAI />} />
+        <Route path='dataSubscriptions/edit/:settingId'
+          element={<SubscriptionForm isRAI editMode />} />
+        <Route path='dataSubscriptions/auditLog/:settingId'
+          element={<DataSubscriptionsAuditLog isRAI/>} />
+        <Route path='dataSubscriptions/cloudStorage/create'
+          element={<CloudStorageForm isRAI/>} />
+        <Route path='dataSubscriptions/cloudStorage/edit/:csId'
+          element={<CloudStorageForm isRAI editMode />} />
+      </>) : []}
     </Route>
   )
   return (

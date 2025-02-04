@@ -61,6 +61,7 @@ export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) =>
         onDateApply={setDateFilter as CallableFunction}
         showTimePicker
         selectionType={range}
+        maxMonthRange={isDateRangeLimit ? 1 : 3}
       />
   ]
 }

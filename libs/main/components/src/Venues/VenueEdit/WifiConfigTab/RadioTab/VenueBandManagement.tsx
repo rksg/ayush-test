@@ -37,10 +37,11 @@ export interface VenueBandManagementPorps {
   bandModeCaps: Record<string, BandModeEnum[]>
   venueTriBandApModels: string[]
   currentVenueBandModeData: VenueApModelBandModeSettings[]
-  setCurrentVenueBandModeData: (data: VenueApModelBandModeSettings[]) => void
+  setCurrentVenueBandModeData: (data: VenueApModelBandModeSettings[]) => void,
+  disabled?: boolean
 }
 
-export const VenueBandManagement = ({ style,
+export const VenueBandManagement = ({ style, disabled,
   triBandApModels, dual5gApModels, bandModeCaps, venueTriBandApModels,
   currentVenueBandModeData, setCurrentVenueBandModeData }: VenueBandManagementPorps) => {
 
@@ -104,6 +105,7 @@ export const VenueBandManagement = ({ style,
         key='edit'
         role='editBtn'
         type='link'
+        disabled={disabled}
         icon={<EditOutlinedIcon />}
         style={{ height: '22px' }}
         onClick={() => {
@@ -114,7 +116,7 @@ export const VenueBandManagement = ({ style,
         key='delete'
         role='deleteBtn'
         type='link'
-        disabled={venueTriBandApModels.includes(row.model)}
+        disabled={disabled || venueTriBandApModels.includes(row.model)}
         icon={<DeleteOutlinedIcon />}
         style={{ height: '22px' }}
         onClick={() => {
@@ -140,7 +142,7 @@ export const VenueBandManagement = ({ style,
             setDrawerVisible(true)
           }}
           type='link'
-          disabled={triBandApModels
+          disabled={disabled || triBandApModels
             .filter(model => supportBandManagementApModels.includes(model))
             .every(model => tableData.map(row => row.model).includes(model))}
           size='small'>

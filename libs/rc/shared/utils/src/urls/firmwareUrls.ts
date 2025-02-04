@@ -192,7 +192,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/venues/:venueId/edgeFirmwares',
     newApi: true,
-    opsApi: 'PATCH:/venues/{venueId}/edgeFirmwares'
+    opsApi: 'PATCH:/venues/{id}/edgeFirmwares'
   },
   getEdgeUpgradePreferences: {
     method: 'get',
@@ -205,19 +205,19 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/upgrade/tenant/:tenantId/edgePreference',
     oldUrl: '/api/upgrade/tenant/:tenantId/edgePreference',
     newApi: true,
-    opsApi: 'PUT:/api/upgrade/tenant/{tenantId}/edgePreference'
+    opsApi: 'PUT:/api/upgrade/tenant/{id}/edgePreference'
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
     url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true,
-    opsApi: 'DELETE:/venues/{venueId}/edgeFirmwares/schedules'
+    opsApi: 'DELETE:/venues/{id}/edgeFirmwares/schedules'
   },
   updateEdgeVenueSchedules: {
     method: 'post',
     url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true,
-    opsApi: 'POST:/venues/{venueId}/edgeFirmwares/schedules'
+    opsApi: 'POST:/venues/{id}/edgeFirmwares/schedules'
   },
   getScheduledFirmware: {
     method: 'get',
@@ -319,7 +319,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PATCH:/edgeFirmwares/batchOperations/{batchId}/venues/{venueId}'
+    opsApi: 'PATCH:/edgeFirmwares/batchOperations/{id}/venues/{id}'
   },
   updateEdgeFirmwareVenueSchedule: {
     method: 'post',
@@ -329,7 +329,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'POST:/edgeFirmwares/batchOperations/{batchId}/venues/{venueId}'
+    opsApi: 'POST:/edgeFirmwares/batchOperations/{id}/venues/{id}'
   },
   skipEdgeFirmwareVenueSchedule: {
     method: 'delete',
@@ -339,6 +339,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'DELETE:/edgeFirmwares/batchOperations/{batchId}/venues/{venueId}'
+    opsApi: 'DELETE:/edgeFirmwares/batchOperations/{id}/venues/{id}'
   }
 }

@@ -24,17 +24,20 @@ import {
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }                                                             from '..'
-import { VenueEditContext }                                                                from '../..'
-import ApModelPlaceholder                                                                  from '../../../assets/images/aps/ap-model-placeholder.png'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueUtilityContext }                        from '..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../..'
+import ApModelPlaceholder                             from '../../../assets/images/aps/ap-model-placeholder.png'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../venueConfigTemplateApiSwitcher'
 
 import { ExternalAntennaForm } from './ExternalAntennaForm'
 
-export function ExternalAntennaSection () {
+export function ExternalAntennaSection (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const readOnly = false // TODO: !rbacService.isRoleAllowed('UpdateExternalAntennas')
+  const { isAllowEdit=true } = props
   const imageTitle = $t({ defaultMessage: 'AP external Antenna image' })
   const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
@@ -252,8 +255,10 @@ export function ExternalAntennaSection () {
             />
           </Form.Item>
           {selectedApAntennaType &&
-            <ApAntennaTypeSelector model={selectedApAntennaType.model}
+            <ApAntennaTypeSelector
+              model={selectedApAntennaType.model}
               selectedApAntennaType={selectedApAntennaType}
+              readOnly={!isAllowEdit}
               onAntennaTypeChanged={handleAntennaTypesChanged}/>
           }
           {(selectedApExternalAntenna && apiSelectedApExternalAntenna) &&
@@ -261,7 +266,7 @@ export function ExternalAntennaSection () {
               model={selectedApExternalAntenna?.model}
               apiSelectedApExternalAntenna={apiSelectedApExternalAntenna}
               selectedApExternalAntenna={selectedApExternalAntenna}
-              readOnly={readOnly}
+              readOnly={!isAllowEdit}
               onExternalAntennaChanged={handleExternalAntennasChanged}
             />
           }

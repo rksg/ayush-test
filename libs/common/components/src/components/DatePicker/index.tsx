@@ -102,13 +102,9 @@ export const RangePicker = ({
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const allowedDateRange = (isDateRangeLimit && allowedMonthRange)
     ? dateRangeForLast(allowedMonthRange,'months')
-    : isReport
-      ? dateRangeForLast(12,'months')
-      : (accountTier === AccountTier.GOLD
-        ? dateRangeForLast(1,'month')
-        : dateRangeForLast(3,'months')
-      )
-
+    : (accountTier === AccountTier.GOLD
+      ? dateRangeForLast(1, 'month')
+      : dateRangeForLast(isReport ? 12 : 3, 'months'))
 
 
   const disabledDate = useCallback(

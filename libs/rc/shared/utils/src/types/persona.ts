@@ -14,6 +14,7 @@ export interface PersonaGroup {
   identityCount?: number,
   certificateTemplateId?: string,
   policySetId?: string
+  networkCount?: number
 }
 
 export interface Persona {

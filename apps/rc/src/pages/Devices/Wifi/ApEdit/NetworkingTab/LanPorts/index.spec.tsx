@@ -6,7 +6,6 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
   AaaUrls,
-  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   EthernetPortProfileUrls,
   LanPortsUrls,
@@ -64,7 +63,7 @@ describe('Lan Port', () => {
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
-      rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+      rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(WifiUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),

@@ -33,12 +33,27 @@ import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  usePollingTableQuery
+  usePollingTableQuery,
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum }   from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, hasPermission, hasRoles } from '@acx-ui/user'
-import { transformToCityListOptions }                                        from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import {
+  EdgeScopes,
+  RequestPayload,
+  SwitchScopes,
+  WifiScopes, RolesEnum
+
+}   from '@acx-ui/types'
+import {
+  hasCrossVenuesPermission,
+  filterByAccess,
+  hasPermission,
+  hasRoles,
+  getUserProfile,
+  hasAllowedOperations
+} from '@acx-ui/user'
+import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
 const incompatibleIconStyle = {
   height: '16px',
@@ -112,38 +127,6 @@ function useColumns (
         />
       }
     }] : []),
-    // { // TODO: Waiting for backend support
-    //   key: 'incidents',
-    //   dataIndex: 'incidents',
-    //   title: () => {
-    //     return (
-    //       <>
-    //         { $t({ defaultMessage: 'Incidents' }) }
-    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-    //       </>
-    //     )
-    //   },
-    //   align: 'center'
-    // },
-    // { // TODO: Waiting for backend support
-    //   key: 'health',
-    //   dataIndex: 'health',
-    //   title: () => {
-    //     return (
-    //       <>
-    //         { $t({ defaultMessage: 'Health Score' }) }
-    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-    //       </>
-    //     )
-    //   },
-    //   align: 'center'
-    // },
-    // { // TODO: Waiting for HEALTH feature support
-    //   title: $t({ defaultMessage: 'Services' }),
-    //   key: 'services',
-    //   dataIndex: 'services',
-    //   align: 'center'
-    // },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       align: 'center',
@@ -246,12 +229,6 @@ function useColumns (
         )
       }
     }
-    // { // TODO: Waiting for TAG feature support
-    //   key: 'tags',
-    //   dataIndex: 'tags',
-    //   title: $t({ defaultMessage: 'Tags' }),
-    //   show: false
-    // }
   ]
 
   return columns.filter(({ key }) =>
@@ -301,15 +278,24 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
     { isLoading: isDeleteVenueUpdating }
   ] = useDeleteVenueMutation()
 
+  const hasDeletePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission()
+
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
+    rbacOpsIds: [
+      getOpsApi(CommonUrlsInfo.updateVenue),
+      getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+    ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
@@ -317,7 +303,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission(),
+    visible: hasDeletePermission,
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -356,7 +342,11 @@ export const VenueTable = ({ settingsId = 'venues-table',
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]
+          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
+          rbacOpsIds: [
+            getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+          ]
         }) && rowSelection}
       />
     </Loader>
@@ -385,11 +375,18 @@ export function VenuesTable () {
 
   const count = tableQuery?.currentData?.totalCount || 0
 
+
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddVenuePermissions = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.addVenue)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+      hasCrossVenuesPermission()
+
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission() && [
+        extra={hasAddVenuePermissions && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
