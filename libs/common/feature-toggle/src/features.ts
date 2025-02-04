@@ -94,6 +94,7 @@ export enum Features {
   MFA_ALTERNATE_QR_CODE_TOGGLE = 'acx-ui-mfa-qr-code-display-toggle',
   MFA_NEW_API_TOGGLE = 'mfa-new-api-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
+  MSP_APP_MONITORING = 'mspservice-app-monitoring',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
