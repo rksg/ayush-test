@@ -100,7 +100,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             data-testid={'enable-softgre-tunnel-banner'}
             showIcon={true}
             style={{ verticalAlign: 'middle' }}
-            message={$t({ defaultMessage: 'Enabling on the uplink will disconnect AP(s)' })}
+            message={$t({ defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })}
           />
           <SoftGREProfileSettings
             index={index}
