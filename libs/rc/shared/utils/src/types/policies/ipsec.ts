@@ -1,0 +1,128 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
+import {
+  IpSecAuthEnum,
+  IpSecProposalTypeEnum,
+  IpSecEncryptionAlgorithmEnum,
+  IpSecIntegrityAlgorithmEnum,
+  IpSecPseudoRandomFunctionEnum,
+  IpSecDhGroupEnum,
+  IpSecAdvancedOptionEnum,
+  IpSecRekeyTimeUnitEnum,
+  IpSecFailoverModeEnum
+} from '../../models'
+
+export interface Ipsec {
+  id: string
+  name: string
+  serverAddress: string
+  authType: IpSecAuthEnum
+  preSharedKey?: string
+  certificate?: string
+  ikeSecurityAssociation?: IkeSecurityAssociation
+  espSecurityAssociation?: EspSecurityAssociation
+  ikeRekeyTime?: number
+  ikeRekeyTimeUnit?: IpSecRekeyTimeUnitEnum
+  espRekeyTime?: number
+  espRekeyTimeUnit?: IpSecRekeyTimeUnitEnum
+  advancedOption?: AdvancedOption
+}
+
+export interface IkeSecurityAssociation {
+  ikeProposalType: IpSecProposalTypeEnum
+  ikeProposals: Array<IkeProposal>
+}
+
+export interface EspSecurityAssociation {
+  espProposalType: IpSecProposalTypeEnum
+  espProposals: Array<EspProposal>
+}
+
+export interface AdvancedOption {
+  dhcpOpt43Subcode: number
+  retryLimit: number
+  replayWindow: number
+  ipcompEnable: IpSecAdvancedOptionEnum
+  enforceNatt: IpSecAdvancedOptionEnum
+  dpdDelay: number
+  keepAliveIntval: number
+  failoverRetryPeriod: number
+  failoverRetryInterval: number
+  failoverMode: IpSecFailoverModeEnum
+  failoverPrimaryCheckInterval: number
+}
+
+export interface IkeProposal {
+  encAlg: IpSecEncryptionAlgorithmEnum
+  authAlg: IpSecIntegrityAlgorithmEnum
+  prfAlg: IpSecPseudoRandomFunctionEnum
+  dhGroup: IpSecDhGroupEnum
+}
+
+export interface EspProposal {
+  encAlg: IpSecEncryptionAlgorithmEnum
+  authAlg: IpSecIntegrityAlgorithmEnum
+  dhGroup: IpSecDhGroupEnum
+}
+
+export interface IpSecFormData extends Ipsec {
+}
+
+export interface IpsecViewData {
+  id: string
+  name: string
+  serverAddress: string
+  authenticationType: IpSecAuthEnum
+  preSharedKey: string
+  certificate: string
+  certNames: string[]
+  ikeProposalType: string
+  ikeProposals: IkeProposal[]
+  espProposalType: string
+  espProposals: EspProposal[]
+  activations: IpsecActivation[]
+  venueActivations: IpsecWiredActivation[]
+  apActivations: IpsecWiredApActivation[]
+}
+
+export interface VenueTableUsageByIpsec extends IpsecActivation {
+  name: string
+  id: string
+  addressLine: string
+  wifiNetworkNames: string[]
+  apSerialNumbers: string[]
+  apNames: string[]
+  softGreProfileId: string
+  softGreProfileName: string
+}
+
+export interface VenueTableIpsecActivation {
+  wifiNetworkIds: Set<string>
+  apSerialNumbers: Set<string>
+}
+
+export interface IpsecActivation {
+  venueId: string
+  softGreProfileId: string
+  wifiNetworkIds: string[]
+}
+
+export interface IpsecWiredActivation {
+  venueId: string
+  softGreProfileId: string
+  apModel?: string
+  apSerialNumbers: string[],
+  portId: number
+}
+
+export interface IpsecWiredApActivation {
+  venueId: string
+  softGreProfileId: string
+  apSerialNumber: string,
+  portId: number
+}
+
+export const authTypeLabelMapping: Record<IpSecAuthEnum, MessageDescriptor> = {
+  [IpSecAuthEnum.PSK]: defineMessage({ defaultMessage: 'Pre-shared Key' }),
+  [IpSecAuthEnum.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
+}

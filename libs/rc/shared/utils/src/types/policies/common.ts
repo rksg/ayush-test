@@ -36,6 +36,7 @@ export enum PolicyType {
   DIRECTORY_SERVER = 'Directory Server',
   PORT_PROFILE = 'Port Profile',
   SWITCH_PORT_PROFILE = 'Switch Port Profile',
+  IPSEC = 'IPsec'
 }
 
 export enum PolicyOperation {
@@ -92,7 +93,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
   [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' }),
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
-  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' })
+  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
+  [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'Secures IP communications through encryption and authentication' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

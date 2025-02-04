@@ -50,7 +50,8 @@ import {
   videoCallQoeApi,
   baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi,
-  baseClientIsolationApi as clientIsolationApi
+  baseClientIsolationApi as clientIsolationApi,
+  baseIpSecApi as ipSecApi
 } from './baseApi'
 import { cancelMiddleware } from './cancelMiddleware'
 
@@ -108,7 +109,8 @@ export const store = configureStore({
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
-    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
+    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer,
+    [ipSecApi.reducerPath]: ipSecApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -166,7 +168,8 @@ export const store = configureStore({
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
       directoryServerApi.middleware,
-      clientIsolationApi.middleware
+      clientIsolationApi.middleware,
+      ipSecApi.middleware
     ])
   },
 
