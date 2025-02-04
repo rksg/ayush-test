@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 
 import { Input, SelectProps } from 'antd'
 import _                      from 'lodash'
@@ -21,6 +21,24 @@ export const RadioSelect = memo((props: RadioSelectProps) => {
   const { isSupport6G, isSelected = true, ...otherProps } = props
   // eslint-disable-next-line max-len
   const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
+  const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+  useEffect(() => {
+    setSelectedValues((prev) => {
+      if (isSupport6G && !prev.includes(RadioTypeEnum._6_GHz)) {
+        return [...prev, RadioTypeEnum._6_GHz]
+      }
+      if (!isSupport6G) {
+        return prev.filter((v) => v !== RadioTypeEnum._6_GHz)
+      }
+      return prev
+    })
+  }, [isSupport6G])
+
+  const handleChange = (newValues: string[]) => {
+    setSelectedValues(newValues)
+  }
+
   if (!isSupport6G) {
     _.remove(otherProps.value, (v) => v === RadioTypeEnum._6_GHz)
   }
@@ -35,6 +53,8 @@ export const RadioSelect = memo((props: RadioSelectProps) => {
       mode='multiple'
       showArrow
       style={{ width: '220px' }}
+      value={selectedValues}
+      onChange={handleChange}
     >
       {/* eslint-disable-next-line max-len */}
       <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
