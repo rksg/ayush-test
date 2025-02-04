@@ -125,6 +125,7 @@ describe('ImpactedSwitchVLANDetails', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('Impacted switches')).toBeVisible()
+    expect(screen.getByText('2')).toBeVisible()
     expect(screen.getByText('Out of 1 switch')).toBeVisible()
     expect(screen.getByText('Mismatched VLAN')).toBeVisible()
     expect(screen.getByText('6 configured VLANs')).toBeVisible()

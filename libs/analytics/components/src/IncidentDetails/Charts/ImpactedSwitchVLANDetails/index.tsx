@@ -61,7 +61,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       return agg
     }, {} as Record<number, { macs: string[]; names: string[] }>)), ([id]) => parseInt(id, 10))
 
-  const uniqueSwitchCount = impactedSwitches?.length || 0
+  const uniqueSwitchCount = [...new Set([...(impactedSwitches??[]).map(({ mac })=>mac)])].length
   const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
     ? _.flatMap(uniqImpactedVlans, ([, { macs }]) => macs).length : 0
   const impactedTypes = [
