@@ -173,6 +173,17 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       <SoftGreDrawer
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
+        callbackFn={async (option: DefaultOptionType, gatewayIps: string[]) => {
+          optionDispatch && optionDispatch({
+            state: SoftGreDuplicationChangeState.ReloadOptionList,
+            index: String(index ?? 0),
+            candidate: { option, gatewayIps },
+            voter: (isUnderAPNetworking ?
+              { serialNumber, portId: portId }:
+              { model: apModel, portId: portId }
+            )
+          })
+        }}
       />
     </>
   )

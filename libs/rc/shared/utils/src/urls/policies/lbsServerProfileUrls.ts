@@ -29,11 +29,13 @@ export const LbsServerProfileUrls: { [key: string]: ApiInfo } = {
   activateLbsServerProfileOnVenue: {
     method: 'put',
     url: '/venues/:venueId/lbsServerProfiles/:policyId',
+    opsApi: 'PUT:/venues/{id}/lbsServerProfiles/{id}',
     newApi: true
   },
   deactivateLbsServerProfileOnVenue: {
     method: 'delete',
     url: '/venues/:venueId/lbsServerProfiles/:policyId',
+    opsApi: 'DELETE:/venues/{id}/lbsServerProfiles/{id}',
     newApi: true
   }
 }

@@ -79,7 +79,7 @@ export default function SwitchPortProfileTable () {
       },
       {
         key: 'type',
-        title: $t({ defaultMessage: 'Server Type' }),
+        title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'type'
       },
       {

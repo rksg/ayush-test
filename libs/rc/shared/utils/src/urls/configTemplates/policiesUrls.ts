@@ -582,6 +582,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSyslogSettings: {
     method: 'post',
     url: '/templates/venues/:venueId/syslogServerProfileSettings',
+    opsApi: 'POST:/templates/venues/{id}/syslogServerProfileSettings',
     newApi: true
   },
   querySyslog: {
@@ -596,6 +597,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   bindVenueSyslog: {
     method: 'PUT',
     url: '/templates/venues/:venueId/syslogServerProfiles/:policyId',
+    opsApi: 'PUT:/templates/venues/{id}/syslogServerProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -605,6 +607,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   unbindVenueSyslog: {
     method: 'delete',
     url: '/templates/venues/:venueId/syslogServerProfiles/:policyId',
+    opsApi: 'DELETE:/templates/venues/{id}/syslogServerProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -712,6 +715,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueRogueApRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/roguePolicySettings',
+    opsApi: 'GET:/templates/venues/{id}/roguePolicySettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -721,6 +725,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRogueApRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/roguePolicySettings',
+    opsApi: 'PUT:/templates/venues/{id}/roguePolicySettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
