@@ -150,7 +150,7 @@ export function SmartMonitor (props: VenueWifiConfigItemProps) {
               </Tooltip>}
               {isR370UnsupportedFeatures && <ApCompatibilityToolTip
                 title={tooltipInfo}
-                visible={true}
+                showDetailButton
                 placement='right'
                 onClick={() => setDrawerVisible(true)}
               />}

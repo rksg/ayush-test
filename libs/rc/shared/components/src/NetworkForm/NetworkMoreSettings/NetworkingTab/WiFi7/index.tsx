@@ -290,7 +290,7 @@ function WiFi7 () {
                   />}
                   {isR370UnsupportedFeatures && <ApCompatibilityToolTip
                     title={mloTooltip}
-                    visible={true}
+                    showDetailButton
                     placement='right'
                     onClick={() => setMloDrawerVisible(true)}
                   />}

@@ -358,7 +358,7 @@ function SettingsForm () {
             />}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              visible={true}
+              showDetailButton
               placement='bottom'
               onClick={() => setDrawerVisible(true)}
             />}

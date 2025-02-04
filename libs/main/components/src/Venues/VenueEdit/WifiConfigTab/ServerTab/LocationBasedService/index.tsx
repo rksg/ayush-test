@@ -208,7 +208,7 @@ export function LocationBasedService (props: VenueWifiConfigItemProps) {
           <div style={{ margin: '2px' }}></div>
           {isR370UnsupportedFeatures && <ApCompatibilityToolTip
             title={''}
-            visible={true}
+            showDetailButton
             placement='bottom'
             onClick={() => setDrawerVisible(true)}
           />}

@@ -144,7 +144,7 @@ export const VenueBandManagement = ({ style, disabled,
           {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
           {isR370UnsupportedFeatures && <ApCompatibilityToolTip
             title={''}
-            visible={true}
+            showDetailButton
             placement='right'
             onClick={() => setRfDrawerVisible(true)}
           />}

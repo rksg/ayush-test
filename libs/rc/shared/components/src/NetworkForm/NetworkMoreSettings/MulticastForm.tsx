@@ -123,7 +123,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
             />}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={multicastRateLimitingTooltipContent}
-              visible={true}
+              showDetailButton
               placement='right'
               onClick={() => setDrawerVisible(true)}
             />}

@@ -190,7 +190,7 @@ export function RadioSettingsForm (props:{
             </Tooltip>}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={afcTooltip}
-              visible={true}
+              showDetailButton
               placement='bottom'
               onClick={() => setAfcDrawerVisible(true)}
             />}
@@ -418,7 +418,7 @@ export function RadioSettingsForm (props:{
             {$t({ defaultMessage: 'Bandwidth:' })}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={''}
-              visible={true}
+              showDetailButton
               placement='right'
               onClick={() => setBand320DrawerVisible(true)}
               icon={<QuestionMarkCircleOutlined
@@ -469,7 +469,7 @@ export function RadioSettingsForm (props:{
           }
           {isR370UnsupportedFeatures && <ApCompatibilityToolTip
             title={aggressiveTxTooltip}
-            visible={true}
+            showDetailButton
             placement='right'
             onClick={() => setTxDrawerVisible(true)}
             icon={<QuestionMarkCircleOutlined
@@ -533,7 +533,7 @@ export function RadioSettingsForm (props:{
               />}
               {isR370UnsupportedFeatures && <ApCompatibilityToolTip
                 title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
-                visible={true}
+                showDetailButton
                 placement='right'
                 onClick={() => setMrlDrawerVisible(true)}
               />}

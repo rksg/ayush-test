@@ -165,7 +165,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
             {$t({ defaultMessage: 'SoftGRE Tunneling' })}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={''}
-              visible={true}
+              showDetailButton
               placement='top'
               onClick={() => setSoftGreDrawerVisible(true)}
               icon={<QuestionMarkCircleOutlined

@@ -576,7 +576,7 @@ export function SingleRadioSettings (props:{
                 <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
                 {isR370Unsupported6gFeatures && <ApCompatibilityToolTip
                   title={''}
-                  visible={true}
+                  showDetailButton
                   placement='right'
                   onClick={() => setOutdoor6gDrawerVisible(true)}
                   icon={<QuestionMarkCircleOutlined

@@ -320,7 +320,7 @@ export function NetworkingTab (props: {
             { $t({ defaultMessage: 'Airtime Decongestion' }) }
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={''}
-              visible={true}
+              showDetailButton
               placement='right'
               onClick={() => setAirtimeDrawerVisible(true)}
             />}
@@ -352,7 +352,7 @@ export function NetworkingTab (props: {
               { $t({ defaultMessage: 'Join RSSI Threshold' }) }
               {isR370UnsupportedFeatures && <ApCompatibilityToolTip
                 title={''}
-                visible={true}
+                showDetailButton
                 placement='right'
                 onClick={() => setJoinRssiDrawerVisible(true)}
               />}
@@ -566,7 +566,7 @@ export function NetworkingTab (props: {
             />}
             {isR370UnsupportedFeatures && <ApCompatibilityToolTip
               title={bssPriorityTooltipContent}
-              visible={true}
+              showDetailButton
               placement='right'
               onClick={() => setBssPriorityDrawerVisible(true)}
             />}
