@@ -54,13 +54,14 @@ import {
   Vlan,
   VlanModalType,
   isFirmwareVersionAbove10020b,
-  PortProfilesBySwitchId
+  PortProfilesBySwitchId,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { store }         from '@acx-ui/store'
-import { SwitchScopes }  from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
-import { getIntl }       from '@acx-ui/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { store }              from '@acx-ui/store'
+import { SwitchScopes }       from '@acx-ui/types'
+import { hasPermission }      from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import {
   AuthenticationType,
@@ -230,7 +231,10 @@ export function EditPortDrawer ({
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
-  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
+  const hasCreatePermission = hasPermission({
+    scopes: [SwitchScopes.CREATE],
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAcl)]
+  })
 
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
