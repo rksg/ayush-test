@@ -15,9 +15,9 @@ import {
   useGetNotificationRecipientsQuery,
   useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { hasAdministratorTab, useTableQuery, Webhook } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                       from '@acx-ui/user'
+import { hasAdministratorTab, transformDisplayNumber, useTableQuery, Webhook } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                               from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -66,7 +66,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
-  const webhookCount = webhookData?.data?.totalCount || 0
+  const webhookCount = transformDisplayNumber(webhookData?.data?.totalCount)
 
   return [
     {
