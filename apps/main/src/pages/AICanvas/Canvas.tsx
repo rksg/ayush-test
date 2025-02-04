@@ -40,6 +40,9 @@ export interface CardInfo {
   currentSizeIndex: number
   sizes: Size[]
   chartType?: string
+  widgetId?: string
+  chatId?: string
+  canvasId?: string
 }
 export interface Group {
   id: string
@@ -217,6 +220,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
             setGroups={setGroups}
             compactType={compactType}
             layout={layout}
+            canvasId={canvasId}
           />
         </UI.Grid>
       </div>

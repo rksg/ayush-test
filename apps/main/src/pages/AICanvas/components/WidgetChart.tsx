@@ -5,23 +5,25 @@ import { CallbackDataParams }                      from 'echarts/types/dist/shar
 import { useDrag }                                 from 'react-dnd'
 import { getEmptyImage }                           from 'react-dnd-html5-backend'
 import { renderToString }                          from 'react-dom/server'
-import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }                            from 'uuid'
 
 import { BarChartData }                                                                             from '@acx-ui/analytics/utils'
 import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
-import { useChatChartQuery }                                                                        from '@acx-ui/rc/services'
+import { useGetWidgetQuery }                                                                        from '@acx-ui/rc/services'
 import { WidgetListData }                                                                           from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
-import { ItemTypes } from './GroupItem'
+import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
+import { ItemTypes }         from './GroupItem'
 
 
 interface WidgetListProps {
-  data: WidgetListData;
+  data: WidgetListData
+  visible?: boolean
+  setVisible?: (v: boolean) => void
 }
 
 interface WidgetCategory {
@@ -153,12 +155,19 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
   )
 }
 
-export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
-  const { $t } = useIntl()
-  const queryResults = useChatChartQuery({
+export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
+  // const queryResults = useChatChartQuery({
+  //   params: {
+  //     sessionId: data.sessionId,
+  //     chatId: data.chatId
+  //   }
+  // }, { skip: data.type !== 'card' })
+  // console.log('WidgetChart: ', data)
+
+  const queryResults = useGetWidgetQuery({
     params: {
-      sessionId: data.sessionId,
-      chatId: data.chatId
+      canvasId: data.canvasId,
+      widgetId: data.widgetId
     }
   }, { skip: data.type !== 'card' })
 
@@ -289,7 +298,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
         key={data.id}
-        title={data.type === 'card' ? (data.title || $t({ defaultMessage: 'Title' })) : ''}
+        title={data.type === 'card' ? chartData?.name : ''}
         className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
@@ -297,6 +306,12 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
             data.chartType, width, height, chartData as WidgetListData)}
         </AutoSizer>
       </UI.Widget>
+      {
+        setVisible && <CustomizeWidgetDrawer
+          visible={visible as boolean}
+          setVisible={setVisible}
+          widget={chartData as WidgetListData} />
+      }
     </Loader>
   )
 }

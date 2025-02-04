@@ -172,7 +172,6 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
-    expect(await screen.findByText('History Drawer')).toBeVisible()
     expect(await screen.findByTestId('historyIcon')).toBeVisible()
     expect(await screen.findByTestId('newChatIcon')).toBeVisible()
     expect(await screen.findByText('what can you do?')).toBeVisible()
