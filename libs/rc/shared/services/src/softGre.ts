@@ -113,16 +113,16 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
 
         let venues: string[] = []
 
-        Object.entries(activations).forEach(([venueId, activation]) => {
-          if (activation) {
+        Object.entries(activations)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .filter(([venueId, activation]) => { return !!activation })
+          .forEach(([venueId, activation]) => {
             venueNetworksMap[venueId] = Array.from(activation.wifiNetworkIds)
             networkIds = networkIds.concat(Array.from(activation.wifiNetworkIds))
-
             apNameMap[venueId] = Array.from(activation.apSerialNumbers)
             apSerialNumbers = apSerialNumbers.concat(Array.from(activation.apSerialNumbers))
-            venues = venues.concat(Array.from(venueId))
-          }
-        })
+            venues.push(venueId)
+          })
 
         if(
           networkIds.length === 0 &&
