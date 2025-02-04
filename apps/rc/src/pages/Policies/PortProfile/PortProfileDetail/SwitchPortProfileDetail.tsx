@@ -73,7 +73,10 @@ export default function SwitchPortProfileDetail () {
         title: $t({ defaultMessage: 'Model' }),
         dataIndex: 'model',
         filterable: true,
-        sorter: true
+        sorter: true,
+        render: function (_, row) {
+          return row.model?.replace('_', '-')
+        }
       },
       {
         key: 'venueName',
