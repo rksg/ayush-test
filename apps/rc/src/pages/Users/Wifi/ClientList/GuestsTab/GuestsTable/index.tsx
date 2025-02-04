@@ -83,8 +83,9 @@ export const GuestsTable = () => {
 
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = !hasCrossVenuesPermission() || hasRoles(RolesEnum.READ_ONLY)
+  const addNetworkOpsApi = getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)
   const hasAddNetworkPermission = rbacOpsApiEnabled ?
-    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)])
+    hasAllowedOperations([addNetworkOpsApi])
     : (hasCrossVenuesPermission() && hasPermission({
       scopes: [WifiScopes.CREATE]
     }))
@@ -458,7 +459,7 @@ export const GuestsTable = () => {
         ...( hasAddNetworkPermission? [{
           key: 'addNetworks',
           scopeKey: [WifiScopes.CREATE],
-          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)],
+          rbacOpsIds: [addNetworkOpsApi],
           roles: operationRoles.filter(role => role !== RolesEnum.GUEST_MANAGER),
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) }

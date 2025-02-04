@@ -7,18 +7,27 @@ import { Button }                                                               
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import { NetworkTabContext, NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
 import { useEnhanceWifiNetworkTableQuery, useNetworkTableQuery, useWifiNetworkTableQuery }   from '@acx-ui/rc/services'
-import { Network, usePollingTableQuery, WifiNetwork, WifiRbacUrlsInfo }                      from '@acx-ui/rc/utils'
-import { TenantLink }                                                                        from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                        from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission }                    from '@acx-ui/user'
-import { getOpsApi }                                                                         from '@acx-ui/utils'
+import {
+  ConfigTemplateUrlsInfo,
+  Network,
+  useConfigTemplate,
+  usePollingTableQuery,
+  WifiNetwork,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { TenantLink }                                                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                     from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                                      from '@acx-ui/utils'
 
 export default function useNetworksTable () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { rbacOpsApiEnabled } = getUserProfile()
+
   const [ networkCount, setNetworkCount ] = useState(0)
 
   const settingsId = 'network-table'
@@ -37,8 +46,12 @@ export default function useNetworksTable () {
     description: 'Translation strings - Network List'
   })
 
+  const addNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkDeep)
+
   const hasAddNetworkPermission = rbacOpsApiEnabled ?
-    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)])
+    hasAllowedOperations([addNetworkOpsApi])
     : hasCrossVenuesPermission()
 
   const extra = hasAddNetworkPermission? [

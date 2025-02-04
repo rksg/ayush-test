@@ -21,7 +21,9 @@ import {
   checkVenuesNotInSetup,
   WlanSecurityEnum,
   WifiNetwork,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  useConfigTemplate,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes } from '@acx-ui/types'
@@ -332,9 +334,22 @@ export function NetworkTable ({
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const intl = useIntl()
   const { $t } = intl
+  const { isTemplate } = useConfigTemplate()
   const { rbacOpsApiEnabled } = getUserProfile()
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
+
+  const addNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkDeep)
+
+  const updateNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkDeep)
+
+  const deleteNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetwork)
 
 
   useEffect(() => {
@@ -369,7 +384,7 @@ export function NetworkTable ({
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [WifiScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateNetworkDeep)],
+      rbacOpsIds: [updateNetworkOpsApi],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
@@ -379,7 +394,7 @@ export function NetworkTable ({
     {
       label: $t({ defaultMessage: 'Clone' }),
       scopeKey: [WifiScopes.CREATE],
-      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)],
+      rbacOpsIds: [addNetworkOpsApi],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
@@ -389,7 +404,7 @@ export function NetworkTable ({
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
-      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteNetwork)],
+      rbacOpsIds: [deleteNetworkOpsApi],
       onClick: async ([selected], clearSelection) => {
         const isDeletingDPSK = isSelectedDpskNetwork([selected])
         const isDeletingGuestPass = isSelectedGuestNetwork([selected])
@@ -439,11 +454,7 @@ export function NetworkTable ({
   }
 
   const hasAddNetworkPermission = rbacOpsApiEnabled ?
-    hasAllowedOperations([
-      getOpsApi(WifiRbacUrlsInfo.addNetworkDeep),
-      getOpsApi(WifiRbacUrlsInfo.updateNetworkDeep),
-      getOpsApi(WifiRbacUrlsInfo.deleteNetwork)
-    ])
+    hasAllowedOperations([ addNetworkOpsApi, updateNetworkOpsApi, deleteNetworkOpsApi ])
     : (hasCrossVenuesPermission()
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
