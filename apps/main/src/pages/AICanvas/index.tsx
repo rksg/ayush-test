@@ -226,7 +226,7 @@ export default function AICanvas () {
       /> }
       {
         chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-          {moment(chat.created).format('h:m A')}
+          {moment(chat.created).format('hh:mm A')}
         </div>
       }
     </div>
@@ -235,7 +235,6 @@ export default function AICanvas () {
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
-
         <div className='chat-wrapper'>
           <div className='chat'>
             <div className='header'>
