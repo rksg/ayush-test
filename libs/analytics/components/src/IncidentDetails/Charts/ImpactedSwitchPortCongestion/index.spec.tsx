@@ -27,7 +27,7 @@ describe('SwitchDetails', () => {
     expect(await screen.findByText('ICX8200-24P Router')).toBeVisible()
 
     expect(await screen.findByText('Switch Model')).toBeVisible()
-    expect(await screen.findByText('ICX8200-24P')).toBeVisible()
+    expect(await screen.findByText('ICX8200')).toBeVisible()
 
     expect(await screen.findByText('Switch MAC')).toBeVisible()
     expect(await screen.findByText('38:45:3B:3C:F1:20')).toBeVisible()
