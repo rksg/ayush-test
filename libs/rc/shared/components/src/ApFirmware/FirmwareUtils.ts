@@ -152,6 +152,7 @@ export const isAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
 export const isLegacyAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA)
     && (labels.includes(FirmwareLabel.LEGACYALPHA) || labels.includes(FirmwareLabel.LEGACYBETA))
+    && !labels.includes(FirmwareLabel.ALPHA) && !labels.includes(FirmwareLabel.BETA)
 }
 
 export const toUserDate = (date: string): string => {
