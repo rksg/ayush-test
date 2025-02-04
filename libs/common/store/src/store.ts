@@ -50,6 +50,7 @@ import {
   videoCallQoeApi,
   baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi,
+  baseRuckusAiChatApi as ruckusAiChatApi,
   baseClientIsolationApi as clientIsolationApi
 } from './baseApi'
 import { cancelMiddleware } from './cancelMiddleware'
@@ -108,6 +109,7 @@ export const store = configureStore({
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
+    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
     [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
   },
 
@@ -166,6 +168,7 @@ export const store = configureStore({
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
       directoryServerApi.middleware,
+      ruckusAiChatApi.middleware,
       clientIsolationApi.middleware
     ])
   },
