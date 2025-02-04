@@ -67,18 +67,18 @@ export default function SwitchPortProfileTable () {
         sorter: true,
         searchable: true,
         defaultSortOrder: 'ascend',
-        render: function (_, row) {
+        render: function (_, row, index, highlightFn) {
           return (
             <TenantLink
               to={`/policies/portProfile/switch/profiles/${row.id}/detail`}>
-              {row.name}
+              {highlightFn(row.name)}
             </TenantLink>
           )
         }
       },
       {
         key: 'type',
-        title: $t({ defaultMessage: 'Server Type' }),
+        title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'type'
       },
       {

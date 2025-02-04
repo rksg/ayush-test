@@ -56,6 +56,51 @@ export const data = (multiseries = false): BarChartData => ({
 
 })
 
+const timeYAxisData = {
+  dimensions: [
+    'time',
+    'Total Traffic'
+  ],
+  source: [
+    [
+      '2024-12-18T02:30:00.000Z',
+      52763632
+    ],
+    [
+      '2024-12-18T03:00:00.000Z',
+      53073370
+    ],
+    [
+      '2024-12-18T03:30:00.000Z',
+      52407978
+    ],
+    [
+      '2024-12-18T04:00:00.000Z',
+      53007648
+    ],
+    [
+      '2024-12-18T04:30:00.000Z',
+      52711471
+    ],
+    [
+      '2024-12-18T05:00:00.000Z',
+      126562118
+    ],
+    [
+      '2024-12-18T05:30:00.000Z',
+      54993026
+    ]
+  ],
+  seriesEncode: [
+    {
+      x: 'Total Traffic',
+      y: 'time',
+      seriesName: null
+    }
+  ],
+  multiSeries: false
+}
+
 function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
   const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
@@ -138,6 +183,14 @@ storiesOf('BarChart', module)
         grid={{ right: '15%' }}
         labelFormatter={switchUsageLabelFormatter}
         labelRichStyle={getSwitchUsageRichStyle()}
+      />))
+  .add('Single Series - yAxisType is time', () =>
+    wrapInsideCard('Top Switches',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={timeYAxisData}
+        onClick={clickHandler}
+        yAxisType={'time' as unknown as undefined}
       />))
   .add('Multi Series', () =>
     wrapInsideCard('Top Switches by Traffic',

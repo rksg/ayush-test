@@ -17,6 +17,8 @@ import { NetworkTunnelTypeEnum }                          from '../types'
 import { SoftGreNetworkTunnel }                           from '../useSoftGreTunnelActions'
 import { getNetworkTunnelType, getTunnelTypeDisplayText } from '../utils'
 
+import { StyledTunnelInfoLabel } from './styledComponents'
+
 interface NetworkTunnelInfoLabelProps {
   network: NetworkTunnelActionModalProps['network'],
   isVenueActivated: boolean,
@@ -34,11 +36,12 @@ export const NetworkTunnelInfoLabel = (props: NetworkTunnelInfoLabelProps) => {
   if (!isVenueActivated || tunnelType === NetworkTunnelTypeEnum.None)
     return null
 
-  return <span>{$t({ defaultMessage: '{tunnelType} ({profileName})' },
-    {
-      tunnelType: getTunnelTypeDisplayText(tunnelType),
-      profileName: getProfileDetailLink(tunnelType, venueSdLan || venuePin || venueSoftGre)
-    })}</span>
+  return <StyledTunnelInfoLabel>
+    {$t({ defaultMessage: '{tunnelType} ({profileName})' },
+      {
+        tunnelType: getTunnelTypeDisplayText(tunnelType),
+        profileName: getProfileDetailLink(tunnelType, venueSdLan || venuePin || venueSoftGre)
+      })}</StyledTunnelInfoLabel>
 }
 
 const getProfileDetailLink = (

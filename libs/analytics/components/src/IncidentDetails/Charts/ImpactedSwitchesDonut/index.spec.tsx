@@ -16,20 +16,18 @@ jest.mock('@acx-ui/config', () => ({
 }))
 const mockOverlapsRollup = overlapsRollup as jest.Mock
 
-Object.assign(navigator, {
-  clipboard: {
-    writeText: () => {}
-  }
-})
-
 describe('ImpactedSwitchesDonut',()=>{
   const sample1:ImpactedSwitch[] = [{
     name: 'ICX7150-C12 Router',
-    mac: '58:FB:96:0B:12:CA'
+    mac: '58:FB:96:0B:12:CA',
+    model: 'ICX7150-C12',
+    firmware: 'firmware1'
   },
   {
     name: 'ICX7650-48ZP Router',
-    mac: 'D4:C1:9E:14:C3:99'
+    mac: 'D4:C1:9E:14:C3:99',
+    model: 'ICX7650-48ZP',
+    firmware: 'firmaware2'
   }
   ]
 

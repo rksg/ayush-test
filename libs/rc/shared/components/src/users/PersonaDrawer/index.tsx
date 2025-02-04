@@ -15,14 +15,15 @@ interface PersonaDrawerProps {
   isEdit: boolean,
   visible: boolean,
   onClose: (result?: CommonAsyncResponse) => void,
-  data?: Partial<Persona>
+  data?: Partial<Persona>,
+  disableAddDevices?: boolean
 }
 
 
 export function PersonaDrawer (props: PersonaDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { isEdit, data, visible, onClose } = props
+  const { isEdit, data, visible, onClose, disableAddDevices } = props
   // FIXME: Add loading status on creating and updating
   const [addPersona] = useAddPersonaMutation()
   const [updatePersona] = useUpdatePersonaMutation()
@@ -109,6 +110,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
         <PersonaForm
           form={form}
           defaultValue={data}
+          disableAddDevices={disableAddDevices}
         />
       }
       footer={footer}

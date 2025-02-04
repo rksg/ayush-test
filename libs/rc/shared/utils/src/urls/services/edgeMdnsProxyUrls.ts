@@ -44,13 +44,15 @@ export const EdgeMdnsProxyUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/edgeMulticastDnsProxyProfiles/:serviceId/venues/:venueId/edgeClusters/:edgeClusterId',
     newApi: true,
-    defaultHeaders: versionHeaders
+    defaultHeaders: versionHeaders,
+    opsApi: 'PUT:/edgeMulticastDnsProxyProfiles/{id}/venues/{id}/edgeClusters/{id}'
   },
   deactivateEdgeMdnsProxyCluster: {
     method: 'delete',
     url: '/edgeMulticastDnsProxyProfiles/:serviceId/venues/:venueId/edgeClusters/:edgeClusterId',
     newApi: true,
-    defaultHeaders: versionHeaders
+    defaultHeaders: versionHeaders,
+    opsApi: 'DELETE:/edgeMulticastDnsProxyProfiles/{id}/venues/{id}/edgeClusters/{id}'
   },
   getEdgeMdnsProxyStatsList: {
     method: 'post',

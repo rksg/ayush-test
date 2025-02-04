@@ -269,6 +269,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
         setVisible={setShowDialog}
         isEditMode={editMode}
         editData={editMode ? editData : undefined}
+        groupData={adminList}
       />}
       {membersDrawerVisible && <ShowMembersDrawer
         visible={membersDrawerVisible}
