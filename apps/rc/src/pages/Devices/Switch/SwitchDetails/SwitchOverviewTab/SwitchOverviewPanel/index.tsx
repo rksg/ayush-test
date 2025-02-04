@@ -14,13 +14,23 @@ import {
   SwitchInfo
 }
   from '@acx-ui/rc/components'
-import { useSwitchPortlistQuery }                                                                                                                                                               from '@acx-ui/rc/services'
-import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction, SwitchStatusEnum, SwitchPortViewModelQueryFields } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                                                                            from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                                                                                                                            from '@acx-ui/types'
-import { hasPermission, hasRoles }                                                                                                                                                              from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                                                                                                    from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                                                                                                                 from '@acx-ui/utils'
+import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
+import {
+  NetworkDevice,
+  NetworkDevicePosition,
+  ShowTopologyFloorplanOn,
+  StackMember,
+  SwitchPortViewModel,
+  SwitchViewModel,
+  sortPortFunction,
+  SwitchStatusEnum,
+  SwitchPortViewModelQueryFields,
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { hasPermission, hasRoles }                      from '@acx-ui/user'
+import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import type { AnalyticsFilter }                         from '@acx-ui/utils'
 
 
 import { ResourceUtilization } from './ResourceUtilization'
@@ -41,7 +51,9 @@ export function SwitchOverviewPanel (props:{
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   return <>
-    {enableSwitchBlinkLed && (hasPermission() || hasRoles([RolesEnum.READ_ONLY])) &&
+    {enableSwitchBlinkLed && (
+      hasPermission({ rbacOpsIds: [getOpsApi(SwitchUrlsInfo.blinkLeds)] })
+    || hasRoles([RolesEnum.READ_ONLY])) &&
       <div style={{ textAlign: 'right' }}>
         <Button
           style={{ marginLeft: '20px' }}

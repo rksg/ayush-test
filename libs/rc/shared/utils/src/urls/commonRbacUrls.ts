@@ -173,6 +173,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateRwgPosition: {
     method: 'put',
     url: '/venues/:venueId/rwgs/:gatewayId/floorPositions',
+    opsApi: 'PUT:/venues/{id}/rwgs/{id}/floorPositions',
     newApi: true
   },
 
