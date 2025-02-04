@@ -2217,21 +2217,20 @@ export function EditPortDrawer ({
           { getFieldTemplate({
             field: 'adminPtToPt',
             content: <Form.Item
-              noStyle
-              name='adminPtToPt'
-              valuePropName='checked'
-              initialValue={false}
+              {...getFormItemLayout(isMultipleEdit)}
+              label={$t(FIELD_LABEL.ptToPtMac)}
               children={shouldRenderMultipleText({
                 field: 'adminPtToPt', ...commonRequiredProps
               }) ? <MultipleText />
                 : <Form.Item
                   name='adminPtToPt'
-                  initialValue=''><Select
+                  initialValue='NONE'>
+                  <Select
                     options={Object.keys(ptToPtMacActionMessages).map((key) => {
                       // eslint-disable-next-line max-len
                       const label = ptToPtMacActionMessages[key as keyof typeof ptToPtMacActionMessages]
                       return {
-                        value: key === 'NONE' ? '' : key,
+                        value: key,
                         label: $t(label)
                       }
                     })}
