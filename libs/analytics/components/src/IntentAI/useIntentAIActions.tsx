@@ -112,19 +112,6 @@ const aggregateFeaturesZones = (rows:IntentListItem[]) => {
   return { feature, zone, getOptimizeMessage }
 }
 
-const getR1WlanPayload = (venueId:string, code:string) => ({
-  params: { venueId },
-  radio: codeToRadio[code],
-  payload: {
-    venueId,
-    fields: ['id', 'name', 'ssid'],
-    page: 1,
-    sortField: 'name',
-    sortOrder: 'ASC',
-    pageSize: 10_000
-  }
-})
-
 export const getUserName = () => get('IS_MLISA_SA') ? getRAIUserName() : getR1UserName()
 
 export function useIntentAIActions () {
@@ -193,6 +180,19 @@ export function useIntentAIActions () {
       showSuccessToast(action, data)
     }
   }
+
+  const getR1WlanPayload = (venueId:string, code:string) => ({
+    params: { venueId },
+    radio: codeToRadio[code],
+    payload: {
+      venueId,
+      fields: isWifiRbacEnabled ? ['id', 'name', 'venueApGroups', 'ssid'] : ['id', 'name', 'ssid'],
+      page: 1,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      pageSize: 10_000
+    }
+  })
 
   const fetchWlans = async (row: IntentListItem) => {
     if (isMlisa) {

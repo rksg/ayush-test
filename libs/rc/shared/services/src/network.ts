@@ -1711,8 +1711,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: JSON.stringify(arg.payload)
         }
 
-        const wifiNetworksQuery = await fetchWithBQ(wifiNetworksReq) as { data: { data: Network[] } }
-        const networkIds = (wifiNetworksQuery.data).data.map((item) => item.id)
+        const wifiNetworksQuery = await fetchWithBQ(wifiNetworksReq) as { data: { data: (Network & { venueApGroups: NetworkVenue[] })[] } }
+        const filterNetworks = (wifiNetworksQuery.data).data.filter(
+          network => network.venueApGroups.some(venue => venue.venueId === arg.params?.venueId))
+        const networkIds = filterNetworks.map((network) => network.id)
         const networksQueryResults = await Promise.all(networkIds.map(async (id) => {
           if (id) {
             const networksQuery = await fetchWithBQ({
@@ -1725,7 +1727,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           }
           return { data: { data: [] }, networkId: '' }
         })) as { data: { data: NetworkVenue[] }, networkId: string }[]
-        const filteredNetworks = networksQueryResults.filter(item => Object.keys(item).length > 1) as unknown as NetworkVenue[]
+        const filteredNetworks = networksQueryResults.filter(network => Object.keys(network).length > 1) as unknown as NetworkVenue[]
 
         const active = filteredNetworks.reduce(
           (active: Record<string, boolean>, network: NetworkVenue) => {
