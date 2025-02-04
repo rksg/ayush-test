@@ -71,6 +71,9 @@ exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 h1.c7.ant-typography {
@@ -175,16 +178,8 @@ h5.c7.ant-typography {
             class="ant-card-head-title"
           >
             <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
-            >
-              <div
-                class="ant-space-item"
-              >
-                <div
-                  class="c1"
-                />
-              </div>
-            </div>
+              class="c1"
+            />
           </div>
           <div
             class="ant-card-extra"

@@ -88,6 +88,9 @@ exports[`Alarm widget v2 should render "No active alarms" when no alarms exist 1
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c0 {
@@ -169,17 +172,9 @@ exports[`Alarm widget v2 should render "No active alarms" when no alarms exist 1
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center"
+                class="c2"
               >
-                <div
-                  class="ant-space-item"
-                >
-                  <div
-                    class="c2"
-                  >
-                    Alarms
-                  </div>
-                </div>
+                Alarms
               </div>
             </div>
             <div
