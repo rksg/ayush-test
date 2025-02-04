@@ -6,7 +6,7 @@ import { ClientHealth }                                                 from '@a
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { formatter, convertEpochToRelativeTime }                        from '@acx-ui/formatter'
-import { Client, ClientStatistic, ClientStatusEnum }                     from '@acx-ui/rc/utils'
+import { Client, ClientStatistic, ClientStatusEnum }                    from '@acx-ui/rc/utils'
 import { useParams }                                                    from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                                         from '@acx-ui/utils'
 
