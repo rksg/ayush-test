@@ -53,7 +53,7 @@ jest.mock('moment', () => {
   })
 })
 
-const mockedUpdate = jest.fn()
+const mockedUpdate = jest.fn().mockResolvedValue({})
 const mockedDelete = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
   useUpdateChatMutation: () => ([ mockedUpdate ]),

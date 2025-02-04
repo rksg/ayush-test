@@ -83,6 +83,7 @@ export const History = styled.div`
         text-overflow: ellipsis;
         padding: 6px 5px 6px 0;
         cursor: pointer;
+        font-size: var(--acx-body-4-font-size);
       }
       .action {
         display: none;
@@ -452,7 +453,7 @@ export const Grid = styled.div`
 `
 
 export const Widget = styled(Card)`
-  &.table .ant-card-body {
+  &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;
     /* width */
     &::-webkit-scrollbar {
@@ -470,6 +471,7 @@ export const Widget = styled(Card)`
     &::-webkit-scrollbar-thumb {
       background: var(--acx-neutrals-30);
       border-radius: 4px;
+      border-top: 1px solid var(--acx-primary-white);
     }
   }
 `

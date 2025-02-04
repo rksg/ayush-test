@@ -88,7 +88,6 @@ export default function HistoryDrawer (props: DrawerProps) {
 
   useEffect(()=>{
     if(historyData?.length) {
-      handleDrawerClose()
       setHistoryList(historyData)
     } else if(historyData?.length === 0) {
       setHistory([])
@@ -99,6 +98,10 @@ export default function HistoryDrawer (props: DrawerProps) {
     updateChat({
       params: { sessionId: chat.id },
       payload: form.getFieldValue('chatTitle')
+    }).then(()=>{
+      setTimeout(()=>{
+        onCancelEditChat()
+      }, 300)
     })
   }
 
