@@ -12,6 +12,7 @@ import MigrationSummary                                     from './pages/Admini
 import { AddNewCustomRole }                                 from './pages/Administration/UserPrivileges/CustomRoles/AddNewCustomRole'
 import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
 import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
+import AICanvas                                             from './pages/AICanvas'
 import AnalyticsBase                                        from './pages/Analytics'
 import Dashboard                                            from './pages/Dashboard'
 import DevicesBase                                          from './pages/Devices'
@@ -29,7 +30,6 @@ import TimelineBase                                         from './pages/Timeli
 import { UserProfile }                                      from './pages/UserProfile'
 import UsersBase                                            from './pages/Users'
 import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
-
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -60,6 +60,7 @@ function AllRoutes () {
           <Route path='*' element={<PageNotFound />} />
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
+          <Route path='canvas' element={<AICanvas />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
