@@ -45,7 +45,7 @@ describe('Client Isolation Settings Fields', () => {
     expect(
       screen.getByText(
         'Enabling on the uplink/WAN port will disconnect AP(s)')
-      ).toBeInTheDocument()
+    ).toBeInTheDocument()
 
     const packetsTypeDropdown = screen.getByRole('combobox', { name: 'Isolate Packets' })
     await userEvent.click(packetsTypeDropdown)

@@ -98,7 +98,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
         <Alert
           showIcon={true}
           style={{ verticalAlign: 'middle' }}
-          message={$t({ 
+          message={$t({
             defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })
           }
         />
