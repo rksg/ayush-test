@@ -5,6 +5,7 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
   addApSnmpPolicy: {
     method: 'post',
     url: '/snmpAgentProfiles',
+    opsApi: 'POST:/snmpAgentProfiles',
     newApi: true
   },
   getApUsageByApSnmpPolicy: { // detail
@@ -20,11 +21,13 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
   updateApSnmpPolicy: {
     method: 'put',
     url: '/snmpAgentProfiles/:profileId',
+    opsApi: 'PUT:/snmpAgentProfiles/{id}',
     newApi: true
   },
   deleteApSnmpPolicy: {
     method: 'delete',
     url: '/snmpAgentProfiles/:profileId',
+    opsApi: 'DELETE:/snmpAgentProfiles/{id}',
     newApi: true
   },
   updateVenueApSnmpSettings: { //venue instances
@@ -62,6 +65,7 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
   getApSnmpFromViewModel: {
     method: 'post',
     url: '/snmpAgentProfiles/query',
+    opsApi: 'POST:/snmpAgentProfiles/query',
     newApi: true
   }
 }
