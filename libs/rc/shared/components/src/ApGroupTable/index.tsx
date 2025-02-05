@@ -292,7 +292,6 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewM
     title: $t({ defaultMessage: 'Clients' }),
     dataIndex: 'clients',
     align: 'center',
-    sorter: true,
     render: (_, row: ApGroupViewModel) => {
       return transformDisplayNumber(row.clients)
     }
