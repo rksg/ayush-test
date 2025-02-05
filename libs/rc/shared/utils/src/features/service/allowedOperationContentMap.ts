@@ -13,6 +13,7 @@ import {
   EthernetPortProfileUrls,
   IdentityProviderUrls,
   LbsServerProfileUrls,
+  SwitchUrlsInfo,
   TunnelProfileUrls,
   WifiOperatorUrls
 } from '../../urls'
@@ -140,6 +141,18 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: ['PUT:/applicationPolicies/{id}'],
     [PolicyOperation.DELETE]: ['DELETE:/applicationPolicies/{id}'],
     [PolicyOperation.LIST]: ['POST:/applicationPolicies/query']
+  },
+  [PolicyType.FLEX_AUTH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addFlexAuthenticationProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.updateFlexAuthenticationProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteFlexAuthenticationProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getFlexAuthenticationProfiles)]
+  },
+  [PolicyType.SWITCH_PORT_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addSwitchPortProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getSwitchPortProfilesList)]
   },
   [PolicyType.WORKFLOW]: {
     [PolicyOperation.CREATE]: ['POST:/workflows'],
