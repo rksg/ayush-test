@@ -253,6 +253,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateVenueSchedulesPerApModel)],
       visible: (rows) => {
         if (!hasAvailableUpdateDisplayData(rows)) {
           return false
