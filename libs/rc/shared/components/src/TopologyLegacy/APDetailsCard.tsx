@@ -24,8 +24,8 @@ export function APDetailsCard (props: {
   const { apDetail, isLoading, onClose } = props
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg })
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/wifi')
 

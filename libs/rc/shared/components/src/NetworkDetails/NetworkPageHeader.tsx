@@ -24,7 +24,8 @@ function NetworkPageHeader ({
   selectedVenues?: string[]
 }) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg })
   const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()

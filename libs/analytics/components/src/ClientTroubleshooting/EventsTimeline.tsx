@@ -138,8 +138,8 @@ export function Timeline (props: TimelineProps) {
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { startDate, endDate } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate } = useDateFilter({ showResetMsg })
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
 
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>

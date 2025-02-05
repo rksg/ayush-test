@@ -27,9 +27,10 @@ interface GroupedStatsTablesProps {
 export const GroupedStatsTables =
   styled((props: GroupedStatsTablesProps) => {
     const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+    const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
     const { $t } = useIntl()
     const { className, edgeData, edgeFirewallData } = props
-    const { startDate, endDate, range, setDateFilter } = useDateFilter({ isDateRangeLimit })
+    const { startDate, endDate, range, setDateFilter } = useDateFilter({ showResetMsg })
     const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
     const directionOpts = getACLDirectionOptions($t)
 

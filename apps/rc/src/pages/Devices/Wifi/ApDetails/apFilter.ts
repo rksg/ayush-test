@@ -6,8 +6,8 @@ import type { AnalyticsFilter }   from '@acx-ui/utils'
 export const useApFilter = (
   { venueId, apMac }: { venueId?: string, apMac?: string }
 ): AnalyticsFilter => {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg })
   return {
     ...dateFilter,
     filter: pathToFilter([

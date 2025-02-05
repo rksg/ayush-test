@@ -58,8 +58,8 @@ export function useActivityTableQuery (
   pagination?: Record<string, unknown>,
   earliestStart?: Moment
 ) {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { dateFilter } = useDateFilter({ isDateRangeLimit, earliestStart })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart })
   const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = useTableQuery<Activity>({

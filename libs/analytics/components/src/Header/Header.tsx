@@ -44,7 +44,8 @@ export const Filter = (
 
 export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) => {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg })
   return [
     <Filter
       key={getShowWithoutRbacCheckKey('network-filter')}

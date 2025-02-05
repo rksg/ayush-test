@@ -29,9 +29,9 @@ import type { EChartsOption, TooltipComponentOption } from 'echarts'
 type Key = keyof Omit<EdgeResourceTimeSeries, 'time'>
 
 export function EdgeResourceUtilizationWidget () {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
-  const filters = useDateFilter({ isDateRangeLimit })
+  const filters = useDateFilter({ showResetMsg })
   const params = useParams()
 
   const emptyData = {

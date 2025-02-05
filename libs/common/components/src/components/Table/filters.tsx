@@ -39,8 +39,9 @@ interface RangePickerProps {
 
 function RangePickerComp (props: RangePickerProps) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { filterValues, setFilterValues, settingsId, filterPersistence } = props
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg })
   return <UI.FilterRangePicker>
     <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

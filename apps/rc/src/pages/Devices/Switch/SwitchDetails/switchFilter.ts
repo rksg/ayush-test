@@ -5,8 +5,8 @@ import { useDateFilter }          from '@acx-ui/utils'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 export const useSwitchFilter = (details: SwitchViewModel | undefined): AnalyticsFilter => {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg })
   return {
     ...dateFilter,
     filter: pathToFilter([

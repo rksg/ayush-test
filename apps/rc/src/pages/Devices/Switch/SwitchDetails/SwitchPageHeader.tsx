@@ -69,6 +69,7 @@ function SwitchPageHeader () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
@@ -97,7 +98,7 @@ function SwitchPageHeader () {
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ isDateRangeLimit })
+    useDateFilter({ showResetMsg })
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {

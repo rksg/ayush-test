@@ -7,8 +7,8 @@ import type { AnalyticsFilter }   from '@acx-ui/utils'
 import { extractSSIDFilter, useGetNetwork } from '../services'
 
 export function NetworkIncidentsTab () {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg })
   const network = useGetNetwork()
   const ssids = extractSSIDFilter(network)
   const filters = {

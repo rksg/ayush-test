@@ -1,15 +1,18 @@
 import { useMemo } from 'react'
 
+import { message }         from 'antd'
+import { ArgsProps }       from 'antd/lib/message'
 import moment              from 'moment'
 import { useSearchParams } from 'react-router-dom'
+import { v4 as uuidv4 }    from 'uuid'
 
 import { DateRangeFilter, DateRange, getDateRangeFilter, dateRangeForLast } from './dateUtil'
 import { getIntl }                                                          from './intlUtil'
 import { AccountTier, getJwtTokenPayload }                                  from './jwtToken'
-import { showToast }                                                        from './Toast'
 import { useEncodedParameter }                                              from './useEncodedParameter'
 
 import type { Moment } from 'moment-timezone'
+
 
 export interface DateFilter extends DateRangeFilter {
   initiated?: number // seconds
@@ -26,10 +29,10 @@ export function getEarliestStart () {
 
 export const useDateFilter = ({
   earliestStart = undefined,
-  isDateRangeLimit = false
+  showResetMsg = false
 }: {
   earliestStart?: Moment;
-  isDateRangeLimit?: boolean;
+  showResetMsg?: boolean;
 } = {})=> {
   const { read, write } = useEncodedParameter<DateFilter>('period')
   const { $t } = getIntl()
@@ -37,8 +40,7 @@ export const useDateFilter = ({
   const [, setSearch] = useSearchParams()
 
   return useMemo(() => {
-    const earliestStartData = isDateRangeLimit ?
-      (earliestStart || getEarliestStart()) : moment().subtract(3, 'months')
+    const earliestStartData = (earliestStart || getEarliestStart())
     const isSameOrAfter = period && moment(period.startDate).isSameOrAfter(earliestStartData)
     const dateFilter = isSameOrAfter
       ? getDateRangeFilter(period.range, period.startDate, period.endDate)
@@ -57,7 +59,7 @@ export const useDateFilter = ({
       setSearch(newSearch, { replace: true })
     }
 
-    if(url.searchParams.get('period') && !isSameOrAfter && isDateRangeLimit) {
+    if(showResetMsg && url.searchParams.get('period') && !isSameOrAfter) {
       clearDateFilter()
       showToast({
         key: 'dateFilterResetToast',
@@ -78,3 +80,26 @@ export const useDateFilter = ({
   }, [read, write, period]) // eslint-disable-line react-hooks/exhaustive-deps
   // if we add earliestStart as deps, the date will start sliding again
 }
+
+type ToastType = 'info' | 'success' | 'error'
+
+interface ToastProps extends ArgsProps {
+  type: ToastType
+  extraContent?: React.ReactNode
+  closable?: boolean
+  link?: { text?: string, onClick: Function }
+}
+
+export const showToast = (config: ToastProps): string | number => {
+  const key = config.key || uuidv4()
+  message.open({
+    className: `toast-${config.type}`,
+    key,
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    icon: <></>,
+    duration: 7,
+    ...config
+  })
+  return key
+}
+

@@ -62,10 +62,10 @@ export interface AnalyticsFilterProps {
 }
 
 export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const { dateFilter } = useDateFilter({ showResetMsg })
   // use dashboard filter as analytics filter when only 1 venue selected
   const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const venuesFilter = dashboardFilter.read()

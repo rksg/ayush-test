@@ -32,9 +32,10 @@ import EdgeDetailsTabs from './EdgeDetailsTabs'
 
 export const EdgeDetailsPageHeader = () => {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ isDateRangeLimit })
+    useDateFilter({ showResetMsg })
   const params = useParams()
   const { serialNumber } = params
   const { currentEdgeStatus: currentEdge, currentCluster } = useContext(EdgeDetailsDataContext)

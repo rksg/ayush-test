@@ -17,9 +17,9 @@ export function AnalyticsTabs (props: {
   const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { activeSubTab } = useParams()
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const { dateFilter } = useDateFilter({ showResetMsg })
   const onTabChange = (tab: string) => {
     navigate({
       ...location,

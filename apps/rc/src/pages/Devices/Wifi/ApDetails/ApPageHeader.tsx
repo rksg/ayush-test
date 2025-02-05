@@ -41,11 +41,12 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ isDateRangeLimit })
+    useDateFilter({ showResetMsg })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
   const { data } = useApDetailHeaderQuery({ params })

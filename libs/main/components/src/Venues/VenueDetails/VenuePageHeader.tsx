@@ -26,7 +26,8 @@ import VenueTabs from './VenueTabs'
 
 function DatePicker () {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg })
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

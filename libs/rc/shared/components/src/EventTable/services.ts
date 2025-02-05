@@ -88,8 +88,8 @@ const adminLogsDefaultFilters = {
 }
 
 function useQueryFilter (earliestStart?: Moment) {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { dateFilter } = useDateFilter({ isDateRangeLimit, earliestStart })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart })
   const detailLevel = useUserProfileContext().data?.detailLevel
   return {
     detailLevel,

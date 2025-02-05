@@ -5,8 +5,8 @@ import { EventTable, useEventsTableQuery }   from '@acx-ui/rc/components'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 const Events = () => {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const earliestStart = isDateRangeLimit ? moment().subtract(3, 'month').startOf('day'): undefined
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const earliestStart = showResetMsg ? moment().subtract(3, 'month').startOf('day'): undefined
   const settingsId = 'timeline-event-table'
   const tableQuery = useEventsTableQuery(
     undefined,

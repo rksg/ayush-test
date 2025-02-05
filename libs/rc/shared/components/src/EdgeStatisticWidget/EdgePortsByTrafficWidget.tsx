@@ -14,8 +14,8 @@ import { useDateFilter }                                              from '@acx
 
 export function EdgePortsByTrafficWidget () {
   const { $t } = useIntl()
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const filters = useDateFilter({ isDateRangeLimit })
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const filters = useDateFilter({ showResetMsg })
   const params = useParams()
 
   const { data, isLoading } = useGetEdgeTopTrafficQuery({

@@ -17,10 +17,10 @@ import {
 
 export function SessionTable () {
   const intl = useIntl()
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { clientId } = useParams()
   const { $t } = intl
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const { dateFilter } = useDateFilter({ showResetMsg })
   const filters = {
     ...dateFilter,
     mac: clientId?.toUpperCase()

@@ -5,9 +5,9 @@ import { AnalyticsFilter, useDateFilter } from '@acx-ui/utils'
 import { useApGroupContext } from '../ApGroupContextProvider'
 
 export default function ApGroupIncidentsTab () {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { venueId, apGroupId } = useApGroupContext()
-  const { dateFilter } = useDateFilter({ isDateRangeLimit })
+  const { dateFilter } = useDateFilter({ showResetMsg })
 
   const filters = {
     ...dateFilter,

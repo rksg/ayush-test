@@ -16,11 +16,11 @@ function Timeline () {
   const { activeTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
-
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const earliestStart = isDateRangeLimit ? moment().subtract(3, 'month').startOf('day'): undefined
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const earliestStart = showResetMsg ? moment().subtract(3, 'month').startOf('day'): undefined
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ earliestStart, isDateRangeLimit })
+    useDateFilter({ earliestStart, showResetMsg })
 
   const onTabChange = (tab: string) =>
     navigate({
