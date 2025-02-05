@@ -395,7 +395,7 @@ export function NetworkForm (props:{
       }
     )
 
-    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'],  wifiCallingIds)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'], wifiCallingIds)
     form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingEnabled'], wifiCallingEnabled)
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds, saveState])
