@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import Privacy from '.'
 
