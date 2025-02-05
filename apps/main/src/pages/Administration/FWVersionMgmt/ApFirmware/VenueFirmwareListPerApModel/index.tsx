@@ -32,7 +32,7 @@ import {
   ApModelFirmware,
   dateSort,
   defaultSort, FirmwareLabel,
-  FirmwareType,
+  FirmwareType, FirmwareUrlsInfo,
   FirmwareVenuePerApModel,
   sortProp,
   SortResult,
@@ -41,10 +41,9 @@ import {
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess,
-  hasPermission,
   hasRoles
 }                                                               from '@acx-ui/user'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
 import { PreferencesDialog }    from '../../PreferencesDialog'
@@ -222,6 +221,7 @@ export function VenueFirmwareListPerApModel () {
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => {
         if (!hasAvailableUpdateDisplayData(rows)) {
           return false
@@ -236,6 +236,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => {
         const forEarlyAccess = true
         if (!hasAvailableUpdateDisplayData(rows, forEarlyAccess)) {
@@ -252,6 +253,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateVenueSchedulesPerApModel)],
       visible: (rows) => {
         if (!hasAvailableUpdateDisplayData(rows)) {
           return false
@@ -267,6 +269,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.skipVenueSchedulesPerApModel)],
       visible: (rows) => rows.every(row => hasApSchedule(row.nextApFirmwareSchedules)),
       label: $t({ defaultMessage: 'Skip Update' }),
       onClick: (rows, clearSelection) => {
@@ -275,6 +278,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => canDowngrade(rows),
       // eslint-disable-next-line max-len
       label: $t({ defaultMessage: 'Downgrade' }),
@@ -297,7 +301,7 @@ export function VenueFirmwareListPerApModel () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         // eslint-disable-next-line max-len
-        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        rowSelection={filterByAccess(rowActions).length > 0 &&
           { type: 'checkbox', selectedRowKeys }}
         actions={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
