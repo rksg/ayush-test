@@ -156,6 +156,7 @@ export function SingleRadioSettings (props:{
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
 
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  // eslint-disable-next-line max-len
   const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const [
