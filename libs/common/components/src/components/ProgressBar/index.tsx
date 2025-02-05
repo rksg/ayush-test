@@ -29,11 +29,11 @@ export const strokeColorsCompletionByPercent = (percent: number) => {
 
 export const strokeColorsUsageByPercent = (percent: number) => {
   if (percent <= 25)
-    return Array(1).fill(green)
+    return green
   else if (percent <= 50)
-    return Array(3).fill(yellow)
+    return yellow
   else
-    return Array(5).fill(red)
+    return red
 }
 
 export const normalizePercent = (percent: number) => {

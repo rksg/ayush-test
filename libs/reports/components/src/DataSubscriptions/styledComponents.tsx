@@ -6,7 +6,7 @@ import { Button } from '@acx-ui/components'
 export const QuotaUsageTitle = styled.div`
   font-size: var(--acx-headline-3-font-size);
   line-height: var(--acx-headline-3-line-heigh);
-  font-weight: var(--acx-headline-3-font-weigh);
+  font-weight: var(--acx-headline-3-font-weight);
   display: block;
   margin-bottom: 14px;
 `
