@@ -7,9 +7,12 @@ import { useIntl }         from 'react-intl'
 import { CSSProperties }   from 'styled-components'
 import styled              from 'styled-components/macro'
 
-import { Button, Pill, Table, TableProps }            from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }       from '@acx-ui/icons'
-import { BandModeEnum, VenueApModelBandModeSettings } from '@acx-ui/rc/utils'
+import { Button, Pill, Table, TableProps }                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, EditOutlinedIcon }                                                        from '@acx-ui/icons'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
+import { BandModeEnum, VenueApModelBandModeSettings }                                                  from '@acx-ui/rc/utils'
+import { useParams }                                                                                   from '@acx-ui/react-router-dom'
 
 import { VenueBandManagementDrawer } from './VenueBandManagementDrawer'
 
@@ -46,8 +49,12 @@ export const VenueBandManagement = ({ style, disabled,
   currentVenueBandModeData, setCurrentVenueBandModeData }: VenueBandManagementPorps) => {
 
   const { $t } = useIntl()
+  const { venueId } = useParams()
 
   const [supportBandManagementApModels, setSupportBandManagementApModels] = useState<string[]>([])
+
+  const [rfDrawerVisible, setRfDrawerVisible] = useState(false)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   useEffect(()=> {
     const supportBandManagementApModels = triBandApModels
@@ -133,7 +140,22 @@ export const VenueBandManagement = ({ style, disabled,
   return (<Space size={8} direction='vertical' style={style}>
     <Row gutter={0}>
       <Col span={18}>
-        Wi-Fi 6/7 band management:
+        <Space>
+          {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={''}
+            showDetailButton
+            placement='right'
+            onClick={() => setRfDrawerVisible(true)}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={rfDrawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.BAND_MANAGEMENT}
+            onClose={() => setRfDrawerVisible(false)}
+          />}
+        </Space>
       </Col>
       <Col span={6} style={{ textAlign: 'right' }}>
         <Button
