@@ -8,7 +8,8 @@ import { useRaiR1HelpPageLink }                         from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                             from '@acx-ui/user'
 
-import { generateBreadcrumb } from './utils'
+import { DataSubscriptionsTable } from './Table'
+import { generateBreadcrumb }     from './utils'
 
 type DataSubscriptionsContentProps = {
   isRAI?: boolean
@@ -58,6 +59,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
           helpUrl={helpUrl} />
       </GridCol>
     </GridRow>
+    <DataSubscriptionsTable isRAI/>
   </>)
 }
 

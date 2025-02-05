@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event'
 
 import { get }                               from '@acx-ui/config'
 import { Provider }                          from '@acx-ui/store'
-import { render, screen }                    from '@acx-ui/test-utils'
+import { mockServer, render, screen }        from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
-import DataSubscriptionsContent from './Content'
+import { mockSubscriptionQuery } from './__fixtures__'
+import DataSubscriptionsContent  from './Content'
 
 const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
@@ -49,6 +50,9 @@ describe('DataSubscriptionsContent', () => {
         READ_DATA_SUBSCRIPTIONS: true,
         WRITE_DATA_SUBSCRIPTIONS: true
       } as RaiPermissions)
+      mockServer.use(
+        mockSubscriptionQuery()
+      )
     })
     it('should render DataSubscriptionsContent correct', async () => {
       render(<DataSubscriptionsContent isRAI/>, {
