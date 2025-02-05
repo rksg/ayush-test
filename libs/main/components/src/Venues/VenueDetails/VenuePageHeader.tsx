@@ -8,6 +8,7 @@ import { useVenueDetailsHeaderQuery }                   from '@acx-ui/rc/service
 import {
   ConfigTemplateType,
   CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
@@ -70,7 +71,10 @@ function VenuePageHeader () {
           configTemplateType={ConfigTemplateType.VENUE}
           instanceId={venueId}
           type='primary'
-          rbacOpsIds={[getOpsApi(CommonUrlsInfo.updateVenue)]}
+          rbacOpsIds={[
+            getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+          ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {
