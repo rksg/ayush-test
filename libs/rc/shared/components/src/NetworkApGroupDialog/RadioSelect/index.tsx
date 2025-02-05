@@ -31,14 +31,19 @@ export const RadioSelect = memo((props: RadioSelectProps) => {
   useEffect(() => {
     setSelectedValues((prev) => {
       const updatedValues = new Set(prev)
+      const shouldInclude6G = isSupport6G && default6gEnablementToggle
 
-      if (isSupport6G && default6gEnablementToggle) {
+      if (shouldInclude6G && !updatedValues.has(RadioTypeEnum._6_GHz)) {
         updatedValues.add(RadioTypeEnum._6_GHz)
-      } else {
-        updatedValues.delete(RadioTypeEnum._6_GHz)
+        return Array.from(updatedValues)
       }
 
-      return Array.from(updatedValues)
+      if (!shouldInclude6G && updatedValues.has(RadioTypeEnum._6_GHz)) {
+        updatedValues.delete(RadioTypeEnum._6_GHz)
+        return Array.from(updatedValues)
+      }
+
+      return prev
     })
   }, [isSupport6G, default6gEnablementToggle])
 
