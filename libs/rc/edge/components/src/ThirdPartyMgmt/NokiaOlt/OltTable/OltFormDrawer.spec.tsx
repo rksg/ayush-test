@@ -1,13 +1,14 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import {
-  useVenuesListQuery,
-  useGetEdgeClusterListQuery
-} from '@acx-ui/rc/services'
-import  { EdgeTnmServiceUrls, VenueFixtures, EdgeGeneralFixtures, EdgeOltFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, screen, render, waitFor }                                      from '@acx-ui/test-utils'
+import  {
+  EdgeTnmServiceUrls,
+  VenueFixtures, EdgeGeneralFixtures, EdgeOltFixtures,
+  CommonUrlsInfo,
+  EdgeUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, screen, render, waitFor } from '@acx-ui/test-utils'
 
 import { NokiaOltFormDrawer } from './OltFormDrawer'
 
@@ -31,38 +32,16 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-jest.mock('@acx-ui/rc/services', () => {
-  const actual = jest.requireActual('@acx-ui/rc/services')
-  return {
-    useVenuesListQuery: jest.fn(),
-    useGetEdgeClusterListQuery: jest.fn(),
-    useAddEdgeOltMutation: actual.useAddEdgeOltMutation,
-    useUpdateEdgeOltMutation: actual.useUpdateEdgeOltMutation
-  }
-})
-
 const { mockOlt } = EdgeOltFixtures
-// eslint-disable-next-line max-len
-const mockVenueOptions = VenueFixtures.mockVenueOptions.data.map((v) => ({ label: v.name, value: v.id }))
-// eslint-disable-next-line max-len
-const mockEdgeClusterList = EdgeGeneralFixtures.mockEdgeClusterList.data.map((c) => ({ label: c.name, value: c.clusterId }))
+const { mockVenueOptions } = VenueFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 describe('NokiaOltFormDrawer', () => {
   const params = { tenantId: 'mock-tenant-id' }
   const mockPath = '/:tenantId/devices/optical/olt'
   const mockedAddReq = jest.fn()
 
   beforeEach(() => {
-    mockedAddReq.mockClear();
-
-    (useVenuesListQuery as jest.Mock).mockReturnValue({
-      venueOptions: mockVenueOptions,
-      isVenueOptsLoading: false
-    });
-
-    (useGetEdgeClusterListQuery as jest.Mock).mockReturnValue({
-      clusterOptions: mockEdgeClusterList,
-      isClusterOptsLoading: false
-    })
+    mockedAddReq.mockClear()
 
     mockServer.use(
       rest.post(
@@ -70,7 +49,14 @@ describe('NokiaOltFormDrawer', () => {
         (_, res, ctx) => {
           mockedAddReq()
           return res(ctx.status(202))
-        }
+        }),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockVenueOptions))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       )
     )
   })

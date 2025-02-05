@@ -64,7 +64,8 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'OLT Device' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            // since we use radio selection, there will be only one row
+            entityValue: rows[0].name,
             numOfEntities: rows.length
           },
           onOk: () => {

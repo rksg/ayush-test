@@ -12,11 +12,12 @@ import useEdgeNokiaOltTable from './OltTable'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockOltList } = EdgeOltFixtures
+const mockOpenAddDrawer = jest.fn()
 jest.mock('@acx-ui/edge/components', () => {
   const { forwardRef } = jest.requireActual('react')
   return {
     EdgeNokiaOltTable: forwardRef((_props, ref) => {
-      ref.current = { openAddDrawer: jest.fn() }
+      ref.current = { openAddDrawer: mockOpenAddDrawer }
       return <div data-testid='EdgeNokiaOltTable'/>
     })
   }
@@ -32,7 +33,7 @@ const MockComponent = (props: { title?: string, headerExtra?: React.ReactNode, c
 describe('useEdgeNokiaOltTable', () => {
   const mockGetOlt = jest.fn()
   beforeEach(() => {
-    mockGetOlt.mockClear()
+    jest.resetAllMocks()
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeTnmServiceApi.util.resetApiState())
 
@@ -67,9 +68,9 @@ describe('useEdgeNokiaOltTable', () => {
       headerExtra={result.current?.headerExtra}
       component={result.current?.component}
     />)
-    await screen.findByText('Optical (5)')
     expect(screen.getByTestId('headerExtra')).not.toBeEmptyDOMElement()
     expect(within(screen.getByTestId('component')).getByTestId('EdgeNokiaOltTable')).toBeVisible()
+    expect(await screen.findByTestId('title')).toHaveTextContent('Optical (5)')
   })
 
   it('calls the handleAddOlt function when the button is clicked', async () => {
@@ -82,7 +83,9 @@ describe('useEdgeNokiaOltTable', () => {
       headerExtra={result.current?.headerExtra}
       component={result.current?.component}
     />)
-    await screen.findByText('Optical (5)')
+
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(mockOpenAddDrawer).toBeCalledTimes(1)
+    expect(await screen.findByTestId('title')).toHaveTextContent('Optical (5)')
   })
 })

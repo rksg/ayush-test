@@ -32,7 +32,7 @@ describe('OltDetailsDrawer', () => {
     expect(screen.getByText('Firmware Version')).toBeInTheDocument()
     expect(screen.getByText('22.649')).toBeInTheDocument()
     expect(screen.getByText('Venue')).toBeInTheDocument()
-    expect(screen.getByText('Mock Venue 2')).toBeInTheDocument()
+    expect(screen.getByText('Mock Venue 1')).toBeInTheDocument()
     expect(screen.getByText('RUCKUS Edge')).toBeInTheDocument()
     expect(screen.getByText('Edge Cluster 1')).toBeInTheDocument()
   })
@@ -89,7 +89,7 @@ describe('OltDetailsDrawer', () => {
       <OltDetailsDrawer {...props} />
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('Venue')).toBeInTheDocument()
-    expect(screen.getByText('Mock Venue 2')).toBeInTheDocument()
+    expect(screen.getByText('Mock Venue 1')).toBeInTheDocument()
     expect(screen.getAllByText('--')).toHaveLength(5)
   })
 })
