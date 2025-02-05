@@ -26,7 +26,8 @@ import {
   NotificationRecipientUIModel,
   NotificationEndpointType,
   emailRegExp,
-  generalPhoneRegExp
+  generalPhoneRegExp,
+  NotificationRecipientType
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { RolesEnum }          from '@acx-ui/types'
@@ -42,6 +43,7 @@ export interface RecipientDrawerProps {
   editMode: boolean;
   editData: NotificationRecipientUIModel;
   isDuplicated: (type: string, value: string) => boolean;
+  RecipientData?: NotificationRecipientUIModel[]
 }
 
 interface Recipient {
@@ -85,7 +87,8 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     setVisible,
     editMode,
     editData,
-    isDuplicated
+    isDuplicated,
+    RecipientData
   } = props
   const [isValid, setIsValid] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -106,6 +109,9 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
     value: item.id
   }))
+
+  const existingPgList = RecipientData?.filter((item) =>
+    item.recipientType === NotificationRecipientType.PRIVILEGEGROUP)
 
   useEffect(()=>{
     if (editData && visible) {
@@ -328,6 +334,14 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     setRecipientType(e.target.value)
   }
 
+  const validatePrivilegeGroup = (value: string) =>{
+    if (existingPgList?.find(e => e.privilegeGroup === value) &&
+      editData.privilegeGroup !== value) {
+      return Promise.reject($t({ defaultMessage: 'Privilege Group already exists' }))
+    }
+    return Promise.resolve()
+  }
+
   const GlobalRecipientContent =
     <>
       <Form.Item
@@ -409,7 +423,11 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       <Form.Item
         name='privilegeGroup'
         label={$t({ defaultMessage: 'Privilege Group Name' })}
-        rules={[{ required: true }]}
+        rules={[
+          { required: true },
+          { validator: (_, value) => validatePrivilegeGroup(value) }
+        ]}
+        validateFirst
       >
         <Select
           options={groupList}

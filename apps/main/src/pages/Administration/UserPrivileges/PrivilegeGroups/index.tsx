@@ -55,7 +55,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   const [deletePrivilegeGroup, { isLoading: isDeletePrivilegeGroupUpdating }]
     = useDeletePrivilegeGroupMutation()
-  const linkAddPrivilegePath =
+  const linkAddPriviledgePath =
     useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
 
   useEffect(() => {
@@ -74,8 +74,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       tenantType: tenantType as TenantType
     }
     navigate({
-      ...linkAddPrivilegePath,
-      pathname: `${linkAddPrivilegePath.pathname}/create`
+      ...linkAddPriviledgePath,
+      pathname: `${linkAddPriviledgePath.pathname}/create`
     }, { state: stateProp })
   }
 
@@ -162,8 +162,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           tenantType: tenantType as TenantType
         }
         navigate({
-          ...linkAddPrivilegePath,
-          pathname: `${linkAddPrivilegePath.pathname}/edit/${selectedRows[0].id}`
+          ...linkAddPriviledgePath,
+          pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
         }, { state: stateProp })
       }
     },
@@ -179,8 +179,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           isOnboardedMsp: isOnboardedMsp
         }
         navigate({
-          ...linkAddPrivilegePath,
-          pathname: `${linkAddPrivilegePath.pathname}/clone/${selectedRows[0].id}`
+          ...linkAddPriviledgePath,
+          pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
         }, { state: stateProp })
       }
     },

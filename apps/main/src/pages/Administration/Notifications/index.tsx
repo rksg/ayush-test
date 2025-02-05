@@ -264,6 +264,7 @@ export const NotificationsTable = () => {
           editMode={editMode}
           editData={editData}
           isDuplicated={isDuplicated}
+          RecipientData={notificationList.data ?? []}
         />
         : <RecipientDialog
           visible={showDialog}
