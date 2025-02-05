@@ -1,13 +1,34 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps, Tooltip }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery }  from '@acx-ui/rc/services'
-import { SwitchCliTemplateModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
-import { useNavigate }                                             from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                            from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, hasPermission } from '@acx-ui/user'
+import {
+  Loader,
+  showActionModal,
+  Table,
+  TableProps,
+  Tooltip
+
+}     from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useDeleteCliTemplatesMutation,
+  useGetCliTemplatesQuery
+
+}  from '@acx-ui/rc/services'
+import {
+  SwitchCliTemplateModel,
+  SwitchUrlsInfo,
+  usePollingTableQuery
+}            from '@acx-ui/rc/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { useNavigate }  from '@acx-ui/react-router-dom'
+import { SwitchScopes } from '@acx-ui/types'
+import {
+  hasCrossVenuesPermission,
+  filterByAccess,
+  hasPermission
+
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { Notification  } from './styledComponents'
 
@@ -64,6 +85,7 @@ export function OnDemandCliTab () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateCliTemplate)],
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit`, { replace: false })
       }
@@ -71,6 +93,7 @@ export function OnDemandCliTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteCliTemplates)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -94,7 +117,11 @@ export function OnDemandCliTab () {
   ]
 
   const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE],
+    rbacOpsIds: [
+      getOpsApi(SwitchUrlsInfo.updateCliTemplate),
+      getOpsApi(SwitchUrlsInfo.deleteCliTemplates)
+    ]
   })
 
   return (
@@ -125,6 +152,7 @@ export function OnDemandCliTab () {
         actions={hasCrossVenuesPermission() ? filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addCliTemplate)],
           onClick: () => {
             navigate('add', { replace: false })
           }

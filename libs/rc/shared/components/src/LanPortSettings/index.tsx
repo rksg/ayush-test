@@ -107,7 +107,7 @@ export function LanPortSettings (props: {
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
   const isR370UnsupportFeatureEnabled = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isModelSupportSoftGRE =
-    (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGRE) ||
+    (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGre) ||
     selectedModelCaps?.model !== 'R370'
 
   const isEthernetClientIsolationEnabled =

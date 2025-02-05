@@ -12,10 +12,11 @@ import { AAAForm } from '../../policies/AAAForm'
 export default function AAAPolicyModal (props:{
   type?: string,
   updateInstance: (value:AAAPolicyType) => void,
-  aaaCount: number
-  disabled?: boolean
+  aaaCount: number,
+  disabled?: boolean,
+  forceDisableRadsec?: boolean
 }) {
-  const { updateInstance, aaaCount, type } = props
+  const { updateInstance, aaaCount, type, forceDisableRadsec } = props
   const { $t } = useIntl()
   const hasPermission = useTemplateAwarePolicyPermission(PolicyType.AAA, PolicyOperation.CREATE)
   const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
@@ -28,6 +29,7 @@ export default function AAAPolicyModal (props:{
   const getContent = <AAAForm networkView={true}
     edit={false}
     type={type}
+    forceDisableRadsec={forceDisableRadsec}
     backToNetwork={(data)=>{
       onClose()
       if(data)updateInstance(data)
