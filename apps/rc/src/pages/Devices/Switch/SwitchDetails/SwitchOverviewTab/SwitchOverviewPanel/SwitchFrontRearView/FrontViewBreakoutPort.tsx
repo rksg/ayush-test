@@ -2,10 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                            from '@acx-ui/components'
-import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { SwitchScopes }                       from '@acx-ui/types'
-import { hasPermission }                      from '@acx-ui/user'
+import { Tooltip }                                                from '@acx-ui/components'
+import { SwitchPortStatus, SwitchRbacUrlsInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { SwitchScopes }                                           from '@acx-ui/types'
+import { hasPermission }                                          from '@acx-ui/user'
+import { getOpsApi }                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -73,7 +74,9 @@ export function FrontViewBreakoutPort (props:{
     return 'gray'
   }
 
-  const editable = hasPermission({ scopes: [SwitchScopes.UPDATE] })
+  const editable = hasPermission({ scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+  })
 
   const onPortClick = () => {
     if (!editable) {
