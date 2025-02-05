@@ -912,7 +912,7 @@ export function NetworkForm (props:{
       }
 
       if (networkId) {
-        networkId && afterVenueActivationRequest.push(saveEnforcementConfig(networkId))
+        afterVenueActivationRequest.push(saveEnforcementConfig(networkId))
       }
 
       await Promise.all(afterVenueActivationRequest)
