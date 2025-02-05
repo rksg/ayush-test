@@ -84,7 +84,7 @@ export default function Privacy () {
         style={{
           marginBottom: '6px'
         }}>
-        <Col span={7}>
+        <Col span={6}>
           <Typography.Text>
             { $t(MessageMapping.arc_privacy_settings_label) }
           </Typography.Text>
@@ -96,7 +96,7 @@ export default function Privacy () {
         </Col>
       </Row>
       <Row gutter={24}>
-        <Col span={12}>
+        <Col span={10}>
           <Typography.Text style={{
             color: 'var(--acx-neutrals-50)'
           }}>
