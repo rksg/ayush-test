@@ -74,8 +74,8 @@ jest.mock('./Notifications', () => ({
     return <div data-testid='mocked-Notifications'></div>
   }
 }))
-jest.mock('./privacy', () => ({
-  ...jest.requireActual('./privacy'),
+jest.mock('./Privacy', () => ({
+  ...jest.requireActual('./Privacy'),
   __esModule: true,
   default: () => {
     return <div data-testid='mocked-privacy'></div>

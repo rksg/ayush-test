@@ -48,8 +48,8 @@ describe('Privacy settings', () => {
       </Provider>,
       { route: { params } })
 
-    const view = screen.getByText(/Enable application-recognition and control/i)
-    const switchBtn = within(view).getByRole('switch')
+    expect(screen.getByText(/Enable application-recognition and control/i)).toBeVisible()
+    const switchBtn = screen.getByRole('switch')
     expect(switchBtn).toBeVisible()
     await userEvent.click(switchBtn)
     expect(switchBtn.getAttribute('aria-checked')).toBe('true')
