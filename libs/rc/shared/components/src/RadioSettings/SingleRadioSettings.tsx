@@ -156,6 +156,7 @@ export function SingleRadioSettings (props:{
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
 
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const [
     channelMethod,
@@ -261,32 +262,42 @@ export function SingleRadioSettings (props:{
       outdoorChBars.dfsChannels = availableDfsChannels
       setOutdoorChannelBars(outdoorChBars)
 
-      const isPreviousManualSelect = previousChannelMethod.current === 'MANUAL'
-      if (previousChannelMethod.current !== channelMethod) {
-        previousChannelMethod.current = channelMethod
-      }
-
-      // the bandwidth value is changed
-      if (bandWidthOnChanged.current ||
-          (methodOnChanged.current && isManualSelect !== isPreviousManualSelect)  ) {
-        if (isManualSelect) {
-          const allowIndoorChannels = form.getFieldValue(allowedIndoorChannelsFieldName)
-          const allowOutdoorChannels = form.getFieldValue(allowedOutdoorChannelsFieldName)
-
-          if (allowIndoorChannels && allowIndoorChannels.length !== 1 || !availableIndoorChannels.includes(allowIndoorChannels)) {
-            form.setFieldValue(allowedIndoorChannelsFieldName, [])
-            setIndoorChannelList(selectedIndoorChannels)
-          }
-          if (allowOutdoorChannels && allowOutdoorChannels.length !== 1 || !availableOutdoorChannels.includes(allowOutdoorChannels)) {
-            form.setFieldValue(allowedOutdoorChannelsFieldName, [])
-            setOutdoorChannelList(selectedOutdoorChannels)
-          }
-        } else {
-          form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
-          form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+      if (isVenueChannelSelectionManualEnabled) {
+        const isPreviousManualSelect = previousChannelMethod.current === 'MANUAL'
+        if (previousChannelMethod.current !== channelMethod) {
+          previousChannelMethod.current = channelMethod
         }
 
-        bandWidthOnChanged.current = false
+        // the bandwidth value is changed
+        if (bandWidthOnChanged.current ||
+            (methodOnChanged.current && isManualSelect !== isPreviousManualSelect)  ) {
+          if (isManualSelect) {
+            const allowIndoorChannels = form.getFieldValue(allowedIndoorChannelsFieldName)
+            const allowOutdoorChannels = form.getFieldValue(allowedOutdoorChannelsFieldName)
+
+            // eslint-disable-next-line max-len
+            if (allowIndoorChannels && allowIndoorChannels.length !== 1 || !availableIndoorChannels.includes(allowIndoorChannels)) {
+              form.setFieldValue(allowedIndoorChannelsFieldName, [])
+              setIndoorChannelList(selectedIndoorChannels)
+            }
+            // eslint-disable-next-line max-len
+            if (allowOutdoorChannels && allowOutdoorChannels.length !== 1 || !availableOutdoorChannels.includes(allowOutdoorChannels)) {
+              form.setFieldValue(allowedOutdoorChannelsFieldName, [])
+              setOutdoorChannelList(selectedOutdoorChannels)
+            }
+          } else {
+            form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
+            form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+          }
+
+          bandWidthOnChanged.current = false
+        }
+      } else {
+        if (bandWidthOnChanged.current) {
+          form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
+          form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+          bandWidthOnChanged.current = false
+        }
       }
 
       // the combinChannels value is changed
