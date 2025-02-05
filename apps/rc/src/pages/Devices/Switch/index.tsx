@@ -1,3 +1,4 @@
+import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                               from '@acx-ui/components'
@@ -5,10 +6,13 @@ import { useNavigate, useTenantLink }                     from '@acx-ui/react-ro
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 import { filterByAccess }                                 from '@acx-ui/user'
 
+import useEdgeNokiaOltTable from '../Edge/Olt/OltTable'
+
 import useSwitchesTable from './SwitchesTable'
 
 export enum SwitchTabsEnum {
   LIST = 'switch',
+  OPTICAL = 'optical',
   WIRED_REPORT = 'switch/reports/wired'
 }
 
@@ -30,10 +34,19 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
+  const edgeOltTabInfo = useEdgeNokiaOltTable()
+
   const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
-  }, {
+  },
+  ...(isNil(edgeOltTabInfo)
+    ? []
+    : [{
+      key: SwitchTabsEnum.OPTICAL,
+      ...edgeOltTabInfo
+    }]),
+  {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
     component: <EmbeddedReport
@@ -53,7 +66,8 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
 
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Switches' })}
+      // eslint-disable-next-line max-len
+      title={tab === SwitchTabsEnum.OPTICAL ? $t({ defaultMessage: 'Wired Devices' }) : $t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

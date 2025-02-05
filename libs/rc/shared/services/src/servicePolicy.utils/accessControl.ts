@@ -500,7 +500,7 @@ export function getEnhancedAccessControlProfileListFn (isTemplate: boolean = fal
         return {
           ...aclData,
           ...policy,
-          networkIds: aclData.networkIds
+          networkIds: aclData.networkIds || policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -548,7 +548,8 @@ export function getEnhancedL2AclProfileListFn (isTemplate: boolean = false) : Qu
 
         return {
           ...policy,
-          macAddress: l2AclData.macAddresses
+          macAddress: l2AclData.macAddresses,
+          networkIds: policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console

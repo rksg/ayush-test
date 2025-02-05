@@ -378,6 +378,10 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0 || saveState?.wlan?.advancedCustomization?.wifiCallingEnabled) return
 
+    const wifiCallingEnabled = saveState?.wlan?.advancedCustomization?.wifiCallingEnabled !== undefined
+      ? saveState?.wlan?.advancedCustomization?.wifiCallingEnabled
+      : true
+
     const fullNetworkSaveData = merge(
       {},
       saveState,
@@ -385,21 +389,14 @@ export function NetworkForm (props:{
         wlan: {
           advancedCustomization: {
             wifiCallingIds: wifiCallingIds,
-            wifiCallingEnabled: true
+            wifiCallingEnabled: wifiCallingEnabled
           }
         }
       }
     )
 
-    form.setFieldValue('wlan', {
-      ...form.getFieldValue('wlan'),
-      advancedCustomization: {
-        ...form.getFieldValue('wlan.advancedCustomization'),
-        wifiCallingIds: wifiCallingIds,
-        wifiCallingEnabled: true
-      }
-    })
-
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'], wifiCallingIds)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingEnabled'], wifiCallingEnabled)
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds, saveState])
 
@@ -457,6 +454,7 @@ export function NetworkForm (props:{
       }
 
       let settingSaveData = tranferSettingsToSave(settingData, editMode)
+
       if (!editMode) {
         // eslint-disable-next-line max-len
         settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo,
