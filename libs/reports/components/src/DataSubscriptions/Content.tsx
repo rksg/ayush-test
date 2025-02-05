@@ -2,15 +2,14 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { GridRow, GridCol, Banner, Button, PageHeader, Loader } from '@acx-ui/components'
-import { SettingsOutlined }                                     from '@acx-ui/icons'
-import { useRaiR1HelpPageLink }                                 from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                           from '@acx-ui/react-router-dom'
-import { hasRaiPermission }                                     from '@acx-ui/user'
+import { GridRow, GridCol, Banner, Button, PageHeader } from '@acx-ui/components'
+import { SettingsOutlined }                             from '@acx-ui/icons'
+import { useRaiR1HelpPageLink }                         from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                             from '@acx-ui/user'
 
-import { QuotaUsageBar }         from './QuotaUsageBar'
-import { useGetQuotaUsageQuery } from './services'
-import { generateBreadcrumb }    from './utils'
+import { QuotaUsageBar }      from './QuotaUsageBar'
+import { generateBreadcrumb } from './utils'
 
 type DataSubscriptionsContentProps = {
   isRAI?: boolean
@@ -21,7 +20,6 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
-  const quotaQuery = useGetQuotaUsageQuery()
   const breadCrumb = isRAI ? [
     { text: $t({ defaultMessage: 'Business Insights' }) }
   ]: generateBreadcrumb({ isRAI, isList: true })
@@ -59,12 +57,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
           helpUrl={helpUrl} />
-        <Loader states={[quotaQuery]} >
-          <QuotaUsageBar
-            total={quotaQuery.data?.allowed ?? 0}
-            used={quotaQuery.data?.used ?? 0}
-            onClick={() => {}}/>
-        </Loader>
+        <QuotaUsageBar />
       </GridCol>
     </GridRow>
   </>)
