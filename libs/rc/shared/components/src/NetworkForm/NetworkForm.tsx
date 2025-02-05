@@ -453,11 +453,8 @@ export function NetworkForm (props:{
         ...data
       }
 
-      console.log(settingData)
-
       let settingSaveData = tranferSettingsToSave(settingData, editMode)
 
-      console.log('transferTo', settingSaveData)
       if (!editMode) {
         // eslint-disable-next-line max-len
         settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo,
@@ -1006,14 +1003,11 @@ export function NetworkForm (props:{
   }
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
-    console.log('start handleEditNetwork')
     try {
       processEditData(formData)
       const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
 
-      console.log('after process...')
-      console.log(oldData, payload)
       if (isRuckusAiMode) {
         modalCallBack?.(payload)
         return
