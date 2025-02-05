@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader }  from '@acx-ui/components'
@@ -23,7 +24,8 @@ import {
   Network,
   AAAViewModalType,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -70,6 +72,7 @@ export default function IdentityProviderTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.DELETE),
       onClick: (selectedRows: IdentityProviderViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
@@ -77,6 +80,7 @@ export default function IdentityProviderTable () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -107,7 +111,8 @@ export default function IdentityProviderTable () {
         extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}
-            scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)}>
+            scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)}>
             <Button
               type='primary'
               disabled={tableQuery.data?.totalCount! >= IDENTITY_PROVIDER_MAX_COUNT}>

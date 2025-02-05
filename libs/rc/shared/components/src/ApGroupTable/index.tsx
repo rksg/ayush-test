@@ -9,11 +9,18 @@ import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeve
 import { Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
 import { useIsSplitOn, Features }                                                                  from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery, useDeleteApGroupMutation }                                          from '@acx-ui/rc/services'
-import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                           from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                                                           from '@acx-ui/utils'
+import {
+  ApGroupViewModel,
+  FILTER,
+  getFilters,
+  transformDisplayNumber,
+  usePollingTableQuery,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
+import { WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasPermission }            from '@acx-ui/user'
+import { DateRange, getDateRangeFilter, getOpsApi } from '@acx-ui/utils'
 
 import {  CountAndNamesTooltip } from '../'
 
@@ -151,6 +158,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateApGroup)],
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       //redirect to edit AP group page url
@@ -160,6 +168,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteApGroup)],
     onClick: async (selectedRows, clearSelection) => {
       showDeleteApGroups(selectedRows, clearSelection)
     }
@@ -185,6 +194,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP Group' }),
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApGroup)],
           onClick: () => {
             navigate({
               ...basePath,
@@ -196,7 +206,10 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
           }
         }]) : []}
         rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+          scopes: [WifiScopes.UPDATE, WifiScopes.DELETE],
+          rbacOpsIds: [
+            getOpsApi(WifiRbacUrlsInfo.updateApGroup),
+            getOpsApi(WifiRbacUrlsInfo.deleteApGroup)]
         }) && { type: 'checkbox' }}
         searchableWidth={260}
         filterableWidth={150}
