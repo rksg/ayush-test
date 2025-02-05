@@ -150,7 +150,8 @@ export const allMultipleEditableFields = [
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId'
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
+  'adminPtToPt'
 ]
 
 interface ProfileVlans {
@@ -846,6 +847,8 @@ export function EditPortDrawer ({
           || getAuthFieldDisabled(field, authfieldValues)
       case 'switchPortProfileId':
         return !isFirmwareAbove10020b || isCloudPort
+      case 'adminPtToPt':
+        return !isFirmwareAbove10020b
       default: return false
     }
   }
@@ -2228,7 +2231,7 @@ export function EditPortDrawer ({
               }) ? <MultipleText />
                 : <Form.Item
                   name='adminPtToPt'
-                  initialValue='NONE'>
+                  initialValue='AUTO'>
                   <Select
                     options={Object.keys(ptToPtMacActionMessages).map((key) => {
                       // eslint-disable-next-line max-len
