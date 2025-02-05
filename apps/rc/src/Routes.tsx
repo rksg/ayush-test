@@ -55,6 +55,7 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  getScopeKeyByPolicy,
   hasSomePoliciesPermission,
   hasSomeServicesPermission,
   PolicyAuthRoute,
@@ -76,6 +77,7 @@ import EdgeClusterConfigWizard                      from './pages/Devices/Edge/C
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
+import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -286,6 +288,7 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
+      {useEdgeOltRoutes()}
       <Route path='devices/edge' element={<Edges />} />
       <Route
         path='devices/edge/add'
@@ -443,6 +446,15 @@ function NetworkRoutes () {
       />
     </Route>
   )
+}
+
+const useEdgeOltRoutes = () => {
+  const isEdgeOltReady = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+  return isEdgeOltReady ? <>
+    <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
+    <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
+  </> : null
 }
 
 const edgeDhcpRoutes = () => {
@@ -1445,27 +1457,47 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
-          element={<FlexibleAuthenticationTable />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.LIST)}>
+              <FlexibleAuthenticationTable />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.CREATE
           })}
-          element={<AddFlexibleAuthentication/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}>
+              <AddFlexibleAuthentication />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.EDIT
           })}
-          element={<EditFlexibleAuthentication/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}>
+              <EditFlexibleAuthentication />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
           })}
-          element={<FlexibleAuthenticationDetail />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.DETAIL)}>
+              <FlexibleAuthenticationDetail />
+            </AuthRoute>
+          }
         />
       </>
       }
@@ -1527,7 +1559,12 @@ function PolicyRoutes () {
       {isSwitchPortProfileEnabled && <>
         <Route
           path='policies/portProfile/create'
-          element={<CreatePortProfile />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <CreatePortProfile />
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/:activeTab/'
@@ -1539,15 +1576,30 @@ function PolicyRoutes () {
         />
         <Route
           path='policies/portProfile/switch/profiles/add'
-          element={<SwitchPortProfileForm />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/edit'
-          element={<SwitchPortProfileForm />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/detail'
-          element={<SwitchPortProfileDetail />}
+          element={
+          // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
+              <SwitchPortProfileDetail />
+            </AuthRoute>
+          }
         />
       </>
       }

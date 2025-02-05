@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Form, Select, Space, Switch, Button } from 'antd'
@@ -218,8 +219,8 @@ export function LocationBasedService (props: VenueWifiConfigItemProps) {
             })}
             style={{ width: '200px' }}
           />
-          {isAllowEdit && hasPolicyPermission(
-            { type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE }) &&
+          {isAllowEdit &&
+           hasPolicyPermission({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE }) &&
           <Button
             disabled={selectOptions.length >= LBS_SERVER_PROFILE_MAX_COUNT}
             type='link'

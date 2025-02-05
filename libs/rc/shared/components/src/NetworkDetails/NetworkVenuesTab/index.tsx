@@ -56,16 +56,26 @@ import {
   EdgeSdLanViewDataP2,
   EdgeMvSdLanViewData,
   useConfigTemplateQueryFnSwitcher,
-  TableResult
+  TableResult,
+  ConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { transformToCityListOptions }    from '@acx-ui/utils'
+import { useParams }  from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
-import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
-import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import { useGetNetworkTunnelInfo }          from '../../EdgeSdLan/edgeSdLanUtils'
+import {
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
+} from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog } from '../../NetworkApGroupDialog'
 import {
   NetworkTunnelActionModal,
   NetworkTunnelActionModalProps,
@@ -182,11 +192,32 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
-  const hasCreatePermission = hasPermission({ scopes: [WifiScopes.CREATE] })
   const params = useParams()
   const networkId = params.networkId
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { isTemplate } = useConfigTemplate()
+
+  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasUpdatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasUpdatePermission)
+
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -624,7 +655,7 @@ export function NetworkVenuesTab () {
       render: function (_, row) {
         let disabled = false
         let title = ''
-        if (hasUpdatePermission || hasCreatePermission) {
+        if (hasActivateNetworkVenuePermission) {
           if (networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled){
             disabled = true
             title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
@@ -638,7 +669,7 @@ export function NetworkVenuesTab () {
           placement='bottom'>
           <Switch
             checked={Boolean(row.activated?.isActivated)}
-            disabled={!(hasUpdatePermission || hasCreatePermission) || disabled}
+            disabled={!hasActivateNetworkVenuePermission || disabled}
             onClick={(checked, event) => {
               activateNetwork(checked, row)
               event.stopPropagation()
@@ -657,7 +688,7 @@ export function NetworkVenuesTab () {
           networkQuery.data as NetworkSaveData,
           vlanPoolingNameMap,
           (e) => handleClickApGroups(row, e),
-          (!hasUpdatePermission || systemNetwork))
+          (!hasUpdateNetworkVenuePermission || systemNetwork))
       }
     },
     {
@@ -670,7 +701,7 @@ export function NetworkVenuesTab () {
           getCurrentVenue(row),
           networkQuery.data as NetworkSaveData,
           (e) => handleClickApGroups(row, e),
-          (!hasUpdatePermission || systemNetwork),
+          (!hasUpdateNetworkVenuePermission || systemNetwork),
           row.incompatible)
       }
     },
@@ -684,7 +715,7 @@ export function NetworkVenuesTab () {
           getCurrentVenue(row),
           networkQuery.data as NetworkSaveData,
           (e) => handleClickApGroups(row, e),
-          (!hasUpdatePermission || systemNetwork))
+          (!hasUpdateNetworkVenuePermission || systemNetwork))
       }
     },
     {
@@ -696,7 +727,7 @@ export function NetworkVenuesTab () {
           getCurrentVenue(row),
           scheduleSlotIndexMap[row.id],
           (e) => handleClickScheduling(row, e),
-          (!hasUpdatePermission || systemNetwork))
+          (!hasUpdateNetworkVenuePermission || systemNetwork))
       }
     },
     ...tunnelColumn
@@ -857,7 +888,7 @@ export function NetworkVenuesTab () {
         settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasUpdatePermission && !systemNetwork && {
+        rowSelection={hasUpdateNetworkVenuePermission && !systemNetwork && {
           type: 'checkbox'
         }}
         columns={columns}

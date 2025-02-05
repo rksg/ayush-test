@@ -21,7 +21,8 @@ import {
   ApDeviceStatusEnum,
   useApContext,
   ApStatus,
-  PowerSavingStatusEnum
+  PowerSavingStatusEnum,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -31,7 +32,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum, WifiScopes }                   from '@acx-ui/types'
 import { hasRoles, hasPermission, filterByAccess } from '@acx-ui/user'
-import { useDateFilter }                           from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }                from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -116,6 +117,7 @@ function ApPageHeader () {
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot',
         scopeKey: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
         roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Download Log' }),
@@ -134,11 +136,14 @@ function ApPageHeader () {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete',
         scopeKey: [WifiScopes.DELETE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
         roles: operationRoles
       }]).filter(item => {
+        const { scopeKey: scopes, rbacOpsIds, roles } = item
+        const isHasPermission = hasPermission({ scopes, rbacOpsIds, roles })
         return (
-          (currentApOperational && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
-          (item.key === 'delete' && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
+          (currentApOperational && isHasPermission) ||
+          (item.key === 'delete' && isHasPermission) ||
           (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
         )
       })}
@@ -189,6 +194,7 @@ function ApPageHeader () {
           <Button
             type='primary'
             scopeKey={[WifiScopes.UPDATE]}
+            rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.updateAp)]}
             onClick={() => {
               navigate({
                 ...basePath,

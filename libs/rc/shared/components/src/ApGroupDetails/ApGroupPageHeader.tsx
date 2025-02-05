@@ -3,13 +3,13 @@ import moment                       from 'moment-timezone'
 import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Button, PageHeader, RangePicker }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { LocationOutlined }                                 from '@acx-ui/icons'
-import { ApGroupDetailHeader, useConfigTemplateBreadcrumb } from '@acx-ui/rc/utils'
-import { WifiScopes }                                       from '@acx-ui/types'
-import { filterByAccess }                                   from '@acx-ui/user'
-import { useDateFilter }                                    from '@acx-ui/utils'
+import { Button, PageHeader, RangePicker }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { LocationOutlined }                                                   from '@acx-ui/icons'
+import { ApGroupDetailHeader, useConfigTemplateBreadcrumb, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { WifiScopes }                                                         from '@acx-ui/types'
+import { filterByAccess }                                                     from '@acx-ui/user'
+import { getOpsApi, useDateFilter }                                           from '@acx-ui/utils'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
@@ -65,6 +65,7 @@ function ApGroupPageHeader () {
         ...filterByAccess([
           <Button type='primary'
             scopeKey={[WifiScopes.UPDATE]}
+            rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.updateApGroup)]}
             children={$t({ defaultMessage: 'Configure' })}
             onClick={() => {
               navigate({
