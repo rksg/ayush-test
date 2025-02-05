@@ -42,8 +42,8 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
 
   const steps = [
     {
-      key: 'onboardCA',
-      title: $t({ defaultMessage: 'Onboard CA' }),
+      key: 'templateDetails',
+      title: $t({ defaultMessage: 'Template Details' }),
       content: <OnboardForm editMode={editMode}/>,
       showEdit: true
     },

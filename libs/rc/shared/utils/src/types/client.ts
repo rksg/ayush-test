@@ -154,6 +154,7 @@ export interface ClientInfo {
   trafficStatus: TrafficStatus
   mldMacAddress: string
   cpeMacAddress: string
+  band: string
   switchInformation?: SwitchInformation // form GUI
   connectedTimeString: string // form GUI
   connectedTimeParssed: boolean // form GUI
