@@ -20,16 +20,10 @@ export const ApModelFamiliesItem = (props: {
     const { apModels, name, displayName } = apModelFamily
     const findModels = intersection(apModels, models)
     if (findModels.length > 0) {
-      const displayModels = findModels.map((model: string) => {
-        if (model.includes(':')) {
-          return model.split(':')[1]
-        }
-        return model
-      })
       familiesData.push({
         name,
         displayName,
-        models: displayModels
+        models: findModels
       })
     }
   })
@@ -42,7 +36,7 @@ export const ApModelFamiliesItem = (props: {
         tagWidth={hasLongTags? '80px' : '60px'}
       >
         {getApModelFamilyTag(name as ApModelFamilyType, displayName)}
-        <div>{models.join(', ').replace(':', ', ')}</div>
+        <div>{models.join(', ').replace('R350:', '')}</div>
       </StyledApModelFamilyWrapper>
     ))}
   </>)
