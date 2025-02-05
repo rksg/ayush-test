@@ -129,9 +129,7 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   }, [addState.isLoading, updateState.isLoading])
 
   const getSavePayload = (data: NotificationRecipientUIModel) => {
-    let dataToSave = {
-      description: data.description
-    } as RecipientSaveModel
+    let dataToSave = {} as RecipientSaveModel
 
     if (recipientType === RecipientType.AdminRecipient) {
       if (editMode) {
@@ -142,6 +140,7 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
       dataToSave.emailPreferences = emailPreferences
     }
     else if (recipientType === RecipientType.GlobalRecipient) {
+      dataToSave.description = data.description
       dataToSave.endpoints = []
       const emailVal = data.email?.trim()
       const mobileVal = data.mobile?.trim()

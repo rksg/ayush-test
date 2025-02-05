@@ -25,13 +25,11 @@ import {
   defaultSort,
   NotificationRecipientType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
+import { useParams }         from '@acx-ui/react-router-dom'
 import {
   filterByAccess,
   hasAccess,
-  hasCrossVenuesPermission,
-  roleStringMap
+  hasCrossVenuesPermission
 } from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -138,14 +136,7 @@ export const NotificationsTable = () => {
       dataIndex: 'description',
       defaultSortOrder: 'ascend',
       // width: 600,
-      sorter: { compare: sortProp('description', defaultSort) },
-      render: (_, row) => {
-        return row.recipientType === NotificationRecipientType.GLOBAL
-          ? row.description
-          : roleStringMap[row.description as RolesEnum]
-            ? $t(roleStringMap[row.description as RolesEnum])
-            : row.description
-      }
+      sorter: { compare: sortProp('description', defaultSort) }
     },
     ...(!notificationAdminContextualEnabled ? [] : [
       {
