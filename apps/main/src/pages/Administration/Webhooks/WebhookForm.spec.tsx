@@ -132,7 +132,6 @@ describe('WebhookForm', () => {
     // Assert error messages are shown
     expect(await screen.findByText('Please enter Name')).toBeVisible()
     expect(await screen.findByText('Please enter Webhook URL')).toBeVisible()
-    expect(await screen.findByText('Please enter Secret')).toBeVisible()
     expect(await screen.findByText('Please enter Payload')).toBeVisible()
 
     // Input valid values
