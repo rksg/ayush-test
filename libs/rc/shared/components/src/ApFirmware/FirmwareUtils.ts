@@ -139,9 +139,10 @@ export const isAlphaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.ALPHA)
 }
 
-export const isBetaFilter = (labels: FirmwareLabel[] = [], onlyBeta: boolean = false): boolean => {
+// eslint-disable-next-line max-len
+export const isBetaFilter = (labels: FirmwareLabel[] = [], onlyIsBetaFlagOn: boolean = false): boolean => {
   return !labels.includes(FirmwareLabel.GA)
-    && (onlyBeta || !labels.includes(FirmwareLabel.ALPHA))
+    && (onlyIsBetaFlagOn || !labels.includes(FirmwareLabel.ALPHA))
     && labels.includes(FirmwareLabel.BETA)
 }
 
