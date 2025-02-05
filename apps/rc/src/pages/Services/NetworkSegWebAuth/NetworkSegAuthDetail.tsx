@@ -148,10 +148,10 @@ export default function NetworkSegAuthDetail () {
       <br /><br />
 
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: switches?.switchVenueInfos?.length || 0 })}>
+        { count: switches?.length || 0 })}>
         <Table
           columns={columns}
-          dataSource={switches?.switchVenueInfos as unknown as WebAuthSwitchType[]}
+          dataSource={switches as unknown as WebAuthSwitchType[]}
           type='form'
           rowKey='switchId' />
       </Card>
