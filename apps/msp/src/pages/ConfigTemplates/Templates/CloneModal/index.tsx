@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Modal }                                                                                                             from '@acx-ui/components'
-import { useCloneTemplateMutation, useGetConfigTemplateListQuery }                                                           from '@acx-ui/rc/services'
-import { AllowedCloneTemplateTypes, allowedCloneTemplateTypesSet, checkObjectNotExists, ConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { Modal }                                                                                                                    from '@acx-ui/components'
+import { useCloneTemplateMutation, useGetConfigTemplateListQuery }                                                                  from '@acx-ui/rc/services'
+import { AllowedCloneTemplateTypes, allowedCloneTemplateTypesSet, ConfigTemplate, ConfigTemplateCloneUrlsInfo, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                                                                                     from '@acx-ui/user'
+import { getOpsApi }                                                                                                                from '@acx-ui/utils'
 
 interface ConfigTemplateCloneModalProps {
   selectedTemplate: ConfigTemplate
@@ -17,9 +19,11 @@ export function ConfigTemplateCloneModal (props: ConfigTemplateCloneModalProps) 
   const [ saveDisabled, setSaveDisabled ] = useState(true)
   const [ form ] = Form.useForm()
   const { $t } = useIntl()
-  const { canClone } = useCloneConfigTemplate()
-  const { data: templateList, isLoading } = useGetConfigTemplateListQuery({
-    params: {}, payload: { fields: ['name'], page: 1, pageSize: 10000 }
+  const { data: templateList, isLoading: isTemplateListLoading } = useGetConfigTemplateListQuery({
+    params: {}, payload: {
+      filters: { type: [selectedTemplate.type] },
+      fields: ['name'], page: 1, pageSize: 10000
+    }
   })
   const [ cloneTemplate ] = useCloneTemplateMutation()
 
@@ -30,12 +34,10 @@ export function ConfigTemplateCloneModal (props: ConfigTemplateCloneModalProps) 
   }, [templateList])
 
   const handleSave = async () => {
-    if (!canClone(selectedTemplate.type)) return
-
     try {
       await cloneTemplate({
         payload: {
-          type: selectedTemplate.type,
+          type: selectedTemplate.type as AllowedCloneTemplateTypes,
           templateId: selectedTemplate.id!,
           name: form.getFieldValue('name')
         }
@@ -51,8 +53,11 @@ export function ConfigTemplateCloneModal (props: ConfigTemplateCloneModalProps) 
   }
 
   const nameValidator = (value: string) => {
-    const list = (templateList?.data ?? []).map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Template' }))
+    const isNameExisting = (templateList?.data ?? []).some(t => t.name === value)
+    if (isNameExisting) {
+      return Promise.reject($t({ defaultMessage: 'The name already exists' }))
+    }
+    return Promise.resolve()
   }
 
   const onFieldsChange = () => {
@@ -66,7 +71,7 @@ export function ConfigTemplateCloneModal (props: ConfigTemplateCloneModalProps) 
     destroyOnClose={true}
     width={400}
     okText={$t({ defaultMessage: 'Save' })}
-    okButtonProps={{ disabled: saveDisabled || isLoading }}
+    okButtonProps={{ disabled: saveDisabled || isTemplateListLoading }}
     onOk={handleSave}
     onCancel={handleCancel}
   >
@@ -81,7 +86,6 @@ export function ConfigTemplateCloneModal (props: ConfigTemplateCloneModalProps) 
           { validator: (_, value) => nameValidator(value) }
         ]}
         validateFirst
-        hasFeedback
         initialValue={selectedTemplate.name + ' - CLONE'}
         children={<Input/>}
       />
@@ -89,13 +93,19 @@ export function ConfigTemplateCloneModal (props: ConfigTemplateCloneModalProps) 
   </Modal>
 }
 
+// eslint-disable-next-line max-len
+const isAllowedCloneTemplateTypes = (templateType: ConfigTemplateType): templateType is AllowedCloneTemplateTypes => {
+  return allowedCloneTemplateTypesSet.has(templateType)
+}
+
 export function useCloneConfigTemplate () {
   const [ visible, setVisible ] = useState(false)
 
   // eslint-disable-next-line max-len
   const canClone = (templateType?: ConfigTemplateType): templateType is AllowedCloneTemplateTypes => {
-    if (!templateType) return false
-    return allowedCloneTemplateTypesSet.has(templateType)
+    if (!templateType || !isAllowedCloneTemplateTypes(templateType)) return false
+
+    return hasAllowedOperations([getOpsApi(ConfigTemplateCloneUrlsInfo[templateType])])
   }
 
   return {

@@ -12,22 +12,22 @@ export const allowedCloneTemplateTypesSet = new Set<ConfigTemplateType>([
 export const ConfigTemplateCloneUrlsInfo: Record<AllowedCloneTemplateTypes, ApiInfo> = {
   [ConfigTemplateType.NETWORK]: {
     method: 'post',
-    url: '/templates/wifiNetworks/cloneSettings',
+    url: '/wifiNetworks/{:templateId}/cloneSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'POST:/templates/wifiNetworks/cloneSettings'
+    opsApi: 'POST:/wifiNetworks/{id}/cloneSettings'
   },
   [ConfigTemplateType.VENUE]: {
     method: 'post',
-    url: '/templates/venues/cloneSettings',
+    url: '/venues/{:templateId}/cloneSettings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'POST:/templates/venues/cloneSettings'
+    opsApi: 'POST:/venues/{id}/cloneSettings'
   }
 }
