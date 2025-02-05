@@ -7,7 +7,7 @@ import { Select }                  from '@acx-ui/components'
 import { FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 import { compareVersions }         from '@acx-ui/utils'
 
-import { isLegacyAlphaOrBetaFilter }        from '../../FirmwareUtils'
+import { isEarlyAccessOrLegacyEarlyAccess } from '../../FirmwareUtils'
 import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModelUtils'
 
 const { Option } = Select
@@ -29,7 +29,6 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
     emptyOptionLabel = $t({ defaultMessage: 'Do not update firmware' }),
     noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' }),
     isUpgrade = true,
-    earlyAccess = false,
     selectedVenuesFirmwares = []
   } = props
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
@@ -69,9 +68,11 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
     }
   }
 
-  const legacyEarlyAccess = selectedVenuesFirmwares[0].currentApFirmwares?.find(
-    // eslint-disable-next-line max-len
-    fw => fw.apModel === apModel && fw.firmware === extremeFirmware && isLegacyAlphaOrBetaFilter(fw.labels)
+  const {
+    earlyAccess,
+    legacyEarlyAccess
+  } = isEarlyAccessOrLegacyEarlyAccess(
+    selectedVenuesFirmwares, apModel, extremeFirmware
   )
 
   const earlyAccessContent = earlyAccess

@@ -36,7 +36,8 @@ export function VersionBannerPerApModel () {
         data.filter(d => isAlphaFilter(d.labels))
       )
       let updateBetaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => isBetaFilter(d.labels))
+        // eslint-disable-next-line max-len
+        data.filter(d => isBetaFilter(d.labels, (apFirmwareContext.isBetaFlag && !apFirmwareContext.isAlphaFlag)))
       )
 
       updateGroups = [
@@ -76,19 +77,26 @@ export function VersionBannerPerApModel () {
             labels: updateGroups[0].firmwares[0].labels
           }
         ] : data)
+
+      // eslint-disable-next-line max-len
+      const earlyAccessFilter = (data: ApModelFirmware[], filterFn: (labels: FirmwareLabel[] | undefined) => boolean) => {
+        const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
+        const result = data.filter(firmware => {
+          const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
+          // eslint-disable-next-line max-len
+          const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
+          const hasAlpha = filterFn(firmware.labels)
+          return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
+        })
+
+        return result
+      }
+
       if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant
         if (isApFwMgmtEarlyAccess) { // if ea/iea firmware exists and larger than GA, display it
           const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
-          const resultAlpha = data.filter(firmware => {
-            const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
-            const hasAlpha = isAlphaFilter(firmware.labels)
-            return hasAlpha && isLaterThanGA
-          })
-          const resultBeta = data.filter(firmware => {
-            const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
-            const hasAlpha = isBetaFilter(firmware.labels)
-            return hasAlpha && isLaterThanGA
-          })
+          const resultAlpha = earlyAccessFilter(data, isAlphaFilter)
+          const resultBeta = earlyAccessFilter(data, isBetaFilter)
           // eslint-disable-next-line max-len
           if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0) updateGroups.push(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
           // eslint-disable-next-line max-len
@@ -107,20 +115,6 @@ export function VersionBannerPerApModel () {
 
         if (isApFwMgmtEarlyAccess) {
           // ACX-76973: for EA/IEA firmware, also need to display the latest version information in the banner
-          const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
-          // eslint-disable-next-line max-len
-          const earlyAccessFilter = (data: ApModelFirmware[], filterFn: (labels: FirmwareLabel[] | undefined) => boolean) => {
-            const result = data.filter(firmware => {
-              const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
-              // eslint-disable-next-line max-len
-              const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
-              const hasAlpha = filterFn(firmware.labels)
-              return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
-            })
-
-            return result
-          }
-
           const resultAlpha = earlyAccessFilter(data, isAlphaFilter)
           const resultBeta = earlyAccessFilter(data, isBetaFilter)
           if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0) {
