@@ -77,5 +77,50 @@ export const EdgeTnmServiceUrls: { [key: string]: ApiInfo } = {
     url: '/edgeTnmZabbixServices/:serviceId/history',
     newApi: true,
     defaultHeaders: versionHeaders
+  },
+
+
+  // Edge Nokia OLT POC
+  getEdgeOltList: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  addEdgeOlt: {
+    method: 'post',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  updateEdgeOlt: {
+    method: 'put',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  deleteEdgeOlt: {
+    method: 'delete',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  getEdgeCageList: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/cages',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  toggleEdgeCageState: {
+    method: 'put',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/cages/:cageName',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  getEdgeOnuList: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/cages/:cageName/onus',
+    newApi: true,
+    defaultHeaders: versionHeaders
   }
 }

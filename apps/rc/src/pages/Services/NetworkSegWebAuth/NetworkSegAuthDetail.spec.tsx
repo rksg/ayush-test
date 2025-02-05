@@ -31,7 +31,7 @@ describe( 'NetworkSegAuthDetail', () => {
       ),
       rest.get(
         EdgePinUrls.getWebAuthTemplateSwitches.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
