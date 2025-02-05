@@ -727,3 +727,14 @@ export const AssignedEntitlementListPayload = {
     usageType: 'ASSIGNED'
   }
 }
+
+export interface SolutionTokenSettings {
+  featureType: DeviceComplianceType,
+  featureName: string,
+  maxQuantity: number,
+  enabled: boolean,
+  capped: boolean,
+  licenseToken: number,
+  featureCostUnit: string,
+  featureUnit: string
+}

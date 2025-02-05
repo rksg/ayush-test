@@ -12,11 +12,19 @@ import {
 import {
   MacOuis,
   SwitchPortProfiles,
+  SwitchUrlsInfo,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { SwitchScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasCrossVenuesPermission,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { MacOuiDrawer } from '../PortProfileForm/MacOuiDrawer'
 
@@ -27,6 +35,8 @@ type PortProfileMap = {
 export default function MacOuiTable () {
   const { $t } = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const settingsId = 'mac-ouis-table'
   const [ visible, setVisible ] = useState(false)
   const [ isEditMode, setIsEditMode ] = useState(false)
@@ -106,6 +116,7 @@ export default function MacOuiTable () {
   const rowActions: TableProps<MacOuis>['rowActions'] = [
     {
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfileMacOui)],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
@@ -116,6 +127,7 @@ export default function MacOuiTable () {
     },
     {
       scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfileMacOui)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         const portProfileCount = rows.filter(item => item.portProfiles).length
@@ -171,9 +183,18 @@ export default function MacOuiTable () {
     }
   ]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
+  const isSelectionVisible = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      getOpsApi(SwitchUrlsInfo.editSwitchPortProfileMacOui),
+      getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfileMacOui)
+    ])
+    : hasCrossVenuesPermission() && hasPermission({
+      scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    })
+
+  const hasCreatePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([ getOpsApi(SwitchUrlsInfo.addSwitchPortProfileMacOui) ])
+    : hasCrossVenuesPermission() && hasPermission({ scopes: [SwitchScopes.CREATE] })
 
   return (
     <Loader states={[tableQuery]}>
@@ -187,7 +208,7 @@ export default function MacOuiTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        actions={hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
+        actions={hasCreatePermission ? [{
           label: $t({ defaultMessage: 'Add MAC OUI' }),
           scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
