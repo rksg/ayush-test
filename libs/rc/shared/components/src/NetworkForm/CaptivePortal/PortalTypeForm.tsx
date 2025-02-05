@@ -76,7 +76,8 @@ function TypesForm () {
         rules={[{ required: true }]}
       >
         <Radio.Group onChange={onChange}
-          disabled={(editMode || cloneMode || (isRuckusAiMode ? false : modalMode))}>
+          // eslint-disable-next-line max-len
+          disabled={(editMode || cloneMode || (isRuckusAiMode ? false : (modalMode && !!createType)))}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}
