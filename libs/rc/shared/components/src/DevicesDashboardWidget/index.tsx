@@ -14,8 +14,7 @@ import {
 import { DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidgetV2 () {
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
-  const { venueIds } = useDashboardFilter({ isDateRangeLimit })
+  const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const query = isNewDashboardQueryEnabled ? useDeviceSummariesQuery : useDashboardV2OverviewQuery

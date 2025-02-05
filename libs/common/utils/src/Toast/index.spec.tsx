@@ -1,0 +1,114 @@
+import React from 'react'
+
+import '@testing-library/jest-dom'
+import { message } from 'antd'
+
+import {
+  act,
+  screen,
+  fireEvent,
+  waitFor,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
+
+import { showToast } from '.'
+
+describe('Toast', () => {
+  afterEach((done) => {
+    const toast = screen.queryByRole('img')
+    if (toast) {
+      waitForElementToBeRemoved(toast).then(done)
+      message.destroy()
+    } else {
+      done()
+    }
+  })
+
+  it('renders content', async () => {
+    act(() => {
+      showToast({
+        type: 'info',
+        content: 'This is a toast'
+      })
+    })
+    await screen.findByText('This is a toast')
+    expect(screen.getByRole('img', { name: 'close' })).toBeInTheDocument()
+  })
+
+  it('renders content with no close button', async () => {
+    act(() => {
+      showToast({
+        type: 'info',
+        closable: false,
+        content: 'This is a toast'
+      })
+    })
+    await screen.findByText('This is a toast')
+    expect(screen.queryByRole('img', { name: 'close' })).not.toBeInTheDocument()
+  })
+
+  it('renders extra content', async () => {
+    act(() => {
+      showToast({
+        type: 'info',
+        content: 'This is a toast - test extra',
+        extraContent: <div data-testid='extra'>Extra content</div>
+      })
+    })
+    await screen.findByTestId('extra')
+  })
+
+  describe('link', () => {
+    it('renders link', async () => {
+      const onClick = jest.fn()
+      act(() => {
+        showToast({
+          type: 'info',
+          content: 'This is a toast - test link',
+          link: { text: 'Click me', onClick: onClick }
+        })
+      })
+      const link = await screen.findByText('Click me')
+      fireEvent.click(link)
+      expect(onClick).toBeCalledTimes(1)
+    })
+
+    it('renders default text for type', async () => {
+      act(() => {
+        showToast({
+          type: 'error',
+          content: 'This is a toast - test click',
+          link: { onClick: () => alert('clicked') }
+        })
+      })
+      await screen.findByText('Technical Details')
+    })
+  })
+
+  describe('onClose', () => {
+    it('handles onClose', async () => {
+      const onClose = jest.fn()
+      act(() => {
+        showToast({
+          type: 'error',
+          content: 'This is a toast - test close',
+          onClose: onClose
+        })
+      })
+      const close = await waitFor(()=>screen.findByRole('img'))
+      fireEvent.click(close)
+      expect(onClose).toBeCalledTimes(1)
+    })
+
+    it('handles onClose is unavailable', async () => {
+      act(() => {
+        showToast({
+          type: 'error',
+          content: 'This is a toast - test close'
+        })
+      })
+      const close = await waitFor(()=>screen.findByRole('img'))
+      fireEvent.click(close)
+    })
+  })
+})
