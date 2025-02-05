@@ -4,11 +4,11 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                                from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }                                                              from '@acx-ui/rc/components'
-import { useLazyApListQuery }                                                                        from '@acx-ui/rc/services'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
+import { useLazyApListQuery }                     from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,
   redirectPreviousPage,
@@ -16,8 +16,8 @@ import {
   VenueConfigTemplateUrlsInfo,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                                                    from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }                                                                      from '@acx-ui/user'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }   from '@acx-ui/user'
 import {
   directedMulticastInfo,
   getOpsApi,
@@ -56,7 +56,8 @@ export function NetworkingTab () {
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
-  const isLegacyTemplateLanPortEnabled = !isTemplate || useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
+  const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
+  const isLegacyTemplateLanPortEnabled = !isTemplate || isLegacyLanPortEnabled
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
