@@ -1,6 +1,6 @@
 import { DonutChart, DonutChartData, DonutChartProps, Loader, NoActiveData } from '@acx-ui/components'
 
-import { SpaceWrapper } from '../../SpaceWrapper'
+import { StyledSpace } from './styledComponents'
 
 export type ReduceReturnType = Record<string, number>
 
@@ -23,7 +23,7 @@ export function EdgeOverviewDonutWidget (props : EdgeOverviewDonutWidgetProps ) 
 
   return (
     <Loader states={[{ isLoading }]}>
-      <SpaceWrapper full>
+      <StyledSpace>
         { (!emptyMessage || Number(data?.length) > 0)
           ? <DonutChart
             title={title}
@@ -34,7 +34,7 @@ export function EdgeOverviewDonutWidget (props : EdgeOverviewDonutWidgetProps ) 
           />
           : <NoActiveData text={emptyMessage}/>
         }
-      </SpaceWrapper>
+      </StyledSpace>
     </Loader>
   )
 }
