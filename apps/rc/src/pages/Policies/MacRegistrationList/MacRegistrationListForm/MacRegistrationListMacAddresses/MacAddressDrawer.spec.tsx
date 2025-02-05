@@ -15,7 +15,8 @@ const macAddress = {
   macAddress: '3A-B8-A9-29-35-D5',
   username: 'ex proident',
   email: 'test@commscope.com',
-  createdDate: '2065-12-08T18:40:01Z'
+  createdDate: '2065-12-08T18:40:01Z',
+  deviceName: 'test device'
 }
 
 const list = {
@@ -176,6 +177,9 @@ describe('MacAddressDrawer', () => {
 
     const emailInput = await screen.findByRole('textbox', { name: 'E-mail' })
     expect(emailInput).toHaveValue(macAddress.email)
+
+    const deviceNameInput = await screen.findByRole('textbox', { name: 'Device Name' })
+    expect(deviceNameInput).toHaveValue(macAddress.deviceName)
 
     await userEvent.click(saveButton)
 

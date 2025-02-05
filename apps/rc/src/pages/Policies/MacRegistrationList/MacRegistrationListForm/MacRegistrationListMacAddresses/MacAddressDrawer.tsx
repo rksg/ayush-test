@@ -101,7 +101,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         email: data.email?.length === 0 ? null : data.email,
         expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
           toExpireEndDate(data.expiration?.date),
-        identityId: data.identityId
+        identityId: data.identityId,
+        deviceName: data.deviceName
       }
       if (isEdit) {
         await editMacRegistration(
@@ -160,6 +161,11 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
         ]}
         label={intl.$t({ defaultMessage: 'E-mail' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='deviceName'
+        rules={[{ max: 255 }]}
+        label={intl.$t({ defaultMessage: 'Device Name' })}>
         <Input/>
       </Form.Item>
       <ExpirationDateSelector

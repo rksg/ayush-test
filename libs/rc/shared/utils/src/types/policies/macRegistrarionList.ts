@@ -46,4 +46,5 @@ export interface MacRegistration {
   createdDate: string
   expiration?: ExpirationDateEntity,
   identityId?: string
+  deviceName?: string
 }
