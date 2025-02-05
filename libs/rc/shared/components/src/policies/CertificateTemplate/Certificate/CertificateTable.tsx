@@ -162,6 +162,7 @@ export function CertificateTable (
           name={item.name}
           personaId={item.id}
           personaGroupId={item.groupId}
+          revoked={item.revoked}
         /> : noDataDisplay)
       }
     },

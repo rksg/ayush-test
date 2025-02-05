@@ -6,6 +6,7 @@ import { useParams }                        from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, Tabs } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { EditOutlined }                                                        from '@acx-ui/icons-new'
 import {
   CertificateTable,
   ConnectionMeteringLink,
@@ -15,6 +16,7 @@ import {
   NetworkSegmentationLink,
   PassphraseViewer,
   PersonaDrawer,
+  PassphraseDrawer,
   PropertyUnitLink,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -58,6 +60,7 @@ function PersonaDetails () {
   const [unitData, setUnitData] =
     useState({} as { venueId?: string, unitId?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
+  const [editPassphraseDrawerVisible, setEditPassphraseDrawerVisible] = useState(false)
 
   const [deviceCount, setDeviceCount] = useState(0)
 
@@ -190,11 +193,20 @@ function PersonaDetails () {
     },
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
-      personaDetailsQuery.data?.dpskPassphrase
-        ? <PassphraseViewer
-          passphrase={personaDetailsQuery.data?.dpskPassphrase ?? ''}
-        />
-        : noDataDisplay
+        <>
+          {
+            personaDetailsQuery.data?.dpskPassphrase
+              ? <PassphraseViewer
+                passphrase={personaDetailsQuery.data?.dpskPassphrase ?? ''}
+              />
+              : noDataDisplay
+          }
+          <Button
+            ghost
+            icon={<EditOutlined size='sm' />}
+            onClick={() => setEditPassphraseDrawerVisible(true)}
+          />
+        </>
     },
     { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:
@@ -376,6 +388,15 @@ function PersonaDetails () {
           visible={editDrawerVisible}
           onClose={() => setEditDrawerVisible(false)}
           data={personaDetailsQuery.data}
+        />
+      }
+      { (personaDetailsQuery.data && editPassphraseDrawerVisible) &&
+        <PassphraseDrawer
+          visible={editPassphraseDrawerVisible}
+          onClose={()=>{
+            setEditPassphraseDrawerVisible(false)
+          }}
+          persona={personaDetailsQuery.data}
         />
       }
     </Loader>

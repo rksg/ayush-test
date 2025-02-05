@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
 import {
+  Blocked,
   DeleteOutlined, EditOutlined,
   LeafOutlined, LeafSolid,
   LinkDocument, LinkVideo
@@ -50,5 +51,10 @@ export const LinkDocumentIcon = styled(LinkDocument)`
 export const LinkVideoIcon = styled(LinkVideo)`
   path {
     fill: var(--acx-accents-blue-50);
+  }
+`
+export const PersonaBlockedIcon = styled(Blocked)`
+  path {
+    stroke: var(--acx-semantics-red-50) !important;
   }
 `
