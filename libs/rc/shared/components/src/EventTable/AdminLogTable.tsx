@@ -2,18 +2,19 @@ import { useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }   from '@acx-ui/components'
-import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
-import { DownloadOutlined }                    from '@acx-ui/icons'
-import { AdminLog, TableQuery }                from '@acx-ui/rc/utils'
-import { RequestPayload }                      from '@acx-ui/types'
-import { exportMessageMapping, noDataDisplay } from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button, TableHighlightFnArgs } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
+import { DownloadOutlined }                                        from '@acx-ui/icons'
+import { AdminLog, TableQuery }                                    from '@acx-ui/rc/utils'
+import { RequestPayload }                                          from '@acx-ui/types'
+import { exportMessageMapping, noDataDisplay }                     from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
-import { adminLogTypeMapping, severityMapping }              from './mapping'
-import { useExportCsv }                                      from './useExportCsv'
+import { filtersFrom, getDescription, getSource, valueFrom }     from './helpers'
+import { adminLogTypeMapping, authTypeMapping, severityMapping } from './mapping'
+import { useExportCsv }                                          from './useExportCsv'
 
 interface AdminLogTableProps {
   tableQuery: TableQuery<AdminLog, RequestPayload<unknown>, unknown>
@@ -24,6 +25,8 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<AdminLog>()
   const { exportCsv, disabled } = useExportCsv<AdminLog>(tableQuery)
+
+  const showAuthTypeColumn = useIsSplitOn(Features.ACX_UI_SHOW_ADMIN_TYPE_COLUMN_TOGGLE)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
@@ -63,6 +66,19 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
         highlightFn(valueFrom(adminLogTypeMapping, row.entity_type)),
       filterable: filtersFrom(adminLogTypeMapping)
     },
+    ...( showAuthTypeColumn ? [{
+      key: 'authenticationType',
+      title: $t({ defaultMessage: 'Authentication type' }),
+      dataIndex: 'authenticationType',
+      sorter: true,
+      searchable: true,
+      render: (_: React.ReactNode,
+        row: AdminLog,
+        __: number,
+        highlightFn: TableHighlightFnArgs) =>
+        highlightFn(valueFrom(authTypeMapping, row.authenticationType as string)),
+      filterable: filtersFrom(authTypeMapping)
+    }]:[]),
     {
       key: 'adminName',
       title: $t({ defaultMessage: 'Source' }),

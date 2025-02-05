@@ -485,17 +485,20 @@ export const apApi = baseApApi.injectEndpoints({
         if(ap) {
           ap.serialNumber = params?.serialNumber ?? ''
           ap.venueId = params?.venueId ?? ''
-          const apGroupPayload = {
-            fields: ['id'],
+
+          // get AP group ID from the AP list data from the view model
+          const apListQueryPayload = {
+            fields: ['name', 'serialNumber', 'apGroupId'],
             pageSize: 1,
-            filters: { apSerialNumbers: [ap.serialNumber] }
+            filters: { id: [ap.serialNumber] }
           }
-          const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
-          const apGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(apGroupPayload) })
-          const apGroupList = apGroupListRes.data as TableResult<ApGroup>
-          const targetApGroup = apGroupList.data[0]
-          if(targetApGroup) {
-            ap.apGroupId = targetApGroup.id
+          const apListQuery = await fetchWithBQ({
+            ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
+            body: JSON.stringify(apListQueryPayload)
+          })
+          const aps = apListQuery.data as TableResult<NewAPModel>
+          if(aps?.data) {
+            ap.apGroupId = aps.data[0].apGroupId
           }
         }
         return { data: ap }
@@ -1170,6 +1173,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
+    // deprecated! RBAC API will use the updateApLanPorts to replace.
     resetApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLanPorts, params)
@@ -1203,6 +1207,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    // deprecated! RBAC API will use the updateApLed to replace.
     resetApLed: build.mutation<ApLedSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLed, params)
@@ -1673,7 +1678,8 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApManagementVlan: build.query<ApManagementVlan, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApManagementVlan, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApManagementVlan, params, customHeaders)
         return {
           ...req
         }
@@ -1692,10 +1698,11 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     updateApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApManagementVlan, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApManagementVlan, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
@@ -1871,6 +1878,7 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetEnhanceApFeatureSetsQuery,
+  useGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,

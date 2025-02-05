@@ -32,7 +32,7 @@ describe('CertTemplateActionPreview', () => {
     expect(screen.getByText('Network2')).toBeInTheDocument()
     expect(screen
       // eslint-disable-next-line max-len
-      .getByText('Scan or click to download the certificate'))
+      .getByText('Scan or click the QR code to download the certificate:'))
       .toBeInTheDocument()
   })
 
@@ -46,7 +46,7 @@ describe('CertTemplateActionPreview', () => {
     expect(screen.getByText('Wi-Fi Network name: SingleNetwork')).toBeInTheDocument()
     expect(screen
     // eslint-disable-next-line max-len
-      .getByText('Scan or click to download the certificate'))
+      .getByText('Scan or click this QR code to download the certificate that is required in order to connect to the network:'))
       .toBeInTheDocument()
   })
 })

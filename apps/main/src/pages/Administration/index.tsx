@@ -12,11 +12,12 @@ import { Features,
 import {
   useGetAdminListQuery,
   useGetDelegationsQuery,
-  useGetNotificationRecipientsQuery
+  useGetNotificationRecipientsQuery,
+  useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { hasAdministratorTab }                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                 from '@acx-ui/user'
+import { hasAdministratorTab, transformDisplayNumber, useTableQuery, Webhook } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                               from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -26,6 +27,7 @@ import Notifications     from './Notifications'
 import OnpremMigration   from './OnpremMigration'
 import Subscriptions     from './Subscriptions'
 import UserPrivileges    from './UserPrivileges'
+import R1Webhooks        from './Webhooks'
 
 const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
@@ -35,6 +37,8 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
+  const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -54,9 +58,15 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
     { params },
     { skip: !isAdministratorAccessible }
   )
+  const webhookData = useTableQuery<Webhook>({
+    useQuery: useGetWebhooksQuery,
+    defaultPayload: {},
+    option: { skip: !isWebhookToggleEnabled }
+  })
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
+  const webhookCount = transformDisplayNumber(webhookData?.data?.totalCount)
 
   return [
     {
@@ -94,10 +104,20 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
       title: $t({ defaultMessage: 'Version Management' }),
       component: <FWVersionMgmt />
     },
-    {
-      key: 'webhooks',
-      ...useWebhooks()
-    },
+    isWebhookToggleEnabled
+      ? {
+        key: 'webhooks',
+        title: $t({
+          defaultMessage: 'Webhooks {webhookCount, select, null {} other {({webhookCount})}}',
+          description: 'Translation string - Webhooks'
+        }, { webhookCount }),
+        component: <R1Webhooks/>
+      }
+      : {
+        key: 'webhooks',
+        title: webhookTitle,
+        component: webhookComponent
+      },
     {
       key: 'onpremMigration',
       title: $t({ defaultMessage: 'ZD Migration' }),

@@ -17,7 +17,6 @@ import {
   LanPort,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
-  SoftGreProfileDispatcher,
   useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
@@ -70,7 +69,6 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
-  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   softGREProfileOptionList?: DefaultOptionType[]
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
@@ -107,6 +105,10 @@ export function LanPortSettings (props: {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+  const isR370UnsupportFeatureEnabled = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isModelSupportSoftGRE =
+    (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGRE) ||
+    selectedModelCaps?.model !== 'R370'
 
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
@@ -230,7 +232,7 @@ export function LanPortSettings (props: {
           selectedModelCaps={selectedModelCaps}
           onEthernetPortProfileChanged={onEthernetPortProfileChange}
         />
-        {isEthernetSoftgreEnabled && <>
+        {isEthernetSoftgreEnabled && isModelSupportSoftGRE && <>
           <SoftGRETunnelSettings
             readonly={
               !isEthernetPortEnable ||
@@ -299,7 +301,7 @@ export function LanPortSettings (props: {
             {lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
               <ApCompatibilityToolTip
                 title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
-                visible={true}
+                showDetailButton
                 placement='bottom'
                 onClick={() => setDrawerVisible(true)} />
               :
