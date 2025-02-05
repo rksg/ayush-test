@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { Form, FormInstance, Input, Select } from 'antd'
 import { useIntl }                           from 'react-intl'
 
-import { Button, showToast }                              from '@acx-ui/components'
-import { useWebhookSendSampleEventMutation }              from '@acx-ui/rc/services'
-import { URLProtocolRegExp, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+import { Button, showToast }                      from '@acx-ui/components'
+import { useWebhookSendSampleEventMutation }      from '@acx-ui/rc/services'
+import { URLRegExp, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
 
 import * as UI                         from './styledComponents'
 import { getWebhookPayloadEnumString } from './webhookConfig'
@@ -13,11 +13,12 @@ import { getWebhookPayloadEnumString } from './webhookConfig'
 interface SettingsTabProps {
   form: FormInstance<Webhook>
   isEditMode?: boolean
+  webhookData?: Webhook[]
 }
 
 const SettingsTab = (props: SettingsTabProps) => {
   const { $t } = useIntl()
-  const { form, isEditMode = false } = props
+  const { form, isEditMode = false, webhookData } = props
   const [testURLEnabled, setTestURLEnabled] = useState(isEditMode)
   const [sendSampleEvent] = useWebhookSendSampleEventMutation()
 
@@ -26,10 +27,9 @@ const SettingsTab = (props: SettingsTabProps) => {
     try {
       await form.validateFields([field])
       const url = form.getFieldValue(['url'])
-      const secret = form.getFieldValue(['secret'])
       const payload = form.getFieldValue(['payload'])
-      const enabled = url && secret && payload &&
-        !form.getFieldsError(['url','secret','payload']).some(({ errors }) => errors.length)
+      const enabled = url && payload &&
+        !form.getFieldsError(['url','payload']).some(({ errors }) => errors.length)
       setTestURLEnabled(enabled)
     }
     catch(error) {
@@ -78,7 +78,15 @@ const SettingsTab = (props: SettingsTabProps) => {
     rules={[
       { required: true },
       { max: 255 },
-      { whitespace: true }
+      { whitespace: true },
+      { validator: (_, value) => {
+        if(webhookData?.map((item) => { return item.name}).includes(value)) {
+          return Promise.reject(
+            `${$t({ defaultMessage: 'Name already exists' })} `
+          )
+        }
+        return Promise.resolve()}
+      }
     ]}
     children={<Input />}
   />
@@ -89,7 +97,15 @@ const SettingsTab = (props: SettingsTabProps) => {
       label={$t({ defaultMessage: 'Webhook URL' })}
       rules={[
         { required: true },
-        { validator: (_, value) => URLProtocolRegExp(value) }
+        { validator: (_, value) => {
+          if(webhookData?.map((item) => { return item.url}).includes(value)) {
+            return Promise.reject(
+              `${$t({ defaultMessage: 'Webhook URL already exists' })} `
+            )
+          }
+          return Promise.resolve()}
+        },
+        { validator: (_, value) => URLRegExp(value) }
       ]}
       children={<Input type='url' onChange={() => updateButtonEnabled('url')} />}
     />
@@ -103,7 +119,6 @@ const SettingsTab = (props: SettingsTabProps) => {
   <Form.Item
     name='secret'
     label={$t({ defaultMessage: 'Secret' })}
-    rules={[{ required: true }]}
     children={<Input.Password onChange={() => updateButtonEnabled('secret')} />}
   />
   <Form.Item
