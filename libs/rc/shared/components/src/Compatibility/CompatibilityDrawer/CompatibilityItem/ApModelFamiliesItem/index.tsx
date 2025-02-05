@@ -20,10 +20,16 @@ export const ApModelFamiliesItem = (props: {
     const { apModels, name, displayName } = apModelFamily
     const findModels = intersection(apModels, models)
     if (findModels.length > 0) {
+      const displayModels = findModels.map((model: string) => {
+        if (model.includes(':')) {
+          return model.split(':')[1]
+        }
+        return model
+      })
       familiesData.push({
         name,
         displayName,
-        models: findModels
+        models: displayModels
       })
     }
   })
