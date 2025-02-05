@@ -371,5 +371,15 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/webhooks/sendSampleEvents',
     newApi: true
+  },
+  getPrivacySettings: {
+    method: 'get',
+    url: '/tenants/privacySettings',
+    newApi: true
+  },
+  updatePrivacySettings: {
+    method: 'PATCH',
+    url: '/tenants/privacySettings',
+    newApi: true
   }
 }
