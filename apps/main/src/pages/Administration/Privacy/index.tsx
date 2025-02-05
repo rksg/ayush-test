@@ -101,7 +101,7 @@ export default function Privacy () {
             color: 'var(--acx-neutrals-50)'
           }}>
             {
-              $t(MessageMapping.privacy_settings_description)
+              $t(MessageMapping.arc_privacy_settings_description)
             }
           </Typography.Text>
         </Col>
