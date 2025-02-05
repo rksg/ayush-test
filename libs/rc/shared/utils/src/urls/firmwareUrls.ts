@@ -254,6 +254,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   patchVenueApModelFirmwares: {
     method: 'put',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -271,6 +272,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSchedulesPerApModel: {
     method: 'put',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -280,6 +282,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   skipVenueSchedulesPerApModel: {
     method: 'delete',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    opsApi: 'DELETE:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'

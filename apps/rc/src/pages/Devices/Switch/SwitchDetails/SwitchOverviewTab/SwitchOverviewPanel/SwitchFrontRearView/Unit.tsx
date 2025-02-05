@@ -18,15 +18,16 @@ import { getPoeUsage,
   SwitchFrontView,
   SwitchModelInfo,
   SwitchPortViewModelQueryFields,
+  SwitchRbacUrlsInfo,
   SwitchRearViewUISlot,
   SwitchSlot,
   SwitchStatusEnum,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { SwitchScopes }                      from '@acx-ui/types'
-import { hasPermission }                     from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { hasPermission }                                from '@acx-ui/user'
+import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -429,7 +430,10 @@ export function Unit (props:{
       }
       <div className='view-button'>
         {
-          enableDeleteStackMember && hasPermission({ scopes: [SwitchScopes.DELETE] }) &&
+          enableDeleteStackMember && hasPermission({
+            scopes: [SwitchScopes.DELETE],
+            rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteStackMember)]
+          }) &&
           <Button
             type='link'
             size='small'
