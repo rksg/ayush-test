@@ -55,6 +55,7 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  getScopeKeyByPolicy,
   hasSomePoliciesPermission,
   hasSomeServicesPermission,
   PolicyAuthRoute,
@@ -1445,27 +1446,47 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
-          element={<FlexibleAuthenticationTable />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.LIST)}>
+              <FlexibleAuthenticationTable />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.CREATE
           })}
-          element={<AddFlexibleAuthentication/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}>
+              <AddFlexibleAuthentication />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.EDIT
           })}
-          element={<EditFlexibleAuthentication/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}>
+              <EditFlexibleAuthentication />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
           })}
-          element={<FlexibleAuthenticationDetail />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.DETAIL)}>
+              <FlexibleAuthenticationDetail />
+            </AuthRoute>
+          }
         />
       </>
       }
@@ -1527,7 +1548,12 @@ function PolicyRoutes () {
       {isSwitchPortProfileEnabled && <>
         <Route
           path='policies/portProfile/create'
-          element={<CreatePortProfile />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <CreatePortProfile />
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/:activeTab/'
@@ -1539,15 +1565,30 @@ function PolicyRoutes () {
         />
         <Route
           path='policies/portProfile/switch/profiles/add'
-          element={<SwitchPortProfileForm />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/edit'
-          element={<SwitchPortProfileForm />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/detail'
-          element={<SwitchPortProfileDetail />}
+          element={
+          // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
+              <SwitchPortProfileDetail />
+            </AuthRoute>
+          }
         />
       </>
       }
