@@ -1,24 +1,25 @@
-import React            from 'react'
+import React, { useCallback }            from 'react'
 import { ReactElement } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer } from '@acx-ui/components'
+import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast } from '@acx-ui/components'
 import { useNavigate }                                                    from '@acx-ui/react-router-dom'
-
+import { getUserProfile }         from '@acx-ui/user'
+import { getIntl  } from '@acx-ui/utils'
 import { generateBreadcrumb } from './utils'
-
+import { useSaveStorageMutation, useGetStorageQuery } from './services'
+import { use } from 'echarts'
 
 
 type CloudStorageFormProps = {
   editMode?: boolean
   isRAI?: boolean
 }
-const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }) => {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  const storageMap = {
+const getStorageMap = () => {
+  const { $t } = getIntl()
+  return {
     azure: [{
       id: 'azureConnectionType',
       name: $t({ defaultMessage: 'Azure connection type' }),
@@ -84,90 +85,114 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
       component: <Input />
     }]
   }
-  // To be fetched from api
-  const selectedCloudStorage = {
-    connectionType: 'azure',
-    azureConnectionType: 'Azure Files',
-    azureAccountName: 'some name',
-    azureAccountKey: 'key',
-    azureShareName: 'share name',
-    azureCustomerName: 'name'
-  }
+}
+const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }) => {
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const storageMap = getStorageMap()
+  const { profile: { tenantId } } = getUserProfile()
+  const storage = useGetStorageQuery(
+    { tenantId },
+    { skip: !editMode }
+  )
+  const selectedCloudStorage = storage.data?.config
   const [form] = Form.useForm()
   const selectedConnectionType: string = Form.useWatch('connectionType', form)
-  const connectionType = selectedConnectionType || selectedCloudStorage.connectionType
+  const connectionType = selectedConnectionType || selectedCloudStorage?.connectionType
   const comps = storageMap[connectionType as keyof typeof storageMap]
+  const [updateStorage, { isLoading }] = useSaveStorageMutation()
+  
+  const saveStorage = useCallback(() => {
+    const data = form.getFieldsValue()
+    if (editMode) {
+      data.id = storage.data?.id
+      data.isEdit = true
+    }
+    updateStorage(data)
+      .unwrap()
+      .then(() => {
+       navigate(-1)
+      })
+      .catch(({ data: { error }}) => {
+        showToast({ type: 'error', content: error })
+      })
+  }, [form, tenantId, editMode, storage.data?.id])
+  const initialValues =
+    editMode ? selectedCloudStorage : { connectionType: 'azure' }
   return <>
     <PageHeader
       title={editMode
         ? $t(
           { defaultMessage: 'Cloud Storage: {type}' },
-          { type: selectedCloudStorage.connectionType }
+          { type: selectedCloudStorage?.connectionType }
         )
         : $t({ defaultMessage: 'New Cloud Storage' })
       }
       breadcrumb={generateBreadcrumb({ isRAI })}
     />
-    <GridRow>
-      <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
-        <Form
-          initialValues={
-            editMode ? selectedCloudStorage : { connectionType: 'azure' }
-          }
-          layout='vertical'
-          form={form}
-        >
-          <Form.Item
-            name='connectionType'
-            label={$t({ defaultMessage: 'Connection type' })}
-            required
+    <Loader states={[{ isLoading: isLoading || storage.isLoading }]}>
+      <GridRow>
+        <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
+          <Form
+            initialValues={initialValues}
+            layout='vertical'
+            form={form}
           >
-            <Select
-              options={[
-                { value: 'azure', label: 'Azure' },
-                { value: 'ftp', label: 'FTP' },
-                { value: 'sftp', label: 'SFTP' }
-              ]}
-            />
-          </Form.Item>
-          {comps?.map((item: { id: string, name: string, component: ReactElement }) =>
             <Form.Item
-              key={item.id}
-              name={item.id}
-              label={item.name}
-              rules={[{
-                required: true,
-                message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
-              }]}
+              name='connectionType'
+              label={$t({ defaultMessage: 'Connection type' })}
+              required
             >
-              {item.component}
-            </Form.Item>)}
-        </Form>
-      </GridCol>
-    </GridRow>
-    <GridRow >
-      <ActionsContainer>
-        <GridCol col={{ span: 12 }} style={{ flexDirection: 'row-reverse' }}>
-          <Button
-            type='primary'
-            style={{ marginLeft: '20px' }}
-            onClick={() => {
-              console.log(form.getFieldsValue()) // eslint-disable-line no-console
-              // TODO Add validations and submit
-              form.submit()
-            }}
-          >
-            {$t({ defaultMessage: 'Save' })}
-          </Button>
-          <Button
-            type='default'
-            onClick={() => {
-              navigate(-1)
-            }}
-          >{$t({ defaultMessage: 'Cancel' })}</Button>
+              <Select
+                options={[
+                  { value: 'azure', label: 'Azure' },
+                  { value: 'ftp', label: 'FTP' },
+                  { value: 'sftp', label: 'SFTP' }
+                ]}
+              />
+            </Form.Item>
+            {comps?.map((item: { id: string, name: string, component: ReactElement }) =>
+              <Form.Item
+                key={item.id}
+                name={item.id}
+                label={item.name}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
+                }]}
+              >
+                {item.component}
+              </Form.Item>)}
+          </Form>
         </GridCol>
-      </ActionsContainer>
-    </GridRow>
+      </GridRow>
+      <GridRow >
+        <ActionsContainer>
+          <GridCol col={{ span: 12 }} style={{ flexDirection: 'row-reverse' }}>
+            <Button
+              type='primary'
+              style={{ marginLeft: '20px' }}
+              onClick={() => {
+                form
+                  .validateFields()
+                  .then(() => {
+                    saveStorage() 
+                  })
+                  .catch(() => {})
+              }}
+            >
+              {$t({ defaultMessage: 'Save' })}
+            </Button>
+            <Button
+              type='default'
+              onClick={() => {
+                navigate(-1)
+              }}
+            >{$t({ defaultMessage: 'Cancel' })}</Button>
+          </GridCol>
+        </ActionsContainer>
+      </GridRow>
+    </Loader>
   </>
 }
 export default CloudStorage
