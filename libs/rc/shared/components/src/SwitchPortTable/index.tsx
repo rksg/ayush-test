@@ -22,7 +22,8 @@ import {
   SwitchMessages,
   SwitchViewModel,
   usePollingTableQuery,
-  SwitchRbacUrlsInfo
+  SwitchRbacUrlsInfo,
+  isFirmwareVersionAbove10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
@@ -351,6 +352,7 @@ export function SwitchPortTable (props: {
   const getColumns = () => columns
     .filter(item => !isVenueLevel ? item.key !== 'switchName' : item)
     .filter(item => !isSwitchPortProfileEnabled
+      || (!isVenueLevel && !isFirmwareVersionAbove10020b(switchDetail?.firmware))
       ? item.key !== 'switchPortProfileName' && item.key !== 'switchPortProfileType' : item)
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
