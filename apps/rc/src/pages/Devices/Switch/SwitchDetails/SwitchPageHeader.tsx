@@ -22,6 +22,7 @@ import {
   getStackUnitsMinLimitation,
   getStackUnitsMinLimitationV1002,
   getSwitchModelGroup,
+  SwitchRbacUrlsInfo,
   SwitchRow,
   SwitchStatusEnum,
   SwitchViewModel
@@ -34,7 +35,7 @@ import {
 }                  from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { useDateFilter }                 from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }      from '@acx-ui/utils'
 
 import AddStackMember from './AddStackMember'
 import SwitchTabs     from './SwitchTabs'
@@ -253,11 +254,16 @@ function SwitchPageHeader () {
     }, 3000)
   }
 
-  const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
-  const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
+  const hasUpdatePermission = hasPermission({
+    scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)] })
+  const hasDeletPermission = hasPermission({
+    scopes: [SwitchScopes.DELETE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitches)]
+  })
   const showAddMember = isStack && (maxMembers > 0) && hasUpdatePermission
   const showDivider = (hasUpdatePermission && (isSyncedSwitchConfig || isOperational))
-    && (showAddMember || hasDeletaPermission)
+    && (showAddMember || hasDeletPermission)
 
   const menu = (
     <Menu
@@ -293,7 +299,7 @@ function SwitchPageHeader () {
           label: $t({ defaultMessage: 'Add Member' })
         }] : []),
 
-        ...(hasDeletaPermission ? [{
+        ...(hasDeletPermission ? [{
           key: MoreActions.DELETE,
           label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
             {isStack ?
@@ -334,6 +340,10 @@ function SwitchPageHeader () {
           />,
           ...filterByAccess([
             <Dropdown overlay={menu}
+              rbacOpsIds={[
+                getOpsApi(SwitchRbacUrlsInfo.updateSwitch),
+                getOpsApi(SwitchRbacUrlsInfo.deleteSwitches)
+              ]}
               scopeKey={[SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
                 <Button>
                   <Space>
@@ -344,6 +354,7 @@ function SwitchPageHeader () {
               }</Dropdown>,
             <Button
               type='primary'
+              rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.updateSwitch)]}
               scopeKey={[SwitchScopes.UPDATE]}
               onClick={() =>
                 navigate({

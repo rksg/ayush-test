@@ -509,6 +509,20 @@ export enum PermissionType {
   delete = 'd'
 }
 
+export enum PrivacyFeatureName {
+  ARC='ARC',
+  APP_VISIBILITY='APP_VISIBILITY'
+}
+
+export interface PrivacySettings {
+  featureName: PrivacyFeatureName,
+  isEnabled: boolean
+}
+
+export interface PrivacyFeatures {
+  privacyFeatures: PrivacySettings[]
+}
+
 export interface ScopeFeature {
   id: string,
   name: string,

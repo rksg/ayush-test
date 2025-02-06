@@ -36,7 +36,9 @@ import {
   TwiliosMessagingServices,
   Webhook,
   TableResult,
-  ScopeFeature
+  ScopeFeature,
+  PrivacyFeatures,
+  PrivacySettings
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -996,6 +998,31 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getPrivacySettings: build.query<PrivacySettings[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getPrivacySettings, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: PrivacyFeatures) => {
+        return response.privacyFeatures
+      },
+      providesTags: [{ type: 'Privacy', id: 'DETAIL' }]
+    }),
+    updatePrivacySettings: build.mutation<PrivacySettings[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updatePrivacySettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (response: PrivacyFeatures) => {
+        return response.privacyFeatures
+      },
+      invalidatesTags: [{ type: 'Privacy', id: 'DETAIL' }]
     })
   })
 })
@@ -1088,5 +1115,7 @@ export const {
   useAddWebhookMutation,
   useUpdateWebhookMutation,
   useDeleteWebhookMutation,
-  useWebhookSendSampleEventMutation
+  useWebhookSendSampleEventMutation,
+  useGetPrivacySettingsQuery,
+  useUpdatePrivacySettingsMutation
 } = administrationApi
