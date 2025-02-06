@@ -6,11 +6,11 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { EdgeNokiaOnuTable } from './index'
-const { mockOnuList } = EdgeOltFixtures
+const { mockOlt, mockOnuList } = EdgeOltFixtures
 
 describe('EdgeNokiaOnuTable', () => {
   const defaultProps = {
-    oltId: 'oltId',
+    oltData: mockOlt,
     cageName: 'cageName'
   }
 
@@ -20,7 +20,7 @@ describe('EdgeNokiaOnuTable', () => {
     mockGetOnuList.mockClear()
 
     mockServer.use(
-      rest.get(
+      rest.post(
         EdgeTnmServiceUrls.getEdgeOnuList.url,
         (_, res, ctx) => {
           mockGetOnuList()

@@ -1,7 +1,6 @@
 import { EdgeNokiaOltStatusEnum, EdgeNokiaCageStateEnum } from '../models'
 
 export interface EdgeNokiaOltData {
-  id: string
   name: string
   status: EdgeNokiaOltStatusEnum
   vendor: string

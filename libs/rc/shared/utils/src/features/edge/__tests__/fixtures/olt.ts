@@ -1,7 +1,9 @@
+import { EdgeNokiaOltStatusEnum } from '../../../../models/EdgeNokiaOltEnum'
+
 export const mockOlt = {
   name: 'TestOlt',
   serialNumber: 'testSerialNumber',
-  status: 'online',
+  status: 'online' as EdgeNokiaOltStatusEnum,
   vendor: 'Nokia',
   model: 'MF-2',
   firmware: '22.649',
@@ -87,17 +89,25 @@ export const mockOltCageList = [
 export const mockOnuList = [
   {
     name: 'ont_9',
-    ports: 1,
-    usedPorts: 1,
+    ports: 3,
+    usedPorts: 2,
     portDetails: [
       {
         status: 'up',
         vlan: ['30']
+      },
+      {
+        status: 'down',
+        vlan: ['11']
+      },
+      {
+        status: 'up',
+        vlan: ['66']
       }
     ]
   }, {
     name: 'ont_7',
-    ports: 2,
+    ports: 1,
     usedPorts: 0,
     portDetails: [
       {

@@ -10,20 +10,27 @@ import {
 } from '@acx-ui/components'
 import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
 import {
+  EdgeNokiaOltData,
   EdgeNokiaOnuData
 } from '@acx-ui/rc/utils'
 
 interface EdgeNokiaOnuTableProps {
-  oltId: string | undefined
+  oltData: EdgeNokiaOltData | undefined
   cageName: string | undefined
   onClick: (onu: EdgeNokiaOnuData) => void
 }
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
-  const { oltId, cageName } = props
+  const { oltData, cageName } = props
+
   const { data, isLoading } = useGetEdgeOnuListQuery({
-    params: { oltId, cageName }
-  }, { skip: !oltId || !cageName })
+    params: {
+      venueId: oltData?.venueId,
+      edgeClusterId: oltData?.edgeClusterId,
+      oltId: oltData?.serialNumber
+    },
+    payload: { cage: cageName }
+  }, { skip: !oltData || !cageName })
 
   return <Loader states={[{ isLoading }]}>
     <Table
@@ -56,7 +63,7 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
       render: (_, row) =>
         <Space>
           <span>{row.ports}</span>
-          <ProgressBarV2 percent={33.33} />
+          <ProgressBarV2 percent={row.usedPorts/row.ports} />
         </Space>
     },
     {

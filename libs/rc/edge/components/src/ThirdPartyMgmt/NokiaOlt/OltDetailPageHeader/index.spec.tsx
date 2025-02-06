@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { EdgeNokiaOltData, EdgeOltFixtures } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { screen, render }                    from '@acx-ui/test-utils'
+import { EdgeNokiaOltData, EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { screen, render, mockServer }                            from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltDetailsPageHeader } from '.'
-const { mockOlt } = EdgeOltFixtures
+const { mockOlt, mockOltCageList } = EdgeOltFixtures
 
 jest.mock( './DetailsDrawer', () => ({
   // eslint-disable-next-line max-len
@@ -35,6 +36,16 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
   const props = {
     currentOlt: mockOlt as EdgeNokiaOltData
   }
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeCageList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockOltCageList))
+        })
+    )
+  })
 
   it('test component renders with expected elements', () => {
     render(<Provider>

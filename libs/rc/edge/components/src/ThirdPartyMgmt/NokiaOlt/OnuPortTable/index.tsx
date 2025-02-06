@@ -5,7 +5,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import {  EdgeNokiaOnuPortData, getOnuPortStatusConfig } from '@acx-ui/rc/utils'
+import { useSetEdgeOnuPortVlanMutation }                                   from '@acx-ui/rc/services'
+import {  EdgeNokiaOltData, EdgeNokiaOnuPortData, getOnuPortStatusConfig } from '@acx-ui/rc/utils'
 
 import { EdgeNokiaOltStatus } from '../OltStatus'
 
@@ -13,28 +14,48 @@ import { TextInlineEditor } from './TextInlineEditor'
 
 interface EdgeNokiaOnuPortTableProps {
   data: EdgeNokiaOnuPortData[] | undefined
+  oltData: EdgeNokiaOltData
+  cageName: string | undefined
+  onuName: string | undefined
 }
 
 export const EdgeNokiaOnuPortTable = (props: EdgeNokiaOnuPortTableProps) => {
-  const { data } = props
+  const { data, oltData, cageName, onuName } = props
 
-  const handleVlanIdChange = () => {}
+  const [updateVlan] = useSetEdgeOnuPortVlanMutation()
+  const handleVlanIdChange = async (portId: string, vlan: number) => {
+    return await updateVlan({
+      params: {
+        venueId: oltData.venueId,
+        edgeClusterId: oltData.edgeClusterId,
+        oltId: oltData.serialNumber
+      },
+      payload: {
+        cageId: cageName,
+        name: onuName,
+        ports: portId,
+        toUpdateVlan: vlan.toString()
+      }
+    }).unwrap()
+  }
 
   return <Table
     rowKey='portId'
-    columns={useColumns(handleVlanIdChange)}
+    columns={useColumns(onuName, handleVlanIdChange)}
     dataSource={data?.map((item, idx) => ({ ...item, portId: `${idx}` }))}
   />
 }
 
-function useColumns (handleVlanIdChange: (portId: string, value: number) => void) {
+// eslint-disable-next-line max-len
+function useColumns (onuName: string | undefined, handleVlanIdChange: (portId: string, value: number) => void) {
   const { $t } = useIntl()
   const columns: TableProps<EdgeNokiaOnuPortData>['columns'] = [
     {
       key: 'portId',
       title: $t({ defaultMessage: 'Port' }),
       dataIndex: 'portId',
-      fixed: 'left'
+      fixed: 'left',
+      width: 50
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -58,8 +79,9 @@ function useColumns (handleVlanIdChange: (portId: string, value: number) => void
       dataIndex: 'vlan',
       render: (_, row) => {
         return <TextInlineEditor
+          key={`${onuName}-${row.portId}`}
           value={stringToNumber(row.vlan[0])}
-          onChange={vlan => handleVlanIdChange(row.portId, vlan)}
+          onChange={async (vlan) => handleVlanIdChange(row.portId, vlan)}
         />
       }
     }
