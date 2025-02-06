@@ -105,6 +105,11 @@ export interface MspEcData {
   number_of_days?: string;
   isManageAllEcs?: boolean;
   tier?: MspEcTierEnum;
+  privacyFeatures?: [{
+    featureName?: string,
+    status?: string,
+    isEnabled?: boolean
+  }]
 }
 
 export interface VarCustomer {

@@ -126,7 +126,7 @@ describe('Venues Table', () => {
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    const deleteButton = screen.getByRole('button', { name: 'Delete' })
     await userEvent.click(deleteButton)
 
     const dialog = await screen.findByRole('dialog')
@@ -134,7 +134,7 @@ describe('Venues Table', () => {
       = await within(dialog).findByRole('textbox', { name: 'Type the word "Delete" to confirm:' })
     expect(await within(dialog).findByText('Delete "My-Venue"?')).toBeVisible()
     fireEvent.change(confirmInput, { target: { value: 'Delete' } })
-    await userEvent.click(await within(dialog).findByRole('button', { name: /Delete Venue/i }))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete Venue' }))
     expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
@@ -199,8 +199,6 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    // jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
-
     render(
       <Provider>
         <VenuesTable />
