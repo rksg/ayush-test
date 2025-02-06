@@ -365,8 +365,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'VE' })}
             name='veId'
-            rules={[
-              { required: true }]}
           >
             {/* <span style={{
               display: 'flex',
