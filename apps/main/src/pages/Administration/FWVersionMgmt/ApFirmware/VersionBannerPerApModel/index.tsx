@@ -79,14 +79,16 @@ export function VersionBannerPerApModel () {
         ] : data)
 
       // eslint-disable-next-line max-len
-      const earlyAccessFilter = (data: ApModelFirmware[], filterFn: (labels: FirmwareLabel[] | undefined) => boolean) => {
+      const earlyAccessFilter = (data: ApModelFirmware[], filterFn: (labels: FirmwareLabel[] | undefined) => boolean, tenantLatestVersionUpdateGroup?: ApFirmwareUpdateGroupType) => {
         const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
+        const compareFirmware = tenantLatestVersionUpdateGroup?.firmwares[0].name
         const result = data.filter(firmware => {
           const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
           // eslint-disable-next-line max-len
-          const isLaterThanLatestVersion = compareVersions(firmware.name, tenantLatestVersionUpdateGroup.firmwares[0].name) > 0
-          const hasAlpha = filterFn(firmware.labels)
-          return hasAlpha && isLaterThanGA && isLaterThanLatestVersion
+          const isLaterThanLatestVersion = compareFirmware ? compareVersions(firmware.name, compareFirmware) > 0 : true
+          const hasEarlyAccess = filterFn(firmware.labels)
+
+          return hasEarlyAccess && isLaterThanGA && isLaterThanLatestVersion
         })
 
         return result
@@ -115,8 +117,8 @@ export function VersionBannerPerApModel () {
 
         if (isApFwMgmtEarlyAccess) {
           // ACX-76973: for EA/IEA firmware, also need to display the latest version information in the banner
-          const resultAlpha = earlyAccessFilter(data, isAlphaFilter)
-          const resultBeta = earlyAccessFilter(data, isBetaFilter)
+          const resultAlpha = earlyAccessFilter(data, isAlphaFilter, tenantLatestVersionUpdateGroup)
+          const resultBeta = earlyAccessFilter(data, isBetaFilter, tenantLatestVersionUpdateGroup)
           if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0) {
             updateGroups.unshift(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
           }
