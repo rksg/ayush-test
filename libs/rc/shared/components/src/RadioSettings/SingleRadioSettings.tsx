@@ -1,17 +1,20 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Row, Form, Switch } from 'antd'
-import { isEmpty }                from 'lodash'
-import { useIntl }                from 'react-intl'
+import { Col, Row, Form, Switch, Space } from 'antd'
+import { isEmpty }                       from 'lodash'
+import { useIntl }                       from 'react-intl'
 
 import { Button, cssStr }                from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
 import { AFCProps, CapabilitiesApModel } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 import { isApFwVersionLargerThan711 }    from '@acx-ui/utils'
 
-import { RadioSettingsChannels }       from '../RadioSettingsChannels'
-import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
-import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { RadioSettingsChannels }                                                                       from '../RadioSettingsChannels'
+import { findIsolatedGroupByChannel }                                                                  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
+import { RadioSettingsChannels320Mhz }                                                                 from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
 import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
@@ -73,6 +76,7 @@ export function SingleRadioSettings (props:{
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { venueId } = useParams()
   const {
     disabled = false,
     inherit5G = false,
@@ -94,6 +98,8 @@ export function SingleRadioSettings (props:{
   } = useContext(SupportRadioChannelsContext)
 
   const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370Unsupported6gFeatures = isSupportR370ToggleOn &&
+    (radioType === ApRadioTypeEnum.Radio6G)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
@@ -128,6 +134,8 @@ export function SingleRadioSettings (props:{
   const [channelErrMsg, setChannelErrMsg] = useState<string>()
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
+
+  const [outdoor6gDrawerVisible, setOutdoor6gDrawerVisible] = useState(false)
 
   const previousChannelMethod = useRef<string>()
   const bandWidthOnChanged = useRef(false)
@@ -597,7 +605,25 @@ export function SingleRadioSettings (props:{
         <>
           <Row gutter={20}>
             <Col span={4}>
-              <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+              <Space>
+                <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+                {isR370Unsupported6gFeatures && <ApCompatibilityToolTip
+                  title={''}
+                  showDetailButton
+                  placement='right'
+                  onClick={() => setOutdoor6gDrawerVisible(true)}
+                  icon={<QuestionMarkCircleOutlined
+                    style={{ height: '16px', width: '16px' }}
+                  />}
+                />}
+                {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
+                  visible={outdoor6gDrawerVisible}
+                  type={context === 'venue' ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                  venueId={venueId}
+                  featureName={InCompatibilityFeatures.OUTDOOR_6G_CHANNEL}
+                  onClose={() => setOutdoor6gDrawerVisible(false)}
+                />}
+              </Space>
             </Col>
             {outdoorChannelErrMsg &&
               <Col span={6}>
