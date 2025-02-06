@@ -52,7 +52,12 @@ const mockedMSPCustomers = {
   }]
 }
 
+const services = require('@acx-ui/msp/services')
+
 describe('MSP Custom selector component', () => {
+  services.useMspCustomerListQuery = jest.fn().mockImplementation(() => {
+    return { data: mockedMSPCustomers }
+  })
   mockServer.use(
     rest.post(
       MspUrlsInfo.getMspCustomersList.url,
