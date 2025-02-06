@@ -5,7 +5,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import {  EdgeNokiaOnuPortData, getOnuPortStatusConfig } from '@acx-ui/rc/utils'
+import { formatter }                                                                               from '@acx-ui/formatter'
+import { useSetEdgeOnuPortVlanMutation }                                                           from '@acx-ui/rc/services'
+import {  EdgeNokiaOltData, EdgeNokiaOnuPortData, getOnuPortStatusConfig, OLT_PSE_SUPPLIED_POWER } from '@acx-ui/rc/utils'
 
 import { EdgeNokiaOltStatus } from '../OltStatus'
 
@@ -13,28 +15,49 @@ import { TextInlineEditor } from './TextInlineEditor'
 
 interface EdgeNokiaOnuPortTableProps {
   data: EdgeNokiaOnuPortData[] | undefined
+  oltData: EdgeNokiaOltData
+  cageName: string | undefined
+  onuName: string | undefined
 }
 
 export const EdgeNokiaOnuPortTable = (props: EdgeNokiaOnuPortTableProps) => {
-  const { data } = props
+  const { data, oltData, cageName, onuName } = props
 
-  const handleVlanIdChange = () => {}
+  const [updateVlan] = useSetEdgeOnuPortVlanMutation()
+
+  const handleVlanIdChange = async (portIdx: string, vlan: number) => {
+    return await updateVlan({
+      params: {
+        venueId: oltData.venueId,
+        edgeClusterId: oltData.edgeClusterId,
+        oltId: oltData.serialNumber
+      },
+      payload: {
+        cageId: cageName,
+        name: onuName,
+        toUpdatePortIdx: portIdx,
+        toUpdateVlan: vlan.toString()
+      }
+    }).unwrap()
+  }
 
   return <Table
-    rowKey='portId'
-    columns={useColumns(handleVlanIdChange)}
-    dataSource={data?.map((item, idx) => ({ ...item, portId: `${idx}` }))}
+    rowKey='portIdx'
+    columns={useColumns(onuName, handleVlanIdChange)}
+    dataSource={data}
   />
 }
 
-function useColumns (handleVlanIdChange: (portId: string, value: number) => void) {
+// eslint-disable-next-line max-len
+function useColumns (onuName: string | undefined, handleVlanIdChange: (portIdx: string, value: number) => void) {
   const { $t } = useIntl()
   const columns: TableProps<EdgeNokiaOnuPortData>['columns'] = [
     {
-      key: 'portId',
+      key: 'portIdx',
       title: $t({ defaultMessage: 'Port' }),
-      dataIndex: 'portId',
-      fixed: 'left'
+      dataIndex: 'portIdx',
+      fixed: 'left',
+      width: 50
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -50,7 +73,12 @@ function useColumns (handleVlanIdChange: (portId: string, value: number) => void
     {
       key: 'poeUtilization',
       title: $t({ defaultMessage: 'PoE Utilization' }),
-      dataIndex: 'poeUtilization'
+      dataIndex: 'poeUtilization',
+      render: (_, row) => {
+        const percentVal = row.poePower / OLT_PSE_SUPPLIED_POWER
+        // eslint-disable-next-line max-len
+        return `${formatter('percentFormat')(percentVal)} (${formatter('ratioFormat')([row.poePower, OLT_PSE_SUPPLIED_POWER])} W)`
+      }
     },
     {
       key: 'vlan',
@@ -58,8 +86,9 @@ function useColumns (handleVlanIdChange: (portId: string, value: number) => void
       dataIndex: 'vlan',
       render: (_, row) => {
         return <TextInlineEditor
+          key={`${onuName}-${row.portIdx}`}
           value={stringToNumber(row.vlan[0])}
-          onChange={vlan => handleVlanIdChange(row.portId, vlan)}
+          onChange={async (vlan) => handleVlanIdChange(row.portIdx, vlan)}
         />
       }
     }

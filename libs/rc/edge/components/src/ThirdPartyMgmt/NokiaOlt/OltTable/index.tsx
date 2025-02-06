@@ -1,6 +1,7 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
 
 import { Row, Button } from 'antd'
+import { omit }        from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import {
@@ -115,23 +116,12 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: (_, row) => {
-        // TODO: remove after IT done
-        const mockData = {
-          name: 'mwc_barcelona',
-          status: 'online',
-          vendor: 'Nokia',
-          model: 'MF-2',
-          firmware: '22.649',
-          ip: '134.242.136.112',
-          serialNumber: 'FH2408A0B5D'
-        }
-
         return <Button type='link'
           onClick={() => {
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/devices/optical/${mockData.serialNumber}/details`
-            }, { state: mockData })
+              pathname: `${basePath.pathname}/devices/optical/${row.serialNumber}/details`
+            }, { state: omit(row, 'children') })
           }}>
           {row.name}
         </Button>
@@ -142,10 +132,9 @@ function useColumns () {
       key: 'status',
       dataIndex: 'stauts',
       width: 80,
-      align: 'center',
       render: (_, row) =>
-        <Row justify='center'>
-          <EdgeNokiaOltStatus config={getOltStatusConfig()} status={row.status} />
+        <Row>
+          <EdgeNokiaOltStatus config={getOltStatusConfig()} status={row.status} showText />
         </Row>
     },
     {

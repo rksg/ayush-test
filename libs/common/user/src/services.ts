@@ -179,6 +179,7 @@ export const UserRbacUrlsInfo = {
     method: 'PATCH',
     url: '/tenants/self',
     oldUrl: '/tenants/betaStatus/:enable',
+    opsApi: 'PATCH:/tenants/self',
     newApi: true
   },
   getPrivilegeGroups: {
