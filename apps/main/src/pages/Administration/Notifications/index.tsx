@@ -135,7 +135,6 @@ export const NotificationsTable = () => {
       key: 'description',
       dataIndex: 'description',
       defaultSortOrder: 'ascend',
-      // width: 600,
       sorter: { compare: sortProp('description', defaultSort) }
     },
     ...(!notificationAdminContextualEnabled ? [] : [
@@ -145,7 +144,6 @@ export const NotificationsTable = () => {
         key: 'recipientType',
         filterMultiple: false,
         filterable: recipientTypeFilterOpts($t),
-        sorter: true,
         render: (data: ReactNode, row: NotificationRecipientUIModel ) => {
           return row.recipientType === NotificationRecipientType.PRIVILEGEGROUP
             ? $t({ defaultMessage: 'Privilege Group' })
