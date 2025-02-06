@@ -21,67 +21,67 @@ export const mockOltList = [
 
 export const mockOltCageList = [
   {
-    name: 'S1/1',
+    cage: 'S1/1',
     state: 'down'
   },
   {
-    name: 'S1/2',
+    cage: 'S1/2',
     state: 'up'
   },
   {
-    name: 'S1/3',
+    cage: 'S1/3',
     state: 'down'
   },
   {
-    name: 'S1/4',
+    cage: 'S1/4',
     state: 'down'
   },
   {
-    name: 'S1/5',
+    cage: 'S1/5',
     state: 'down'
   },
   {
-    name: 'S1/6',
+    cage: 'S1/6',
     state: 'down'
   },
   {
-    name: 'S1/7',
+    cage: 'S1/7',
     state: 'down'
   },
   {
-    name: 'S1/8',
+    cage: 'S1/8',
     state: 'down'
   },
   {
-    name: 'S1/9',
+    cage: 'S1/9',
     state: 'down'
   },
   {
-    name: 'S1/10',
+    cage: 'S1/10',
     state: 'down'
   },
   {
-    name: 'S1/11',
+    cage: 'S1/11',
     state: 'down'
   },
   {
-    name: 'S1/12',
+    cage: 'S1/12',
     state: 'up'
   },
   {
-    name: 'S1/13',
+    cage: 'S1/13',
     state: 'down'
   },
   {
-    name: 'S1/14',
+    cage: 'S1/14',
     state: 'down'
   },
   {
-    name: 'S1/15',
+    cage: 'S1/15',
     state: 'down'
   },
   {
-    name: 'S1/16',
+    cage: 'S1/16',
     state: 'down'
   }
 ]

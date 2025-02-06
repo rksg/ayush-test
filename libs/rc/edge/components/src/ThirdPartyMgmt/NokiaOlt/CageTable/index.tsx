@@ -37,7 +37,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
   })
 
   const handleRowClick = (cage: string) => {
-    setCurrentCage(data?.find(item => item.name === cage))
+    setCurrentCage(data?.find(item => item.cage === cage))
     setVisible(true)
   }
 
@@ -61,15 +61,15 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
     const { $t } = useIntl()
     const columns: TableProps<EdgeNokiaCageData>['columns'] = [
       {
-        key: 'name',
+        key: 'cage',
         title: $t({ defaultMessage: 'Cage' }),
-        dataIndex: 'name',
+        dataIndex: 'cage',
         sorter: true,
         searchable: true,
         fixed: 'left',
         render: (_, row) =>
-          <Button type='link' onClick={() => handleRowClick(row.name)}>
-            {row.name}
+          <Button type='link' onClick={() => handleRowClick(row.cage)}>
+            {row.cage}
           </Button>
       },
       {
@@ -93,7 +93,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
             checked={row.state === EdgeNokiaCageStateEnum.UP}
             disabled={isUpdating}
             onChange={async (checked) => {
-              await handleCageStateChange(row.name, checked)
+              await handleCageStateChange(row.cage, checked)
             }}
           />
         }
@@ -108,7 +108,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
     { isLoading: false, isFetching: isUpdating }
   ]}>
     <Table
-      rowKey='name'
+      rowKey='cage'
       columns={useColumns()}
       dataSource={oltData.status === EdgeNokiaOltStatusEnum.ONLINE ? data : []}
     />

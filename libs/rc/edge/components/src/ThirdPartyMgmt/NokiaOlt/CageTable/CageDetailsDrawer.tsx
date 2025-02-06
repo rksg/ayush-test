@@ -40,7 +40,7 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
 
   return (
     <Drawer
-      title={currentCage?.name}
+      title={currentCage?.cage}
       visible={visible}
       onClose={onClose}
       width={550}
@@ -50,7 +50,7 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
           <EdgeNokiaOnuTable
             onClick={handleOnOnuClick}
             oltData={oltData}
-            cageName={currentCage?.name}
+            cageName={currentCage?.cage}
           />
         </Col>
       </Row>
@@ -71,7 +71,7 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
               <EdgeNokiaOnuPortTable
                 data={currentOnu.portDetails}
                 oltData={oltData}
-                cageName={currentCage?.name}
+                cageName={currentCage?.cage}
                 onuName={currentOnu.name}
               />
             </div>}

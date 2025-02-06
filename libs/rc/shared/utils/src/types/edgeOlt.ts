@@ -27,7 +27,7 @@ export interface EdgeNokiaOltCreatePayload {
 }
 
 export interface EdgeNokiaCageData {
-  name: string
+  cage: string
   state: EdgeNokiaCageStateEnum
 }
 
