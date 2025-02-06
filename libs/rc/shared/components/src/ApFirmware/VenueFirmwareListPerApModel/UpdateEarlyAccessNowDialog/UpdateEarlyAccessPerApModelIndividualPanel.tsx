@@ -54,7 +54,7 @@ export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAc
     // eslint-disable-next-line max-len
     let updateAlphaGroups = apModelFirmwares.filter(data => isAlphaFilter(data.labels))
     // eslint-disable-next-line max-len
-    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels))
+    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels, (isBeta && !isAlpha)))
 
     updateGroups = [
       ...updateGroups,
@@ -111,6 +111,7 @@ export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAc
 
           return <UpdateEarlyAccessPerApModelIndividual key={item.apModel}
             {...item}
+            selectedVenuesFirmwares={selectedVenuesFirmwares}
             update={update}
             labelSize={labelSize}
           />
