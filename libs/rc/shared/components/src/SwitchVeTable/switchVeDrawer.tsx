@@ -326,6 +326,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               onChange={(e)=> {
                 setSwitchId(e)
                 updateOspfAreaEnabled(e)
+                form.resetFields(['vlanId'])
+                form.resetFields(['veId'])
               }}
               options={[{
                 label: $t({ defaultMessage: 'Select Switch...' }),
@@ -373,7 +375,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             }}>
           VE- */}
             <InputNumber
-              disabled={isEditMode || readOnly}
+              disabled={true}
               style={{ marginLeft: '5px' }}
               min={1}
               max={4095}
