@@ -1,0 +1,3 @@
+﻿,#ExpirationDate support formats: [yyyy-MM-dd] [MM/dd/yyyy] [yyyy/MM/dd],#if a single identity is enabled in the mac pool then all the mac addresses will be added to the same identity,,,
+MAC Address,Expiration Date,Identity Name,Email,Device Name,Location
+FF-7D-A2-5B-6A:AD,9/14/2025,Maisey,,idHphTXUs,RuOqnvAahJ

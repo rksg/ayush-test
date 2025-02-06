@@ -8,9 +8,11 @@ import {
   UseConfigTemplateQueryFnSwitcherProps,
   VenueExtended,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { ApiInfo, getOpsApi } from '@acx-ui/utils'
 
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
   props: UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload>
@@ -38,4 +40,10 @@ export function useGetVenueInstance () {
     useQueryFn: useGetVenueQuery,
     useTemplateQueryFn: useGetVenueTemplateQuery
   })
+}
+
+export function useVenueConfigTemplateOpsApiSwitcher (apiInfo: ApiInfo, templateApiInfo: ApiInfo) {
+  const { isTemplate } = useConfigTemplate()
+
+  return !isTemplate? getOpsApi(apiInfo) : getOpsApi(templateApiInfo)
 }

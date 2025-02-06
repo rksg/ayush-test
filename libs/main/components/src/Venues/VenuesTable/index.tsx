@@ -34,7 +34,8 @@ import {
   ApVenueStatusEnum,
   TableQuery,
   usePollingTableQuery,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
@@ -291,7 +292,10 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
-    rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenue)],
+    rbacOpsIds: [
+      getOpsApi(CommonUrlsInfo.updateVenue),
+      getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+    ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
@@ -338,7 +342,11 @@ export const VenueTable = ({ settingsId = 'venues-table',
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]
+          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
+          rbacOpsIds: [
+            getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+          ]
         }) && rowSelection}
       />
     </Loader>

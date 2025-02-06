@@ -18,14 +18,15 @@ import {
   VenueDirectedMulticast
 } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { FieldLabel }                   from '../../styledComponents'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { FieldLabel }                                    from '../../styledComponents'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function DirectedMulticast () {
+export function DirectedMulticast (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -203,6 +204,7 @@ export function DirectedMulticast () {
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
         <VenueSettingsHeader venue={venueData}
+          disabled={!isAllowEdit}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>
@@ -223,7 +225,7 @@ export function DirectedMulticast () {
                     $t({ defaultMessage: 'On' }): $t({ defaultMessage: 'Off' })}</span> :
                   <Switch
                     data-testid={key+'-switch'}
-                    disabled={isUseVenueSettings}
+                    disabled={!isAllowEdit || isUseVenueSettings}
                   />
               }
             />

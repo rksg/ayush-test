@@ -36,16 +36,8 @@ function VenueEditTabs () {
   const navigate = useNavigate()
   const enablePropertyManagement = usePropertyManagementEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
-  const {
-    editContextData,
-    setEditContextData,
-    editNetworkingContextData,
-    editRadioContextData,
-    editSecurityContextData,
-    editServerContextData,
-    editAdvancedContextData,
-    setPreviousPath
-  } = useContext(VenueEditContext)
+  const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData } = venueEditTabContext
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -75,17 +67,10 @@ function VenueEditTabs () {
           ...editContextData,
           isDirty: false
         })
-        showUnsavedModal(
-          editContextData,
-          setEditContextData,
-          editNetworkingContextData,
-          editRadioContextData,
-          editSecurityContextData,
-          editServerContextData,
-          editAdvancedContextData,
-          intl,
-          tx.retry
-        )
+        showUnsavedModal({
+          ...venueEditTabContext,
+          callback: tx.retry
+        })
       })
     } else {
       unblockRef.current?.()
@@ -111,7 +96,10 @@ function VenueEditTabs () {
         hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
         <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       }
-      {hasPermission({ scopes: [SwitchScopes.UPDATE] }) &&
+      {hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+      }) &&
         <Tabs.TabPane
           key='switch'
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}

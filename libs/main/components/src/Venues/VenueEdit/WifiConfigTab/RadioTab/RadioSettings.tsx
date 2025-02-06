@@ -70,12 +70,13 @@ import {
   VenueApModelBandModeSettings,
   TriBandSettings,
   VenueDefaultRegulatoryChannels,
-  useConfigTemplate
+  useConfigTemplate,
+  ScanMethodEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }            from '..'
-import { VenueEditContext }               from '../..'
+import { VenueUtilityContext }                        from '..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -120,8 +121,9 @@ const RadioLable = styled.div`
   justify-content: center;
 `
 
-export function RadioSettings () {
+export function RadioSettings (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
+  const { isAllowEdit=true } = props
 
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
@@ -135,6 +137,7 @@ export function RadioSettings () {
   const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const {
     editContextData,
@@ -565,7 +568,7 @@ export function RadioSettings () {
 
   const validateRadioChannels = ( data: VenueRadioCustomization ) => {
     const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
-    const validateChannels = (channels: unknown[] | undefined,
+    const validateChannels = (channels: unknown[] | undefined, method: ScanMethodEnum | undefined,
       title: string, dual5GName?: string) => {
 
       const content = dual5GName?
@@ -573,9 +576,10 @@ export function RadioSettings () {
           // eslint-disable-next-line max-len
           { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
           { dual5GName, br: <br /> }
-        ):
-        $t({ defaultMessage: 'Please select at least two channels' })
-      if (Array.isArray(channels) && channels.length <2) {
+        ): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
+          $t({ defaultMessage: 'Please select one channel' }):
+          $t({ defaultMessage: 'Please select at least two channels' })
+      if (Array.isArray(channels) && ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
         showActionModal({
           type: 'error',
           title: title,
@@ -602,26 +606,29 @@ export function RadioSettings () {
     }
 
     const channel24 = radioParams24G?.allowedChannels
+    const method24 = radioParams24G?.method
     const title24 = $t({ defaultMessage: '2.4 GHz - Channel selection' })
-    if (!validateChannels(channel24, title24)) return false
+    if (!validateChannels(channel24, method24, title24)) return false
 
     const indoorChannel5 = radioParams50G?.allowedIndoorChannels
+    const method5 = radioParams50G?.method
     const indoorTitle5 = $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorChannel5, indoorTitle5)) return false
+    if (!validateChannels(indoorChannel5, method5, indoorTitle5)) return false
 
     const outdoorChannel5 = radioParams50G?.allowedOutdoorChannels
     const outdoorTitle5 = $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorChannel5, outdoorTitle5)) return false
+    if (!validateChannels(outdoorChannel5, method5, outdoorTitle5)) return false
 
     const channelBandwidth6 = radioParams6G?.channelBandwidth
+    const method6 = radioParams6G?.method
     const indoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedIndoorChannels : radioParams6G?.allowedChannels
     const indoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Indoor AP channel selection' }) :
       $t({ defaultMessage: '6 GHz - Channel selection' })
-    if (!validateChannels(indoorChannel6, indoorTitle6)) return false
+    if (!validateChannels(indoorChannel6, method6, indoorTitle6)) return false
     const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
     const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
       ''
-    if (outdoorChannel6 && !validateChannels(outdoorChannel6, outdoorTitle6)) return false
+    if (outdoorChannel6 && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
     if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
       if (!validate320MHzIsolatedGroup(indoorChannel6, indoorTitle6)) return false
       if (outdoorChannel6 && !validate320MHzIsolatedGroup(outdoorChannel6, outdoorTitle6)) return false
@@ -653,6 +660,7 @@ export function RadioSettings () {
     }
 
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
+    const lowerMethod5 = radioParamsLower5G?.method
 
     const indoorLowerChannel5 = inheritParamsLower5G
       ? indoorLower5GChs
@@ -660,7 +668,7 @@ export function RadioSettings () {
     const indoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
       : $t({ defaultMessage: 'Lower 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorLowerChannel5, indoorLowerTitle5, lower5GName)) return false
+    if (!validateChannels(indoorLowerChannel5, lowerMethod5, indoorLowerTitle5, lower5GName)) return false
 
     const outdoorLowerChannel5 = inheritParamsLower5G
       ? outdoorLower5GChs
@@ -668,9 +676,10 @@ export function RadioSettings () {
     const outdoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
       : $t({ defaultMessage: 'Lower 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorLowerChannel5, outdoorLowerTitle5, lower5GName)) return false
+    if (!validateChannels(outdoorLowerChannel5, lowerMethod5, outdoorLowerTitle5, lower5GName)) return false
 
     const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
+    const upperMethod5 = radioParamsUpper5G?.method
 
     const indoorUpperChannel5 = inheritParamsUpper5G
       ? indoorUpper5GChs
@@ -678,7 +687,7 @@ export function RadioSettings () {
     const indoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
       : $t({ defaultMessage: 'Upper 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorUpperChannel5, indoorUpperTitle5, upper5GName)) return false
+    if (!validateChannels(indoorUpperChannel5, upperMethod5, indoorUpperTitle5, upper5GName)) return false
 
     const outdoorUpperChannel5 = inheritParamsUpper5G
       ? outdoorUpper5GChs
@@ -686,7 +695,7 @@ export function RadioSettings () {
     const outdoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
       : $t({ defaultMessage: 'Upper 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorUpperChannel5, outdoorUpperTitle5, upper5GName)) return false
+    if (!validateChannels(outdoorUpperChannel5, upperMethod5, outdoorUpperTitle5, upper5GName)) return false
 
     return true
   }
@@ -914,6 +923,7 @@ export function RadioSettings () {
                   children={<></>}
                 />
                 <VenueBandManagement style={{ paddingBottom: '5em' }}
+                  disabled={!isAllowEdit}
                   triBandApModels={triBandApModels}
                   dual5gApModels={dual5gApModels}
                   bandModeCaps={bandModeCaps}
@@ -981,6 +991,7 @@ export function RadioSettings () {
               <SingleRadioSettings
                 testId='radio-24g-tab'
                 radioType={ApRadioTypeEnum.Radio24G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings} />
             </div>
@@ -988,6 +999,7 @@ export function RadioSettings () {
               <SingleRadioSettings
                 testId='radio-5g-tab'
                 radioType={ApRadioTypeEnum.Radio5G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings} />
             </div>
@@ -997,6 +1009,7 @@ export function RadioSettings () {
               <SingleRadioSettings
                 testId='radio-6g-tab'
                 radioType={ApRadioTypeEnum.Radio6G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings}
                 afcProps={afcProps} />
@@ -1035,6 +1048,7 @@ export function RadioSettings () {
                   testId='radio-l5g-tab'
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
@@ -1069,6 +1083,7 @@ export function RadioSettings () {
                   testId='radio-u5g-tab'
                   inherit5G={isUpper5gInherit}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
