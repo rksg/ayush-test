@@ -107,7 +107,6 @@ left: 0;
 top: 0;
 width: 100%; /* Full width */
 height: 100%; /* Full height */
-overflow: auto; /* Enable scroll if needed */
 background-color: transparent;
 border-top: 75px solid rgba(255,255,255, 0.4);
 

@@ -8,12 +8,17 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
   },
   chats: {
     method: 'post',
-    url: '/ruckusAi/chats',
+    url: '/ruckusAi/chats/123',
     newApi: true
   },
   getChat: {
     method: 'get',
     url: '/ruckusAi/chats/:sessionId',
+    newApi: true
+  },
+  getChats: {
+    method: 'post',
+    url: '/ruckusAi/chats/:sessionId/histories/query',
     newApi: true
   },
   updateChat: {

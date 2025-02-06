@@ -37,7 +37,17 @@ export interface ChatHistory {
 
 export interface RuckusAiChat {
   sessionId: string,
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  page: number,
+  totalCount: number,
+  totalPages: number
+}
+
+export interface RuckusAiChats {
+  page: number,
+  totalCount: number,
+  totalPages: number,
+  data: ChatMessage[]
 }
 
 export interface ChatMessage {

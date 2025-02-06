@@ -145,24 +145,26 @@ export default function Layout (props: LayoutProps) {
   const onCardDropInGroupItem = async () => {
     const groupsTmp = _.cloneDeep(groups)
     const { compactType } = props
-    const response = await createWidget({
-      params: {
-        canvasId
-      },
-      payload: {
-        messageId: shadowCard.chatId
-      }
-    }).unwrap()
-
-
-    groupsTmp.forEach(g => {
-      g.cards.forEach(c => {
-        if(c.id == shadowCard.id) {
-          c.widgetId = response.id
-          c.canvasId = canvasId
+    if(!shadowCard.widgetId) {
+      const response = await createWidget({
+        params: {
+          canvasId
+        },
+        payload: {
+          messageId: shadowCard.chatId
         }
+      }).unwrap()
+
+
+      groupsTmp.forEach(g => {
+        g.cards.forEach(c => {
+          if(c.id == shadowCard.id) {
+            c.widgetId = response.id
+            c.canvasId = canvasId
+          }
+        })
       })
-    })
+    }
     // Remove shadows from all cards within all groups.
     utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
     // Recompress the layout horizontally within the target group, and due to cross-group dependencies,

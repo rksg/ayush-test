@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
-import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery } from '@acx-ui/rc/services'
+import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
@@ -23,20 +23,23 @@ import * as UI               from './styledComponents'
 export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
-  const scroll = useRef(null)
+  const scrollRef = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
 
-  const [getChat] = useLazyGetChatQuery()
-  const [loading, setLoading] = useState(false)
-  const [isChatLoading, setIsChatLoading] = useState(true)
+  const [getChats] = useGetChatsMutation()
+  const [aiBotLoading, setAiBotLoading] = useState(false)
+  const [moreloading, setMoreLoading] = useState(false)
+  const [isChatsLoading, setIsChatsLoading] = useState(true)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[])
   const [ searchText, setSearchText ] = useState('')
   const [ isNewChat, setIsNewChat ] = useState(false)
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(2)
 
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
@@ -52,10 +55,12 @@ export default function AICanvas () {
   const { data: historyData } = getAllChatsQuery
 
   useEffect(()=>{
-    setTimeout(()=>{
-      // @ts-ignore
-      scroll?.current?.scrollTo({ top: scroll.current.scrollHeight })
-    }, 100)
+    if(page === 1 || aiBotLoading) {
+      setTimeout(()=>{
+        // @ts-ignore
+        scrollRef?.current?.scrollTo({ top: scrollRef.current.scrollHeight })
+      }, 100)
+    }
   }, [chats])
 
   useEffect(()=>{
@@ -65,23 +70,61 @@ export default function AICanvas () {
         setSessionId(latestId)
       }
     } else if(historyData?.length === 0) {
-      setIsChatLoading(false)
+      setIsChatsLoading(false)
       setHistoryVisible(false)
       onNewChat()
     }
   }, [historyData])
 
+  const getLatestPageChats = () => {
+    getSessionChats(1)
+    setPage(1)
+  }
+
   useEffect(() => {
     if(!isNewChat && sessionId) {
-      getChats()
+      getLatestPageChats()
     }
   }, [sessionId])
 
-  const getChats = async ()=>{
-    setIsChatLoading(true)
-    const response = await getChat({ params: { sessionId } }).unwrap()
-    setChats(response.messages)
-    setIsChatLoading(false)
+  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
+    if(e.currentTarget.scrollTop === 0) {
+      if(page < totalPages && sessionId) {
+        const newPage = page + 1
+        getSessionChats(newPage)
+        setPage(newPage)
+        if(newPage !== totalPages) {
+          e.currentTarget.scrollTop = 20
+        }
+      }
+    }
+  }
+
+  const getSessionChats = async (pageNum: number)=>{
+    if(pageNum ===1) {
+      setIsChatsLoading(true)
+    } else {
+      setMoreLoading(true)
+    }
+    const response = await getChats({
+      params: { sessionId },
+      payload: {
+        page: pageNum,
+        pageSize: 100,
+        sortOrder: 'DESC'
+      }
+    }).unwrap()
+    setTotalPages(response.totalPages)
+    if(pageNum ===1) {
+      setChats([...response.data].reverse())
+    } else {
+      setChats([...[...response.data].reverse(), ...chats])
+    }
+    if(pageNum ===1) {
+      setIsChatsLoading(false)
+    } else {
+      setMoreLoading(false)
+    }
   }
 
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -91,7 +134,7 @@ export default function AICanvas () {
     }
   }
   const handleSearch = async (suggestion?: string) => {
-    if ((!suggestion && searchText.length <= 1) || loading) return
+    if ((!suggestion && searchText.length <= 1) || aiBotLoading) return
     const question = suggestion || searchText
     const newMessage = {
       id: uuidv4(),
@@ -99,47 +142,57 @@ export default function AICanvas () {
       text: question
     }
     setChats([...chats, newMessage])
-    setLoading(true)
+    setAiBotLoading(true)
     setSearchText('')
-    const response = await chatAi({
+    await chatAi({
       payload: {
         question,
+        pageSize: 100,
         ...(sessionId && { sessionId })
       }
-    }).unwrap()
-
-    if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
-      || !historyData?.length){
-      getAllChatsQuery.refetch()
-    }
-    // const response: RuckusAiChat = {
-    //   sessionId: '001',
-    //   messages: [
-    //     {
-    //       id: '1',
-    //       role: 'USER',
-    //       text: 'Generate Network Health Overview Widget'
-    //     },
-    //     {
-    //       id: '555',
-    //       role: 'AI',
-    //       text: `2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to
-    //        the canvas on the right.`,
-    //       widgets: [{
-    //         title: '',
-    //         chartType: 'pie'
-    //       }]
-    //     }
-    //   ]
-    // }
-    if(sessionId && isNewChat) {
-      setIsNewChat(false)
-    }
-    if(response.sessionId && !sessionId) {
-      setSessionId(response.sessionId)
-    }
-    setLoading(false)
-    setChats(response.messages)
+    })
+      .then(({ data: response, error })=>{
+        if(error) {
+          getSessionChats(1)
+        } else {
+          if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+        || !historyData?.length){
+            getAllChatsQuery.refetch()
+          }
+          // const response: RuckusAiChat = {
+          //   sessionId: '001',
+          //   messages: [
+          //     {
+          //       id: '1',
+          //       role: 'USER',
+          //       text: 'Generate Network Health Overview Widget'
+          //     },
+          //     {
+          //       id: '555',
+          //       role: 'AI',
+          //       text: `2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to
+          //        the canvas on the right.`,
+          //       widgets: [{
+          //         title: '',
+          //         chartType: 'pie'
+          //       }]
+          //     }
+          //   ]
+          // }
+          if(sessionId && isNewChat) {
+            setIsNewChat(false)
+          }
+          if(response) {
+            if(response.sessionId && !sessionId) {
+              setSessionId(response.sessionId)
+            }
+            setChats([...response.messages].reverse())
+            setTotalPages(response.totalPages)
+            setPage(1)
+          }
+        }
+        setAiBotLoading(false)
+      })
   }
 
   const onClickClose = () => {
@@ -204,8 +257,8 @@ export default function AICanvas () {
     if(historyData && historyData.length >= 10){
       return
     }
-    setSessionId('')
     setIsNewChat(true)
+    setSessionId('')
     setChats([])
   }
 
@@ -269,13 +322,14 @@ export default function AICanvas () {
               </div>
             </div>
             <div className='content'>
-              <Loader states={[{ isLoading: isChatLoading }]}>
-                <div className='chatroom' ref={scroll}>
+              <Loader states={[{ isLoading: isChatsLoading }]}>
+                <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
                   <div className='messages-wrapper'>
+                    {moreloading && <div className='loading'><Spin /></div>}
                     {chats?.map((i) => (
                       <Message key={i.id} chat={i} />
                     ))}
-                    {loading && <div className='loading'><Spin /></div>}
+                    {aiBotLoading && <div className='loading'><Spin /></div>}
                   </div>
                   {
                     !chats?.length && <div className='placeholder'>
@@ -304,7 +358,7 @@ export default function AICanvas () {
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}
-                      disabled={loading || searchText.length <= 1}
+                      disabled={aiBotLoading || searchText.length <= 1}
                       onClick={()=> { handleSearch() }}
                     />
                   </div>
