@@ -89,6 +89,12 @@ describe('hasAccess', () => {
     it('allow when operation in allowedOperations', () => {
       setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
       expect(hasAccess({ rbacOpsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasAllowedOperations(['GET:/networks'])).toBe(true)
+    })
+
+    it('allow when the given operations is empty', () => {
+      setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
+      expect(hasAccess({ rbacOpsIds: [] })).toBe(true)
       expect(hasAllowedOperations([])).toBe(true)
     })
 
