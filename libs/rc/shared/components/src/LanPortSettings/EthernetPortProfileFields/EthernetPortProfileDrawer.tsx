@@ -33,7 +33,7 @@ export default function EthernetPortProfileDrawer (props:{
 
   return (
     <>
-      <Space split={addBtnVisible ? '|' : ''} >
+      <Space split={addBtnVisible && '|'} >
         <Button type='link'
           onClick={()=>setDetailVisible(true)}>
           {$t({ defaultMessage: 'Profile Details' })}
