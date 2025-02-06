@@ -80,7 +80,7 @@ describe('EdgeNokiaCageTable', () => {
     await userEvent.click(within(upRow).getByRole('switch'))
     expect(mockToggleCageReq).toHaveBeenNthCalledWith(1, {
       cage: 'S1/2',
-      state: 'down'
+      state: 'DOWN'
     }, {
       venueId: 'mock_venue_1',
       edgeClusterId: 'clusterId_1',
@@ -93,7 +93,7 @@ describe('EdgeNokiaCageTable', () => {
     await userEvent.click(within(downRow).getByRole('switch'))
     await waitFor(() => expect(mockToggleCageReq).toHaveBeenNthCalledWith(2, {
       cage: 'S1/1',
-      state: 'up'
+      state: 'UP'
     }, {
       venueId: 'mock_venue_1',
       edgeClusterId: 'clusterId_1',

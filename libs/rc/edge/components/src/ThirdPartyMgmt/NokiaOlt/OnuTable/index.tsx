@@ -31,7 +31,7 @@ export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
       edgeClusterId: oltData?.edgeClusterId,
       oltId: oltData?.serialNumber
     },
-    payload: { cage: cageName }
+    payload: { cageId: cageName }
   }, { skip: !oltData || !cageName })
 
   // eslint-disable-next-line max-len
@@ -41,7 +41,10 @@ export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
     }
   }
 
-  return <Loader states={[{ isLoading }]}>
+  return <Loader
+    states={[{ isLoading }]}
+    style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+  >
     <Table
       rowKey='name'
       columns={useColumns(props)}
@@ -75,7 +78,9 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
       render: (_, row) =>
         <Space>
           <span>{row.ports}</span>
-          <ProgressBarV2 percent={row.usedPorts/row.ports} />
+          <div style={{ margin: 'auto', width: '100px' }}>
+            <ProgressBarV2 percent={(row.usedPorts/row.ports) * 100} />
+          </div>
         </Space>
     },
     {

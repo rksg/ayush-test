@@ -17,7 +17,7 @@ jest.mock('./TextInlineEditor', () => ({
     </div>
 }))
 describe('EdgeNokiaOnuPortTable', () => {
-  const mockCageName = mockOltCageList[0].name
+  const mockCageName = mockOltCageList[0].cage
   const mockOnuName = mockOnuList[0].name
 
   it('renders with valid props', () => {

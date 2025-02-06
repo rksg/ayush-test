@@ -48,7 +48,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
         params,
         payload: {
           cage,
-          state: checked ? EdgeNokiaCageStateEnum.UP : EdgeNokiaCageStateEnum.DOWN
+          state: checked ? 'UP' : 'DOWN'
         }
       }).unwrap()
     }catch(error) {
@@ -106,7 +106,9 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
   return <><Loader states={[
     { isLoading, isFetching },
     { isLoading: false, isFetching: isUpdating }
-  ]}>
+  ]}
+  style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+  >
     <Table
       rowKey='cage'
       columns={useColumns()}

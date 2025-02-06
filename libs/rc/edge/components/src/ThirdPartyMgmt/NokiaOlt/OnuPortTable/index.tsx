@@ -24,6 +24,7 @@ export const EdgeNokiaOnuPortTable = (props: EdgeNokiaOnuPortTableProps) => {
   const { data, oltData, cageName, onuName } = props
 
   const [updateVlan] = useSetEdgeOnuPortVlanMutation()
+
   const handleVlanIdChange = async (portIdx: string, vlan: number) => {
     return await updateVlan({
       params: {
