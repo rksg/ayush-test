@@ -273,6 +273,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     >
       <div
         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+        gradientmode="completion"
       >
         <div
           class="ant-progress-outer"
@@ -311,6 +312,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     >
       <div
         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+        gradientmode="completion"
       >
         <div
           class="ant-progress-outer"
@@ -349,6 +351,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     >
       <div
         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+        gradientmode="completion"
       >
         <div
           class="ant-progress-outer"
@@ -387,6 +390,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     >
       <div
         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+        gradientmode="completion"
       >
         <div
           class="ant-progress-outer"
@@ -425,6 +429,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     >
       <div
         class="ant-progress ant-progress-line ant-progress-status-success ant-progress-default c0"
+        gradientmode="completion"
       >
         <div
           class="ant-progress-outer"
@@ -454,7 +459,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
 
 .c0 .ant-progress-inner,
 .c0 .ant-progress-bg {
-  border-radius: 0px 3px 3px 0px !important;
+  border-radius: 2px 2px 2px 2px !important;
 }
 
 <div
@@ -462,6 +467,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
   >
     <div
       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      gradientmode="usage"
       style="height: 8px; line-height: 8px;"
     >
       <div
@@ -486,7 +492,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
 
 .c0 .ant-progress-inner,
 .c0 .ant-progress-bg {
-  border-radius: 0px 3px 3px 0px !important;
+  border-radius: 2px 2px 2px 2px !important;
 }
 
 <div
@@ -494,6 +500,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
   >
     <div
       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      gradientmode="usage"
       style="height: 8px; line-height: 8px;"
     >
       <div
@@ -518,7 +525,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
 
 .c0 .ant-progress-inner,
 .c0 .ant-progress-bg {
-  border-radius: 0px 3px 3px 0px !important;
+  border-radius: 2px 2px 2px 2px !important;
 }
 
 <div
@@ -526,6 +533,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
   >
     <div
       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      gradientmode="usage"
       style="height: 8px; line-height: 8px;"
     >
       <div
@@ -550,7 +558,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
 
 .c0 .ant-progress-inner,
 .c0 .ant-progress-bg {
-  border-radius: 0px 3px 3px 0px !important;
+  border-radius: 2px 2px 2px 2px !important;
 }
 
 <div
@@ -558,6 +566,7 @@ exports[`ProgressBarV2 should match usage - snapshot 1`] = `
   >
     <div
       class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
+      gradientmode="usage"
       style="height: 8px; line-height: 8px;"
     >
       <div

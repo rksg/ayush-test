@@ -1,5 +1,4 @@
-import { ProgressProps } from 'antd'
-import { useIntl }       from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { intlFormats } from '@acx-ui/formatter'
 
@@ -8,10 +7,9 @@ import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 
-interface ProgressBarProps extends Pick<ProgressProps, 'percent' | 'strokeWidth' | 'style'> {
-  percent: number // 0 - 100
-  gradientMode?: 'completion' | 'usage'
-}
+import type { ProgressBarProps } from './styledComponents'
+
+
 
 const red = cssStr('--acx-semantics-red-50')
 const yellow = cssStr('--acx-semantics-yellow-40')
@@ -80,6 +78,7 @@ export function ProgressBarV2 ({
       strokeColor={gradientMode === 'usage' ?
         strokeColorsUsageByPercent(percent) : strokeColorsCompletionByPercent(percent)}
       style={style}
+      gradientmode={gradientMode}
     />
   </Tooltip>
 }
