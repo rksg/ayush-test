@@ -1,6 +1,14 @@
+import { find }          from 'lodash'
+import { defineMessage } from 'react-intl'
+
 import { getIntl } from '@acx-ui/utils'
 
 import { EdgeNokiaCageStateEnum, EdgeNokiaOltStatusEnum } from '../../models/EdgeNokiaOltEnum'
+
+export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment (
+
+export const OLT_POE_SUPPLIED_TOTAL = 280
+export const OLT_POE_PD_USED = 232 // PD: Powered Device
 
 export const getOltStatusConfig = () => {
   const { $t } = getIntl()
@@ -49,4 +57,24 @@ export const getOnuPortStatusConfig = () => {
       text: $t({ defaultMessage: 'DOWN' })
     }
   }
+}
+
+
+const oltPoeClassOptions = [
+  { label: defineMessage({ defaultMessage: 'Negotiate' }), value: '' },
+  { label: defineMessage({ defaultMessage: '0 (802.3af 15.4 W)' }), value: '0' },
+  { label: defineMessage({ defaultMessage: '1 (802.3af 4.0 W)' }), value: '1' },
+  { label: defineMessage({ defaultMessage: '2 (802.3af 7.0 W)' }), value: '2' },
+  { label: defineMessage({ defaultMessage: '3 (802.3af 15.4 W)' }), value: '3' },
+  { label: defineMessage({ defaultMessage: '4 (802.3at 30 W)' }), value: '4' },
+  { label: defineMessage({ defaultMessage: '5 (802.3bt 45 W)' }), value: '5' },
+  { label: defineMessage({ defaultMessage: '6 (802.3bt 60 W)' }), value: '6' },
+  { label: defineMessage({ defaultMessage: '7 (802.3bt 75 W)' }), value: '7' },
+  { label: defineMessage({ defaultMessage: '8 (802.3bt 90 W)' }), value: '8' }
+]
+
+export const getOltPoeClassText = (poeClass: string): string => {
+  const { $t } = getIntl()
+  const msgDescriptor = find(oltPoeClassOptions, { value: poeClass })?.label
+  return msgDescriptor ? $t(msgDescriptor) : ''
 }

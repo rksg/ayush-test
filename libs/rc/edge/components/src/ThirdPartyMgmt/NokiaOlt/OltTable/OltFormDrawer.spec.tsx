@@ -159,7 +159,8 @@ describe('NokiaOltFormDrawer', () => {
   })
 
   it('submits form with error', async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    const spyOnConsole = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(spyOnConsole)
 
     mockServer.use(
       rest.post(
@@ -188,7 +189,6 @@ describe('NokiaOltFormDrawer', () => {
 
     const submitButton = screen.getByText('Add')
     await userEvent.click(submitButton)
-    // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalled()
+    await waitFor(() => expect(spyOnConsole).toHaveBeenCalled())
   })
 })
