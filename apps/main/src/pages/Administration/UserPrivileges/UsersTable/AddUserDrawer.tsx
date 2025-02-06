@@ -48,7 +48,7 @@ interface AddUserDataModel {
   authenticationId?: string;
   name?: string;
   lastName?: string;
-  phone?: string;
+  phoneNumber?: string;
 }
 
 const AddUserDrawer = (props: AddUserDrawerProps) => {
@@ -135,7 +135,8 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
         payload.authenticationId = authenticationData.id
         payload.lastName = formValues.lastName ?? ''
         payload.name = formValues.firstName ?? ''
-        payload.phone = notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
+        payload.phoneNumber =
+          notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
       }
 
       await addAdmin({ params, payload }).unwrap()

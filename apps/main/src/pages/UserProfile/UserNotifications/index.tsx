@@ -9,7 +9,6 @@ import { RolesEnum }                             from '@acx-ui/types'
 import {
   hasRoles,
   UserProfile,
-  UserProfile as UserProfileInterface,
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
 
@@ -23,14 +22,18 @@ export function UserNotifications (props: { profile: UserProfile }) {
   const navigate = useNavigate()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const [emailPreferences, setEmailPreferences] =
-    useState(profile.preferredNotifications?.emailPreferences)
+    useState(profile.preferredNotifications?.emailPreferences ?? false)
   const [smsPreferences, setSmsPreferences] =
-    useState(profile.preferredNotifications?.smsPreferences)
+    useState(profile.preferredNotifications?.smsPreferences ?? false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const rootPath = useTenantLink('/')
 
-  const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
-    await updateUserProfile({ payload: data, params: { tenantId } })
+  const handleUpdateSettings = async () => {
+    const payload: UserProfile = { ...profile, preferredNotifications: {
+      emailPreferences: emailPreferences,
+      smsPreferences: smsPreferences
+    } }
+    await updateUserProfile({ payload: payload, params: { tenantId } })
     window.location.reload()
     navigate(-1)
   }
@@ -50,10 +53,12 @@ export function UserNotifications (props: { profile: UserProfile }) {
         onCancel={async () => handleCancel()}
       >
         <StepsForm.StepForm>
-          <Form.Item
-          // eslint-disable-next-line max-len
-            label={$t({ defaultMessage: 'All changes to Notification Preferences will override preferences previously set by the administrator.' })}
-          />
+          <UI.DescriptionWrapper>
+            <Form.Item
+              // eslint-disable-next-line max-len
+              label={$t({ defaultMessage: 'All changes to Notification Preferences will override preferences previously set by the administrator.' })}
+            />
+          </UI.DescriptionWrapper>
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Delivery Preference' })}
           </Subtitle>

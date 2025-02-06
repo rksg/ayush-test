@@ -116,10 +116,13 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   useEffect(()=>{
     if (editData && visible) {
       form.setFieldsValue(editData)
+      if (editData.privilegeGroup) {
+        form.setFieldValue('description', '')
+      }
       setEmailEnabled(editData.emailEnabled)
       setMobileEnabled(editData.mobileEnabled)
-      setEmailSwitchDisabled(!editData.emailEnabled)
-      setMobileSwitchDisabled(!editData.mobileEnabled)
+      setEmailSwitchDisabled(editData.email ? false : true)
+      setMobileSwitchDisabled(editData.mobile ? false : true)
       setEmailPreferences(editData.emailPreferences ?? false)
       setSmsPreferences(editData.smsPreferences ?? false)
     }
@@ -156,9 +159,10 @@ const AddRecipientDrawer = (props: RecipientDrawerProps) => {
 
         // need endpoint "id", it will tell API do endpoint update
         // without it API will try to create new endpoint
-        dataToSave.endpoints = data.endpoints.map((point) =>
+        // also check data.endpoints may be undefined if admin recipient was edited to global recipient
+        dataToSave.endpoints = data.endpoints?.map((point) =>
           _.pick(point, ['id', 'active', 'destination', 'type'])
-        )
+        ) ?? []
 
         let endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.email)
         if (endpoint) {

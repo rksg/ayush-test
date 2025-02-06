@@ -70,6 +70,7 @@ export interface UserProfile {
   externalId: string
   cloudCertStatus: string
   email: string
+  phoneNumber: string
   initials?: string
   fullName: string
   preferredLanguage?: string
