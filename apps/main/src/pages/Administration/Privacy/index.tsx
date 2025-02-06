@@ -89,17 +89,32 @@ export default function Privacy () {
         style={{
           marginBottom: '6px'
         }}>
-        <Col span={6}>
-          <Typography.Text>
-            { $t(MessageMapping.arc_privacy_settings_label) }
-          </Typography.Text>
-        </Col>
-        <Col span={1}>
-          <Switch
-            disabled={!isPrimeAdminUser}
-            checked={isPrivacyMonitoringSettingsEnabled}
-            onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.ARC, ev)}/>
-        </Col>
+        { isPrimeAdminUser ? <>
+          <Col span={6}>
+            <Typography.Text>
+              { $t(MessageMapping.arc_privacy_settings_label) }
+            </Typography.Text>
+          </Col>
+          <Col span={1}>
+            <Switch
+              checked={isPrivacyMonitoringSettingsEnabled}
+              onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.ARC, ev)}/>
+          </Col>
+        </>
+          : <Col span={6}>
+            <Typography.Text>
+              {
+                $t(MessageMapping.arc_privacy_settings_label_non_prime_admin)
+              }
+              {
+                ` ${isPrivacyMonitoringSettingsEnabled ? $t({
+                  defaultMessage: 'Enabled'
+                }) : $t({
+                  defaultMessage: 'Disabled'
+                })}`
+              }
+            </Typography.Text>
+          </Col> }
       </Row>
       <Row gutter={24}>
         <Col span={10}>
