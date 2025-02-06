@@ -425,7 +425,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               const payload = {
                 accountSid: form.getFieldValue('accountSid'),
                 authToken: form.getFieldValue('authToken'),
-                contentSid: value
+                authTemplateSid: value
               }
               const templateStatus = await getTwiliosWhatsappServices({
                 params: params, payload: payload
@@ -440,11 +440,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
                 )
               }
 
-              if ((templateStatus as TwiliosWhatsappServices).approvalFetch?.sid === value
+              if ((templateStatus.data as TwiliosWhatsappServices).approvalFetch?.sid === value
                 // eslint-disable-next-line max-len
-                && (templateStatus as TwiliosWhatsappServices).approvalFetch?.accountSid === form.getFieldValue('accountSid')
+                && (templateStatus.data as TwiliosWhatsappServices).approvalFetch?.accountSid === form.getFieldValue('accountSid')
                 // eslint-disable-next-line max-len
-                && (templateStatus as TwiliosWhatsappServices).approvalFetch?.whatsapp.status === 'approved') {
+                && (templateStatus.data as TwiliosWhatsappServices).approvalFetch?.whatsapp.status === 'approved') {
                 return Promise.resolve()
               } else {
                 return Promise.reject(

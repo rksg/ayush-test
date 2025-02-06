@@ -442,7 +442,9 @@ export interface TwiliosWhatsappServices
     },
     url: string,
     accountSid: string
-  }
+  },
+  hasError?: boolean,
+  errorMessage?: string
 }
 
 export interface ErrorsResult<T> {
