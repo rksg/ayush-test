@@ -7,8 +7,8 @@ import { screen, render, within, mockServer }  from '@acx-ui/test-utils'
 
 import { EdgeNokiaOnuPortTable } from './'
 
-
 const { mockOlt, mockOltCageList, mockOnuList } = EdgeOltFixtures
+
 jest.mock('./TextInlineEditor', () => ({
   TextInlineEditor: (props: { value: number, onChange: (data: number) => Promise<void> }) =>
     <div data-test='TextInlineEditor'>
@@ -22,11 +22,7 @@ describe('EdgeNokiaOnuPortTable', () => {
 
   it('renders with valid props', () => {
     const props = {
-      data: [
-        { status: 'up', vlan: ['3', '2'] },
-        { status: 'down', vlan: [] },
-        { status: 'up', vlan: ['6'] }
-      ],
+      data: mockOnuList[0].portDetails,
       oltData: mockOlt,
       cageName: mockCageName,
       onuName: mockOnuName
@@ -36,9 +32,9 @@ describe('EdgeNokiaOnuPortTable', () => {
     </Provider>)
     expect(screen.getByText('Port')).toBeVisible()
     expect(screen.getByText('Status')).toBeVisible()
-    screen.getByRole('row', { name: /UP 3/ })
-    screen.getByRole('row', { name: /DOWN 0/ })
-    expect(screen.getByRole('row', { name: /UP 6/ })).toBeVisible()
+    screen.getByRole('row', { name: /1 UP 5% \(2.5 \/ 50 W\)/ })
+    screen.getByRole('row', { name: /2 DOWN 20% \(10 \/ 50 W\)/ })
+    expect(screen.getByRole('row', { name: /3 UP 6% \(3 \/ 50 W\)/ })).toBeVisible()
   })
 
   it('renders with empty data', () => {
@@ -64,10 +60,7 @@ describe('EdgeNokiaOnuPortTable', () => {
         }))
 
     const props = {
-      data: [
-        { status: 'up', vlan: ['7'] },
-        { status: 'down', vlan: [] }
-      ],
+      data: mockOnuList[1].portDetails,
       oltData: mockOlt,
       cageName: mockCageName,
       onuName: mockOnuName
@@ -76,8 +69,7 @@ describe('EdgeNokiaOnuPortTable', () => {
     render(<Provider>
       <EdgeNokiaOnuPortTable {...props} />
     </Provider>)
-    const row = screen.getByRole('row', { name: /7/ })
-    screen.getByRole('row', { name: /DOWN 0/ })
+    const row = screen.getByRole('row', { name: /DOWN/ })
     const onChangeButton = within(row).getByRole('button', { name: 'Test onChange' })
     await userEvent.click(onChangeButton)
     expect(mockSetVlanReq).toBeCalled()

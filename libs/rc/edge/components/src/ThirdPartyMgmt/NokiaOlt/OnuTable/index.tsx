@@ -1,5 +1,6 @@
-import {  Space }  from 'antd'
-import { useIntl } from 'react-intl'
+import {  Space }                  from 'antd'
+import { Key as AntdTableKeyType } from 'antd/lib/table/interface'
+import { useIntl }                 from 'react-intl'
 
 import {
   Table,
@@ -11,13 +12,14 @@ import {
 import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
 import {
   EdgeNokiaOltData,
-  EdgeNokiaOnuData
+  EdgeNokiaOnuData,
+  getOltPoeClassText
 } from '@acx-ui/rc/utils'
 
 interface EdgeNokiaOnuTableProps {
   oltData: EdgeNokiaOltData | undefined
   cageName: string | undefined
-  onClick: (onu: EdgeNokiaOnuData) => void
+  onClick: (onu: EdgeNokiaOnuData | undefined) => void
 }
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
@@ -32,12 +34,22 @@ export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
     payload: { cage: cageName }
   }, { skip: !oltData || !cageName })
 
+  // eslint-disable-next-line max-len
+  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[]) => {
+    if (selectedRowKeys.length === 0) {
+      props.onClick(undefined)
+    }
+  }
+
   return <Loader states={[{ isLoading }]}>
     <Table
       rowKey='name'
       columns={useColumns(props)}
       dataSource={data}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={{
+        type: 'radio',
+        onChange: handleRowSelectChange
+      }}
     />
   </Loader>
 }
@@ -69,7 +81,8 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
     {
       key: 'poeClass',
       title: $t({ defaultMessage: 'PoE Class' }),
-      dataIndex: 'poeClass'
+      dataIndex: 'poeClass',
+      render: (_, row) => getOltPoeClassText(row.poeClass)
     }
   ]
 

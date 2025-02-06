@@ -5,8 +5,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useSetEdgeOnuPortVlanMutation }                                   from '@acx-ui/rc/services'
-import {  EdgeNokiaOltData, EdgeNokiaOnuPortData, getOnuPortStatusConfig } from '@acx-ui/rc/utils'
+import { formatter }                                                                               from '@acx-ui/formatter'
+import { useSetEdgeOnuPortVlanMutation }                                                           from '@acx-ui/rc/services'
+import {  EdgeNokiaOltData, EdgeNokiaOnuPortData, getOnuPortStatusConfig, OLT_PSE_SUPPLIED_POWER } from '@acx-ui/rc/utils'
 
 import { EdgeNokiaOltStatus } from '../OltStatus'
 
@@ -23,7 +24,7 @@ export const EdgeNokiaOnuPortTable = (props: EdgeNokiaOnuPortTableProps) => {
   const { data, oltData, cageName, onuName } = props
 
   const [updateVlan] = useSetEdgeOnuPortVlanMutation()
-  const handleVlanIdChange = async (portId: string, vlan: number) => {
+  const handleVlanIdChange = async (portIdx: string, vlan: number) => {
     return await updateVlan({
       params: {
         venueId: oltData.venueId,
@@ -33,27 +34,27 @@ export const EdgeNokiaOnuPortTable = (props: EdgeNokiaOnuPortTableProps) => {
       payload: {
         cageId: cageName,
         name: onuName,
-        ports: portId,
+        toUpdatePortIdx: portIdx,
         toUpdateVlan: vlan.toString()
       }
     }).unwrap()
   }
 
   return <Table
-    rowKey='portId'
+    rowKey='portIdx'
     columns={useColumns(onuName, handleVlanIdChange)}
-    dataSource={data?.map((item, idx) => ({ ...item, portId: `${idx}` }))}
+    dataSource={data}
   />
 }
 
 // eslint-disable-next-line max-len
-function useColumns (onuName: string | undefined, handleVlanIdChange: (portId: string, value: number) => void) {
+function useColumns (onuName: string | undefined, handleVlanIdChange: (portIdx: string, value: number) => void) {
   const { $t } = useIntl()
   const columns: TableProps<EdgeNokiaOnuPortData>['columns'] = [
     {
-      key: 'portId',
+      key: 'portIdx',
       title: $t({ defaultMessage: 'Port' }),
-      dataIndex: 'portId',
+      dataIndex: 'portIdx',
       fixed: 'left',
       width: 50
     },
@@ -71,7 +72,12 @@ function useColumns (onuName: string | undefined, handleVlanIdChange: (portId: s
     {
       key: 'poeUtilization',
       title: $t({ defaultMessage: 'PoE Utilization' }),
-      dataIndex: 'poeUtilization'
+      dataIndex: 'poeUtilization',
+      render: (_, row) => {
+        const percentVal = row.poePower / OLT_PSE_SUPPLIED_POWER
+        // eslint-disable-next-line max-len
+        return `${formatter('percentFormat')(percentVal)} (${formatter('ratioFormat')([row.poePower, OLT_PSE_SUPPLIED_POWER])} W)`
+      }
     },
     {
       key: 'vlan',
@@ -79,9 +85,9 @@ function useColumns (onuName: string | undefined, handleVlanIdChange: (portId: s
       dataIndex: 'vlan',
       render: (_, row) => {
         return <TextInlineEditor
-          key={`${onuName}-${row.portId}`}
+          key={`${onuName}-${row.portIdx}`}
           value={stringToNumber(row.vlan[0])}
-          onChange={async (vlan) => handleVlanIdChange(row.portId, vlan)}
+          onChange={async (vlan) => handleVlanIdChange(row.portIdx, vlan)}
         />
       }
     }

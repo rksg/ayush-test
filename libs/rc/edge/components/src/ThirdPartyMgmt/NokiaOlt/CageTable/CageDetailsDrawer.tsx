@@ -1,15 +1,21 @@
 import { useState } from 'react'
 
-import { Row, Col, Form, Typography } from 'antd'
-import { useIntl }                    from 'react-intl'
+import { Row, Col, Typography } from 'antd'
+import { useIntl }              from 'react-intl'
 
-import { Drawer }                                                                        from '@acx-ui/components'
-import { EdgeNokiaCageData, EdgeNokiaOltData, EdgeNokiaOnuData, transformDisplayNumber } from '@acx-ui/rc/utils'
+import { Drawer }          from '@acx-ui/components'
+import {
+  EdgeNokiaCageData,
+  EdgeNokiaOltData,
+  EdgeNokiaOnuData,
+  getOltPoeClassText,
+  transformDisplayNumber
+} from '@acx-ui/rc/utils'
 
 import { EdgeNokiaOnuPortTable } from '../OnuPortTable'
 import { EdgeNokiaOnuTable }     from '../OnuTable'
 
-import { OnuDetailWrapper, StyledPoeClassText } from './styledComponents'
+import { OnuDetailWrapper, StyledFormItem } from './styledComponents'
 
 interface CageDetailsDrawerProps {
   visible: boolean
@@ -28,7 +34,7 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
     setVisible(false)
   }
 
-  const handleOnOnuClick = (onu: EdgeNokiaOnuData) => {
+  const handleOnOnuClick = (onu: EdgeNokiaOnuData | undefined) => {
     setCurrentOnu(onu)
   }
 
@@ -52,27 +58,23 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
       {currentOnu && <OnuDetailWrapper>
         <Typography.Title level={3}>{currentOnu.name}</Typography.Title>
         <Col span={24}>
-          <StyledPoeClassText
+          <StyledFormItem
             label={$t({ defaultMessage: 'PoE Class' })}
-            children={<Row>
-              <Col span={24}>
-                2 (802.3af 7w)
-              </Col>
-            </Row>}
+            children={<div style={{ width: '100%', marginTop: -20 }}>
+              {getOltPoeClassText(currentOnu.poeClass)}
+            </div>}
           />
-          <Form.Item
+          <StyledFormItem
             label={$t({ defaultMessage: 'Ports ({count})' },
               { count: transformDisplayNumber(currentOnu.ports) })}
-            children={<Row>
-              <Col span={24}>
-                <EdgeNokiaOnuPortTable
-                  data={currentOnu.portDetails}
-                  oltData={oltData}
-                  cageName={currentCage?.name}
-                  onuName={currentOnu.name}
-                />
-              </Col>
-            </Row>}
+            children={<div style={{ width: '100%' }}>
+              <EdgeNokiaOnuPortTable
+                data={currentOnu.portDetails}
+                oltData={oltData}
+                cageName={currentCage?.name}
+                onuName={currentOnu.name}
+              />
+            </div>}
           />
         </Col>
       </OnuDetailWrapper>}

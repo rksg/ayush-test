@@ -68,8 +68,10 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
     render(<Provider>
       <EdgeNokiaOltDetailsPageHeader {...props} />
     </Provider>, { route: { params, path: mockPath } })
-    expect(screen.getByText('Status')).toBeInTheDocument()
-    expect(screen.getByText('Cages')).toBeInTheDocument()
-    expect(screen.getByText('PoE Usage')).toBeInTheDocument()
+    expect(screen.getByText('Status')).toBeVisible()
+    expect(screen.getByText('Cages')).toBeVisible()
+    expect(screen.getByText('PoE Usage')).toBeVisible()
+    expect(screen.getByTestId('value')).toHaveTextContent('232')
+    expect(screen.getByTestId('totalVal')).toHaveTextContent('280')
   })
 })

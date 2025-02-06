@@ -34,6 +34,7 @@ describe('EdgeNokiaOnuTable', () => {
     </Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('ont_9')).toBeInTheDocument()
+    screen.getByRole('row', { name: 'ont_9 3 2 (802.3af 7.0 W)' })
   })
 
   it('renders with loading state', () => {
@@ -45,7 +46,7 @@ describe('EdgeNokiaOnuTable', () => {
 
   it('should not trigger API when oltId or cageName is not provided', () => {
     render(<Provider>
-      <EdgeNokiaOnuTable oltId={undefined} cageName={undefined} onClick={jest.fn()} />
+      <EdgeNokiaOnuTable oltData={undefined} cageName={undefined} onClick={jest.fn()} />
     </Provider>)
     expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     expect(mockGetOnuList).not.toHaveBeenCalled()

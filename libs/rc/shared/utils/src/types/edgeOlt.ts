@@ -33,13 +33,15 @@ export interface EdgeNokiaCageData {
 
 export interface EdgeNokiaOnuData {
   name: string
+  poeClass: string
   ports: number
   usedPorts: number
   portDetails: EdgeNokiaOnuPortData[]
 }
 
 export interface EdgeNokiaOnuPortData {
-  portId: string
+  portIdx: string
   status: EdgeNokiaCageStateEnum
   vlan: string[]
+  poePower: number
 }

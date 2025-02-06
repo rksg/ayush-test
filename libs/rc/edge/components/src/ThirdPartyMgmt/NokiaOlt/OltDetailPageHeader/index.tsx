@@ -3,11 +3,18 @@ import React from 'react'
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Card, GridRow,  GridCol, PageHeader, Button }                                          from '@acx-ui/components'
-import { useGetEdgeCageListQuery }                                                              from '@acx-ui/rc/services'
-import { EdgeNokiaCageStateEnum, EdgeNokiaOltData, EdgeNokiaOltStatusEnum, getOltStatusConfig } from '@acx-ui/rc/utils'
+import { Card, GridRow,  GridCol, PageHeader, Button, cssStr } from '@acx-ui/components'
+import { useGetEdgeCageListQuery }                             from '@acx-ui/rc/services'
+import {
+  EdgeNokiaCageStateEnum,
+  EdgeNokiaOltData,
+  EdgeNokiaOltStatusEnum,
+  getOltStatusConfig,
+  OLT_POE_PD_USED,
+  OLT_POE_SUPPLIED_TOTAL
+} from '@acx-ui/rc/utils'
 
-import OltImage                    from '../../../assets/images/olt/olt_img.png'
+import OltImage                    from '../../../assets/images/olt/olt.png'
 import { EdgeOverviewDonutWidget } from '../../../ChartWidgets/EdgeOverviewDonutWidget'
 
 import { OltDetailsDrawer }         from './DetailsDrawer'
@@ -75,28 +82,28 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
                 status={currentOlt.status}
                 showText />
             </GridCol>
-            <GridCol col={{ span: 4 }}>
+            <GridCol col={{ span: 3 }}>
               <EdgeOverviewDonutWidget
                 title={$t({ defaultMessage: 'Cages' })}
                 data={totalCages ? [{
-                  color: '#23AB36',
-                  name: 'Up',
-                  value: upCages
-                }, {
-                  color: '#FF9D49',
+                  color: cssStr('--acx-neutrals-50'),
                   name: 'Down',
                   value: totalCages - upCages
+                }, {
+                  color: cssStr('--acx-semantics-green-50'),
+                  name: 'Up',
+                  value: upCages
                 }] : []}
                 isLoading={isCageListLoading}
                 isFetching={isCageListFetching}
               />
             </GridCol>
-            <GridCol col={{ span: 5 }}>
+            <GridCol col={{ span: 6 }}>
               <PoeUtilizationBox
                 title={$t({ defaultMessage: 'PoE Usage' })}
                 isOnline={currentOlt.status === EdgeNokiaOltStatusEnum.ONLINE}
-                value={232}
-                totalVal={280}
+                value={OLT_POE_PD_USED}
+                totalVal={OLT_POE_SUPPLIED_TOTAL}
                 isLoading={false}
               />
             </GridCol>
