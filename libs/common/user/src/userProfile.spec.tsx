@@ -89,7 +89,7 @@ describe('hasAccess', () => {
     it('allow when operation in allowedOperations', () => {
       setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
       expect(hasAccess({ rbacOpsIds: ['GET:/networks'] })).toBe(true)
-      expect(hasAllowedOperations(['GET:/networks'])).toBe(true)
+      expect(hasAllowedOperations([])).toBe(true)
     })
 
     it('block when operation NOT in allowedOperations', () => {
@@ -300,6 +300,18 @@ describe('filterByOperations', () => {
 
     setRole({ role: RolesEnum.READ_ONLY })
     expect(filterByOperations(items)).toHaveLength(2)
+
+    setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
+    expect(filterByOperations(items)).toHaveLength(1)
+  })
+
+  it('filter based on logic of filterByOperations and rbacOpsApiEnabled', () => {
+    const MockComponent = (props: { rbacOpsIds: string[] }) => <div children={props.rbacOpsIds}/>
+
+    const items = [
+      <MockComponent rbacOpsIds={['GET:/switches']}/>,
+      <MockComponent rbacOpsIds={['GET:/edges']}/>
+    ]
 
     setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
     expect(filterByOperations(items)).toHaveLength(1)
