@@ -280,7 +280,8 @@ export enum Features {
   ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
   ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle',
   ACX_UI_SHOW_ADMIN_TYPE_COLUMN_TOGGLE='acx-ui-show-admin-type-column-toggle',
-  ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle'
+  ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
+  MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
