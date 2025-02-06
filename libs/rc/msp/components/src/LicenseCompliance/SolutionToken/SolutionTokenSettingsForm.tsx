@@ -32,55 +32,54 @@ export default function SolutionTokenSettingsForm () {
     <label></label>
   </UI.SettingsFieldLabel>
   <Form name='solutionTokenSettings'>
-    <UI.SettingsFieldLabelKeyValue width='600px'>
-      {
-        settingsData.map((setting: SolutionTokenSettings) =>
-          <>
-            <label>
-              {DeviceComplianceTypeLabels[setting.featureType]
-                ? $t(DeviceComplianceTypeLabels[setting.featureType])
-                : setting.featureType}
-            </label>
-            <label>{`${setting?.licenseToken} ${setting?.featureCostUnit}`}</label>
-            <label>
-              <Form.Item
-                name='capped'
-                style={{
-                  margin: '0px'
-                }}
-                initialValue={setting.capped}
-                children={<>
-                  <Switch
-                    checked={setting.capped}
-                  />
-                  <span>{setting.capped ? $t({ defaultMessage: 'Capped' })
-                    : $t({ defaultMessage: 'Uncapped' })}</span></>
-                }/>
-            </label>
-            <label>
-              <Form.Item
-                name='maxQuantity'
-                initialValue={setting.maxQuantity}
-                style={{
-                  margin: '0px'
-                }}
-                children={<>
-                  <InputNumber
-                    controls={false}
-                    style={{
-                      height: '28px',
-                      fontSize: '12px',
-                      width: '60px'
-                    }}/>
-                  <span style={{
-                    fontSize: '12px'
-                  }}>{` ${setting.featureUnit}`}</span></>
-                }/>
-            </label>
-          </>
-        )
-      }
-    </UI.SettingsFieldLabelKeyValue>
+    {
+      settingsData.map((setting: SolutionTokenSettings, idx: number) =>
+        <UI.SettingsFieldLabelKeyValue width='600px' key={idx}>
+          <label>
+            {DeviceComplianceTypeLabels[setting.featureType]
+              ? $t(DeviceComplianceTypeLabels[setting.featureType])
+              : setting.featureType}
+          </label>
+          <label>{`${setting?.licenseToken} ${setting?.featureCostUnit}`}</label>
+          <label>
+            <Form.Item
+              name={setting.featureType + '_capped'}
+              style={{
+                margin: '0px'
+              }}
+              initialValue={setting.capped}
+              children={<>
+                <Switch
+                  checked={setting.capped}
+                />
+                <span>{setting.capped ? $t({ defaultMessage: 'Capped' })
+                  : $t({ defaultMessage: 'Uncapped' })}</span></>
+              }/>
+          </label>
+          <label>
+            <Form.Item
+              name={setting.featureType + '_maxQuantity'}
+              initialValue={setting.maxQuantity}
+              style={{
+                margin: '0px'
+              }}
+              children={<>
+                <InputNumber
+                  controls={false}
+                  style={{
+                    height: '28px',
+                    fontSize: '12px',
+                    width: '60px'
+                  }}/>
+                <span style={{
+                  fontSize: '12px'
+                }}>{` ${setting.featureUnit}`}</span></>
+              }/>
+          </label>
+        </UI.SettingsFieldLabelKeyValue>
+      )
+    }
+
   </Form>
   </div>
 }
