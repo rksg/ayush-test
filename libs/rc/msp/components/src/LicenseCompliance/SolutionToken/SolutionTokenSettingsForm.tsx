@@ -33,8 +33,8 @@ export default function SolutionTokenSettingsForm () {
   </UI.SettingsFieldLabel>
   <Form name='solutionTokenSettings'>
     {
-      settingsData.map((setting: SolutionTokenSettings, idx: number) =>
-        <UI.SettingsFieldLabelKeyValue width='600px' key={idx}>
+      settingsData.map((setting: SolutionTokenSettings) =>
+        <UI.SettingsFieldLabelKeyValue width='600px' key={setting.featureType}>
           <label>
             {DeviceComplianceTypeLabels[setting.featureType]
               ? $t(DeviceComplianceTypeLabels[setting.featureType])
