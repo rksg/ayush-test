@@ -276,6 +276,7 @@ export default function AICanvas () {
         id: chat.id,
         chatId: chat.id
       }}
+      sections={canvasRef.current?.sections}
       /> }
       {
         chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>

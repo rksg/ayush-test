@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button }                                         from '@acx-ui/components'
+import { Button, showToast }                              from '@acx-ui/components'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
 import Layout            from './components/Layout'
@@ -87,6 +87,7 @@ const DEFAULT_CANVAS = [
 
 export interface CanvasRef {
   save: () => Promise<void>;
+  sections: Section[]
 }
 
 interface CanvasProps {
@@ -180,13 +181,20 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
           widgetIds
         }
       })
+      showToast({
+        type: 'success',
+        content: $t(
+          { defaultMessage: 'Canvas saved successfully' }
+        )
+      })
     }
     setCanvasChange(false)
     // localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
 
   useImperativeHandle(ref, () => ({
-    save: onSave
+    save: onSave,
+    sections: sections
   }))
 
   const emptyCanvas = () => {

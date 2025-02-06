@@ -5,16 +5,18 @@ import { CallbackDataParams }                      from 'echarts/types/dist/shar
 import { useDrag }                                 from 'react-dnd'
 import { getEmptyImage }                           from 'react-dnd-html5-backend'
 import { renderToString }                          from 'react-dom/server'
+import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }                            from 'uuid'
 
-import { BarChartData }                                                                             from '@acx-ui/analytics/utils'
-import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
-import { useGetWidgetQuery }                                                                        from '@acx-ui/rc/services'
-import { WidgetListData }                                                                           from '@acx-ui/rc/utils'
+import { BarChartData }                                                                                        from '@acx-ui/analytics/utils'
+import { BarChart, cssNumber, cssStr, DonutChart, Loader, showToast, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                           from '@acx-ui/formatter'
+import { useGetWidgetQuery }                                                                                   from '@acx-ui/rc/services'
+import { WidgetListData }                                                                                      from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import { Section } from '../Canvas'
+import * as UI     from '../styledComponents'
 
 import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
 import { ItemTypes }         from './GroupItem'
@@ -24,6 +26,7 @@ interface WidgetListProps {
   data: WidgetListData
   visible?: boolean
   setVisible?: (v: boolean) => void
+  sections?: Section[]
 }
 
 interface WidgetCategory {
@@ -107,12 +110,37 @@ export const getChartConfig = (data: WidgetListData) => {
   return ChartConfig[data.chartType]
 }
 
-export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
+export const DraggableChart: React.FC<WidgetListProps> = ({ data, sections }) => {
+  const { $t } = useIntl()
+  const canDragtoCanvas = () => {
+    if(sections) {
+      const tmp = [...sections]
+      let cardsCount = 0
+      tmp.forEach(s => {
+        s.groups.forEach(g => {
+          g.cards.forEach(() => cardsCount++)
+        })
+      })
+      if(cardsCount < 20) {
+        return true
+      } else {
+        showToast({
+          type: 'error',
+          content: $t(
+            { defaultMessage: 'The maximum number of widgets is 20' }
+          )
+        })
+        return false
+      }
+    }
+    return true
+  }
   const [{ isDragging }, drag, preview] = useDrag({
     type: ItemTypes.CARD,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     }),
+    canDrag: () => canDragtoCanvas(),
     item: () => {
       const dragCard = {
         ...data,
