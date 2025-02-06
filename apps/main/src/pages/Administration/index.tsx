@@ -39,7 +39,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
-  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_SERVICE_APP_MONITORING)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 
   const defaultPayload = {

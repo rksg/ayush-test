@@ -63,7 +63,7 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
-  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_SERVICE_APP_MONITORING)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
   type Item = ItemType & {
     permission?: RaiPermission

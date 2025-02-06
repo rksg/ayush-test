@@ -7,6 +7,7 @@ import { useParams }                    from 'react-router-dom'
 
 import { useGetPrivacySettingsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
 import { PrivacyFeatureName }                                           from '@acx-ui/rc/utils'
+import { useUserProfileContext }                                        from '@acx-ui/user'
 
 import { MessageMapping } from './MessageMapping'
 
@@ -21,10 +22,14 @@ interface RequestPayload {
 export default function Privacy () {
   const { $t } = useIntl()
   const params = useParams()
+  const {
+    isPrimeAdmin
+  } = useUserProfileContext()
+  const isPrimeAdminUser = isPrimeAdmin()
   const [isPrivacyMonitoringSettingsEnabled, setIsPrivacyMonitoringSettingsEnabled]
     = useState<boolean>(false)
 
-  const { data } = useGetPrivacySettingsQuery({ params })
+  const { data } = useGetPrivacySettingsQuery({ params }, { skip: !isPrimeAdminUser })
 
   const payload: RequestPayload = {
     privacyFeatures: [
@@ -91,6 +96,7 @@ export default function Privacy () {
         </Col>
         <Col span={1}>
           <Switch
+            disabled={!isPrimeAdminUser}
             checked={isPrivacyMonitoringSettingsEnabled}
             onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.ARC, ev)}/>
         </Col>

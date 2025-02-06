@@ -43,7 +43,7 @@ export function NetworkControlTab () {
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
   const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL)
-  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_SERVICE_APP_MONITORING)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
   const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !isMspAppMonitoringEnabled })
 

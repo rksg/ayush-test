@@ -39,7 +39,7 @@ describe('Privacy settings', () => {
   })
 
   it('Should show ARC privacy settings', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_SERVICE_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
     render(
       <Provider>
         <Form>
