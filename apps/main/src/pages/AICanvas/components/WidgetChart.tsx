@@ -310,7 +310,9 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         setVisible && <CustomizeWidgetDrawer
           visible={visible as boolean}
           setVisible={setVisible}
-          widget={chartData as WidgetListData} />
+          widget={chartData as WidgetListData}
+          canvasId={data.canvasId as string}
+        />
       }
     </Loader>
   )

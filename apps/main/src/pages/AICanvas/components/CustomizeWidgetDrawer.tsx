@@ -1,10 +1,12 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { Drawer }         from '@acx-ui/components'
-import { WidgetListData } from '@acx-ui/rc/utils'
+import { Drawer }                  from '@acx-ui/components'
+import { useUpdateWidgetMutation } from '@acx-ui/rc/services'
+import { WidgetListData }          from '@acx-ui/rc/utils'
 
 export interface CustomizeWidgetDrawerProps {
+  canvasId: string,
   widget: WidgetListData,
   visible: boolean
   setVisible: (v: boolean) => void
@@ -12,11 +14,27 @@ export interface CustomizeWidgetDrawerProps {
 
 export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, widget, canvasId } = props
   const [form] = Form.useForm()
+  const [updateWidget] = useUpdateWidgetMutation()
 
   const onClose = () => {
     setVisible(false)
+  }
+
+  const handleSubmit = async () => {
+    const formValues = form.getFieldsValue(true)
+    try {
+      await updateWidget({
+        params: { canvasId, widgetId: widget.id },
+        payload: {
+          name: formValues.name
+        }
+      })
+      onClose()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   return (
@@ -27,7 +45,23 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
       destroyOnClose={true}
       width={400}
       children={
-        <></>
+        <Form layout='vertical'
+          form={form}
+          onFinish={handleSubmit}
+        >
+          <Form.Item
+            label={$t({ defaultMessage: 'Widget Title' })}
+            name='name'
+            initialValue={widget?.name}
+            validateFirst
+            rules={[
+              { required: true },
+              { min: 1 },
+              { max: 64 }
+            ]}
+            children={<Input/>}
+          />
+        </Form>
       }
       footer={
         <Drawer.FormFooter
@@ -39,8 +73,6 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
             try {
               await form.validateFields()
               form.submit()
-              onClose()
-
             } catch (error) {
               if (error instanceof Error) throw error
             }
