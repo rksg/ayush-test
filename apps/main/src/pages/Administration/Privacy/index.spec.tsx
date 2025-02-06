@@ -1,13 +1,22 @@
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen }                  from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+
+import { fakeUserProfile } from '../Administrators/__tests__/fixtures'
 
 import Privacy from '.'
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+
+const userProfileContextValues = {
+  data: fakeUserProfile,
+  isPrimeAdmin
+} as UserProfileContextProps
 
 
 const params = { tenantId: 'tenant-id' }
@@ -42,9 +51,11 @@ describe('Privacy settings', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
     render(
       <Provider>
-        <Form>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
           <Privacy/>
-        </Form>
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } })
 
