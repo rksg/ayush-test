@@ -140,9 +140,9 @@ export const isAlphaFilter = (labels: FirmwareLabel[] = []): boolean => {
 }
 
 // eslint-disable-next-line max-len
-export const isBetaFilter = (labels: FirmwareLabel[] = [], onlyIsBetaFlagOn: boolean = false): boolean => {
+export const isBetaFilter = (labels: FirmwareLabel[] = [], ignoreAlphaLabel: boolean = false): boolean => {
   return !labels.includes(FirmwareLabel.GA)
-    && (onlyIsBetaFlagOn || !labels.includes(FirmwareLabel.ALPHA))
+    && (ignoreAlphaLabel || !labels.includes(FirmwareLabel.ALPHA))
     && labels.includes(FirmwareLabel.BETA)
 }
 
