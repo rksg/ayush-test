@@ -146,6 +146,7 @@ export default function DpskPassphraseManagement () {
             name={item.name}
             personaId={item.id}
             personaGroupId={item.groupId}
+            revoked={item.revoked}
           /> : row.username)
         }
         return row.username
@@ -238,7 +239,8 @@ export default function DpskPassphraseManagement () {
       selectedRows,
       $t({ defaultMessage: 'Passphrase' }),
       selectedRows[0].username,
-      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
+      // eslint-disable-next-line max-len
+      isIdentityGroupRequired ? [] : [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
       async () => deletePassphrases({
         params: { ...params },
         payload: selectedRows.map(p => p.id)
@@ -347,10 +349,11 @@ export default function DpskPassphraseManagement () {
       rbacOpsIds: [getOpsApi(DpskUrls.deletePassphrase)],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: ([selectedRow]) => !!selectedRow?.identityId,
+      disabled: ([selectedRow]) => !isIdentityGroupRequired && !!selectedRow?.identityId,
       tooltip: (selectedRow) => getDisabledActionMessage(
         selectedRow,
-        [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
+        // eslint-disable-next-line max-len
+        isIdentityGroupRequired ? [] : [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
         $t({ defaultMessage: 'delete' })),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         doDelete(selectedRows, clearSelection)

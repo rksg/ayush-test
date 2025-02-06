@@ -140,6 +140,29 @@ const mileageReportData = {
   ]
 }
 
+const list = [
+  {
+    featureType: 'SLTN_PI_NET',
+    featureName: 'Personal Identity Network',
+    maxQuantity: 0,
+    enabled: false,
+    capped: false,
+    licenseToken: 1,
+    featureCostUnit: 'per Tunnel',
+    featureUnit: 'Tunnels'
+  },
+  {
+    featureType: 'SLTN_ADAPT_POLICY',
+    featureName: 'Adaptive Policy',
+    maxQuantity: 0,
+    enabled: false,
+    capped: true,
+    licenseToken: 5,
+    featureCostUnit: 'per Policy',
+    featureUnit: 'Policies'
+  }
+]
+
 const fakeTenantDetails = {
   id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
   createdDate: '2023-01-31T04:19:00.241+00:00',
@@ -189,6 +212,10 @@ describe('LicenseCompliance', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        MspRbacUrlsInfo.getSolutionTokenSettings.url,
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
     params = {
@@ -322,7 +349,7 @@ describe('LicenseCompliance', () => {
     expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
   })
 
-  it('should render solution token card with solution token FF enabled', async () => {
+  it('should render rec solution token card with solution token FF enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
     render(
@@ -335,12 +362,63 @@ describe('LicenseCompliance', () => {
 
     expect(screen.getByText('Solution Token Licenses')).toBeVisible()
 
-    const tabMaxLiceses = screen.getAllByRole('tab', { name: 'Summary' })[1]
-    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
-    const tabMaxPeriod = screen.getAllByRole('tab', { name: 'My Account' })[1]
-    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
+    const tabSummary = screen.getAllByRole('tab', { name: 'Summary' })[1]
+    expect(tabSummary.getAttribute('aria-selected')).toBeTruthy()
+    const tabMyAccount = screen.getAllByRole('tab', { name: 'My Account' })[1]
+    expect(tabMyAccount.getAttribute('aria-selected')).toBe('false')
+    const tabSettings = screen.getByRole('tab', { name: 'Settings' })
+    expect(tabSettings.getAttribute('aria-selected')).toBe('false')
 
-    await userEvent.click(tabMaxPeriod)
+    await userEvent.click(tabMyAccount)
     expect(screen.getByText('Adaptive Policy')).toBeVisible()
+
+    await userEvent.click(tabSettings)
+
+    expect(screen.getByRole('tabpanel', { name: 'Settings' } )).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit Settings' }))
+
+    expect(screen.getByRole('checkbox', { name: 'Personal Identity Network' } )).toBeVisible()
+    expect(screen.getByRole('checkbox', { name: 'Adaptive Policy' } )).toBeVisible()
+
+    expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
+
+    userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[0])
+  })
+
+  it('should render msp solution token card settings tab', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+    render(
+      <Provider>
+        <LicenseCompliance isExtendedTrial={true} isMsp={true}/>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/t/administration/subscriptions/compliance' }
+      })
+
+    expect(screen.getByText('Solution Token Licenses')).toBeVisible()
+
+    const tabSummary = screen.getAllByRole('tab', { name: 'MSP Subscriptions' })[1]
+    expect(tabSummary.getAttribute('aria-selected')).toBeTruthy()
+    const tabMyAccount = screen.getAllByRole('tab', { name: 'My Account' })[1]
+    expect(tabMyAccount.getAttribute('aria-selected')).toBe('false')
+    const tabSettings = screen.getByRole('tab', { name: 'Settings' })
+    expect(tabSettings.getAttribute('aria-selected')).toBe('false')
+
+    await userEvent.click(tabMyAccount)
+
+    expect(tabMyAccount.getAttribute('aria-selected')).toBe('true')
+
+    await userEvent.click(tabSettings)
+
+    expect(screen.getByRole('tabpanel', { name: 'Settings' } )).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit Settings' }))
+
+    expect(screen.getByRole('checkbox', { name: 'Personal Identity Network' } )).toBeVisible()
+    expect(screen.getByRole('checkbox', { name: 'Adaptive Policy' } )).toBeVisible()
+
+    expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
+
+    userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[0])
   })
 })

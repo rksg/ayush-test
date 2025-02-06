@@ -22,11 +22,13 @@ import {
   TableQuery,
   Lag,
   SwitchRow,
-  SwitchPortStatus
+  SwitchPortStatus,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes } from '@acx-ui/types'
 import { hasPermission }                from '@acx-ui/user'
+import { getOpsApi }                    from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -229,7 +231,10 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
+        if (!portLinkEnabled || !hasPermission({
+          scopes: [SwitchScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+        })) {
           return row['switchPort']
         }
 

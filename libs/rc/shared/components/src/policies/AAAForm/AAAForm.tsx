@@ -45,6 +45,7 @@ type AAAFormProps = {
   edit: boolean,
   networkView?: boolean,
   backToNetwork?: (value?: AAAPolicyType) => void,
+  forceDisableRadsec?: boolean
 }
 
 type State = {
@@ -56,7 +57,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.AAA, PolicyOperation.LIST)
   const params = useParams()
   const state = useLocation().state as State
-  const { type, edit, networkView, backToNetwork } = props
+  const { type, edit, networkView, backToNetwork, forceDisableRadsec } = props
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
@@ -275,7 +276,9 @@ export const AAAForm = (props: AAAFormProps) => {
           <AAASettingForm edit={isEdit}
             saveState={saveState}
             type={type}
-            networkView={networkView}/>
+            networkView={networkView}
+            forceDisableRadsec={forceDisableRadsec}
+          />
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>
