@@ -186,7 +186,12 @@ describe('VersionBannerPerApModel', () => {
 
     render(
       <Provider>
-        <VersionBannerPerApModel />
+        <ApFirmwareContext.Provider value={{
+          isAlphaFlag: true,
+          isBetaFlag: true
+        }}>
+          <VersionBannerPerApModel />
+        </ApFirmwareContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       }
