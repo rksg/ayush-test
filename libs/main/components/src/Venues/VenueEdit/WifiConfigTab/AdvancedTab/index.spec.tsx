@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -55,6 +55,11 @@ jest.mock('./AccessPointUSB', () => ({
   AccessPointUSB: () => <div data-testid='mocked-AP-USB'></div>
 }))
 
+jest.mock('./RebootTimeout', () => ({
+  ...jest.requireActual('./AccessPointUSB'),
+  RebootTimeout: () => <div data-testid='mocked-Reboot-Timeout'></div>
+}))
+
 const mockAdvancedTab = (
   <VenueUtilityContext.Provider value={{
     venueApCaps: venueCaps,
@@ -84,14 +89,14 @@ describe('AdvancedTab', () => {
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
       rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
-        (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
-      rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
-        (_, res, ctx) => res(ctx.json({}))),
       // RBAC API
-      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
+      rest.put(WifiRbacUrlsInfo.updateVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiRbacUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),
-      rest.put(CommonRbacUrlsInfo.updateVenueLedOn.url,
+      rest.put(WifiRbacUrlsInfo.updateVenueLedOn.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(venueBssColoring))),

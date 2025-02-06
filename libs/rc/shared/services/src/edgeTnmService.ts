@@ -7,11 +7,21 @@ import {
   EdgeTnmHostGroup,
   EdgeTnmGraphItem,
   EdgeTnmGraphItemInfo,
-  EdgeTnmGraphHistory
+  EdgeTnmGraphHistory,
+  EdgeNokiaOltData,
+  EdgeNokiaCageData,
+  EdgeNokiaOnuData,
+  TableResult,
+  EdgeUrlsInfo,
+  EdgeClusterStatus,
+  EdgeNokiaOltCreatePayload,
+  EdgeOltFixtures
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
+
+import { isFulfilled } from './utils'
 
 export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
   endpoints: (build) => ({
@@ -110,6 +120,102 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+
+    // Edge Nokia OLT POC
+    getEdgeOltList: build.query<EdgeNokiaOltData[], RequestPayload>({
+      async queryFn (_reqApi, _queryApi, _extraOptions, fetchWithBQ) {
+        const clusterDataDefaultPayload = {
+          fields: ['clusterId', 'venueId'],
+          pageSize: 10000,
+          sortField: 'name',
+          sortOrder: 'ASC'
+        }
+
+        const clusterListReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList, {})
+        // eslint-disable-next-line max-len
+        const clusterListQuery = await fetchWithBQ({ ...clusterListReq, body: JSON.stringify(clusterDataDefaultPayload) })
+        const clusterList = clusterListQuery.data as TableResult<EdgeClusterStatus>
+
+        const results = await Promise.allSettled(clusterList.data?.map(item => {
+          return fetchWithBQ(createHttpRequest(
+            EdgeTnmServiceUrls.getEdgeOltList,
+            { venueId: item.venueId, edgeClusterId: item.clusterId }
+          ))
+        }))
+
+        const oltList = results.filter(isFulfilled).flatMap(p => p.value.data)
+
+        return {
+          data: oltList as EdgeNokiaOltData[]
+        }
+      },
+      providesTags: [{ type: 'EdgeNokiaOlt', id: 'LIST' }]
+    }),
+    addEdgeOlt: build.mutation<CommonResult, RequestPayload<EdgeNokiaOltCreatePayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.addEdgeOlt, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'LIST' }]
+    }),
+    updateEdgeOlt: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.updateEdgeOlt, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'LIST' }]
+    }),
+    deleteEdgeOlt: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.deleteEdgeOlt, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'LIST' }]
+    }),
+    getEdgeCageList: build.query<EdgeNokiaCageData[], RequestPayload>({
+      // query: () => {
+      //   const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeCageList)
+      //   return {
+      //     ...req
+      //   }
+      // },
+      // TODO: remove after IT done
+      async queryFn () {
+        return { data: EdgeOltFixtures.mockOltCageList as EdgeNokiaCageData[] }
+      },
+      providesTags: [{ type: 'EdgeNokiaOlt', id: 'CAGE_LIST' }]
+    }),
+    toggleEdgeCageState: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.toggleEdgeCageState, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'CAGE_LIST' }]
+    }),
+    getEdgeOnuList: build.query<EdgeNokiaOnuData[], RequestPayload>({
+      // query: () => {
+      //   const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeOnuList)
+      //   return {
+      //     ...req
+      //   }
+      // },
+      // TODO: remove after IT done
+      async queryFn () {
+        return { data: EdgeOltFixtures.mockOnuList as EdgeNokiaOnuData[] }
+      },
+      providesTags: [{ type: 'EdgeNokiaOlt', id: 'ONU_LIST' }]
     })
   })
 })
@@ -126,5 +232,13 @@ export const {
   useGetEdgeTnmHostGroupListQuery,
   useGetEdgeTnmGraphItemsQuery,
   useGetEdgeTnmGraphItemsInfoQuery,
-  useGetEdgeTnmGraphHistoryQuery
+  useGetEdgeTnmGraphHistoryQuery,
+  useGetEdgeOltListQuery,
+  useLazyGetEdgeOltListQuery,
+  useAddEdgeOltMutation,
+  useUpdateEdgeOltMutation,
+  useDeleteEdgeOltMutation,
+  useGetEdgeCageListQuery,
+  useToggleEdgeCageStateMutation,
+  useGetEdgeOnuListQuery
 } = edgeTnmServiceApi

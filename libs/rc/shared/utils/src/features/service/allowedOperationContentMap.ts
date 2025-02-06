@@ -1,9 +1,22 @@
 import { RbacOpsIds } from '@acx-ui/types'
 import { getOpsApi }  from '@acx-ui/utils'
 
-import { ServiceOperation, ServiceType }                                                                        from '../../constants'
-import { PolicyOperation, PolicyType }                                                                          from '../../types'
-import { EdgeDhcpUrls, EdgeHqosProfilesUrls, EdgeMdnsProxyUrls, EdgePinUrls, EdgeSdLanUrls, TunnelProfileUrls } from '../../urls'
+import { ServiceOperation, ServiceType } from '../../constants'
+import { PolicyOperation, PolicyType }   from '../../types'
+import {
+  ApSnmpRbacUrls,
+  EdgeDhcpUrls,
+  EdgeHqosProfilesUrls,
+  EdgeMdnsProxyUrls,
+  EdgePinUrls,
+  EdgeSdLanUrls,
+  EthernetPortProfileUrls,
+  IdentityProviderUrls,
+  LbsServerProfileUrls,
+  SwitchUrlsInfo,
+  TunnelProfileUrls,
+  WifiOperatorUrls
+} from '../../urls'
 
 import { SvcPcyAllowedOper, SvcPcyAllowedType } from './servicePolicyAbacContentsMap'
 
@@ -129,6 +142,24 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: ['DELETE:/applicationPolicies/{id}'],
     [PolicyOperation.LIST]: ['POST:/applicationPolicies/query']
   },
+  [PolicyType.FLEX_AUTH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addFlexAuthenticationProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.updateFlexAuthenticationProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteFlexAuthenticationProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getFlexAuthenticationProfiles)]
+  },
+  [PolicyType.SWITCH_PORT_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addSwitchPortProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getSwitchPortProfilesList)]
+  },
+  [PolicyType.WORKFLOW]: {
+    [PolicyOperation.CREATE]: ['POST:/workflows'],
+    [PolicyOperation.EDIT]: ['PATCH:/workflows/{id}'],
+    [PolicyOperation.DELETE]: ['DELETE:/workflows/{id}'],
+    [PolicyOperation.LIST]: ['POST:/workflows/query']
+  },
   [PolicyType.TUNNEL_PROFILE]: {
     [PolicyOperation.CREATE]: [getOpsApi(TunnelProfileUrls.createTunnelProfile)],
     [PolicyOperation.EDIT]: [getOpsApi(TunnelProfileUrls.updateTunnelProfile)],
@@ -139,7 +170,36 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.CREATE]: [getOpsApi(EdgeHqosProfilesUrls.addEdgeHqosProfile)],
     [PolicyOperation.EDIT]: [getOpsApi(EdgeHqosProfilesUrls.updateEdgeHqosProfile)],
     [PolicyOperation.DELETE]: [getOpsApi(EdgeHqosProfilesUrls.deleteEdgeHqosProfile)],
-    // eslint-disable-next-line max-len
     [PolicyOperation.LIST]: [getOpsApi(EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList)]
+  },
+  [PolicyType.SNMP_AGENT]: {
+    [PolicyOperation.CREATE]: [getOpsApi(ApSnmpRbacUrls.addApSnmpPolicy)],
+    [PolicyOperation.EDIT]: [getOpsApi(ApSnmpRbacUrls.updateApSnmpPolicy)],
+    [PolicyOperation.DELETE]: [getOpsApi(ApSnmpRbacUrls.deleteApSnmpPolicy)],
+    [PolicyOperation.LIST]: [getOpsApi(ApSnmpRbacUrls.getApSnmpFromViewModel)]
+  },
+  [PolicyType.WIFI_OPERATOR]: {
+    [PolicyOperation.CREATE]: [getOpsApi(WifiOperatorUrls.addWifiOperator)],
+    [PolicyOperation.EDIT]: [getOpsApi(WifiOperatorUrls.updateWifiOperator)],
+    [PolicyOperation.DELETE]: [getOpsApi(WifiOperatorUrls.deleteWifiOperator)],
+    [PolicyOperation.LIST]: [getOpsApi(WifiOperatorUrls.getWifiOperatorList)]
+  },
+  [PolicyType.IDENTITY_PROVIDER]: {
+    [PolicyOperation.CREATE]: [getOpsApi(IdentityProviderUrls.addIdentityProvider)],
+    [PolicyOperation.EDIT]: [getOpsApi(IdentityProviderUrls.updateIdentityProvider)],
+    [PolicyOperation.DELETE]: [getOpsApi(IdentityProviderUrls.deleteIdentityProvider)],
+    [PolicyOperation.LIST]: [getOpsApi(IdentityProviderUrls.getIdentityProviderList)]
+  },
+  [PolicyType.LBS_SERVER_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(LbsServerProfileUrls.addLbsServerProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(LbsServerProfileUrls.updateLbsServerProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(LbsServerProfileUrls.deleteLbsServerProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(LbsServerProfileUrls.getLbsServerProfileList)]
+  },
+  [PolicyType.ETHERNET_PORT_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(EthernetPortProfileUrls.createEthernetPortProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(EthernetPortProfileUrls.updateEthernetPortProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(EthernetPortProfileUrls.deleteEthernetPortProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)]
   }
 }

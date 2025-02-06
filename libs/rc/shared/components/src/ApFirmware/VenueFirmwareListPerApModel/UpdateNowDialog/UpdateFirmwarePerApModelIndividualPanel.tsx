@@ -80,6 +80,7 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
 
           return <UpdateFirmwarePerApModelIndividual key={item.apModel}
             {...item}
+            selectedVenuesFirmwares={selectedVenuesFirmwares}
             update={update}
             labelSize={labelSize}
             isUpgrade={isUpgrade}

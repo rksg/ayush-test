@@ -29,6 +29,7 @@ export function DpskOverview (props: DpskOverviewProps) {
   const isTableBlocked = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   const { data } = props
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const dpskInfo = [
     {
@@ -62,7 +63,11 @@ export function DpskOverview (props: DpskOverviewProps) {
     },
     ...(isIdentityGroupRequired ? [{
       title: intl.$t({ defaultMessage: 'Identity Group' }),
-      content: <IdentityGroupLink enableFetchName personaGroupId={data?.identityId}/>,
+      content: <IdentityGroupLink
+        enableFetchName
+        disableLink={isDpskRole}
+        personaGroupId={data?.identityId}
+      />,
       colSpan: 5
     }] : [])
   ]

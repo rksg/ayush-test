@@ -121,6 +121,7 @@ export interface EventBase {
   turnOffTimestamp?: string
   portList?: string
   indexName?: string
+  authenticationType?: string
 }
 
 export interface EventMeta {

@@ -57,7 +57,7 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
@@ -68,7 +68,7 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
           disabled: !isEdgePinReady
@@ -79,7 +79,7 @@ export default function ServiceCatalog () {
           helpIcon: isEdgeCompatibilityEnabled
             ? <ApCompatibilityToolTip
               title={''}
-              visible={true}
+              showDetailButton
               onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
             />
             : undefined,
@@ -106,7 +106,7 @@ export default function ServiceCatalog () {
           disabled: !isEdgeMdnsReady,
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
           />
         },
