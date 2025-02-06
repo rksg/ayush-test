@@ -19,13 +19,6 @@ export const EdgeNokiaOltDetails = () => {
   const { $t } = useIntl()
   const { activeSubTab } = useParams()
   const oltDetails = useLocation().state as EdgeNokiaOltData
-  // TODO: remove after API returns data
-  if (oltDetails) {
-    oltDetails.venueId = '2c5422d229924ce899ad26334699aeea'
-    oltDetails.venueName = 'Raj-PoC-Venue1'
-    oltDetails.edgeClusterId = 'aef88a46-c0d5-415b-8f6f-e2c1cc4edc60'
-    oltDetails.edgeClusterName = 'Raj_PoC_1 SE-Standalone-2.1.0.971'
-  }
 
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
 
