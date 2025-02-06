@@ -1,6 +1,9 @@
 
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { Space } from 'antd'
+
+import { PersonaBlockedIcon } from '@acx-ui/icons'
+import { TenantLink }         from '@acx-ui/react-router-dom'
+import { noDataDisplay }      from '@acx-ui/utils'
 
 import { ServiceOperation, ServiceType }                       from '../../constants'
 import { getPolicyDetailsLink, MacRegistrationDetailsTabKey  } from '../../features/policy/policyRouteUtils'
@@ -33,10 +36,12 @@ export function IdentityDetailsLink (
     personaGroupId?: string,
     personaId?: string,
     name?: string,
-    disableLink?: boolean })
+    disableLink?: boolean,
+    revoked?: boolean
+  })
 {
-  const { personaGroupId, personaId, name, disableLink = false } = props
-  return (
+  const { personaGroupId, personaId, name, disableLink = false, revoked = false } = props
+  return <Space align='center' size={2}> {
     disableLink
       ? <>{name}</>
       : <TenantLink
@@ -44,7 +49,12 @@ export function IdentityDetailsLink (
       >
         {name ?? personaId}
       </TenantLink>
-  )
+  }
+  {
+    revoked &&
+    <PersonaBlockedIcon style={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+  }
+  </Space>
 }
 
 export function DpskPoolLink (props: { dpskPoolId?: string, name?: string, showNoData?: boolean }) {

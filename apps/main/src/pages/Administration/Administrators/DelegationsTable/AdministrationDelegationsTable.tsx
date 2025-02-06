@@ -19,6 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdministrationDelegationStatus,
+  AdministrationUrlsInfo,
   defaultSort,
   Delegation,
   getDelegetionStatusIntlString,
@@ -27,6 +28,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { RolesEnum }                from '@acx-ui/types'
 import { filterByAccess, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -161,8 +163,10 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const tableActions = []
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
-      label: isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Add Delegated Admin' })
-        : ($t({ defaultMessage: 'Invite 3rd Party Admin' })),
+      label: isGroupBasedLoginEnabled
+        ? $t({ defaultMessage: 'Add Delegated Admin' })
+        : $t({ defaultMessage: 'Invite 3rd Party Admin' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.inviteVAR)],
       disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })
