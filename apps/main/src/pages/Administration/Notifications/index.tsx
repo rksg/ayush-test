@@ -51,11 +51,11 @@ const FunctionEnabledStatusLightConfig = {
 const recipientTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Recipient Type' }) },
   {
-    key: 'PRIVILEGE',
+    key: NotificationRecipientType.PRIVILEGEGROUP,
     value: $t({ defaultMessage: 'Privileges Groups' })
   },
   {
-    key: 'GLOBAL',
+    key: NotificationRecipientType.GLOBAL,
     value: $t({ defaultMessage: 'Global Recipients' })
   }
 ]
