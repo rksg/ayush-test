@@ -1,5 +1,6 @@
-import {  Space }  from 'antd'
-import { useIntl } from 'react-intl'
+import {  Space }                  from 'antd'
+import { Key as AntdTableKeyType } from 'antd/lib/table/interface'
+import { useIntl }                 from 'react-intl'
 
 import {
   Table,
@@ -10,27 +11,48 @@ import {
 } from '@acx-ui/components'
 import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
 import {
-  EdgeNokiaOnuData
+  EdgeNokiaOltData,
+  EdgeNokiaOnuData,
+  getOltPoeClassText
 } from '@acx-ui/rc/utils'
 
 interface EdgeNokiaOnuTableProps {
-  oltId: string | undefined
+  oltData: EdgeNokiaOltData | undefined
   cageName: string | undefined
-  onClick: (onu: EdgeNokiaOnuData) => void
+  onClick: (onu: EdgeNokiaOnuData | undefined) => void
 }
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
-  const { oltId, cageName } = props
-  const { data, isLoading } = useGetEdgeOnuListQuery({
-    params: { oltId, cageName }
-  }, { skip: !oltId || !cageName })
+  const { oltData, cageName } = props
 
-  return <Loader states={[{ isLoading }]}>
+  const { data, isLoading } = useGetEdgeOnuListQuery({
+    params: {
+      venueId: oltData?.venueId,
+      edgeClusterId: oltData?.edgeClusterId,
+      oltId: oltData?.serialNumber
+    },
+    payload: { cageId: cageName }
+  }, { skip: !oltData || !cageName })
+
+  // eslint-disable-next-line max-len
+  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[]) => {
+    if (selectedRowKeys.length === 0) {
+      props.onClick(undefined)
+    }
+  }
+
+  return <Loader
+    states={[{ isLoading }]}
+    style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+  >
     <Table
       rowKey='name'
       columns={useColumns(props)}
       dataSource={data}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={{
+        type: 'radio',
+        onChange: handleRowSelectChange
+      }}
     />
   </Loader>
 }
@@ -56,13 +78,16 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
       render: (_, row) =>
         <Space>
           <span>{row.ports}</span>
-          <ProgressBarV2 percent={33.33} />
+          <div style={{ margin: 'auto', width: '100px' }}>
+            <ProgressBarV2 percent={(row.usedPorts/row.ports) * 100} />
+          </div>
         </Space>
     },
     {
       key: 'poeClass',
       title: $t({ defaultMessage: 'PoE Class' }),
-      dataIndex: 'poeClass'
+      dataIndex: 'poeClass',
+      render: (_, row) => getOltPoeClassText(row.poeClass)
     }
   ]
 

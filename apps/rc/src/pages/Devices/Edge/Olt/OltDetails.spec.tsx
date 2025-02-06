@@ -7,7 +7,6 @@ import { screen, render }   from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltDetails } from './OltDetails'
 
-// const mockActiveSubTab = 'performance'
 const { mockOlt } = EdgeOltFixtures
 jest.mock('@acx-ui/edge/components', () => ({
   EdgeNokiaOltDetailsPageHeader: (props: { currentOlt: EdgeNokiaOltData }) =>
