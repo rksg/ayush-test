@@ -1,4 +1,4 @@
-import { EspProposal, IkeProposal, IpSecAuthEnum, IpSecDhGroupEnum, IpSecEncryptionAlgorithmEnum, IpSecIntegrityAlgorithmEnum, IpSecProposalTypeEnum, IpSecPseudoRandomFunctionEnum, IpsecViewData, IpsecWiredActivation, IpsecWiredApActivation} from '@acx-ui/rc/utils'
+import { EspProposal, IkeProposal, IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecDhGroupEnum, IpSecEncryptionAlgorithmEnum, IpSecFailoverModeEnum, IpSecIntegrityAlgorithmEnum, IpSecProposalTypeEnum, IpSecPseudoRandomFunctionEnum, IpSecRekeyTimeUnitEnum, IpsecViewData, IpsecWiredActivation, IpsecWiredApActivation} from '@acx-ui/rc/utils'
 
 export const mockIpSecTable = {
   data: {
@@ -183,4 +183,50 @@ export const mockIpSecTable2 = {
   isFetching: false,
   handleTableChange: () => {},
   handleFilterChange: () => {}
+}
+
+
+export const mockIpSecDetail = {
+  id: '0d89c0f5596c4689900fb7f5f53a0859',
+  name: 'ipsecProfileName1',
+  serverAddress: '7.7.7.7',
+  authType: IpSecAuthEnum.PSK,
+  preSharedKey: 'admin!234',
+  ikeSecurityAssociation: {
+    ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+    ikeProposals: [
+      {
+        encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+        authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+        prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+        dhGroup: IpSecDhGroupEnum.MODP768
+      },
+      {
+        encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+        authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+        prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+        dhGroup: IpSecDhGroupEnum.MODP2048
+      }
+    ]
+  },
+  espSecurityAssociation: {
+    espProposalType: IpSecProposalTypeEnum.DEFAULT
+  },
+  advancedOption: {
+    dhcpOpt43Subcode: 7,
+    retryLimit: 5,
+    replayWindow: 32,
+    ipcompEnable: IpSecAdvancedOptionEnum.ENABLED,
+    enforceNatt: IpSecAdvancedOptionEnum.ENABLED,
+    dpdDelay: 0,
+    keepAliveInterval: 20,
+    failoverRetryPeriod: 0,
+    failoverRetryInterval: 1,
+    failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
+    failoverPrimaryCheckInterval: 1
+  },
+  ikeRekeyTime: 4,
+  ikeRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+  espRekeyTime: 1,
+  espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR
 }

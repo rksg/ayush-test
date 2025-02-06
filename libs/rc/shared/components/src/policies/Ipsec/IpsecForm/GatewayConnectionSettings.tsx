@@ -62,8 +62,9 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         </GridCol>
         <GridCol col={{ span: 12 }}>
           <Form.Item name={['advancedOption','dhcpOpt43Subcode']}
+            initialValue={7}
             children={
-              <InputNumber min={1} max={32} defaultValue={7} />
+              <InputNumber min={1} max={32} />
             }
           />
         </GridCol>
@@ -96,9 +97,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 <Space>
                   <Form.Item
                     label={' '}
+                    data-testid='advOpt-retryLimit'
                     name={['advancedOption','retryLimit']}
+                    initialValue={5}
                     children={
-                      <InputNumber min={1} max={16} defaultValue={5} />
+                      <InputNumber min={1} max={16} />
                     } />
                   <span> {$t({ defaultMessage: 'retries' })} </span>
                 </Space>
@@ -137,9 +140,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 <Space>
                   <Form.Item
                     label={' '}
+                    data-testid='advOpt-replayWindow'
                     name={['advancedOption','replayWindow']}
+                    initialValue={32}
                     children={
-                      <InputNumber min={1} max={32} defaultValue={32} />
+                      <InputNumber min={1} max={32} />
                     } />
                   <span> {$t({ defaultMessage: 'packets' })} </span>
                 </Space>
@@ -170,6 +175,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             children={
               <Switch
                 checked={ipCompressionEnabled}
+                data-testid='advOpt-ipcompEnable'
                 onChange={async (checked: boolean) => {
                   setIpCompressionEnabled(checked)
                 }}
@@ -205,8 +211,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 <Space>
                   <Form.Item
                     label={' '}
+                    data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
-                    children={<InputNumber min={1} max={65536} defaultValue={1}/>} />
+                    initialValue={1}
+                    children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
               }
@@ -237,6 +245,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             children={
               <Switch
                 // eslint-disable-next-line max-len
+                data-testid='advOpt-enforceNatt'
                 checked={forceNATTEnabled}
                 onChange={async (checked: boolean) => {
                   setForceNATTEnabled(checked)
@@ -270,8 +279,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 <Space>
                   <Form.Item
                     label={' '}
+                    data-testid='advOpt-keepAliveInterval'
+                    initialValue={20}
                     name={['advancedOption','keepAliveInterval']}
-                    children={<InputNumber min={1} max={65536} defaultValue={20}/>} />
+                    children={<InputNumber min={1} max={65536}/>} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
               }

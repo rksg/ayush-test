@@ -1,12 +1,9 @@
-
 import { Form } from 'antd'
 
-import { IpSecAuthEnum, IpSecFailoverModeEnum } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }           from '@acx-ui/test-utils'
+import { IpSecAuthEnum, IpSecFailoverModeEnum }  from '@acx-ui/rc/utils'
+import { fireEvent, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import FailoverSettings from './FailoverSettings'
-
-
 
 const initialFormValue = {
   advancedOption: {
@@ -18,6 +15,26 @@ const initialFormValue = {
   serverAddress: '1.1.1.1',
   authType: IpSecAuthEnum.PSK
 }
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
+
 
 describe('FailoverSettings', () => {
   it('renders with default props', () => {
@@ -77,20 +94,12 @@ describe('FailoverSettings', () => {
       form.setFieldsValue(initialFormValue)
       return form
     })
-    const initIpSecData = {
-      advancedOption: {
-        failoverMode: IpSecFailoverModeEnum.REVERTIVE
-      }
-    }
-    render(<Form form={formRef.current}>
-      <FailoverSettings initIpSecData={initIpSecData} /></Form>)
-    expect(screen.getByText('REVERTIVE')).toBeInTheDocument()
+    render(<Form form={formRef.current}><FailoverSettings /></Form>)
 
-    render(<Form form={formRef.current}>
-      <FailoverSettings initIpSecData={{
-        advancedOption: { failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE }
-      }} /></Form>)
-    expect(screen.getByText('Non-revertive')).toBeInTheDocument()
+    expect(screen.queryByText('Check Interval')).not.toBeInTheDocument()
+
+    const failoverModeSelect = screen.getAllByRole('combobox', { name: /retry mode/i })[0]
+    fireEvent.change(failoverModeSelect, { target: { value: IpSecFailoverModeEnum.REVERTIVE } })
     expect(screen.getByText('Check Interval')).toBeInTheDocument()
   })
 })

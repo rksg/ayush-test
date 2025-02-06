@@ -179,10 +179,14 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             initialValue={authType}
             children={
               <Select
-                data-testid='authentication-select'
                 style={{ width: '380px' }}
                 placeholder={$t({ defaultMessage: 'Select...' })}
-                options={authOptions}
+                children={
+                  authOptions.map((option) =>
+                    <Select.Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Select.Option>)
+                }
                 onChange={onAuthTypeChange}
               />
             }

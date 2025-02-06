@@ -1,99 +1,88 @@
-import { IpSecAdvancedOptionEnum }   from '@acx-ui/rc/utils'
+import { Form }         from 'antd'
+import { IntlProvider } from 'react-intl'
+
 import { render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import GatewayConnectionSettings from './GatewayConnectionSettings'
 
 describe('GatewayConnectionSettings', () => {
-  it('renders with no props', () => {
-    render(<GatewayConnectionSettings />)
-    expect(screen.getByText('Gateway')).toBeInTheDocument()
-  })
-
-  it('renders with initIpSecData prop', () => {
-    const initIpSecData = {
-      advancedOption: {
-        ipcompEnable: true,
-        enforceNatt: true
-      }
+  const renderComponent = (initialValues = {
+    advancedOption: {
+      ipcompEnable: true,
+      enforceNatt: false
     }
-    render(<GatewayConnectionSettings initIpSecData={initIpSecData} />)
+  }) => {
+    return render(
+      <IntlProvider locale='en'>
+        <Form initialValues={initialValues}>
+          <GatewayConnectionSettings />
+        </Form>
+      </IntlProvider>
+    )
+  }
+
+  it('renders with no props', () => {
+    renderComponent()
+    expect(screen.getByText('Gateway')).toBeInTheDocument()
     expect(screen.getByText('IP Compression')).toBeInTheDocument()
     expect(screen.getByText('Force NAT-T')).toBeInTheDocument()
   })
 
-  it('toggles retry limit checkbox', () => {
-    render(<GatewayConnectionSettings />)
+  it('toggles checkboxes', () => {
+    renderComponent()
+
+    //retryLimit
     const retryLimitEnabledCheckbox = screen.getByTestId('retryLimitEnabled')
     expect(retryLimitEnabledCheckbox.checked).toBe(false)
+    expect(screen.queryByTestId('advOpt-retryLimit')).not.toBeInTheDocument()
+
     fireEvent.click(retryLimitEnabledCheckbox)
     expect(retryLimitEnabledCheckbox.checked).toBe(true)
-  })
+    expect(screen.getByTestId('advOpt-retryLimit')).toBeInTheDocument()
 
-  it('toggles ESP replay window checkbox', () => {
-    render(<GatewayConnectionSettings />)
+    //espReplayWindow
     const espReplayWindowEnabledCheckbox = screen.getByTestId('espReplayWindowEnabled')
     expect(espReplayWindowEnabledCheckbox.checked).toBe(false)
+    expect(screen.queryByTestId('advOpt-replayWindow')).not.toBeInTheDocument()
+
     fireEvent.click(espReplayWindowEnabledCheckbox)
     expect(espReplayWindowEnabledCheckbox.checked).toBe(true)
-  })
+    expect(screen.getByTestId('advOpt-replayWindow')).toBeInTheDocument()
 
-  it('toggles dead peer detection delay checkbox', () => {
-    render(<GatewayConnectionSettings />)
+    //deadPeerDetectionDelay
     const deadPeerDetectionDelayEnabledCheckbox =
       screen.getByTestId('deadPeerDetectionDelayEnabled')
     expect(deadPeerDetectionDelayEnabledCheckbox.checked).toBe(false)
+    expect(screen.queryByTestId('advOpt-dpdDelay')).not.toBeInTheDocument()
+
     fireEvent.click(deadPeerDetectionDelayEnabledCheckbox)
     expect(deadPeerDetectionDelayEnabledCheckbox.checked).toBe(true)
-  })
+    expect(screen.getByTestId('advOpt-dpdDelay')).toBeInTheDocument()
 
-  it('toggles NAT-T keep alive interval checkbox', () => {
-    render(<GatewayConnectionSettings />)
-    const nattKeepAliveIntervalEnabledCheckbox = screen.getByTestId('nattKeepAliveIntervalEnabled')
+    //nattKeepAliveInterval
+    const nattKeepAliveIntervalEnabledCheckbox =
+    screen.getByTestId('nattKeepAliveIntervalEnabled')
     expect(nattKeepAliveIntervalEnabledCheckbox.checked).toBe(false)
+    expect(screen.queryByTestId('advOpt-keepAliveInterval')).not.toBeInTheDocument()
+
     fireEvent.click(nattKeepAliveIntervalEnabledCheckbox)
     expect(nattKeepAliveIntervalEnabledCheckbox.checked).toBe(true)
+    expect(screen.getByTestId('advOpt-keepAliveInterval')).toBeInTheDocument()
   })
 
   it('toggles IP compression switch', () => {
-    const initIpSecData = {
-      advancedOption: {
-        ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
-        enforceNatt: IpSecAdvancedOptionEnum.DISABLED
-      }
-    }
-    render(<GatewayConnectionSettings initIpSecData={initIpSecData}/>)
-    const ipCompressionSwitch = screen.getByText('IP Compression')
-    expect(ipCompressionSwitch.checked).toBe(false)
+    renderComponent()
+    const ipCompressionSwitch = screen.getByTestId('advOpt-ipcompEnable')
+    expect(ipCompressionSwitch).not.toBeChecked()
     fireEvent.click(ipCompressionSwitch)
-    // await userEvent.click(select)
-    expect(ipCompressionSwitch.checked).toBe(true)
+    expect(ipCompressionSwitch).toBeChecked()
   })
 
   it('toggles force NAT-T switch', () => {
-    render(<GatewayConnectionSettings />)
-    const forceNATTSwitch = screen.getByText('Force NAT-T')
-    expect(forceNATTSwitch.checked).toBe(false)
+    renderComponent()
+    const forceNATTSwitch = screen.getByTestId('advOpt-enforceNatt')
+    expect(forceNATTSwitch).not.toBeChecked()
     fireEvent.click(forceNATTSwitch)
-    expect(forceNATTSwitch.checked).toBe(true)
-  })
-
-  it('updates input number fields', () => {
-    render(<GatewayConnectionSettings />)
-    const retryLimitInput = screen.getByTestId('retryLimit')
-    const espReplayWindowInput = screen.getByTestId('replayWindow')
-    const deadPeerDetectionDelayInput = screen.getByTestId('dpdDelay')
-    const nattKeepAliveIntervalInput = screen.getByTestId('keepAliveInterval')
-
-    fireEvent.change(retryLimitInput, { target: { value: 10 } })
-    expect(retryLimitInput.value).toBe('10')
-
-    fireEvent.change(espReplayWindowInput, { target: { value: 20 } })
-    expect(espReplayWindowInput.value).toBe('20')
-
-    fireEvent.change(deadPeerDetectionDelayInput, { target: { value: 30 } })
-    expect(deadPeerDetectionDelayInput.value).toBe('30')
-
-    fireEvent.change(nattKeepAliveIntervalInput, { target: { value: 40 } })
-    expect(nattKeepAliveIntervalInput.value).toBe('40')
+    expect(forceNATTSwitch).toBeChecked()
   })
 })

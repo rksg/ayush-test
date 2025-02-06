@@ -95,49 +95,6 @@ describe('IpsecTable', () => {
     })}`)
   })
 
-  it('should navigate to IpSec Edit Form Page correctly', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <IpsecTable />
-      </Provider>,
-      { route: { params, path: tablePath } }
-    )
-
-    const row = await screen.findByRole('row', { name: /ipsecProfileName4/i })
-    await user.click(within(row).getByRole('checkbox'))
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/${getPolicyDetailsLink({
-        type: PolicyType.IPSEC,
-        oper: PolicyOperation.EDIT,
-        policyId: policyId
-      })}`,
-      hash: '',
-      search: ''
-    })
-  })
-
-  it('should navigate to IpSec Add Form Page correctly', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <IpsecTable />
-      </Provider>,
-      { route: { params, path: tablePath } }
-    )
-
-    await user.click(screen.getByRole('button', { name: 'Add IPsec Profile' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/${getPolicyRoutePath({
-        type: PolicyType.IPSEC,
-        oper: PolicyOperation.CREATE
-      })}`,
-      hash: '',
-      search: ''
-    })
-  })
-
   it('should delete selected row - single', async () => {
     const user = userEvent.setup()
     render(

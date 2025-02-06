@@ -1,14 +1,14 @@
-/* eslint-disable testing-library/no-debugging-utils */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { ipSecApi }                                                       from '@acx-ui/rc/services'
 import { IpsecUrls }                                                      from '@acx-ui/rc/utils'
 import { Path }                                                           from '@acx-ui/react-router-dom'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import {  mockIpSecTable } from './__tests__/fixtures'
+import {  mockIpSecDetail, mockIpSecTable } from './__tests__/fixtures'
 
 import { IpsecForm } from '.'
 
@@ -25,27 +25,27 @@ jest.mock('react-router-dom', () => ({
   useTenantLink: ():Path => mockedTenantPath
 }))
 
-// jest.mock('antd', () => {
-//   const antd = jest.requireActual('antd')
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
 
-//   // @ts-ignore
-//   const Select = ({ children, onChange, ...otherProps }) =>
-//     <select
-//       role='combobox'
-//       onChange={e => onChange(e.target.value)}
-//       {...otherProps}>
-//       {children}
-//     </select>
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
 
-//   // @ts-ignore
-//   Select.Option = ({ children, ...otherProps }) =>
-//     <option role='option' {...otherProps}>{children}</option>
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
 
-//   return { ...antd, Select }
-// })
+  return { ...antd, Select }
+})
 
-const editViewPath = '/:tenantId/t/policies/SoftGre/:policyId/edit'
-const createViewPath = '/:tenantId/t/policies/SoftGre/create'
+const editViewPath = '/:tenantId/t/policies/ipsec/:policyId/edit'
+const createViewPath = '/:tenantId/t/policies/ipsec/create'
 
 const params = {
   tenantId: 'tenantId',
@@ -54,6 +54,9 @@ const params = {
 
 describe('IpsecForm', () => {
   const user = userEvent.setup()
+  jest.mocked(useIsSplitOn)
+    .mockImplementation(ff => ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+
   describe('addIpsecForm', () => {
     const addFn = jest.fn()
     beforeEach(() => {
@@ -97,21 +100,11 @@ describe('IpsecForm', () => {
       await user.type(profileNameField, 'createIpSec')
       const securityGatewayField = await screen.findByLabelText(/Security Gateway/i)
       await user.type(securityGatewayField, '128.0.0.1')
-
-    //   // eslint-disable-next-line no-console
-    //   console.log((screen.getByRole('combobox', { name: 'Authentication' }) as HTMLSelectElement)
-    //     .options[0].value)
-    //   await user.selectOptions(
-    //     screen.getByRole('combobox', { name: 'Authentication' }),
-    //     await screen.findAllByRole('option', { name: 'PSK' })
-    //   )
-
-      const authCombo = await screen.findByRole('combobox', { name: 'Authentication' })
-      await user.click(authCombo)
-      await user.click(
-        await screen.findByText('Pre-shared Key')
+      await user.selectOptions(
+        screen.getByRole('combobox', { name: /authentication/i }),
+        await screen.findAllByRole('option', { name: /pre-shared key/i })
       )
-      const pskField = await screen.findByTestId('pre-shared-key')
+      const pskField = await screen.findByLabelText(/Pre-shared Key/i)
       await user.type(pskField, 'testPSK')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -124,11 +117,11 @@ describe('IpsecForm', () => {
           serverAddress: '128.0.0.1'
         }))
       })
-    //   await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
-    //     pathname: `/${params.tenantId}/t/policies/ipsec/list`,
-    //     hash: '',
-    //     search: ''
-    //   }))
+      await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/policies/ipsec/list`,
+        hash: '',
+        search: ''
+      }))
     })
 
     it('should click cancel button and go back to list page', async () => {
@@ -172,13 +165,12 @@ describe('IpsecForm', () => {
       await user.type(profileNameField, 'TestFailedToAddIpSec')
       // eslint-disable-next-line max-len
       const securityGatewayField = await screen.findByLabelText(/Security Gateway/i)
-      await user.type(securityGatewayField,'128.0.0.1')
-      const authCombo = await screen.findByRole('combobox', { name: 'Authentication' })
-      await user.click(authCombo)
-      await user.click(
-        await screen.findByText('Pre-shared Key')
+      await user.type(securityGatewayField, '128.0.0.1')
+      await user.selectOptions(
+        screen.getByRole('combobox', { name: /authentication/i }),
+        await screen.findAllByRole('option', { name: /pre-shared key/i })
       )
-      const pskField = await screen.findByTestId('pre-shared-key')
+      const pskField = await screen.findByLabelText(/Pre-shared Key/i)
       await user.type(pskField, 'testPSK')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -195,6 +187,7 @@ describe('IpsecForm', () => {
   describe('EditIpSec', () => {
     const updateFn = jest.fn()
     const getListFn = jest.fn()
+    const getByIdFn = jest.fn()
     beforeEach(() => {
       store.dispatch(ipSecApi.util.resetApiState())
 
@@ -216,6 +209,13 @@ describe('IpsecForm', () => {
             getListFn()
             return res(ctx.json(mockIpSecTable.data))
           }
+        ),
+        rest.get(
+          IpsecUrls.getIpsec.url,
+          (_, res, ctx) => {
+            getByIdFn()
+            return res(ctx.json(mockIpSecDetail))
+          }
         )
       )
     })
@@ -233,38 +233,26 @@ describe('IpsecForm', () => {
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-      const descriptionField = await screen.findByLabelText(/Description/i)
-      await user.clear(descriptionField)
-      await user.type(descriptionField, 'update profileName and primaryGatewayAdress')
-
       const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.clear(profileNameField)
       await user.type(profileNameField, 'testEditIpSec')
 
-      const primaryGatewayField = await screen.findByLabelText(/Primary Gateway/i)
+      const primaryGatewayField = await screen.findByLabelText(/Security Gateway/i)
       await user.clear(primaryGatewayField)
-      await user.type(primaryGatewayField, '128.0.0.3')
-      expect(await screen.findByText(/Please enter a unique/i)).toBeVisible()
+      await user.type(primaryGatewayField, '128.0.0.99')
 
-      getListFn.mockReset()
-      await user.clear(primaryGatewayField)
-      await user.type(primaryGatewayField, '128.0.0.4')
-      await waitFor(() => expect(getListFn).toHaveBeenCalledTimes(1))
-      // eslint-disable-next-line max-len
-      expect(screen.queryByText(/Please enter a unique/i)).toBeNull()
+      const pskField = await screen.findByLabelText(/Pre-shared Key/i)
+      await user.clear(pskField)
+      await user.type(pskField, 'updatedTestPSK')
+
       await user.click(await screen.findByRole('button', { name: 'Apply' }))
 
       await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
       await waitFor(() => {
         expect(updateFn).toHaveBeenCalledWith(expect.objectContaining({
           name: 'testEditIpSec',
-          description: 'update profileName and primaryGatewayAdress',
-          mtuType: 'MANUAL',
-          keepAliveInterval: 100,
-          keepAliveRetryTimes: 8,
-          mtuSize: 1450,
-          disassociateClientEnabled: false,
-          primaryGatewayAddress: '128.0.0.4'
+          preSharedKey: 'updatedTestPSK',
+          serverAddress: '128.0.0.99'
         }))
       })
       await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({

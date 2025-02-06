@@ -34,6 +34,27 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
     dhGroup: IpSecDhGroupEnum.MODP2048
   }
 
+  const algorithmValidator = async (value: string) => {
+    let isValid = true
+    let proposalType = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
+    let proposals = form.getFieldValue(['espSecurityAssociation', 'espProposals'])
+    if (value && proposalType === IpSecProposalTypeEnum.SPECIFIC) {
+      if (proposals.length === MAX_PROPOSALS) {
+        if (proposals[0].encAlg === proposals[1].encAlg &&
+          proposals[0].authAlg === proposals[1].authAlg &&
+          proposals[0].dhGroup === proposals[1].dhGroup) {
+          isValid = false
+        }
+      }
+    }
+
+    return isValid ? Promise.resolve() :
+      Promise.reject(
+        /* eslint-disable max-len */
+        $t({ defaultMessage: 'Combinations of encryption mode, integrity algorithm, and Diffie-Hellman group must be unique. Please select a different combination.' })
+      )
+  }
+
   useEffect (() => {
     if (initIpSecData?.espSecurityAssociation?.espProposalType) {
       setEspProposalType(initIpSecData.espSecurityAssociation.espProposalType)
@@ -69,11 +90,13 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
         name={['espSecurityAssociation', 'espProposalType']}
         label={$t({ defaultMessage: 'Encapsulating Security Payload (ESP) Proposal' })}
         style={{ width: '300px' }}
+        initialValue={espProposalType}
         children={
           <Select
-            defaultValue={espProposalType}
             onChange={onProposalTypeChange}
-            options={proposalTypeOptions} />
+            children={proposalTypeOptions.map(({ label, value }) =>
+              <Select.Option key={value} value={value}>
+                {label}</Select.Option>)} />
         }
       />
       {espProposalType === IpSecProposalTypeEnum.DEFAULT &&
@@ -120,12 +143,14 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     rules={[
                       { required: true }
                     ]}
+                    initialValue={IpSecEncryptionAlgorithmEnum.AES128}
                     children={
                       <Select style={{ minWidth: 160 }}
                         data-testid={`select_encryption_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
-                        defaultValue={IpSecEncryptionAlgorithmEnum.AES128}
-                        options={encryptionOptions}
+                        children={encryptionOptions.map(({ label, value }) =>
+                          <Select.Option key={value} value={value}>
+                            {label}</Select.Option>)}
                       />}
                   /> }
                   <Form.Item
@@ -145,9 +170,9 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                   <Form.Item
                     name={[field.name, 'dhGroup']}
                     label={$t({ defaultMessage: 'DH Group' })}
-                    rules={[
-                      { required: true }
-                    ]}
+                    rules={(index === MAX_PROPOSALS - 1) ?
+                      [{ required: true }, { validator: (_, value) => algorithmValidator(value) }] :
+                      [{ required: true }]}
                     children={
                       <Select style={{ minWidth: 160 }}
                         data-testid={`select_dh_${index}`}

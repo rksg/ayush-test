@@ -74,9 +74,14 @@ export default function RekeySettings () {
                   initialValue={IpSecRekeyTimeUnitEnum.HOUR}
                   children={
                     <Select
-                      // defaultValue={IpSecRekeyTimeUnitEnum.HOUR}
                       style={{ width: 120 }}
-                      options={rekeyTimeUnitOptions} />
+                      options={rekeyTimeUnitOptions}
+                      children={
+                        rekeyTimeUnitOptions.map((item) => 
+                          <Select.Option key={item.value} value={item.value}>
+                            {item.label}
+                          </Select.Option>)
+                      } />
                   } />
               </Space>
             </GridCol>

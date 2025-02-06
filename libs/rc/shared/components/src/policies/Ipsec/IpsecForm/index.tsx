@@ -105,8 +105,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
       if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
         data.espSecurityAssociation.espProposals = []
       }
-      // eslint-disable-next-line no-console
-      console.log(data)
+
       if (editMode) {
         await updateIpsec({ params, payload: data }).unwrap()
       } else {

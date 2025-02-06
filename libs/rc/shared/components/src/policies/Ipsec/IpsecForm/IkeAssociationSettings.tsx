@@ -36,6 +36,28 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
     dhGroup: IpSecDhGroupEnum.MODP2048
   }
 
+  const algorithmValidator = async (value: string) => {
+    let isValid = true
+    let proposalType = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
+    let proposals = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposals'])
+    if (value && proposalType === IpSecProposalTypeEnum.SPECIFIC) {
+      if (proposals.length === MAX_PROPOSALS) {
+        if (proposals[0].encAlg === proposals[1].encAlg &&
+          proposals[0].authAlg === proposals[1].authAlg &&
+          proposals[0].prfAlg === proposals[1].prfAlg &&
+          proposals[0].dhGroup === proposals[1].dhGroup) {
+          isValid = false
+        }
+      }
+    }
+
+    return isValid ? Promise.resolve() :
+      Promise.reject(
+        /* eslint-disable max-len */
+        $t({ defaultMessage: 'Combinations of encryption mode, integrity algorithm, pseudo-random function and Diffie-Hellman group must be unique. Please select a different combination.' })
+      )
+  }
+
   useEffect (() => {
     if (initIpSecData?.ikeSecurityAssociation?.ikeProposalType) {
       setIkeProposalType(initIpSecData.ikeSecurityAssociation.ikeProposalType)
@@ -73,11 +95,14 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
         name={['ikeSecurityAssociation', 'ikeProposalType']}
         label={$t({ defaultMessage: 'Internet Key Exchange (IKE) Proposal' })}
         style={{ width: '300px' }}
+        initialValue={ikeProposalType}
         children={
           <Select
-            defaultValue={ikeProposalType}
             onChange={onProposalTypeChange}
-            options={proposalTypeOptions} />
+            children={proposalTypeOptions.map(({ label, value }) =>
+              <Select.Option key={value} value={value}>
+                {label}
+              </Select.Option>)} />
         }
       />
       {ikeProposalType === IpSecProposalTypeEnum.DEFAULT &&
@@ -141,8 +166,10 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_encryption_${index}`}
                           placeholder={$t({ defaultMessage: 'Select...' })}
-                          // defaultValue={IpSecEncryptionAlgorithmEnum.AES128}
-                          options={encryptionOptions}
+                          children={encryptionOptions.map(({ label, value }) =>
+                            <Select.Option key={value} value={value}>
+                              {label}
+                            </Select.Option>)}
                         />}
                     /> }
                     <Form.Item
@@ -156,7 +183,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_integrity_${index}`}
                           placeholder={$t({ defaultMessage: 'Select...' })}
-                          // defaultValue={IpSecIntegrityAlgorithmEnum.SHA1}
                           options={integrityOptions}
                         />}
                     />
@@ -171,22 +197,20 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_prf_${index}`}
                           placeholder={$t({ defaultMessage: 'Select...' })}
-                          // defaultValue={IpSecPseudoRandomFunctionEnum.USE_INTEGRITY_ALG}
                           options={prfOptions}
                         />}
                     />
                     <Form.Item
                       name={[field.name, 'dhGroup']}
                       label={$t({ defaultMessage: 'DH Group' })}
-                      rules={[
-                        { required: true }
-                      ]}
+                      rules={(index === MAX_PROPOSALS - 1) ?
+                        [{ required: true }, { validator: (_, value) => algorithmValidator(value) }] :
+                        [{ required: true }]}
                       initialValue={IpSecDhGroupEnum.MODP2048}
                       children={
                         <Select style={{ minWidth: 150 }}
                           data-testid={`select_dh_${index}`}
                           placeholder={$t({ defaultMessage: 'Select...' })}
-                          // defaultValue={IpSecDhGroupEnum.MODP2048}
                           options={dhGroupOptions}
                         />}
                     />
@@ -203,14 +227,14 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                 </>
               )}
               {(fields.length < MAX_PROPOSALS) &&
-              <Button type='link'
-                data-testid='addProposalBtn'
-                style={{ textAlign: 'left' }}
-                onClick={() => {
-                  add(initialAlgValue, fields.length)
-                }}>
-                {$t({ defaultMessage: 'Add another proposal' })}
-              </Button>
+                <Button type='link'
+                  data-testid='addProposalBtn'
+                  style={{ textAlign: 'left' }}
+                  onClick={() => {
+                    add(initialAlgValue, fields.length)
+                  }}>
+                  {$t({ defaultMessage: 'Add another proposal' })}
+                </Button>
               }
             </>
           )}
