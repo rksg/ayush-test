@@ -7,6 +7,7 @@ import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
@@ -67,7 +68,10 @@ function VenuePageHeader () {
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
-          rbacOpsIds={[getOpsApi(CommonUrlsInfo.updateVenue)]}
+          rbacOpsIds={[
+            getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+          ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {

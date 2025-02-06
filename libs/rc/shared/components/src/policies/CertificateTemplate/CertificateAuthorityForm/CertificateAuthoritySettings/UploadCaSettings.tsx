@@ -26,7 +26,7 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
   const password = Form.useWatch('password', form)
   const [fileDescription, setFileDescription] = useState<{ [key in KeyType]?: ReactNode }>({})
   const bytesFormatter = formatter('bytesFormat')
-  const maxSize: number = 1024 * 10
+  const maxSize: number = 1024 * 50
   const acceptableFileExtensions = ['cer', 'crt', 'chain', 'pem', 'p7b', 'p12', 'der', 'key']
 
   const beforeUpload = async (file: File, keyType: KeyType) => {

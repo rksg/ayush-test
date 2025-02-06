@@ -22,13 +22,14 @@ import {
   SwitchVlan,
   SwitchMessages,
   SwitchViewModel,
-  usePollingTableQuery
+  usePollingTableQuery,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { SwitchScopes }                      from '@acx-ui/types'
-import { filterByAccess, hasPermission }     from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import { getIntl }                           from '@acx-ui/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                                      from '@acx-ui/utils'
 
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
@@ -363,6 +364,7 @@ export function SwitchPortTable (props: {
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)],
     scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       setSelectedPorts(selectedRows)
@@ -387,19 +389,22 @@ export function SwitchPortTable (props: {
       enableApiFilter={true}
       rowKey='portId'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? {
-        type: 'checkbox',
-        renderCell: (checked, record, index, originNode) => {
-          return record?.inactiveRow
-            ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
-            : originNode
-        },
-        getCheckboxProps: (record) => {
-          return {
-            disabled: record?.inactiveRow
+      rowSelection={hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+      }) ? {
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            return record?.inactiveRow
+              ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
+              : originNode
+          },
+          getCheckboxProps: (record) => {
+            return {
+              disabled: record?.inactiveRow
+            }
           }
-        }
-      } : undefined}
+        } : undefined}
       actions={!isVenueLevel
         ? filterByAccess([{
           label: $t({ defaultMessage: 'Manage LAG' }),
