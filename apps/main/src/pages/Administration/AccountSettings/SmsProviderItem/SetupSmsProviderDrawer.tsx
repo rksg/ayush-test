@@ -57,6 +57,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>()
   const [messagingServiceErrorMessage, setMessagingServiceErrorMessage] = useState<string>()
   const isSmsMessagingServiceEnabled = useIsSplitOn(Features.NUVO_SMS_MESSAGING_SERVICE_TOGGLE)
+  const isEnabledWhatsApp = useIsSplitOn(Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
 
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
   const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
@@ -89,8 +90,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           setTwilioEditMethod(messageMethod)
           form.setFieldsValue({
             messageMethod,
-            enableWhatsapp,
-            authTemplateSid: editData?.providerData.authTemplateSid ?? ''
+            ...(isEnabledWhatsApp && {
+              enableWhatsapp,
+              authTemplateSid: editData?.providerData.authTemplateSid ?? ''
+            })
           })
         }
         else if (isValidAccountSID === false && isValidAuthToken === false) {
@@ -372,7 +375,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
            />}
          />}
     </>}
-    {providerType === SmsProviderType.TWILIO && messageMethod !== undefined && <>
+    {/* eslint-disable-next-line max-len */}
+    {isEnabledWhatsApp && providerType === SmsProviderType.TWILIO && messageMethod !== undefined && <>
       <Form.Item
         name='enableWhatsapp'
         valuePropName='checked'

@@ -98,7 +98,7 @@ export function SelfSignInForm () {
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
-  // const isEnabledWhatsApp = useIsSplitOn(Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
+  const isEnabledWhatsApp = useIsSplitOn(Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
@@ -239,7 +239,7 @@ export function SelfSignInForm () {
               </>
             </Form.Item>
             }
-            {<Form.Item name={['guestPortal', 'enableWhatsappLogin']}
+            {isEnabledWhatsApp && <Form.Item name={['guestPortal', 'enableWhatsappLogin']}
               initialValue={false}
               style={SelfSignInAppStyle}>
               <>
