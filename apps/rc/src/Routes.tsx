@@ -55,6 +55,7 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  getScopeKeyByPolicy,
   hasSomePoliciesPermission,
   hasSomeServicesPermission,
   PolicyAuthRoute,
@@ -76,6 +77,7 @@ import EdgeClusterConfigWizard                      from './pages/Devices/Edge/C
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
+import { EdgeNokiaOltDetails }                      from './pages/Devices/Edge/Olt/OltDetails'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -104,7 +106,7 @@ import ConnectionMeteringPageForm                   from './pages/Policies/Conne
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
-import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import EthernetPortProfile                          from './pages/Policies/EthernetPortProfile'
 import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
 import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
 import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
@@ -121,6 +123,10 @@ import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import PortProfile                                                      from './pages/Policies/PortProfile'
+import CreatePortProfile                                                from './pages/Policies/PortProfile/create'
+import SwitchPortProfileDetail                                          from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
+import SwitchPortProfileForm                                            from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -282,6 +288,7 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
+      {useEdgeOltRoutes()}
       <Route path='devices/edge' element={<Edges />} />
       <Route
         path='devices/edge/add'
@@ -439,6 +446,15 @@ function NetworkRoutes () {
       />
     </Route>
   )
+}
+
+const useEdgeOltRoutes = () => {
+  const isEdgeOltReady = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+  return isEdgeOltReady ? <>
+    <Route path='devices/optical' element={<SwitchList tab={SwitchTabsEnum.OPTICAL} />} />
+    <Route path='devices/optical/:oltId/details' element={<EdgeNokiaOltDetails />} />
+  </> : null
 }
 
 const edgeDhcpRoutes = () => {
@@ -878,6 +894,7 @@ function PolicyRoutes () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1440,27 +1457,47 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
-          element={<FlexibleAuthenticationTable />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.LIST)}>
+              <FlexibleAuthenticationTable />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.CREATE
           })}
-          element={<AddFlexibleAuthentication/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}>
+              <AddFlexibleAuthentication />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.EDIT
           })}
-          element={<EditFlexibleAuthentication/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}>
+              <EditFlexibleAuthentication />
+            </AuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
           })}
-          element={<FlexibleAuthenticationDetail />}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.DETAIL)}>
+              <FlexibleAuthenticationDetail />
+            </AuthRoute>
+          }
         />
       </>
       }
@@ -1494,7 +1531,7 @@ function PolicyRoutes () {
             type: PolicyType.ETHERNET_PORT_PROFILE ,
             oper: PolicyOperation.LIST
           })}
-          element={<EthernetPortProfileTable/>}
+          element={<EthernetPortProfile/>}
         />
         <Route
           path={getPolicyRoutePath({
@@ -1516,6 +1553,53 @@ function PolicyRoutes () {
             oper: PolicyOperation.DETAIL
           })}
           element={<EthernetPortProfileDetail/>}
+        />
+      </>
+      }
+      {isSwitchPortProfileEnabled && <>
+        <Route
+          path='policies/portProfile/create'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <CreatePortProfile />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/portProfile/:activeTab/'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/:activeTab/:activeSubTab'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/add'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/edit'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/detail'
+          element={
+          // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
+              <SwitchPortProfileDetail />
+            </AuthRoute>
+          }
         />
       </>
       }

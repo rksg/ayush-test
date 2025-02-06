@@ -7,6 +7,7 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
+  Filter,
   Loader,
   PageHeader,
   Subtitle,
@@ -75,6 +76,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
+const defaultSelectedFilters: Filter = {
+  status: ['VALID', 'FUTURE']
+}
+
 const entitlementSummaryPayload = {
   filters: {
     licenseType: ['APSW'],
@@ -85,31 +90,6 @@ const entitlementSummaryPayload = {
 const entitlementRefreshPayload = {
   status: 'synchronize',
   usageType: 'ASSIGNED'
-}
-
-const entitlementListPayload = {
-  fields: [
-    'externalId',
-    'licenseType',
-    'effectiveDate',
-    'expirationDate',
-    'quantity',
-    'sku',
-    'licenseDesc',
-    'isR1SKU',
-    'status',
-    'isTrial',
-    'graceEndDate',
-    'usageType'
-  ],
-  page: 1,
-  pageSize: 1000,
-  sortField: 'expirationDate',
-  sortOrder: 'DESC',
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'ASSIGNED'
-  }
 }
 
 export function Subscriptions () {
@@ -130,6 +110,32 @@ export function Subscriptions () {
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
   const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
+  const isSubscriptionPagesizeToggleEnabled = useIsSplitOn(Features.SUBSCRIPTIONS_PAGESIZE_TOGGLE)
+
+  const entitlementListPayload = {
+    fields: [
+      'externalId',
+      'licenseType',
+      'effectiveDate',
+      'expirationDate',
+      'quantity',
+      'sku',
+      'licenseDesc',
+      'isR1SKU',
+      'status',
+      'isTrial',
+      'graceEndDate',
+      'usageType'
+    ],
+    page: 1,
+    pageSize: isSubscriptionPagesizeToggleEnabled ? 10000 : 1000,
+    sortField: 'expirationDate',
+    sortOrder: 'DESC',
+    filters: {
+      licenseType: ['APSW'],
+      usageType: 'ASSIGNED'
+    }
+  }
 
   const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
     { payload: isAttentionNotesToggleEnabled ? GeneralAttentionNotesPayload
@@ -489,6 +495,7 @@ export function Subscriptions () {
           actions={filterByAccess(actions)}
           dataSource={subscriptionData}
           stickyHeaders={false}
+          selectedFilters={defaultSelectedFilters}
           rowKey='id'
         />
         {showDialog && <SubscriptionUsageReportDialog

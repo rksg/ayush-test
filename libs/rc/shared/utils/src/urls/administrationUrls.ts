@@ -10,6 +10,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateTenantSelf: {
     method: 'PUT',
     url: '/tenants/self',
+    opsApi: 'PUT:/tenants/self',
     newApi: true
   },
   getRegisteredUsersList: {
@@ -28,12 +29,14 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/admins',
     oldUrl: '/api/tenant/:tenantId/admin',
+    opsApi: 'PUT:/admins',
     newApi: true
   },
   deleteAdmin: {
     method: 'delete',
     url: '/admins/:adminId',
     oldUrl: '/api/tenant/:tenantId/admin/:adminId',
+    opsApi: 'DELETE:/admins/{id}',
     newApi: true
   },
   deleteAdmins: {
@@ -46,6 +49,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/admins',
     oldUrl: '/api/tenant/:tenantId/admin',
+    opsApi: 'POST:/admins',
     newApi: true
   },
   getAccountDetails: {
@@ -64,6 +68,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/wifiNetworks/recoveryPassphraseSettings',
     oldUrl: '/recoveryPskSettings',
+    opsApi: 'PUT:/wifiNetworks/recoveryPassphraseSettings',
     newApi: true
   },
   getDelegations: {
@@ -94,6 +99,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/supportDelegations',
     oldUrl: '/api/tenant/:tenantId/delegation/support',
+    opsApi: 'POST:/tenants/supportDelegations',
     newApi: true
   },
   disableAccessSupport: {
@@ -112,6 +118,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenants/preferences',
     oldUrl: '/api/tenant/:tenantId/preferences',
+    opsApi: 'PUT:/tenants/preferences',
     newApi: true
   },
   revokeInvitation: {
@@ -124,6 +131,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/delegations',
     oldUrl: '/api/tenant/:tenantId/delegation',
+    opsApi: 'POST:/tenants/delegations',
     newApi: true
   },
   findVAR: {
@@ -142,18 +150,21 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/notificationRecipients',
     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    opsApi: 'POST:/tenants/notificationRecipients',
     newApi: true
   },
   updateRecipient: {
     method: 'put',
     url: '/tenants/notificationRecipients/:recipientId',
     oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
+    opsApi: 'PUT:/tenants/notificationRecipients/{id}',
     newApi: true
   },
   deleteNotificationRecipients: {
     method: 'delete',
     url: '/tenants/notificationRecipients',
     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    opsApi: 'DELETE:/tenants/notificationRecipients',
     newApi: true
   },
   deleteNotificationRecipient: {
@@ -211,6 +222,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addTenantAuthentications: {
     method: 'post',
     url: '/tenants/authentications',
+    opsApi: 'POST:/tenants/authentications',
     newApi: true
   },
   patchTenantAuthentications: {
@@ -221,6 +233,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateTenantAuthentications: {
     method: 'put',
     url: '/tenants/authentications/:authenticationId',
+    opsApi: 'PUT:/tenants/authentications/{id}',
     newApi: true
   },
   deleteTenantAuthentications: {
@@ -240,16 +253,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addAdminGroups: {
     method: 'post',
     url: '/groups',
+    opsApi: 'POST:/groups',
     newApi: true
   },
   updateAdminGroups: {
     method: 'PATCH',
     url: '/groups/:groupId',
+    opsApi: 'PATCH:/groups/{id}',
     newApi: true
   },
   deleteAdminGroups: {
     method: 'delete',
     url: '/groups',
+    opsApi: 'DELETE:/groups',
     newApi: true
   },
   getAdminGroupLastLogins: {
@@ -270,11 +286,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateCustomRole: {
     method: 'put',
     url: '/roleAuthentications/customRoles/:customRoleId',
+    opsApi: 'PUT:/roleAuthentications/customRoles/{id}',
     newApi: true
   },
   deleteCustomRole: {
     method: 'delete',
     url: '/roleAuthentications/customRoles/:customRoleId',
+    opsApi: 'DELETE:/roleAuthentications/customRoles/{id}',
     newApi: true
   },
   getOnePrivilegeGroup: {
@@ -315,6 +333,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateNotificationSms: {
     method: 'post',
     url: '/notifications/sms',
+    opsApi: 'POST:/notifications/sms',
     newApi: true
   },
   getNotificationSmsProvider: {
@@ -340,6 +359,46 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getTwiliosMessagingServices: {
     method: 'post',
     url: '/notifications/sms/providers/twilios/messagingServices',
+    newApi: true
+  },
+  getWebhooks: {
+    method: 'post',
+    url: '/webhooks/query',
+    newApi: true
+  },
+  getWebhookEntry: {
+    method: 'get',
+    url: '/webhooks/:webhookId',
+    newApi: true
+  },
+  addWebhook: {
+    method: 'post',
+    url: '/webhooks',
+    newApi: true
+  },
+  updateWebhook: {
+    method: 'put',
+    url: '/webhooks/:webhookId',
+    newApi: true
+  },
+  deleteWebhook: {
+    method: 'delete',
+    url: '/webhooks/:webhookId',
+    newApi: true
+  },
+  webhookSendSampleEvent: {
+    method: 'post',
+    url: '/webhooks/sendSampleEvents',
+    newApi: true
+  },
+  getPrivacySettings: {
+    method: 'get',
+    url: '/tenants/privacySettings',
+    newApi: true
+  },
+  updatePrivacySettings: {
+    method: 'PATCH',
+    url: '/tenants/privacySettings',
     newApi: true
   }
 }

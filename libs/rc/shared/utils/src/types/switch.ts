@@ -50,6 +50,7 @@ export const SwitchPortViewModelQueryFields = [
   'switchMac',
   'switchModel',
   'switchName',
+  'switchPortProfileId',
   'switchSerial',
   'switchUnitId',
   'syncedSwitchConfig',
@@ -531,7 +532,8 @@ export interface SwitchPortViewModel extends GridDataRow {
 	restrictedVlan?: number
 	criticalVlan?: number
 	authFailAction?: string
-	authTimeoutAction?: string
+	authTimeoutAction?: string,
+  switchPortProfileId?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -759,6 +761,18 @@ export interface SwitchSlot2 { //TODO
   portStatus?: PortStatus[]
 }
 
+export interface PortProfileAPI {
+  id?: string
+  models: string[]
+  portProfileId: string
+}
+
+export interface PortProfileUI {
+  id?: string
+  models: string[]
+  portProfileId: string[]
+}
+
 export interface TrustedPort {
   id?: string
   vlanDemand?: boolean
@@ -800,6 +814,7 @@ export interface SwitchConfigurationProfile {
   trustedPorts: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
+  portProfiles?: PortProfileAPI[]
   applyOnboardOnly: boolean
 }
 
@@ -826,6 +841,7 @@ export interface SwitchModelPortData {
   slots: SwitchSlot2[]
   taggedPorts: string[]
   untaggedPorts: string[]
+  portProfiles?: PortProfileAPI[]
 }
 
 export interface CliTemplateExample {
@@ -972,4 +988,86 @@ export interface FlexibleAuthenticationAppliedTargets {
   switchName?: string
   ports: string[]
   switchModel: string
+}
+
+export interface LldpTlvs {
+  id?: string
+  systemName: string
+  systemDescription?: string
+  nameMatchingType: string
+  descMatchingType?: string
+  portProfiles?: string[]
+}
+
+export interface MacOuis {
+  id?: string
+  oui: string
+  note?: string
+  portProfiles?: string[]
+}
+
+export enum LldpTlvMatchingType {
+  FULL_MAPPING = 'FULL_MAPPING',
+  BEGIN = 'BEGIN',
+  INCLUDE = 'INCLUDE'
+}
+
+export enum PortProfileConfigSourceType {
+  SWITCH_LEVEL = 'SWITCH_LEVEL',
+  PROFILE_LEVEL = 'PROFILE_LEVEL',
+  GLOBAL_LEVEL = 'GLOBAL_LEVEL'
+}
+
+export interface PortProfilesBySwitchId {
+  switchId?: string
+  portProfileId: string
+  portProfileName: string
+  configSource: PortProfileConfigSourceType
+  ports?: string[]
+}
+
+export interface PortProfilesForMultiSwitches {
+  switchId: string,
+  availablePortProfiles: PortProfilesBySwitchId[]
+}
+
+export interface SwitchPortProfiles {
+  id?: string
+  name: string
+  type: string
+  taggedVlans?: string[]
+  untaggedVlan?: number
+  poeEnable: boolean
+  poeClass: string
+  poePriority: number
+  portSpeed: string
+  ingressAcl?: string
+  egressAcl?: string
+  portProtected: boolean
+  rstpAdminEdgePort: boolean
+  stpBpduGuard: boolean
+  stpRootGuard: boolean
+  dhcpSnoopingTrust: boolean
+  ipsg: boolean
+  dot1x: boolean
+  macAuth: boolean
+  lldpTlvs?: LldpTlvs[]
+  macOuis?: MacOuis[]
+  regularProfiles?: string[]
+  appliedSwitchesInfo?: SwitchPortProfilesAppliedTargets[]
+}
+
+export interface SwitchPortProfilesAppliedTargets {
+  id?: string
+  switchId: string
+  switchName: string
+  serialNumber: string
+  model: string
+  venueId: string
+  venueName: string
+}
+
+export enum PortProfileTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
 }

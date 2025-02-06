@@ -2,14 +2,15 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { Button }                                                   from '@acx-ui/components'
-import { Features }                                                 from '@acx-ui/feature-toggle'
-import { EdgesTable, EdgesTableQueryProps, useIsEdgeFeatureReady  } from '@acx-ui/rc/components'
-import { useGetVenueEdgeCompatibilitiesQuery }                      from '@acx-ui/rc/services'
-import { retrievedEdgeCompatibilitiesOptions }                      from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                    from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                               from '@acx-ui/types'
-import { hasPermission }                                            from '@acx-ui/user'
+import { Button }                                                  from '@acx-ui/components'
+import { Features }                                                from '@acx-ui/feature-toggle'
+import { EdgesTable, EdgesTableQueryProps, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useGetVenueEdgeCompatibilitiesQuery }                     from '@acx-ui/rc/services'
+import { EdgeUrlsInfo, retrievedEdgeCompatibilitiesOptions }       from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                   from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                              from '@acx-ui/types'
+import { hasPermission }                                           from '@acx-ui/user'
+import { getOpsApi }                                               from '@acx-ui/utils'
 
 import { CompatibilityCheck } from './CompatibilityCheck'
 
@@ -54,9 +55,18 @@ export const VenueEdge = () => {
   })
 
   const featureIncompatible = retrievedEdgeCompatibilitiesOptions(edgeCompatibilities)
+  const hasCreateEdgePermission = hasPermission({
+    scopes: [EdgeScopes.CREATE],
+    rbacOpsIds: [
+      [
+        getOpsApi(EdgeUrlsInfo.addEdge),
+        getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+      ]
+    ]
+  })
 
   return (<>
-    {hasPermission({ scopes: [EdgeScopes.CREATE] }) &&
+    {hasCreateEdgePermission &&
       <SpaceWrapper direction='vertical' align='end' size={0}>
         {(isEdgeCompatibilityEnabled && edgeCompatibilities) &&
           <CompatibilityCheck

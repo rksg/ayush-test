@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useGetApLanPortsWithActivatedProfilesQuery,
@@ -38,14 +38,14 @@ import {
   VenueLanPorts,
   WifiApSetting,
   isEqualLanPort,
-  mergeLanPortSettings
+  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { ApDataContext, ApEditContext } from '../..'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 const useFetchIsVenueDhcpEnabled = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -78,9 +78,10 @@ const useFetchIsVenueDhcpEnabled = () => {
   }
 }
 
-export function LanPorts () {
+export function LanPorts (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const navigate = useNavigate()
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
@@ -150,10 +151,14 @@ export function LanPorts () {
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const isResetClick = useRef(false)
+  const {
+    softGREProfileOptionList,
+    duplicationChangeDispatch,
+    validateIsFQDNDuplicate
+  } = useSoftGreProfileLimitedSelection(venueId!)
 
-  // TODO: rbac
-  const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
-  const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
+  const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
+  const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
@@ -410,6 +415,9 @@ export function LanPorts () {
   }
 
   const handleFormChange = async (formName: string, info: FormChangeInfo) => {
+
+    if (info?.changedFields) return
+
     const index = Number(info?.changedFields?.[0].name.toString().split(',')[1])
     const newLanData = (lanData?.map((item, idx) => {
       return idx === index
@@ -455,6 +463,21 @@ export function LanPorts () {
       })
       isResetClick.current = true
       updateEditContext(formRef?.current as StepsFormLegacyInstance)
+
+      let voters = [] as Voter[]
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defaultLanPortsFormData.lanPorts.forEach((lanPort: any) => {
+        voters.push({
+          portId: (lanPort.portId ?? '0'),
+          serialNumber
+        })
+      })
+
+      duplicationChangeDispatch({
+        state: SoftGreDuplicationChangeState.ResetToDefault,
+        voters: voters
+      })
     }
   }
 
@@ -505,6 +528,7 @@ export function LanPorts () {
             <Col span={8}>
               <LanPortPoeSettings
                 context='ap'
+                disabled={!isAllowEdit}
                 selectedModel={selectedModel}
                 selectedModelCaps={selectedModelCaps}
                 useVenueSettings={useVenueSettings}
@@ -527,7 +551,7 @@ export function LanPorts () {
                     <Row>
                       <Col span={8}>
                         <LanPortSettings
-                          readOnly={useVenueSettings}
+                          readOnly={!isAllowEdit || useVenueSettings}
                           selectedPortCaps={selectedPortCaps}
                           selectedModel={selectedModel}
                           setSelectedPortCaps={setSelectedPortCaps}
@@ -539,6 +563,9 @@ export function LanPorts () {
                           venueId={venueId}
                           onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
+                          softGREProfileOptionList={softGREProfileOptionList}
+                          optionDispatch={duplicationChangeDispatch}
+                          validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                         />
                       </Col>
                     </Row>
@@ -586,7 +613,10 @@ export function LanPorts () {
             </Button>
           }} />
         : (isResetLanPortEnabled ? <>{$t({ defaultMessage: 'Custom settings' })}
-          <Button type='link' size='small' onClick={handleResetDefaultLanPorts}>
+          <Button type='link'
+            size='small'
+            disabled={!isAllowEdit}
+            onClick={handleResetDefaultLanPorts}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button></> : $t({ defaultMessage: 'Custom settings' }) )
       }

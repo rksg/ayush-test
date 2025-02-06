@@ -9,6 +9,9 @@ import type { GraphQLResponse } from 'graphql-request/dist/types'
 
 const reducerPaths = ['data-api', 'network-health']
 
+export type Meta =
+  { baseQueryMeta?: { response?: { errors?: [{ extensions?: { code?: string } }] } } }
+
 export function isGraphQLAction (action: AnyAction) : boolean {
   const type = action.type
   return !!(type && reducerPaths.find(p => type.includes(p)))
@@ -28,6 +31,10 @@ export function formatGraphQLErrors (
       message: error.message
     }))
   }
+}
+
+export const hasGraphQLErrorCode = (code: string, meta?: Meta) => {
+  return meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === code
 }
 
 export interface ErrorMessageType {

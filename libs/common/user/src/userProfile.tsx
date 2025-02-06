@@ -33,6 +33,7 @@ type Profile = {
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
   venuesList?: string[],
+  selectedBetaListEnabled?: boolean,
   betaFeaturesList?: FeatureAPIResults[]
 }
 const userProfile: Profile = {
@@ -94,7 +95,8 @@ export function hasAccess (props?: { legacyKey?: string,
   // measure to permit all undefined id for admins
   const { rbacOpsApiEnabled } = getUserProfile()
   if(rbacOpsApiEnabled) {
-    return props?.rbacOpsIds ? hasAllowedOperations(props?.rbacOpsIds) : true
+    return (props?.rbacOpsIds)
+      ? hasAllowedOperations(props?.rbacOpsIds) : true
   } else {
     if(props?.legacyKey?.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
     return hasRoles(props?.roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
@@ -111,7 +113,7 @@ export function hasAccess (props?: { legacyKey?: string,
  */
 export function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
   const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
-  if (rbacOpsApiEnabled) {
+  if (rbacOpsApiEnabled && rbacOpsIds.length > 0) {
     return rbacOpsIds?.some(rbacOpsIds => {
       if (Array.isArray(rbacOpsIds)) {
         return rbacOpsIds.every(i => allowedOperations.includes(i))
@@ -129,7 +131,7 @@ export function filterByAccess <Item> (items: Item[]) {
   } else {
     return items.filter(item => {
       const filterItem = item as FilterItemType
-      const allowedOperations = filterItem?.rbacOpsIds
+      const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds || []
       const legacyKey = filterItem?.key
       const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
       return hasPermission({ scopes, rbacOpsIds: allowedOperations, legacyKey })
@@ -145,7 +147,7 @@ export function filterByOperations <Item> (items: Item[]) {
 
   return items.filter(item => {
     const filterItem = item as FilterItemType
-    const allowedOperations = filterItem?.rbacOpsIds
+    const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds || []
     return allowedOperations ? hasAllowedOperations(allowedOperations) : true
   })
 }

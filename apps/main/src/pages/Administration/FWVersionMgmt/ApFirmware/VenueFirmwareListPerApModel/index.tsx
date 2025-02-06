@@ -3,8 +3,8 @@ import { useCallback, useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal, Filter }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps, Tooltip, showActionModal, Filter }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import {
   renderCurrentFirmwaresColumn,
   useChangeScheduleVisiblePerApModel,
@@ -14,7 +14,7 @@ import {
   UpdateNowPerApModelDialog,
   ChangeSchedulePerApModelDialog,
   useUpdateEarlyAccessNowPerApModel,
-  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData, isAlpha, isBeta
+  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData, isAlphaFilter, isBetaFilter
 } from '@acx-ui/rc/components'
 import {
   compareVersions,
@@ -33,6 +33,7 @@ import {
   dateSort,
   defaultSort, FirmwareLabel,
   FirmwareType,
+  FirmwareUrlsInfo,
   FirmwareVenuePerApModel,
   sortProp,
   SortResult,
@@ -41,10 +42,9 @@ import {
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess,
-  hasPermission,
   hasRoles
 }                                                               from '@acx-ui/user'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
 import { PreferencesDialog }    from '../../PreferencesDialog'
@@ -162,8 +162,9 @@ export function VenueFirmwareListPerApModel () {
   // eslint-disable-next-line max-len
   const genUpdateDisplayData = useCallback((apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
     let eaApModelFirmwares = [] as ApModelFirmware[]
-    let updateAlphaGroups = apModelFirmwares.filter(data => isAlpha(data.labels))
-    let updateBetaGroups = apModelFirmwares.filter(data => isBeta(data.labels))
+    let updateAlphaGroups = apModelFirmwares.filter(data => isAlphaFilter(data.labels))
+    // eslint-disable-next-line max-len
+    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels, (apFirmwareContext.isBetaFlag && !apFirmwareContext.isAlphaFlag)))
 
     eaApModelFirmwares = [
       ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
@@ -221,6 +222,7 @@ export function VenueFirmwareListPerApModel () {
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => {
         if (!hasAvailableUpdateDisplayData(rows)) {
           return false
@@ -235,6 +237,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => {
         const forEarlyAccess = true
         if (!hasAvailableUpdateDisplayData(rows, forEarlyAccess)) {
@@ -251,6 +254,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.updateVenueSchedulesPerApModel)],
       visible: (rows) => {
         if (!hasAvailableUpdateDisplayData(rows)) {
           return false
@@ -266,6 +270,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.skipVenueSchedulesPerApModel)],
       visible: (rows) => rows.every(row => hasApSchedule(row.nextApFirmwareSchedules)),
       label: $t({ defaultMessage: 'Skip Update' }),
       onClick: (rows, clearSelection) => {
@@ -274,6 +279,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => canDowngrade(rows),
       // eslint-disable-next-line max-len
       label: $t({ defaultMessage: 'Downgrade' }),
@@ -296,7 +302,7 @@ export function VenueFirmwareListPerApModel () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         // eslint-disable-next-line max-len
-        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        rowSelection={filterByAccess(rowActions).length > 0 &&
           { type: 'checkbox', selectedRowKeys }}
         actions={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? [{
           label: $t({ defaultMessage: 'Preferences' }),

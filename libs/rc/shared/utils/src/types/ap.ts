@@ -1,3 +1,5 @@
+import { DefaultOptionType } from 'antd/lib/select'
+
 import { APMeshRole, ApDeviceStatusEnum } from '../constants'
 import {
   ApAntennaTypeEnum,
@@ -517,10 +519,10 @@ export interface CapabilitiesApModel {
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
   requireOneEnabledTrunkPort: boolean,
-  simCardPrimaryEnabled: boolean,
-  simCardPrimaryRoaming: boolean,
-  simCardSecondaryEnabled: boolean,
-  simCardSecondaryRoaming: boolean,
+  simCardPrimaryEnabled?: boolean,
+  simCardPrimaryRoaming?: boolean,
+  simCardSecondaryEnabled?: boolean,
+  simCardSecondaryRoaming?: boolean,
   supportChannel144: boolean,
   supportDual5gMode: boolean,
   supportTriRadio: boolean,
@@ -541,6 +543,7 @@ export interface CapabilitiesApModel {
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
   supportMesh5GOnly6GOnly?: boolean,
+  supportSoftGre?: boolean,
   usbPowerEnable?: boolean
 }
 
@@ -1023,11 +1026,51 @@ export enum SoftGreState {
   ResetToDefault
 }
 
+export enum SoftGreDuplicationChangeState {
+  Init,
+  OnChangeSoftGreProfile,
+  TurnOnSoftGre,
+  TurnOffSoftGre,
+  TurnOnLanPort,
+  TurnOffLanPort,
+  ResetToDefault,
+  FindTheOnlyVoter,
+  ReloadOptionList
+}
+
+export interface SoftGreDuplicationChangeDispatcher {
+  state: SoftGreDuplicationChangeState
+  softGreProfileId?: string
+  voter?: Voter
+  voters?: Voter[]
+  index?: string,
+  candidate?: SoftGreOptionCandidate
+}
+
+export interface SoftGreOptionCandidate {
+  option: DefaultOptionType
+  gatewayIps:string[]
+}
+
 export interface SoftGreProfileDispatcher {
   portId?: string,
   state: SoftGreState,
   index: number,
   softGreProfileId?: string
+}
+
+export interface Voter {
+  model?: string,
+  serialNumber?: string,
+  portId: string,
+}
+
+export interface VoteTallyBoard {
+  softGreProfileId: string,
+  FQDNAddresses: string[],
+  name?: string,
+  vote: number,
+  voters: Voter[]
 }
 
 export interface SoftGreLanPortChange {

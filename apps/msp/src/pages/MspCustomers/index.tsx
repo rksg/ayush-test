@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Space }              from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -44,6 +44,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EntitlementUtil,
+  FILTER,
+  SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -86,6 +88,7 @@ export function MspCustomers () {
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isCustomFilterEnabled = useIsSplitOn(Features.VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -114,6 +117,7 @@ export function MspCustomers () {
     (tenantType === AccountType.MSP_INSTALLER ||
      tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
 
   const allowManageAdmin =
       ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
@@ -225,11 +229,69 @@ export function MspCustomers () {
     }
   }
 
-  function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
+  function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean,
+    isFilterEnable?: boolean) {
     const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
       (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
         : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
           : 'mspAdminCount' )) : 'mspAdminCount'
+
+    const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+      { key: '', value: $t({ defaultMessage: 'All' }) },
+      {
+        key: 'Active',
+        value: $t({ defaultMessage: 'Active' })
+      },
+      {
+        key: 'Inactive',
+        value: $t({ defaultMessage: 'Inactive' })
+      },
+      {
+        key: 'Trial',
+        value: $t({ defaultMessage: 'Trial' })
+      },
+      ...(isExtendedTrialEnabled ? [{
+        key: 'Extended Trial',
+        value: $t({ defaultMessage: 'Extended Trial' })
+      }
+      ] : [])
+    ]
+
+    const expirationDateFilterOpts = ($t: IntlShape['$t']) => [
+      { key: '', value: $t({ defaultMessage: 'All' }) },
+      {
+        key: 'Non-Expired',
+        value: $t({ defaultMessage: 'Non-Expired' })
+      },
+      {
+        key: '+30',
+        value: $t({ defaultMessage: 'Expiring within 30 days' })
+      },
+      {
+        key: '+60',
+        value: $t({ defaultMessage: 'Expiring within 60 days' })
+      },
+      {
+        key: '+90',
+        value: $t({ defaultMessage: 'Expiring within 90 days' })
+      },
+      {
+        key: 'Expired',
+        value: $t({ defaultMessage: 'Expired' })
+      },
+      {
+        key: '-30',
+        value: $t({ defaultMessage: 'Expired in last 30 days' })
+      },
+      {
+        key: '-60',
+        value: $t({ defaultMessage: 'Expired in last 60 days' })
+      },
+      {
+        key: '-90',
+        value: $t({ defaultMessage: 'Expired in last 90 days' })
+      }
+    ]
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -260,6 +322,9 @@ export function MspCustomers () {
         dataIndex: 'status',
         key: 'status',
         sorter: true,
+        filterMultiple: false,
+        filterPlaceholder: $t({ defaultMessage: 'Service Status' }),
+        filterable: isFilterEnable ? statusTypeFilterOpts($t) : false,
         width: 120,
         render: function (_, row) {
           return $t(mspUtils.getStatus(row))
@@ -430,6 +495,9 @@ export function MspCustomers () {
         dataIndex: 'expirationDate',
         key: 'expirationDate',
         sorter: true,
+        filterMultiple: false,
+        filterPlaceholder: $t({ defaultMessage: 'Service Date' }),
+        filterable: isFilterEnable ? expirationDateFilterOpts($t) : false,
         render: function (_, row) {
           const nextExpirationDate = mspUtils.transformExpirationDate(row)
           if (nextExpirationDate === noDataDisplay)
@@ -489,7 +557,7 @@ export function MspCustomers () {
       }
     }, [tableQuery?.data?.data, alarmList?.data])
 
-    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled)
+    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled, isCustomFilterEnabled)
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -623,6 +691,17 @@ export function MspCustomers () {
         }
       }]
 
+    const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+      let _customFilters = {}
+      _customFilters = {
+        ...customFilters,
+        ...(customFilters?.status ? { status: [customFilters.status[0]] } : {}),
+        ...(customFilters?.expirationDate ?
+          { expirationDate: [customFilters.expirationDate[0]] } : {})
+      }
+      tableQuery.handleFilterChange(_customFilters, customSearch)
+    }
+
     return (
       <Loader states={[
         tableQuery,
@@ -633,10 +712,11 @@ export function MspCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
+          enableApiFilter={true}
         />
         {modalVisible && <ResendInviteModal
           visible={modalVisible}

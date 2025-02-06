@@ -6,8 +6,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
+import { redirectPreviousPage, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                   from '@acx-ui/user'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
@@ -40,6 +42,16 @@ export function RadioTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
+  const [
+    isAllowEditRadioSettings,
+    isAllowEditClientSteering,
+    isAllowEditClientAdmissionControl
+  ] = [
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApRadioCustomization)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApStickyClientSteering)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApClientAdmissionControl)])
+  ]
+
   const {
     previousPath,
     editContextData,
@@ -69,7 +81,7 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='radio-settings'>
           { wifiRadioTitle }
         </StepsFormLegacy.SectionTitle>
-        <RadioSettings />
+        <RadioSettings isAllowEdit={isAllowEditRadioSettings} />
       </>
     )
   },
@@ -80,7 +92,7 @@ export function RadioTab () {
         <StepsFormLegacy.SectionTitle id='client-steering'>
           { clientSteeringTitle }
         </StepsFormLegacy.SectionTitle>
-        <ClientSteering />
+        <ClientSteering isAllowEdit={isAllowEditClientSteering} />
       </>
     )
   }] : []),
@@ -99,7 +111,7 @@ export function RadioTab () {
           </Tooltip>
         </StepsFormLegacy.SectionTitle>
         {
-          <ClientAdmissionControlSettings />
+          <ClientAdmissionControlSettings isAllowEdit={isAllowEditClientAdmissionControl} />
         }
       </>
     )

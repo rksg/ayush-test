@@ -42,7 +42,10 @@ describe('Client Isolation Settings Fields', () => {
 
     const enableToggle = screen.getByTestId('client-isolation-switch')
     await userEvent.click(enableToggle)
-    expect(screen.getByText('Enabling on the uplink will disconnect AP(s)')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Enabling on the uplink/WAN port will disconnect AP(s)')
+    ).toBeInTheDocument()
 
     const packetsTypeDropdown = screen.getByRole('combobox', { name: 'Isolate Packets' })
     await userEvent.click(packetsTypeDropdown)
@@ -75,7 +78,7 @@ describe('Client Isolation Settings Fields', () => {
 
     const showDetailButton = screen.getByRole('button', { name: 'Policy Details' })
     await userEvent.click(showDetailButton)
-    expect(screen.getByText(clientIsolationProfileDescription)).toBeInTheDocument()
+    expect(await screen.findByText(clientIsolationProfileDescription)).toBeInTheDocument()
     const closeButton = screen.getByRole('button', { name: 'Close' })
     await userEvent.click(closeButton)
 

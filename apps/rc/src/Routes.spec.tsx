@@ -17,6 +17,7 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
+import useEdgeNokiaOltTable from './pages/Devices/Edge/Olt/OltTable'
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import RcRoutes             from './Routes'
 
@@ -169,6 +170,16 @@ jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
 
+jest.mock('./pages/Devices/Edge/Olt/OltDetails', () => ({
+  EdgeNokiaOltDetails: () => <div data-testid='EdgeNokiaOltDetails' />
+}))
+
+jest.mock('./pages/Devices/Edge/Olt/OltTable', () => ({
+  ...jest.requireActual('./pages/Devices/Edge/Olt/OltTable'),
+  __esModule: true,
+  default: jest.fn().mockReturnValue(undefined)
+}))
+
 jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })
@@ -193,6 +204,21 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
   return <div data-testid='MacRegistrationListsTable' />
 })
 
+jest.mock('./pages/Policies/PortProfile/create', () => () => {
+  return <div data-testid='CreatePortProfile' />
+})
+
+jest.mock('./pages/Policies/PortProfile', () => () => {
+  return <div data-testid='PortProfile' />
+})
+
+jest.mock('./pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm', () => () => {
+  return <div data-testid='AddEditPortProfile' />
+})
+
+jest.mock('./pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail', () => () => {
+  return <div data-testid='PortProfileDetail' />
+})
 const mockUseIsEdgeFeatureReady = jest.fn().mockReturnValue(true)
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -408,6 +434,61 @@ describe('RcRoutes: Devices', () => {
       }
     })
     expect(screen.getByTestId('EditEdge')).toBeVisible()
+  })
+
+  describe('RcRoutes: Devices > Edge Optical', () => {
+    jest.mocked(useEdgeNokiaOltTable).mockReturnValue({
+      title: 'EdgeOltTab',
+      headerExtra: [],
+      component: <div data-testid='EdgeNokiaOltTable' />
+    })
+
+    test('should navigate to devices edge optical list', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/optical',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeNokiaOltTable')).toBeVisible()
+    })
+
+    test('should navigate to devices edge optical details', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/devices/optical/mockOltId/details',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeNokiaOltDetails')).toBeVisible()
+    })
+
+    describe('FF is off', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
+      afterEach(() => jest.mocked(useIsSplitOn).mockReset())
+
+      test('should be not found when navigate to devices edge optical list', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/devices/optical',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.queryByTestId('EdgeNokiaOltTable')).toBeNull()
+        expect(screen.getByText(/Something is going wrong/)).toBeVisible()
+      })
+
+      test('should be not found when navigate to devices edge optical details', async () => {
+        render(<Provider><RcRoutes /></Provider>, {
+          route: {
+            path: '/tenantId/t/devices/optical/mockOltId/details',
+            wrapRoutes: false
+          }
+        })
+        expect(screen.queryByTestId('EdgeNokiaOltDetails')).toBeNull()
+        expect(screen.getByText(/Something is going wrong/)).toBeVisible()
+      })
+    })
   })
 
   describe('RcRoutes: Networks', () => {
@@ -1298,4 +1379,61 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
   })
 
+  describe('RcRoutes: Port Profile', () => {
+    test('should redirect to port profile create page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/create',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('CreatePortProfile')).toBeVisible()
+    })
+    test('should redirect to port profile page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortProfile')).toBeVisible()
+    })
+    test('should redirect to add port profile page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles/add',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEditPortProfile')).toBeVisible()
+    })
+    test('should redirect to edit port profile page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles/portProfileId/edit',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEditPortProfile')).toBeVisible()
+    })
+    test('should redirect to port profile detail page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles/portProfileId/detail',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortProfileDetail')).toBeVisible()
+    })
+  })
 })

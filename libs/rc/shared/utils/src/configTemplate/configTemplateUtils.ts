@@ -1,5 +1,4 @@
-import { UseLazyQuery, UseMutation }           from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition, QueryDefinition } from '@reduxjs/toolkit/query'
+import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { Params, TenantType, useParams }                  from '@acx-ui/react-router-dom'
@@ -79,12 +78,11 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
   return isTemplate ? templateResult : result
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
 interface UseConfigTemplateLazyQueryFnSwitcherProps<ResultType> {
-  useLazyQueryFn: UseLazyQuery<DefaultQueryDefinition<ResultType>>,
-  useLazyTemplateQueryFn: UseLazyQuery<DefaultQueryDefinition<ResultType>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useLazyQueryFn: TypedUseLazyQuery<ResultType, any, any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useLazyTemplateQueryFn: TypedUseLazyQuery<ResultType, any, any>
 }
 export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
   props: UseConfigTemplateLazyQueryFnSwitcherProps<ResultType>
@@ -97,12 +95,11 @@ export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
   return isTemplate ? templateResult : result
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultMutationDefinition = MutationDefinition<any, any, any, any>
 interface UseConfigTemplateMutationFnSwitcherProps {
-  useMutationFn: UseMutation<DefaultMutationDefinition>,
-  useTemplateMutationFn: UseMutation<DefaultMutationDefinition>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useMutationFn: TypedUseMutation<any, any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useTemplateMutationFn: TypedUseMutation<any, any, any>
 }
 export function useConfigTemplateMutationFnSwitcher (
   props: UseConfigTemplateMutationFnSwitcherProps

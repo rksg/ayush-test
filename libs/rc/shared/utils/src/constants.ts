@@ -251,7 +251,8 @@ export enum ConfigTypeEnum {
   ADMIN_PASSWORD = 'ADMIN_PASSWORD',
   ACL = 'ACL',
   VLAN = 'VLAN',
-  AUTHENTICATION = 'AUTHENTICATION'
+  AUTHENTICATION = 'AUTHENTICATION',
+  PORT_PROFILE = 'PORT_PROFILE'
 }
 
 export enum ConfigStatusEnum {

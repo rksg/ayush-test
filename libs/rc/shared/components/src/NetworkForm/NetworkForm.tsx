@@ -178,6 +178,8 @@ export function NetworkForm (props:{
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
+
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
   const intl = useIntl()
@@ -376,6 +378,10 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0 || saveState?.wlan?.advancedCustomization?.wifiCallingEnabled) return
 
+    const wifiCallingEnabled = saveState?.wlan?.advancedCustomization?.wifiCallingEnabled !== undefined
+      ? saveState?.wlan?.advancedCustomization?.wifiCallingEnabled
+      : true
+
     const fullNetworkSaveData = merge(
       {},
       saveState,
@@ -383,21 +389,14 @@ export function NetworkForm (props:{
         wlan: {
           advancedCustomization: {
             wifiCallingIds: wifiCallingIds,
-            wifiCallingEnabled: true
+            wifiCallingEnabled: wifiCallingEnabled
           }
         }
       }
     )
 
-    form.setFieldValue('wlan', {
-      ...form.getFieldValue('wlan'),
-      advancedCustomization: {
-        ...form.getFieldValue('wlan.advancedCustomization'),
-        wifiCallingIds: wifiCallingIds,
-        wifiCallingEnabled: true
-      }
-    })
-
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'], wifiCallingIds)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingEnabled'], wifiCallingEnabled)
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds, saveState])
 
@@ -455,9 +454,11 @@ export function NetworkForm (props:{
       }
 
       let settingSaveData = tranferSettingsToSave(settingData, editMode)
+
       if (!editMode) {
         // eslint-disable-next-line max-len
-        settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo)
+        settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo,
+          { isSupportDVlanWithPskMacAuth })
       }
       updateSaveData(settingSaveData)
     } else {
@@ -490,7 +491,8 @@ export function NetworkForm (props:{
 
     if (!editMode) {
       // eslint-disable-next-line max-len
-      dataMore = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo)
+      dataMore = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo,
+        { isSupportDVlanWithPskMacAuth })
     }
     handlePortalWebPage(dataMore)
     return true
@@ -500,7 +502,8 @@ export function NetworkForm (props:{
   const handleMoreSettings = async (data: any) => {
     const dataMore = handleGuestMoreSetting(data)
     // eslint-disable-next-line max-len
-    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo)
+    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo,
+      { isSupportDVlanWithPskMacAuth })
     updateSaveData(settingSaveData)
     return true
   }
@@ -978,6 +981,24 @@ export function NetworkForm (props:{
           ]
         )
       }
+    }
+    if (editMode && data.wlan?.wlanSecurity) {
+      const toRemoveFromWlan: string[] = []
+      if (data.wlan.wlanSecurity === WlanSecurityEnum.OWE) {
+        toRemoveFromWlan.push('passphrase', 'saePassphrase')
+      } else if (data.wlan.wlanSecurity === WlanSecurityEnum.None) {
+        toRemoveFromWlan.push('managementFrameProtection', 'passphrase', 'saePassphrase')
+      } else {
+        toRemoveFromWlan.push('managementFrameProtection')
+        if (data.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
+          toRemoveFromWlan.push('passphrase')
+        } else if (data.wlan.wlanSecurity !== WlanSecurityEnum.WPA23Mixed) {
+          toRemoveFromWlan.push('saePassphrase')
+        }
+      }
+      saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
+        toRemoveFromWlan
+      )
     }
   }
 

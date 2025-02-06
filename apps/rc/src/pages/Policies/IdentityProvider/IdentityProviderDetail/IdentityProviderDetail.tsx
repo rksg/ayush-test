@@ -12,7 +12,8 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getScopeKeyByPolicy,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -56,7 +57,8 @@ const IdentityProviderDetail = () => {
           oper: PolicyOperation.EDIT,
           policyId: policyId as string
         })}
-        scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT)}>
+        scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT)}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT)}>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ])} />

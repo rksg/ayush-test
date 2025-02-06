@@ -118,3 +118,6 @@ export const ImagePreviewLight = styled.div<{ width: string, height: string }>`
   width: ${props => props.width};
   height: ${props => props.height}
 `
+export const SwitchDescription = styled.div`
+  color: var(--acx-neutrals-50);
+ `

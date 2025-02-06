@@ -4,14 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
+  // useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -21,13 +22,14 @@ import {
   SwitchVlan,
   SwitchMessages,
   SwitchViewModel,
-  usePollingTableQuery
+  usePollingTableQuery,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { SwitchScopes }                      from '@acx-ui/types'
-import { filterByAccess, hasPermission }     from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import { getIntl }                           from '@acx-ui/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                                      from '@acx-ui/utils'
 
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
@@ -47,6 +49,7 @@ export function SwitchPortTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -80,12 +83,17 @@ export function SwitchPortTable (props: {
     enableAggregateStackMember: false,
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled
+    skip: !isSwitchRbacEnabled || !vid || (!isSwitchFlexAuthEnabled && !isSwitchPortProfileEnabled)
   })
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
   })) : []
+
+  // const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
+  //   params: { tenantId },
+  //   payload: { fields: ['id'] }
+  // }, { skip: !isSwitchPortProfileEnabled })
 
   useEffect(() => {
     const setData = async () => {
@@ -205,7 +213,30 @@ export function SwitchPortTable (props: {
         return row.poeUsage
       }
     }
-  }, {
+  },
+  //Temporarily commented
+  // {
+  //   key: 'switchPortProfileId',
+  //   title: $t({ defaultMessage: 'Profile Name' }),
+  //   dataIndex: 'switchPortProfileId',
+  //   show: isSwitchPortProfileEnabled,
+  //   sorter: true,
+  //   render: (_, row) => {
+  //     return switchPortProfilesList?.data?.find(
+  //       profile => profile.id === row.switchPortProfileId)?.name
+  //   }
+  // }, {
+  //   key: 'switchPortProfileId',
+  //   title: $t({ defaultMessage: 'Type' }),
+  //   dataIndex: 'switchPortProfileId',
+  //   show: isSwitchPortProfileEnabled,
+  //   sorter: true,
+  //   render: (_, row) => {
+  //     return switchPortProfilesList?.data?.find(
+  //       profile => profile.id === row.switchPortProfileId)?.type
+  //   }
+  // },
+  {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
@@ -333,6 +364,7 @@ export function SwitchPortTable (props: {
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)],
     scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       setSelectedPorts(selectedRows)
@@ -357,19 +389,22 @@ export function SwitchPortTable (props: {
       enableApiFilter={true}
       rowKey='portId'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? {
-        type: 'checkbox',
-        renderCell: (checked, record, index, originNode) => {
-          return record?.inactiveRow
-            ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
-            : originNode
-        },
-        getCheckboxProps: (record) => {
-          return {
-            disabled: record?.inactiveRow
+      rowSelection={hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+      }) ? {
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            return record?.inactiveRow
+              ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
+              : originNode
+          },
+          getCheckboxProps: (record) => {
+            return {
+              disabled: record?.inactiveRow
+            }
           }
-        }
-      } : undefined}
+        } : undefined}
       actions={!isVenueLevel
         ? filterByAccess([{
           label: $t({ defaultMessage: 'Manage LAG' }),
