@@ -6,13 +6,14 @@ import {
   Space
 } from 'antd'
 
-import { Button } from '@acx-ui/components'
+import { Button }        from '@acx-ui/components'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { StyledFormItem } from './styledComponents'
 
 interface TextInlineEditorProps {
   value: number,
-  onChange: (data: number) => void,
+  onChange: (data: number) => Promise<void>,
 }
 export const TextInlineEditor = (props: TextInlineEditorProps) => {
   const { onChange } = props
@@ -33,19 +34,27 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
   }
 
   const handleApply = () => {
-    onChange(editingValue)
-    setInitialValue(editingValue)
     setIsSubmitting(true)
 
-    // TODO: trigger API and show loading icon
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setEditMode(false)
-    }, 1000)
+    onChange(editingValue)
+      .then(() => {
+        setInitialValue(editingValue)
+      })
+      .catch(() => {
+        handleResetValue()
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+        setEditMode(false)
+      })
+  }
+
+  const handleResetValue = () => {
+    setEditingValue(initialValue)
   }
 
   const handleCancel = () => {
-    setEditingValue(initialValue)
+    handleResetValue()
     setEditMode(false)
   }
 
@@ -83,7 +92,7 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
           />
         </>
       ) : (<>
-        <label>{editingValue}</label>
+        <label>{editingValue ? editingValue : noDataDisplay}</label>
         <Button type='link' icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
       </>
       )}

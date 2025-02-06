@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { EdgeNokiaOltData, EdgeOltFixtures } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { screen, render }                    from '@acx-ui/test-utils'
+import { EdgeNokiaOltData, EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { screen, render, mockServer }                            from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltDetailsPageHeader } from '.'
-const { mockOlt } = EdgeOltFixtures
+const { mockOlt, mockOltCageList } = EdgeOltFixtures
 
 jest.mock( './DetailsDrawer', () => ({
   // eslint-disable-next-line max-len
@@ -36,6 +37,16 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
     currentOlt: mockOlt as EdgeNokiaOltData
   }
 
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeCageList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockOltCageList))
+        })
+    )
+  })
+
   it('test component renders with expected elements', () => {
     render(<Provider>
       <EdgeNokiaOltDetailsPageHeader {...props} />
@@ -57,8 +68,10 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
     render(<Provider>
       <EdgeNokiaOltDetailsPageHeader {...props} />
     </Provider>, { route: { params, path: mockPath } })
-    expect(screen.getByText('Status')).toBeInTheDocument()
-    expect(screen.getByText('Cages')).toBeInTheDocument()
-    expect(screen.getByText('PoE Usage')).toBeInTheDocument()
+    expect(screen.getByText('Status')).toBeVisible()
+    expect(screen.getByText('Cages')).toBeVisible()
+    expect(screen.getByText('PoE Usage')).toBeVisible()
+    expect(screen.getByTestId('value')).toHaveTextContent('232')
+    expect(screen.getByTestId('totalVal')).toHaveTextContent('280')
   })
 })
