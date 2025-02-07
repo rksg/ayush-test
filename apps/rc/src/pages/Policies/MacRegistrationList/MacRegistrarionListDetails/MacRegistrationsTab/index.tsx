@@ -177,6 +177,7 @@ export function MacRegistrationsTab () {
             name={item.name}
             personaId={item.id}
             personaGroupId={item.groupId}
+            revoked={item.revoked}
           /> : row.username)
         }
         return row.username
