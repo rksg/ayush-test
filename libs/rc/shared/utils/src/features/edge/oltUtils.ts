@@ -21,6 +21,10 @@ export const getOltStatusConfig = () => {
     [EdgeNokiaOltStatusEnum.OFFLINE]: {
       color: 'var(--acx-neutrals-50)',
       text: $t({ defaultMessage: 'OFFLINE' })
+    },
+    [EdgeNokiaOltStatusEnum.UNKNOWN]: {
+      color: 'var(--acx-neutrals-50)',
+      text: $t({ defaultMessage: 'UNKNOWN' })
     }
   }
 }
@@ -78,3 +82,5 @@ export const getOltPoeClassText = (poeClass: string): string => {
   const msgDescriptor = find(oltPoeClassOptions, { value: poeClass })?.label
   return msgDescriptor ? $t(msgDescriptor) : ''
 }
+
+export const isOltValidSerialNumber = (serialNumber: string): boolean => !!serialNumber
