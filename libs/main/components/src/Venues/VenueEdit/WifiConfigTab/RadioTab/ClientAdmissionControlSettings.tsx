@@ -25,7 +25,10 @@ import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFn
 
 const { useWatch } = Form
 
-export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEnabled?: boolean }) {
+export function ClientAdmissionControlSettings (props: {
+  isLoadOrBandBalaningEnabled?: boolean,
+  isAllowEdit?: boolean
+ }) {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
@@ -41,6 +44,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const minClientThroughput50GFieldName = 'clientAdmissionControlMinClientThroughput50G'
 
   const { isTemplate } = useConfigTemplate()
+  const { isAllowEdit=true, isLoadOrBandBalaningEnabled } = props
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
@@ -58,7 +62,6 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { isLoadOrBandBalaningEnabled } = props
   // eslint-disable-next-line max-len
   const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>({
     useQueryFn: useGetVenueClientAdmissionControlQuery,
@@ -153,7 +156,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
       key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
       level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_24G}
-      readOnly={false}
+      readOnly={!isAllowEdit}
       isEnabled={enable24G}
       isMutuallyExclusive={isTurnedOffAndGrayedOut}
       enabledFieldName={enable24GFieldName}
@@ -166,7 +169,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
       key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
       level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
       type={ClientAdmissionControlTypeEnum.CAC_5G}
-      readOnly={false}
+      readOnly={!isAllowEdit}
       isEnabled={enable50G}
       isMutuallyExclusive={isTurnedOffAndGrayedOut}
       enabledFieldName={enable50GFieldName}

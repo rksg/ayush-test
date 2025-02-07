@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
+import { SimpleListTooltip }               from '../../../SimpleListTooltip'
 import { AddModeProps }                    from '../../AccessControlForm'
 import { DeviceOSDrawer }                  from '../../AccessControlForm/DeviceOSDrawer'
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
@@ -36,6 +37,7 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -225,7 +227,12 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => {
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkFilterOptions.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
+      }
     }
   ]
 

@@ -177,6 +177,7 @@ export function MacRegistrationsTab () {
             name={item.name}
             personaId={item.id}
             personaGroupId={item.groupId}
+            revoked={item.revoked}
           /> : row.username)
         }
         return row.username
@@ -269,7 +270,9 @@ export function MacRegistrationsTab () {
         maxSize={CsvSize['5MB']}
         maxEntries={512}
         acceptType={['csv']}
-        templateLink='assets/templates/mac_registration_import_template.csv'
+        templateLink={isIdentityRequired
+          ? 'assets/templates/mac_registration_import_template_v2.csv'  // Change "Username" as "Identity Name"
+          : 'assets/templates/mac_registration_import_template.csv'}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
         importRequest={async (formData) => {

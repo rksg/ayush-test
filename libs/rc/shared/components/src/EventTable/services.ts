@@ -59,7 +59,12 @@ const defaultPayload = {
     'clientMldMac',
     'turnOnTimestamp',
     'turnOffTimestamp',
-    'portList'
+    'portList',
+    'authenticationType',
+    'profileName',
+    'action',
+    'macOui',
+    'lldpTlv'
   ]
 }
 

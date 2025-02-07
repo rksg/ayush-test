@@ -26,6 +26,7 @@ export * from './policies'
 export * from './msp'
 export * from './license'
 export * from './edge'
+export * from './edgeOlt'
 export * from './client'
 export * from './components'
 export * from './switch'
@@ -114,7 +115,8 @@ export interface AlarmBase {
   entityType: string
   entityId: string
   sourceType: string,
-  switchMacAddress: string
+  switchMacAddress: string,
+  clearedBy?: string
 }
 
 export interface AlarmMeta {

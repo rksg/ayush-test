@@ -18,6 +18,8 @@ export class GuestPortal {
 
   enableEmailLogin?: boolean
 
+  enableWhatsappLogin?: boolean
+
   maxDevices?: number
 
   endOfDayReauthDelay?: boolean
