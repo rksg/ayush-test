@@ -137,7 +137,7 @@ export function NetworkingTab () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
-  const items = [(isLegacyTemplateLanPortEnabled && {
+  const items = [...(isLegacyTemplateLanPortEnabled ? [{
     title: $t({ defaultMessage: 'LAN Ports' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='lan-ports'>
@@ -145,7 +145,7 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <LanPorts isAllowEdit={isAllowEditLanPort}/>
     </>
-  }), {
+  }] : []), {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='mesh-network'>
@@ -198,7 +198,7 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <RadiusOptions isAllowEdit={isAllowEditRADIUSOptions} />
     </>
-  }].filter(truthy)
+  }]
 
   const handleUpdateAllSettings = async () => {
     try {
