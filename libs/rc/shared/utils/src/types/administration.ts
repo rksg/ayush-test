@@ -408,6 +408,8 @@ export interface NotificationSmsConfig
   accountSid?: string,
   authToken?: string,
   fromNumber?: string,
+  enableWhatsapp?: boolean,
+  authTemplateSid?: string,
   // esendex
   apiKey?: string,
   // others
@@ -422,6 +424,27 @@ export interface TwiliosIncommingPhoneNumbers
 export interface TwiliosMessagingServices
 {
   messagingServiceResources?: string[]
+}
+
+export interface TwiliosWhatsappServices
+{
+  approvalFetch?: {
+    sid: string,
+    whatsapp: {
+      allow_category_change: boolean,
+      category: string,
+      content_type: string,
+      flows: string | null,
+      name: string,
+      rejection_reason: string,
+      status: string,
+      type: string
+    },
+    url: string,
+    accountSid: string
+  },
+  hasError?: boolean,
+  errorMessage?: string
 }
 
 export interface ErrorsResult<T> {
