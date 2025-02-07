@@ -130,7 +130,8 @@ import {
   PortVlan,
   MultipleText,
   updateSwitchVlans,
-  getPortProfileOptions
+  getPortProfileOptions,
+  ptToPtMacActionMessages
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -149,7 +150,8 @@ export const allMultipleEditableFields = [
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId'
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
+  'adminPtToPt'
 ]
 
 interface ProfileVlans {
@@ -230,6 +232,7 @@ export function EditPortDrawer ({
     useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -844,6 +847,8 @@ export function EditPortDrawer ({
           || getAuthFieldDisabled(field, authfieldValues)
       case 'switchPortProfileId':
         return !isFirmwareAbove10020b || isCloudPort
+      case 'adminPtToPt':
+        return !isFirmwareAbove10020b
       default: return false
     }
   }
@@ -2214,6 +2219,33 @@ export function EditPortDrawer ({
                 }/>}
           />
         })}
+
+        {isSwitchRstpPtToPtMacEnabled && isAnyFirmwareAbove10020b && <>
+          { getFieldTemplate({
+            field: 'adminPtToPt',
+            content: <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              label={$t(FIELD_LABEL.ptToPtMac)}
+              children={shouldRenderMultipleText({
+                field: 'adminPtToPt', ...commonRequiredProps
+              }) ? <MultipleText />
+                : <Form.Item
+                  name='adminPtToPt'
+                  initialValue='AUTO'>
+                  <Select
+                    options={Object.keys(ptToPtMacActionMessages).map((key) => {
+                      // eslint-disable-next-line max-len
+                      const label = ptToPtMacActionMessages[key as keyof typeof ptToPtMacActionMessages]
+                      return {
+                        value: key,
+                        label: $t(label)
+                      }
+                    })}
+                    disabled={getFieldDisabled('adminPtToPt')}
+                  /></Form.Item>}
+            />
+          })}</>
+        }
 
         { getFieldTemplate({
           field: 'stpBpduGuard',
