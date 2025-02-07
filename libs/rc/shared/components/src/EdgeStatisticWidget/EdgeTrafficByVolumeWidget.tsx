@@ -14,7 +14,8 @@ import {
   TooltipFormatterParams,
   TooltipWrapper,
   Badge,
-  defaultRichTextFormatValues
+  defaultRichTextFormatValues,
+  getDefaultEarliestStart
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
@@ -72,7 +73,7 @@ const transformTrafficSeriesFragment = (data: EdgeAllPortTrafficData): TrafficSe
 export function EdgeTrafficByVolumeWidget () {
   const { $t } = useIntl()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const filters = useDateFilter({ showResetMsg })
+  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const params = useParams()
 
   const { data: queryResults = emptyData, isLoading } = useGetEdgePortTrafficQuery({

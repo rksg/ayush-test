@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                                                  from '@acx-ui/components'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker }                         from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
 import { TenantType }                                                                       from '@acx-ui/react-router-dom'
@@ -25,7 +25,8 @@ function NetworkPageHeader ({
 }) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg })
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()

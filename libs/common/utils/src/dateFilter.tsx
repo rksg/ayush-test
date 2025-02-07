@@ -6,25 +6,15 @@ import moment              from 'moment'
 import { useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 }    from 'uuid'
 
-import { DateRangeFilter, DateRange, getDateRangeFilter, dateRangeForLast } from './dateUtil'
-import { getIntl }                                                          from './intlUtil'
-import { AccountTier, getJwtTokenPayload }                                  from './jwtToken'
-import { useEncodedParameter }                                              from './useEncodedParameter'
+import { DateRangeFilter, DateRange, getDateRangeFilter } from './dateUtil'
+import { getIntl }                                        from './intlUtil'
+import { useEncodedParameter }                            from './useEncodedParameter'
 
 import type { Moment } from 'moment-timezone'
 
 
 export interface DateFilter extends DateRangeFilter {
   initiated?: number // seconds
-}
-
-export function getEarliestStart () {
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
-  const allowedDateRange = (accountTier === AccountTier.GOLD
-    ? dateRangeForLast(1,'month')
-    : dateRangeForLast(3,'months')
-  )
-  return allowedDateRange[0].startOf('day')
 }
 
 export const useDateFilter = ({
@@ -40,7 +30,7 @@ export const useDateFilter = ({
   const [, setSearch] = useSearchParams()
 
   return useMemo(() => {
-    const earliestStartData = (earliestStart || getEarliestStart())
+    const earliestStartData = (earliestStart || moment().subtract(3, 'months').subtract(1, 'hour'))
     const isSameOrAfter = period && moment(period.startDate).isSameOrAfter(earliestStartData)
     const dateFilter = isSameOrAfter
       ? getDateRangeFilter(period.range, period.startDate, period.endDate)

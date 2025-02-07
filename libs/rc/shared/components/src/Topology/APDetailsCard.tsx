@@ -2,7 +2,7 @@ import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
-import { Card, Descriptions, Loader, Subtitle, Tooltip }                            from '@acx-ui/components'
+import { Card, Descriptions, getDefaultEarliestStart, Loader, Subtitle, Tooltip }                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
 import { CloseSymbol, LeafSolidIcon }                                               from '@acx-ui/icons'
@@ -36,7 +36,7 @@ export function APDetailsCard (props: {
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const { dateFilter } = useDateFilter({ showResetMsg })
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const location = useLocation()
 
   const filters = {

@@ -5,7 +5,7 @@ import userEvent          from '@testing-library/user-event'
 import moment, { Moment } from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }      from '@acx-ui/formatter'
 import { render, screen }                 from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
@@ -52,7 +52,7 @@ describe('RangePicker', () => {
     })
   })
 
-  
+
   afterEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(false)
   })

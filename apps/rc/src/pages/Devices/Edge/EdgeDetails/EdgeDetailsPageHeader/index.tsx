@@ -10,9 +10,9 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker }       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }              from '@acx-ui/rc/components'
+import { Button, CaretDownSolidIcon, Dropdown, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }                                 from '@acx-ui/rc/components'
 import {
   EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
@@ -35,7 +35,7 @@ export const EdgeDetailsPageHeader = () => {
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ showResetMsg })
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const params = useParams()
   const { serialNumber } = params
   const { currentEdgeStatus: currentEdge, currentCluster } = useContext(EdgeDetailsDataContext)

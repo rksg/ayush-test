@@ -15,7 +15,8 @@ import {
   TooltipFormatterParams,
   TooltipWrapper,
   Badge,
-  defaultRichTextFormatValues
+  defaultRichTextFormatValues,
+  getDefaultEarliestStart
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
@@ -31,7 +32,7 @@ type Key = keyof Omit<EdgeResourceTimeSeries, 'time'>
 export function EdgeResourceUtilizationWidget () {
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
-  const filters = useDateFilter({ showResetMsg })
+  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const params = useParams()
 
   const emptyData = {

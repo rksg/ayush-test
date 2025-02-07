@@ -10,7 +10,7 @@ import { useIntl } from 'react-intl'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
-import { useUserProfileContext }                          from '@acx-ui/user'
+import { getUserProfile }                                 from '@acx-ui/user'
 import {
   defaultRanges,
   DateRange,
@@ -97,7 +97,7 @@ export const RangePicker = ({
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
-  const { accountTier } = useUserProfileContext()
+  const { accountTier } = getUserProfile()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const allowedDateRange = (isDateRangeLimit && allowedMonthRange)
@@ -308,3 +308,11 @@ export const DateTimePicker = ({
   </Tooltip>
 }
 
+export function getDefaultEarliestStart () {
+  const { accountTier } = getUserProfile()
+  const allowedDateRange = (accountTier === AccountTier.GOLD
+    ? dateRangeForLast(1,'month')
+    : dateRangeForLast(3,'months')
+  )
+  return allowedDateRange[0].startOf('day')
+}

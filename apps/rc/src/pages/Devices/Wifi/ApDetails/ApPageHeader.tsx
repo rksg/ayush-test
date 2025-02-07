@@ -6,11 +6,11 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
-import { useApActions }                                                  from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                                                                    from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { APStatus, LowPowerBannerAndModal }                                                       from '@acx-ui/rc/components'
+import { useApActions }                                                                           from '@acx-ui/rc/components'
 import {
   useApDetailHeaderQuery,
   isAPLowPower,
@@ -46,7 +46,7 @@ function ApPageHeader () {
 
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ showResetMsg })
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
   const { data } = useApDetailHeaderQuery({ params })

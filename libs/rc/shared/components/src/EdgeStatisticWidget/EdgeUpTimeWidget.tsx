@@ -5,14 +5,14 @@ import { useParams } from 'react-router-dom'
 import AutoSizer     from 'react-virtualized-auto-sizer'
 
 
-import { calculateGranularity, TimeSeriesChartData, getSeriesData }                from '@acx-ui/analytics/utils'
-import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { formatter }                                                               from '@acx-ui/formatter'
-import { useGetEdgeUptimeQuery }                                                   from '@acx-ui/rc/services'
-import { EdgeStatusTimeSeries, EdgeTimeSeriesPayload }                             from '@acx-ui/rc/utils'
-import { TimeStamp }                                                               from '@acx-ui/types'
-import { useDateFilter }                                                           from '@acx-ui/utils'
+import { calculateGranularity, TimeSeriesChartData, getSeriesData }                                         from '@acx-ui/analytics/utils'
+import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip, getDefaultEarliestStart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { formatter }                                                                                        from '@acx-ui/formatter'
+import { useGetEdgeUptimeQuery }                                                                            from '@acx-ui/rc/services'
+import { EdgeStatusTimeSeries, EdgeTimeSeriesPayload }                                                      from '@acx-ui/rc/utils'
+import { TimeStamp }                                                                                        from '@acx-ui/types'
+import { useDateFilter }                                                                                    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -36,7 +36,7 @@ function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
 export function EdgeUpTimeWidget () {
   const { $t } = useIntl()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const filters = useDateFilter({ showResetMsg })
+  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const params = useParams()
 
   type Key = keyof Omit<EdgeStatusTimeSeries, 'time'>

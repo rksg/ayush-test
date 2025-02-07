@@ -7,10 +7,10 @@ import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
-import { Tooltip }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useDateFilter }            from '@acx-ui/utils'
+import { Incident, overlapsRollup }         from '@acx-ui/analytics/utils'
+import { getDefaultEarliestStart, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useDateFilter }                    from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -139,7 +139,8 @@ export function Timeline (props: TimelineProps) {
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const { startDate, endDate } = useDateFilter({ showResetMsg })
+  const { startDate, endDate } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
 
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>

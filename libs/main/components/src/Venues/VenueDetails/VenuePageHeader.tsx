@@ -1,10 +1,10 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
-import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }                             from '@acx-ui/rc/components'
+import { useVenueDetailsHeaderQuery }                               from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   SwitchRbacUrlsInfo,
@@ -27,7 +27,8 @@ import VenueTabs from './VenueTabs'
 function DatePicker () {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg })
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

@@ -7,10 +7,10 @@ import _                          from 'lodash'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
-import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
+import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip, getDefaultEarliestStart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                       from '@acx-ui/formatter'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                                                from '@acx-ui/rc/components'
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
@@ -98,7 +98,7 @@ function SwitchPageHeader () {
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
   const { startDate, endDate, setDateFilter, range } =
-    useDateFilter({ showResetMsg })
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {

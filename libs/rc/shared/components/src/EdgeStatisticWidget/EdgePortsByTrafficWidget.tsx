@@ -4,7 +4,7 @@ import { useParams }               from 'react-router-dom'
 import AutoSizer                   from 'react-virtualized-auto-sizer'
 
 import { calculateGranularity }                                       from '@acx-ui/analytics/utils'
-import { qualitativeColorSet }                                        from '@acx-ui/components'
+import { getDefaultEarliestStart, qualitativeColorSet }               from '@acx-ui/components'
 import { DonutChart, HistoricalCard, Loader, NoData, DonutChartData } from '@acx-ui/components'
 import { useIsSplitOn, Features }                                     from '@acx-ui/feature-toggle'
 import { formatter }                                                  from '@acx-ui/formatter'
@@ -15,7 +15,7 @@ import { useDateFilter }                                              from '@acx
 export function EdgePortsByTrafficWidget () {
   const { $t } = useIntl()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const filters = useDateFilter({ showResetMsg })
+  const filters = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const params = useParams()
 
   const { data, isLoading } = useGetEdgeTopTrafficQuery({

@@ -23,7 +23,8 @@ import {
   GridRow,
   GridCol,
   ContentSwitcherProps,
-  ContentSwitcher
+  ContentSwitcher,
+  getDefaultEarliestStart
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
@@ -40,7 +41,8 @@ import * as UI from './styledComponents'
 export function VenueOverviewTab () {
   const { $t } = useIntl()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const { dateFilter } = useDateFilter({ showResetMsg })
+  const { dateFilter } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const { venueId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
 
-import { TrafficByBand, TrafficByUsage } from '@acx-ui/analytics/components'
-import { GridCol, GridRow }              from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { TrafficByBand, TrafficByUsage }             from '@acx-ui/analytics/components'
+import { getDefaultEarliestStart, GridCol, GridRow } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
   useGetClientOrHistoryDetailQuery,
   useGetClientsQuery
@@ -29,7 +29,8 @@ import { TopApplications }          from './TopApplications'
 export function ClientOverviewTab () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
-  const { dateFilter } = useDateFilter({ showResetMsg })
+  const { dateFilter } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const filters = useMemo(() => ({
     filter: {},
     ...dateFilter
