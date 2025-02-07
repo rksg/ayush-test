@@ -193,7 +193,10 @@ function SettingsForm () {
                   (!isSupportDpsk3NonProxyMode &&
                     dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) || editMode
                 }>
-                { $t({ defaultMessage: 'Use RADIUS Server' }) }
+                {(dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)?
+                  $t({ defaultMessage: 'Use RADIUS Server(Cloudpath Server Only)' }) :
+                  $t({ defaultMessage: 'Use RADIUS Server' })
+                }
               </Radio>
             </Space>
           </Radio.Group>
