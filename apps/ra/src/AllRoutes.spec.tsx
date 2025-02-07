@@ -47,7 +47,8 @@ const defaultReportsPermissions = {
   READ_HEALTH: false,
   READ_REPORTS: false,
   READ_DATA_STUDIO: false,
-  READ_DATA_CONNECTOR: false
+  READ_DATA_CONNECTOR: false,
+  READ_DATA_CONNECTOR_STORAGE: false
 }
 
 describe('AllRoutes', () => {
