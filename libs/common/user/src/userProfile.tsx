@@ -147,7 +147,7 @@ export function filterByOperations <Item> (items: Item[]) {
 
   return items.filter(item => {
     const filterItem = item as FilterItemType
-    const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds || []
+    const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds
     return allowedOperations ? hasAllowedOperations(allowedOperations) : true
   })
 }
