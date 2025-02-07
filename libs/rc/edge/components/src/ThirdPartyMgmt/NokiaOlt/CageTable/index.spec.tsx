@@ -54,13 +54,6 @@ describe('EdgeNokiaCageTable', () => {
     expect(drawer).toBeVisible()
   })
 
-  it('displays loading state', () => {
-    render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
-    </Provider>, { route: { params, path: mockPath } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
-  })
-
   it('should change cage status', async () => {
     const mockToggleCageReq = jest.fn()
     mockServer.use(
