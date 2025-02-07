@@ -49,14 +49,14 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
   }))
 
   const rowActions: TableProps<EdgeNokiaOltData>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (rows) => {
-        setCurrentOlt(rows[0])
-        setVisible(true)
-      },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
-    },
+    // {
+    //   label: $t({ defaultMessage: 'Edit' }),
+    //   onClick: (rows) => {
+    //     setCurrentOlt(rows[0])
+    //     setVisible(true)
+    //   },
+    //   scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
+    // },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
