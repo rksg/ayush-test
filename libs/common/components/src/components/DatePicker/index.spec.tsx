@@ -6,23 +6,21 @@ import moment, { Moment } from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
-import { render, screen }            from '@acx-ui/test-utils'
+import { formatter, DateFormatEnum }      from '@acx-ui/formatter'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 import {
   DateRange,
   useDateFilter,
-  getJwtTokenPayload,
   AccountTier
 } from '@acx-ui/utils'
 
 import { DatePicker, DateTimePicker, RangePicker, restrictDateToMonthsRange } from '.'
 
-const mockGetJwtTokenPayload = getJwtTokenPayload as jest.Mock
 const mockUseDateFilter = useDateFilter as jest.Mock
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getJwtTokenPayload: jest.fn(),
   useDateFilter: jest.fn()
 }))
 
@@ -47,11 +45,15 @@ describe('RangePicker', () => {
       endDate: '2022-01-02T00:00:00+08:00',
       range: 'Last 24 Hours'
     })
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.PLATINUM
+    })
+  })
 
-    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.PLATINUM })
   })
   afterEach(() => {
-    mockGetJwtTokenPayload.mockClear()
     jest.mocked(useIsSplitOn).mockImplementation(false)
   })
   it('should open when click on date select', async () => {
@@ -405,7 +407,11 @@ describe('RangePicker', () => {
   })
 
   it('should restrict date for gold tier license', async () => {
-    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.GOLD })
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.GOLD
+    })
     const apply = jest.fn()
     render(
       <IntlProvider locale='en'>

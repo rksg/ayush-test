@@ -10,13 +10,13 @@ import { useIntl } from 'react-intl'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
+import { useUserProfileContext }                          from '@acx-ui/user'
 import {
   defaultRanges,
   DateRange,
   dateRangeMap,
   resetRanges,
   dateRangeForLast,
-  getJwtTokenPayload,
   AccountTier
 } from '@acx-ui/utils'
 
@@ -97,7 +97,7 @@ export const RangePicker = ({
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
+  const { accountTier } = useUserProfileContext()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const allowedDateRange = (isDateRangeLimit && allowedMonthRange)
