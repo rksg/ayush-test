@@ -34,6 +34,7 @@ import {
   NotificationSmsConfig,
   TwiliosIncommingPhoneNumbers,
   TwiliosMessagingServices,
+  TwiliosWhatsappServices,
   Webhook,
   TableResult,
   PrivacyFeatures,
@@ -924,6 +925,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getTwiliosWhatsappServices: build.query<TwiliosWhatsappServices, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosWhatsappServices,
+          params, { ...ignoreErrorModal })
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
       query: ({ params }) => {
         const req =
@@ -1099,6 +1110,8 @@ export const {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useGetTwiliosMessagingServicesQuery,
   useLazyGetTwiliosMessagingServicesQuery,
+  useGetTwiliosWhatsappServicesQuery,
+  useLazyGetTwiliosWhatsappServicesQuery,
   useGetWebhooksQuery,
   useGetWebhookEntryQuery,
   useAddWebhookMutation,
