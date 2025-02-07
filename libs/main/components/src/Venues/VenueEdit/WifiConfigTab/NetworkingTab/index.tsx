@@ -20,8 +20,7 @@ import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 import {
   directedMulticastInfo,
-  getOpsApi,
-  truthy
+  getOpsApi
 } from '@acx-ui/utils'
 
 import { VenueUtilityContext }                  from '..'
