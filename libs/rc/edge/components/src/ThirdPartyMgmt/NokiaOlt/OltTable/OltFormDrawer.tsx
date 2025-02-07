@@ -179,7 +179,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
         }, { validator: async (_, value) => {
           return networkWifiIpRegExp(value)
         } }]}
-        children={<Input />}
+        children={<Input disabled={isEditMode} />}
       />
     </Form>
   </Drawer>

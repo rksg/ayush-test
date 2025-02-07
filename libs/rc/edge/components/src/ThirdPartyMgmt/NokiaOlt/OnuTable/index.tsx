@@ -1,4 +1,6 @@
-import {  Space }                  from 'antd'
+import { useEffect, useState } from 'react'
+
+import { Space }                   from 'antd'
 import { Key as AntdTableKeyType } from 'antd/lib/table/interface'
 import { useIntl }                 from 'react-intl'
 
@@ -24,8 +26,9 @@ interface EdgeNokiaOnuTableProps {
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
   const { oltData, cageName } = props
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
-  const { data, isLoading } = useGetEdgeOnuListQuery({
+  const { data, isLoading, isFetching } = useGetEdgeOnuListQuery({
     params: {
       venueId: oltData?.venueId,
       edgeClusterId: oltData?.edgeClusterId,
@@ -35,14 +38,22 @@ export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
   }, { skip: !oltData || !cageName })
 
   // eslint-disable-next-line max-len
-  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[]) => {
-    if (selectedRowKeys.length === 0) {
-      props.onClick(undefined)
-    }
+  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[], selectedRows: EdgeNokiaOnuData[]) => {
+    setSelectedRowKeys(selectedRowKeys)
+    props.onClick(selectedRowKeys.length === 0 ? undefined : selectedRows[0])
   }
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+    props.onClick(undefined)
+  }
+
+  useEffect(() => {
+    clearSelection()
+  }, [cageName])
+
   return <Loader
-    states={[{ isLoading }]}
+    states={[{ isLoading, isFetching }]}
     style={{ minHeight: '100px', backgroundColor: 'transparent' }}
   >
     <Table
@@ -51,7 +62,8 @@ export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
       dataSource={data}
       rowSelection={{
         type: 'radio',
-        onChange: handleRowSelectChange
+        onChange: handleRowSelectChange,
+        selectedRowKeys
       }}
     />
   </Loader>
