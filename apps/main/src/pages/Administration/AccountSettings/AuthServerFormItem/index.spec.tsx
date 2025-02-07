@@ -82,10 +82,6 @@ describe('Auth Server Form Item', () => {
       rest.post(
         CertificateUrls.getServerCertificates.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
-      ),
-      rest.post(
-        CertificateUrls.getCertificateList.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '789' }))
       )
     )
     utils.loadImageWithJWT = jest.fn().mockImplementation(() =>
