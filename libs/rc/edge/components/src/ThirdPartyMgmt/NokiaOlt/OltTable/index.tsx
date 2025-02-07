@@ -18,7 +18,9 @@ import {
   filterByAccessForServicePolicyMutation,
   VenueLink,
   EdgeNokiaOltData,
-  getOltStatusConfig
+  getOltStatusConfig,
+  isOltValidSerialNumber,
+  EdgeNokiaOltStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -74,7 +76,8 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
               params: {
                 venueId: row.venueId,
                 edgeClusterId: row.edgeClusterId,
-                oltId: row.serialNumber }
+                // special case for OLT which has no serial number (ex: before it onboard to R1)
+                oltId: isOltValidSerialNumber(row.serialNumber) ? row.serialNumber : row.ip }
             }).unwrap())).then(clearSelection)
           }
         })
@@ -134,7 +137,11 @@ function useColumns () {
       width: 80,
       render: (_, row) =>
         <Row>
-          <EdgeNokiaOltStatus config={getOltStatusConfig()} status={row.status} showText />
+          <EdgeNokiaOltStatus
+            config={getOltStatusConfig()}
+            // eslint-disable-next-line max-len
+            status={isOltValidSerialNumber(row.serialNumber) ? row.status : EdgeNokiaOltStatusEnum.UNKNOWN}
+            showText />
         </Row>
     },
     {
