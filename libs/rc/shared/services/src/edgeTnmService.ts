@@ -14,8 +14,7 @@ import {
   TableResult,
   EdgeUrlsInfo,
   EdgeClusterStatus,
-  EdgeNokiaOltCreatePayload,
-  EdgeOltFixtures
+  EdgeNokiaOltCreatePayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -182,15 +181,11 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'LIST' }]
     }),
     getEdgeCageList: build.query<EdgeNokiaCageData[], RequestPayload>({
-      // query: () => {
-      //   const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeCageList)
-      //   return {
-      //     ...req
-      //   }
-      // },
-      // TODO: remove after IT done
-      async queryFn () {
-        return { data: EdgeOltFixtures.mockOltCageList as EdgeNokiaCageData[] }
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeCageList, params)
+        return {
+          ...req
+        }
       },
       providesTags: [{ type: 'EdgeNokiaOlt', id: 'CAGE_LIST' }]
     }),
@@ -205,17 +200,29 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'CAGE_LIST' }]
     }),
     getEdgeOnuList: build.query<EdgeNokiaOnuData[], RequestPayload>({
-      // query: () => {
-      //   const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeOnuList)
-      //   return {
-      //     ...req
-      //   }
-      // },
-      // TODO: remove after IT done
-      async queryFn () {
-        return { data: EdgeOltFixtures.mockOnuList as EdgeNokiaOnuData[] }
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeOnuList, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
       },
+      transformResponse: (result: Omit<EdgeNokiaOnuData, 'portIdx'>[]) =>
+        result?.map((item) => ({
+          ...item,
+          portDetails: item.portDetails.map((port, idx) => ({ ...port, portIdx: `${++idx}` }))
+        })),
       providesTags: [{ type: 'EdgeNokiaOlt', id: 'ONU_LIST' }]
+    }),
+    setEdgeOnuPortVlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.setEdgeOnuPortVlan, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeNokiaOlt', id: 'ONU_LIST' }]
     })
   })
 })
@@ -240,5 +247,6 @@ export const {
   useDeleteEdgeOltMutation,
   useGetEdgeCageListQuery,
   useToggleEdgeCageStateMutation,
-  useGetEdgeOnuListQuery
+  useGetEdgeOnuListQuery,
+  useSetEdgeOnuPortVlanMutation
 } = edgeTnmServiceApi

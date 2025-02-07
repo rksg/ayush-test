@@ -11,6 +11,7 @@ export const MigrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/zdConfigurations/:id',
     oldUrl: '/zd/migration/:id',
+    opsApi: 'POST:/zdConfigurations/{id}',
     newApi: true
   },
   getZdMigrationList: {
