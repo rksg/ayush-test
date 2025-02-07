@@ -56,6 +56,7 @@ describe('RangePicker', () => {
   afterEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(false)
   })
+
   it('should open when click on date select', async () => {
     render(
       <IntlProvider locale='en'>
