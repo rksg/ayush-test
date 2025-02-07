@@ -4,12 +4,12 @@ import { useContext, useEffect, useReducer } from 'react'
 import { Button, Form }              from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { cssStr, Tooltip }            from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { SmsProviderType }            from '@acx-ui/rc/utils'
-import { NotificationSmsUsage }       from '@acx-ui/rc/utils'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
+import { cssStr, Tooltip }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
+import { SmsProviderType, useConfigTemplate } from '@acx-ui/rc/utils'
+import { NotificationSmsUsage }               from '@acx-ui/rc/utils'
+import { TenantLink }                         from '@acx-ui/react-router-dom'
 
 import NetworkFormContext from '../../../NetworkFormContext'
 import * as UI            from '../../../styledComponents'
@@ -104,6 +104,7 @@ export const SMSTokenCheckbox = ({ SMSUsage, onChange }: {
   const { $t } = useIntl()
   const { useWatch } = Form
   const enableSmsLogin = useWatch(['guestPortal', 'enableSmsLogin'])
+  const { isTemplate } = useConfigTemplate()
 
   const [state, dispatch] = useReducer(actionRunner, statesCollection.default)
 
@@ -130,7 +131,10 @@ export const SMSTokenCheckbox = ({ SMSUsage, onChange }: {
 
   const displaySMSTokenToolTips = () => {
     // eslint-disable-next-line max-len
-    const defaultMessage = $t({ defaultMessage: 'Captive Portal Self-sign-in via SMS One-time Passcode.' })
+    const defaultMessage = isTemplate
+      // eslint-disable-next-line max-len
+      ? $t({ defaultMessage: 'Captive Portal Self-sign-in via SMS One-time Passcode. To enable this functionality, please configure an SMS provider for End Customers.' })
+      : $t({ defaultMessage: 'Captive Portal Self-sign-in via SMS One-time Passcode.' })
 
     // when FF is off
     if (!isSmsProviderEnabled) {
@@ -154,8 +158,8 @@ export const SMSTokenCheckbox = ({ SMSUsage, onChange }: {
         <FormattedMessage
           defaultMessage={
             `{defaultMessage}<br></br>
-              You have {poolCount} messages remaining in the RUCKUS-provided pool. 
-              To ensure uninterrupted service, kindly set up an SMS provider on the 
+              You have {poolCount} messages remaining in the RUCKUS-provided pool.
+              To ensure uninterrupted service, kindly set up an SMS provider on the
               <SMSLink></SMSLink> page.`}
           values={{
             defaultMessage: defaultMessage,
@@ -179,7 +183,7 @@ export const SMSTokenCheckbox = ({ SMSUsage, onChange }: {
         <FormattedMessage
           defaultMessage={
             `{defaultMessage}<br></br>
-              To activate the SMS option, configure an SMS provider 
+              To activate the SMS option, configure an SMS provider
               on the <SMSLink></SMSLink> page.`}
           values={{
             defaultMessage,

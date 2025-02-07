@@ -3,7 +3,7 @@ import { EdgeNokiaOltStatusEnum } from '../../../../models/EdgeNokiaOltEnum'
 export const mockOlt = {
   name: 'TestOlt',
   serialNumber: 'testSerialNumber',
-  status: 'online' as EdgeNokiaOltStatusEnum,
+  status: EdgeNokiaOltStatusEnum.ONLINE,
   vendor: 'Nokia',
   model: 'MF-2',
   firmware: '22.649',
@@ -13,6 +13,14 @@ export const mockOlt = {
   venueName: 'Mock Venue 1',
   edgeClusterId: 'clusterId_1',
   edgeClusterName: 'Edge Cluster 1'
+}
+
+export const mockEmptySnOlt = {
+  ...mockOlt,
+  name: '',
+  serialNumber: '',
+  status: EdgeNokiaOltStatusEnum.OFFLINE,
+  ip: '1.1.1.1'
 }
 
 export const mockOltList = [
@@ -46,42 +54,6 @@ export const mockOltCageList = [
   },
   {
     cage: 'S1/7',
-    state: 'down'
-  },
-  {
-    cage: 'S1/8',
-    state: 'down'
-  },
-  {
-    cage: 'S1/9',
-    state: 'down'
-  },
-  {
-    cage: 'S1/10',
-    state: 'down'
-  },
-  {
-    cage: 'S1/11',
-    state: 'down'
-  },
-  {
-    cage: 'S1/12',
-    state: 'up'
-  },
-  {
-    cage: 'S1/13',
-    state: 'down'
-  },
-  {
-    cage: 'S1/14',
-    state: 'down'
-  },
-  {
-    cage: 'S1/15',
-    state: 'down'
-  },
-  {
-    cage: 'S1/16',
     state: 'down'
   }
 ]
