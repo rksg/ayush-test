@@ -215,6 +215,7 @@ export enum Features {
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
+  WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
