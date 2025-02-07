@@ -14,9 +14,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { EdgeAlarmWidget } from './EdgeAlarmWidget'
-import EdgeDetailsDrawer   from './EdgeDetailsDrawer'
-import { Styles }          from './styledComponents'
+import { EdgeAlarmWidget }                 from './EdgeAlarmWidget'
+import EdgeDetailsDrawer                   from './EdgeDetailsDrawer'
+import { Styles, CentralizedChartGridCol } from './styledComponents'
 
 interface EdgeInfoWidgetProps {
   className?: string
@@ -61,20 +61,20 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
 
   return (
     <GridRow className={className}>
-      <GridCol col={{ span: 4 }}>
+      <CentralizedChartGridCol col={{ span: 4 }}>
         <EdgeAlarmWidget
           isLoading={isEdgeStatusLoading}
           serialNumber={serialNumber}
           onClick={onClickWidget}
         />
-      </GridCol>
-      <GridCol col={{ span: 4 }}>
+      </CentralizedChartGridCol>
+      <CentralizedChartGridCol col={{ span: 4 }}>
         <EdgePortsWidget
           isLoading={isPortListLoading}
           edgePortsSetting={edgePortsSetting}
           onClick={onClickWidget}
         />
-      </GridCol>
+      </CentralizedChartGridCol>
       <GridCol col={{ span: 4 }}>
         <EdgeSysResourceBox
           isLoading={isEdgeStatusLoading}
