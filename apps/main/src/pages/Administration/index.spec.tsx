@@ -74,6 +74,13 @@ jest.mock('./Notifications', () => ({
     return <div data-testid='mocked-Notifications'></div>
   }
 }))
+jest.mock('./Privacy', () => ({
+  ...jest.requireActual('./Privacy'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-privacy'></div>
+  }
+}))
 jest.mock('./Subscriptions', () => ({
   ...jest.requireActual('./Subscriptions'),
   __esModule: true,
@@ -384,5 +391,24 @@ describe('Administration page', () => {
 
     const adminTab = await screen.findByRole('tab', { name: 'Administrators' })
     expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should show Privacy tab selected', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    params.activeTab = 'privacy'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const notificationTab = await screen.findByRole('tab', { name: 'Privacy' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
   })
 })

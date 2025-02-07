@@ -22,14 +22,15 @@ import {
   NotificationRecipientUIModel,
   NotificationEndpointType,
   sortProp,
-  defaultSort
+  defaultSort,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import {
   filterByAccess,
-  hasAccess,
   hasCrossVenuesPermission
 } from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
@@ -134,6 +135,7 @@ export const NotificationsTable = () => {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateRecipient)],
       onClick: (selectedRows) => {
         // show edit dialog
         setEditMode(true)
@@ -143,6 +145,7 @@ export const NotificationsTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteNotificationRecipients)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -177,10 +180,12 @@ export const NotificationsTable = () => {
   const tableActions = [
     {
       label: $t({ defaultMessage: 'Add Recipient' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addRecipient)],
       onClick: handleClickAddRecipient
     },
     {
       label: titleNotification,
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantSelf)],
       onClick: handleEnableIncidents
     }
   ]
@@ -197,7 +202,9 @@ export const NotificationsTable = () => {
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCrossVenuesPermission() && hasAccess() && { type: 'checkbox' }}
+          rowSelection={hasCrossVenuesPermission()
+            && filterByAccess(rowActions).length > 0
+            && { type: 'checkbox' }}
           actions={hasCrossVenuesPermission() ? filterByAccess(tableActions) : []}
         />
       </Loader>
