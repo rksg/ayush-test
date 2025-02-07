@@ -15,6 +15,7 @@ jest.mock('@acx-ui/edge/components', () => ({
     </div>,
   EdgeNokiaCageTable: () => <div data-testid='EdgeNokiaCageTable' />
 }))
+
 describe('EdgeNokiaOltDetails', () => {
 
   it('renders the correct tabs', () => {
@@ -51,10 +52,11 @@ describe('EdgeNokiaOltDetails', () => {
       state: mockOlt }]}
     >
       <EdgeNokiaOltDetails />
-    </MemoryRouter>
-    )
-    expect(screen.getByText('PerformanceTab')).toBeInTheDocument()
-    await userEvent.click( screen.getByRole('tab', { name: 'Cages' }))
+    </MemoryRouter>)
+
+    screen.getByRole('tab', { name: 'Performance' })
+    expect(await screen.findAllByText('No data to display')).toHaveLength(4)
+    await userEvent.click(screen.getByRole('tab', { name: 'Cages' }))
     expect(screen.getByTestId('EdgeNokiaCageTable')).toBeInTheDocument()
   })
 })
