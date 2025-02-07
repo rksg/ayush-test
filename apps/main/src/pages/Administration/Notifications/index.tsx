@@ -115,7 +115,7 @@ export const NotificationsTable = () => {
     return data ? <Badge
       color={FunctionEnabledStatusLightConfig[enabled ? 'active' : 'inActive'].color}
       text={data}
-    /> : data
+    /> : noDataDisplay
   }
 
   const renderDeliveryPreference = (row: NotificationRecipientUIModel) => {
