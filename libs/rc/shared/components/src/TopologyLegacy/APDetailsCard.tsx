@@ -2,7 +2,7 @@ import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery }                 from '@acx-ui/analytics/components'
-import { Card, Descriptions, getDefaultEarliestStart, Loader, Subtitle }                                                     from '@acx-ui/components'
+import { Card, Descriptions, getDefaultEarliestStart, Loader, Subtitle }                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
