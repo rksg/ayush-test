@@ -25,6 +25,7 @@ import FWVersionMgmt     from './FWVersionMgmt'
 import LocalRadiusServer from './LocalRadiusServer'
 import Notifications     from './Notifications'
 import OnpremMigration   from './OnpremMigration'
+import Privacy           from './Privacy'
 import Subscriptions     from './Subscriptions'
 import UserPrivileges    from './UserPrivileges'
 import R1Webhooks        from './Webhooks'
@@ -38,6 +39,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 
   const defaultPayload = {
@@ -89,6 +91,13 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           component: <Administrators />
         }]
       : []),
+    ...(isMspAppMonitoringEnabled ? [
+      {
+        key: 'privacy',
+        title: $t({ defaultMessage: 'Privacy' }),
+        component: <Privacy />
+      }
+    ] : []),
     {
       key: 'notifications',
       title: $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount }),
