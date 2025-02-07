@@ -120,7 +120,7 @@ export function FrontViewTooltip () {
           />
         </div>
         <div className='ports-description'>
-          { $t({ defaultMessage: 'Error' }) }
+          { $t({ defaultMessage: 'ErrDisable' }) }
         </div>
         <div className='ports'>
           <FrontViewPort

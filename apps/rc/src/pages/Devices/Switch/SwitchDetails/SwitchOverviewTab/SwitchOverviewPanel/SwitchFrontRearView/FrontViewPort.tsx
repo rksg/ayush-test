@@ -4,15 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip, cssStr }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { getInactiveTooltip }                        from '@acx-ui/rc/components'
-import { useLazyGetLagListQuery }                    from '@acx-ui/rc/services'
-import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
-import { SwitchScopes }                              from '@acx-ui/types'
-import { hasPermission }                             from '@acx-ui/user'
-import { getOpsApi }                                 from '@acx-ui/utils'
+import { Tooltip, cssStr }                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { getInactiveTooltip }                                                      from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery }                                                  from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10020b } from '@acx-ui/rc/utils'
+import { useParams }                                                               from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                            from '@acx-ui/types'
+import { hasPermission }                                                           from '@acx-ui/user'
+import { getOpsApi }                                                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -26,12 +26,14 @@ export function FrontViewPort (props:{
   labelPosition: 'top' | 'bottom',
   tooltipEnable: boolean,
   disabledClick?:boolean
+  switchFirmware?: string
 }) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
 
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
-    disabledClick } = props
+    disabledClick, switchFirmware } = props
   const {
     setEditPortDrawerVisible,
     setSelectedPorts,
@@ -81,45 +83,8 @@ export function FrontViewPort (props:{
       borderColor: cssStr('--acx-accents-red-30')
     }
 
-    const getErrorDisableStatus = (portErrorDisableStatus: string) => {
-      switch (portErrorDisableStatus) {
-        case 'ERRDISABLE_BPDUGUARD':
-          return 'BPDU GUARD'
-        case 'ERRDISABLE_LOOP_DETECTION':
-          return 'Loop Detection'
-        case 'ERRDISABLE_INVALID_LICENSE':
-          return 'Invalid License'
-        case 'ERRDISABLE_PACKET_INERROR':
-          return 'Packet InError'
-        case 'ERRDISABLE_LOAM_REM_CRITICAL_EVENT':
-          return 'LOAM Remote Critical Event'
-        case 'ERRDISABLE_NEEDS_REBOOT':
-          return 'Needs Reboot'
-        case 'ERRDISABLE_BCAST_THRESHOLD_EXCEEDED':
-          return 'BCAST Threshold Exceeded'
-        case 'ERRDISABLE_MCAST_THRESHOLD_EXCEEDED':
-          return 'MCAST Threshold Exceeded'
-        case 'ERRDISABLE_UNKNOWN_UCAST_THRESHOLD_EXCEEDED':
-          return 'UNKNOWN UCAST Threshold Exceeded'
-        case 'ERRDISABLE_STK_PORT_PROBLEM':
-          return 'Stack Port Problem'
-        case 'ERRDISABLE_SPX_INVALID_TOPO':
-          return 'SPX Invalid TOPO'
-        case 'ERRDISABLE_PVST_PROTECT':
-          return 'PVST Protect'
-        case 'ERRDISABLE_BPDU_TUN_THRESHOLD_EXCEEDED':
-          return 'BPDU Threshold Exceeded'
-        case 'ERRDISABLE_LAG_OPER_SPEED_MISMATCH':
-          return 'LAG OPER Speed Mismatch'
-        case 'ERRDISABLE_CAUSE_CNT':
-          return 'Cause Counter'
-        default:
-          return portErrorDisableStatus
-      }
-    }
-
     return <div>
-      <UI.TooltipStyle labelWidthPercent={50}>
+      <UI.TooltipStyle labelWidthPercent={40}>
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Port' })}
           children={port.portIdentifier}
@@ -144,20 +109,36 @@ export function FrontViewPort (props:{
           label={$t({ defaultMessage: 'Port State' })}
           children={port.status}
         />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'Error Type' })}
-          children={
-            !port.errorDisableStatus || port.errorDisableStatus === 'None' ? '--' :
-              <>
-                <Tooltip.Warning
-                  isFilled
-                  isTriangle
-                  iconStyle={incompatibleIconStyle}
-                />
-                {getErrorDisableStatus(port.errorDisableStatus)}
-              </>
-          }
-        />
+        {isSwitchErrorDisableEnabled && isFirmwareVersionAbove10020b(switchFirmware) && (<>
+          <UI.TooltipStyle.Item
+            label={$t({ defaultMessage: 'ErrDisable' })}
+            children={
+              !port.errorDisableStatus || port.errorDisableStatus === 'None' ? 'No'
+                : <>
+                  <Tooltip.Warning
+                    isFilled
+                    isTriangle
+                    iconStyle={incompatibleIconStyle}
+                  />
+                  {'Yes'}
+                </>
+            }
+          />
+          <UI.TooltipStyle.Item
+            label={$t({ defaultMessage: 'ErrDisable Reason' })}
+            children={
+              !port.errorDisableStatus || port.errorDisableStatus === 'None' ? '--'
+                : <>
+                  <Tooltip.Warning
+                    isFilled
+                    isTriangle
+                    iconStyle={incompatibleIconStyle}
+                  />
+                  {port.errorDisableStatus}
+                </>
+            }
+          />
+        </>)}
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
           children={port.neighborName || port.neighborMacAddress || '--'}

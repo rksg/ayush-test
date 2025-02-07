@@ -23,7 +23,8 @@ import {
   SwitchMessages,
   SwitchViewModel,
   usePollingTableQuery,
-  SwitchRbacUrlsInfo
+  SwitchRbacUrlsInfo,
+  isFirmwareVersionAbove10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
@@ -50,6 +51,7 @@ export function SwitchPortTable (props: {
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -147,45 +149,6 @@ export function SwitchPortTable (props: {
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 
-  const getErrorDisableStatus = (portErrorDisableStatus: string) => {
-    switch (portErrorDisableStatus) {
-      case 'None':
-        return '--'
-      case 'ERRDISABLE_BPDUGUARD':
-        return 'BPDU GUARD'
-      case 'ERRDISABLE_LOOP_DETECTION':
-        return 'Loop Detection'
-      case 'ERRDISABLE_INVALID_LICENSE':
-        return 'Invalid License'
-      case 'ERRDISABLE_PACKET_INERROR':
-        return 'Packet InError'
-      case 'ERRDISABLE_LOAM_REM_CRITICAL_EVENT':
-        return 'LOAM Remote Critical Event'
-      case 'ERRDISABLE_NEEDS_REBOOT':
-        return 'Needs Reboot'
-      case 'ERRDISABLE_BCAST_THRESHOLD_EXCEEDED':
-        return 'BCAST Threshold Exceeded'
-      case 'ERRDISABLE_MCAST_THRESHOLD_EXCEEDED':
-        return 'MCAST Threshold Exceeded'
-      case 'ERRDISABLE_UNKNOWN_UCAST_THRESHOLD_EXCEEDED':
-        return 'UNKNOWN UCAST Threshold Exceeded'
-      case 'ERRDISABLE_STK_PORT_PROBLEM':
-        return 'Stack Port Problem'
-      case 'ERRDISABLE_SPX_INVALID_TOPO':
-        return 'SPX Invalid TOPO'
-      case 'ERRDISABLE_PVST_PROTECT':
-        return 'PVST Protect'
-      case 'ERRDISABLE_BPDU_TUN_THRESHOLD_EXCEEDED':
-        return 'BPDU Threshold Exceeded'
-      case 'ERRDISABLE_LAG_OPER_SPEED_MISMATCH':
-        return 'LAG OPER Speed Mismatch'
-      case 'ERRDISABLE_CAUSE_CNT':
-        return 'Cause Counter'
-      default:
-        return portErrorDisableStatus
-    }
-  }
-
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
     key: 'portIdentifierFormatted',
     title: $t({ defaultMessage: 'Port Number' }),
@@ -219,15 +182,32 @@ export function SwitchPortTable (props: {
     dataIndex: 'adminStatus',
     sorter: true
   }, {
-    key: 'errorType',
-    title: $t({ defaultMessage: 'Error Type' }),
+    key: 'errDisable',
+    title: $t({ defaultMessage: 'ErrDisable' }),
     dataIndex: 'errorDisableStatus',
     sorter: true,
+    show: false,
     render: (_, row) => {
-      if (!row.errorDisableStatus) {
-        return '--'
-      }
-      return getErrorDisableStatus(row.errorDisableStatus)
+      const isErrorDisabled = row.errorDisableStatus && row.errorDisableStatus !== 'None'
+      return (
+        <span style={{ color: isErrorDisabled ? 'red' : 'inherit' }}>
+          {isErrorDisabled ? 'Yes' : 'No'}
+        </span>
+      )
+    }
+  }, {
+    key: 'errDisableReason',
+    title: $t({ defaultMessage: 'ErrDisable Reason' }),
+    dataIndex: 'errorDisableStatus',
+    sorter: true,
+    show: false,
+    render: (_, row) => {
+      const isErrorDisabled = row.errorDisableStatus && row.errorDisableStatus !== 'None'
+      return (
+        <span style={{ color: isErrorDisabled ? 'red' : 'inherit' }}>
+          {isErrorDisabled ? row.errorDisableStatus : '--' }
+        </span>
+      )
     }
   }, {
     key: 'portSpeed',
@@ -406,11 +386,45 @@ export function SwitchPortTable (props: {
     sorter: true
   }]
 
-  const getColumns = () => columns.filter(
-    item => !isVenueLevel
-      ? item.key !== 'switchName'
-      : item
-  )
+  const featureSupport = {
+    switchPortProfile:
+      isSwitchPortProfileEnabled && isFirmwareVersionAbove10020b(switchDetail?.firmware),
+    switchErrorDisable:
+      isSwitchErrorDisableEnabled && isFirmwareVersionAbove10020b(switchDetail?.firmware)
+  }
+
+  const hidenColumns = {
+    venueLevel: ['switchName'],
+    unsupportedFeatures: {
+      switchPortProfile: ['switchPortProfileName', 'switchPortProfileType'],
+      switchErrorDisable: ['errDisable', 'errDisableReason']
+    }
+  }
+
+  const isColumnHiddenForUnsupportedFeature = (columnKey: string) =>
+    Object.entries(hidenColumns.unsupportedFeatures).some(([feature, cols]) => {
+      const isFeatureSupported = featureSupport[feature as keyof typeof featureSupport]
+      return !isFeatureSupported && cols.includes(columnKey)
+    })
+
+  const getColumns = () => columns.filter(item => {
+    if (isVenueLevel) {
+      if (hidenColumns.unsupportedFeatures.switchPortProfile.includes(item.key)) {
+        return isSwitchPortProfileEnabled
+      }
+      if (hidenColumns.unsupportedFeatures.switchErrorDisable.includes(item.key)) {
+        return isSwitchErrorDisableEnabled
+      }
+
+      return true
+    } else {
+      if (hidenColumns.venueLevel.includes(item.key)) {
+        return false
+      }
+
+      return !isColumnHiddenForUnsupportedFeature(item.key)
+    }
+  })
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),

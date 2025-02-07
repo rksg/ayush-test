@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { isLAGMemberPort }                                from '@acx-ui/rc/components'
 import { SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
@@ -11,8 +12,10 @@ export function FrontViewSlot (props:{
   isOnline: boolean,
   isStack: boolean,
   deviceStatus: SwitchStatusEnum
+  switchFirmware?: string
 }) {
-  const { slot, deviceStatus, isStack, portLabel, isOnline } = props
+  const { slot, deviceStatus, isStack, portLabel, isOnline, switchFirmware } = props
+  const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
 
   const getPortIcon = (port: SwitchPortStatus) => {
     if (deviceStatus === SwitchStatusEnum.DISCONNECTED) {
@@ -39,7 +42,8 @@ export function FrontViewSlot (props:{
       return 'lightgray'
     }
 
-    if (!!port.errorDisableStatus && port.errorDisableStatus !== 'None') {
+    if (isSwitchErrorDisableEnabled &&
+      !!port.errorDisableStatus && port.errorDisableStatus !== 'None') {
       return 'red'
     } else if (status === 'Up') {
       return 'green'
@@ -83,6 +87,7 @@ export function FrontViewSlot (props:{
                   portIcon={getPortIcon(port)}
                   tooltipEnable={isOnline}
                   portData={port}
+                  switchFirmware={switchFirmware}
                 />
               )
             }
@@ -121,6 +126,7 @@ export function FrontViewSlot (props:{
                   portIcon={getPortIcon(port)}
                   tooltipEnable={isOnline}
                   portData={port}
+                  switchFirmware={switchFirmware}
                 />
               )
             }
