@@ -92,6 +92,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   clearAlarmByVenue: {
     method: 'delete',
     url: '/venues/:venueId/alarms',
+    opsApi: 'DELETE:/venues/{id}/alarms',
     newApi: true
   },
   deleteGateway: {
@@ -108,6 +109,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateGateway: {
     method: 'post',
     url: '/venues/:venueId/rwgs',
+    opsApi: 'POST:/venues/{id}/rwgs',
     newApi: true
   },
   getRwgList: {
