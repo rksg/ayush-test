@@ -223,6 +223,7 @@ export function LanPortSettings (props: {
           index={index}
           onGUIChanged={onGUIChanged}
           readOnly={readOnly || isDhcpEnabled}
+          useVenueSettings={useVenueSettings}
           isDhcpEnabled={isDhcpEnabled}
           hasVni={hasVni}
           serialNumber={serialNumber}
