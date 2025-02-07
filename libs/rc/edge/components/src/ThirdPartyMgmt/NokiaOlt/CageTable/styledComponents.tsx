@@ -7,13 +7,11 @@ export const OnuDetailWrapper = styled(Row)`
   background-color: rgb(253, 227, 201);
 `
 
-export const StyledPoeClassText = styled(Form.Item)`
+export const StyledFormItem = styled(Form.Item)`
   &.ant-form-item {
     margin-bottom: 2px;
   }
   & .ant-col.ant-form-item-control {
     width: 100%;
-    margin-top: -10px;
-    
   }
 `
