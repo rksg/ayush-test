@@ -52,7 +52,7 @@ describe('RangePicker', () => {
     })
   })
 
-  })
+  
   afterEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(false)
   })
