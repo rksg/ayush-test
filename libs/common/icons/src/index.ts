@@ -386,6 +386,7 @@ export { ReactComponent as WarningTriangleSolid } from './icons/WarningTriangleS
 export { ReactComponent as WavinghandWawingHandOutlined } from './icons/WavinghandWawingHandOutlined.svg'
 export { ReactComponent as WdsOutlined } from './icons/WdsOutlined.svg'
 export { ReactComponent as Wemo } from './icons/Wemo.svg'
+export { ReactComponent as Whatsapp } from './icons/Whatsapp.svg'
 export { ReactComponent as WiFi } from './icons/WiFi.svg'
 export { ReactComponent as WifiSmartPlug } from './icons/WifiSmartPlug.svg'
 export { ReactComponent as WindowsOutlined } from './icons/WindowsOutlined.svg'
