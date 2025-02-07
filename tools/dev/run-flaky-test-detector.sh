@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get all test files that have been added / updated on branch
-updated_test_files_on_branch=$(git diff --name-only master...HEAD  | grep -E ".*\\.spec\\.(js|ts|tsx|jsx)$" | tr '\n' ' ')
+updated_test_files_on_branch=$(git diff --name-only origin/master...HEAD  | grep -E ".*\\.spec\\.(js|ts|tsx|jsx)$" | tr '\n' ' ')
 
 if [ -z "$updated_test_files_on_branch" ]; then
   echo "No new test files to test."
