@@ -11,11 +11,13 @@ import {
   DataSubscriptionsAuditLog,
   CloudStorageForm
 } from '@acx-ui/reports/components'
-import { Provider } from '@acx-ui/store'
+import { Provider }         from '@acx-ui/store'
+import { hasRaiPermission } from '@acx-ui/user'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
+  const hasDCStoragePermission = isRa ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE') : false
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
     wireless: <Report type={ReportType.WIRELESS}/>,
@@ -51,11 +53,13 @@ export default function ReportsRoutes () {
           element={<SubscriptionForm isRAI editMode />} />
         <Route path='dataSubscriptions/auditLog/:settingId'
           element={<DataSubscriptionsAuditLog isRAI/>} />
+      </>) : []}
+      {hasDCStoragePermission ? (<>
         <Route path='dataSubscriptions/cloudStorage/create'
           element={<CloudStorageForm isRAI/>} />
         <Route path='dataSubscriptions/cloudStorage/edit/:csId'
           element={<CloudStorageForm isRAI editMode />} />
-      </>) : []}
+      </>): []}
     </Route>
   )
   return (

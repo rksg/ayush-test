@@ -23,29 +23,41 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
     { text: $t({ defaultMessage: 'Business Insights' }) }
   ]: generateBreadcrumb({ isRAI, isList: true })
 
+  const headerButtons = []
+  if (hasRaiPermission('WRITE_DATA_CONNECTOR')) {
+    headerButtons.push(
+      <Button
+        type='primary'
+        onClick={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/create`
+        })}
+      >
+        {$t({ defaultMessage: 'New Subscription' })}
+      </Button>
+    )
+  }
+  if (hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE')) {
+    headerButtons.push(
+      <Button
+        size='middle'
+        icon={<SettingsOutlined />}
+        type='default'
+        onClick={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/cloudStorage/edit/storageId`
+        })}
+      >
+        {$t({ defaultMessage: 'Cloud Storage: Azure' })}
+      </Button>
+    )
+  }
+
   return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Data Subscriptions' })}
       breadcrumb={breadCrumb}
-      extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <>
-        <Button
-          type='primary'
-          onClick={() => navigate({
-            ...basePath,
-            pathname: `${basePath.pathname}/create`
-          })}
-        >{$t({ defaultMessage: 'New Subscription' })}</Button>
-        <Button
-          size='middle'
-          icon={<SettingsOutlined/>}
-          type='default'
-          onClick={() => navigate({
-            ...basePath,
-            // to test new storage route use ${basePath.pathname}/cloudStorage/create
-            pathname: `${basePath.pathname}/cloudStorage/edit/storageId`
-          })}
-        >{$t({ defaultMessage: 'Cloud Storage: Azure' })}</Button>
-      </> : []}
+      extra={headerButtons}
     />
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>

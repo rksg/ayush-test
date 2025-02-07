@@ -46,8 +46,10 @@ describe('DataSubscriptionsContent', () => {
       jest.clearAllMocks()
       jest.mocked(get).mockReturnValue('true')
       setRaiPermissions({
-        READ_DATA_SUBSCRIPTIONS: true,
-        WRITE_DATA_SUBSCRIPTIONS: true
+        READ_DATA_CONNECTOR: true,
+        WRITE_DATA_CONNECTOR: true,
+        READ_DATA_CONNECTOR_STORAGE: true,
+        WRITE_DATA_CONNECTOR_STORAGE: true
       } as RaiPermissions)
     })
     it('should render DataSubscriptionsContent correct', async () => {
@@ -73,10 +75,28 @@ describe('DataSubscriptionsContent', () => {
       })
     })
 
+    it('should render DataSubscriptionsContent correct(no storage permission)', async () => {
+      setRaiPermissions({
+        READ_DATA_CONNECTOR: true,
+        WRITE_DATA_CONNECTOR: true,
+        READ_DATA_CONNECTOR_STORAGE: false,
+        WRITE_DATA_CONNECTOR_STORAGE: false
+      } as RaiPermissions)
+      render(<DataSubscriptionsContent isRAI/>, {
+        route: { params },
+        wrapper: Provider
+      })
+      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(screen.getByText('New Subscription')).toBeVisible()
+      expect(screen.queryByText(/Cloud Storage:/)).toBeNull()
+    })
+
     it('should render DataSubscriptionsContent correct(no write permisson)', async () => {
       setRaiPermissions({
-        READ_DATA_SUBSCRIPTIONS: true,
-        WRITE_DATA_SUBSCRIPTIONS: false
+        READ_DATA_CONNECTOR: true,
+        WRITE_DATA_CONNECTOR: false,
+        READ_DATA_CONNECTOR_STORAGE: false,
+        WRITE_DATA_CONNECTOR_STORAGE: false
       } as RaiPermissions)
       render(<DataSubscriptionsContent isRAI/>, {
         route: { params },
