@@ -1,7 +1,6 @@
-import { TableResult }       from '@acx-ui/rc/utils'
-import { notificationApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { TableResult }     from '@acx-ui/rc/utils'
+import { notificationApi } from '@acx-ui/store'
+import { RequestPayload }  from '@acx-ui/types'
 
 export type DataSubscription = {
   id: string
@@ -9,7 +8,9 @@ export type DataSubscription = {
   userId: string
   userName: string
   columns: string[]
-  status: boolean
+  status: boolean,
+  frequency: string,
+  updatedAt: string
 }
 
 type PatchDataSubscriptions = {
@@ -27,18 +28,12 @@ export const {
       TableResult<DataSubscription>,
       RequestPayload
     >({
-      query: ({ payload }) => {
-        const req = createHttpRequest(
-          {
-            url: '/analytics/api/rsa-mlisa-notification/dataSubscriptions/query',
-            method: 'post'
-          })
-        return {
-          ...req,
-          credentials: 'include',
-          body: JSON.stringify(payload)
-        }
-      },
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions/query',
+        method: 'post',
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      }),
       providesTags: [{ type: 'DataSubscription', id: 'LIST' }],
       transformResponse: (response: TableResult<DataSubscription>) => {
         return {
@@ -52,36 +47,24 @@ export const {
       void,
       RequestPayload<PatchDataSubscriptions>
     >({
-      query: ({ payload }) => {
-        const req = createHttpRequest(
-          {
-            url: '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
-            method: 'PATCH'
-          })
-        return ({
-          ...req,
-          credentials: 'include',
-          body: payload
-        })
-      },
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions',
+        method: 'PATCH',
+        credentials: 'include',
+        body: payload
+      }),
       invalidatesTags: [{ type: 'DataSubscription', id: 'LIST' }]
     }),
     deleteDataSubscriptions: build.mutation<
       void,
       RequestPayload<string[]>
     >({
-      query: ({ payload }) => {
-        const req = createHttpRequest(
-          {
-            url: '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
-            method: 'DELETE'
-          })
-        return ({
-          ...req,
-          credentials: 'include',
-          body: payload
-        })
-      },
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions',
+        method: 'DELETE',
+        credentials: 'include',
+        body: payload
+      }),
       invalidatesTags: [{ type: 'DataSubscription', id: 'LIST' }]
     })
   })

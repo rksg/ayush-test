@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { getUserProfile, UserProfile }                            from '@acx-ui/analytics/utils'
-import { get }                                                    from '@acx-ui/config'
-import { notificationApi, Provider, rbacApi, store }              from '@acx-ui/store'
-import { findTBody, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions }                      from '@acx-ui/user'
+import { getUserProfile, UserProfile }                                   from '@acx-ui/analytics/utils'
+import { get }                                                           from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                     from '@acx-ui/formatter'
+import { notificationApi, notificationApiURL, Provider, rbacApi, store } from '@acx-ui/store'
+import { findTBody, mockServer, render, screen, waitFor, within }        from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }                             from '@acx-ui/user'
 
 import { mockedSubscriptions, mockedUserId, mockSubscriptionQuery } from './__fixtures__'
 import { DataSubscription }                                         from './services'
@@ -30,7 +31,7 @@ const mockGet = get as jest.Mock
 describe('DataSubscriptions table', () => {
   describe('RAI', () => {
     beforeEach(() => {
-      setRaiPermissions({ WRITE_DATA_STUDIO: true } as RaiPermissions)
+      setRaiPermissions({ WRITE_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
       mockServer.use(
         mockSubscriptionQuery()
       )
@@ -51,8 +52,8 @@ describe('DataSubscriptions table', () => {
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(mockedSubscriptions.length)
       expect(await screen
-        // column header#
-        .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
+        // column header count
+        .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(5)
       const firstRow = (await tbody.findAllByRole('row'))[0]
       const firstRowText = within(firstRow).getAllByRole('cell').map(cell =>
         cell.title)
@@ -61,6 +62,8 @@ describe('DataSubscriptions table', () => {
         mockedSubscriptions[0].name,
         mockedSubscriptions[0].userName,
         'Paused',
+        mockedSubscriptions[0].frequency,
+        formatter(DateFormatEnum.DateTimeFormat)(mockedSubscriptions[0].updatedAt),
         '' // settings
       ])
     })
@@ -87,7 +90,7 @@ describe('DataSubscriptions table', () => {
       const patchFn = jest.fn()
       mockServer.use(
         rest.patch(
-          '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
+          `${notificationApiURL}/dataSubscriptions`,
           (req, res, ctx) => {
             patchFn(req.body)
             return res(ctx.json(null))
@@ -113,7 +116,7 @@ describe('DataSubscriptions table', () => {
     it('handle resume RTKQuery error', async () => {
       mockServer.use(
         rest.patch(
-          '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
+          `${notificationApiURL}/dataSubscriptions`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
@@ -135,7 +138,7 @@ describe('DataSubscriptions table', () => {
       const patchFn = jest.fn()
       mockServer.use(
         rest.patch(
-          '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
+          `${notificationApiURL}/dataSubscriptions`,
           (req, res, ctx) => {
             patchFn(req.body)
             return res(ctx.json(null))
@@ -161,7 +164,7 @@ describe('DataSubscriptions table', () => {
     it('handle pause RTKQuery error', async () => {
       mockServer.use(
         rest.patch(
-          '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
+          `${notificationApiURL}/dataSubscriptions`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
@@ -207,7 +210,7 @@ describe('DataSubscriptions table', () => {
       const deleteFn = jest.fn()
       mockServer.use(
         rest.delete(
-          '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
+          `${notificationApiURL}/dataSubscriptions`,
           (req, res, ctx) => {
             deleteFn(req.body)
             return res(ctx.json(null))
@@ -231,7 +234,7 @@ describe('DataSubscriptions table', () => {
     it('handle delete RTKQuery error', async () => {
       mockServer.use(
         rest.delete(
-          '/analytics/api/rsa-mlisa-notification/dataSubscriptions',
+          `${notificationApiURL}/dataSubscriptions`,
           (_, res) => res.networkError('Failed to connect'))
       )
 

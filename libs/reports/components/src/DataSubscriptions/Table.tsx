@@ -2,6 +2,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { getUserProfile as getRaiUserProfile }  from '@acx-ui/analytics/utils'
 import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { doProfileDelete }                      from '@acx-ui/rc/services'
 import { useTableQuery }                        from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }           from '@acx-ui/react-router-dom'
@@ -103,6 +104,17 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI: boolean }) {
       render: (_, row) => row.status
         ? $t({ defaultMessage: 'Active' })
         : $t({ defaultMessage: 'Paused' })
+    },
+    {
+      key: 'frequency',
+      title: $t({ defaultMessage: 'Frequency' }),
+      dataIndex: 'frequency'
+    },
+    {
+      key: 'updatedAt',
+      title: $t({ defaultMessage: 'Last Update' }),
+      dataIndex: 'updatedAt',
+      render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
 
@@ -196,7 +208,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI: boolean }) {
   }
 
   const hasDataPermission = isRAI
-    ? hasPermission({ permission: 'WRITE_DATA_STUDIO' })
+    ? hasPermission({ permission: 'WRITE_DATA_SUBSCRIPTIONS' })
     : false //TODO: implement R1 permission later
 
   const allowedRowActions = filterByAccess(rowActions)
