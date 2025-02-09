@@ -5,8 +5,6 @@ import { BrowserRouter }      from '@acx-ui/react-router-dom'
 import {
   act,
   screen,
-  fireEvent,
-  waitFor,
   renderHook,
   render,
   waitForElementToBeRemoved
@@ -71,9 +69,9 @@ describe('useDateFilter', () => {
 
   it('When it is set beyond available start date reset date and show toast', async () => {
     function Component () {
-      const filters = useDateFilter({ 
+      const filters = useDateFilter({
         showResetMsg: true,
-        earliestStart: moment('2021-07-23T18:31:00+08:00') 
+        earliestStart: moment('2021-07-23T18:31:00+08:00')
       })
       return <div>{JSON.stringify(filters)}</div>
     }
@@ -89,9 +87,9 @@ describe('useDateFilter', () => {
         <Component />
       </BrowserRouter>
     )
-    expect(await screen.findByText('Note that your Calendar selection has been updated in line with current page default/max values.')).toBeInTheDocument();
-
-})
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Note that your Calendar selection has been updated in line with current page default/max values.')).toBeInTheDocument()
+  })
 
   it('ignores period params when it is set beyond available start date', async () => {
     function Component () {
