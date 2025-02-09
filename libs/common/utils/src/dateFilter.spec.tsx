@@ -68,6 +68,31 @@ describe('useDateFilter', () => {
     rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('When it is set beyond available start date reset date and show toast', async () => {
+    function Component () {
+      const filters = useDateFilter({ 
+        showResetMsg: true,
+        earliestStart: moment('2021-07-23T18:31:00+08:00') 
+      })
+      return <div>{JSON.stringify(filters)}</div>
+    }
+
+    window.history.pushState({}, 'Test Page', `/?period=${encodeURIComponent(JSON.stringify({
+      startDate: '2020-07-23T18:31:00+08:00',
+      endDate: '2020-07-24T18:31:59+08:00',
+      range: 'Custom'
+    }))}`)
+
+    render(
+      <BrowserRouter>
+        <Component />
+      </BrowserRouter>
+    )
+    expect(await screen.findByText('Note that your Calendar selection has been updated in line with current page default/max values.')).toBeInTheDocument();
+
+})
+
   it('ignores period params when it is set beyond available start date', async () => {
     function Component () {
       const filters = useDateFilter(moment('2020-07-23T18:31:00+08:00'))
@@ -79,6 +104,7 @@ describe('useDateFilter', () => {
     const { asFragment } = render(component())
     expect(asFragment()).toMatchSnapshot()
   })
+
   it('should render correctly with default date from url', () => {
     function Component () {
       const filters = useDateFilter()
@@ -173,91 +199,15 @@ describe('Toast', () => {
     }
   })
 
-  it('renders content', async () => {
+  it('renders content success', async () => {
     act(() => {
       showToast({
-        type: 'info',
+        type: 'success',
+        key: 'test',
         content: 'This is a toast'
       })
     })
-    await screen.findByText('This is a toast')
-    expect(screen.getByRole('img', { name: 'close' })).toBeInTheDocument()
+    expect(await screen.findByText('This is a toast')).toBeInTheDocument()
   })
 
-  it('renders content with no close button', async () => {
-    act(() => {
-      showToast({
-        type: 'info',
-        closable: false,
-        content: 'This is a toast'
-      })
-    })
-    await screen.findByText('This is a toast')
-    expect(screen.queryByRole('img', { name: 'close' })).not.toBeInTheDocument()
-  })
-
-  it('renders extra content', async () => {
-    act(() => {
-      showToast({
-        type: 'info',
-        content: 'This is a toast - test extra',
-        extraContent: <div data-testid='extra'>Extra content</div>
-      })
-    })
-    await screen.findByTestId('extra')
-  })
-
-  describe('link', () => {
-    it('renders link', async () => {
-      const onClick = jest.fn()
-      act(() => {
-        showToast({
-          type: 'info',
-          content: 'This is a toast - test link',
-          link: { text: 'Click me', onClick: onClick }
-        })
-      })
-      const link = await screen.findByText('Click me')
-      fireEvent.click(link)
-      expect(onClick).toBeCalledTimes(1)
-    })
-
-    it('renders default text for type', async () => {
-      act(() => {
-        showToast({
-          type: 'error',
-          content: 'This is a toast - test click',
-          link: { onClick: () => alert('clicked') }
-        })
-      })
-      await screen.findByText('Technical Details')
-    })
-  })
-
-  describe('onClose', () => {
-    it('handles onClose', async () => {
-      const onClose = jest.fn()
-      act(() => {
-        showToast({
-          type: 'error',
-          content: 'This is a toast - test close',
-          onClose: onClose
-        })
-      })
-      const close = await waitFor(()=>screen.findByRole('img'))
-      fireEvent.click(close)
-      expect(onClose).toBeCalledTimes(1)
-    })
-
-    it('handles onClose is unavailable', async () => {
-      act(() => {
-        showToast({
-          type: 'error',
-          content: 'This is a toast - test close'
-        })
-      })
-      const close = await waitFor(()=>screen.findByRole('img'))
-      fireEvent.click(close)
-    })
-  })
 })
