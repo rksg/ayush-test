@@ -176,7 +176,7 @@ export function RWGTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
+    rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.deleteGateway)],
     onClick: (rows, clearSelection) => {
       rwgActions.deleteGateways(rows, tenantId, clearSelection)
     }

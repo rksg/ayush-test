@@ -119,7 +119,7 @@ function RWGPageHeader () {
           ...(isCustomRole ? []
             : [<Button
               type='default'
-              rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.updateGateway)]}
+              rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.deleteGateway)]}
               onClick={() =>
                 rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
               }
