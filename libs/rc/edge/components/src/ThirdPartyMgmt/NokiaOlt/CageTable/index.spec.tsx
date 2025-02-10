@@ -20,15 +20,23 @@ jest.mock( './CageDetailsDrawer', () => ({
 describe('EdgeNokiaCageTable', () => {
   const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
   const mockPath = '/:tenantId/devices/optical/:oltId/details'
+  const mockToggleCageReq = jest.fn()
 
   beforeEach(() => {
     store.dispatch(edgeTnmServiceApi.util.resetApiState())
+    mockToggleCageReq.mockClear()
 
     mockServer.use(
       rest.get(
         EdgeTnmServiceUrls.getEdgeCageList.url,
         (_, res, ctx) => {
           return res(ctx.json(mockOltCageList))
+        }),
+      rest.put(
+        EdgeTnmServiceUrls.toggleEdgeCageState.url,
+        (req, res, ctx) => {
+          mockToggleCageReq(req.body, req.params)
+          return res(ctx.status(202))
         })
     )
   })
@@ -54,31 +62,14 @@ describe('EdgeNokiaCageTable', () => {
     expect(drawer).toBeVisible()
   })
 
-  it('displays loading state', () => {
-    render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
-    </Provider>, { route: { params, path: mockPath } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
-  })
-
-  it('should change cage status', async () => {
-    const mockToggleCageReq = jest.fn()
-    mockServer.use(
-      rest.put(
-        EdgeTnmServiceUrls.toggleEdgeCageState.url,
-        (req, res, ctx) => {
-          mockToggleCageReq(req.body, req.params)
-          return res(ctx.status(202))
-        })
-    )
-
+  it('should change cage status from ON to OFF', async () => {
     render(<Provider>
       <EdgeNokiaCageTable oltData={mockOlt} />
     </Provider>, { route: { params, path: mockPath } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const upRow = screen.getByRole('row', { name: /S1\/2 UP/ })
     await userEvent.click(within(upRow).getByRole('switch'))
-    expect(mockToggleCageReq).toHaveBeenNthCalledWith(1, {
+    expect(mockToggleCageReq).toBeCalledWith({
       cage: 'S1/2',
       state: 'DOWN'
     }, {
@@ -88,10 +79,17 @@ describe('EdgeNokiaCageTable', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+  })
+
+  it('should change cage status from OFF to ON', async () => {
+    render(<Provider>
+      <EdgeNokiaCageTable oltData={mockOlt} />
+    </Provider>, { route: { params, path: mockPath } })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const downRow = screen.getByRole('row', { name: /S1\/1 DOWN/ })
     await userEvent.click(within(downRow).getByRole('switch'))
-    await waitFor(() => expect(mockToggleCageReq).toHaveBeenNthCalledWith(2, {
+    await waitFor(() => expect(mockToggleCageReq).toBeCalledWith({
       cage: 'S1/1',
       state: 'UP'
     }, {

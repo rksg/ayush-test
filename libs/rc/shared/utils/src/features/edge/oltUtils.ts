@@ -7,9 +7,6 @@ import { EdgeNokiaCageStateEnum, EdgeNokiaOltStatusEnum } from '../../models/Edg
 
 export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment (
 
-export const OLT_POE_SUPPLIED_TOTAL = 280
-export const OLT_POE_PD_USED = 232 // PD: Powered Device
-
 export const getOltStatusConfig = () => {
   const { $t } = getIntl()
 
@@ -21,6 +18,10 @@ export const getOltStatusConfig = () => {
     [EdgeNokiaOltStatusEnum.OFFLINE]: {
       color: 'var(--acx-neutrals-50)',
       text: $t({ defaultMessage: 'OFFLINE' })
+    },
+    [EdgeNokiaOltStatusEnum.UNKNOWN]: {
+      color: 'var(--acx-neutrals-50)',
+      text: $t({ defaultMessage: 'UNKNOWN' })
     }
   }
 }
@@ -78,3 +79,5 @@ export const getOltPoeClassText = (poeClass: string): string => {
   const msgDescriptor = find(oltPoeClassOptions, { value: poeClass })?.label
   return msgDescriptor ? $t(msgDescriptor) : ''
 }
+
+export const isOltValidSerialNumber = (serialNumber: string): boolean => !!serialNumber

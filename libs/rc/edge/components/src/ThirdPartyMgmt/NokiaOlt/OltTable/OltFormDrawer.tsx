@@ -123,7 +123,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
       onFinish={handleFinish}
       disabled={isCreating || isUpdating}
     >
-      <Form.Item
+      {/*<Form.Item
         name='name'
         label={$t({ defaultMessage: 'Device Name' })}
         rules={[{
@@ -132,6 +132,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
         }]}
         children={<Input />}
       />
+      */}
       <Form.Item
         name='venueId'
         label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
@@ -179,7 +180,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
         }, { validator: async (_, value) => {
           return networkWifiIpRegExp(value)
         } }]}
-        children={<Input />}
+        children={<Input disabled={isEditMode} />}
       />
     </Form>
   </Drawer>
