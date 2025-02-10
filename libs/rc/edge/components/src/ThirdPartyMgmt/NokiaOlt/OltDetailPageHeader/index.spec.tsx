@@ -1,31 +1,17 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { EdgeNokiaOltData, EdgeOltFixtures } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { screen, render }                    from '@acx-ui/test-utils'
+import { EdgeNokiaOltData, EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { screen, render, mockServer }                            from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltDetailsPageHeader } from '.'
-const { mockOlt } = EdgeOltFixtures
+const { mockOlt, mockOltCageList } = EdgeOltFixtures
 
 jest.mock( './DetailsDrawer', () => ({
   // eslint-disable-next-line max-len
   OltDetailsDrawer: (props: { visible: boolean, setVisible: () => void, currentOlt?: EdgeNokiaOltData }) =>
     props.visible && <div data-testid='OltDetailsDrawer'>{JSON.stringify(props.currentOlt)}</div>
-}))
-jest.mock( './PoeUtilizationBox', () => ({
-  // eslint-disable-next-line max-len
-  PoeUtilizationBox: (props: {
-    title: string
-    isOnline: boolean
-    value?: number
-    totalVal?: number
-   }) =>
-    <div data-testid='PoeUtilizationBox'>
-      <div>{props.title}</div>
-      <div data-testid='isOnline'>{props.isOnline}</div>
-      <div data-testid='value'>{props.value}</div>
-      <div data-testid='totalVal'>{props.totalVal}</div>
-    </div>
 }))
 
 describe('EdgeNokiaOltDetailsPageHeader', () => {
@@ -35,6 +21,16 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
   const props = {
     currentOlt: mockOlt as EdgeNokiaOltData
   }
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeCageList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockOltCageList))
+        })
+    )
+  })
 
   it('test component renders with expected elements', () => {
     render(<Provider>
@@ -57,8 +53,7 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
     render(<Provider>
       <EdgeNokiaOltDetailsPageHeader {...props} />
     </Provider>, { route: { params, path: mockPath } })
-    expect(screen.getByText('Status')).toBeInTheDocument()
-    expect(screen.getByText('Cages')).toBeInTheDocument()
-    expect(screen.getByText('PoE Usage')).toBeInTheDocument()
+    expect(screen.getByText('Status')).toBeVisible()
+    expect(screen.getByText('Cages')).toBeVisible()
   })
 })

@@ -34,8 +34,10 @@ import {
   NotificationSmsConfig,
   TwiliosIncommingPhoneNumbers,
   TwiliosMessagingServices,
+  TwiliosWhatsappServices,
   Webhook,
   TableResult,
+  NotificationRecipientType,
   PrivacyFeatures,
   PrivacySettings
 } from '@acx-ui/rc/utils'
@@ -384,10 +386,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           const result = {
             id: data.id,
             description: data.description,
+            emailPreferences: data.emailPreferences,
+            smsPreferences: data.smsPreferences,
+            privilegeGroup: data.privilegeGroupId,
+            recipientType: data.privilegeGroupId
+              ? NotificationRecipientType.PRIVILEGEGROUP : NotificationRecipientType.GLOBAL,
             endpoints: data.endpoints
           } as NotificationRecipientUIModel
 
-          data.endpoints.forEach((endpoint: NotificationEndpoint) => {
+          data.endpoints?.forEach((endpoint: NotificationEndpoint) => {
             switch (endpoint.type) {
               case (NotificationEndpointType.email):
                 result.email = endpoint.destination
@@ -924,6 +931,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getTwiliosWhatsappServices: build.query<TwiliosWhatsappServices, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosWhatsappServices,
+          params, { ...ignoreErrorModal })
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
       query: ({ params }) => {
         const req =
@@ -1099,6 +1116,8 @@ export const {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useGetTwiliosMessagingServicesQuery,
   useLazyGetTwiliosMessagingServicesQuery,
+  useGetTwiliosWhatsappServicesQuery,
+  useLazyGetTwiliosWhatsappServicesQuery,
   useGetWebhooksQuery,
   useGetWebhookEntryQuery,
   useAddWebhookMutation,

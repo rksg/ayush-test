@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { useSwitchPortProfileAppliedListQuery, useVenuesListQuery }              from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                      from '@acx-ui/components'
+import { useSwitchPortProfileAppliedListQuery, useVenuesListQuery, useSwitchPortProfilesDetailQuery } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   getPolicyAllowedOperation,
@@ -18,10 +18,12 @@ import SwitchPortProfileWidget from './SwitchPortProfileWidget'
 
 export default function SwitchPortProfileDetail () {
   const { $t } = useIntl()
-  const { portProfileId } = useParams()
+  const params = useParams()
+  const portProfileId = params.portProfileId
 
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/switch/profiles'
   const settingsId = 'switch-port-profile-detail'
+  const { data, isLoading } = useSwitchPortProfilesDetailQuery({ params })
 
   const defaultPayload = {
     fields: [ 'id' ],
@@ -110,11 +112,7 @@ export default function SwitchPortProfileDetail () {
   return (
     <>
       <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Port Profiles' }
-          )
-        }
+        title={data?.name || ''}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
@@ -131,7 +129,10 @@ export default function SwitchPortProfileDetail () {
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <SwitchPortProfileWidget />
+          <SwitchPortProfileWidget
+            data={data}
+            isLoading={isLoading}
+          />
         </GridCol>
 
         <GridCol col={{ span: 24 }}>
