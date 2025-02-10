@@ -7,9 +7,6 @@ import { EdgeNokiaCageStateEnum, EdgeNokiaOltStatusEnum } from '../../models/Edg
 
 export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment (
 
-export const OLT_POE_SUPPLIED_TOTAL = 280
-export const OLT_POE_PD_USED = 232 // PD: Powered Device
-
 export const getOltStatusConfig = () => {
   const { $t } = getIntl()
 
