@@ -15,10 +15,10 @@ import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@ac
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
-import Canvas, { CanvasRef } from './Canvas'
-import { DraggableChart }    from './components/WidgetChart'
-import HistoryDrawer         from './HistoryDrawer'
-import * as UI               from './styledComponents'
+import Canvas, { CanvasRef, Group } from './Canvas'
+import { DraggableChart }           from './components/WidgetChart'
+import HistoryDrawer                from './HistoryDrawer'
+import * as UI                      from './styledComponents'
 
 export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
@@ -40,6 +40,7 @@ export default function AICanvas () {
   const [ isNewChat, setIsNewChat ] = useState(false)
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
+  const [groups, setGroups] = useState([] as Group[])
 
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
@@ -276,7 +277,7 @@ export default function AICanvas () {
         id: chat.id,
         chatId: chat.id
       }}
-      sections={canvasRef.current?.sections}
+      groups={groups}
       /> }
       {
         chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
@@ -368,7 +369,12 @@ export default function AICanvas () {
             </div>
           </div>
         </div>
-        <Canvas ref={canvasRef} onCanvasChange={handleCanvasChange} />
+        <Canvas
+          ref={canvasRef}
+          onCanvasChange={handleCanvasChange}
+          groups={groups}
+          setGroups={setGroups}
+        />
         {
           historyVisible && <HistoryDrawer
             visible={historyVisible}

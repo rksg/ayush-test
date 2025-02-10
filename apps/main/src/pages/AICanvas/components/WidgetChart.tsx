@@ -15,8 +15,8 @@ import { DateFormatEnum, formatter }                                            
 import { useGetWidgetQuery }                                                                                   from '@acx-ui/rc/services'
 import { WidgetListData }                                                                                      from '@acx-ui/rc/utils'
 
-import { Section } from '../Canvas'
-import * as UI     from '../styledComponents'
+import { Group } from '../Canvas'
+import * as UI   from '../styledComponents'
 
 import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
 import { ItemTypes }         from './GroupItem'
@@ -26,7 +26,7 @@ interface WidgetListProps {
   data: WidgetListData
   visible?: boolean
   setVisible?: (v: boolean) => void
-  sections?: Section[]
+  groups?: Group[]
 }
 
 interface WidgetCategory {
@@ -110,16 +110,13 @@ export const getChartConfig = (data: WidgetListData) => {
   return ChartConfig[data.chartType]
 }
 
-export const DraggableChart: React.FC<WidgetListProps> = ({ data, sections }) => {
+export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups }) => {
   const { $t } = useIntl()
   const canDragtoCanvas = () => {
-    if(sections) {
-      const tmp = [...sections]
+    if(groups) {
       let cardsCount = 0
-      tmp.forEach(s => {
-        s.groups.forEach(g => {
-          g.cards.forEach(() => cardsCount++)
-        })
+      groups.forEach(g => {
+        g.cards.forEach(() => cardsCount++)
       })
       if(cardsCount < 20) {
         return true

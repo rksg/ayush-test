@@ -87,17 +87,16 @@ const DEFAULT_CANVAS = [
 
 export interface CanvasRef {
   save: () => Promise<void>;
-  sections: Section[]
 }
 
 interface CanvasProps {
   onCanvasChange?: (hasChanges: boolean) => void;
+  groups: Group[]
+  setGroups: React.Dispatch<React.SetStateAction<Group[]>>
 }
 
-const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, setGroups }, ref) => {
   const { $t } = useIntl()
-  // const [widgets, setWidgets] = useState([])
-  const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
   const [getCanvas] = useLazyGetCanvasQuery()
@@ -193,8 +192,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange }, ref) => {
   }
 
   useImperativeHandle(ref, () => ({
-    save: onSave,
-    sections: sections
+    save: onSave
   }))
 
   const emptyCanvas = () => {
