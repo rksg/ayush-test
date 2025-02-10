@@ -1274,3 +1274,24 @@ export function radiusIpAddressRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+export function checkUntaggedVlan (value: string) {
+  const { $t } = getIntl()
+
+  const validFormat = /^[0-9,]+$/.test(value)
+  if (!validFormat) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  const items = value.toString().split(',')
+
+  const isValid = items.every((item: string) => {
+    const num = Number(item.trim())
+    return !isNaN(num) && num > 0 && num < 4095
+  })
+
+  if (isValid) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t(validationMessages.invalid))
+}
