@@ -1,6 +1,8 @@
+import AutoSizer from 'react-virtualized-auto-sizer'
+
 import { DonutChart, DonutChartData, DonutChartProps, Loader, NoActiveData } from '@acx-ui/components'
 
-import { StyledSpace } from './styledComponents'
+import { SizedDonutChartWrapper } from './styledComponents'
 
 export type ReduceReturnType = Record<string, number>
 
@@ -11,6 +13,7 @@ interface EdgeOverviewDonutWidgetProps {
   isFetching?: boolean,
   emptyMessage?: string,
   onClick?: DonutChartProps['onClick']
+  size?: { width: number, height: number }
 }
 
 export function EdgeOverviewDonutWidget (props : EdgeOverviewDonutWidgetProps ) {
@@ -20,23 +23,38 @@ export function EdgeOverviewDonutWidget (props : EdgeOverviewDonutWidgetProps ) 
     isFetching = false,
     data,
     emptyMessage,
-    onClick
+    onClick,
+    size
   } = props
 
-  return (
-    <Loader states={[{ isLoading, isFetching }]}>
-      <StyledSpace>
-        { (!emptyMessage || Number(data?.length) > 0)
-          ? <DonutChart
+  const getContent = (size?: { width: number, height: number }) => {
+    return (size
+      ? <SizedDonutChartWrapper>
+        <DonutChart
+          title={title}
+          style={{ width: size.width, height: size.height }}
+          legend={'name-value'}
+          data={data!}
+          onClick={onClick}
+        />
+      </SizedDonutChartWrapper>
+      : <AutoSizer>
+        {({ height, width }) => {
+          return <DonutChart
             title={title}
-            style={{ width: 100, height: 100 }}
+            style={{ width, height }}
             legend={'name-value'}
             data={data!}
             onClick={onClick}
-          />
-          : <NoActiveData text={emptyMessage}/>
+          />}
         }
-      </StyledSpace>
+      </AutoSizer>)
+  }
+  return (
+    <Loader states={[{ isLoading, isFetching }]}>
+      {(!emptyMessage || Number(data?.length)) > 0
+        ? getContent(size)
+        : <NoActiveData text={emptyMessage} />}
     </Loader>
   )
 }
