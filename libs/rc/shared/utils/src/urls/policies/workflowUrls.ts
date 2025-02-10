@@ -16,6 +16,7 @@ type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
   | 'createWorkflow' | 'updateWorkflow' | 'deleteWorkflow'
   | 'searchInProgressWorkflows' | 'getWorkflowUIConfig'
   | 'updateWorkflowUIConfig' | 'resetWorkflowUIConfig' | 'getWorkflowUIConfigImage'
+  | 'cloneWorkflow' | 'nestedCloneWorkflow'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
@@ -340,5 +341,25 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  cloneWorkflow: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/:id/workflows`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: `POST:${WorkflowBaseUrl}/{id}/workflows`
+  },
+  nestedCloneWorkflow: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/:id/steps/:stepId:/nextSteps/workflows/:referencedWorkflowId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: `POST:${WorkflowBaseUrl}/{id}/steps/{id}/nextSteps/workflows/{id}`
   }
 }
