@@ -6,7 +6,8 @@ import { useIntl }     from 'react-intl'
 import { GridRow, GridCol, PageHeader, Select, Button, ActionsContainer } from '@acx-ui/components'
 import { useNavigate }                                                    from '@acx-ui/react-router-dom'
 
-import { generateBreadcrumb } from './utils'
+import { DataSubscriptionFrequencyEnum } from './types'
+import { generateBreadcrumb }            from './utils'
 
 
 type DataSubscriptionsFormProps = {
@@ -107,9 +108,12 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
           >
             <Select
               disabled
-              options={[
-                { value: 'daily', label: $t({ defaultMessage: 'Daily' }) }
-              ]}
+              options={Object.entries(DataSubscriptionFrequencyEnum).map(
+                ([key, value]) => ({
+                  value,
+                  label: $t({ defaultMessage: '{key}' }, { key })
+                })
+              )}
             />
           </Form.Item>
         </Form>
