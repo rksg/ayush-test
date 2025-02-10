@@ -33,7 +33,13 @@ import {
   NotificationSmsUsage,
   NotificationSmsConfig,
   TwiliosIncommingPhoneNumbers,
-  TwiliosMessagingServices
+  TwiliosMessagingServices,
+  TwiliosWhatsappServices,
+  Webhook,
+  TableResult,
+  NotificationRecipientType,
+  PrivacyFeatures,
+  PrivacySettings
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -380,10 +386,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           const result = {
             id: data.id,
             description: data.description,
+            emailPreferences: data.emailPreferences,
+            smsPreferences: data.smsPreferences,
+            privilegeGroup: data.privilegeGroupId,
+            recipientType: data.privilegeGroupId
+              ? NotificationRecipientType.PRIVILEGEGROUP : NotificationRecipientType.GLOBAL,
             endpoints: data.endpoints
           } as NotificationRecipientUIModel
 
-          data.endpoints.forEach((endpoint: NotificationEndpoint) => {
+          data.endpoints?.forEach((endpoint: NotificationEndpoint) => {
             switch (endpoint.type) {
               case (NotificationEndpointType.email):
                 result.email = endpoint.destination
@@ -919,6 +930,106 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getTwiliosWhatsappServices: build.query<TwiliosWhatsappServices, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosWhatsappServices,
+          params, { ...ignoreErrorModal })
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getWebhooks, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'WEBHOOK_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'WEBHOOK'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'WEBHOOK_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getWebhookEntry: build.query<Webhook, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getWebhookEntry, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    addWebhook: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addWebhook, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateWebhook: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateWebhook, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteWebhook: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteWebhook, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    webhookSendSampleEvent: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.webhookSendSampleEvent, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getPrivacySettings: build.query<PrivacySettings[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getPrivacySettings, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: PrivacyFeatures) => {
+        return response.privacyFeatures
+      },
+      providesTags: [{ type: 'Privacy', id: 'DETAIL' }]
+    }),
+    updatePrivacySettings: build.mutation<PrivacySettings[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updatePrivacySettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (response: PrivacyFeatures) => {
+        return response.privacyFeatures
+      },
+      invalidatesTags: [{ type: 'Privacy', id: 'DETAIL' }]
     })
   })
 })
@@ -1004,5 +1115,15 @@ export const {
   useGetTwiliosIncomingPhoneNumbersQuery,
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useGetTwiliosMessagingServicesQuery,
-  useLazyGetTwiliosMessagingServicesQuery
+  useLazyGetTwiliosMessagingServicesQuery,
+  useGetTwiliosWhatsappServicesQuery,
+  useLazyGetTwiliosWhatsappServicesQuery,
+  useGetWebhooksQuery,
+  useGetWebhookEntryQuery,
+  useAddWebhookMutation,
+  useUpdateWebhookMutation,
+  useDeleteWebhookMutation,
+  useWebhookSendSampleEventMutation,
+  useGetPrivacySettingsQuery,
+  useUpdatePrivacySettingsMutation
 } = administrationApi

@@ -1,14 +1,14 @@
-import { UseLazyQuery, UseMutation }           from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition, QueryDefinition } from '@reduxjs/toolkit/query'
+import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { Params, TenantType, useParams }       from '@acx-ui/react-router-dom'
-import { RequestPayload, RolesEnum, UseQuery } from '@acx-ui/types'
-import { hasAllowedOperations, hasRoles }      from '@acx-ui/user'
-import { AccountType, getIntl, getOpsApi }     from '@acx-ui/utils'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { Params, TenantType, useParams }                  from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, UseQuery }            from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { AccountType, getIntl, getOpsApi }                from '@acx-ui/utils'
 
 import { hasPolicyPermission, hasServicePermission } from '../features'
 import { ConfigTemplateType }                        from '../types'
+import { ConfigTemplateUrlsInfo }                    from '../urls'
 
 import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
 import {
@@ -34,8 +34,12 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
 
 // eslint-disable-next-line max-len
 export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountType: string): boolean {
+  const hasPermission = getUserProfile().rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.getConfigTemplatesRbac)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   return featureFlagEnabled
-    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    && hasPermission
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
 
@@ -74,12 +78,11 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
   return isTemplate ? templateResult : result
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
 interface UseConfigTemplateLazyQueryFnSwitcherProps<ResultType> {
-  useLazyQueryFn: UseLazyQuery<DefaultQueryDefinition<ResultType>>,
-  useLazyTemplateQueryFn: UseLazyQuery<DefaultQueryDefinition<ResultType>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useLazyQueryFn: TypedUseLazyQuery<ResultType, any, any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useLazyTemplateQueryFn: TypedUseLazyQuery<ResultType, any, any>
 }
 export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
   props: UseConfigTemplateLazyQueryFnSwitcherProps<ResultType>
@@ -92,12 +95,11 @@ export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
   return isTemplate ? templateResult : result
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultMutationDefinition = MutationDefinition<any, any, any, any>
 interface UseConfigTemplateMutationFnSwitcherProps {
-  useMutationFn: UseMutation<DefaultMutationDefinition>,
-  useTemplateMutationFn: UseMutation<DefaultMutationDefinition>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useMutationFn: TypedUseMutation<any, any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useTemplateMutationFn: TypedUseMutation<any, any, any>
 }
 export function useConfigTemplateMutationFnSwitcher (
   props: UseConfigTemplateMutationFnSwitcherProps

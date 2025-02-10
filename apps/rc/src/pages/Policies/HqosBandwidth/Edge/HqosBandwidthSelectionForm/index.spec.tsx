@@ -7,8 +7,7 @@ import { EdgeHqosProfileFixtures, EdgeHqosProfilesUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                               from '@acx-ui/store'
 import { mockServer, render, renderHook, screen }        from '@acx-ui/test-utils'
 
-
-import { EdgeQosProfileSelectionForm } from './index'
+import { EdgeHqosProfileSelectionForm } from './index'
 
 const { mockEdgeHqosProfileStatusList, mockEdgeHqosData } = EdgeHqosProfileFixtures
 
@@ -59,7 +58,7 @@ describe('EdgeHqosProfileSelectionForm', () => {
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
-            <EdgeQosProfileSelectionForm />
+            <EdgeHqosProfileSelectionForm />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }
@@ -78,7 +77,7 @@ describe('EdgeHqosProfileSelectionForm', () => {
       <Provider>
         <StepsForm form={formRef.current}>
           <StepsForm.StepForm>
-            <EdgeQosProfileSelectionForm />
+            <EdgeHqosProfileSelectionForm />
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }

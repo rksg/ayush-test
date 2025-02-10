@@ -22,7 +22,7 @@ describe('Search', () => {
   it('should render correctly', async () => {
     const context = { setEntityNameSearch: jest.fn() } as unknown as ConfigChangeContextType
     render( <ConfigChangeContext.Provider value={context} children={<Search/>} />)
-    expect(await screen.findByPlaceholderText('Search Entity Name')).toBeVisible()
+    expect(await screen.findByPlaceholderText('Search Scope')).toBeVisible()
     await userEvent.type(screen.getByRole('textbox'), 'search')
     expect(context.setEntityNameSearch).toBeCalled()
   })
@@ -35,7 +35,7 @@ describe('KPIFilter', () => {
       applyKpiFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<KPIFilter/>}/>)
-    await userEvent.click(await screen.findByText('Add KPI filter'))
+    await userEvent.click(await screen.findByText('KPI'))
     await userEvent.click(
       await screen.findByRole('menuitemcheckbox', { name: 'Client Throughput' }))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -57,9 +57,9 @@ describe('KPIFilter', () => {
       applyKpiFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<KPIFilter/>}/>)
-    await userEvent.click(await screen.findByText('Add KPI filter'))
+    await userEvent.click(await screen.findByText('KPI'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(await screen.findByText('Add KPI filter')).toBeVisible()
+    expect(await screen.findByText('KPI')).toBeVisible()
     expect(context.applyKpiFilter).toBeCalledWith([])
   })
 })
@@ -71,7 +71,7 @@ describe('EntityTypeFilter', () => {
       setEntityTypeFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render( <ConfigChangeContext.Provider value={context} children={<EntityTypeFilter/>} />)
-    await userEvent.click(await screen.findByText('Entity Type'))
+    await userEvent.click(await screen.findByText('Entity'))
     await userEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'AP' }))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('AP')).toBeVisible()
@@ -92,9 +92,9 @@ describe('EntityTypeFilter', () => {
       setEntityTypeFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render( <ConfigChangeContext.Provider value={context} children={<EntityTypeFilter/>} />)
-    await userEvent.click(await screen.findByText('Entity Type'))
+    await userEvent.click(await screen.findByText('Entity'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(await screen.findByText('Entity Type')).toBeVisible()
+    expect(await screen.findByText('Entity')).toBeVisible()
     expect(context.setEntityTypeFilter).toBeCalledWith([])
   })
 })
@@ -216,10 +216,10 @@ describe('Ftiler', () => {
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Filter/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-    expect(await screen.findByPlaceholderText('Search Entity Name')).toBeVisible()
+    expect(await screen.findByPlaceholderText('Search Scope')).toBeVisible()
     await userEvent.type(screen.getByRole('textbox'), 'search')
-    expect(await screen.findByText('Add KPI filter')).toBeVisible()
-    expect(await screen.findByText('Entity Type')).toBeVisible()
+    expect(await screen.findByText('KPI')).toBeVisible()
+    expect(await screen.findByText('Entity')).toBeVisible()
     expect(await screen.findByText('Clear Filters')).toBeVisible()
     expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
   })

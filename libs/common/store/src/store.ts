@@ -1,6 +1,5 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore, createDynamicMiddleware }        from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
 
 import {
   baseAdministrationApi as administrationApi,
@@ -51,10 +50,14 @@ import {
   videoCallQoeApi,
   baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi,
+  baseRuckusAiChatApi as ruckusAiChatApi,
   baseClientIsolationApi as clientIsolationApi
 } from './baseApi'
+import { cancelMiddleware } from './cancelMiddleware'
 
 const isDev = process.env['NODE_ENV'] === 'development'
+
+export const dynamicMiddleware = createDynamicMiddleware()
 
 export const store = configureStore({
   reducer: {
@@ -106,6 +109,7 @@ export const store = configureStore({
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
+    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
     [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
   },
 
@@ -114,7 +118,8 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
-      dynamicMiddlewares,
+      cancelMiddleware,
+      dynamicMiddleware.middleware,
       commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
@@ -163,6 +168,7 @@ export const store = configureStore({
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
       directoryServerApi.middleware,
+      ruckusAiChatApi.middleware,
       clientIsolationApi.middleware
     ])
   },

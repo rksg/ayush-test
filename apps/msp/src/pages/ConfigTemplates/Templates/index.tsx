@@ -1,9 +1,8 @@
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
-import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition } from '@reduxjs/toolkit/query'
-import moment                 from 'moment'
-import { useIntl }            from 'react-intl'
+import { TypedMutationTrigger } from '@reduxjs/toolkit/query/react'
+import moment                   from 'moment'
+import { useIntl }              from 'react-intl'
 
 
 import {
@@ -58,11 +57,11 @@ import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-do
 import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'
 
-import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }                                              from './ShowDriftsDrawer'
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
-import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }                                                                    from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }                                                                      from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                                                                         from './ShowDriftsDrawer'
+import { ConfigTemplateDriftStatus, getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }                                                                  from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -174,7 +173,10 @@ export function ConfigTemplateList () {
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
-            setAppliedToTenantDrawerVisible, setSelectedTemplates, setAccessControlSubPolicyVisible
+            setAppliedToTenantDrawerVisible,
+            setSelectedTemplates,
+            setAccessControlSubPolicyVisible,
+            setShowDriftsDrawerVisible
           })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -214,7 +216,8 @@ interface TemplateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
   // eslint-disable-next-line max-len
-  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
+  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
+  setShowDriftsDrawerVisible: (visible: boolean) => void
 }
 
 function useColumns (props: TemplateColumnProps) {
@@ -222,7 +225,8 @@ function useColumns (props: TemplateColumnProps) {
   const {
     setAppliedToTenantDrawerVisible,
     setSelectedTemplates,
-    setAccessControlSubPolicyVisible
+    setAccessControlSubPolicyVisible,
+    setShowDriftsDrawerVisible
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
@@ -327,7 +331,15 @@ function useColumns (props: TemplateColumnProps) {
       filterable: driftStatusFilterOptions,
       sorter: true,
       render: function (_: ReactNode, row: ConfigTemplate) {
-        return getConfigTemplateDriftStatusLabel(row.driftStatus)
+        return <ConfigTemplateDriftStatus
+          row={row}
+          callbackMap={{
+            [ConfigTemplateDriftType.DRIFT_DETECTED]: () => {
+              setSelectedTemplates([row])
+              setShowDriftsDrawerVisible(true)
+            }
+          }}
+        />
       }
     }] : []),
     {
@@ -344,10 +356,8 @@ function useColumns (props: TemplateColumnProps) {
   return columns
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DeleteTemplateMutationDefinition = MutationDefinition<any, any, any, any>
-// eslint-disable-next-line max-len
-function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigger<DeleteTemplateMutationDefinition>>> {
+// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationTrigger<any, any, any>>> {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()

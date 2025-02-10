@@ -2,9 +2,10 @@ import { Switch, Tooltip }                           from 'antd'
 import { cloneDeep, findIndex, omit, remove, union } from 'lodash'
 import { useIntl }                                   from 'react-intl'
 
-import { Network, ServiceOperation, ServiceType, hasServicePermission } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                   from '@acx-ui/types'
-import { hasPermission }                                                from '@acx-ui/user'
+import { EdgeSdLanUrls, Network, ServiceOperation, ServiceType, hasServicePermission } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                  from '@acx-ui/types'
+import { hasPermission }                                                               from '@acx-ui/user'
+import { getOpsApi }                                                                   from '@acx-ui/utils'
 
 export interface ActivateNetworkSwitchButtonP2Props {
     row: Network,
@@ -28,7 +29,9 @@ export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButton
   const hasServiceOpsPermission = hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
    || hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE })
   const isPermiited = hasServiceOpsPermission && hasPermission({
-    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE]
+    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+    rbacOpsIds: [[getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
+      getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)]]
   })
   let newSelected = cloneDeep(activated)
 

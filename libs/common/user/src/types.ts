@@ -70,12 +70,17 @@ export interface UserProfile {
   externalId: string
   cloudCertStatus: string
   email: string
+  phoneNumber: string
   initials?: string
   fullName: string
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: []
+  scopes?: [],
+  preferredNotifications?: {
+    emailPreferences: boolean,
+    smsPreferences: boolean
+  }
 }
 
 export type GuestErrorRes = {
@@ -199,6 +204,8 @@ export enum raiPermissionsList {
 
   'READ_DATA_STUDIO',
   'WRITE_DATA_STUDIO',
+  'READ_DATA_SUBSCRIPTIONS',
+  'WRITE_DATA_SUBSCRIPTIONS',
   'READ_REPORTS',
   'READ_OCCUPANCY',
   'WRITE_OCCUPANCY',

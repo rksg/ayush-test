@@ -43,6 +43,11 @@ jest.mock('../utils', () => ({
     vxLanTunnels: undefined
   })
 }))
+jest.mock('../../ApCompatibility', () => ({
+  ...jest.requireActual('../../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
 jest.mocked(useIsSplitOn).mockReturnValue(true) // mock AAA policy
 
 async function fillInBeforeSettings (networkName: string) {
@@ -163,6 +168,25 @@ describe('NetworkForm', () => {
     await userEvent.click(macAuthenticationSwitch)
     expect(await screen.findByText(/MAC Address Format/i)).toBeInTheDocument()
     expect(await screen.findByText('AA-BB-CC-DD-EE-FF')).toBeVisible()
+  })
+
+  it('should render AAA Network with R370 compatibility tooltip', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(1)
+    toolTips.forEach(t => expect(t).toBeVisible())
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
   })
 
   it('should render correctly when certificateTemplate enabled', async () => {

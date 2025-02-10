@@ -20,7 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { domainNameRegExp, VenueIot } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }               from '../../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -28,10 +28,11 @@ import {
 import { FieldLabel } from '../../styledComponents'
 
 
-export function IotController () {
+export function IotController (props: VenueWifiConfigItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit=true } = props
   const [iotEnabled, setIotEnabled] = useState(false)
 
   const {
@@ -62,7 +63,7 @@ export function IotController () {
 
       setIotEnabled(venueApIotData.enabled)
 
-      setReadyToScroll?.((r) => [...new Set(r.concat('IoT Controller'))])
+      setReadyToScroll?.((r) => [...new Set(r.concat('IoT-Controller'))])
     }
   }, [form, venueApIot, setReadyToScroll])
 
@@ -137,6 +138,7 @@ export function IotController () {
               children={
                 <Switch
                   data-testid='iot-switch'
+                  disabled={!isAllowEdit}
                   onChange={handleChanged}
                   onClick={toggleIot}
                 />
@@ -153,7 +155,10 @@ export function IotController () {
               style={{ display: 'inline-block', width: '230px' }}
               // noStyle
               rules={[
-                { required: true },
+                { required: true,
+                  // eslint-disable-next-line max-len
+                  message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
+                },
                 { validator: (_, value) => domainNameRegExp(value) }
               ]}
               label={
@@ -169,7 +174,12 @@ export function IotController () {
                 </>
               }
               initialValue={''}
-              children={<Input />}
+              children={
+                <Input
+                  disabled={!isAllowEdit}
+                  onChange={handleChanged}
+                />
+              }
             />
           </Space>
         </Row>
