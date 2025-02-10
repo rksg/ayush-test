@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -25,6 +25,7 @@ import {
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { defaultNetworkPayload } from '../../../NetworkTable'
+import { SimpleListTooltip }     from '../../../SimpleListTooltip'
 import { ApplicationDrawer }     from '../../AccessControlForm/ApplicationDrawer'
 import { DeviceOSDrawer }        from '../../AccessControlForm/DeviceOSDrawer'
 import { Layer2Drawer }          from '../../AccessControlForm/Layer2Drawer'
@@ -282,7 +283,10 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       render: (_, row) => {
-        return row.networkIds?.length || 0
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkFilterOptions.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
       }
     }
   ]

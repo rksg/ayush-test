@@ -13,10 +13,25 @@ import {
   useDeleteProfilesMutation,
   useGetProfilesQuery
 }      from '@acx-ui/rc/services'
-import { SwitchProfileModel, ProfileTypeEnum, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, hasPermission }   from '@acx-ui/user'
+import {
+  SwitchProfileModel,
+  ProfileTypeEnum,
+  usePollingTableQuery,
+  SwitchUrlsInfo
+} from '@acx-ui/rc/utils'
+import {
+  useNavigate,
+  useParams,
+  useTenantLink
+}                     from '@acx-ui/react-router-dom'
+import { SwitchScopes } from '@acx-ui/types'
+import {
+  hasCrossVenuesPermission,
+  filterByAccess,
+  hasPermission
+
+}   from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -79,6 +94,7 @@ export function ProfilesTab () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateSwitchConfigProfile)],
       onClick: (selectedRows) => {
         const row = selectedRows?.[0]
         navigate(`${row?.profileType?.toLowerCase()}/${row?.id}/edit`, { replace: false })
@@ -87,6 +103,7 @@ export function ProfilesTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteProfiles)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -114,7 +131,11 @@ export function ProfilesTab () {
   ]
 
   const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE],
+    rbacOpsIds: [
+      getOpsApi(SwitchUrlsInfo.deleteProfiles),
+      getOpsApi(SwitchUrlsInfo.updateSwitchConfigProfile)
+    ]
   })
 
   return (
@@ -133,11 +154,13 @@ export function ProfilesTab () {
         actions={hasCrossVenuesPermission() ? filterByAccess([{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addSwitchConfigProfile)],
           onClick: () => navigate(`${linkToProfiles.pathname}/add`)
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addSwitchConfigProfile)],
           onClick: () => {
             navigate('cli/add', { replace: false })
           }

@@ -70,12 +70,17 @@ export interface UserProfile {
   externalId: string
   cloudCertStatus: string
   email: string
+  phoneNumber: string
   initials?: string
   fullName: string
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: []
+  scopes?: [],
+  preferredNotifications?: {
+    emailPreferences: boolean,
+    smsPreferences: boolean
+  }
 }
 
 export type GuestErrorRes = {

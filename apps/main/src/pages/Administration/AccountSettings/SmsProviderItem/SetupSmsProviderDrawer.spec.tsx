@@ -35,10 +35,32 @@ const mockLazyPhoneNumberQuery = jest.fn().mockImplementation(() => Promise.reso
 const mockLazyMessagingQuery = jest.fn().mockImplementation(() => Promise.resolve(
   { data: { messagingServiceResources: [] } }
 ))
+const mockLazyWhatsappQuery = jest.fn().mockImplementation(() => Promise.resolve(
+  { data: {
+    approvalFetch: {
+      sid: 'sid',
+      whatsapp: {
+        allow_category_change: true,
+        category: 'AUTHENTICATION',
+        content_type: 'whatsapp/authentication',
+        flows: null,
+        name: 'guest_network_authentication',
+        rejection_reason: '',
+        status: 'approved',
+        type: 'whatsapp'
+      },
+      url: 'https://content.twilio.com/v1/Content/sid/ApprovalRequests',
+      accountSid: 'AC76930bb18cb76e44e743bbd1572c5eaa'
+    },
+    errorMessage: null,
+    hasError: false
+  } }
+))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useLazyGetTwiliosIncomingPhoneNumbersQuery: () => ([ mockLazyPhoneNumberQuery ]),
-  useLazyGetTwiliosMessagingServicesQuery: () => ([ mockLazyMessagingQuery ])
+  useLazyGetTwiliosMessagingServicesQuery: () => ([ mockLazyMessagingQuery ]),
+  useLazyGetTwiliosWhatsappServicesQuery: () => ([ mockLazyWhatsappQuery ])
 }))
 
 describe('Set SMS Provider Drawer', () => {
