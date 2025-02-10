@@ -90,7 +90,7 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
 
   return <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
     <Table
-      rowKey='serialNumber'
+      rowKey='ip'
       settingsId={settingsId}
       columns={useColumns()}
       dataSource={data}

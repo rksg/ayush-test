@@ -49,18 +49,18 @@ describe('EdgeNokiaOltTable', () => {
     }, { state: mockOlt }))
   })
 
-  it.skip('should open OLT form when edit', async () => {
-    render(<Provider>
-      <EdgeNokiaOltTable data={mockOltList} />
-    </Provider>, { route: { params, path: mockPath } })
+  // it('should open OLT form when edit', async () => {
+  //   render(<Provider>
+  //     <EdgeNokiaOltTable data={mockOltList} />
+  //   </Provider>, { route: { params, path: mockPath } })
 
-    const row = await screen.findByRole('row', { name: /TestOlt/i })
-    await click(within(row).getByRole('radio'))
-    await click(screen.getByRole('button', { name: 'Edit' }))
-    const drawer = await screen.findByTestId('NokiaOltFormDrawer')
-    expect(drawer).toBeVisible()
-    expect(drawer).toHaveTextContent(JSON.stringify(mockOltList[0]))
-  })
+  //   const row = await screen.findByRole('row', { name: /TestOlt/i })
+  //   await click(within(row).getByRole('radio'))
+  //   await click(screen.getByRole('button', { name: 'Edit' }))
+  //   const drawer = await screen.findByTestId('NokiaOltFormDrawer')
+  //   expect(drawer).toBeVisible()
+  //   expect(drawer).toHaveTextContent(JSON.stringify(mockOltList[0]))
+  // })
 
   it('should delete OLT', async () => {
     const mockedDeleteReq = jest.fn()
