@@ -1,15 +1,16 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, Loader, SummaryCard, Tooltip } from '@acx-ui/components'
-import { useSwitchPortProfilesDetailQuery }               from '@acx-ui/rc/services'
+import { SwitchPortProfiles }                             from '@acx-ui/rc/utils'
 
+interface SwitchPortProfileWidgetProps {
+  data?: SwitchPortProfiles
+  isLoading: boolean
+}
 
-export default function SwitchPortProfileWidget (){
+export default function SwitchPortProfileWidget (props: SwitchPortProfileWidgetProps){
   const { $t } = useIntl()
-  const params = useParams()
-
-  const { data, isLoading } = useSwitchPortProfilesDetailQuery({ params })
+  const { data, isLoading } = props
 
   const taggedVlanContent = () => {
     if(data?.taggedVlans){
