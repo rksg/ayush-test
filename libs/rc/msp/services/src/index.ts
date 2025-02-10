@@ -37,7 +37,8 @@ import {
   LicenseAttentionNotes,
   RecommendFirmwareUpgradeByApModel,
   LicenseCalculatorDataResponse,
-  MileageReportsResponse
+  MileageReportsResponse,
+  SolutionTokenSettings
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -1010,6 +1011,14 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getSolutionTokenSettings: build.query<SolutionTokenSettings[], RequestPayload>({
+      query: ({ params }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getSolutionTokenSettings, params)
+        return {
+          ...request
+        }
+      }
+    }),
     getEntitlementsAttentionNotes: build.query<LicenseAttentionNotes, RequestPayload>({
       query: ({ params, payload }) => {
         const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsAttentionNotes, params)
@@ -1214,6 +1223,7 @@ export const {
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
   useGetEntitlementsCompliancesQuery,
+  useGetSolutionTokenSettingsQuery,
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
   useUpdateMspEcDelegationsMutation,

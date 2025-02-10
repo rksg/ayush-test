@@ -36,7 +36,7 @@ export const defaultRbacClientPayload = {
     'macAddress', 'ipAddress','mldMacAddress', 'cpeMacAddress',
     'connectedTime', 'lastUpdatedTime',
     'venueInformation', 'apInformation', 'networkInformation', 'switchInformation',
-    'signalStatus', 'radioStatus', 'trafficStatus', 'authenticationStatus'
+    'signalStatus', 'radioStatus', 'trafficStatus', 'authenticationStatus', 'band'
   ]
 }
 

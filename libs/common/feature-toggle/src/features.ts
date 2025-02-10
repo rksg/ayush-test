@@ -55,6 +55,7 @@ export enum Features {
   EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
+  EDGE_NOKIA_OLT_MGMT_TOGGLE = 'edge-poc-nokia-olt-mgmt-toggle',
   EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
@@ -94,6 +95,7 @@ export enum Features {
   MFA_ALTERNATE_QR_CODE_TOGGLE = 'acx-ui-mfa-qr-code-display-toggle',
   MFA_NEW_API_TOGGLE = 'mfa-new-api-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
+  MSP_APP_MONITORING = 'mspservice-app-monitoring',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
@@ -113,6 +115,7 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
+  NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE = 'ptenant-admin-contextual-notifications',
   NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-api-changes-toggle',
   NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
@@ -213,6 +216,7 @@ export enum Features {
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
+  WHATSAPP_SELF_SIGN_IN_TOGGLE = 'whatsapp-self-sign-in-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
@@ -278,7 +282,9 @@ export enum Features {
   ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
   ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle',
   ACX_UI_SHOW_ADMIN_TYPE_COLUMN_TOGGLE='acx-ui-show-admin-type-column-toggle',
-  ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle'
+  ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
+  SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
+  LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

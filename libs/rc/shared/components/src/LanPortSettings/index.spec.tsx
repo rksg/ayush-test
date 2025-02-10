@@ -708,7 +708,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
 
     const selectedApModelCaps = {
       model: 'R370',
-      supportSoftGRE: false
+      supportSoftGre: false
     }
 
     render(<Provider>
@@ -787,7 +787,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
 
     const selectedApModelCaps = {
       model: 'R370',
-      supportSoftGRE: false
+      supportSoftGre: false
     }
 
     render(<Provider>

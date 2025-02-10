@@ -20,6 +20,7 @@ interface EthernetPortProfileFieldsProps {
     isDhcpEnabled?: boolean,
     hasVni?: boolean,
     readOnly?: boolean,
+    useVenueSettings?: boolean,
     serialNumber?: string,
     venueId?: string,
     onGUIChanged?: (fieldName: string) => void,
@@ -38,6 +39,7 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
     selectedModelCaps,
     selectedPortCaps,
     venueId,
+    useVenueSettings=false,
     onEthernetPortProfileChanged
   } = props
   const { $t } = useIntl()
@@ -119,6 +121,8 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
               onGUIChanged?.('ethernetPortProfileId')
               setEthernetProfileCreateId(createId)
             }}
+            disabled={isDhcpEnabled}
+            addBtnVisible={!useVenueSettings}
             currentEthernetPortData={currentEthernetPortData} />
         </Space>
       )}
