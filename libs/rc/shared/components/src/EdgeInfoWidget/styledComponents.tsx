@@ -1,6 +1,4 @@
-import styled, { css } from 'styled-components/macro'
-
-import { GridCol } from '@acx-ui/components'
+import { css } from 'styled-components/macro'
 
 export const Styles = css`
 background-color: var(--acx-neutrals-10);
@@ -12,10 +10,3 @@ background-color: var(--acx-neutrals-10);
     justify-content: center;
   }
 }`
-
-export const CentralizedChartGridCol = styled(GridCol)` 
-
-`
-
-// margin: auto;
-// align-items: center;
