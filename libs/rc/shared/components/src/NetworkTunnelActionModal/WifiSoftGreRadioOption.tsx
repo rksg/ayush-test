@@ -210,14 +210,17 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
                 >
                   {$t({ defaultMessage: 'Profile details' })}
                 </UI.TextButton>
-                <UI.TextButton
-                  type='link'
-                  disabled={!hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
-                  onClick={handleClickAdd}
-                  style={{ marginLeft: 5 }}
-                >
-                  {$t({ defaultMessage: 'Add' })}
-                </UI.TextButton>
+                {hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE }) &&
+                  <UI.TextButton
+                    type='link'
+                    disabled={!hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+                    onClick={handleClickAdd}
+                    style={{ marginLeft: 5 }}
+                  >
+                    {$t({ defaultMessage: 'Add' })}
+                  </UI.TextButton>
+                }
+
               </Space>}
       </UI.RadioWrapper>
     </Form.Item>
