@@ -8,8 +8,7 @@ import moment                           from 'moment'
 import { RawIntlProvider }              from 'react-intl'
 
 import { ExpandSquareUp, ExpandSquareDown, CopyOutlined, ReportsOutlined, ReportsSolid } from '@acx-ui/icons'
-import { getUserProfile }                                                                from '@acx-ui/user'
-import { getIntl }                                                                       from '@acx-ui/utils'
+import { getIntl, isDev, isIntEnv, isLocalHost }                                         from '@acx-ui/utils'
 
 import { Button, ButtonProps } from '../Button'
 
@@ -104,9 +103,6 @@ export const showActionModal = (props: ActionModalProps) => {
 
 const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
-  const { improveErrorDialogEnabled } = getUserProfile()
-  // eslint-disable-next-line no-console
-  console.log(improveErrorDialogEnabled)
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
   switch (props.customContent?.action) {
@@ -219,14 +215,14 @@ function CodeTemplate (props: {
   }
 }) {
   const { $t } = getIntl()
-  const { improveErrorDialogEnabled } = getUserProfile()
   const okText = $t({ defaultMessage: 'OK' })
+  const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
   return (
     <>
       {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
         {props.code &&
-          (improveErrorDialogEnabled ? (
+          (enabledDialogImproved ? (
             <CollapsePanel
               expanded={props.code.expanded}
               header={props.code.label}

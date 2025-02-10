@@ -29,7 +29,6 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
-  improveErrorDialogEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
@@ -66,7 +65,6 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
-  userProfile.improveErrorDialogEnabled = profile.improveErrorDialogEnabled
   userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
