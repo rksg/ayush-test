@@ -308,11 +308,11 @@ export const DateTimePicker = ({
   </Tooltip>
 }
 
-export function getDefaultEarliestStart () {
+export function getDefaultEarliestStart (props?: { isReport?: boolean }) {
   const { accountTier } = getUserProfile()
   const allowedDateRange = (accountTier === AccountTier.GOLD
     ? dateRangeForLast(1,'month')
-    : dateRangeForLast(3,'months')
+    : dateRangeForLast(props?.isReport ? 12 : 3, 'months')
   )
   return allowedDateRange[0].startOf('day')
 }
