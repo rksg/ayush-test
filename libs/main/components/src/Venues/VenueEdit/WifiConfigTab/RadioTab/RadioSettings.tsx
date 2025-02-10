@@ -614,8 +614,8 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
           { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
           { dual5GName, br: <br /> }
         )): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
-          $t({ defaultMessage: 'Please select one channel' }):
-          $t({ defaultMessage: 'Please select at least two channels' })
+        $t({ defaultMessage: 'Please select one channel' }):
+        $t({ defaultMessage: 'Please select at least two channels' })
       if (Array.isArray(channels) && ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
         showActionModal({
           type: 'error',
