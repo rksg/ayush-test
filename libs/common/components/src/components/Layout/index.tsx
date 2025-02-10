@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useCallback, useEffect, useState } from 'react'
+import React, { createContext, useContext, useCallback, useEffect, useState, useRef } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
 import { Menu }                              from 'antd'
@@ -187,17 +187,30 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 
 type LayoutContextType = {
   pageHeaderY: number
-  setPageHeaderY: (y: number) => void
+  addStickyNode: (rect: HTMLElement) => () => void
   showMessageBanner?: boolean
   setShowMessageBanner: (isShow?: boolean) => void
 }
 const LayoutContext = createContext({
   pageHeaderY: 0,
-  setPageHeaderY: () => {},
+  addStickyNode: () => () => {},
   showMessageBanner: undefined,
   setShowMessageBanner: () => {}
 } as LayoutContextType)
 export const useLayoutContext = () => useContext(LayoutContext)
+
+export const useLayoutTrackStickyNodes = () => {
+  const { addStickyNode } = useLayoutContext()
+  const ref = useRef<HTMLDivElement | null>(null)
+  const rect = useCallback(() => ref.current?.getBoundingClientRect(), [])
+
+  useEffect(() => {
+    if (!ref.current) return
+    return addStickyNode(ref.current)
+  }, [addStickyNode, ref])
+
+  return { ref, rect }
+}
 
 export function Layout ({
   logo,
@@ -209,12 +222,19 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  const [pageHeaderY, setPageHeaderY] = useState(0)
+  const [stickyNodes, setStickyNodes] = useState<HTMLElement[]>([])
   const [showMessageBanner, setShowMessageBanner] = useState<boolean>()
   const screenXL = parseInt(modifyVars['@screen-xl'], 10)
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
     () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
+
+  const addStickyNode = useCallback((element: HTMLElement) => {
+    setStickyNodes(nodes => nodes.concat(element))
+    return function removeStickyNode () {
+      setStickyNodes(nodes => nodes.filter(node => node !== element))
+    }
+  }, [])
 
   const onSubOptimalDisplay = useCallback((state: boolean) => {
     setSubOptimalDisplay(state)
@@ -239,11 +259,14 @@ export function Layout ({
   }, [window.innerWidth])
 
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
+  const top = Math.max(0, ...stickyNodes.map(node => {
+    const rect = node.getBoundingClientRect()
+    return rect.top + rect.height
+  }))
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
     style={{
-      '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
-      '--acx-pageheader-height': pageHeaderY + 'px'
+      '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0'
     } as React.CSSProperties}>
     <ProLayout
       breakpoint='xl'
@@ -268,8 +291,8 @@ export function Layout ({
       className={collapsed ? 'sider-collapsed' : ''}
     >
       <LayoutContext.Provider value={{
-        pageHeaderY,
-        setPageHeaderY,
+        pageHeaderY: top,
+        addStickyNode,
         showMessageBanner,
         setShowMessageBanner
       }}>

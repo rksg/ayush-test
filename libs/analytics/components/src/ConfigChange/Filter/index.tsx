@@ -10,7 +10,7 @@ import {
   getConfigChangeEntityTypeMapping,
   TableProps,
   Tooltip,
-  useLayoutContext
+  useLayoutTrackStickyNodes
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                 from '@acx-ui/icons'
@@ -154,18 +154,20 @@ export const Download = () => {
 }
 
 export const Filter = () => {
-  const layout = useLayoutContext()
-  return <UI.Wrapper style={
-    { '--sticky-offset': `${layout.pageHeaderY}px` } as React.CSSProperties}>
-    <UI.Space>
-      <Search/>
-      <EntityTypeFilter/>
-      <KPIFilter/>
-    </UI.Space>
-    <UI.Space>
-      <Reset/>
-      <ResetZoom/>
-      <Download/>
-    </UI.Space>
-  </UI.Wrapper>
+  const { ref, rect } = useLayoutTrackStickyNodes()
+
+  return <UI.Container ref={ref} style={{ top: rect()?.top }}>
+    <UI.Wrapper>
+      <UI.Space>
+        <Search/>
+        <EntityTypeFilter/>
+        <KPIFilter/>
+      </UI.Space>
+      <UI.Space>
+        <Reset/>
+        <ResetZoom/>
+        <Download/>
+      </UI.Space>
+    </UI.Wrapper>
+  </UI.Container>
 }
