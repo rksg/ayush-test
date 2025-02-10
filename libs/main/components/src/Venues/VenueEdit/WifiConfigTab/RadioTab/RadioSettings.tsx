@@ -493,27 +493,41 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
   }
 
   const onLower5gTypeChange = (e: RadioChangeEvent) => {
-    const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'method'], radioParams5GMethod)
+    if (isVenueChannelSelectionManualEnabled && e.target.value) {
+      const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
 
-    const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'allowedIndoorChannels'], indoorChannels)
+      if (radioParams5GMethod == ScanMethodEnum.MANUAL) {
+        const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+        formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'allowedIndoorChannels'], indoorChannels)
 
-    const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'allowedOutdoorChannels'], outdoorChannels)
+        const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+        formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'allowedOutdoorChannels'], outdoorChannels)
+      } else {
+        handleResetDefaultSettings(ApRadioTypeEnum.RadioLower5G)
+      }
+
+      formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'method'], radioParams5GMethod)
+    }
 
     setIsLower5gInherit(e.target.value)
   }
 
   const onUpper5gTypeChange = (e: RadioChangeEvent) => {
-    const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'method'], radioParams5GMethod)
+    if (isVenueChannelSelectionManualEnabled && e.target.value) {
+      const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
 
-    const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels'], indoorChannels)
+      if (radioParams5GMethod == ScanMethodEnum.MANUAL) {
+        const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+        formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels'], indoorChannels)
 
-    const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
-    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels'], outdoorChannels)
+        const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+        formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels'], outdoorChannels)
+      } else {
+        handleResetDefaultSettings(ApRadioTypeEnum.RadioUpper5G)
+      }
+
+      formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'method'], radioParams5GMethod)
+    }
 
     setIsUpper5gInherit(e.target.value)
   }
