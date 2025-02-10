@@ -123,7 +123,6 @@ export function ConfigTemplateList () {
       }
     },
     ...(cloneEnabled ? [{
-      // eslint-disable-next-line max-len
       visible: (selectedRows: ConfigTemplate[]) => canClone(selectedRows[0]?.type),
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (rows: ConfigTemplate[]) => {
