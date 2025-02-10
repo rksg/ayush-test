@@ -50,7 +50,8 @@ export const SwitchPortViewModelQueryFields = [
   'switchMac',
   'switchModel',
   'switchName',
-  'switchPortProfileId',
+  'switchPortProfileName',
+  'switchPortProfileType',
   'switchSerial',
   'switchUnitId',
   'syncedSwitchConfig',
@@ -534,7 +535,8 @@ export interface SwitchPortViewModel extends GridDataRow {
 	criticalVlan?: number
 	authFailAction?: string
 	authTimeoutAction?: string,
-  switchPortProfileId?: string
+  switchPortProfileName?: string,
+  switchPortProfileType?: string
   errorDisableStatus?: string
 }
 

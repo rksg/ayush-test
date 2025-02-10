@@ -4,15 +4,14 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
-  // useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -91,11 +90,6 @@ export function SwitchPortTable (props: {
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
   })) : []
-
-  // const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
-  //   params: { tenantId },
-  //   payload: { fields: ['id'] }
-  // }, { skip: !isSwitchPortProfileEnabled })
 
   useEffect(() => {
     const setData = async () => {
@@ -244,28 +238,26 @@ export function SwitchPortTable (props: {
       }
     }
   },
-  //Temporarily commented
-  // {
-  //   key: 'switchPortProfileId',
-  //   title: $t({ defaultMessage: 'Profile Name' }),
-  //   dataIndex: 'switchPortProfileId',
-  //   show: isSwitchPortProfileEnabled,
-  //   sorter: true,
-  //   render: (_, row) => {
-  //     return switchPortProfilesList?.data?.find(
-  //       profile => profile.id === row.switchPortProfileId)?.name
-  //   }
-  // }, {
-  //   key: 'switchPortProfileId',
-  //   title: $t({ defaultMessage: 'Type' }),
-  //   dataIndex: 'switchPortProfileId',
-  //   show: isSwitchPortProfileEnabled,
-  //   sorter: true,
-  //   render: (_, row) => {
-  //     return switchPortProfilesList?.data?.find(
-  //       profile => profile.id === row.switchPortProfileId)?.type
-  //   }
-  // },
+  {
+    key: 'switchPortProfileName',
+    title: $t({ defaultMessage: 'Port Profile Name' }),
+    dataIndex: 'switchPortProfileName',
+    show: false,
+    sorter: true,
+    render: (_, row) => {
+      return row.switchPortProfileName ? row.switchPortProfileName : ''
+    }
+  },
+  {
+    key: 'switchPortProfileType',
+    title: $t({ defaultMessage: 'Port Profile Type' }),
+    dataIndex: 'switchPortProfileType',
+    show: false,
+    sorter: true,
+    render: (_, row) => {
+      return row.switchPortProfileType ? row.switchPortProfileType : ''
+    }
+  },
   {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
