@@ -493,10 +493,28 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
   }
 
   const onLower5gTypeChange = (e: RadioChangeEvent) => {
+    const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'method'], radioParams5GMethod)
+
+    const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'allowedIndoorChannels'], indoorChannels)
+
+    const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'allowedOutdoorChannels'], outdoorChannels)
+
     setIsLower5gInherit(e.target.value)
   }
 
   const onUpper5gTypeChange = (e: RadioChangeEvent) => {
+    const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'method'], radioParams5GMethod)
+
+    const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'allowedIndoorChannels'], indoorChannels)
+
+    const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'allowedOutdoorChannels'], outdoorChannels)
+
     setIsUpper5gInherit(e.target.value)
   }
 
@@ -571,12 +589,17 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     const validateChannels = (channels: unknown[] | undefined, method: ScanMethodEnum | undefined,
       title: string, dual5GName?: string) => {
 
-      const content = dual5GName?
+      const content = dual5GName? ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
+        $t(
+          // eslint-disable-next-line max-len
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select one channel under the {dual5GName} block' },
+          { dual5GName, br: <br /> }
+        ):
         $t(
           // eslint-disable-next-line max-len
           { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
           { dual5GName, br: <br /> }
-        ): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
+        )): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
           $t({ defaultMessage: 'Please select one channel' }):
           $t({ defaultMessage: 'Please select at least two channels' })
       if (Array.isArray(channels) && ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
