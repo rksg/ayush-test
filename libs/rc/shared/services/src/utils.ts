@@ -25,12 +25,9 @@ export function getMetaList<T extends MetaBase> (
     fields: metaListInfo.fields,
     filters: {
       id: list.data.map((item: { id: string }) => item.id),
-      ...(metaListInfo.filters && ('fromTime' in metaListInfo.filters)
-      && { fromTime: metaListInfo.filters['fromTime'] }),
-      ...(metaListInfo.filters && ('toTime' in metaListInfo.filters)
-      && { toTime: metaListInfo.filters['toTime'] }),
-      ...(metaListInfo.filters && ('alarmType' in metaListInfo.filters)
-      && { alarmType: metaListInfo.filters['alarmType'] })
+      fromTime: metaListInfo.filters?.['fromTime'],
+      toTime: metaListInfo.filters?.['toTime'],
+      alarmType: metaListInfo.filters?.['alarmType']
     }
   }
   return {
