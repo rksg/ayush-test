@@ -63,6 +63,7 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataSubscriptionsEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
@@ -404,6 +405,12 @@ export function useMenuConfig () {
               } : {
                 uri: '/administration/administrators',
                 label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
+            ...(isMspAppMonitoringEnabled ? [
+              {
+                uri: '/administration/privacy',
+                label: $t({ defaultMessage: 'Privacy' })
               }
             ] : []),
             ...(

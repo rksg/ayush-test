@@ -56,3 +56,33 @@ export const fakeNotificationList = [
     mobileEnabled: false
   }
 ]
+export const privilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'ADMIN',
+      description: 'Admin Role',
+      roleName: 'ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8912',
+      name: 'PRIME_ADMIN',
+      description: 'Prime Admin Role',
+      roleName: 'PRIME_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8913',
+      name: 'READ_ONLY',
+      description: 'Read only Role',
+      roleName: 'READ_ONLY',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    }
+  ]

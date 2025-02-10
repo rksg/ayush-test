@@ -361,6 +361,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/notifications/sms/providers/twilios/messagingServices',
     newApi: true
   },
+  getTwiliosWhatsappServices: {
+    method: 'post',
+    url: '/notifications/sms/providers/twilios/templateApprovalStatus',
+    newApi: true
+  },
   getWebhooks: {
     method: 'post',
     url: '/webhooks/query',
@@ -389,6 +394,16 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   webhookSendSampleEvent: {
     method: 'post',
     url: '/webhooks/sendSampleEvents',
+    newApi: true
+  },
+  getPrivacySettings: {
+    method: 'get',
+    url: '/tenants/privacySettings',
+    newApi: true
+  },
+  updatePrivacySettings: {
+    method: 'PATCH',
+    url: '/tenants/privacySettings',
     newApi: true
   }
 }
