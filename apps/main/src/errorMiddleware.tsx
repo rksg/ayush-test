@@ -167,7 +167,6 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.SERVER_ERROR
       break
   }
-  // const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
   let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
   if (errors && isShowApiError(request)) {
     if (typeof errors === 'string') {

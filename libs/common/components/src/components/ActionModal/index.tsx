@@ -11,6 +11,7 @@ import { ExpandSquareUp, ExpandSquareDown, CopyOutlined, ReportsOutlined, Report
 import { getIntl, isDev, isIntEnv, isLocalHost }                                         from '@acx-ui/utils'
 
 import { Button, ButtonProps } from '../Button'
+import { Descriptions }        from '../Descriptions'
 
 import * as UI from './styledComponents'
 
@@ -320,42 +321,50 @@ function CollapsePanel (props: {
     inputEl.current?.resizableTextArea?.textArea.select()
   }
 
-  const wrapText = (text: string , maxWidth: number) => {
-    const lines: string[] = []
-    let currentLine: string = ''
-    let words: string[] = text.split('')
-
-    while (words.length) {
-      let char = words.shift()
-      if (char === undefined) break
-
-      if ((currentLine + char).length > maxWidth) {
-        lines.push(currentLine)
-        currentLine = char
-      } else {
-        currentLine += char
-      }
-    }
-
-    if (currentLine) lines.push(currentLine)
-    return lines.join('\n\t\t\t')
-  }
-
   const getContent = function () {
+    const { $t } = getIntl()
     const content = props.content
     const object = JSON.parse(content)
-    const errorObj = object.errors[0]
-    const errorDetails = [
-      `URL:\t\t${wrapText(props.path || '', 40)}`,
-      `Error Code:\t${props.errorCode}`,
-      `Timestamp:\t${moment().format('YYYYMMDD-HHmmss')}`,
-      errorObj.code ? `\nCode:\t\t${errorObj.code}` : '',
-      errorObj.message ? `Reason:\t\t${errorObj.message}` : '',
-      errorObj.suggestion ? `Suggestion:\t${errorObj.suggestion}` : '',
-      !errorObj.message ? `Error Response: ${content}` : ''
-    ]
-    const errorMessage = errorDetails.filter(line => line.trim() !== '').join('\n')
-    return errorMessage
+    const errorObj = object.errors?.[0] || {}
+    return <UI.ErrorDescriptions labelWidthPercent={30}
+      contentStyle={{ alignItems: 'center' }}>
+      {/* model  */}
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'URL' })}
+        children={props.path} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Error Code' })}
+        children={props.errorCode} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Timestamp' })}
+        children={moment().format('YYYYMMDD-HHmmss')} />
+      {errorObj.code &&
+         <Descriptions.Item
+           style={{ marginTop: '16px' }}
+           label={$t({ defaultMessage: 'Code' })}
+           children={errorObj.code} />
+      }
+      {errorObj.message &&
+         <Descriptions.Item
+           label={$t({ defaultMessage: 'Reason' })}
+           children={errorObj.message} />
+      }
+      {errorObj.suggestion &&
+         <Descriptions.Item
+           label={$t({ defaultMessage: 'Suggestion' })}
+           children={errorObj.suggestion} />
+      }
+      { !errorObj.message &&
+      <>
+        <Descriptions.Item
+          label={'Error Response'}
+          children={''} />
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+          {JSON.stringify(content, null, 2)}
+        </div>
+      </>
+      }
+    </UI.ErrorDescriptions>
   }
 
   const getExpandIcon = (isActive: boolean | undefined) => {
@@ -377,17 +386,9 @@ function CollapsePanel (props: {
       defaultActiveKey={props.expanded ? [props.header] : undefined}
     >
       <Panel header={undefined} key={props.header}>
-        <TextArea ref={inputEl}
-          rows={20}
-          readOnly={true}
-          value={getContent()}
-          style={{
-            padding: '0px',
-            fontSize: '11px',
-            lineHeight: '16px',
-            border: 'none',
-            marginTop: '-10px'
-          }} />
+        <div style={{ backgroundColor: '#F8F8FA' }}>
+          {getContent()}
+        </div>
         <UI.CopyButton
           type='link'
           onClick={copyText}
