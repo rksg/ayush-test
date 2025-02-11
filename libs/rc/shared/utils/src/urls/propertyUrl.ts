@@ -12,6 +12,7 @@ type PropertyUrlType =
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
+  'addUnitLinkedIdentity' |
   'deletePropertyUnit' |
   'notifyPropertyUnits' |
   'getResidentPortalList' |
@@ -78,6 +79,11 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'PATCH',
     newApi: true,
     url: '/venues/:venueId/units/:unitId'
+  },
+  addUnitLinkedIdentity: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/units/:unitId/identities/:identityId'
   },
   deletePropertyUnit: {
     method: 'delete',

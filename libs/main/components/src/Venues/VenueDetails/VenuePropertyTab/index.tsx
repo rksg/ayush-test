@@ -47,8 +47,9 @@ import { RolesEnum }                from '@acx-ui/types'
 import { filterByAccess, hasRoles } from '@acx-ui/user'
 import { exportMessageMapping }     from '@acx-ui/utils'
 
-import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
-import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
+import { PropertyUnitBulkDrawer }     from './PropertyUnitBulkDrawer'
+import { PropertyUnitDrawer }         from './PropertyUnitDrawer'
+import { PropertyUnitIdentityDrawer } from './PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
 
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { $expired: boolean }) => props)`
@@ -128,7 +129,9 @@ export function VenuePropertyTab () {
     isEdit: false,
     visible: false
   })
+  const [selectedUnits, setSelectedUnits] = useState<PropertyUnit[]>([])
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
+  const [addIdentityDrawerVisible, setAddIdentityDrawerVisible] = useState(false)
 
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
@@ -407,6 +410,16 @@ export function VenuePropertyTab () {
           }
         },
         {
+          label: $t({ defaultMessage: 'Add Identity Association' }),
+          visible: (selectedItems => selectedItems.length <= 1 && isMultipleIdentityUnits),
+          onClick: (units, clearSelection) => {
+            setSelectedUnits(units.map(u=> {return {
+              ...u }}))
+            clearSelection()
+            setAddIdentityDrawerVisible(true)
+          }
+        },
+        {
           label: $t({ defaultMessage: 'Resend' }),
           onClick: (selectedItems, clearSelection) => {
             notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
@@ -599,6 +612,15 @@ export function VenuePropertyTab () {
           onClose={() => setDrawerState({ isEdit: false, visible: false, units: undefined })}
         />
       }
+      <PropertyUnitIdentityDrawer
+        visible={addIdentityDrawerVisible}
+        groupId={groupId ? groupId : ''}
+        venueId={venueId ? venueId : ''}
+        unitId={selectedUnits.at(0)?.id}
+        onClose={() => {
+          setAddIdentityDrawerVisible(false)
+        }}
+      />
       <ImportFileDrawer
         title={$t({ defaultMessage: 'Import Units From File' })}
         visible={uploadCsvDrawerVisible}
