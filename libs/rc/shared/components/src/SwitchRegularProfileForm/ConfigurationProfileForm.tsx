@@ -40,6 +40,7 @@ import { PortProfile }                              from './PortProfile'
 import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
+import { VlanPortSetting }                          from './VlanPortSetting'
 import { VlanSetting }                              from './VlanSetting'
 import { VoiceVlan }                                from './VoiceVlan'
 
@@ -61,6 +62,7 @@ export function ConfigurationProfileForm () {
   const isSwitchPortProfileToggle = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isBulkVlanProvisioningEnabled = useIsSplitOn(Features.BULK_VLAN_PROVISIONING)
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
 
   const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
@@ -216,8 +218,18 @@ export function ConfigurationProfileForm () {
 
   }
 
-  const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>,
-    timing?: string) => {
+  const updateVlanPortsData = async (data: Partial<SwitchConfigurationProfile>) => {
+    // eslint-disable-next-line no-console
+    console.log('updateVlanPortsData: ', data)
+  }
+
+  const updateVlanCurrentData = async (
+    data: Partial<SwitchConfigurationProfile>,
+    timing?: string
+  ) => {
+    // eslint-disable-next-line no-console
+    console.log('updateVlanCurrentData: ', data)
+
     const nextCurrentData = {
       ...currentData,
       ...data
@@ -374,6 +386,10 @@ export function ConfigurationProfileForm () {
       const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
       const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
 
+      // eslint-disable-next-line no-console
+      console.log('handleEditProfile: ', proceedData(formData) )
+      return
+
       await disassociateWithCliProfile(disassociateSwitch)
       await updateSwitchConfigProfile({
         params,
@@ -385,6 +401,7 @@ export function ConfigurationProfileForm () {
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
       return true
+
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
@@ -420,6 +437,13 @@ export function ConfigurationProfileForm () {
           >
             <VlanSetting />
           </StepsForm.StepForm>
+
+          { isBulkVlanProvisioningEnabled && <StepsForm.StepForm
+            title={$t({ defaultMessage: 'Ports' })}
+            onFinish={(data:Partial<SwitchConfigurationProfile>) => updateVlanPortsData(data)}
+          >
+            <VlanPortSetting />
+          </StepsForm.StepForm> }
 
           {
             vlansWithTaggedPorts &&
