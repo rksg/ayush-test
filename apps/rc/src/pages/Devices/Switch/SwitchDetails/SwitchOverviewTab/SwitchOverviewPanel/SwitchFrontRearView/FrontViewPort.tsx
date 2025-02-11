@@ -79,6 +79,7 @@ export function FrontViewPort (props:{
       height: '16px',
       width: '16px',
       marginBottom: '-4px',
+      marginRight: '4px',
       color: cssStr('--acx-semantics-red-50'),
       borderColor: cssStr('--acx-accents-red-30')
     }
