@@ -1017,7 +1017,18 @@ export const mspApi = baseMspApi.injectEndpoints({
         return {
           ...request
         }
-      }
+      },
+      providesTags: [{ type: 'SolutionTokenSettings', id: 'LIST' }]
+    }),
+    updateSolutionTokenSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateSolutionTokenSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SolutionTokenSettings', id: 'LIST' }]
     }),
     getEntitlementsAttentionNotes: build.query<LicenseAttentionNotes, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1224,6 +1235,7 @@ export const {
   useGetMspUploadURLMutation,
   useGetEntitlementsCompliancesQuery,
   useGetSolutionTokenSettingsQuery,
+  useUpdateSolutionTokenSettingsMutation,
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
   useUpdateMspEcDelegationsMutation,
