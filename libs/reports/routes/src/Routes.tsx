@@ -14,7 +14,7 @@ import {
 import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
-  const isRa = get('IS_MLISA_SA')
+  const isRa = get('IS_MLISA_SA') === 'true'
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -44,16 +44,16 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI />} />
-      <Route path='dataSubscriptions/create' element={<SubscriptionForm isRAI />} />
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions/create' element={<SubscriptionForm isRAI={isRa} />} />
       <Route path='dataSubscriptions/edit/:settingId'
-        element={<SubscriptionForm isRAI editMode />} />
+        element={<SubscriptionForm isRAI={isRa} editMode />} />
       <Route path='dataSubscriptions/auditLog/:settingId'
-        element={<DataSubscriptionsAuditLog isRAI/>} />
+        element={<DataSubscriptionsAuditLog isRAI={isRa}/>} />
       <Route path='dataSubscriptions/cloudStorage/create'
-        element={<CloudStorageForm isRAI/>} />
+        element={<CloudStorageForm isRAI={isRa}/>} />
       <Route path='dataSubscriptions/cloudStorage/edit/:csId'
-        element={<CloudStorageForm isRAI editMode />} />
+        element={<CloudStorageForm isRAI={isRa} editMode />} />
     </Route>
   )
   return (
