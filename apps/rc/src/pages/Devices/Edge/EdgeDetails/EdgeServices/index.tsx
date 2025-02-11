@@ -16,9 +16,9 @@ import {
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { EdgeScopes, RequestPayload }    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { exportMessageMapping }          from '@acx-ui/utils'
+import { EdgeScopes, RequestPayload }      from '@acx-ui/types'
+import { filterByAccess, hasPermission }   from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi } from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
@@ -168,7 +168,7 @@ export const EdgeServices = () => {
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
-      rbacOpsIds: [getOpsId(EdgeUrlsInfo.deleteService)],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteService)],
       scopeKey: [EdgeScopes.DELETE],
       disabled: isRemoveBtnDisable,
       tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
@@ -225,7 +225,7 @@ export const EdgeServices = () => {
     {
       label: $t({ defaultMessage: 'Restart' }),
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: [getOpsId(EdgeDhcpUrls.restartDhcpService)],
+      rbacOpsIds: [getOpsApi(EdgeDhcpUrls.restartDhcpService)],
       disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
         ? $t({ defaultMessage: 'Only DHCP can be restarted' }
@@ -307,8 +307,5 @@ export const EdgeServices = () => {
       />
     </Loader>
   )
-}
-function getOpsId (deleteService: any): string | string[] {
-  throw new Error('Function not implemented.')
 }
 

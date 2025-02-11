@@ -1,13 +1,12 @@
 import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, GridRow, Loader }                     from '@acx-ui/components'
-import { EdgePortsTable }                              from '@acx-ui/rc/components'
-import { EdgeLagStatus, EdgePortStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                  from '@acx-ui/types'
-import { hasPermission }                               from '@acx-ui/user'
-import { getOpsApi }                                   from '@acx-ui/utils'
+import { Button, GridRow, Loader }               from '@acx-ui/components'
+import { EdgePortsTable }                        from '@acx-ui/rc/components'
+import { EdgeLagStatus, EdgePortStatus }         from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 interface PortsTabProps {
   isConfigurable: boolean
@@ -32,11 +31,7 @@ export const PortsTab = (props: PortsTabProps) => {
   }
 
   return <GridRow justify='end'>
-    {hasPermission({
-      scopes: [EdgeScopes.UPDATE],
-      rbacOpsIds: getOpsApi(EdgeUrlsInfo.updatePortConfig)
-    })
-    && isConfigurable &&
+    {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
       <Button
         size='small'
         type='link'

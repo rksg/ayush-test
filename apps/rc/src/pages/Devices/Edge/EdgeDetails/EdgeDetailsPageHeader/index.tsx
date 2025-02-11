@@ -164,23 +164,6 @@ export const EdgeDetailsPageHeader = () => {
             }</Dropdown>,
           <Button
             scopeKey={[EdgeScopes.UPDATE]}
-            rbacOpsIds={[
-              getOpsApi(EdgeUrlsInfo.updateEdge),
-              getOpsApi(EdgeUrlsInfo.updatePortConfig),
-              getOpsApi(EdgeUrlsInfo.addEdgeLag),
-              getOpsApi(EdgeUrlsInfo.updateEdgeLag),
-              getOpsApi(EdgeUrlsInfo.deleteEdgeLag),
-              getOpsApi(EdgeUrlsInfo.addSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV),
-              getOpsApi(EdgeUrlsInfo.addLagSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.updateLagSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.deleteLagSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.importLagSubInterfacesCSV),
-              getOpsApi(EdgeUrlsInfo.updateDnsServers),
-              getOpsApi(EdgeUrlsInfo.updateStaticRoutes)
-            ]}
             type='primary'
             onClick={() =>
               navigate({

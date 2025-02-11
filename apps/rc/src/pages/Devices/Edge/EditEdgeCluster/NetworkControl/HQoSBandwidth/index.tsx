@@ -50,6 +50,13 @@ export const HQoSBandwidthFormItem = (props: {
     defaultMessage: 'Insufficient CPU cores have been detected on this cluster'
   }) : ''
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [
+      [ getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
+        getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster)]
+    ]
+  })
+
   return (
     <>
       <Row gutter={20}>
@@ -70,16 +77,7 @@ export const HQoSBandwidthFormItem = (props: {
                     name='hqosSwitch'
                     valuePropName='checked'
                   >
-                    <Switch
-                      disabled={hqosReadOnly &&
-                        !hasPermission({
-                          rbacOpsIds: [
-                            [ getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
-                              getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster)]
-                          ]
-                        })
-                      }
-                    />
+                    <Switch disabled={hqosReadOnly && !hasUpdatePermission}/>
                   </Form.Item>
                 </Tooltip>
               </Space>

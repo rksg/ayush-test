@@ -48,6 +48,13 @@ export const MdnsProxyFormItem = (props: {
     })
   }, [currentEdgeMdns])
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [
+      [ getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
+        getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)]
+    ]
+  })
+
   return <>
     <Row gutter={20}>
       <Col flex='250px'>
@@ -66,16 +73,7 @@ export const MdnsProxyFormItem = (props: {
                 name='edgeMdnsSwitch'
                 valuePropName='checked'
               >
-                <Switch
-                  disabled={
-                    !hasPermission({
-                      rbacOpsIds: [
-                        [ getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
-                          getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)]
-                      ]
-                    })
-                  }
-                />
+                <Switch disabled={!hasUpdatePermission}/>
               </Form.Item>
             </Space>
           </StepsForm.FieldLabel>
