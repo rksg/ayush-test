@@ -10,10 +10,11 @@ import {
   EdgeCompatibilityType,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
-import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                 from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }    from '@acx-ui/user'
+import { EdgeClusterStatus, EdgeDhcpUrls, EdgeHqosProfilesUrls, EdgeMdnsProxyUrls, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                                                      from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }                                                                         from '@acx-ui/user'
+import { getOpsApi }                                                                                                       from '@acx-ui/utils'
 
 import { ArpTerminationFormItem, useHandleApplyArpTermination } from './ArpTermination'
 import { DhcpFormItem, useHandleApplyDhcp }                     from './DHCP'
@@ -70,7 +71,18 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
-  && hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  && hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [
+      getOpsApi(EdgeDhcpUrls.activateDhcpService),
+      getOpsApi(EdgeDhcpUrls.DeactivateDhcpService),
+      getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
+      getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster),
+      getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
+      getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster),
+      getOpsApi(EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings)
+    ]
+  })
 
   return (
     <>

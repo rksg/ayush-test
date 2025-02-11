@@ -23,11 +23,13 @@ import {
   CommonCategory,
   EdgeStatusEnum,
   isOtpEnrollmentRequired,
-  ClusterHighAvailabilityModeEnum
+  ClusterHighAvailabilityModeEnum,
+  EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 
@@ -205,6 +207,27 @@ export const EdgeClusterTable = () => {
   const rowActions: TableProps<EdgeClusterTableDataType>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [
+        getOpsApi(EdgeUrlsInfo.updateEdge),
+        getOpsApi(EdgeUrlsInfo.updatePortConfig),
+        getOpsApi(EdgeUrlsInfo.addEdgeLag),
+        getOpsApi(EdgeUrlsInfo.updateEdgeLag),
+        getOpsApi(EdgeUrlsInfo.deleteEdgeLag),
+        getOpsApi(EdgeUrlsInfo.addSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV),
+        getOpsApi(EdgeUrlsInfo.addLagSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.updateLagSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.deleteLagSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.importLagSubInterfacesCSV),
+        getOpsApi(EdgeUrlsInfo.updateDnsServers),
+        getOpsApi(EdgeUrlsInfo.updateStaticRoutes),
+        getOpsApi(EdgeUrlsInfo.patchEdgeCluster),
+        getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings),
+        getOpsApi(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings),
+        getOpsApi(EdgeUrlsInfo.updatePortConfig)
+      ],
       visible: (selectedRows) => (selectedRows.length === 1),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -239,6 +262,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteEdgeCluster), getOpsApi(EdgeUrlsInfo.deleteEdge)],
       visible: (selectedRows) =>
         (selectedRows.filter(row =>
           row.isFirstLevel && (row.children?.length ?? 0) > 0).length === 0),
@@ -249,6 +273,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.sendOtp)],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
           selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0 &&
@@ -261,6 +286,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
           selectedRows.filter(row => {
@@ -273,6 +299,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.reboot)],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
@@ -283,6 +310,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
       visible: (selectedRows) => (isGracefulShutdownReady &&
         selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
@@ -293,6 +321,11 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [
+        getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings),
+        getOpsApi(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings),
+        getOpsApi(EdgeUrlsInfo.updatePortConfig)
+      ],
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & RUCKUS Edge configuration wizard' }),

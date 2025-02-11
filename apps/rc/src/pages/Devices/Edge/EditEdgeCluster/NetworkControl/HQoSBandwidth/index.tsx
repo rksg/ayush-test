@@ -6,7 +6,9 @@ import { useIntl }                                     from 'react-intl'
 import { Loader, StepsForm, Tooltip, useStepFormContext }                                                                       from '@acx-ui/components'
 import { ApCompatibilityToolTip }                                                                                               from '@acx-ui/rc/components'
 import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures }                                                                           from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeHqosProfilesUrls, IncompatibilityFeatures }                                                     from '@acx-ui/rc/utils'
+import { hasPermission }                                                                                                        from '@acx-ui/user'
+import { getOpsApi }                                                                                                            from '@acx-ui/utils'
 
 import { EdgeHqosProfileSelectionForm } from '../../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
@@ -68,7 +70,16 @@ export const HQoSBandwidthFormItem = (props: {
                     name='hqosSwitch'
                     valuePropName='checked'
                   >
-                    <Switch disabled={hqosReadOnly} />
+                    <Switch
+                      disabled={hqosReadOnly &&
+                        !hasPermission({
+                          rbacOpsIds: [
+                            [ getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
+                              getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster)]
+                          ]
+                        })
+                      }
+                    />
                   </Form.Item>
                 </Tooltip>
               </Space>

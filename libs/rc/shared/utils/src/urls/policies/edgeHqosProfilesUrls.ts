@@ -33,11 +33,13 @@ export const EdgeHqosProfilesUrls: { [key: string]: ApiInfo } = {
   activateEdgeCluster: {
     method: 'put',
     url: '/edgeHqosProfiles/:policyId/venues/:venueId/edgeClusters/:edgeClusterId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/edgeHqosProfiles/{id}/venues/{id}/edgeClusters/{id}'
   },
   deactivateEdgeCluster: {
     method: 'delete',
     url: '/edgeHqosProfiles/:policyId/venues/:venueId/edgeClusters/:edgeClusterId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/edgeHqosProfiles/{id}/venues/{id}/edgeClusters/{id}'
   }
 }

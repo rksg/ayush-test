@@ -25,6 +25,7 @@ import {
 import {
   EdgeStatus,
   EdgeStatusEnum,
+  EdgeUrlsInfo,
   TABLE_QUERY,
   TableQuery,
   allowRebootShutdownForStatus,
@@ -34,7 +35,7 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
-import { exportMessageMapping }                   from '@acx-ui/utils'
+import { exportMessageMapping, getOpsApi }        from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
@@ -279,6 +280,23 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [
+        getOpsApi(EdgeUrlsInfo.updateEdge),
+        getOpsApi(EdgeUrlsInfo.updatePortConfig),
+        getOpsApi(EdgeUrlsInfo.addEdgeLag),
+        getOpsApi(EdgeUrlsInfo.updateEdgeLag),
+        getOpsApi(EdgeUrlsInfo.deleteEdgeLag),
+        getOpsApi(EdgeUrlsInfo.addSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV),
+        getOpsApi(EdgeUrlsInfo.addLagSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.updateLagSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.deleteLagSubInterfaces),
+        getOpsApi(EdgeUrlsInfo.importLagSubInterfacesCSV),
+        getOpsApi(EdgeUrlsInfo.updateDnsServers),
+        getOpsApi(EdgeUrlsInfo.updateStaticRoutes)
+      ],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -291,6 +309,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteEdge)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         deleteEdges(rows, clearSelection)
@@ -298,6 +317,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.reboot)],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
@@ -307,6 +327,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
       visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Shutdown' }),
@@ -316,6 +337,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.sendOtp)],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
@@ -324,6 +346,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },{
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],
       visible: (selectedRows) => (
         selectedRows.length === 1 &&
         allowResetForStatus(selectedRows[0]?.deviceStatus)

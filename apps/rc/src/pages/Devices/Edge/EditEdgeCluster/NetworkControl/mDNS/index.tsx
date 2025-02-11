@@ -6,7 +6,9 @@ import { useIntl }                                     from 'react-intl'
 import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
 import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
 import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
-import { IncompatibilityFeatures }                    from '@acx-ui/rc/utils'
+import { EdgeMdnsProxyUrls, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { hasPermission }                              from '@acx-ui/user'
+import { getOpsApi }                                  from '@acx-ui/utils'
 
 import EdgeMdnsProfileSelectionForm from './EdgeMdnsProfileSelectionForm'
 
@@ -64,7 +66,16 @@ export const MdnsProxyFormItem = (props: {
                 name='edgeMdnsSwitch'
                 valuePropName='checked'
               >
-                <Switch />
+                <Switch
+                  disabled={
+                    !hasPermission({
+                      rbacOpsIds: [
+                        [ getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
+                          getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)]
+                      ]
+                    })
+                  }
+                />
               </Form.Item>
             </Space>
           </StepsForm.FieldLabel>

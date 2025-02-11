@@ -1,13 +1,14 @@
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Dropdown, PageHeader }          from '@acx-ui/components'
-import { Features }                              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
-import { CommonOperation, Device, getUrl }       from '@acx-ui/rc/utils'
-import { TenantLink }                            from '@acx-ui/react-router-dom'
-import { EdgeScopes }                            from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
+import { Button, Dropdown, PageHeader }                  from '@acx-ui/components'
+import { Features }                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady }         from '@acx-ui/rc/components'
+import { CommonOperation, Device, EdgeUrlsInfo, getUrl } from '@acx-ui/rc/utils'
+import { TenantLink }                                    from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                    from '@acx-ui/types'
+import { hasPermission }                                 from '@acx-ui/user'
+import { getOpsApi }                                     from '@acx-ui/utils'
 
 import { EdgeClusterTable } from './EdgeClusterTable'
 import { OldEdgeListPage }  from './OldEdgeListPage'
@@ -60,7 +61,15 @@ const AddMenu = () => {
   return (
     <Dropdown overlay={<Menu items={menuItems} />} placement='bottom'>
       {
-        () => <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+        () =>
+          <Button
+            type='primary'
+            rbacOpsIds={[
+              getOpsApi(EdgeUrlsInfo.addEdgeCluster),
+              getOpsApi(EdgeUrlsInfo.addEdge)
+            ]}
+          >
+            { $t({ defaultMessage: 'Add' }) }</Button>
       }
     </Dropdown>
   )

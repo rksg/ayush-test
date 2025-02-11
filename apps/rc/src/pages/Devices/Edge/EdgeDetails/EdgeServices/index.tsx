@@ -9,8 +9,10 @@ import { DownloadOutlined }                                                     
 import { EdgeServiceStatusLight, useEdgeDhcpActions, useEdgeExportCsv, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }                           from '@acx-ui/rc/services'
 import {
+  EdgeDhcpUrls,
   EdgeService,
   EdgeServiceTypeEnum,
+  EdgeUrlsInfo,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -166,6 +168,7 @@ export const EdgeServices = () => {
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
+      rbacOpsIds: [getOpsId(EdgeUrlsInfo.deleteService)],
       scopeKey: [EdgeScopes.DELETE],
       disabled: isRemoveBtnDisable,
       tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
@@ -222,6 +225,7 @@ export const EdgeServices = () => {
     {
       label: $t({ defaultMessage: 'Restart' }),
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsId(EdgeDhcpUrls.restartDhcpService)],
       disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
         ? $t({ defaultMessage: 'Only DHCP can be restarted' }
@@ -304,3 +308,7 @@ export const EdgeServices = () => {
     </Loader>
   )
 }
+function getOpsId (deleteService: any): string | string[] {
+  throw new Error('Function not implemented.')
+}
+
