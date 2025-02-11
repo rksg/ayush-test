@@ -9,13 +9,13 @@ import { useIntl } from 'react-intl'
 
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
+import { useUserProfileContext }                          from '@acx-ui/user'
 import {
   defaultRanges,
   DateRange,
   dateRangeMap,
   resetRanges,
   dateRangeForLast,
-  getJwtTokenPayload,
   AccountTier
 } from '@acx-ui/utils'
 
@@ -95,7 +95,7 @@ export const RangePicker = ({
   const [range, setRange] = useState<DateRangeType>(selectedRange)
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
+  const { accountTier } = useUserProfileContext()
   const allowedDateRange = accountTier === AccountTier.GOLD
     ? dateRangeForLast(1, 'month')
     : dateRangeForLast(isReport ? 12 : 3, 'months')

@@ -3,12 +3,13 @@ import { valueType }  from 'antd/lib/statistic/utils'
 
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
 import { formatter }                from '@acx-ui/formatter'
+import { noDataDisplay }            from '@acx-ui/utils'
 
 import { PoeUsageIcon, StyledAntStatistic } from './styledComponents'
 
-const calculatePercentage = (value: number, totalVal: number)=> {
+const calculatePercentage = (value: number, totalVal: number): number=> {
   if (Boolean(totalVal) === false) return 0
-  return Math.round(value / totalVal * 100)
+  return value / totalVal
 }
 export interface PoeUtilizationBoxProps {
     isLoading: boolean,
@@ -28,12 +29,13 @@ export const PoeUtilizationBox = (props: PoeUtilizationBoxProps) => {
   } = props
 
   const statisticFormatter = (val: valueType) => {
-    const valueWithUnit = (val as string).split(' ')
-    const valueData = valueWithUnit[0]
-    const valueUnit = valueWithUnit[1]
+    const valuesWithUnit = (val as string).split('/')
+    const used = valuesWithUnit[0]
+    const total = valuesWithUnit[1]
     return (<>
-      <Typography.Text className='value'>{valueData}</Typography.Text>
-      <Typography.Text className='unit'>{valueUnit}</Typography.Text>
+      <Typography.Text className='value'>{used}</Typography.Text>
+      <Typography.Text>/</Typography.Text>
+      <Typography.Text className='value'>{total}</Typography.Text>
     </>)
   }
 
@@ -46,11 +48,16 @@ export const PoeUtilizationBox = (props: PoeUtilizationBoxProps) => {
             ? <StyledAntStatistic
               title={title}
               // eslint-disable-next-line max-len
-              value={`${formatter('milliWattsFormat')(value)} / ${formatter('milliWattsFormat')(totalVal)}`}
-              suffix={`(${calculatePercentage(value, totalVal)}%)`}
+              value={`${value}w/${totalVal}w`}
+              suffix={`(${formatter('percentFormatRound')(calculatePercentage(value, totalVal))})`}
               formatter={statisticFormatter}
             />
-            : <Typography.Title level={3}>--</Typography.Title>}
+            : <StyledAntStatistic
+              title={title}
+              value={noDataDisplay}
+              formatter={(val: valueType) => <Typography.Title level={3}>{val}</Typography.Title>}
+            />
+          }
         </GridCol>
       </GridRow>
     </Loader>

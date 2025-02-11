@@ -5,7 +5,9 @@ import { screen, render, waitFor, waitForElementToBeRemoved } from '@acx-ui/test
 import { TextInlineEditor } from './TextInlineEditor'
 
 describe('TextInlineEditor', () => {
-  const onChange = jest.fn()
+  const onChange = jest.fn().mockImplementation(() =>
+    new Promise(resolve => setTimeout(resolve, 500)))
+
   const props = { value: 10, onChange }
 
   beforeEach(() => {
@@ -64,5 +66,14 @@ describe('TextInlineEditor', () => {
     await userEvent.click(applyButton)
     const validatingIcon = screen.getByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validatingIcon)
+  })
+
+  it('should reset to initial value after change API failed', async () => {
+    render(<TextInlineEditor {...props} onChange={() => Promise.reject()} />)
+    const editButton = screen.getByRole('button', { name: 'edit' })
+    await userEvent.click(editButton)
+    const applyButton = screen.getByRole('button', { name: 'check' })
+    await userEvent.click(applyButton)
+    await screen.findByText('10')
   })
 })
