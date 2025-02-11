@@ -25,11 +25,11 @@ import {
   getOsTypeIcon,
   Persona,
   PersonaDevice,
-  PersonaErrorResponse,
+  PersonaErrorResponse, PersonaUrls,
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }                            from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
 import { IdentityDeviceContext } from './index'
 
@@ -258,6 +258,7 @@ export function PersonaDevicesTable (props: {
       ? [
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonaDevices)],
           onClick: (selectedItems, clearSelection) => {
 
             showActionModal({
@@ -284,6 +285,7 @@ export function PersonaDevicesTable (props: {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Device' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersonaDevices)],
         onClick: () => {
           setModelVisible(true)
         },
@@ -346,7 +348,7 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasCrossVenuesPermission({ needGlobalPermission: true }) ? {
+        rowSelection={filterByAccess(rowActions).length !== 0 ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page

@@ -65,7 +65,8 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -186,6 +187,7 @@ export function NetworkForm (props:{
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
+  const initVlanPoolRef = useRef<VlanPool>()
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
@@ -232,7 +234,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
-  const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
+  const { updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
   const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
   const updateSoftGreActivations = useUpdateSoftGreActivations()
@@ -364,16 +366,9 @@ export function NetworkForm (props:{
       form?.setFieldsValue(resolvedData)
     }
 
-    if (vlanPoolId) {
-      resolvedData = merge({}, resolvedData,
-        {
-          wlan: {
-            advancedCustomization: {
-              vlanPool: { id: vlanPoolId, name: '', vlanMembers: [] }
-            }
-          }
-        }
-      )
+    const vlanPool = resolvedData.wlan?.advancedCustomization?.vlanPool
+    if (vlanPool) {
+      initVlanPoolRef.current = vlanPool
     }
 
     updateSaveData({
@@ -382,7 +377,8 @@ export function NetworkForm (props:{
       ...(dpskService && { dpskServiceProfileId: dpskService.id }),
       ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
     })
-  }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
+  }, [data, certificateTemplateId, dpskService, portalService])
+  //}, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0 || saveState?.wlan?.advancedCustomization?.wifiCallingEnabled) return
@@ -1055,7 +1051,7 @@ export function NetworkForm (props:{
 
       beforeVenueActivationRequest.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
-      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
+      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, initVlanPoolRef.current?.id))
       beforeVenueActivationRequest.push(updateAccessControl(formData, data, payload.id))
       if(directoryServerDataRef.current.id) {
         beforeVenueActivationRequest.push(activateDirectoryServer(
