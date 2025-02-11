@@ -13,7 +13,8 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/templates/query'
   },
   applyConfigTemplate: {
     method: 'post',

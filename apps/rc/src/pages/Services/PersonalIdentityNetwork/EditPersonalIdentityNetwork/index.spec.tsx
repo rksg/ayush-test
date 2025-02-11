@@ -84,6 +84,7 @@ describe('Edit PersonalIdentityNetwork', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
+  const mockValidateEdgeClusterConfigFn = jest.fn()
 
   beforeEach(() => {
     jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
@@ -91,6 +92,7 @@ describe('Edit PersonalIdentityNetwork', () => {
 
     mockedUsedNavigate.mockClear()
     mockValidateEdgePinSwitchConfigMutation.mockClear()
+    mockValidateEdgeClusterConfigFn.mockClear()
 
     mockServer.use(
       rest.put(
@@ -98,7 +100,10 @@ describe('Edit PersonalIdentityNetwork', () => {
         (_req, res, ctx) => res(ctx.status(202))),
       rest.post(
         EdgePinUrls.validateEdgeClusterConfig.url,
-        (_req, res, ctx) => res(ctx.status(202)))
+        (_req, res, ctx) => {
+          mockValidateEdgeClusterConfigFn()
+          return res(ctx.status(202))
+        })
     )
   })
 
@@ -216,26 +221,41 @@ describe('Enhanced PersonalIdentityNetwork', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
+  const mockWirelessPinData = cloneDeep(mockPinData)
+  mockWirelessPinData.distributionSwitchInfos = []
+  mockWirelessPinData.accessSwitchInfos = []
+
+  const mock2TierPinData = cloneDeep(mockPinData)
+  mock2TierPinData.tunneledWlans = []
+
+  const mockValidateEdgeClusterConfigFn = jest.fn()
+
   beforeEach(() => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockPinData, isLoading: false, refetch: jest.fn() }))
 
+    mockedUsedNavigate.mockClear()
     mockValidateEdgePinSwitchConfigMutation.mockClear()
+    mockValidateEdgeClusterConfigFn.mockClear()
 
     mockServer.use(
       rest.put(
         EdgePinUrls.updateEdgePin.url,
-        (_req, res, ctx) => res(ctx.status(202)))
-
+        (_req, res, ctx) => res(ctx.status(202))),
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => {
+          mockValidateEdgeClusterConfigFn()
+          return res(ctx.status(202))
+        })
     )
   })
 
   it('should show correct steps with wireless data', async () => {
-    const mockModifiedPinData = cloneDeep(mockPinData)
-    mockModifiedPinData.distributionSwitchInfos = []
-    mockModifiedPinData.accessSwitchInfos = []
     jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockModifiedPinData, isLoading: false, refetch: jest.fn() }))
+      data: mockWirelessPinData, isLoading: false, refetch: jest.fn() }))
 
     const user = userEvent.setup()
     render(
@@ -258,10 +278,8 @@ describe('Enhanced PersonalIdentityNetwork', () => {
   })
 
   it('should show correct steps with 2-Tier data', async () => {
-    const mockModifiedPinData = cloneDeep(mockPinData)
-    mockModifiedPinData.tunneledWlans = []
     jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockModifiedPinData, isLoading: false, refetch: jest.fn() }))
+      data: mock2TierPinData, isLoading: false, refetch: jest.fn() }))
 
     const user = userEvent.setup()
     render(
@@ -286,9 +304,6 @@ describe('Enhanced PersonalIdentityNetwork', () => {
   })
 
   it('should show correct steps with 3-Tier data', async () => {
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockPinData, isLoading: false, refetch: jest.fn() }))
-
     const user = userEvent.setup()
     render(
       <Provider>
@@ -313,6 +328,9 @@ describe('Enhanced PersonalIdentityNetwork', () => {
   })
 
   it('should skip switch validation when topology is wireless', async () => {
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockWirelessPinData, isLoading: false, refetch: jest.fn() }))
+
     const user = userEvent.setup()
     render(
       <Provider>
@@ -330,7 +348,13 @@ describe('Enhanced PersonalIdentityNetwork', () => {
     // step 3
     await screen.findByTestId('WirelessNetworkForm')
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/services/list`,
+      search: ''
+    }))
     expect(mockValidateEdgePinSwitchConfigMutation).toBeCalledTimes(0)
+    expect(mockValidateEdgeClusterConfigFn).toBeCalledTimes(1)
   })
 })
 

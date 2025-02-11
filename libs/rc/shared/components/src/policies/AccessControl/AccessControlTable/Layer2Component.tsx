@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
+import { SimpleListTooltip }               from '../../../SimpleListTooltip'
 import { AddModeProps }                    from '../../AccessControlForm'
 import { Layer2Drawer }                    from '../../AccessControlForm/Layer2Drawer'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
@@ -36,6 +37,7 @@ const defaultPayload = {
     'name',
     'description',
     'macAddressCount',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -231,7 +233,12 @@ function useColumns (
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => {
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkFilterOptions.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
+      }
     }
   ]
 

@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react'
 import { Badge, Menu, MenuProps } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr, Dropdown, PageHeader }             from '@acx-ui/components'
-import { CaretDownOutlined }                                from '@acx-ui/icons'
-import { useRwgActions }                                    from '@acx-ui/rc/components'
-import { useGetRwgQuery }                                   from '@acx-ui/rc/services'
-import { getRwgStatus, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Button, cssStr, Dropdown, PageHeader }                                 from '@acx-ui/components'
+import { CaretDownOutlined }                                                    from '@acx-ui/icons'
+import { useRwgActions }                                                        from '@acx-ui/rc/components'
+import { useGetRwgQuery }                                                       from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, getRwgStatus, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -15,6 +15,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                             from '@acx-ui/utils'
 
 import RWGTabs from './RWGTabs'
 
@@ -118,13 +119,16 @@ function RWGPageHeader () {
           ...(isCustomRole ? []
             : [<Button
               type='default'
+              rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.deleteGateway)]}
               onClick={() =>
                 rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
               }
               disabled={!!clusterNodeId}
             >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
             <Dropdown
-              overlay={menu}>
+              overlay={menu}
+              rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.updateGateway)]}
+            >
               { () => <Button
                 type='primary'
               >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }

@@ -111,17 +111,26 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const apNameMap:{ [key:string]: string[] } = {}
         let apSerialNumbers: string[] = []
 
-        Object.entries(activations).forEach(([venueId, activation]) => {
-          if (activation) {
+        let venues: string[] = []
+
+        Object.entries(activations)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .filter(([venueId, activation]) => { return !!activation })
+          .forEach(([venueId, activation]) => {
             venueNetworksMap[venueId] = Array.from(activation.wifiNetworkIds)
             networkIds = networkIds.concat(Array.from(activation.wifiNetworkIds))
-
             apNameMap[venueId] = Array.from(activation.apSerialNumbers)
             apSerialNumbers = apSerialNumbers.concat(Array.from(activation.apSerialNumbers))
-          }
-        })
+            venues.push(venueId)
+          })
 
-        if(networkIds.length === 0 && apSerialNumbers.length === 0) return emptyResponse
+        if(
+          networkIds.length === 0 &&
+          apSerialNumbers.length === 0 &&
+          venues.length === 0) {
+
+          return emptyResponse
+        }
 
         // Collect network names by ids
         const networkIdsSet = Array.from(new Set(networkIds))

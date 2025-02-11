@@ -1,16 +1,29 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { usePreference }                                                  from '@acx-ui/rc/components'
-import { TenantLink, useLocation }                                        from '@acx-ui/react-router-dom'
-import { hasCrossVenuesPermission }                                       from '@acx-ui/user'
-import { LangKey, useLocaleContext, DEFAULT_SYS_LANG, useSupportedLangs } from '@acx-ui/utils'
+import { usePreference }           from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo }  from '@acx-ui/rc/utils'
+import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission
+
+}                       from '@acx-ui/user'
+import {
+  LangKey,
+  useLocaleContext,
+  DEFAULT_SYS_LANG,
+  useSupportedLangs,
+  getOpsApi
+} from '@acx-ui/utils'
 
 
 import { MessageMapping } from '../MessageMapping'
 
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const location = useLocation()
 
   const userProfileLink = <TenantLink
@@ -47,6 +60,11 @@ const DefaultSystemLanguageFormItem = () => {
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
 
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.updatePreferences)
+    ]) : hasCrossVenuesPermission()
+
   return (
     <Row gutter={24}>
       <Col span={10}>
@@ -58,7 +76,7 @@ const DefaultSystemLanguageFormItem = () => {
             onChange={handleDefaultLangChange}
             showSearch
             optionFilterProp='children'
-            disabled={!hasCrossVenuesPermission() || isUpdatingPreference || isLoadingPreference}
+            disabled={!hasPermission || isUpdatingPreference || isLoadingPreference}
             style={{ textTransform: 'capitalize' }}
           >
             {supportedLangs.map(({ label, value }) =>
