@@ -12,16 +12,15 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
-import { MspUrlsInfo }                                                              from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }      from '@acx-ui/formatter'
+import { MspUrlsInfo }                             from '@acx-ui/msp/utils'
 import {
-  renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
   isAccessControlSubPolicy,
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, subPolicyMappingType, isNotAllowToApplyPolicy
+  subPolicyMappingType, isNotAllowToApplyPolicy
 } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
@@ -59,6 +58,7 @@ import { getOpsApi }                               from '@acx-ui/utils'
 
 import { AppliedToTenantDrawer }                                                                    from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }                                                                      from './ApplyTemplateDrawer'
+import { DetailsDrawer }                                                                            from './DetailsDrawer'
 import { ShowDriftsDrawer }                                                                         from './ShowDriftsDrawer'
 import { ConfigTemplateDriftStatus, getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
 import { useAddTemplateMenuProps }                                                                  from './useAddTemplateMenuProps'
@@ -71,6 +71,7 @@ export function ConfigTemplateList () {
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
+  const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
   // eslint-disable-next-line max-len
@@ -175,7 +176,7 @@ export function ConfigTemplateList () {
           columns={useColumns({
             setAppliedToTenantDrawerVisible,
             setSelectedTemplates,
-            setAccessControlSubPolicyVisible,
+            setDetailsDrawerVisible,
             setShowDriftsDrawerVisible
           })}
           dataSource={tableQuery.data?.data}
@@ -208,6 +209,11 @@ export function ConfigTemplateList () {
         accessControlSubPolicyVisible={accessControlSubPolicyVisible}
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
       />
+      {detailsDrawerVisible &&
+      <DetailsDrawer
+        setVisible={setDetailsDrawerVisible}
+        selectedTemplate={selectedTemplates[0]}
+      />}
     </>
   )
 }
@@ -215,9 +221,8 @@ export function ConfigTemplateList () {
 interface TemplateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
-  // eslint-disable-next-line max-len
-  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
   setShowDriftsDrawerVisible: (visible: boolean) => void
+  setDetailsDrawerVisible: (visible: boolean) => void
 }
 
 function useColumns (props: TemplateColumnProps) {
@@ -225,7 +230,7 @@ function useColumns (props: TemplateColumnProps) {
   const {
     setAppliedToTenantDrawerVisible,
     setSelectedTemplates,
-    setAccessControlSubPolicyVisible,
+    setDetailsDrawerVisible,
     setShowDriftsDrawerVisible
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
@@ -247,24 +252,14 @@ function useColumns (props: TemplateColumnProps) {
       sorter: true,
       searchable: true,
       render: (_, row) => {
-        if (isAccessControlSubPolicy(row.type)) {
-          return <Button
-            type='link'
-            size={'small'}
-            onClick={() => {
-              setAccessControlSubPolicyVisible({
-                ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-                [subPolicyMappingType[row.type] as PolicyType]: {
-                  id: row.id,
-                  visible: true,
-                  drawerViewMode: true
-                }
-              })
-            }}>
-            {row.name}
-          </Button>
-        }
-        return renderConfigTemplateDetailsComponent(row.type, row.id!, row.name)
+        return <Button
+          type='link'
+          size={'small'}
+          onClick={() => {
+            setSelectedTemplates([row])
+            setDetailsDrawerVisible(true)
+          }}
+        >{row.name}</Button>
       }
     },
     {
