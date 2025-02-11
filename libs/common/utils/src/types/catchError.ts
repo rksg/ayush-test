@@ -1,6 +1,7 @@
 export interface CatchErrorDetails {
   code: string,
-  message: string
+  message: string,
+  suggestion?: string
 }
 
 export interface CatchErrorResponse {

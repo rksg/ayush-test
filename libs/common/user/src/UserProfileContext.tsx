@@ -50,7 +50,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false,
     isCustomRole = false,
-    rbacOpsApiEnabled = false,
+    rbacOpsApiEnabled = false
 
   const abacFF = 'abac-policies-toggle'
   const betaListFF = 'acx-ui-selective-early-access-toggle'
@@ -61,8 +61,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       { params: { tenantId }, payload: [
         abacFF,
         betaListFF,
-        rbacOpsApiFF,
-        improveErrorDialogFF
+        rbacOpsApiFF
       ] },
       { skip: !Boolean(profile) }
     )

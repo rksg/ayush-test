@@ -9,6 +9,7 @@ import {
   setUpIntl,
   IntlSetUpError,
   isShowApiError,
+  isShowImprovedErrorDialog,
   isIgnoreErrorModal,
   userLogout,
   CatchErrorResponse,
@@ -17,7 +18,8 @@ import {
   ErrorMessageType,
   isGraphQLError,
   hasGraphQLErrorCode,
-  Meta
+  Meta,
+  CatchErrorDetails
 } from '@acx-ui/utils'
 
 import type { GraphQLResponse } from 'graphql-request/dist/types'
@@ -165,6 +167,7 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.SERVER_ERROR
       break
   }
+  // const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
   let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
   if (errors && isShowApiError(request)) {
     if (typeof errors === 'string') {
@@ -174,6 +177,13 @@ export const getErrorContent = (action: ErrorAction) => {
       const errorsMessageList = errors.errors.map(err=>err.message)
       content = <>{errorsMessageList.map(msg=><p key={msg}>{msg}</p>)}</>
     }
+  }
+
+  if(errors && isShowImprovedErrorDialog(errors)) {
+    const errorObj = errors as { errors: CatchErrorDetails[] }
+    const message = errorObj.errors[0].message || ''
+    const suggestion = errorObj.errors[0].suggestion || ''
+    content = <>{message} {suggestion}</>
   }
 
   return {
@@ -191,13 +201,13 @@ export const showErrorModal = (details: {
   title: string,
   content: JSX.Element,
   type: ActionModalType,
-  path?: string,
   errorCode?: number,
   errors?: ErrorDetailsProps,
+  path?: string,
   callback?: () => void
 }) => {
   const { title, content, type, errors,
-    path, errorCode, callback } = details
+    errorCode, callback, path } = details
   if (title && !isModalShown) {
     isModalShown = true
     showActionModal({

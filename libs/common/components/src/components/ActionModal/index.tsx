@@ -78,6 +78,11 @@ export interface ErrorDetailsProps {
   error?: string
 }
 
+export interface ErrorResponse {
+  requestId: string,
+  errors?: string
+}
+
 export interface CustomButtonProps {
   text: string,
   type: ButtonProps['type'],
@@ -333,21 +338,23 @@ function CollapsePanel (props: {
     }
 
     if (currentLine) lines.push(currentLine)
-    return lines.join('\n\t\t\t\t')
+    return lines.join('\n\t\t\t')
   }
 
   const getContent = function () {
     const content = props.content
-    const errorMessage = `
-    URL:\t\t\t${wrapText(props.path || '', 40)}
-    Error Code:\t${props.errorCode}
-    Timestamp:\t${moment().format('YYYYMMDD-HHmmss')}
-    Code:\t\t\tcode
-    Reason:\t\treason
-    Suggestion:\tsuggestion
-
-    ${content}
-      `
+    const object = JSON.parse(content)
+    const errorObj = object.errors[0]
+    const errorDetails = [
+      `URL:\t\t${wrapText(props.path || '', 40)}`,
+      `Error Code:\t${props.errorCode}`,
+      `Timestamp:\t${moment().format('YYYYMMDD-HHmmss')}`,
+      errorObj.code ? `\nCode:\t\t${errorObj.code}` : '',
+      errorObj.message ? `Reason:\t\t${errorObj.message}` : '',
+      errorObj.suggestion ? `Suggestion:\t${errorObj.suggestion}` : '',
+      !errorObj.message ? `Error Response: ${content}` : ''
+    ]
+    const errorMessage = errorDetails.filter(line => line.trim() !== '').join('\n')
     return errorMessage
   }
 
