@@ -45,7 +45,8 @@ import {
   transferToTableResult,
   MacRegistrationPool,
   TxStatus,
-  NewAPModel
+  NewAPModel,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -57,6 +58,7 @@ import {
   fetchEnhanceRbacApGroupNetworkVenueList,
   fetchEnhanceRbacNetworkVenueList,
   fetchEnhanceRbacVenueNetworkList,
+  fetchNetworkVlanPoolList,
   fetchRbacAccessControlPolicyNetwork,
   fetchRbacAccessControlSubPolicyNetwork,
   fetchRbacApGroupNetworkVenueList,
@@ -603,6 +605,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             payload: { page: 1, pageSize: 10000 }
           }
 
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], false, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
           const {
             error: networkVenuesListQueryError,
             networkDeep
@@ -629,6 +636,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
           }
 
           if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
