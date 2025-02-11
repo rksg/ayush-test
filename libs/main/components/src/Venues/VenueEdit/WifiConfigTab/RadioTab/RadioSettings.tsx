@@ -554,10 +554,12 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       }
       delete radioParamsDual5G.radioParamsLower5G
     } else {
-      const inheritParamsLower5G = radioParamsDual5G.inheritParamsLower5G
-      dual5gTypeChange(inheritParamsLower5G, 'radioParamsLower5G')
-      if (inheritParamsLower5G) {
-        set(formData, 'radioParamsDual5G.radioParamsLower5G.method', formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'method']))
+      if (isVenueChannelSelectionManualEnabled) {
+        const inheritParamsLower5G = radioParamsDual5G.inheritParamsLower5G
+        dual5gTypeChange(inheritParamsLower5G, 'radioParamsLower5G')
+        if (inheritParamsLower5G) {
+          set(formData, 'radioParamsDual5G.radioParamsLower5G.method', formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'method']))
+        }
       }
     }
 
@@ -569,10 +571,12 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       }
       delete radioParamsDual5G.radioParamsUpper5G
     } else {
-      const inheritParamsUpper5G = radioParamsDual5G.inheritParamsUpper5G
-      dual5gTypeChange(inheritParamsUpper5G, 'radioParamsUpper5G')
-      if (inheritParamsUpper5G) {
-        set(formData, 'radioParamsDual5G.radioParamsUpper5G.method', formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'method']))
+      if (isVenueChannelSelectionManualEnabled) {
+        const inheritParamsUpper5G = radioParamsDual5G.inheritParamsUpper5G
+        dual5gTypeChange(inheritParamsUpper5G, 'radioParamsUpper5G')
+        if (inheritParamsUpper5G) {
+          set(formData, 'radioParamsDual5G.radioParamsUpper5G.method', formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'method']))
+        }
       }
     }
   }
