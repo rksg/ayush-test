@@ -56,29 +56,29 @@ export default function HistoryDrawer (props: DrawerProps) {
   }
 
   const setHistoryList = (response: ChatHistory[]) => {
-    const list = checkDate(response)
+    const list = checkDate([...response].reverse())
     const historyList = [] as HistoryListItem[]
     Object.keys(list).forEach(key => {
       if(list[key].length) {
         if(key === 'today') {
           historyList.push({
             duration: $t({ defaultMessage: 'Today' }),
-            history: list[key].reverse()
+            history: list[key]
           })
         } else if(key === 'yesterday') {
           historyList.push({
             duration: $t({ defaultMessage: 'Yesterday' }),
-            history: list[key].reverse()
+            history: list[key]
           })
         } else if(key === 'sevendays') {
           historyList.push({
             duration: $t({ defaultMessage: 'Previous 7 days' }),
-            history: list[key].reverse()
+            history: list[key]
           })
         } else {
           historyList.push({
             duration: key,
-            history: list[key].reverse()
+            history: list[key]
           })
         }
       }
