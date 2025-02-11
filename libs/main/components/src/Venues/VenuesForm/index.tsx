@@ -226,7 +226,8 @@ export function VenuesForm (props: VenuesFormProps) {
 
   useEffect(() => {
     if (action === 'edit' && address.country && data ) {
-      const isSameCountry = (data.address.country === address.country) || false
+      const isSameCountry =
+        (!data.address.country || data.address.country === address.country) || false
       let errors = []
       if (!isSameCountry) {
         errors.push(intl.$t(
