@@ -44,6 +44,7 @@ import { WlanSecurityFormItems }                 from './SharedComponent/WlanSec
 export function HostApprovalForm () {
   const {
     data,
+    setData,
     editMode,
     isRuckusAiMode,
     cloneMode
@@ -219,6 +220,19 @@ export function HostApprovalForm () {
                   setPasswordExp(expirationArray)
                   form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDurationChoices'],
                     expirationArray)
+                  if(editMode && data) {
+                    setData && setData({
+                      ...data,
+                      guestPortal: {
+                        ...data.guestPortal,
+                        hostGuestConfig: {
+                          hostEmails: form.getFieldValue(['guestPortal','hostGuestConfig', 'hostEmails']),
+                          hostDomains: form.getFieldValue(['guestPortal','hostGuestConfig', 'hostDomains']),
+                          hostDurationChoices: expirationArray
+                        }
+                      }
+                    })
+                  }
                 }}
               >
                 {$t(captivePasswordExpiration[CaptivePassphraseExpirationEnum[key]])}

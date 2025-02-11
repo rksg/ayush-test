@@ -115,10 +115,12 @@ export const useWebhooks = () => {
   const rowActions: WebhookTableProps['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
+    rbacOpsIds: ['PUT:/api/a4rc/api/rsa-mlisa-notification/webhooks/{id}'],
     onClick: ([webhook]) => setSelectedId(webhook.id)
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
+    rbacOpsIds: ['DELETE:/api/a4rc/api/rsa-mlisa-notification/webhooks/{id}'],
     onClick: ([webhook]) => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
@@ -129,6 +131,7 @@ export const useWebhooks = () => {
 
   const actions: WebhookTableProps['actions'] = [{
     label: $t({ defaultMessage: 'Create Webhook' }),
+    rbacOpsIds: ['POST:/api/a4rc/api/rsa-mlisa-notification/webhooks'],
     scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
     onClick: () => setSelectedId(undefined)
   }]

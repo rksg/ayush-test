@@ -22,6 +22,12 @@ import {
 
 import WiFi7 from '.'
 
+jest.mock('../../../../ApCompatibility', () => ({
+  ...jest.requireActual('../../../../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 describe('test WiFi7', () => {
   it('should render correctly when FF true when creating a network', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -567,6 +573,48 @@ describe('test MLO_3LINK FF functions and components', () => {
       expect(checkboxElement[1]).toBeChecked()
       expect(checkboxElement[2]).not.toBeChecked()
       expect(checkboxElement[2]).not.toBeDisabled()
+    })
+
+    it('should show R370 comopatibility tooltip when FF is on', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      const mockAddNetworkEnabled6GHz = {
+        name: 'mockAddNetworkEnabled6GHz',
+        type: 'psk',
+        isCloudpathEnabled: false,
+        venues: [],
+        enableAccountingProxy: false,
+        enableAuthProxy: false,
+        enableAccountingService: false,
+        wlan: {
+          ssid: 'mockAddNetworkEnabled6GHz',
+          wlanSecurity: 'WPA3',
+          managementFrameProtection: 'Required'
+        }
+      }
+
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: mockAddNetworkEnabled6GHz
+          } as NetworkFormContextType}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: { params }
+        }
+      )
+
+      const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(toolTips.length).toBe(1)
+      toolTips.forEach(t => expect(t).toBeVisible())
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
     })
 
     describe('test getInitMloOptions func', () => {

@@ -60,5 +60,6 @@ export const EdgePortsWidget = (props: EdgePortsWidgetProps) => {
     data={chartData}
     isLoading={isLoading}
     onClick={handleClick}
+    size={{ width: 100, height: 100 }}
   />
 }
