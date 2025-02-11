@@ -492,32 +492,11 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     onTabChange('Normal24GHz')
   }
 
-  const dual5gTypeChange = (inherit: boolean | undefined, radioType: string) => {
-    if (inherit) {
-      const radioParams5GMethod = formRef.current?.getFieldValue(['radioParams50G', 'method'])
-      formRef.current?.setFieldValue(['radioParamsDual5G', radioType, 'method'], radioParams5GMethod)
-
-      const indoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
-      formRef.current?.setFieldValue(['radioParamsDual5G', radioType, 'allowedIndoorChannels'], indoorChannels)
-
-      const outdoorChannels = formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
-      formRef.current?.setFieldValue(['radioParamsDual5G', radioType, 'allowedOutdoorChannels'], outdoorChannels)
-    }
-  }
-
   const onLower5gTypeChange = (e: RadioChangeEvent) => {
-    if (isVenueChannelSelectionManualEnabled) {
-      dual5gTypeChange(e.target.value, 'radioParamsLower5G')
-    }
-
     setIsLower5gInherit(e.target.value)
   }
 
   const onUpper5gTypeChange = (e: RadioChangeEvent) => {
-    if (isVenueChannelSelectionManualEnabled) {
-      dual5gTypeChange(e.target.value, 'radioParamsUpper5G')
-    }
-
     setIsUpper5gInherit(e.target.value)
   }
 
@@ -553,14 +532,6 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
         delete radioParamsDual5G.inheritParamsLower5G
       }
       delete radioParamsDual5G.radioParamsLower5G
-    } else {
-      if (isVenueChannelSelectionManualEnabled) {
-        const inheritParamsLower5G = radioParamsDual5G.inheritParamsLower5G
-        dual5gTypeChange(inheritParamsLower5G, 'radioParamsLower5G')
-        if (inheritParamsLower5G) {
-          set(formData, 'radioParamsDual5G.radioParamsLower5G.method', formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G', 'method']))
-        }
-      }
     }
 
     if (!isSupportUpper5G) {
@@ -570,14 +541,6 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
         delete radioParamsDual5G.inheritParamsUpper5G
       }
       delete radioParamsDual5G.radioParamsUpper5G
-    } else {
-      if (isVenueChannelSelectionManualEnabled) {
-        const inheritParamsUpper5G = radioParamsDual5G.inheritParamsUpper5G
-        dual5gTypeChange(inheritParamsUpper5G, 'radioParamsUpper5G')
-        if (inheritParamsUpper5G) {
-          set(formData, 'radioParamsDual5G.radioParamsUpper5G.method', formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G', 'method']))
-        }
-      }
     }
   }
 
@@ -611,7 +574,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       const content = dual5GName? ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
         $t(
           // eslint-disable-next-line max-len
-          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select one channel under the {dual5GName} block' },
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please use Custom Settings and select one channel under the {dual5GName} block' },
           { dual5GName, br: <br /> }
         ):
         $t(
@@ -702,7 +665,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     }
 
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
-    const lowerMethod5 = radioParamsLower5G?.method
+    const lowerMethod5 = inheritParamsLower5G ? radioParams50G?.method : radioParamsLower5G?.method
 
     const indoorLowerChannel5 = inheritParamsLower5G
       ? indoorLower5GChs
@@ -721,7 +684,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     if (!validateChannels(outdoorLowerChannel5, lowerMethod5, outdoorLowerTitle5, lower5GName)) return false
 
     const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
-    const upperMethod5 = radioParamsUpper5G?.method
+    const upperMethod5 = inheritParamsUpper5G ? radioParams50G?.method : radioParamsUpper5G?.method
 
     const indoorUpperChannel5 = inheritParamsUpper5G
       ? indoorUpper5GChs
