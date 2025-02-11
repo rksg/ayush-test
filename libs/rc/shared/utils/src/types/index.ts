@@ -1,5 +1,6 @@
 import { defineMessage } from 'react-intl'
 
+import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
   ServiceStatus,
@@ -65,7 +66,7 @@ export interface KeyValue<K, V> {
   value: V;
 }
 
-export interface Venue {
+export interface Venue extends EnforceableFields {
   id: string
   venueId?: string
   name: string
@@ -104,7 +105,6 @@ export interface Venue {
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
-  isEnforced?: boolean // For Config Template Enforcement feature, it indicates whether the venue template/instance is enforced
 }
 
 export interface AlarmBase {

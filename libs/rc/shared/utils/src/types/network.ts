@@ -1,4 +1,4 @@
-import { EdgeMvSdLanViewData, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -63,7 +63,7 @@ export type DsaeOnboardNetwork = {
   securityProtocol?: string
 }
 
-export interface Network extends BaseNetwork{
+export interface Network extends BaseNetwork, EnforceableFields {
   children?: BaseNetwork[]
   dsaeOnboardNetwork?: DsaeOnboardNetwork
   securityProtocol?: string
@@ -72,7 +72,6 @@ export interface Network extends BaseNetwork{
   owePairNetworkId?: string,
   certificateTemplateId?: string
   apSerialNumbers?: string[]
-  isEnforced?: boolean // For Config Template Enforcement feature, it indicates whether the network template/instance is enforced
 }
 
 export interface WifiNetwork extends Network{

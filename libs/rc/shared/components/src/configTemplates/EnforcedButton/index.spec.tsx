@@ -124,7 +124,9 @@ describe('EnforcedButton', () => {
         wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
       })
 
-      expect(result.current.hasEnforcedItem([{ isEnforced: true }])).toBe(true)
+      expect(result.current.hasEnforcedItem(
+        [{ isEnforced: true, isManagedByTemplate: true }]
+      )).toBe(true)
     })
 
     it('should return true if any item in the array has isEnforced true', () => {
@@ -136,7 +138,10 @@ describe('EnforcedButton', () => {
       })
 
       // eslint-disable-next-line max-len
-      expect(result.current.hasEnforcedItem([{ isEnforced: false }, { isEnforced: true }])).toBe(true)
+      expect(result.current.hasEnforcedItem([
+        { isEnforced: false, isManagedByTemplate: true },
+        { isEnforced: true, isManagedByTemplate: true }
+      ])).toBe(true)
     })
 
     it('should return false if all items in the array have isEnforced false', () => {
@@ -159,8 +164,8 @@ describe('EnforcedButton', () => {
         wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
       })
 
-      // eslint-disable-next-line max-len
-      expect(result.current.getEnforcedActionMsg([{ isEnforced: true }])).toBe('Action is disabled due to enforcement from the template')
+      expect(result.current.getEnforcedActionMsg([{ isEnforced: true, isManagedByTemplate: true }]))
+        .toBe('Action is disabled due to enforcement from the template')
     })
 
     it('should return empty string if condition is not met', () => {
@@ -185,7 +190,8 @@ function generateEnforcedNetworkResponse (isEnforced: boolean) {
       {
         name: 'test-psk',
         id: '936ad54680ba4e5bae59ae1eb817ca24',
-        isEnforced
+        isEnforced,
+        isManagedByTemplate: isEnforced
       }
     ]
   }

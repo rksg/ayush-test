@@ -3,7 +3,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { Button, ButtonProps, Loader, Tooltip }                                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
 import { AllowedEnforcedConfigTemplateTypes, useGetConfigTemplateInstanceEnforcedQuery } from '@acx-ui/rc/services'
-import { useConfigTemplate }                                                             from '@acx-ui/rc/utils'
+import { EnforceableFields, useConfigTemplate }                                          from '@acx-ui/rc/utils'
 
 // eslint-disable-next-line max-len
 const enforcedActionMsg = defineMessage({ defaultMessage: 'Action is disabled due to enforcement from the template' })
@@ -41,13 +41,13 @@ export function useEnforcedStatus () {
   const { isTemplate } = useConfigTemplate()
   const isConfigTemplateEnforcedEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const hasEnforcedItem = (target: Array<{ isEnforced?: boolean }> | undefined): boolean => {
+  const hasEnforcedItem = (target: Array<EnforceableFields> | undefined): boolean => {
     if (!target || !isConfigTemplateEnforcedEnabled || isTemplate) return false
 
-    return target.some(item => item.isEnforced ?? false)
+    return target.some(item => item.isEnforced && item.isManagedByTemplate)
   }
 
-  const getEnforcedActionMsg = (target: Array<{ isEnforced?: boolean }> | undefined): string => {
+  const getEnforcedActionMsg = (target: Array<EnforceableFields> | undefined): string => {
     return hasEnforcedItem(target) ? $t(enforcedActionMsg) : ''
   }
 
