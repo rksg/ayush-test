@@ -134,7 +134,8 @@ const defaultRbacPayload = {
     ...basePayload.fields,
     'venueApGroups',
     'incompatible',
-    'isEnforced'
+    'isEnforced',
+    'isManagedByTemplate'
   ]
 }
 

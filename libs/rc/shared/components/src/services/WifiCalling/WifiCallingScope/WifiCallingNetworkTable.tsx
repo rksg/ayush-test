@@ -26,7 +26,10 @@ import WifiCallingFormContext from '../WifiCallingFormContext'
 
 const defaultPayload = {
   searchString: '',
-  fields: ['name', 'nwSubType', 'venues', 'id', 'venueApGroups', 'isEnforced']
+  fields: [
+    'name', 'nwSubType', 'venues', 'id', 'venueApGroups',
+    'isEnforced', 'isManagedByTemplate'
+  ]
 }
 
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {

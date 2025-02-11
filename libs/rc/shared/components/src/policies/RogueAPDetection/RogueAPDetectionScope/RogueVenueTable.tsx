@@ -20,7 +20,7 @@ import RogueAPDetectionContext        from '../RogueAPDetectionContext'
 const defaultPayload = {
   fields: [
     'id', 'name', 'city', 'country', 'switches', 'aggregatedApStatus',
-    'rogueDetection', 'status', 'isEnforced'
+    'rogueDetection', 'status', 'isEnforced', 'isManagedByTemplate'
   ],
   sortField: 'name',
   sortOrder: 'ASC',

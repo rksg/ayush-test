@@ -300,7 +300,9 @@ export const defaultRbacNetworkPayload = {
     'dsaeOnboardNetwork',
     'isOweMaster',
     'owePairNetworkId',
-    'tunnelWlanEnable'
+    'tunnelWlanEnable',
+    'isEnforced',
+    'isManagedByTemplate'
   ],
   page: 1,
   pageSize: 2048
