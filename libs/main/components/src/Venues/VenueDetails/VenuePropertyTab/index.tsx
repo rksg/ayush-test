@@ -149,6 +149,7 @@ export function VenuePropertyTab () {
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
   const hasPropertyUnitPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isMultipleIdentityEnabled = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
@@ -446,7 +447,14 @@ export function VenuePropertyTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        return (
+          isMultipleIdentityEnabled ? <TenantLink
+            to={`/venues/${venueId}/${row.id}/property-units`}>
+            {highlightFn(row.name)}</TenantLink> : row.name
+        )
+      }
     },
     {
       key: 'status',

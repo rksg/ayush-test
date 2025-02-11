@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
+import { PropertyUnitDetails }               from '@acx-ui/main/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { RolesEnum }                         from '@acx-ui/types'
@@ -138,6 +139,7 @@ function VenuesRoutes () {
       <Route path=':venueId/edit' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
+      <Route path=':venueId/:unitId/property-units' element={<PropertyUnitDetails />} />
     </Route>
   )
 }
