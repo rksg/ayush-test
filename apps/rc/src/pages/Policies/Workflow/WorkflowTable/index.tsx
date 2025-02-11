@@ -176,7 +176,7 @@ export default function WorkflowTable () {
               })
             } else {
               // eslint-disable-next-line max-len
-              cloneWorkflow({ params: { id: data.id }, payload: { name: data.name + ' (copy)' } })
+              cloneWorkflow({ params: { id: data.id } })
                 .unwrap()
                 .then(() => {
                   clearSelection()
