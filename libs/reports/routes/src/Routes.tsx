@@ -45,15 +45,15 @@ export default function ReportsRoutes () {
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
       <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
-      <Route path='dataSubscriptions/create' element={<SubscriptionForm isRAI={isRa} />} />
+      <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
       <Route path='dataSubscriptions/edit/:settingId'
-        element={<SubscriptionForm isRAI={isRa} editMode />} />
+        element={<SubscriptionForm editMode />} />
       <Route path='dataSubscriptions/auditLog/:settingId'
-        element={<DataSubscriptionsAuditLog isRAI={isRa}/>} />
+        element={<DataSubscriptionsAuditLog />} />
       <Route path='dataSubscriptions/cloudStorage/create'
-        element={<CloudStorageForm isRAI={isRa}/>} />
+        element={<CloudStorageForm />} />
       <Route path='dataSubscriptions/cloudStorage/edit/:csId'
-        element={<CloudStorageForm isRAI={isRa} editMode />} />
+        element={<CloudStorageForm editMode />} />
     </Route>
   )
   return (
