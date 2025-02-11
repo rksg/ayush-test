@@ -3,10 +3,9 @@ import moment from 'moment-timezone'
 import { get } from '@acx-ui/config'
 
 export const granularityToHours = [
-  { granularity: 'PT72H', hours: 24 * 30 },
   { granularity: 'PT24H', hours: 24 * 7 },
   { granularity: 'PT1H', hours: 24 * 1 },
-  { granularity: 'PT180S', hours: 0 }
+  { granularity: 'PT15M', hours: 0 }
 ]
 
 export const calculateGranularity = (
