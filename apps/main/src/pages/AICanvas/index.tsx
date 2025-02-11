@@ -320,7 +320,7 @@ export default function AICanvas () {
                 <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <Close onClick={onClickClose}/>
+                <Close data-testid='close-icon' onClick={onClickClose}/>
               </div>
             </div>
             <div className='content'>

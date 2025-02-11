@@ -196,7 +196,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
     }
   }, { skip: data.type !== 'card' })
 
-  function labelFormatter (params: CallbackDataParams): string {
+  const labelFormatter = (params: CallbackDataParams) => {
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
     const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
     return '{data|' + formatter(unit)(usage) + '}'
@@ -332,7 +332,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         </AutoSizer>
       </UI.Widget>
       {
-        setVisible && <CustomizeWidgetDrawer
+        (visible && setVisible) && <CustomizeWidgetDrawer
           visible={visible as boolean}
           setVisible={setVisible}
           widget={chartData as WidgetListData}

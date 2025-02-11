@@ -24,17 +24,13 @@ export default function CustomizeWidgetDrawer (props: CustomizeWidgetDrawerProps
 
   const handleSubmit = async () => {
     const formValues = form.getFieldsValue(true)
-    try {
-      await updateWidget({
-        params: { canvasId, widgetId: widget.id },
-        payload: {
-          name: formValues.name
-        }
-      })
-      onClose()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    await updateWidget({
+      params: { canvasId, widgetId: widget.id },
+      payload: {
+        name: formValues.name
+      }
+    })
+    onClose()
   }
 
   return (
