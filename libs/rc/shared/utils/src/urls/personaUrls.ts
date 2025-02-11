@@ -19,6 +19,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   addPersonaGroup: {
     method: 'post',
     url: NewPersonaBaseUrl,
+    opsApi: `POST:${NewPersonaBaseUrl}`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -28,6 +29,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associateDpskPool: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/dpskPools/:poolId`,
+    opsApi: `PUT:${NewPersonaBaseUrl}/{id}/dpskPools/{id}`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -37,6 +39,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associateMacRegistration: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`,
+    opsApi: `PUT:${NewPersonaBaseUrl}/{id}/macRegistrationPools/{id}`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -46,6 +49,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associatePolicySet: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/policySets/:policySetId`,
+    opsApi: `PUT:${NewPersonaBaseUrl}/{id}/policySets/{id}`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -55,6 +59,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   dissociatePolicySet: {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/policySets/:policySetId`,
+    opsApi: `DELETE:${NewPersonaBaseUrl}/{id}/policySets/{id}`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -64,6 +69,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   searchPersonaGroupList: {
     method: 'post',
     url: `${NewPersonaBaseUrl}/query${paginationParams}`,
+    opsApi: `POST:${NewPersonaBaseUrl}/query`,
     oldUrl: `${PersonaBaseUrl}/query${paginationParams}`,
     newApi: true
   },
@@ -71,6 +77,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'post',
     url: `${NewPersonaBaseUrl}/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
+    opsApi: `POST:${NewPersonaBaseUrl}/csvFile`,
     oldUrl: `${PersonaBaseUrl}/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
     newApi: true
@@ -78,6 +85,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   getPersonaGroupById: {
     method: 'get',
     url: `${NewPersonaBaseUrl}/:groupId`,
+    opsApi: `GET:${NewPersonaBaseUrl}/{id}`,
     oldUrl: `${PersonaBaseUrl}/:groupId`,
     newApi: true
   },
@@ -85,6 +93,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'PATCH',
     url: `${NewPersonaBaseUrl}/:groupId`,
     oldUrl: `${PersonaBaseUrl}/:groupId`,
+    opsApi: `PATCH:${NewPersonaBaseUrl}/{id}`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -94,6 +103,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   deletePersonaGroup: {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId`,
+    opsApi: `DELETE:${NewPersonaBaseUrl}/{id}`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -104,6 +114,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   addPersona: {
     method: 'post',
     url: `${NewPersonaBaseUrl}/:groupId/identities`,
+    opsApi: `POST:${NewPersonaBaseUrl}/{id}/identities`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -113,12 +124,14 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   getPersonaById: {
     method: 'get',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
+    opsApi: `GET:${NewPersonaBaseUrl}/{id}/identities/{id}`,
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
     newApi: true
   },
   searchPersonaList: {
     method: 'post',
     url: `/identities/query${paginationParams}`,
+    opsApi: 'POST:/identities/query',
     oldUrl: `/identities/query${paginationParams}`,
     newApi: true
   },
@@ -126,12 +139,14 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'post',
     url: `${NewPersonaBaseUrl}/:groupId/identities/csvFile`,
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/csvFile`,
+    opsApi: `POST:${NewPersonaBaseUrl}/{id}/identities/csvFile`,
     newApi: true
   },
   exportPersona: {
     method: 'post',
     url: `/identities/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
+    opsApi: 'POST:/identities/csvFile',
     oldUrl: `/identities/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
     newApi: true
@@ -139,6 +154,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   updatePersona: {
     method: 'PATCH',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
+    opsApi: `PATCH:${NewPersonaBaseUrl}/{id}/identities/{id}`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -149,11 +165,13 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
+    opsApi: `DELETE:${NewPersonaBaseUrl}/{id}/identities/{id}`,
     newApi: true
   },
   deletePersonas: {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/identities`,
+    opsApi: `DELETE:${NewPersonaBaseUrl}/{id}/identities`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -163,6 +181,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   addPersonaDevices: {
     method: 'post',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id/devices`,
+    opsApi: `POST:${NewPersonaBaseUrl}/{id}/identities/{id}/devices`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -172,6 +191,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   deletePersonaDevices: {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id/devices/:macAddress`,
+    opsApi: `DELETE:${NewPersonaBaseUrl}/{id}/identities/{id}/devices/{id}`,
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -182,6 +202,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id/vnis`,
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id/vnis`,
+    opsApi: 'DELETE:/identityGroups/{id}/identities/{id}/vnis',
     newApi: true
   }
 }

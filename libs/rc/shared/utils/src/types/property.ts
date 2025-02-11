@@ -82,6 +82,7 @@ export interface PropertyUnit {
   id: string,
   name: string,
   status: PropertyUnitStatus,
+  identityCount?: number,
   resident?: {
     name?: string,
     email?: string,
