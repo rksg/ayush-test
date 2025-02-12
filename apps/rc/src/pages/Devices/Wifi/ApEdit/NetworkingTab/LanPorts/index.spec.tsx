@@ -6,21 +6,18 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { apApi, venueApi }        from '@acx-ui/rc/services'
 import {
   AaaUrls,
-  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   EthernetPortProfileUrls,
   LanPortsUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Provider, store }    from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved,
-  within
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { ApNetworkingContext }          from '..'
@@ -64,7 +61,7 @@ describe('Lan Port', () => {
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
-      rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+      rest.get(WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(WifiUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
@@ -357,28 +354,7 @@ describe('Lan Port', () => {
       expect(await screen.findAllByText('VLAN Members')).toHaveLength(3)
       expect(await screen.findAllByText('802.1X')).toHaveLength(4)
 
-      const addBtn = await screen.findByRole('button', { name: 'Add Profile' })
-      expect(addBtn).toBeInTheDocument()
-      await userEvent.click(addBtn)
-
-      const form = within(await screen.findByTestId('steps-form'))
-      const actions = within(form.getByTestId('steps-form-actions'))
-
-      expect(screen.getByText('Add Ethernet Port Profile')).toBeInTheDocument()
-
-      const profileNameInput = await screen.findByLabelText('Profile Name')
-      expect(profileNameInput).toBeInTheDocument()
-      fireEvent.change(profileNameInput, { target: { value: 'eth_profile_1' } })
-      fireEvent.blur(profileNameInput)
-
-      expect(screen.getByText('VLAN')).toBeInTheDocument()
-      const untagVlanInput = await screen.findByLabelText('VLAN Untag ID')
-      expect(untagVlanInput).toBeInTheDocument()
-      fireEvent.change(untagVlanInput, { target: { value: 9 } })
-
-      expect(await screen.findByLabelText('802.1X Authentication')).toBeInTheDocument()
-
-      await userEvent.click(actions.getByRole('button', { name: 'Add' }))
+      expect(screen.queryByRole('button', { name: 'Add Profile' })).not.toBeInTheDocument()
     })
 
     it ('Should render ethernet profile correctly with AP model has Vni', async () => {

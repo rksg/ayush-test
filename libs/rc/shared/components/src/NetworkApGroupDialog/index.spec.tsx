@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   ApGroupConfigTemplateUrlsInfo,
@@ -39,6 +39,8 @@ const mockApGroupsList = jest.fn()
 
 describe('NetworkApGroupDialog', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
+
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(policyApi.util.resetApiState())

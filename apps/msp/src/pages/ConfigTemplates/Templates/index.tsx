@@ -57,11 +57,11 @@ import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-do
 import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'
 
-import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }                                              from './ShowDriftsDrawer'
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
-import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }                                                                                                       from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }                                                                                                         from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                                                                                                            from './ShowDriftsDrawer'
+import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }                                                                                                     from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -173,7 +173,10 @@ export function ConfigTemplateList () {
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
-            setAppliedToTenantDrawerVisible, setSelectedTemplates, setAccessControlSubPolicyVisible
+            setAppliedToTenantDrawerVisible,
+            setSelectedTemplates,
+            setAccessControlSubPolicyVisible,
+            setShowDriftsDrawerVisible
           })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -213,7 +216,8 @@ interface TemplateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
   // eslint-disable-next-line max-len
-  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
+  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
+  setShowDriftsDrawerVisible: (visible: boolean) => void
 }
 
 function useColumns (props: TemplateColumnProps) {
@@ -221,10 +225,12 @@ function useColumns (props: TemplateColumnProps) {
   const {
     setAppliedToTenantDrawerVisible,
     setSelectedTemplates,
-    setAccessControlSubPolicyVisible
+    setAccessControlSubPolicyVisible,
+    setShowDriftsDrawerVisible
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+  const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
@@ -233,6 +239,11 @@ function useColumns (props: TemplateColumnProps) {
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
     ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
   ))
+
+  const enforcementFilterOptions = [
+    { key: true, value: getConfigTemplateEnforcementLabel(true) },
+    { key: false, value: getConfigTemplateEnforcementLabel(false) }
+  ]
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
@@ -295,6 +306,34 @@ function useColumns (props: TemplateColumnProps) {
         </Button>
       }
     },
+    ...(enforcementEnabled ? [{
+      key: 'isEnforced',
+      title: $t({ defaultMessage: 'Enforcement' }),
+      dataIndex: 'isEnforced',
+      filterable: enforcementFilterOptions,
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return getConfigTemplateEnforcementLabel(row.isEnforced)
+      }
+    }] : []),
+    ...(driftsEnabled ? [{
+      key: 'driftStatus',
+      title: $t({ defaultMessage: 'Drift Status' }),
+      dataIndex: 'driftStatus',
+      filterable: driftStatusFilterOptions,
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return <ConfigTemplateDriftStatus
+          row={row}
+          callbackMap={{
+            [ConfigTemplateDriftType.DRIFT_DETECTED]: () => {
+              setSelectedTemplates([row])
+              setShowDriftsDrawerVisible(true)
+            }
+          }}
+        />
+      }
+    }] : []),
     {
       key: 'createdBy',
       title: $t({ defaultMessage: 'Created By' }),
@@ -319,16 +358,6 @@ function useColumns (props: TemplateColumnProps) {
         return moment(row.lastModified).format(dateFormat)
       }
     },
-    ...(driftsEnabled ? [{
-      key: 'driftStatus',
-      title: $t({ defaultMessage: 'Drift Status' }),
-      dataIndex: 'driftStatus',
-      filterable: driftStatusFilterOptions,
-      sorter: true,
-      render: function (_: ReactNode, row: ConfigTemplate) {
-        return getConfigTemplateDriftStatusLabel(row.driftStatus)
-      }
-    }] : []),
     {
       key: 'lastApplied',
       title: $t({ defaultMessage: 'Last Applied' }),

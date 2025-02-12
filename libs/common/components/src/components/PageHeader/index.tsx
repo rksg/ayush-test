@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react'
+import React from 'react'
 
 import {
   PageHeader as AntPageHeader,
@@ -12,7 +12,7 @@ import { useIntl  } from 'react-intl'
 
 import { TenantLink, TenantType } from '@acx-ui/react-router-dom'
 
-import { useLayoutContext } from '../Layout'
+import { useLayoutTrackStickyNodes } from '../Layout'
 
 import * as UI from './styledComponents'
 
@@ -37,26 +37,9 @@ PageHeader.defaultProps = {
 }
 
 function PageHeader (props: PageHeaderProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const layout = useLayoutContext()
-  const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
   const { $t } = useIntl()
-
-  useLayoutEffect(() => {
-    const top = parseInt(getComputedStyle(ref.current!).top, 10)
-    let height = ref.current!.getBoundingClientRect().height
-    const hasStickyTop = (dom?: Element | null) => (
-      dom?.classList?.contains('sticky-top') ||
-      dom?.querySelector('.sticky-top')
-    )
-    let tab = ref.current!.nextElementSibling
-    while (tab && !hasStickyTop(tab)) tab = tab.nextElementSibling
-
-    if (hasStickyTop(tab)) {
-      height += 57 // second-tab height
-    }
-    layout.setPageHeaderY(top + height)
-  })
+  const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
+  const { ref } = useLayoutTrackStickyNodes()
 
   let titleNodes: React.ReactNode[] = [<Typography.Title ellipsis>{props.title}</Typography.Title>]
   if (props.titlePrefix) titleNodes = [props.titlePrefix, ...titleNodes]

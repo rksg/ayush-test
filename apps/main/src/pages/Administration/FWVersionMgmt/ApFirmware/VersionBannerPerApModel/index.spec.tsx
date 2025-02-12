@@ -125,6 +125,161 @@ describe('VersionBannerPerApModel', () => {
     expect(screen.getByText('For devices --')).toBeVisible()
   })
 
+  it('should render the banner with the latest ga and ea/iea version group', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    generateApModelFirmwares.mockReturnValue([
+      {
+        id: '7.1.1.400.24',
+        name: '7.1.1.400.24',
+        supportedApModels: [],
+        onboardDate: '2024-10-10T20:56:27.59+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'beta'
+        ]
+      },
+      {
+        id: '7.1.0.400.794',
+        name: '7.1.0.400.794',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.922+00:00',
+        onboardDate: '2024-09-11T05:41:18.829+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      },
+      {
+        id: '7.1.0.400.792',
+        name: '7.1.0.400.792',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.918+00:00',
+        onboardDate: '2024-09-10T05:44:32.246+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      },
+      {
+        id: '6.2.4.103.255',
+        name: '6.2.4.103.255',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.920+00:00',
+        onboardDate: '2024-03-28T09:06:06.554+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      },
+      {
+        id: '6.2.0.103.553',
+        name: '6.2.0.103.553',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.916+00:00',
+        onboardDate: '2023-09-13T06:25:17.671+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      }
+    ])
+
+    render(
+      <Provider>
+        <ApFirmwareContext.Provider value={{
+          isAlphaFlag: true,
+          isBetaFlag: true
+        }}>
+          <VersionBannerPerApModel />
+        </ApFirmwareContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      }
+    )
+
+    expect(await screen.findByText('7.1.1.400.24 (Early Access)')).toBeVisible()
+    expect(screen.getByText('For devices --')).toBeVisible()
+
+    await userEvent.click(screen.getByText('Show more'))
+
+    expect(await screen.findByText('7.1.0.400.794')).toBeVisible()
+    expect(screen.getAllByText('For devices --').length).toBe(2)
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render the banner with the latest ga and ea/iea version group (ea is lower than ga)', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    generateApModelFirmwares.mockReturnValue([
+      {
+        id: '7.1.1.400.24',
+        name: '7.1.1.400.24',
+        supportedApModels: [],
+        onboardDate: '2024-10-10T20:56:27.59+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      },
+      {
+        id: '7.1.0.400.794',
+        name: '7.1.0.400.794',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.922+00:00',
+        onboardDate: '2024-09-11T05:41:18.829+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'beta'
+        ]
+      },
+      {
+        id: '7.1.0.400.792',
+        name: '7.1.0.400.792',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.918+00:00',
+        onboardDate: '2024-09-10T05:44:32.246+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      },
+      {
+        id: '6.2.4.103.255',
+        name: '6.2.4.103.255',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.920+00:00',
+        onboardDate: '2024-03-28T09:06:06.554+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      },
+      {
+        id: '6.2.0.103.553',
+        name: '6.2.0.103.553',
+        supportedApModels: [],
+        releaseDate: '2024-11-28T07:19:54.916+00:00',
+        onboardDate: '2023-09-13T06:25:17.671+0000',
+        category: 'RECOMMENDED',
+        labels: [
+          'ga'
+        ]
+      }
+    ])
+
+    render(
+      <Provider>
+        <VersionBannerPerApModel />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      }
+    )
+
+    expect(await screen.findByText('7.1.1.400.24')).toBeVisible()
+    expect(screen.getByText('For devices --')).toBeVisible()
+
+    await waitFor(() => expect(screen.queryByText('Show more')).toBeNull())
+  })
+
   it('should render the banner with the early access version', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     generateApModelFirmwares.mockReturnValue([

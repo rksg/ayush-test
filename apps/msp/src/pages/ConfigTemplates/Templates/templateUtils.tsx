@@ -2,8 +2,10 @@ import { useMemo } from 'react'
 
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
+import { Button }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  ConfigTemplate,
   ConfigTemplateDriftType,
   ConfigTemplateType, configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap, policyTypeLabelMapping,
@@ -55,11 +57,39 @@ export function getConfigTemplateTypeLabel (configTemplateType: ConfigTemplateTy
   return configTemplateType
 }
 
-// eslint-disable-next-line max-len
-export function getConfigTemplateDriftStatusLabel (driftStatus: ConfigTemplateDriftType | undefined): string {
+export function getConfigTemplateDriftStatusLabel (driftStatus: ConfigTemplateDriftType): string {
   const { $t } = getIntl()
 
-  if (!driftStatus) return ''
-
   return $t(configTemplateDriftTypeLabelMap[driftStatus])
+}
+
+export function getConfigTemplateEnforcementLabel (enforced: boolean | undefined): string {
+  const { $t } = getIntl()
+
+  if (enforced === undefined) return ''
+
+  return enforced ? $t({ defaultMessage: 'Enforced' }) : $t({ defaultMessage: 'Not enforced' })
+}
+
+type DriftStatusCallback = Partial<Record<ConfigTemplateDriftType, () => void>>
+
+// eslint-disable-next-line max-len
+export function ConfigTemplateDriftStatus (props: { row: ConfigTemplate, callbackMap?: DriftStatusCallback }) {
+  const { row, callbackMap = {} } = props
+
+  if (!row.driftStatus) return <span></span>
+
+  const callback = callbackMap[row.driftStatus]
+  const label = getConfigTemplateDriftStatusLabel(row.driftStatus)
+
+  if (!callback) {
+    return <span>{label}</span>
+  }
+
+  return <Button
+    type='link'
+    onClick={() => callback?.()}
+    style={{ fontSize: 'var(--acx-body-4-font-size)' }}
+    children={label}
+  />
 }

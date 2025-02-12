@@ -1,11 +1,20 @@
-import { PageNotFound }                               from '@acx-ui/components'
-import { get }                                        from '@acx-ui/config'
-import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router-dom'
-import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
-import { Provider }                                   from '@acx-ui/store'
+import { PageNotFound }                       from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { rootRoutes, Route, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import {
+  ReportType,
+  Report,
+  ReportList,
+  DataStudio,
+  DataSubscriptionsContent,
+  SubscriptionForm,
+  DataSubscriptionsAuditLog,
+  CloudStorageForm
+} from '@acx-ui/reports/components'
+import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
-  const isRa = get('IS_MLISA_SA')
+  const isRa = Boolean(get('IS_MLISA_SA'))
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -35,6 +44,16 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
+      <Route path='dataSubscriptions/edit/:settingId'
+        element={<SubscriptionForm editMode />} />
+      <Route path='dataSubscriptions/auditLog/:settingId'
+        element={<DataSubscriptionsAuditLog />} />
+      <Route path='dataSubscriptions/cloudStorage/create'
+        element={<CloudStorageForm />} />
+      <Route path='dataSubscriptions/cloudStorage/edit/:csId'
+        element={<CloudStorageForm editMode />} />
     </Route>
   )
   return (

@@ -72,13 +72,18 @@ const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
 
 describe('Venues Form', () => {
   let params: { tenantId: string }
+  const mockedAddVenue = jest.fn()
+  const mockedUpdateVenue = jest.fn()
   beforeEach(async () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockServer.use(
       rest.post(CommonUrlsInfo.addVenue.url,
-        (req, res, ctx) => res(ctx.json(successResponse))
+        (req, res, ctx) => {
+          mockedAddVenue()
+          return res(ctx.json(successResponse))
+        }
       ),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
@@ -87,7 +92,10 @@ describe('Venues Form', () => {
         (req, res, ctx) => res(ctx.json(venueResponse))
       ),
       rest.put(CommonUrlsInfo.updateVenue.url,
-        (req, res, ctx) => res(ctx.json(successResponse))
+        (req, res, ctx) => {
+          mockedUpdateVenue()
+          return res(ctx.json(successResponse))
+        }
       ),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
@@ -102,6 +110,8 @@ describe('Venues Form', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedAddVenue.mockClear()
+    mockedUpdateVenue.mockClear()
     mockedMutationFnSwitcher.mockImplementation(({ useMutationFn }) => useMutationFn())
     mockedLazyQueryFnSwitcher.mockImplementation(({ useLazyQueryFn }) => useLazyQueryFn())
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
@@ -226,6 +236,7 @@ describe('Venues Form', () => {
 
     const saveButton = screen.getByText('Save')
     await userEvent.click(saveButton)
+    await waitFor(() => expect(mockedUpdateVenue).toHaveBeenCalled())
   })
 
   it('should create venue config template successfully', async () => {
@@ -233,19 +244,28 @@ describe('Venues Form', () => {
     mockedUseLocation.mockReturnValue({ state: { from: { pathname: mockedPreviousPath } } })
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    const mockedSaveEnforcementConfig = jest.fn()
+    mockedUseConfigTemplate.mockReturnValue({
+      isTemplate: true,
+      saveEnforcementConfig: mockedSaveEnforcementConfig
+    })
     // eslint-disable-next-line max-len
     mockedMutationFnSwitcher.mockImplementation(({ useTemplateMutationFn }) => useTemplateMutationFn())
     // eslint-disable-next-line max-len
     mockedLazyQueryFnSwitcher.mockImplementation(({ useLazyTemplateQueryFn }) => useLazyTemplateQueryFn())
 
     const addTemplateFn = jest.fn()
+    const addVenueTemplateResponseId = 'venue123456'
     mockServer.use(
       rest.post(
         VenueConfigTemplateUrlsInfo.addVenueTemplate.url,
         (_, res, ctx) => {
           addTemplateFn()
-          return res(ctx.json(successResponse))
+          return res(ctx.json({
+            ...successResponse,
+            response: { id: addVenueTemplateResponseId }
+          }))
         }
       ),
       rest.post(
@@ -259,7 +279,8 @@ describe('Venues Form', () => {
         <VenuesForm />
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/add' }
-      })
+      }
+    )
 
     const venueInput = await screen.findByLabelText('Venue Name')
     await userEvent.type(venueInput, 'test-venue-template')
@@ -274,6 +295,41 @@ describe('Venues Form', () => {
     await userEvent.click(screen.getByRole('button', { name: /Add/ }))
 
     await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(mockedSaveEnforcementConfig).toHaveBeenCalledWith(addVenueTemplateResponseId))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(mockedPreviousPath))
+  })
+
+  it('should override venue config template successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    const mockedModalCallBackFn = jest.fn()
+
+    render(
+      <Provider>
+        <VenuesForm
+          modalMode={true}
+          modalCallBack={mockedModalCallBackFn}
+          specifiedAction={'override'}
+        />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/' }
+      }
+    )
+
+    const venueInput = await screen.findByLabelText('Venue Name')
+    await userEvent.type(venueInput, 'overridden-venue-template')
+    fireEvent.blur(venueInput)
+
+    // Field validation indicator
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    await userEvent.click(screen.getByRole('button', { name: /Add/ }))
+
+    await waitFor(() => {
+      expect(mockedModalCallBackFn).toHaveBeenCalledWith(expect.objectContaining({
+        name: 'overridden-venue-template'
+      }))
+    })
   })
 })

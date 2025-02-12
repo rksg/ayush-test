@@ -3,16 +3,16 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { useIsSplitOn, Features }                                                from '@acx-ui/feature-toggle'
-import { venueApi }                                                              from '@acx-ui/rc/services'
+import { venueApi, networkApi }                                                  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                       from '@acx-ui/store'
 import {
-  act,
   mockServer,
   render,
   screen,
   fireEvent,
   within,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -35,10 +35,11 @@ const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
 describe('Venues Table', () => {
   let params: { tenantId: string }
   const mockedDeleteReq = jest.fn()
+  const mockedApCompReq = jest.fn()
   beforeEach(async () => {
-    act(() => {
-      store.dispatch(venueApi.util.resetApiState())
-    })
+    mockedApCompReq.mockClear()
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -51,7 +52,10 @@ describe('Venues Table', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesVenue.url,
-        (req, res, ctx) => res(ctx.json(venuesApCompatibilitiesData))
+        (req, res, ctx) => {
+          mockedApCompReq()
+          return res(ctx.json(venuesApCompatibilitiesData))
+        }
       ),
       rest.delete(
         CommonUrlsInfo.deleteVenue.url,
@@ -75,6 +79,7 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedApCompReq).toBeCalledTimes(2))
     expect(await screen.findByText('My-Venue')).toBeVisible()
     expect(await screen.findByText('Add Venue')).toBeVisible()
   })
@@ -88,6 +93,7 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedApCompReq).toBeCalledTimes(2))
     const row1 = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
 
@@ -100,6 +106,13 @@ describe('Venues Table', () => {
   })
 
   it('should delete selected row', async () => {
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
     render(
       <Provider>
         <VenuesTable />
@@ -108,11 +121,12 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedApCompReq).toBeCalledTimes(2))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    const deleteButton = screen.getByRole('button', { name: 'Delete' })
     await userEvent.click(deleteButton)
 
     const dialog = await screen.findByRole('dialog')
@@ -120,7 +134,7 @@ describe('Venues Table', () => {
       = await within(dialog).findByRole('textbox', { name: 'Type the word "Delete" to confirm:' })
     expect(await within(dialog).findByText('Delete "My-Venue"?')).toBeVisible()
     fireEvent.change(confirmInput, { target: { value: 'Delete' } })
-    await userEvent.click(await within(dialog).findByRole('button', { name: /Delete Venue/i }))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete Venue' }))
     expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
@@ -185,8 +199,6 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    // jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
-
     render(
       <Provider>
         <VenuesTable />

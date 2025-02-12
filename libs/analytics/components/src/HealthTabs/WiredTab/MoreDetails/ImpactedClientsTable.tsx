@@ -113,31 +113,31 @@ export const ImpactedClientsTable = ({
       sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Name' }),
+      title: $t({ defaultMessage: 'Peer Device Name' }),
       dataIndex: 'deviceName',
       key: 'deviceName',
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device MAC' }),
+      title: $t({ defaultMessage: 'Peer Device MAC' }),
       dataIndex: 'deviceMac',
       key: 'deviceMac',
       sorter: { compare: sortProp('deviceMac', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Port' }),
+      title: $t({ defaultMessage: 'Peer Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Port MAC' }),
+      title: $t({ defaultMessage: 'Peer Device Port MAC' }),
       dataIndex: 'devicePortMac',
       key: 'devicePortMac',
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Port Type' }),
+      title: $t({ defaultMessage: 'Peer Device Port Type' }),
       dataIndex: 'devicePortType',
       key: 'devicePortType',
       sorter: { compare: sortProp('devicePortType', defaultSort) }

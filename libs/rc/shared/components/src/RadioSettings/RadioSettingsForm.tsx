@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, useState } from 'react'
 
 
 
@@ -12,9 +12,15 @@ import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/compone
 import { get }                                             from '@acx-ui/config'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useNavigate, useLocation }                        from '@acx-ui/react-router-dom'
+import { useNavigate, useLocation, useParams }             from '@acx-ui/react-router-dom'
 import { validationMessages }                              from '@acx-ui/utils'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../ApCompatibility'
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import {
@@ -80,8 +86,18 @@ export function RadioSettingsForm (props:{
   const maxFloorFieldName = [...radioDataKey, 'venueHeight', 'maxFloor']
 
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const { venueId } = useParams()
+  const [afcDrawerVisible, setAfcDrawerVisible] = useState(false)
+  const [txDrawerVisible, setTxDrawerVisible] = useState(false)
+  const [mrlDrawerVisible, setMrlDrawerVisible] = useState(false)
+  const [band320DrawerVisible, setBand320DrawerVisible] = useState(false)
 
-  const channelSelectionOpts = (context === 'venue') ?
+  const afcTooltip = $t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })
+  const aggressiveTxTooltip = $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })
+
+  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && context === 'venue') ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
@@ -175,11 +191,24 @@ export function RadioSettingsForm (props:{
         return (
           <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
             {$t({ defaultMessage: 'Enable Indoor AFC:' })}
-            <Tooltip
-              title={$t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })}
+            {!isR370UnsupportedFeatures && <Tooltip
+              title={afcTooltip}
               placement='bottom'>
               <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
-            </Tooltip>
+            </Tooltip>}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={afcTooltip}
+              showDetailButton
+              placement='bottom'
+              onClick={() => setAfcDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={afcDrawerVisible}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.AFC}
+              onClose={() => setAfcDrawerVisible(false)}
+            />}
           </Space>
         )
       } else {
@@ -220,7 +249,7 @@ export function RadioSettingsForm (props:{
             {isUseVenueSettings ?
               LPIButtonText?.buttonText : (isAFCEnabled ?
                 <Switch
-                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  disabled={disabled || !isAFCEnabled || isUseVenueSettings}
                   onChange={() => {
                     onChangedByCustom('enableAfc')
                     form.validateFields()
@@ -231,7 +260,7 @@ export function RadioSettingsForm (props:{
                     <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
                   </div>
                 }>
-                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                  <Switch disabled={disabled || !isAFCEnabled || isUseVenueSettings} />
                 </Tooltip>
               )
             }
@@ -305,6 +334,7 @@ export function RadioSettingsForm (props:{
                   { validator: (_, value) => (isNumber(maxFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Minimum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
+                  disabled={disabled}
                   style={{ width: '150px' }}
                   controls={false}
                   precision={0}
@@ -322,6 +352,7 @@ export function RadioSettingsForm (props:{
                   { validator: (_, value) => (isNumber(minFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Maximum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
+                  disabled={disabled}
                   style={{ width: '150px' }}
                   controls={false}
                   precision={0}
@@ -343,7 +374,7 @@ export function RadioSettingsForm (props:{
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
         <RadioFormSelect
-          disabled={disabled || (context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
+          disabled={disabled || (!isVenueChannelSelectionManualEnabled && context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}
@@ -390,7 +421,27 @@ export function RadioSettingsForm (props:{
         </Space>
       }
       <Form.Item
-        label={$t({ defaultMessage: 'Bandwidth:' })}
+        label={
+          <>
+            {$t({ defaultMessage: 'Bandwidth:' })}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              showDetailButton
+              placement='right'
+              onClick={() => setBand320DrawerVisible(true)}
+              icon={<QuestionMarkCircleOutlined
+                style={{ height: '16px', width: '16px' }}
+              />}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={band320DrawerVisible}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.BANDWIDTH_320MHZ}
+              onClose={() => setBand320DrawerVisible(false)}
+            />}
+          </>
+        }
         name={channelBandwidthFieldName}>
         <RadioFormSelect
           disabled={disabled}
@@ -418,12 +469,29 @@ export function RadioSettingsForm (props:{
       <Form.Item
         label={<>
           {$t({ defaultMessage: 'Transmit Power adjustment:' })}
-          {isApTxPowerToggleEnabled && <Tooltip.Question
-            title={$t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })}
+          {isApTxPowerToggleEnabled && !isR370UnsupportedFeatures && <Tooltip.Question
+            title={aggressiveTxTooltip}
             placement='right'
             iconStyle={{ height: '16px', width: '16px' }}
           />
           }
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={aggressiveTxTooltip}
+            showDetailButton
+            placement='right'
+            onClick={() => setTxDrawerVisible(true)}
+            icon={<QuestionMarkCircleOutlined
+              style={{ height: '16px', width: '16px' }}
+            />}
+          />
+          }
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={txDrawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.AUTO_CELL_SIZING}
+            onClose={() => setTxDrawerVisible(false)}
+          />}
         </>}
         name={txPowerFieldName}>
         <RadioFormSelect
@@ -466,11 +534,24 @@ export function RadioSettingsForm (props:{
           <FieldLabel width='175px'>
             <Space style={{ marginBottom: '10px' }}>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
-              <Tooltip.Question
+              {!isR370UnsupportedFeatures && <Tooltip.Question
                 title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                showDetailButton
+                placement='right'
+                onClick={() => setMrlDrawerVisible(true)}
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                visible={mrlDrawerVisible}
+                type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                venueId={venueId}
+                featureName={InCompatibilityFeatures.VENUE_MULTICAST_RATE_LIMIT}
+                onClose={() => setMrlDrawerVisible(false)}
+              />}
             </Space>
             <Form.Item
               name={enableMulticastRateLimitingFieldName}
