@@ -157,7 +157,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   }
   const isDisableAddEdgeButton = () => {
     return (smartEdges?.length ?? 0) >= getMaxNodes() ||
-    hasPermission({ rbacOpsIds: getOpsApi(EdgeUrlsInfo.addEdge) })
+    hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addEdge)] })
   }
   const isAaNotSuportedByFirmware = () => {
     let venueVersion = getVenueFirmware(venueId)
