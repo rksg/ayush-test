@@ -77,7 +77,7 @@ export const HQoSBandwidthFormItem = (props: {
                     name='hqosSwitch'
                     valuePropName='checked'
                   >
-                    <Switch disabled={hqosReadOnly && !hasUpdatePermission}/>
+                    <Switch disabled={hqosReadOnly || !hasUpdatePermission}/>
                   </Form.Item>
                 </Tooltip>
               </Space>

@@ -102,7 +102,7 @@ export const ArpTerminationFormItem = (props: {
               name='arpTerminationSwitch'
               valuePropName='checked'
             >
-              <Switch disabled={!isArpControllable && !hasUpdatePermission}/>
+              <Switch disabled={!isArpControllable || !hasUpdatePermission}/>
             </Form.Item>
           </StepsForm.FieldLabel>
         </Loader>

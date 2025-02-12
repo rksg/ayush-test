@@ -62,7 +62,7 @@ export const DhcpFormItem = (props: {
   const hasUpdatePermission = hasPermission({
     rbacOpsIds: [
       [getOpsApi(EdgeDhcpUrls.activateDhcpService),
-        getOpsApi(EdgeDhcpUrls.DeactivateDhcpService)]
+        getOpsApi(EdgeDhcpUrls.deactivateDhcpService)]
     ]
   })
 
@@ -83,7 +83,7 @@ export const DhcpFormItem = (props: {
               <Form.Item
                 name='dhcpSwitch'
                 valuePropName='checked'
-                children={<Switch disabled={hasPin && !hasUpdatePermission}/>}
+                children={<Switch disabled={hasPin || !hasUpdatePermission}/>}
               />
             </StepsForm.FieldLabel>
           </Loader>
