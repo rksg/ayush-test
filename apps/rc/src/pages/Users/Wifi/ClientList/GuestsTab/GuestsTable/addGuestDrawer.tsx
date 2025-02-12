@@ -265,13 +265,15 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
+  const isCaptivePortalOWETransitionEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION)
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
   const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
     const filteredData = list.data.filter((network) => {
-      return network?.isOweMaster && network?.securityProtocol === WlanSecurityEnum.OWETransition
+      return (isCaptivePortalOWETransitionEnabled ?
+        network?.isOweMaster && network?.securityProtocol === WlanSecurityEnum.OWETransition : true)
     })
     setAllowedNetworkList(filteredData)
     if(filteredData.length === 1) {
