@@ -11,6 +11,7 @@ import {
   ColumnState,
   ColumnType
 } from '@acx-ui/components'
+import { EdgePermissions } from '@acx-ui/edge/components'
 import {
   Features,
   useIsSplitOn
@@ -280,23 +281,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: [
-        getOpsApi(EdgeUrlsInfo.updateEdge),
-        getOpsApi(EdgeUrlsInfo.updatePortConfig),
-        getOpsApi(EdgeUrlsInfo.addEdgeLag),
-        getOpsApi(EdgeUrlsInfo.updateEdgeLag),
-        getOpsApi(EdgeUrlsInfo.deleteEdgeLag),
-        getOpsApi(EdgeUrlsInfo.addSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV),
-        getOpsApi(EdgeUrlsInfo.addLagSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.updateLagSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.deleteLagSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.importLagSubInterfacesCSV),
-        getOpsApi(EdgeUrlsInfo.updateDnsServers),
-        getOpsApi(EdgeUrlsInfo.updateStaticRoutes)
-      ],
+      rbacOpsIds: EdgePermissions.editEdgeNode,
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {

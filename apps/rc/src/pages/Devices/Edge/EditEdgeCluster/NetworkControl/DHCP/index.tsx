@@ -4,6 +4,7 @@ import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
 import { Loader, StepsForm, useStepFormContext }                                                    from '@acx-ui/components'
+import { EdgePermissions }                                                                          from '@acx-ui/edge/components'
 import { Features }                                                                                 from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgePinViewDataListQuery }                                     from '@acx-ui/rc/services'
@@ -59,12 +60,7 @@ export const DhcpFormItem = (props: {
   }, [currentDhcpId])
 
 
-  const hasUpdatePermission = hasPermission({
-    rbacOpsIds: [
-      [getOpsApi(EdgeDhcpUrls.activateDhcpService),
-        getOpsApi(EdgeDhcpUrls.deactivateDhcpService)]
-    ]
-  })
+  const hasUpdatePermission = hasPermission({ rbacOpsIds: EdgePermissions.switchEdgeClusterDhcp })
 
   return (
     <>

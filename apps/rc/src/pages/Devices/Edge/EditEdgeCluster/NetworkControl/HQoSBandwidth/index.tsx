@@ -4,6 +4,7 @@ import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
 import { Loader, StepsForm, Tooltip, useStepFormContext }                                                                       from '@acx-ui/components'
+import { EdgePermissions }                                                                                                      from '@acx-ui/edge/components'
 import { ApCompatibilityToolTip }                                                                                               from '@acx-ui/rc/components'
 import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeHqosProfilesUrls, IncompatibilityFeatures }                                                     from '@acx-ui/rc/utils'
@@ -50,12 +51,7 @@ export const HQoSBandwidthFormItem = (props: {
     defaultMessage: 'Insufficient CPU cores have been detected on this cluster'
   }) : ''
 
-  const hasUpdatePermission = hasPermission({
-    rbacOpsIds: [
-      [ getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
-        getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster)]
-    ]
-  })
+  const hasUpdatePermission = hasPermission({ rbacOpsIds: EdgePermissions.switchEdgeClusterHqos })
 
   return (
     <>

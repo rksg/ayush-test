@@ -6,6 +6,7 @@ import {
   PageHeader, showActionModal,
   StepsForm
 } from '@acx-ui/components'
+import { EdgePermissions } from '@acx-ui/edge/components'
 import {
   EdgeSettingForm
 } from '@acx-ui/rc/components'
@@ -68,12 +69,7 @@ const AddEdge = () => {
     }
   }
 
-  const hasAddPermission = hasPermission({
-    rbacOpsIds: [
-      [getOpsApi(EdgeUrlsInfo.addEdge),
-        getOpsApi(EdgeUrlsInfo.addEdgeCluster)]
-    ]
-  })
+  const hasAddPermission = hasPermission({ rbacOpsIds: EdgePermissions.addEdgeNode })
 
   return (
     <>

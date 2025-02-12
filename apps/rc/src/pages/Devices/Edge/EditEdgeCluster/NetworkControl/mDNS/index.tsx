@@ -4,6 +4,7 @@ import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
 import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
+import { EdgePermissions }                            from '@acx-ui/edge/components'
 import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
 import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
 import { EdgeMdnsProxyUrls, IncompatibilityFeatures } from '@acx-ui/rc/utils'
@@ -48,12 +49,7 @@ export const MdnsProxyFormItem = (props: {
     })
   }, [currentEdgeMdns])
 
-  const hasUpdatePermission = hasPermission({
-    rbacOpsIds: [
-      [ getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
-        getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster)]
-    ]
-  })
+  const hasUpdatePermission = hasPermission({ rbacOpsIds: EdgePermissions.switchEdgeClusterMdns })
 
   return <>
     <Row gutter={20}>

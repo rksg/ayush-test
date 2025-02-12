@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }      from '@acx-ui/components'
-import { Features }       from '@acx-ui/feature-toggle'
+import { StepsForm }       from '@acx-ui/components'
+import { EdgePermissions } from '@acx-ui/edge/components'
+import { Features }        from '@acx-ui/feature-toggle'
 import {
   EdgeCompatibilityDrawer,
   EdgeCompatibilityType,
@@ -73,15 +74,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
   && hasPermission({
     scopes: [EdgeScopes.UPDATE],
-    rbacOpsIds: [
-      getOpsApi(EdgeDhcpUrls.activateDhcpService),
-      getOpsApi(EdgeDhcpUrls.DeactivateDhcpService),
-      getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
-      getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster),
-      getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
-      getOpsApi(EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster),
-      getOpsApi(EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings)
-    ]
+    rbacOpsIds: EdgePermissions.editEdgeClusterNetworkControl
   })
 
   return (

@@ -1,6 +1,7 @@
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { EdgePermissions }           from '@acx-ui/edge/components'
 import { Features }                  from '@acx-ui/feature-toggle'
 import {
   EdgeStatusLight,
@@ -207,27 +208,7 @@ export const EdgeClusterTable = () => {
   const rowActions: TableProps<EdgeClusterTableDataType>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: [
-        getOpsApi(EdgeUrlsInfo.updateEdge),
-        getOpsApi(EdgeUrlsInfo.updatePortConfig),
-        getOpsApi(EdgeUrlsInfo.addEdgeLag),
-        getOpsApi(EdgeUrlsInfo.updateEdgeLag),
-        getOpsApi(EdgeUrlsInfo.deleteEdgeLag),
-        getOpsApi(EdgeUrlsInfo.addSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV),
-        getOpsApi(EdgeUrlsInfo.addLagSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.updateLagSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.deleteLagSubInterfaces),
-        getOpsApi(EdgeUrlsInfo.importLagSubInterfacesCSV),
-        getOpsApi(EdgeUrlsInfo.updateDnsServers),
-        getOpsApi(EdgeUrlsInfo.updateStaticRoutes),
-        getOpsApi(EdgeUrlsInfo.patchEdgeCluster),
-        getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings),
-        getOpsApi(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings),
-        getOpsApi(EdgeUrlsInfo.updatePortConfig)
-      ],
+      rbacOpsIds: EdgePermissions.editEdgeCluster,
       visible: (selectedRows) => (selectedRows.length === 1),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -321,11 +302,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
-      rbacOpsIds: [
-        getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings),
-        getOpsApi(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings),
-        getOpsApi(EdgeUrlsInfo.updatePortConfig)
-      ],
+      rbacOpsIds: EdgePermissions.editEdgeClusterConfigWizard,
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & RUCKUS Edge configuration wizard' }),

@@ -2,6 +2,7 @@ import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Dropdown, PageHeader }                  from '@acx-ui/components'
+import { EdgePermissions }                               from '@acx-ui/edge/components'
 import { Features }                                      from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useIsEdgeReady }         from '@acx-ui/rc/components'
 import { CommonOperation, Device, EdgeUrlsInfo, getUrl } from '@acx-ui/rc/utils'
@@ -44,9 +45,7 @@ const AddMenu = () => {
         feature: Device.Edge,
         oper: CommonOperation.Add
       })}
-      rbacOpsIds={[
-        [getOpsApi(EdgeUrlsInfo.addEdge),getOpsApi(EdgeUrlsInfo.addEdgeCluster)]
-      ]}
+      rbacOpsIds={EdgePermissions.addEdgeNode}
       >
         {$t({ defaultMessage: 'RUCKUS Edge' })}
       </TenantLink>

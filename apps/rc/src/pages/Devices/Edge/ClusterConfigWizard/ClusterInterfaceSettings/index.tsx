@@ -140,7 +140,7 @@ export const ClusterInterfaceSettings = () => {
         onCancel={handleCancel}
         initialValues={clusterInterfaceSettings}
         buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply & Finish' })
+          submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
         }}
         customSubmit={hasUpdatePermission ? {
           label: $t({ defaultMessage: 'Apply & Continue' }),
