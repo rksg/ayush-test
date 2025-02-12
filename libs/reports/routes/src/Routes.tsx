@@ -44,7 +44,7 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent />} />
       <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
       <Route path='dataSubscriptions/edit/:settingId'
         element={<SubscriptionForm editMode />} />
