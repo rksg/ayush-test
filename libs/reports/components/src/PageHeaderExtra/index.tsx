@@ -25,8 +25,10 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const isAPReport = ['ap','both'].includes(reportType)
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
   const isRA = get('IS_MLISA_SA')
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg,
     earliestStart: isRA ? moment().subtract(12, 'month'):
       getDefaultEarliestStart({ isReport: true }) })
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
