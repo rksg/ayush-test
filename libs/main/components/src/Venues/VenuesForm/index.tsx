@@ -11,9 +11,10 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                                   from '@acx-ui/icons'
-import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                                                            from '@acx-ui/icons'
+import {
+  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes
 } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
@@ -37,7 +38,8 @@ import {
   Venue,
   TableResult,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplatePageHeaderTitle
+  useConfigTemplatePageHeaderTitle,
+  CommonResult
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -191,6 +193,7 @@ export function VenuesForm (props: VenuesFormProps) {
     instanceLabel: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
+  const { saveEnforcementConfig } = useConfigTemplate()
 
   useEffect(() => {
     if (data) {
@@ -319,7 +322,7 @@ export function VenuesForm (props: VenuesFormProps) {
 
   const handleSubmit = async (
     values: VenueExtended,
-    trigger?: (args: RequestPayload<unknown>) => { unwrap: () => Promise<VenueExtended> },
+    trigger?: (args: RequestPayload<unknown>) => { unwrap: () => Promise<CommonResult> },
     needRedirect: boolean = true
   ) => {
     try {
@@ -327,7 +330,11 @@ export function VenuesForm (props: VenuesFormProps) {
       formData.address = countryCode ? { ...address, countryCode } : address
 
       if (trigger) {
-        await trigger({ params, payload: formData }).unwrap()
+        const result = await trigger({ params, payload: formData }).unwrap()
+
+        if (result.response?.id) {
+          await saveEnforcementConfig(result.response.id)
+        }
       }
 
       if (modalMode) {
@@ -465,25 +472,32 @@ export function VenuesForm (props: VenuesFormProps) {
               </Col>
             </Row>
             {isMapEnabled &&
-          <Row gutter={20}>
-            <Col span={modalMode ? 20 : 8}>
-              <Form.Item
-                label={intl.$t({ defaultMessage: 'Wi-Fi Country Code' })}
-                tooltip={intl.$t( MessageMapping.wifi_country_code_tooltip )}
-                name={['address', 'countryCode']}
-              >
-                <Select
-                  options={wifiCountryCodes}
-                  onChange={(countryCode: string) => setCountryCode(countryCode)}
-                  showSearch
-                  allowClear
-                  optionFilterProp='label'
-                  placeholder='Please select a country'
-                  disabled={action === 'edit'}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+              <Row gutter={20}>
+                <Col span={modalMode ? 20 : 8}>
+                  <Form.Item
+                    label={intl.$t({ defaultMessage: 'Wi-Fi Country Code' })}
+                    tooltip={intl.$t( MessageMapping.wifi_country_code_tooltip )}
+                    name={['address', 'countryCode']}
+                  >
+                    <Select
+                      options={wifiCountryCodes}
+                      onChange={(countryCode: string) => setCountryCode(countryCode)}
+                      showSearch
+                      allowClear
+                      optionFilterProp='label'
+                      placeholder='Please select a country'
+                      disabled={action === 'edit'}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            }
+            {!modalMode &&
+              <Row gutter={20}>
+                <Col span={8}>
+                  <ProtectedEnforceTemplateToggle templateId={data?.id} />
+                </Col>
+              </Row>
             }
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>

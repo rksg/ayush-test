@@ -1,11 +1,11 @@
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { goToNotFound }                          from '@acx-ui/user'
-import { useDateFilter }                         from '@acx-ui/utils'
+import { PageHeader, Tabs, RangePicker, getDefaultEarliestStart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { goToNotFound }                                           from '@acx-ui/user'
+import { useDateFilter }                                          from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
@@ -13,11 +13,16 @@ import { Events }     from './Events'
 
 function Timeline () {
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { activeTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const earliestStart = showResetMsg ?
+    moment().subtract(3, 'month').startOf('day'):
+    getDefaultEarliestStart()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ earliestStart, showResetMsg })
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -52,6 +57,7 @@ function Timeline () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            allowedMonthRange={showResetMsg ? 3 : undefined}
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]}
