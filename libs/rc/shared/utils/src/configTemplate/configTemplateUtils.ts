@@ -1,13 +1,14 @@
 import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { Params, TenantType, useParams }       from '@acx-ui/react-router-dom'
-import { RequestPayload, RolesEnum, UseQuery } from '@acx-ui/types'
-import { hasAllowedOperations, hasRoles }      from '@acx-ui/user'
-import { AccountType, getIntl, getOpsApi }     from '@acx-ui/utils'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { Params, TenantType, useParams }                  from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, UseQuery }            from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { AccountType, getIntl, getOpsApi }                from '@acx-ui/utils'
 
 import { hasPolicyPermission, hasServicePermission } from '../features'
 import { ConfigTemplateType }                        from '../types'
+import { ConfigTemplateUrlsInfo }                    from '../urls'
 
 import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
 import {
@@ -33,8 +34,12 @@ export function generateConfigTemplateBreadcrumb (): { text: string, link?: stri
 
 // eslint-disable-next-line max-len
 export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountType: string): boolean {
+  const hasPermission = getUserProfile().rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.getConfigTemplatesRbac)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   return featureFlagEnabled
-    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    && hasPermission
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
 

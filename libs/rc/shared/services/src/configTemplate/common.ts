@@ -22,7 +22,8 @@ import {
   ConfigTemplateDriftsResponse,
   transformWifiNetwork,
   ConfigTemplateCloneUrlsInfo,
-  AllowedCloneTemplateTypes
+  AllowedCloneTemplateTypes,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -31,6 +32,7 @@ import { batchApi, createHttpRequest } from '@acx-ui/utils'
 import { networkApi }    from '../network'
 import {
   fetchEnhanceRbacNetworkVenueList,
+  fetchNetworkVlanPoolList,
   fetchRbacAccessControlPolicyNetwork,
   fetchRbacNetworkVenueList,
   updateNetworkVenueFn
@@ -159,6 +161,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             payload: { isTemplate: true, page: 1, pageSize: 10000 }
           }
 
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], true, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
           const {
             error: networkVenuesListQueryError,
             networkDeep
@@ -177,6 +184,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
           }
 
           if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {

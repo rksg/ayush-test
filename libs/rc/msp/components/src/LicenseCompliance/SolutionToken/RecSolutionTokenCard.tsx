@@ -1,22 +1,37 @@
 import { useState } from 'react'
 
-import { Col }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Col, Form } from 'antd'
+import { useIntl }   from 'react-intl'
 
-import { Card, Tabs }       from '@acx-ui/components'
-import { LicenseCardProps } from '@acx-ui/msp/utils'
+import { Button, Card, Drawer, Tabs } from '@acx-ui/components'
+import { LicenseCardProps }           from '@acx-ui/msp/utils'
 
 import * as UI from '../styledComponents'
 
-import SolutionTokenRecTabContent from './SolutionTokenRecTabContent'
+import SolutionTokenRecTabContent      from './SolutionTokenRecTabContent'
+import SolutionTokenSettingsForm       from './SolutionTokenSettingsForm'
+import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
 
 export default function RecSolutionTokenCard (props: LicenseCardProps) {
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string | undefined>('summary')
+  const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false)
   const { title, data, trialType } = props
+
+  const [form] = Form.useForm()
 
   function onTabChange (tab: string) {
     setCurrentTab(tab)
+  }
+
+  const openSolutionTokenSettings = function () {
+    if(!openSettingsDrawer)
+      setOpenSettingsDrawer(true)
+  }
+
+  function closeSolutionTokenSettings () {
+    if(openSettingsDrawer)
+      setOpenSettingsDrawer(false)
   }
 
   const tabs = {
@@ -37,7 +52,23 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
         myAccountTabSelected={true}
         summaryTabSelected={false}/>,
       visible: true
+    },
+    settings: {
+      title: $t({ defaultMessage: 'Settings' }),
+      content: <SolutionTokenSettingsTabContent
+        isTabSelected={currentTab === 'settings'}/>,
+      visible: true
     }
+  }
+
+  const onSubmitHandler = () => {
+    form.submit()
+  }
+
+  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation()
+    setOpenSettingsDrawer(false)
+    form.resetFields()
   }
 
   return <Col style={{ width: '395px', paddingLeft: 0, marginTop: '15px' }}>
@@ -67,6 +98,41 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
             </div>
           </div>
         </div>
+        { currentTab === 'settings' &&
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'end'
+          }}>
+            <Button
+              size='small'
+              type={'link'}
+              onClick={openSolutionTokenSettings}>
+              {$t({ defaultMessage: 'Edit Settings' })}
+            </Button>
+          </div>
+        }
+        {
+          openSettingsDrawer && <Drawer
+            title={$t({ defaultMessage: 'Edit Solution Usage Cap' })}
+            visible={openSettingsDrawer}
+            onClose={closeSolutionTokenSettings}
+            destroyOnClose={true}
+            width={610}
+            footer={
+              <div><Button
+                type='primary'
+                onClick={() => onSubmitHandler()}>
+                {$t({ defaultMessage: 'Save' })}
+              </Button>
+              <Button type='default' onClick={closeDrawer}>
+                {$t({ defaultMessage: 'Close' })}
+              </Button></div>
+            }
+          >
+            <SolutionTokenSettingsForm form={form}/>
+          </Drawer>
+        }
       </div>
     </Card>
   </Col>

@@ -89,30 +89,35 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getEventList: {
     method: 'post',
     url: '/events/query',
+    opsApi: 'POST:/events/query',
     oldUrl: '/api/eventalarmapi/:tenantId/event/eventlist',
     newApi: true
   },
   getEventListMeta: {
     method: 'post',
     url: '/events/metas/query',
+    opsApi: 'POST:/events/metas/query',
     oldUrl: '/api/eventalarmapi/:tenantId/event/meta',
     newApi: true
   },
   getEventListDetails: {
     method: 'post',
     url: '/events/details/query',
+    opsApi: 'POST:/events/details/query',
     oldUrl: '/events/metas/query',
     newApi: true
   },
   downloadCSV: {
     method: 'post',
     url: '/events/csvFiles',
+    opsApi: 'POST:/events/csvFiles',
     oldUrl: '/api/eventalarmapi/:tenantId/event/export',
     newApi: true
   },
   clearAlarm: {
     method: 'PATCH',
     url: '/alarms/:alarmId',
+    opsApi: 'PATCH:/alarms/{id}',
     oldMethod: 'delete',
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
@@ -418,6 +423,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/switchSettings',
     oldUrl: '/api/switch/tenant/:tenantId/venue',
+    opsApi: 'PUT:/venues/{id}/switchSettings',
     newApi: true
   },
   getVenueConfigHistory: {
@@ -512,11 +518,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   addExportSchedules: {
     method: 'post',
     url: '/reports/exportSchedules',
+    opsApi: 'POST:/reports/exportSchedules',
     newApi: true
   },
   updateExportSchedules: {
     method: 'put',
     url: '/reports/exportSchedules',
+    opsApi: 'PUT:/reports/exportSchedules',
     newApi: true
   },
   getExportSchedules: {
