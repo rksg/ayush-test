@@ -491,6 +491,12 @@ export function NetworkForm (props:{
     delete data.walledGardensString
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
+    } else {
+      // Force set the VLAN ID to 3000 when the RUCKUS DHCP Service checkbox is enabled
+      const isPortalDefaultVLANId = data?.enableDhcp
+      if (isPortalDefaultVLANId) {
+        data.wlan.vlanId = 3000
+      }
     }
     let dataMore = handleGuestMoreSetting(data)
 
