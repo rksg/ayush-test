@@ -94,15 +94,15 @@ export const CopyButton = styled(Button)`
 `
 
 export const ErrorDescriptions = styled(Descriptions)`
-  padding: 5px 30px 5px 10px;
+  padding: 10px 30px 10px 10px;
   .ant-descriptions-item-label {
     color: #333333 !important;
-    font-size: 11px;
+    font-size: 11px !important;
   }
   .ant-descriptions-item-content {
-    font-size: 11px;
+    font-size: 11px !important;
   }
   .ant-descriptions-item {
-    padding-bottom: 0px;
+    padding-bottom: 5px;
   }
 `

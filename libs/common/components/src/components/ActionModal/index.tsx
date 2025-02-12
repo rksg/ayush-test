@@ -326,7 +326,7 @@ function CollapsePanel (props: {
     const content = props.content
     const object = JSON.parse(content)
     const errorObj = object.errors?.[0] || {}
-    return <UI.ErrorDescriptions labelWidthPercent={30}
+    return <UI.ErrorDescriptions labelWidthPercent={25}
       contentStyle={{ alignItems: 'center' }}>
       {/* model  */}
       <Descriptions.Item
@@ -335,12 +335,17 @@ function CollapsePanel (props: {
       <Descriptions.Item
         label={$t({ defaultMessage: 'Error Code' })}
         children={props.errorCode} />
+      {object.requestId &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Requeset ID' })}
+          children={object.requestId} />
+      }
       <Descriptions.Item
         label={$t({ defaultMessage: 'Timestamp' })}
         children={moment().format('YYYYMMDD-HHmmss')} />
       {errorObj.code &&
          <Descriptions.Item
-           style={{ marginTop: '16px' }}
+           style={{ paddingTop: '16px' }}
            label={$t({ defaultMessage: 'Code' })}
            children={errorObj.code} />
       }
@@ -386,7 +391,7 @@ function CollapsePanel (props: {
       defaultActiveKey={props.expanded ? [props.header] : undefined}
     >
       <Panel header={undefined} key={props.header}>
-        <div style={{ backgroundColor: '#F8F8FA' }}>
+        <div style={{ backgroundColor: '#F8F8FA', borderRadius: '4px' }}>
           {getContent()}
         </div>
         <UI.CopyButton
