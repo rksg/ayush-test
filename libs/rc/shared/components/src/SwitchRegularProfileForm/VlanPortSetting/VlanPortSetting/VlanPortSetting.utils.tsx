@@ -1,4 +1,4 @@
-// import { DefaultOptionType } from 'antd/lib/select'
+import { DefaultOptionType } from 'antd/lib/select'
 
 import {
   // getSwitchPortLabel,
@@ -81,28 +81,34 @@ export const getModule = (module: PortsType[][], slot: string, unit: number) => 
 //   value: string
 // }
 
-export const getSlots = (family: string, model: string) => { //: SlotOptionsResult
+export const getModelModules = (family: string, model: string): string[][] => { //: SlotOptionsResult
   const familyIndex = family as keyof typeof ICX_MODELS_MODULES
   const modelIndex = model as keyof typeof familyList
 
   const familyList = ICX_MODELS_MODULES[familyIndex]
-  const slots = familyList[modelIndex]
-  const slotOptionLists = [
-    createSlotOptions(slots, 1) ?? [],
-    createSlotOptions(slots, 2) ?? [],
-    createSlotOptions(slots, 3) ?? []
-  ]
-
-  return {
-    slots,
-    slotOptionLists
-  }
+  return familyList[modelIndex]
 }
 
-const createSlotOptions = (slots: string[][], slotIndex: number) => {
+export const getSlots = (family: string, model: string): DefaultOptionType[][] => { //: SlotOptionsResult
+  // const familyIndex = family as keyof typeof ICX_MODELS_MODULES
+  // const modelIndex = model as keyof typeof familyList
+
+  // const familyList = ICX_MODELS_MODULES[familyIndex]
+  // const modelModules = familyList[modelIndex]
+  const modelModules = getModelModules(family, model)
+  const slotOptionLists = [
+    createSlotOptions(modelModules, 1) ?? [],
+    createSlotOptions(modelModules, 2) ?? [],
+    createSlotOptions(modelModules, 3) ?? []
+  ]
+
+  return slotOptionLists
+}
+
+const createSlotOptions = (modelModules: string[][], slotIndex: number) => {
   const slotOptions = []
-  if (slots.length > slotIndex) {
-    for (let value of slots?.[slotIndex]) {
+  if (modelModules.length > slotIndex) {
+    for (let value of modelModules?.[slotIndex]) {
       const name = value.toString().split('X').join(' X ')
       slotOptions.push({ label: name, value: value.toString() })
     }
@@ -115,22 +121,21 @@ export const checkIfModuleFixed = (family: string, model: string): {
   module2SelectionEnable?: boolean,
   enableSlot2?: boolean,
   enableSlot3?: boolean,
-  selectedOptionOfSlot2?: string,
-  selectedOptionOfSlot3?: string
+  // selectedOptionOfSlot2?: DefaultOptionType['value'],
+  // selectedOptionOfSlot3?: DefaultOptionType['value']
 } => {
   if (!family) return {}
 
+  // const { slotOptionLists } = getSlots(family, model)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { slots, slotOptionLists } = getSlots(family, model)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [ optionListForSlot1, optionListForSlot2, optionListForSlot3 ] = slotOptionLists
+  // const [ optionListForSlot1, optionListForSlot2, optionListForSlot3 ] = slotOptionLists
 
   if (family === 'ICX7550') {
     return {
       moduleSelectionEnable: true,
       module2SelectionEnable: false,
-      enableSlot2: true,
-      selectedOptionOfSlot2: optionListForSlot2[0]?.value
+      enableSlot2: true
+      // selectedOptionOfSlot2: optionListForSlot2[0]?.value
     }
   }
 
@@ -138,8 +143,8 @@ export const checkIfModuleFixed = (family: string, model: string): {
     return {
       moduleSelectionEnable: false,
       module2SelectionEnable: false,
-      enableSlot2: true,
-      selectedOptionOfSlot2: optionListForSlot2[0]?.value
+      enableSlot2: true
+      // selectedOptionOfSlot2: optionListForSlot2[0]?.value ?? ''
     }
   }
 
@@ -147,8 +152,8 @@ export const checkIfModuleFixed = (family: string, model: string): {
     return {
       moduleSelectionEnable: false,
       module2SelectionEnable: false,
-      enableSlot2: true,
-      selectedOptionOfSlot2: optionListForSlot2[0]?.value
+      enableSlot2: true
+      // selectedOptionOfSlot2: optionListForSlot2[0]?.value
     }
   }
 
@@ -166,9 +171,9 @@ export const checkIfModuleFixed = (family: string, model: string): {
         return {
           moduleSelectionEnable: false,
           enableSlot2: true,
-          enableSlot3: true,
-          selectedOptionOfSlot2: optionListForSlot2[0]?.value,
-          selectedOptionOfSlot3: optionListForSlot3[0]?.value
+          enableSlot3: true
+          // selectedOptionOfSlot2: optionListForSlot2[0]?.value,
+          // selectedOptionOfSlot3: optionListForSlot3[0]?.value
         }
         // setModuleSelectionEnable(false)
         // form.setFieldValue('enableSlot2', true)
@@ -184,8 +189,8 @@ export const checkIfModuleFixed = (family: string, model: string): {
       case '48F':
         return {
           moduleSelectionEnable: false,
-          enableSlot2: true,
-          selectedOptionOfSlot2: optionListForSlot2[0]?.value
+          enableSlot2: true
+          // selectedOptionOfSlot2: optionListForSlot2[0]?.value
         }
 
         // setModuleSelectionEnable(false)
@@ -203,53 +208,3 @@ export const checkIfModuleFixed = (family: string, model: string): {
   }
   return {}
 }
-
-// TODO: reduce redundant code
-// const getModuleContent = (
-//   type: string, module: PortsType[], index: number,
-//   slotIndex: number, slotData: SwitchSlot, selectedItems: string[],
-//   handleCheckboxGroupChange: (checkedValues: string[], moduleGroup: string) => void
-// ) => {
-//   const { $t } = getIntl()
-//   const checkboxClassName = type === 'untagged_module' ? 'lightblue' : 'purple'
-//   return module && <Col>
-//     <Row gutter={20}>
-//       <Col>
-//         <div>
-//           <Typography.Text style={{ fontWeight: 'bold' }}>
-//             {$t({ defaultMessage: 'Module {slotIndex}' }, { slotIndex })}
-//           </Typography.Text>
-//         </div>
-//         <Typography.Paragraph>
-//           {$t({ defaultMessage: '{module}' },
-//             { module: slotData?.slotPortInfo?.split('X').join(' X ') })}
-//         </Typography.Paragraph>
-//         <UI.Module>
-//           <Checkbox.Group
-//             key={`checkboxGroup_module${index+1}_${slotIndex}`}
-//             className={checkboxClassName}
-//             onChange={(checkedValues) =>
-//               handleCheckboxGroupChange(checkedValues as string[], `${index+1}/${slotIndex}`)}
-//             value={selectedItems}
-//             options={module.map((timeslot, i) => ({
-//               label: <Tooltip
-//                 title={getTooltip(timeslot.value)}
-//               >
-//                 <div
-//                   id={`${type}${index+1}_${slotIndex}_${i+1}`}
-//                   data-value={timeslot.value}
-//                   data-testid={`${type}${index+1}_${slotIndex}_${i+1}`}
-//                   data-disabled={getDisabledPorts(timeslot.value)}
-//                   style={{ width: '20px', height: '20px' }}
-//                 ></div>
-//                 <p>{getPortLabel(i+1, slotIndex)}</p>
-//               </Tooltip>,
-//               value: timeslot.value,
-//               disabled: getDisabledPorts(timeslot.value)
-//             }))}
-//           />
-//         </UI.Module>
-//       </Col>
-//     </Row>
-//   </Col>
-// }

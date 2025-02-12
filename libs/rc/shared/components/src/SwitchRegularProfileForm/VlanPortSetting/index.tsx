@@ -518,8 +518,8 @@ export function VlanPortSetting () {
 
             const moduleFixed = checkIfModuleFixed(values.family, values.model) //TODO
             const isDefaultModule = moduleFixed?.moduleSelectionEnable === false
-            const enableModuleInfo = values.switchFamilyModels?.slots
-              .filter(slot => slot.slotNumber !== 1)
+            const enableModuleInfo = values.slots
+              ?.filter(slot => slot.slotNumber !== 1)
               .map(slot => {
                 return `Module ${slot.slotNumber}: ${slot.option}`
               }).sort()
@@ -529,18 +529,47 @@ export function VlanPortSetting () {
               `${familymodel}_${moduleCategory.toString()}` : `${familymodel}_--`
 
             if (existingModel) {
-              existingModel.groupbyModules.push({
-                key: moduleCategorykey,
-                familymodel: familymodel,
-                isDefaultModule,
-                slots: values.switchFamilyModels?.slots as Slot[],
-                ports: values.portSettings?.map((port) => ({
-                  id: `${familymodel}-${port?.port}`,
-                  port: port?.port,
-                  untaggedVlan: port?.untaggedVlan,
-                  taggedVlans: port?.taggedVlans
-                }))
-              })
+              const existingModules
+              = existingModel.groupbyModules.find(module => module.key === moduleCategorykey)
+              if (existingModules) {
+                // TODO
+                // existingModules.ports.forEach((port) => {
+                //   let existingPort = existingModules.ports?.find((p) => p.port === port)
+                //   if (existingPort) {
+                //     if (untagged.includes(port)) {
+                //       existingPort.untaggedVlan.push(item.vlanId?.toString())
+                //       existingPort.untaggedVlan
+                //         = Array.from(new Set(existingPort.untaggedVlan)).sort()
+                //     }
+                //     if (tagged.includes(port)) {
+                //       existingPort.taggedVlans.push(item.vlanId?.toString())
+                //       existingPort.taggedVlans
+                //         = Array.from(new Set(existingPort.taggedVlans)).sort()
+                //     }
+                //   } else {
+                //     existingModules.ports?.push({
+                //       id: `${switchModel.model}-${port}`,
+                //       port,
+                //       untaggedVlan: untagged.includes(port) ? [item.vlanId?.toString()] : [],
+                //       taggedVlans: tagged.includes(port) ? [item.vlanId?.toString()] : []
+                //     })
+                //   }
+                // })
+              } else {
+                existingModel.groupbyModules.push({
+                  key: moduleCategorykey,
+                  familymodel: familymodel,
+                  isDefaultModule,
+                  slots: values.slots as Slot[],
+                  ports: values.portSettings?.map((port) => ({
+                    id: `${familymodel}-${port?.port}`,
+                    port: port?.port,
+                    untaggedVlan: port?.untaggedVlan,
+                    taggedVlans: port?.taggedVlans
+                  }))
+                })
+              }
+
             } else {
               filteredVlanPortList.push({
                 id: familymodel,
@@ -549,7 +578,7 @@ export function VlanPortSetting () {
                   key: moduleCategorykey,
                   familymodel: familymodel,
                   isDefaultModule,
-                  slots: values.switchFamilyModels?.slots as Slot[],
+                  slots: values.slots as Slot[],
                   ports: values.portSettings?.map((port) => ({
                     id: `${familymodel}-${port?.port}`,
                     port: port?.port,
@@ -608,6 +637,7 @@ export function VlanPortSetting () {
               })
             })
 
+            // TODO
             console.log(
               Object.entries(vlanMap).map(([vlanId, models]) => ({
                 vlanId: Number(vlanId),

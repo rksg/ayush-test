@@ -7,6 +7,7 @@ import { Modal, ModalType, StepsForm, showActionModal } from '@acx-ui/components
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   SwitchModelPortData,
+  SwitchSlot2,
   Vlan,
   ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
@@ -25,6 +26,8 @@ export interface PortsModalSetting {
   selectedOptionOfSlot2?: string
   selectedOptionOfSlot3?: string
   portSettings: PortSetting[]
+  slots: SwitchSlot2[]
+  ///
   switchFamilyModels?: SwitchModelPortData
 }
 
@@ -100,16 +103,18 @@ export function PortsModal (props: {
       // }
 
       const slots = editRecord?.slots
-      const selectedEnable2
-        = slots?.filter(item => item.slotNumber === 2)[0] || { enable: false, option: undefined }
-      const selectedEnable3
-        = slots?.filter(item => item.slotNumber === 3)[0] || { enable: false, option: undefined }
-      const selectedEnable4
-        = slots?.filter(item => item.slotNumber === 4)[0] || { enable: false, option: undefined }
+      // const selectedEnable2
+      //   = slots?.filter(item => item.slotNumber === 2)[0] || { enable: false, option: undefined }
+      // const selectedEnable3
+      //   = slots?.filter(item => item.slotNumber === 3)[0] || { enable: false, option: undefined }
+      // const selectedEnable4
+      //   = slots?.filter(item => item.slotNumber === 4)[0] || { enable: false, option: undefined }
 
       const enableSlot = Array.from({ length: 2 }, (_, index) => {
-        const slot = slots?.filter(item => item.slotNumber === index + 2)[0]
-        return slot || { enable: false, option: undefined }
+        //slot2, slot3
+        const slotNumber = index + 2
+        const slot = slots?.filter(item => item.slotNumber === slotNumber)[0]
+        return slot || { slotNumber, enable: false, option: undefined }
       })
 
       // console.log('enableSlot: ', enableSlot)
@@ -140,19 +145,24 @@ export function PortsModal (props: {
         portSettings: editRecord?.ports,
         editRecord: editRecord,
         enableSlot: enableSlot,
-        enableSlot2: selectedEnable2.enable,
-        enableSlot3: selectedEnable3.enable,
-        enableSlot4: selectedEnable4.enable,
-        ...( selectedEnable2.option ? { selectedOptionOfSlot2: selectedEnable2.option } : {}),
-        ...( selectedEnable3.option ? { selectedOptionOfSlot3: selectedEnable3.option } : {}),
-        switchFamilyModels: {
-          //...data.switchFamilyModels
-          id: `${family}-${model}`,
-          model: editRecord.familymodel,
-          slots: editRecord.slots
-          // taggedPorts: [],
-          // untaggedPorts: []
-        }
+        // enableSlot2: selectedEnable2.enable,
+        // enableSlot3: selectedEnable3.enable,
+        // enableSlot4: selectedEnable4.enable,
+        // ...( selectedEnable2.option ? { selectedOptionOfSlot2: selectedEnable2.option } : {}),
+        // ...( selectedEnable3.option ? { selectedOptionOfSlot3: selectedEnable3.option } : {}),
+        enableSlot2: enableSlot[0].enable,
+        enableSlot3: enableSlot[1].enable,
+        ...( enableSlot[0].option ? { selectedOptionOfSlot2: enableSlot[0].option } : {}),
+        ...( enableSlot[1].option ? { selectedOptionOfSlot3: enableSlot[1].option } : {}),
+        slots: editRecord.slots
+        // switchFamilyModels: {
+        //   //...data.switchFamilyModels
+        //   id: `${family}-${model}`,
+        //   model: editRecord.familymodel,
+        //   slots: editRecord.slots
+        //   // taggedPorts: [],
+        //   // untaggedPorts: []
+        // }
         // selectedOptionOfSlot4: selectedEnable4.option
 
       //// switchFamilyModels: editRecord
@@ -163,12 +173,13 @@ export function PortsModal (props: {
       )
 
     } else if (open) {
+      form.setFieldValue('slots', [])
       form.setFieldValue('switchFamilyModels', {
         id: '',
         model: '',
-        slots: [],
-        taggedPorts: [],
-        untaggedPorts: []
+        slots: []
+        // taggedPorts: [],
+        // untaggedPorts: []
       })
     }
 
@@ -230,14 +241,14 @@ export function PortsModal (props: {
   // }
 
   const onFinish = async (data: PortsModalSetting) => {
-    // console.log('onFinish: ', data)
+    // console.log('onFinish data: ', data)
     const isValid = !!(
       data.portSettings?.map(p => p.untaggedVlan.concat(p.taggedVlans)).flat()?.length
     )
     if (!isValid) {
-      showActionModal({ //TODO
+      showActionModal({
         type: 'error',
-        title: $t({ defaultMessage: 'Port is not Configured' }),
+        title: $t({ defaultMessage: 'Port is not Configured' }), //TODO
         content: $t({  // eslint-disable-next-line max-len
           defaultMessage: 'Please ensure that at least one Tagged or Untagged Port is configured.'
         })
@@ -343,7 +354,6 @@ export function PortsModal (props: {
 
         <StepsForm.StepForm
           title={$t({ defaultMessage: 'Set Ports' })}
-          // onFinish={onSavePorts}
         >
           <PortsStep
             editRecord={editRecord}
