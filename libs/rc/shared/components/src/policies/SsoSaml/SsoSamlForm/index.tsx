@@ -89,13 +89,9 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
         <StepsForm.StepForm>
           <Row>
             <Col span={12}>
-              <StepsForm.FieldLabel
-                width={'280px'}
-              >
-                {$t({ defaultMessage: 'Profile Name' })}
-              </StepsForm.FieldLabel>
               <Form.Item
                 name='name'
+                label={$t({ defaultMessage: 'Profile Name' })}
                 rules={[
                   { required: true },
                   { min: 2 },
