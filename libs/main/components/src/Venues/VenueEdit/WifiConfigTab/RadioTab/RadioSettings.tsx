@@ -574,7 +574,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       const content = dual5GName? ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
         $t(
           // eslint-disable-next-line max-len
-          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz that uses MANUAL setting.{br}Please select Custom Settings on {dual5GName} block with at least one channel' },
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz that uses Manual channel selection.{br}Please select Custom Settings on {dual5GName} block with at least one channel' },
           { dual5GName, br: <br /> }
         ):
         $t(
