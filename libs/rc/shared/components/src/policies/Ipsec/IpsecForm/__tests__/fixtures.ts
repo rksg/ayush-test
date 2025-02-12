@@ -1,4 +1,4 @@
-import { EspProposal, IkeProposal, IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecDhGroupEnum, IpSecEncryptionAlgorithmEnum, IpSecFailoverModeEnum, IpSecIntegrityAlgorithmEnum, IpSecProposalTypeEnum, IpSecPseudoRandomFunctionEnum, IpSecRekeyTimeUnitEnum, IpsecViewData, IpsecWiredActivation, IpsecWiredApActivation} from '@acx-ui/rc/utils'
+import { EspProposal, IkeProposal, IpSecAdvancedOptionEnum, IpSecAuthEnum, IpSecDhGroupEnum, IpSecEncryptionAlgorithmEnum, IpSecFailoverModeEnum, IpSecIntegrityAlgorithmEnum, IpSecProposalTypeEnum, IpSecPseudoRandomFunctionEnum, IpSecRekeyTimeUnitEnum, IpsecViewData, IpsecWiredActivation, IpsecWiredApActivation } from '@acx-ui/rc/utils'
 
 export const mockIpSecTable = {
   data: {

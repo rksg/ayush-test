@@ -77,7 +77,7 @@ export default function RekeySettings () {
                       style={{ width: 120 }}
                       options={rekeyTimeUnitOptions}
                       children={
-                        rekeyTimeUnitOptions.map((item) => 
+                        rekeyTimeUnitOptions.map((item) =>
                           <Select.Option key={item.value} value={item.value}>
                             {item.label}
                           </Select.Option>)

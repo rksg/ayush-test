@@ -5,8 +5,6 @@ import { IntlProvider }              from 'react-intl'
 import { IpSecEncryptionAlgorithmEnum, IpSecProposalTypeEnum } from '@acx-ui/rc/utils'
 
 import EspAssociationSettings from './EspAssociationSettings'
-import exp from 'constants'
-import { add } from 'lodash'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')

@@ -48,7 +48,6 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
       <Space>
         <Form.Item
           label={$t({ defaultMessage: 'Retry Duration' })}
-          tooltip={$t({ defaultMessage: 'TBD' })}
           name={'retryDuration'}
           initialValue={retryDuration}
           children={
