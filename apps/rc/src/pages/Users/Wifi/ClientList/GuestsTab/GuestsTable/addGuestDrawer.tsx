@@ -40,7 +40,8 @@ import {
   Guest,
   LangCode,
   trailingNorLeadingSpaces,
-  guestPasswordValidator
+  guestPasswordValidator,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -60,7 +61,7 @@ interface AddGuestProps {
 }
 
 const payload = {
-  fields: ['name', 'defaultGuestCountry', 'id'],
+  fields: ['name', 'defaultGuestCountry', 'id', 'isOweMaster', 'securityProtocol'],
   sortField: 'name',
   sortOrder: 'ASC',
   pageSize: 10000,
@@ -269,10 +270,13 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
-    setAllowedNetworkList(list.data)
-    if(list.data.length === 1) {
+    const filteredData = list.data.filter((network) => {
+      return network?.isOweMaster && network?.securityProtocol === WlanSecurityEnum.OWETransition
+    })
+    setAllowedNetworkList(filteredData)
+    if(filteredData.length === 1) {
       form.setFieldsValue({
-        wifiNetworkId: list.data[0].id
+        wifiNetworkId: filteredData[0].id
       })
     }
   }
