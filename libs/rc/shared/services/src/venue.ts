@@ -318,7 +318,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addVenue: build.mutation<VenueExtended, RequestPayload>({
+    addVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
         return {
@@ -358,7 +358,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    updateVenue: build.mutation<VenueExtended, RequestPayload>({
+    updateVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
         return {

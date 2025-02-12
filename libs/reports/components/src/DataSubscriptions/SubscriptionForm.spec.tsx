@@ -12,14 +12,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 describe('DataSubscriptionsForm', () => {
   it('(RAI) should render SubscriptionForm create', async () => {
-    render(<SubscriptionForm isRAI/>, {
+    render(<SubscriptionForm />, {
       route: {},
       wrapper: Provider
     })
     expect(await screen.findByText('New Subscription')).toBeVisible()
   })
   it('(RAI) should render SubscriptionForm edit', async () => {
-    render(<SubscriptionForm isRAI editMode/>, {
+    render(<SubscriptionForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -27,7 +27,7 @@ describe('DataSubscriptionsForm', () => {
   })
   it('should log for fields on apply click', async () => {
     const spyLog = jest.spyOn(console, 'log')
-    render(<SubscriptionForm isRAI editMode/>, {
+    render(<SubscriptionForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -45,7 +45,7 @@ describe('DataSubscriptionsForm', () => {
     })
   })
   it('should navigate to previous route on cancel click', async () => {
-    render(<SubscriptionForm isRAI/>, {
+    render(<SubscriptionForm />, {
       route: {},
       wrapper: Provider
     })
