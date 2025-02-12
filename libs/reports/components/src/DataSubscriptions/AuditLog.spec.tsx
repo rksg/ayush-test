@@ -4,7 +4,7 @@ import { render, screen } from '@acx-ui/test-utils'
 import AuditLog from './AuditLog'
 describe('AuditLog', () => {
   it('should render New AuditLog correct', async () => {
-    render(<AuditLog isRAI/>, {
+    render(<AuditLog />, {
       route: {},
       wrapper: Provider
     })
