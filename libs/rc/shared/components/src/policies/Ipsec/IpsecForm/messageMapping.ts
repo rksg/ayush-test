@@ -13,7 +13,6 @@ export const messageMapping = {
   connection_dead_peer_detection_delay_tooltip: defineMessage({ defaultMessage: 'By default, the IKE protocol runs a health check with the remote peer to ensure that it is alive. Uncheck it to disable the health check. Available range is 1-65536 seconds' }),
   connection_force_nat_tooltip: defineMessage({ defaultMessage: 'Enabling this option will enforce UDP encapsulation of ESP packets.' }),
   connection_nat_keep_alive_interval_tooltip: defineMessage({ defaultMessage: 'Set the keepalive interval for NAT traversal. Available range is 1-65536 seconds' }),
-  failover_retry_duration_tooltip: defineMessage({ defaultMessage: 'Retry Duration' }),
   failover_retry_interval_tooltip: defineMessage({ defaultMessage: '1-30 minutes' }),
   failover_retry_mode_tooltip: defineMessage({ defaultMessage: 'Select Revertive if you want APs to fall back to the specified primary security gateway. Select Non-revertive if you want APs to maintain connectivity with the security gateway to which they are currently connected' }),
   enc_alg_all_tooltip: defineMessage({ defaultMessage: '3DES,AES128,AES192, and AES256' }),

@@ -76,7 +76,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
         label={
           <>
             {$t({ defaultMessage: 'Retry Interval' })}
-            <Tooltip title={$t({ defaultMessage: '1 - 30 minutes' })} placement='bottom'>
+            <Tooltip title={$t(messageMapping.failover_retry_interval_tooltip)} placement='bottom'>
               <QuestionMarkCircleOutlined />
             </Tooltip>
           </>
