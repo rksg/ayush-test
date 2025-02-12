@@ -18,7 +18,7 @@ const DataSubscriptionsContent: React.FC = () => {
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
-  const breadCrumb =  generateBreadcrumb()
+  const breadCrumb = generateBreadcrumb()
   const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
   const StorageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType

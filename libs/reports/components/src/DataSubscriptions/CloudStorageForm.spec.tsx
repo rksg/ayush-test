@@ -55,7 +55,7 @@ describe('CloudStorageForm', () => {
         id: 'id'
       }
     })
-    render(<CloudStorageForm  editMode/>, {
+    render(<CloudStorageForm editMode/>, {
       route: {},
       wrapper: Provider
     })

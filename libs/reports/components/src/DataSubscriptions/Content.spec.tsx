@@ -80,7 +80,7 @@ describe('DataSubscriptionsContent', () => {
           id: 'id'
         }
       })
-      render(<DataSubscriptionsContent isRAI/>, {
+      render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })
@@ -102,7 +102,7 @@ describe('DataSubscriptionsContent', () => {
       })
     })
     it('should render DataSubscriptionsContent correct whenstorage configured', async () => {
-      render(<DataSubscriptionsContent isRAI/>, {
+      render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })
@@ -129,7 +129,7 @@ describe('DataSubscriptionsContent', () => {
         READ_DATA_SUBSCRIPTIONS: true,
         WRITE_DATA_SUBSCRIPTIONS: false
       } as RaiPermissions)
-      render(<DataSubscriptionsContent isRAI/>, {
+      render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })
