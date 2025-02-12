@@ -1,13 +1,17 @@
-
-import userEvent from '@testing-library/user-event'
+import { configureStore } from '@reduxjs/toolkit'
+import userEvent          from '@testing-library/user-event'
 
 import { get }                               from '@acx-ui/config'
 import { Provider }                          from '@acx-ui/store'
+import { notificationApiURL }                from '@acx-ui/store'
 import { mockServer, render, screen }        from '@acx-ui/test-utils'
+import { mockRestApiQuery }                  from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+
 
 import { mockSubscriptionQuery } from './__fixtures__'
 import DataSubscriptionsContent  from './Content'
+import { dataSubscriptionApis }  from './services'
 
 const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
@@ -43,6 +47,16 @@ describe('DataSubscriptionsContent', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    const store = configureStore({
+      reducer: {
+        [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+    })
+    afterEach(() => {
+      store.dispatch(dataSubscriptionApis.util.resetApiState())
+    })
     beforeEach(() => {
       jest.clearAllMocks()
       jest.mocked(get).mockReturnValue('true')
@@ -50,12 +64,26 @@ describe('DataSubscriptionsContent', () => {
         READ_DATA_SUBSCRIPTIONS: true,
         WRITE_DATA_SUBSCRIPTIONS: true
       } as RaiPermissions)
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
       mockServer.use(
         mockSubscriptionQuery()
       )
     })
-    it('should render DataSubscriptionsContent correct', async () => {
-      render(<DataSubscriptionsContent isRAI/>, {
+    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+        data: {
+          config: {
+            connectionType: 'azure',
+            azureConnectionType: 'Azure Files',
+            azureAccountName: 'some name',
+            azureAccountKey: 'key',
+            azureShareName: 'share name',
+            azureCustomerName: 'name'
+          },
+          id: 'id'
+        }
+      })
+      render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })
@@ -68,10 +96,32 @@ describe('DataSubscriptionsContent', () => {
         hash: '',
         search: ''
       })
-      expect(screen.getByText(/Cloud Storage:/)).toBeVisible()
-      await userEvent.click(screen.getByRole('button', { name: /Cloud Storage:/ }))
+      expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/cloudStorage/edit/storageId',
+        pathname: '/ai/dataSubscriptions/cloudStorage/edit/id',
+        hash: '',
+        search: ''
+      })
+    })
+    it('should render DataSubscriptionsContent correct whenstorage configured', async () => {
+      render(<DataSubscriptionsContent />, {
+        route: { params },
+        wrapper: Provider
+      })
+      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(screen.getByTestId(bannerTestId)).toBeVisible()
+      expect(screen.getByText('New Subscription')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: '/ai/dataSubscriptions/create',
+        hash: '',
+        search: ''
+      })
+      expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: '/ai/dataSubscriptions/cloudStorage/create',
         hash: '',
         search: ''
       })
@@ -82,7 +132,7 @@ describe('DataSubscriptionsContent', () => {
         READ_DATA_SUBSCRIPTIONS: true,
         WRITE_DATA_SUBSCRIPTIONS: false
       } as RaiPermissions)
-      render(<DataSubscriptionsContent isRAI/>, {
+      render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })
