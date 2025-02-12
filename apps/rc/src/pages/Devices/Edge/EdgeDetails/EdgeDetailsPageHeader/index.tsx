@@ -11,6 +11,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker }                     from '@acx-ui/components'
+import { EdgePermissions }                                                                   from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }                            from '@acx-ui/rc/components'
 import {
@@ -164,23 +165,7 @@ export const EdgeDetailsPageHeader = () => {
             }</Dropdown>,
           <Button
             scopeKey={[EdgeScopes.UPDATE]}
-            rbacOpsIds={[
-              getOpsApi(EdgeUrlsInfo.updateEdge),
-              getOpsApi(EdgeUrlsInfo.updatePortConfig),
-              getOpsApi(EdgeUrlsInfo.addEdgeLag),
-              getOpsApi(EdgeUrlsInfo.updateEdgeLag),
-              getOpsApi(EdgeUrlsInfo.deleteEdgeLag),
-              getOpsApi(EdgeUrlsInfo.addSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV),
-              getOpsApi(EdgeUrlsInfo.addLagSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.updateLagSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.deleteLagSubInterfaces),
-              getOpsApi(EdgeUrlsInfo.importLagSubInterfacesCSV),
-              getOpsApi(EdgeUrlsInfo.updateDnsServers),
-              getOpsApi(EdgeUrlsInfo.updateStaticRoutes)
-            ]}
+            rbacOpsIds={EdgePermissions.editEdgeNode}
             type='primary'
             onClick={() =>
               navigate({
