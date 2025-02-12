@@ -1003,6 +1003,16 @@ export function NetworkForm (props:{
       saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
         toRemoveFromWlan
       )
+      if ( saveState.wlan?.wlanSecurity === WlanSecurityEnum.OWETransition
+        && saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+        saveContextRef.current = { ...saveContextRef.current,
+          ...{
+            wlan: {
+              ...saveContextRef.current?.wlan,
+              ...{ wlanSecurity: WlanSecurityEnum.OWETransition }
+            }
+          } }
+      }
     }
   }
 
