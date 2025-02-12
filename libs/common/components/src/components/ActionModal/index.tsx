@@ -326,7 +326,7 @@ function CollapsePanel (props: {
     const content = props.content
     const object = JSON.parse(content)
     const errorObj = object.errors?.[0] || {}
-    return <UI.ErrorDescriptions labelWidthPercent={25}
+    return <UI.ErrorDescriptions labelWidthPercent={errorObj.message? 25 : 28}
       contentStyle={{ alignItems: 'center' }}>
       {/* model  */}
       <Descriptions.Item
@@ -365,7 +365,7 @@ function CollapsePanel (props: {
           label={'Error Response'}
           children={''} />
         <div style={{ whiteSpace: 'pre-wrap' }}>
-          {JSON.stringify(content, null, 2)}
+          {content}
         </div>
       </>
       }
