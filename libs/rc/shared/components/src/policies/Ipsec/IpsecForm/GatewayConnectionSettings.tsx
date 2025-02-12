@@ -62,6 +62,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         </GridCol>
         <GridCol col={{ span: 12 }}>
           <Form.Item name={['advancedOption','dhcpOpt43Subcode']}
+            style={{ marginTop: '-4px' }}
             initialValue={7}
             children={
               <InputNumber min={1} max={32} />
@@ -92,7 +93,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           {retryLimitEnabled &&
             <Form.Item
               initialValue={false}
-              style={{ lineHeight: '50px' }}
+              style={{ lineHeight: '50px', marginTop: '-30px' }}
               children={
                 <Space>
                   <Form.Item
@@ -135,7 +136,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {espReplayWindowEnabled &&
             <Form.Item
-              style={{ lineHeight: '50px' }}
+              style={{ lineHeight: '50px', marginTop: '-30px' }}
               children={
                 <Space>
                   <Form.Item
@@ -172,6 +173,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           <Form.Item
             label={' '}
             name={['advancedOption','ipcompEnable']}
+            style={{ marginTop: '-28px' }}
             children={
               <Switch
                 checked={ipCompressionEnabled}
@@ -206,7 +208,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {deadPeerDetectionDelayEnabled &&
             <Form.Item
-              style={{ lineHeight: '50px' }}
+              style={{ lineHeight: '50px', marginTop: '-30px' }}
               children={
                 <Space>
                   <Form.Item
@@ -242,6 +244,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           <Form.Item
             label={' '}
             name={['advancedOption','enforceNatt']}
+            style={{ marginTop: '-28px' }}
             children={
               <Switch
                 // eslint-disable-next-line max-len
@@ -275,6 +278,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {nattKeepAliveIntervalEnabled &&
             <Form.Item
+              style={{ lineHeight: '50px', marginTop: '-30px' }}
               children={
                 <Space>
                   <Form.Item

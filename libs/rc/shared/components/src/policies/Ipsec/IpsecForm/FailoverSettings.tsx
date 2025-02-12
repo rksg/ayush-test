@@ -87,7 +87,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
             name={['advancedOption','failoverRetryInterval']}
             initialValue={1}
             children={<InputNumber min={1} max={30} />} />
-          <span> {$t({ defaultMessage: 'minute(s)' })} </span>
+          <div style={{ height: '36px' }}> {$t({ defaultMessage: 'minute(s)' })} </div>
         </Space>} />
       <Form.Item
         name={['advancedOption','failoverMode']}
@@ -108,12 +108,12 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
           label={$t({ defaultMessage: 'Check Interval' })}
           rules={[{ required: true }]}
           children={
-            <Space>
+            <Space >
               <Form.Item
                 name={['advancedOption','failoverPrimaryCheckInterval']}
                 initialValue={1}
                 children={<InputNumber min={1} max={30} />} />
-              <span> {$t({ defaultMessage: 'minute(s)' })} </span>
+              <div style={{ height: '36px' }}> {$t({ defaultMessage: 'minute(s)' })} </div>
             </Space>} />
       }
     </>
