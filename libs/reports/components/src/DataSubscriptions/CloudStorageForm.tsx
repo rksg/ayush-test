@@ -19,7 +19,6 @@ export const StorageOptions = [
 ]
 type CloudStorageFormProps = {
   editMode?: boolean
-  isRAI?: boolean
 }
 const getStorageMap = () => {
   const { $t } = getIntl()
@@ -90,7 +89,7 @@ const getStorageMap = () => {
     }]
   }
 }
-const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }) => {
+const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const storageMap = getStorageMap()
@@ -128,7 +127,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
         )
         : $t({ defaultMessage: 'New Cloud Storage' })
       }
-      breadcrumb={generateBreadcrumb({ isRAI })}
+      breadcrumb={generateBreadcrumb()}
     />
     <Loader states={[{ isLoading: isLoading || storage.isLoading }]}>
       <GridRow>

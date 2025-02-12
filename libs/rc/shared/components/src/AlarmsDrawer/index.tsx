@@ -27,12 +27,14 @@ import {
   CommonUrlsInfo,
   useTableQuery,
   EventSeverityEnum,
-  EventTypeEnum
+  EventTypeEnum,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { store }                 from '@acx-ui/store'
-import { RolesEnum }             from '@acx-ui/types'
-import { hasRoles }              from '@acx-ui/user'
+import { useParams, TenantLink }                          from '@acx-ui/react-router-dom'
+import { store }                                          from '@acx-ui/store'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -76,6 +78,7 @@ const defaultPayload: {
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { visible, setVisible } = props
   const isFilterProductToggleEnabled = useIsSplitOn(Features.ALARM_WITH_PRODUCT_FILTER_TOGGLE)
 
@@ -240,7 +243,11 @@ export function AlarmsDrawer (props: AlarmsType) {
     return venueIds
   }
 
-  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.clearAlarm),
+      getOpsApi(CommonRbacUrlsInfo.clearAlarmByVenue)
+    ])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const alarmList = <>
     <UI.FilterRow>

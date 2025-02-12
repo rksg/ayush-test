@@ -39,7 +39,7 @@ describe('DataSubscriptionsForm', () => {
     mockNavigate.mockClear()
   })
   it('(RAI) should render SubscriptionForm create', async () => {
-    render(<SubscriptionForm isRAI/>, {
+    render(<SubscriptionForm />, {
       route: {},
       wrapper: Provider
     })
@@ -55,14 +55,14 @@ describe('DataSubscriptionsForm', () => {
         frequency: 'daily'
       }
     })
-    render(<SubscriptionForm isRAI editMode/>, {
+    render(<SubscriptionForm editMode/>, {
       route: {},
       wrapper: Provider
     })
     expect(await screen.findByText('Edit Subscription')).toBeVisible()
   })
   it('should trigger validation for fields on apply click', async () => {
-    render(<SubscriptionForm isRAI />, {
+    render(<SubscriptionForm />, {
       route: {},
       wrapper: Provider
     })
@@ -78,7 +78,7 @@ describe('DataSubscriptionsForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'post', {
       data: { id: 'id' }
     }, false, true)
-    render(<SubscriptionForm isRAI />, {
+    render(<SubscriptionForm />, {
       route: {},
       wrapper: Provider
     })
@@ -111,7 +111,7 @@ describe('DataSubscriptionsForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'patch', {
       error: { data: { error: 'server error' } }
     }, false, true)
-    render(<SubscriptionForm isRAI editMode/>, {
+    render(<SubscriptionForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -127,7 +127,7 @@ describe('DataSubscriptionsForm', () => {
     })
   })
   it('should navigate to previous route on cancel click', async () => {
-    render(<SubscriptionForm isRAI/>, {
+    render(<SubscriptionForm />, {
       route: {},
       wrapper: Provider
     })

@@ -46,6 +46,11 @@ export interface DelegationEntitlementRecord {
   rwgDeviceCount?: string;
   edgeDeviceCount?: string;
   availableLicenses?: number;
+  adaptivePolicyCount?: number;
+  piNetworkCount?: number;
+  sisIntegrationCount?: number;
+  pmsIntegrationCount?: number;
+  hybridCloudSecCount?: number;
 }
 
 export interface MspEc {
@@ -105,6 +110,11 @@ export interface MspEcData {
   number_of_days?: string;
   isManageAllEcs?: boolean;
   tier?: MspEcTierEnum;
+  privacyFeatures?: [{
+    featureName?: string,
+    status?: string,
+    isEnabled?: boolean
+  }]
 }
 
 export interface VarCustomer {
@@ -721,4 +731,15 @@ export const AssignedEntitlementListPayload = {
     licenseType: ['APSW'],
     usageType: 'ASSIGNED'
   }
+}
+
+export interface SolutionTokenSettings {
+  featureType: DeviceComplianceType,
+  featureName: string,
+  maxQuantity: number,
+  enabled: boolean,
+  capped: boolean,
+  licenseToken: number,
+  featureCostUnit: string,
+  featureUnit: string
 }

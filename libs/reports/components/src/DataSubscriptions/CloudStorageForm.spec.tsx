@@ -35,7 +35,7 @@ describe('CloudStorageForm', () => {
   })
 
   it('(RAI) should render New CloudStorageForm correct', async () => {
-    render(<CloudStorageForm isRAI/>, {
+    render(<CloudStorageForm />, {
       route: {},
       wrapper: Provider
     })
@@ -55,7 +55,7 @@ describe('CloudStorageForm', () => {
         id: 'id'
       }
     })
-    render(<CloudStorageForm isRAI editMode/>, {
+    render(<CloudStorageForm  editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -78,7 +78,7 @@ describe('CloudStorageForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage/id`, 'put', {
       data: { id: 'id' }
     }, false, true)
-    render(<CloudStorageForm isRAI editMode/>, {
+    render(<CloudStorageForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -94,7 +94,7 @@ describe('CloudStorageForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'post', {
       data: { id: 'id' }
     }, false, true)
-    render(<CloudStorageForm isRAI />, {
+    render(<CloudStorageForm />, {
       route: {},
       wrapper: Provider
     })
@@ -120,7 +120,7 @@ describe('CloudStorageForm', () => {
     })
   })
   it('should trigger validation on apply click for create', async () => {
-    render(<CloudStorageForm isRAI />, {
+    render(<CloudStorageForm />, {
       route: {},
       wrapper: Provider
     })
@@ -149,7 +149,7 @@ describe('CloudStorageForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage/id`, 'put', {
       error: { data: { error: 'server error' } }
     }, false, true)
-    render(<CloudStorageForm isRAI editMode/>, {
+    render(<CloudStorageForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -166,7 +166,7 @@ describe('CloudStorageForm', () => {
     })
   })
   it('should navigate to previous route on cancel click', async () => {
-    render(<CloudStorageForm isRAI/>, {
+    render(<CloudStorageForm />, {
       route: {},
       wrapper: Provider
     })

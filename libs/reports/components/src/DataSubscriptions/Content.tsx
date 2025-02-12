@@ -12,18 +12,13 @@ import { StorageOptions }     from './CloudStorageForm'
 import { useGetStorageQuery } from './services'
 import { generateBreadcrumb } from './utils'
 
-type DataSubscriptionsContentProps = {
-  isRAI?: boolean
-}
 
-const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isRAI }) => {
+const DataSubscriptionsContent: React.FC = () => {
   const { $t } = useIntl()
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
-  const breadCrumb = isRAI ? [
-    { text: $t({ defaultMessage: 'Business Insights' }) }
-  ]: generateBreadcrumb({ isRAI, isList: true })
+  const breadCrumb =  generateBreadcrumb()
   const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
   const StorageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType

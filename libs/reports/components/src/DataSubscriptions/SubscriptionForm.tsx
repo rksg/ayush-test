@@ -12,11 +12,10 @@ import { generateBreadcrumb }                                   from './utils'
 
 type DataSubscriptionsFormProps = {
   editMode?: boolean
-  isRAI?: boolean
 }
 
 
-const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, editMode=false }) => {
+const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
@@ -60,7 +59,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
       title={editMode
         ? $t({ defaultMessage: 'Edit Subscription' })
         : $t({ defaultMessage: 'New Subscription' })}
-      breadcrumb={generateBreadcrumb({ isRAI })}
+      breadcrumb={generateBreadcrumb()}
     />
     <Loader states={[{ isLoading: isLoading || selectedSubscription.isLoading }]}>
       <GridRow>
