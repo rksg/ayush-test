@@ -6,8 +6,15 @@ import {
   SearchInput as AcxSearchInput
 } from '@acx-ui/components'
 
-export const Wrapper = styled(AntSpace).attrs({ style: { justifyContent: 'space-between' } })`
+export const Container = styled.div`
   padding-bottom: 15px;
+  position: sticky;
+  z-index: 5;
+  background-color: var(--acx-primary-white);
+`
+
+export const Wrapper = styled(AntSpace)`
+  justify-content: space-between;
 `
 
 export const Space = styled(AntSpace).attrs({ size: 12 })``

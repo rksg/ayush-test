@@ -1,11 +1,12 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
-import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
+import { PageHeader, RangePicker }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { EnforcedButton, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useVenueDetailsHeaderQuery }                   from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
   CommonUrlsInfo,
   SwitchRbacUrlsInfo,
   useConfigTemplate,
@@ -66,7 +67,9 @@ function VenuePageHeader () {
       breadcrumb={breadcrumb}
       extra={[
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
-        ...filterByAccess([<Button
+        ...filterByAccess([<EnforcedButton
+          configTemplateType={ConfigTemplateType.VENUE}
+          instanceId={venueId}
           type='primary'
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
@@ -80,7 +83,7 @@ function VenuePageHeader () {
               }
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</Button>])
+        >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>])
       ]}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />
