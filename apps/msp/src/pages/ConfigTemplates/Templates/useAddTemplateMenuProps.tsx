@@ -41,7 +41,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null 
   }
 }
 
-function usePolicyMenuItems (): ItemType | null {
+export function usePolicyMenuItems (): ItemType {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = useIntl()
 
@@ -80,7 +80,7 @@ export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, vi
   }
 }
 
-function useServiceMenuItems (): ItemType | null {
+export function useServiceMenuItems (): ItemType {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = useIntl()
 
@@ -118,7 +118,7 @@ export function createServiceMenuItem (configTemplateType: ConfigTemplateType, v
   }
 }
 
-export function useSwitchMenuItems (): ItemType | null {
+export function useSwitchMenuItems (): ItemType {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = getIntl()
   const isSwitchRegularAvailable = visibilityMap[ConfigTemplateType.SWITCH_REGULAR]

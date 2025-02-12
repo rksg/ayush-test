@@ -116,20 +116,29 @@ export function VersionBannerPerApModel () {
         }
 
         if (isApFwMgmtEarlyAccess) {
+          const currentVersion = tenantLatestVersionUpdateGroup.firmwares[0].name
           // ACX-76973: for EA/IEA firmware, also need to display the latest version information in the banner
+          const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
           const resultAlpha = earlyAccessFilter(data, isAlphaFilter, tenantLatestVersionUpdateGroup)
           const resultBeta = earlyAccessFilter(data, isBetaFilter, tenantLatestVersionUpdateGroup)
-          if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0) {
+          if (apFirmwareContext.isAlphaFlag && resultAlpha.length > 0
+            && compareVersions(resultAlpha[0].name, currentVersion) > 0) {
             updateGroups.unshift(extractLatestVersionToUpdateGroup(resultAlpha.slice(0, 1)))
           }
-          if (apFirmwareContext.isBetaFlag && resultBeta.length > 0) {
+          if (apFirmwareContext.isBetaFlag && resultBeta.length > 0
+            && compareVersions(resultBeta[0].name, currentVersion) > 0) {
             updateGroups.unshift(extractLatestVersionToUpdateGroup(resultBeta.slice(0, 1)))
+          }
+
+          if (latestGA && compareVersions(latestGA.name, currentVersion) > 0) {
+            updateGroups.unshift(extractLatestVersionToUpdateGroup([latestGA]))
           }
         }
       }
 
       const updateGroupsWithLatestVersion = updateGroups
         .map(item => ({ firmware: item.firmwares[0], apModels: item.apModels }))
+        .sort((a, b) => compareVersions(b.firmware.name, a.firmware.name))
 
       return { updateGroupsWithLatestVersion }
     }

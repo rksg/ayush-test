@@ -42,6 +42,7 @@ export interface ConfigTemplate {
   lastModified: number,
   lastApplied: number,
   driftStatus?: ConfigTemplateDriftType
+  isEnforced?: boolean
 }
 
 export interface ApplyConfigTemplatePaylod {
@@ -105,3 +106,9 @@ export type ConfigTemplateDriftSet = {
 //   }
 // ]
 export type ConfigTemplateDriftsResponse = ConfigTemplateDriftSet[]
+
+
+export interface EnforceableFields {
+  isEnforced?: boolean // It indicates whether the network template/instance is enforced
+  isManagedByTemplate?: boolean // It indicates whether the venue is derived from a template
+}
