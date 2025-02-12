@@ -35,10 +35,16 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
-}))
+jest.mock('@acx-ui/rc/components', () => {
+  const rcComponents = jest.requireActual('@acx-ui/rc/components')
+  return {
+    SimpleListTooltip: rcComponents.SimpleListTooltip,
+    TrafficClassSettingsTable: rcComponents.TrafficClassSettingsTable,
+    ToolTipTableStyle: rcComponents.ToolTipTableStyle,
+    // eslint-disable-next-line max-len
+    EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />
+  }
+})
 
 const modifiedMockEdgeHqosProfileStatusList = {
   ...mockEdgeHqosCompatibilities,
@@ -97,7 +103,7 @@ describe('HqosBandwidthTable', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /Test-QoS-/i })
     expect(row.length).toBe(2)
-    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    await screen.findAllByTestId('EdgeTableCompatibilityWarningTooltip')
   })
 
   it('should render breadcrumb correctly', async () => {

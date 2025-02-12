@@ -7,14 +7,14 @@ import {
   ReportList,
   DataStudio,
   DataSubscriptionsContent,
-  DataSubscriptionsForm,
+  SubscriptionForm,
   DataSubscriptionsAuditLog,
-  DataSubscriptionsCloudStorage
+  CloudStorageForm
 } from '@acx-ui/reports/components'
 import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
-  const isRa = get('IS_MLISA_SA')
+  const isRa = Boolean(get('IS_MLISA_SA'))
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -44,18 +44,16 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      {isRa ? (<>
-        <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI />} />
-        <Route path='dataSubscriptions/create' element={<DataSubscriptionsForm isRAI />} />
-        <Route path='dataSubscriptions/edit/:settingId'
-          element={<DataSubscriptionsForm isRAI editMode />} />
-        <Route path='dataSubscriptions/auditLog/:settingId'
-          element={<DataSubscriptionsAuditLog isRAI/>} />
-        <Route path='dataSubscriptions/cloudStorage/create'
-          element={<DataSubscriptionsCloudStorage isRAI/>} />
-        <Route path='dataSubscriptions/cloudStorage/edit/:csId'
-          element={<DataSubscriptionsCloudStorage isRAI editMode />} />
-      </>) : []}
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
+      <Route path='dataSubscriptions/edit/:settingId'
+        element={<SubscriptionForm editMode />} />
+      <Route path='dataSubscriptions/auditLog/:settingId'
+        element={<DataSubscriptionsAuditLog />} />
+      <Route path='dataSubscriptions/cloudStorage/create'
+        element={<CloudStorageForm />} />
+      <Route path='dataSubscriptions/cloudStorage/edit/:csId'
+        element={<CloudStorageForm editMode />} />
     </Route>
   )
   return (

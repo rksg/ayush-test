@@ -9,9 +9,9 @@ import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 
 export type ApCompatibilityToolTipProps = {
-    visible: boolean,
+    showDetailButton: boolean,
     title: string,
-    onClick: (e: ReactMouseEvent) => void,
+    onClick?: (e: ReactMouseEvent) => void,
     placement?: TooltipPlacement,
     icon?: ReactElement
 }
@@ -25,7 +25,7 @@ export type ApCompatibilityToolTipProps = {
   */
 export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
   const { $t } = useIntl()
-  const { visible, title, onClick, placement, icon } = props
+  const { showDetailButton, title, onClick, placement, icon } = props
 
   const compatibilityToolTipInfo = $t({
     defaultMessage:
@@ -34,7 +34,7 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
 
   const handleOnClick = (e: ReactMouseEvent) => {
     e.stopPropagation()
-    onClick(e)
+    onClick?.(e)
   }
 
   return (<Tooltip
@@ -45,13 +45,13 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
         }
         values={{
           title,
-          compatibilityToolTip: ()=> (visible?<Button
+          compatibilityToolTip: ()=> (showDetailButton ? <Button
             type='link'
             data-testid='tooltip-button'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={handleOnClick}>
             {compatibilityToolTipInfo}
-          </Button>:[])
+          </Button> : null)
         }}
       />
     }

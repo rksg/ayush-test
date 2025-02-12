@@ -381,6 +381,16 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/entitlements/compliances/query',
     newApi: true
   },
+  getSolutionTokenSettings: {
+    method: 'get',
+    url: '/entitlements/settings',
+    newApi: true
+  },
+  updateSolutionTokenSettings: {
+    method: 'PATCH',
+    url: '/entitlements/settings',
+    newApi: true
+  },
   getEntitlementsAttentionNotes: {
     method: 'post',
     url: '/entitlements/attentionNotes/query',

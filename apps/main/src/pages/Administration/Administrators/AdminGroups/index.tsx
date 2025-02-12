@@ -19,10 +19,19 @@ import {
   useDeleteAdminGroupsMutation,
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
-import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc/utils'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import {
+  AdminGroup,
+  sortProp,
+  defaultSort,
+  AdministrationUrlsInfo
+}                    from '@acx-ui/rc/utils'
+import { RolesEnum } from '@acx-ui/types'
+import {
+  filterByAccess,
+  useUserProfileContext,
+  roleStringMap
+} from '@acx-ui/user'
+import { AccountType, getOpsApi } from '@acx-ui/utils'
 
 import { AddGroupDrawer }    from './AddGroupDrawer'
 import { ShowMembersDrawer } from './ShowMembersDrawer'
@@ -139,6 +148,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         }
       },
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateAdminGroups)],
       onClick: (selectedRows) => {
         // show edit dialog
         setEditData(selectedRows[0])
@@ -148,6 +158,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteAdminGroups)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -186,6 +197,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add Group' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addAdminGroups)],
       disabled: maxAllowedGroupReached,
       onClick: handleClickAdd
     })
@@ -270,6 +282,7 @@ const AdminGroups = (props: AdminGroupsTableProps) => {
         setVisible={setShowDialog}
         isEditMode={editMode}
         editData={editMode ? editData : undefined}
+        groupData={adminList}
       />}
       {membersDrawerVisible && <ShowMembersDrawer
         visible={membersDrawerVisible}

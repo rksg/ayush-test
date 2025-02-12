@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { ApGroupTable, ApGroupsTabContext }         from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { ApGroupViewModel, usePollingTableQuery }   from '@acx-ui/rc/utils'
-import { TenantLink }                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                               from '@acx-ui/types'
+import { Button }                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { ApGroupTable, ApGroupsTabContext }                         from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useVenuesListQuery }                 from '@acx-ui/rc/services'
+import { ApGroupViewModel, usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { TenantLink }                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                               from '@acx-ui/types'
+import { getOpsApi }                                                from '@acx-ui/utils'
 
 
 export default function useApGroupsTable () {
@@ -55,7 +56,8 @@ export default function useApGroupsTable () {
 
   const extra = [
     <TenantLink to='devices/apgroups/add'
-      scopeKey={[WifiScopes.CREATE]}>
+      scopeKey={[WifiScopes.CREATE]}
+      rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.addApGroup)]}>
       <Button type='primary'>
         {$t({ defaultMessage: 'Add' })}
       </Button>

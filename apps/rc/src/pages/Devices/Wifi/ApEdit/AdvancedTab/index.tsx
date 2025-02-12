@@ -3,10 +3,12 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }   from '@acx-ui/rc/utils'
-import { useTenantLink }          from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { redirectPreviousPage, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }                   from '@acx-ui/user'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
@@ -14,6 +16,7 @@ import { ApLed }                from './ApLed'
 import { ApManagementVlanForm } from './ApManagementVlan'
 import { ApUsb }                from './ApUsb'
 import { BssColoring }          from './BssColoring'
+
 
 
 export interface ApAdvancedContext {
@@ -35,6 +38,19 @@ export function AdvancedTab () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+
+  const [
+    isAllowEditApLed,
+    isAllowEditApUsb,
+    isAllowEditApBssColoring,
+    isAllowEditApMgmtVlan
+  ] = [
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApLed)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApUsb)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApBssColoring)]),
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateApManagementVlan)])
+  ]
+
 
   const {
     previousPath,
@@ -64,7 +80,7 @@ export function AdvancedTab () {
           <StepsFormLegacy.SectionTitle id='ap-led'>
             { apLedTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApLed />
+          <ApLed isAllowEdit={isAllowEditApLed}/>
         </>
       )
     },
@@ -76,7 +92,7 @@ export function AdvancedTab () {
           <StepsFormLegacy.SectionTitle id='ap-usb'>
             { apUsbTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApUsb />
+          <ApUsb isAllowEdit={isAllowEditApUsb} />
         </>
       )
 
@@ -89,7 +105,7 @@ export function AdvancedTab () {
           <StepsFormLegacy.SectionTitle id='bss-coloring'>
             { bssColoringTitle }
           </StepsFormLegacy.SectionTitle>
-          <BssColoring />
+          <BssColoring isAllowEdit={isAllowEditApBssColoring} />
         </>
       )
 
@@ -102,7 +118,7 @@ export function AdvancedTab () {
           <StepsFormLegacy.SectionTitle id='ap-mgmt-vlan'>
             { apMgmtVlanTitle }
           </StepsFormLegacy.SectionTitle>
-          <ApManagementVlanForm />
+          <ApManagementVlanForm isAllowEdit={isAllowEditApMgmtVlan} />
         </>
       )
 

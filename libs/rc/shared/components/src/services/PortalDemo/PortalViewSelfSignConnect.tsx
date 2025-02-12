@@ -15,6 +15,14 @@ export default function PortalViewSelfSignConnect (props:{
         <UI.ViewSectionSocialText>
           {portalLang.connectWithSMS}</UI.ViewSectionSocialText>
       </UI.ViewSectionSocial>}
+      {(!networkSocial || networkSocial.whatsappEnabled) &&
+        <UI.ViewSectionSocial $type='whatsapp'>
+          <UI.ViewSectionSocialIcon>
+            <UI.WhatsAppOutlined/>
+          </UI.ViewSectionSocialIcon>
+          <UI.ViewSectionSocialText>
+            {portalLang.connectWithSMS}</UI.ViewSectionSocialText>
+        </UI.ViewSectionSocial>}
       {(!networkSocial || networkSocial.facebookEnabled) &&
       <UI.ViewSectionSocial $type='facebook'>
         <UI.ViewSectionSocialIcon>
