@@ -65,7 +65,7 @@ export const SwitchUplinkPortCongestion = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={'PT5M'}
+          minGranularity={'PT15M'}
           granularities={granularities}
           buffer={buffer}
         />

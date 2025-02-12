@@ -69,7 +69,7 @@ export const Ttc = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity='PT180S'
+          minGranularity='PT15M'
           buffer={buffer}
         />
       </GridCol>

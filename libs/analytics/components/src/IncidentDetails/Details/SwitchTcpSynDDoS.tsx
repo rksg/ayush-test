@@ -1,9 +1,8 @@
 import { unitOfTime } from 'moment-timezone'
 
-import { calculateGranularity,
-  granularityToHours, type Incident } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }       from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { calculateGranularity, type Incident } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
 import { ImpactedSwitchDDoSTable }        from '../Charts/ImpactedSwitchDDoS'
@@ -30,31 +29,29 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
     TimeSeriesChartTypes.SwitchImpactedPortsCount
   ]
 
-  const granularities: typeof granularityToHours = [
-    { granularity: 'PT30M', hours: 24 * 3 }, // 30 mins for 3 days and above
-    { granularity: 'PT15M', hours: 24 * 1 }, // 15 mins for 1 day and above
-    { granularity: 'PT3M', hours: 0 } // 3 mins for less than 1 day
-  ]
-
   const start = incident.impactedStart || incident.startTime
   const end = incident.impactedEnd || incident.endTime
 
-  const granularity = calculateGranularity(start, end, 'PT3M', granularities)
+  const granularity = calculateGranularity(start, end, 'PT15M')
 
   const binMinsMap: Record<string, number> = {
-    PT3M: 3,
     PT15M: 15,
-    PT30M: 30
+    PT1H: 60,
+    PT1D: 1440
   }
 
   const noOfBinsForBufferMap: Record<string, number> = {
-    PT3M: 40,
     PT15M: 24,
-    PT30M: 12
+    PT1H: 6,
+    PT1D: 3
   }
 
+  // check binMinsMap and noOfBinsForBufferMap
   const binMins = binMinsMap[granularity] ?? 60 // 60 minutes as default when rollup happens
   const noOfBinsForBuffer = noOfBinsForBufferMap[granularity] ?? 6 // 6 bins as default for 60 minutes granularity when rollup happens
+
+  console.log('@@@@@@@@@@@@@@@@binMins', binMins)
+  console.log('@@@@@@@@@@@@@@@@noOfBinsForBuffer', noOfBinsForBuffer)
 
   const buffer = {
     front: { value: binMins * noOfBinsForBuffer, unit: 'minutes' as unitOfTime.Base },
@@ -86,8 +83,7 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={'PT180S'}
-          granularities={granularities}
+          minGranularity={'PT15M'}
           buffer={buffer}
         />
       </GridCol>

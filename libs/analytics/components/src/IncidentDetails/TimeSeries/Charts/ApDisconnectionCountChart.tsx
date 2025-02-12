@@ -14,7 +14,7 @@ const apDisconnectionCountChartQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
     id severity code startTime endTime
   }
-  apDisconnectionCountChart: timeSeries(granularity: "PT3M") {
+  apDisconnectionCountChart: timeSeries(granularity: $granularity) {
     time
     apDisconnectionCount
   }

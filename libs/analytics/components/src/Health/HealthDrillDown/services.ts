@@ -2,9 +2,9 @@
 import { gql }  from 'graphql-request'
 import { find } from 'lodash'
 
-import { getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
-import { dataApi }                               from '@acx-ui/store'
-import { NodesFilter }                           from '@acx-ui/utils'
+import { calculateGranularity, getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
+import { dataApi }                                                     from '@acx-ui/store'
+import { NodesFilter }                                                 from '@acx-ui/utils'
 
 import { TabKeyType } from './healthPieChart'
 
@@ -137,7 +137,9 @@ export const api = dataApi.injectEndpoints({
         variables: {
           ...payload,
           ...getFilterPayload(payload),
-          granularity: 'all'
+          start: payload.start,
+          end: payload.end,
+          granularity: calculateGranularity(payload.start, payload.end, 'PT15M')
         }
       })
     }),
@@ -169,7 +171,9 @@ export const api = dataApi.injectEndpoints({
         variables: {
           ...payload,
           ...getFilterPayload(payload),
-          granularity: 'all'
+          start: payload.start,
+          end: payload.end,
+          granularity: calculateGranularity(payload.start, payload.end, 'PT15M')
         }
       })
     }),
