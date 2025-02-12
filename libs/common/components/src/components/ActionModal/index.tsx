@@ -41,6 +41,13 @@ type ErrorContent = {
   errorCode?: number
 }
 
+type ApiErrorContent = {
+  action: 'SHOW_API_ERRORS',
+  errorDetails?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number
+}
+
 type CustomButtonsContent = {
   action: 'CUSTOM_BUTTONS',
   buttons: CustomButtonProps[]
@@ -57,7 +64,8 @@ type CodeContent = {
 
 export interface ActionModalProps extends ModalFuncProps {
   type: ActionModalType,
-  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent,
+  // eslint-disable-next-line max-len
+  customContent?: DeleteContent | ErrorContent | ApiErrorContent | CustomButtonsContent | CodeContent,
 }
 
 export interface ModalRef {
@@ -111,6 +119,8 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
+  const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
+  const { errorDetails, path, errorCode } = props.customContent
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -144,8 +154,29 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
         ...props
       }
       break
+    case 'SHOW_API_ERRORS':
+      props = {
+        ...props,
+        content: enabledDialogImproved ? <ApiErrorTemplate
+          content={props.content}
+          path={path}
+          errorCode={errorCode}
+          errors={errorDetails}
+          modal={modal}
+          onOk={props.onOk}
+        /> : <ErrorTemplate
+          content={props.content}
+          path={path}
+          errorCode={errorCode}
+          errors={errorDetails}
+          modal={modal}
+          onOk={props.onOk}
+        />,
+        okText: ' ',
+        className: 'modal-custom'
+      }
+      break
     case 'SHOW_ERRORS':
-      const { errorDetails, path, errorCode } = props.customContent
       props = {
         ...props,
         content: <ErrorTemplate
@@ -208,6 +239,48 @@ function ErrorTemplate ({ errors, ...props }: {
   return <CodeTemplate {...props} code={code} />
 }
 
+function ApiErrorTemplate ({ errors, ...props }: {
+  content: React.ReactNode,
+  errors?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number,
+  onOk?: () => void,
+  modal: ModalRef
+}) {
+  const { $t } = getIntl()
+  const code = errors && {
+    label: $t({ defaultMessage: 'Technical details' }),
+    content: convertToJSON(errors)
+  }
+  const okText = $t({ defaultMessage: 'OK' })
+  return (
+    <>
+      {props.content && <UI.Content children={props.content} />}
+      <UI.Footer>
+        {code && <ApiCollapsePanel
+          expanded={code.expanded}
+          header={code.label}
+          content={code.content}
+          path={props.path}
+          errorCode={props.errorCode}
+        />
+        }
+        <UI.FooterButtons>
+          <Button
+            type='primary'
+            onClick={() => {
+              props.onOk?.()
+              props.modal.destroy()
+            }}
+          >
+            {okText}
+          </Button>
+        </UI.FooterButtons>
+      </UI.Footer>
+    </>
+  )
+}
+
 function CodeTemplate (props: {
   content?: React.ReactNode
   path?: string,
@@ -222,27 +295,16 @@ function CodeTemplate (props: {
 }) {
   const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
-  const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
   return (
     <>
       {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
-        {props.code &&
-          (enabledDialogImproved ? (
-            <CollapsePanel
-              expanded={props.code.expanded}
-              header={props.code.label}
-              content={props.code.content}
-              path={props.path}
-              errorCode={props.errorCode}
-            />
-          ) : (
-            <CollapsePanelLegacy
-              expanded={props.code.expanded}
-              header={props.code.label}
-              content={props.code.content}
-            />
-          ))}
+        {props.code && <CollapsePanel
+          expanded={props.code.expanded}
+          header={props.code.label}
+          content={props.code.content}
+        />
+        }
         <UI.FooterButtons>
           <Button
             type='primary'
@@ -307,7 +369,7 @@ function CustomButtonsTemplate (props: {
 }
 
 
-function CollapsePanel (props: {
+function ApiCollapsePanel (props: {
   header: string
   content: string
   expanded?: boolean
@@ -406,7 +468,7 @@ function CollapsePanel (props: {
 }
 
 
-function CollapsePanelLegacy (props: {
+function CollapsePanel (props: {
   header: string
   content: string
   expanded?: boolean
