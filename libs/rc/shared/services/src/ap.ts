@@ -971,6 +971,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni'],
               pageSize: 1000
             })
           }

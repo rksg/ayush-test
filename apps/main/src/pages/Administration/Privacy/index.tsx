@@ -52,7 +52,7 @@ export default function Privacy () {
         data.filter(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)[0]
       setIsPrivacyMonitoringSettingsEnabled(privacyMonitoringSetting.isEnabled)
 
-      payload.privacyFeatures.map(item => {
+      payload.privacyFeatures.forEach(item => {
         if (item.featureName === PrivacyFeatureName.ARC)
           item.status = privacyMonitoringSetting.isEnabled
             ? 'enabled' : 'disabled'
