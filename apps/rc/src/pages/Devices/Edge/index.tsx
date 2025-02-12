@@ -43,7 +43,11 @@ const AddMenu = () => {
       label: <TenantLink to={getUrl({
         feature: Device.Edge,
         oper: CommonOperation.Add
-      })}>
+      })}
+      rbacOpsIds={[
+        [getOpsApi(EdgeUrlsInfo.addEdge),getOpsApi(EdgeUrlsInfo.addEdgeCluster)]
+      ]}
+      >
         {$t({ defaultMessage: 'RUCKUS Edge' })}
       </TenantLink>
     },
@@ -52,7 +56,9 @@ const AddMenu = () => {
       label: <TenantLink to={getUrl({
         feature: Device.EdgeCluster,
         oper: CommonOperation.Add
-      })}>
+      })}
+      rbacOpsIds={[getOpsApi(EdgeUrlsInfo.addEdgeCluster)]}
+      >
         {$t({ defaultMessage: 'Cluster' })}
       </TenantLink>
     }
