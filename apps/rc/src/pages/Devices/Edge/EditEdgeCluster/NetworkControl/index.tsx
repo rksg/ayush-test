@@ -11,11 +11,10 @@ import {
   EdgeCompatibilityType,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
-import { EdgeClusterStatus, EdgeDhcpUrls, EdgeHqosProfilesUrls, EdgeMdnsProxyUrls, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                                                                                      from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }                                                                         from '@acx-ui/user'
-import { getOpsApi }                                                                                                       from '@acx-ui/utils'
+import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                 from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }    from '@acx-ui/user'
 
 import { ArpTerminationFormItem, useHandleApplyArpTermination } from './ArpTermination'
 import { DhcpFormItem, useHandleApplyDhcp }                     from './DHCP'

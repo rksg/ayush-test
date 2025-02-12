@@ -8,9 +8,8 @@ import { EdgePermissions }                                                      
 import { Features }                                                                                 from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgePinViewDataListQuery }                                     from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDhcpUrls, IncompatibilityFeatures }                                 from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, IncompatibilityFeatures }                                               from '@acx-ui/rc/utils'
 import { hasPermission }                                                                            from '@acx-ui/user'
-import { getOpsApi }                                                                                from '@acx-ui/utils'
 
 export const DhcpFormItem = (props: {
   currentClusterStatus: EdgeClusterStatus,

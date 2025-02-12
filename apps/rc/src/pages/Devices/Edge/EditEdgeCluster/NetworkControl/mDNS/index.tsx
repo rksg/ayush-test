@@ -7,9 +7,8 @@ import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
 import { EdgePermissions }                            from '@acx-ui/edge/components'
 import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
 import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
-import { EdgeMdnsProxyUrls, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { IncompatibilityFeatures }                    from '@acx-ui/rc/utils'
 import { hasPermission }                              from '@acx-ui/user'
-import { getOpsApi }                                  from '@acx-ui/utils'
 
 import EdgeMdnsProfileSelectionForm from './EdgeMdnsProfileSelectionForm'
 

@@ -11,13 +11,13 @@ import {
   EdgeSettingForm
 } from '@acx-ui/rc/components'
 import { useAddEdgeClusterMutation, useAddEdgeMutation } from '@acx-ui/rc/services'
-import { EdgeGeneralSetting, EdgeUrlsInfo }              from '@acx-ui/rc/utils'
+import { EdgeGeneralSetting }                            from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { hasPermission }                 from '@acx-ui/user'
-import { CatchErrorResponse, getOpsApi } from '@acx-ui/utils'
+import { hasPermission }      from '@acx-ui/user'
+import { CatchErrorResponse } from '@acx-ui/utils'
 
 import { getErrorModalInfo } from './errorMessageMapping'
 
