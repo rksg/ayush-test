@@ -40,6 +40,11 @@ jest.mock('./ShowDriftsDrawer', () => ({
   }
 }))
 
+jest.mock('./DetailsDrawer', () => ({
+  ...jest.requireActual('./ShowDriftsDrawer'),
+  DetailsDrawer: () => <div>DetailsDrawer</div>
+}))
+
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
   const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
@@ -424,5 +429,22 @@ describe('ConfigTemplateList component', () => {
     // Display Show Drifts by clicking the in-row link
     await userEvent.click(within(row).getByRole('button', { name: /Drift Detected/ }))
     expect(await screen.findByTestId('ShowDriftsDrawer')).toBeInTheDocument()
+  })
+
+  it('should show details drawer', async () => {
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetTemplate = mockedConfigTemplateList.data[0]
+    await userEvent.click(screen.getByRole('button', { name: targetTemplate.name }))
+
+    expect(await screen.findByText('DetailsDrawer')).toBeInTheDocument()
   })
 })

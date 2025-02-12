@@ -40,7 +40,7 @@ export interface ConfigTemplate {
   appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
-  lastApplied: number,
+  lastApplied?: number,
   driftStatus?: ConfigTemplateDriftType
   isEnforced?: boolean
 }
