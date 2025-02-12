@@ -94,13 +94,13 @@ export const RangePicker = ({
     return { translatedRanges, translatedOptions }
   }, [$t, rangeOptions])
   const [range, setRange] = useState<DateRangeType>(selectedRange)
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
   const { accountTier } = getUserProfile()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const allowedDateRange = (isDateRangeLimit && allowedMonthRange)
+  const allowedDateRange = (showResetMsg && allowedMonthRange)
     ? dateRangeForLast(allowedMonthRange,'months')
     : (accountTier === AccountTier.GOLD
       ? dateRangeForLast(1, 'month')
@@ -118,9 +118,9 @@ export const RangePicker = ({
 
   useEffect(
     () => {
-      if (isDateRangeLimit && !isCalendarOpen) {
+      if (showResetMsg && !isCalendarOpen) {
         setRange(selectedRange)
-      } else if (!isDateRangeLimit) {
+      } else if (!showResetMsg) {
         setRange(selectedRange)
       }
     },
