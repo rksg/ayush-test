@@ -46,6 +46,11 @@ export interface DelegationEntitlementRecord {
   rwgDeviceCount?: string;
   edgeDeviceCount?: string;
   availableLicenses?: number;
+  adaptivePolicyCount?: number;
+  piNetworkCount?: number;
+  sisIntegrationCount?: number;
+  pmsIntegrationCount?: number;
+  hybridCloudSecCount?: number;
 }
 
 export interface MspEc {
