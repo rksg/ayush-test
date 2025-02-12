@@ -612,7 +612,7 @@ export function VenuePropertyTab () {
           onClose={() => setDrawerState({ isEdit: false, visible: false, units: undefined })}
         />
       }
-      <PropertyUnitIdentityDrawer
+      {groupId && <PropertyUnitIdentityDrawer
         visible={addIdentityDrawerVisible}
         groupId={groupId ? groupId : ''}
         venueId={venueId ? venueId : ''}
@@ -621,6 +621,7 @@ export function VenuePropertyTab () {
           setAddIdentityDrawerVisible(false)
         }}
       />
+      }
       <ImportFileDrawer
         title={$t({ defaultMessage: 'Import Units From File' })}
         visible={uploadCsvDrawerVisible}
