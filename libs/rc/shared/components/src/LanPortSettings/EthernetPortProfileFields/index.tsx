@@ -20,6 +20,7 @@ interface EthernetPortProfileFieldsProps {
     isDhcpEnabled?: boolean,
     hasVni?: boolean,
     readOnly?: boolean,
+    useVenueSettings?: boolean,
     serialNumber?: string,
     venueId?: string,
     onGUIChanged?: (fieldName: string) => void,
@@ -38,6 +39,7 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
     selectedModelCaps,
     selectedPortCaps,
     venueId,
+    useVenueSettings=false,
     onEthernetPortProfileChanged
   } = props
   const { $t } = useIntl()
@@ -53,6 +55,12 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
     isLoading: isLoadingEthPortList } =
     useQueryEthernetPortProfilesWithOverwritesQuery({
       payload: {
+        fields: [
+          'id','name','isDefault','type','untagId','vlanMembers','authType','authRadiusId',
+          'accountingRadiusId','bypassMacAddressAuthentication','supplicantAuthenticationOptions',
+          'dynamicVlanEnabled','unauthenticatedGuestVlan','enableAuthProxy','enableAccountingProxy',
+          'apSerialNumbers','venueIds','venueActivations','apActivations','apPortOverwrites','vni'
+        ],
         sortField: 'name',
         sortOrder: 'ASC',
         pageSize: 1000
@@ -113,6 +121,8 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
               onGUIChanged?.('ethernetPortProfileId')
               setEthernetProfileCreateId(createId)
             }}
+            disabled={isDhcpEnabled}
+            addBtnVisible={!useVenueSettings}
             currentEthernetPortData={currentEthernetPortData} />
         </Space>
       )}
@@ -131,6 +141,10 @@ export const convertEthernetPortListToDropdownItems = (
   selectedPortCaps: LanPort
 ): DefaultOptionType[] => {
   return ethernetPortList.filter((m) => {
+    // A profile with VNI configuration is hidden and should not be accessible
+    if(m.vni) {
+      return false
+    }
     // Not allow port-based ethernet port when LAN port is single port
     if(selectedModelCaps.lanPorts.length === 1 &&
         m.authType === EthernetPortAuthType.PORT_BASED) {

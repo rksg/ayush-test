@@ -65,7 +65,8 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -173,18 +174,20 @@ export function NetworkForm (props:{
 
   const isUseWifiRbacApi = isRuckusAiMode ? false : wifiRbacApiEnabled
   const isConfigTemplateRbacEnabled = isRuckusAiMode ? false : configTemplateRbacEnabled
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
+  const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
+  const initVlanPoolRef = useRef<VlanPool>()
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
@@ -231,7 +234,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
-  const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
+  const { updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
   const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
   const updateSoftGreActivations = useUpdateSoftGreActivations()
@@ -269,6 +272,15 @@ export function NetworkForm (props:{
         delete updateSate.authRadiusId
         delete saveData?.authRadius
         delete saveData?.authRadiusId
+      }
+
+      if(editMode &&
+        saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed &&
+        saveData.isCloudpathEnabled){
+        updateSate.enableAuthProxy = false
+        updateSate.enableAccountingProxy = false
+        saveData.enableAuthProxy = false
+        saveData.enableAccountingProxy = false
       }
 
       const newSavedata = merge({}, updateSate, saveData)
@@ -343,7 +355,6 @@ export function NetworkForm (props:{
 
   useEffect(() => {
     if (!data) return
-
     let resolvedData = isUseWifiRbacApi ? data : deriveRadiusFieldsFromServerData(data)
     resolvedData = deriveWISPrFieldsFromServerData(resolvedData)
 
@@ -355,16 +366,9 @@ export function NetworkForm (props:{
       form?.setFieldsValue(resolvedData)
     }
 
-    if (vlanPoolId) {
-      resolvedData = merge({}, resolvedData,
-        {
-          wlan: {
-            advancedCustomization: {
-              vlanPool: { id: vlanPoolId, name: '', vlanMembers: [] }
-            }
-          }
-        }
-      )
+    const vlanPool = resolvedData.wlan?.advancedCustomization?.vlanPool
+    if (vlanPool) {
+      initVlanPoolRef.current = vlanPool
     }
 
     updateSaveData({
@@ -373,10 +377,15 @@ export function NetworkForm (props:{
       ...(dpskService && { dpskServiceProfileId: dpskService.id }),
       ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
     })
-  }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
+  }, [data, certificateTemplateId, dpskService, portalService])
+  //}, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0 || saveState?.wlan?.advancedCustomization?.wifiCallingEnabled) return
+
+    const wifiCallingEnabled = saveState?.wlan?.advancedCustomization?.wifiCallingEnabled !== undefined
+      ? saveState?.wlan?.advancedCustomization?.wifiCallingEnabled
+      : true
 
     const fullNetworkSaveData = merge(
       {},
@@ -385,21 +394,14 @@ export function NetworkForm (props:{
         wlan: {
           advancedCustomization: {
             wifiCallingIds: wifiCallingIds,
-            wifiCallingEnabled: true
+            wifiCallingEnabled: wifiCallingEnabled
           }
         }
       }
     )
 
-    form.setFieldValue('wlan', {
-      ...form.getFieldValue('wlan'),
-      advancedCustomization: {
-        ...form.getFieldValue('wlan.advancedCustomization'),
-        wifiCallingIds: wifiCallingIds,
-        wifiCallingEnabled: true
-      }
-    })
-
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'], wifiCallingIds)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'wifiCallingEnabled'], wifiCallingEnabled)
     updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds, saveState])
 
@@ -457,6 +459,7 @@ export function NetworkForm (props:{
       }
 
       let settingSaveData = tranferSettingsToSave(settingData, editMode)
+
       if (!editMode) {
         // eslint-disable-next-line max-len
         settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo,
@@ -846,7 +849,6 @@ export function NetworkForm (props:{
   const handleAddNetwork = async (formData: NetworkSaveData) => {
     try {
       const payload = processAddData(saveState)
-
       if (isRuckusAiMode) {
         modalCallBack?.(payload)
         return
@@ -909,6 +911,10 @@ export function NetworkForm (props:{
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
         }
+      }
+
+      if (networkId) {
+        afterVenueActivationRequest.push(saveEnforcementConfig(networkId))
       }
 
       await Promise.all(afterVenueActivationRequest)
@@ -1009,10 +1015,14 @@ export function NetworkForm (props:{
       processEditData(formData)
       const oldData = cloneDeep(saveContextRef.current)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-
       if (isRuckusAiMode) {
         modalCallBack?.(payload)
         return
+      }
+
+      // Due to proxy mode validation, the Radius proxy mode update must execute before the network update
+      if(formData.wlanSecurity === WlanSecurityEnum.WPA23Mixed && formData.isCloudpathEnabled) {
+        await updateRadiusServer(formData, payload.id)
       }
 
       await updateNetworkInstance({
@@ -1034,15 +1044,18 @@ export function NetworkForm (props:{
         beforeVenueActivationRequest.push(activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id))
       }
       beforeVenueActivationRequest.push(updateHotspot20NetworkActivations(formData))
-      if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
+      if (formData.type !== NetworkTypeEnum.HOTSPOT20 &&
+        !(formData.wlanSecurity === WlanSecurityEnum.WPA23Mixed && formData.isCloudpathEnabled)
+      ) {
         // HS 20 Network:
         // The Radius service is binding on the Identity provider profile
         // So it doesn't need to do the network and radius service binding
         beforeVenueActivationRequest.push(updateRadiusServer(formData, payload.id))
       }
+
       beforeVenueActivationRequest.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
-      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
+      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, initVlanPoolRef.current?.id))
       beforeVenueActivationRequest.push(updateAccessControl(formData, data, payload.id))
       if(directoryServerDataRef.current.id) {
         beforeVenueActivationRequest.push(activateDirectoryServer(
@@ -1074,6 +1087,10 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
+      }
+
+      if (payload.id) {
+        afterVenueActivationRequest.push(saveEnforcementConfig(payload.id))
       }
 
       await Promise.all(afterVenueActivationRequest)

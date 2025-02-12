@@ -13,7 +13,8 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/templates/query'
   },
   applyConfigTemplate: {
     method: 'post',
@@ -373,5 +374,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReport'
+  },
+  updateEnforcement: {
+    method: 'put',
+    url: '/templates/:templateId/enforcementSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PUT:/templates/{id}/enforce'
   }
 }

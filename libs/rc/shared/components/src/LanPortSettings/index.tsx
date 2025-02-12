@@ -107,7 +107,7 @@ export function LanPortSettings (props: {
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
   const isR370UnsupportFeatureEnabled = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isModelSupportSoftGRE =
-    (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGRE) ||
+    (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGre) ||
     selectedModelCaps?.model !== 'R370'
 
   const isEthernetClientIsolationEnabled =
@@ -223,6 +223,7 @@ export function LanPortSettings (props: {
           index={index}
           onGUIChanged={onGUIChanged}
           readOnly={readOnly || isDhcpEnabled}
+          useVenueSettings={useVenueSettings}
           isDhcpEnabled={isDhcpEnabled}
           hasVni={hasVni}
           serialNumber={serialNumber}
@@ -238,7 +239,8 @@ export function LanPortSettings (props: {
               !isEthernetPortEnable ||
                       isDhcpEnabled ||
                       currentEthernetPortData?.authType === EthernetPortAuthType.SUPPLICANT ||
-                      (readOnly ?? false)}
+                      (readOnly ?? false) ||
+                    hasVni}
             index={index}
             portId={selectedModel.lanPorts![index].portId}
             onGUIChanged={onGUIChanged}
@@ -273,7 +275,7 @@ export function LanPortSettings (props: {
           <ClientIsolationSettingsFields
             index={index}
             onGUIChanged={onGUIChanged}
-            readOnly={readOnly || isDhcpEnabled}
+            readOnly={readOnly || isDhcpEnabled || hasVni}
           />
         }
       </>) :

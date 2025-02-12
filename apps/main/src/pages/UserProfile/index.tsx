@@ -1,8 +1,11 @@
-import { Row, Col, Form, Select } from 'antd'
-import { useIntl }                from 'react-intl'
+import { useState } from 'react'
 
-import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
-import { MultiFactor }                                     from '@acx-ui/msp/components'
+import { Row, Col, Form, Select, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
+
+import { Button, PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { MultiFactor }                                             from '@acx-ui/msp/components'
 import {
   useNavigate,
   useParams,
@@ -18,10 +21,11 @@ import {
   hasRoles
 } from '@acx-ui/user'
 
+import AddPhoneDrawer                from './AddPhoneDrawer'
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
-import {
-  RecentLogin
-} from './RecentLogin'
+import { RecentLogin }               from './RecentLogin'
+import * as UI                       from './styledComponents'
+import { UserNotifications }         from './UserNotifications'
 
 export function UserProfile () {
   const { $t } = useIntl()
@@ -33,6 +37,9 @@ export function UserProfile () {
   const basePath = useTenantLink('/userprofile')
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const rootPath = useTenantLink('/')
+  const notificationAdminContextualEnabled =
+    useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
+  const [phoneDrawerVisible, setPhoneDrawerVisible] = useState(false)
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
@@ -122,7 +129,14 @@ export function UserProfile () {
       title: $t({ defaultMessage: 'Recent Logins' }),
       disabled: hasRoles([RolesEnum.DPSK_ADMIN]),
       component: userProfile && <RecentLogin userEmail={userProfile!.email} />
-    }
+    },
+    ...(!notificationAdminContextualEnabled ? [] : [
+      {
+        title: $t({ defaultMessage: 'Notifications' }),
+        key: 'notifications',
+        component: <UserNotifications profile={userProfile!}/>
+      }
+    ])
   ]
 
   const ActiveTabPane = tabs.find(({ key }) => key === activeTab)?.component
@@ -137,6 +151,24 @@ export function UserProfile () {
         tenantId={tenantId}
         roleStringMap={roleStringMap}
       />
+      {notificationAdminContextualEnabled && <UI.UserProfilePhoneNumberWrapper>
+        <Row align='middle'>
+          <UI.MobilePhoneOutlinedIcon style={{ marginLeft: '115px' }}/>
+          <Typography.Paragraph>{userProfile?.phoneNumber ?? ''}</Typography.Paragraph>
+          <Button type='link'
+            style={{ marginLeft: '3px' }}
+            onClick={() => setPhoneDrawerVisible(true)}>
+            {userProfile?.phoneNumber ? $t({ defaultMessage: 'Change' })
+              : $t({ defaultMessage: 'Add phone' })}
+          </Button>
+        </Row>
+      </UI.UserProfilePhoneNumberWrapper>}
+
+      {phoneDrawerVisible &&
+        <AddPhoneDrawer
+          profile={userProfile}
+          visible={phoneDrawerVisible}
+          setVisible={setPhoneDrawerVisible} />}
 
       <Tabs
         defaultActiveKey='settings'

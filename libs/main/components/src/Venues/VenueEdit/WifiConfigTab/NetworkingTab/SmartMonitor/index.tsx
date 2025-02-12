@@ -4,9 +4,10 @@ import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { AnchorContext, Loader, Tooltip }                from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
+import { AnchorContext, Loader, Tooltip }                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                                  from '@acx-ui/icons'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
 import {
   useGetVenueApSmartMonitorQuery,
   useUpdateVenueApSmartMonitorMutation,
@@ -28,12 +29,15 @@ export function SmartMonitor (props: VenueWifiConfigItemProps) {
   const { venueId } = useParams()
   const { isAllowEdit=true } = props
   const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
-
+  // eslint-disable-next-line max-len
+  const tooltipInfo = $t({ defaultMessage: 'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable' })
   const {
     editContextData,
     setEditContextData,
@@ -133,7 +137,7 @@ export function SmartMonitor (props: VenueWifiConfigItemProps) {
           <FieldLabel width='200px'>
             <Space>
               {$t({ defaultMessage: 'Smart Monitor' })}
-              <Tooltip
+              {!isR370UnsupportedFeatures && <Tooltip
                 title={$t({
                   // eslint-disable-next-line max-len
                   defaultMessage: 'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
@@ -143,7 +147,20 @@ export function SmartMonitor (props: VenueWifiConfigItemProps) {
                 <QuestionMarkCircleOutlined
                   style={{ height: '14px', marginBottom: -3 }}
                 />
-              </Tooltip>
+              </Tooltip>}
+              {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                title={tooltipInfo}
+                showDetailButton
+                placement='right'
+                onClick={() => setDrawerVisible(true)}
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                visible={drawerVisible}
+                type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                venueId={venueId}
+                featureName={InCompatibilityFeatures.SMART_MONITOR}
+                onClose={() => setDrawerVisible(false)}
+              />}
             </Space>
             <Form.Item
               name={smartMonitorEnabledFieldName}

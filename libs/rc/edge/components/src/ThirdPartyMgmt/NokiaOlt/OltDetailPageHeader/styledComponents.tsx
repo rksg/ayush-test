@@ -51,7 +51,7 @@ export const StyledAntStatistic = styled(AntStatistic)`
     }
     .ant-statistic-content {
       .ant-statistic-content-value {
-        font-size: 32px;
+        font-size: 22px;
         font-weight: var(--acx-body-font-weight-bold);
       }
       .ant-statistic-content-value .ant-typography {
