@@ -14,7 +14,7 @@ import {
 import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
-  const isRa = get('IS_MLISA_SA') === 'true'
+  const isRa = Boolean(get('IS_MLISA_SA'))
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
