@@ -1,18 +1,22 @@
-import React, { useCallback }            from 'react'
-import { ReactElement } from 'react'
+import React, { useCallback } from 'react'
+import { ReactElement }       from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast } from '@acx-ui/components'
-import { useNavigate }                                                    from '@acx-ui/react-router-dom'
-import { getUserProfile }         from '@acx-ui/user'
-import { getIntl  } from '@acx-ui/utils'
-import { generateBreadcrumb } from './utils'
+import { useNavigate }                                                                       from '@acx-ui/react-router-dom'
+import { getIntl  }                                                                          from '@acx-ui/utils'
+
 import { useSaveStorageMutation, useGetStorageQuery } from './services'
-import { use } from 'echarts'
+import { generateBreadcrumb }                         from './utils'
 
 
+export const StorageOptions = [
+  { value: 'azure', label: 'Azure' },
+  { value: 'ftp', label: 'FTP' },
+  { value: 'sftp', label: 'SFTP' }
+]
 type CloudStorageFormProps = {
   editMode?: boolean
   isRAI?: boolean
@@ -32,19 +36,19 @@ const getStorageMap = () => {
     }, {
       id: 'azureAccountName',
       name: $t({ defaultMessage: 'Azure account name' }),
-      component: <Input />
+      component: <Input data-testid='azureAccountName' />
     }, {
       id: 'azureAccountKey',
       name: $t({ defaultMessage: 'Azure account key' }),
-      component: <Input />
+      component: <Input data-testid='azureAccountKey' />
     }, {
       id: 'azureShareName',
       name: $t({ defaultMessage: 'Azure share Name' }),
-      component: <Input />
+      component: <Input data-testid='azureShareName' />
     }, {
       id: 'azureCustomerName',
       name: $t({ defaultMessage: 'Azure customer Name' }),
-      component: <Input />
+      component: <Input data-testid='azureCustomerName' />
     }],
     ftp: [{
       id: 'ftpHost',
@@ -90,18 +94,14 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
   const { $t } = useIntl()
   const navigate = useNavigate()
   const storageMap = getStorageMap()
-  const { profile: { tenantId } } = getUserProfile()
-  const storage = useGetStorageQuery(
-    { tenantId },
-    { skip: !editMode }
-  )
+  const storage = useGetStorageQuery({}, { skip: !editMode })
   const selectedCloudStorage = storage.data?.config
   const [form] = Form.useForm()
   const selectedConnectionType: string = Form.useWatch('connectionType', form)
   const connectionType = selectedConnectionType || selectedCloudStorage?.connectionType
   const comps = storageMap[connectionType as keyof typeof storageMap]
   const [updateStorage, { isLoading }] = useSaveStorageMutation()
-  
+
   const saveStorage = useCallback(() => {
     const data = form.getFieldsValue()
     if (editMode) {
@@ -111,12 +111,12 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
     updateStorage(data)
       .unwrap()
       .then(() => {
-       navigate(-1)
+        navigate(-1)
       })
-      .catch(({ data: { error }}) => {
+      .catch(({ data: { error } }) => {
         showToast({ type: 'error', content: error })
       })
-  }, [form, tenantId, editMode, storage.data?.id])
+  }, [form, editMode, storage.data?.id, navigate, updateStorage])
   const initialValues =
     editMode ? selectedCloudStorage : { connectionType: 'azure' }
   return <>
@@ -144,11 +144,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
               required
             >
               <Select
-                options={[
-                  { value: 'azure', label: 'Azure' },
-                  { value: 'ftp', label: 'FTP' },
-                  { value: 'sftp', label: 'SFTP' }
-                ]}
+                options={StorageOptions}
               />
             </Form.Item>
             {comps?.map((item: { id: string, name: string, component: ReactElement }) =>
@@ -176,7 +172,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
                 form
                   .validateFields()
                   .then(() => {
-                    saveStorage() 
+                    saveStorage()
                   })
                   .catch(() => {})
               }}
