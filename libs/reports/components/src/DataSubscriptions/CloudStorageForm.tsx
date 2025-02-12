@@ -13,9 +13,8 @@ import { generateBreadcrumb } from './utils'
 
 type CloudStorageFormProps = {
   editMode?: boolean
-  isRAI?: boolean
 }
-const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }) => {
+const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const storageMap = {
@@ -106,7 +105,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ isRAI, editMode=false }
         )
         : $t({ defaultMessage: 'New Cloud Storage' })
       }
-      breadcrumb={generateBreadcrumb({ isRAI })}
+      breadcrumb={generateBreadcrumb()}
     />
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>

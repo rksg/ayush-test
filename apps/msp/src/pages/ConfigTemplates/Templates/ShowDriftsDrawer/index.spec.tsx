@@ -11,8 +11,8 @@ import { mockedConfigTemplate, mockedDriftTenants, mockedMSPCustomers } from './
 
 import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
 
-jest.mock('./CustomerFirmwareReminder', () => ({
-  ...jest.requireActual('./CustomerFirmwareReminder'),
+jest.mock('../CustomerFirmwareReminder', () => ({
+  ...jest.requireActual('../CustomerFirmwareReminder'),
   CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
 }))
 
