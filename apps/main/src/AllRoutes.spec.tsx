@@ -155,6 +155,15 @@ describe('AllRoutes', () => {
     })
     await screen.findByTestId('reports')
   })
+  test('should navigate to dataSubscriptions', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/dataSubscriptions',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('reports')
+  })
 
   test('should navigate to devices/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
