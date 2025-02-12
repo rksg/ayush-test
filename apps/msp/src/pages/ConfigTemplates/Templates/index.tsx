@@ -12,9 +12,9 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }      from '@acx-ui/formatter'
-import { MspUrlsInfo }                             from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }     from '@acx-ui/formatter'
+import { MspUrlsInfo }                            from '@acx-ui/msp/utils'
 import {
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
@@ -213,6 +213,7 @@ export function ConfigTemplateList () {
       <DetailsDrawer
         setVisible={setDetailsDrawerVisible}
         selectedTemplate={selectedTemplates[0]}
+        setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
       />}
     </>
   )

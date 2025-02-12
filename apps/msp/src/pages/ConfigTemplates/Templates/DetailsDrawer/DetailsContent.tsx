@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Col, Divider, Row, Space } from 'antd'
 import moment                       from 'moment'
 import { useIntl }                  from 'react-intl'
@@ -8,32 +10,32 @@ import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
 import { useMspCustomerListQuery }            from '@acx-ui/msp/services'
 import {
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-  AccessControlSubPolicyDrawers,
   AccessControlSubPolicyVisibility,
   isAccessControlSubPolicy,
   renderConfigTemplateDetailsComponent,
-  subPolicyMappingType,
-  useAccessControlSubPolicyVisible
+  subPolicyMappingType
 } from '@acx-ui/rc/components'
-import { ConfigTemplate, PolicyType } from '@acx-ui/rc/utils'
+import { ConfigTemplate, ConfigTemplateDriftType, PolicyType } from '@acx-ui/rc/utils'
 
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from '../templateUtils'
-import { useEcFilters }                                                  from '../templateUtils'
+import { ShowDriftsDrawer }                                      from '../ShowDriftsDrawer'
+import { ConfigTemplateDriftStatus, getConfigTemplateTypeLabel } from '../templateUtils'
+import { useEcFilters }                                          from '../templateUtils'
 
 import * as UI from './styledComponents'
 
 
 interface DetailsContentProps {
   template: ConfigTemplate
+  // eslint-disable-next-line max-len
+  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
 }
 
 export function DetailsContent (props: DetailsContentProps) {
   const { $t } = useIntl()
-  const { template } = props
+  const { template, setAccessControlSubPolicyVisible } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+  const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
-  // eslint-disable-next-line max-len
-  const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
 
   const basicDetails = [
     {
@@ -47,7 +49,11 @@ export function DetailsContent (props: DetailsContentProps) {
     },
     ...(driftsEnabled ? [{
       label: $t({ defaultMessage: 'Drift Status' }),
-      value: template.driftStatus ? getConfigTemplateDriftStatusLabel(template.driftStatus) : ''
+      value: <ConfigTemplateDriftStatus row={template}
+        callbackMap={{
+          [ConfigTemplateDriftType.DRIFT_DETECTED]: () => setShowDriftsDrawerVisible(true)
+        }}
+      />
     }] : [])
   ]
 
@@ -77,10 +83,11 @@ export function DetailsContent (props: DetailsContentProps) {
       </UI.DetailBlock>
       <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
     </Space>
-    <AccessControlSubPolicyDrawers
-      accessControlSubPolicyVisible={accessControlSubPolicyVisible}
-      setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
-    />
+    {showDriftsDrawerVisible &&
+      <ShowDriftsDrawer
+        setVisible={setShowDriftsDrawerVisible}
+        selectedTemplate={template}
+      />}
   </>
 }
 
@@ -99,17 +106,20 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
   const mspEcTenantsPayload = {
     filters: {
       ...useEcFilters(),
-      id: [...(appliedOnTenants ?? [])]
+      id: appliedOnTenants
     },
     fields: ['id', 'name']
   }
 
-  const { data, isLoading } = useMspCustomerListQuery({ params: {}, payload: mspEcTenantsPayload })
+  const { data, isLoading } = useMspCustomerListQuery(
+    { params: {}, payload: mspEcTenantsPayload },
+    { skip: !appliedOnTenants?.length }
+  )
 
-  return <Space direction='vertical' size={4}>
+  return <Space direction='vertical' size={6}>
     <span style={{ fontWeight: 600 }}>{ $t({ defaultMessage: 'Applied to' })}</span>
-    <Loader states={[{ isLoading }]} style={{ width: '100px', backgroundColor: 'transparent' }}>
-      <Space direction='vertical' size={2}>
+    <Loader states={[{ isLoading }]} style={{ width: '100%', backgroundColor: 'transparent' }}>
+      <Space direction='vertical' size={4}>
         {data?.data.map(mspEcTenant => <div key={mspEcTenant.id}>{mspEcTenant.name}</div>)}
       </Space>
     </Loader>
