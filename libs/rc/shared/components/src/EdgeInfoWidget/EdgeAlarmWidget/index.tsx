@@ -106,6 +106,7 @@ export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
       isLoading={isLoading || isAlarmListLoading}
       emptyMessage={$t({ defaultMessage: 'No active alarms' })}
       onClick={handleDonutClick}
+      size={{ width: 100, height: 100 }}
     />
   )
 }

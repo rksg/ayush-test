@@ -13,21 +13,6 @@ jest.mock( './DetailsDrawer', () => ({
   OltDetailsDrawer: (props: { visible: boolean, setVisible: () => void, currentOlt?: EdgeNokiaOltData }) =>
     props.visible && <div data-testid='OltDetailsDrawer'>{JSON.stringify(props.currentOlt)}</div>
 }))
-jest.mock( './PoeUtilizationBox', () => ({
-  // eslint-disable-next-line max-len
-  PoeUtilizationBox: (props: {
-    title: string
-    isOnline: boolean
-    value?: number
-    totalVal?: number
-   }) =>
-    <div data-testid='PoeUtilizationBox'>
-      <div>{props.title}</div>
-      <div data-testid='isOnline'>{props.isOnline}</div>
-      <div data-testid='value'>{props.value}</div>
-      <div data-testid='totalVal'>{props.totalVal}</div>
-    </div>
-}))
 
 describe('EdgeNokiaOltDetailsPageHeader', () => {
   const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
@@ -70,8 +55,5 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('Status')).toBeVisible()
     expect(screen.getByText('Cages')).toBeVisible()
-    expect(screen.getByText('PoE Usage')).toBeVisible()
-    expect(screen.getByTestId('value')).toHaveTextContent('232')
-    expect(screen.getByTestId('totalVal')).toHaveTextContent('280')
   })
 })

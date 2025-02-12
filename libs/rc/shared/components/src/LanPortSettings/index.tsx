@@ -223,6 +223,7 @@ export function LanPortSettings (props: {
           index={index}
           onGUIChanged={onGUIChanged}
           readOnly={readOnly || isDhcpEnabled}
+          useVenueSettings={useVenueSettings}
           isDhcpEnabled={isDhcpEnabled}
           hasVni={hasVni}
           serialNumber={serialNumber}
@@ -238,7 +239,8 @@ export function LanPortSettings (props: {
               !isEthernetPortEnable ||
                       isDhcpEnabled ||
                       currentEthernetPortData?.authType === EthernetPortAuthType.SUPPLICANT ||
-                      (readOnly ?? false)}
+                      (readOnly ?? false) ||
+                    hasVni}
             index={index}
             portId={selectedModel.lanPorts![index].portId}
             onGUIChanged={onGUIChanged}
@@ -273,7 +275,7 @@ export function LanPortSettings (props: {
           <ClientIsolationSettingsFields
             index={index}
             onGUIChanged={onGUIChanged}
-            readOnly={readOnly || isDhcpEnabled}
+            readOnly={readOnly || isDhcpEnabled || hasVni}
           />
         }
       </>) :
