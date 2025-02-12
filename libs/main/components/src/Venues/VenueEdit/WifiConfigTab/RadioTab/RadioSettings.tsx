@@ -401,6 +401,13 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       if (!isAFCEnabled) {
         set(data, 'radioParams6G.enableAfc', false)
       }
+      const { radioParams6G } = data
+      if (radioParams6G) {
+        const { enableMulticastUplinkRateLimiting, enableMulticastDownlinkRateLimiting } = radioParams6G
+        if (enableMulticastUplinkRateLimiting || enableMulticastDownlinkRateLimiting) {
+          set(data, 'radioParams6G.enableMulticastRateLimiting', true)
+        }
+      }
 
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
