@@ -9,9 +9,8 @@ import {
   useGetCertificateTemplatesQuery
 } from '@acx-ui/rc/services'
 import { CertificateTemplate, Persona } from '@acx-ui/rc/utils'
-import { RolesEnum }                    from '@acx-ui/types'
-import { hasRoles }                     from '@acx-ui/user'
 
+import { hasCreateIdentityPermission }                        from '../../../../useIdentityGroupUtils'
 import { PersonaDrawer }                                      from '../../../../users'
 import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
 import { certificateDescription, onboardSettingsDescription } from '../../contentsMap'
@@ -133,7 +132,7 @@ export default function CertificateSettings (
             </Form.Item>
           </Col>
           {
-            (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+            hasCreateIdentityPermission() &&
             <>
               <Col span={2}>
                 <Button

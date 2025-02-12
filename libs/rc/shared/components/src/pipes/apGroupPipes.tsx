@@ -103,15 +103,19 @@ export const transformVLAN = (
       const firstApGroup = currentVenue.apGroups[0]
       const isVlanPool = firstApGroup?.vlanPoolId !== undefined
       if (isVlanPool) {
+        const vlanPoolId = firstApGroup.vlanPoolId
+        const defaultValue = network?.wlan?.advancedCustomization?.vlanPool?.id || ''
         const vlanPoolName = (vlanPoolingNameMap?.find(pool => pool.key === firstApGroup.vlanPoolId)?.value) || ''
         displayText = $t(vlanContents.vlanPool, {
           poolName: vlanPoolName,
-          isCustom: true
+          isCustom: vlanPoolId && (vlanPoolId !== defaultValue)
         })
       } else if (firstApGroup?.vlanId !== undefined) {
+        const vlanId = firstApGroup.vlanId
+        const defaultValue = network?.wlan?.vlanId || 1
         displayText = $t(vlanContents.vlan, {
-          id: firstApGroup.vlanId.toString(),
-          isCustom: true
+          id: vlanId.toString(),
+          isCustom: vlanId && (vlanId !== defaultValue)
         })
       } else {
         const vlan = getVlanString(currentVenue.vlanPoolId ? {

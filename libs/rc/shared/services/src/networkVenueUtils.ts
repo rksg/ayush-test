@@ -24,7 +24,8 @@ import {
   WifiNetwork,
   WifiRbacUrlsInfo,
   WifiUrlsInfo,
-  NetworkApGroup
+  NetworkApGroup,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
@@ -435,6 +436,9 @@ export const fetchEnhanceRbacApGroupNetworkVenueList = async (arg: any, fetchWit
       const apGroupIds = uniq(networkApGroupParamsList.map(item => item.apGroupId).filter(item => item))
       const apGroupIdNameMap = await getApGroupIdNameMap(apGroupIds, isTemplate, fetchWithBQ)
 
+      // fetch network vlan pool info
+      const networkVlanPoolList = await fetchNetworkVlanPoolList(networkIds, isTemplate, fetchWithBQ)
+
       // fetch AP Group vlan pool info
       const apGroupVenueIds = uniq(networkApGroupParamsList.map(item => item.venueId))
       const apGroupVlanPoolList = await fetchApGroupVlanPoolList(apGroupVenueIds, isTemplate, fetchWithBQ)
@@ -470,6 +474,7 @@ export const fetchEnhanceRbacApGroupNetworkVenueList = async (arg: any, fetchWit
             }
           }))
 
+        const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
         const networkVenueData = {
           ...defaultNetworkVenue,
           ...networkVenueResult,
@@ -478,6 +483,13 @@ export const fetchEnhanceRbacApGroupNetworkVenueList = async (arg: any, fetchWit
           venueId
         } as NetworkVenue
         networkDeep.venues = [networkVenueData]
+
+        if (networkVlanPool && networkDeep.wlan?.advancedCustomization) {
+          networkDeep.wlan.advancedCustomization.vlanPool = {
+            id: networkVlanPool.id,
+            name: networkVlanPool.name
+          } as VlanPool
+        }
       })
     }
   }
@@ -839,7 +851,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
             }
           })
 
-          const networkVlanPoolId = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))?.id
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
           const networkVenueData = {
             ...defaultNetworkVenue,
@@ -847,14 +859,16 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
             ...(venueApGroups && { apGroups: venueApGroups }),
             networkId,
             venueId,
-            ...(networkVlanPoolId && { vlanPoolId: networkVlanPoolId })
+            ...(networkVlanPool && {
+              vlanPoolId: networkVlanPool.id,
+              vlanPoolName: networkVlanPool.name
+            })
           }
 
           networkDeep.venues = [networkVenueData]
         }
       })
     }
-
   }
 
   return {
@@ -955,17 +969,28 @@ export const fetchEnhanceRbacVenueNetworkList = async (arg: any, fetchWithBQ: an
               }
             })
 
-          const networkVlanPoolId = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))?.id
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
           const networkVenueData = {
             ...defaultNetworkVenue,
             ...networkVenueResult,
             ...(venueApGroups && { apGroups: venueApGroups }),
             networkId,
             venueId,
-            ...(networkVlanPoolId && { vlanPoolId: networkVlanPoolId })
+            ...(networkVlanPool && {
+              vlanPoolId: networkVlanPool.id,
+              vlanPoolName: networkVlanPool.name
+            })
           } as NetworkVenue
 
           networkDeep.venues = [networkVenueData]
+
+          if (networkVlanPool && networkDeep.wlan?.advancedCustomization) {
+            networkDeep.wlan.advancedCustomization.vlanPool = {
+              id: networkVlanPool.id,
+              name: networkVlanPool.name
+            } as VlanPool
+          }
         }
       })
     }
@@ -1272,6 +1297,7 @@ export const fetchEnhanceRbacNetworkVenueList = async (queryArgs: RequestPayload
 
       // fetch network vlan pool info
       const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], isTemplate, fetchWithBQ)
+      const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
       // fetch AP Group vlan pool info
       const apGroupVenueIds = uniq(networkApGroupParamsList.map(item => item.venueId))
@@ -1307,8 +1333,6 @@ export const fetchEnhanceRbacNetworkVenueList = async (queryArgs: RequestPayload
               })
             }
           }))
-
-        const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
         return {
           ...defaultNetworkVenue,
