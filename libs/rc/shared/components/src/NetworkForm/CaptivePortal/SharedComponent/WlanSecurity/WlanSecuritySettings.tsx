@@ -272,6 +272,7 @@ export const WlanSecurityFormItems = () => {
             />
           </Space>
           <Form.Item
+            data-testid={'owe-transition-switch'}
             name='enableOweTransition'
             valuePropName='checked'
             children={<Switch onChange={onOweTransitionChange} />}/>
