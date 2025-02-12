@@ -22,6 +22,7 @@ export enum Features {
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
+  CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
