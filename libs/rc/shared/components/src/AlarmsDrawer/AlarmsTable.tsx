@@ -12,6 +12,7 @@ import { DateFormatEnum, formatter }                                            
 import { eventAlarmApi, networkApi, useAlarmsListQuery, useClearAlarmByVenueMutation, useClearAlarmMutation, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   Alarm,
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   EventSeverityEnum,
   EventTypeEnum,
@@ -19,10 +20,11 @@ import {
   SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { store }                 from '@acx-ui/store'
-import { RolesEnum }             from '@acx-ui/types'
-import { hasRoles }              from '@acx-ui/user'
+import { TenantLink, useParams }                          from '@acx-ui/react-router-dom'
+import { store }                                          from '@acx-ui/store'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -71,6 +73,7 @@ interface AlarmsTableProps {
 export const AlarmsTable = (props: AlarmsTableProps) => {
   const params = useParams()
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const { newAlarmType, venueId, serialNumber, selectedFilters, setSelectedFilters } = props
 
@@ -176,7 +179,11 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     }
   }
 
-  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.clearAlarm),
+      getOpsApi(CommonRbacUrlsInfo.clearAlarmByVenue)
+    ])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const columns: TableProps<Alarm>['columns'] = [
     {
