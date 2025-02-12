@@ -227,7 +227,7 @@ export function VenuesForm (props: VenuesFormProps) {
   useEffect(() => {
     if (action === 'edit' && address.country && data ) {
       const isSameCountry =
-        (!data.address.country || data.address.country === address.country) || false
+        (!data.address.country || (data.address.country === address.country)) || false
       let errors = []
       if (!isSameCountry) {
         errors.push(intl.$t(
@@ -268,7 +268,16 @@ export function VenuesForm (props: VenuesFormProps) {
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value === formRef.current?.getFieldValue('address')?.addressLine
-    const isSameCountry = (data && (data?.address.country === address?.country)) || false
+    const isSameCountry =
+      (!data?.address.country || (data?.address.country === address?.country)) || false
+
+    if (isEdit && !address.country) {
+      return Promise.reject(
+        intl.$t(
+          { defaultMessage: '<VenueSingular></VenueSingular> address is invalid' }
+        )
+      )
+    }
 
     if(!address.addressLine){
       return Promise.reject(
