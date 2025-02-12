@@ -270,13 +270,15 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/brandings',
     oldUrl: '/mspLabels',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/brandings'
   },
   updateMspLabel: {
     method: 'put',
     url: '/brandings',
     oldUrl: '/mspLabels',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/brandings'
   },
   acceptRejectInvitation: {
     method: 'put',

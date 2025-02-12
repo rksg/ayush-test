@@ -99,9 +99,10 @@ export function Subscriptions () {
   const basePath = useTenantLink('/mspLicenses', 'v')
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspUrlsInfo.addMspAssignment),
-      getOpsApi(MspUrlsInfo.updateMspAssignment),
-      getOpsApi(MspUrlsInfo.deleteMspAssignment)])
+    ? hasAllowedOperations([
+      [getOpsApi(MspUrlsInfo.addMspAssignment), getOpsApi(MspUrlsInfo.updateMspAssignment),
+        getOpsApi(MspUrlsInfo.deleteMspAssignment)]
+    ])
     : hasCrossVenuesPermission()
 
   const [showDialog, setShowDialog] = useState(false)
