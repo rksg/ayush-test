@@ -9,7 +9,6 @@ import { useNavigate, useTenantLink }                   from '@acx-ui/react-rout
 import { hasRaiPermission }                             from '@acx-ui/user'
 
 import { DataSubscriptionsTable } from './Table'
-import { generateBreadcrumb }     from './utils'
 
 type DataSubscriptionsContentProps = {
   isRAI?: boolean
@@ -20,14 +19,11 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
-  const breadCrumb = isRAI ? [
-    { text: $t({ defaultMessage: 'Business Insights' }) }
-  ]: generateBreadcrumb()
 
   return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Data Subscriptions' })}
-      breadcrumb={breadCrumb}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <>
         <Button
           type='primary'
@@ -59,7 +55,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
           helpUrl={helpUrl} />
       </GridCol>
     </GridRow>
-    <DataSubscriptionsTable isRAI/>
+    <DataSubscriptionsTable isRAI={isRAI} />
   </>)
 }
 

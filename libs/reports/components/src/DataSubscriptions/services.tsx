@@ -32,7 +32,7 @@ export const {
         url: 'dataSubscriptions/query',
         method: 'post',
         credentials: 'include',
-        body: JSON.stringify(payload)
+        body: payload
       }),
       providesTags: [{ type: 'DataSubscription', id: 'LIST' }],
       transformResponse: (response: TableResult<DataSubscription>) => {

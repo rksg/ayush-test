@@ -6,23 +6,26 @@ import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { doProfileDelete }                      from '@acx-ui/rc/services'
 import { useTableQuery }                        from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }           from '@acx-ui/react-router-dom'
+import { RolesEnum }                            from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
   getUserProfile as getR1userProfile,
-  hasPermission
+  hasPermission,
+  hasRoles
 } from '@acx-ui/user'
 
 import { DataSubscription, useDataSubscriptionsQuery, useDeleteDataSubscriptionsMutation, usePatchDataSubscriptionsMutation } from './services'
 import { Actions, isVisibleByAction }                                                                                         from './Utils'
 
-export function DataSubscriptionsTable ({ isRAI }: { isRAI: boolean }) {
+export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics/dataSubscriptions')
+  const basePath = useTenantLink('/dataSubscriptions')
   const [deleteDataSubscriptions] = useDeleteDataSubscriptionsMutation()
   const [patchDataSubscriptions] = usePatchDataSubscriptionsMutation()
-  const userId = isRAI ? getRaiUserProfile().userId : getR1userProfile().profile.swuId
+  // For R1, mlisa-rbac uses externalId as x-mlisa-user-id
+  const userId = isRAI ? getRaiUserProfile().userId : getR1userProfile().profile.externalId
 
   const showToastByAction = (isSuccess: boolean, action: Actions, count: number) => {
     let verb = ''
@@ -165,9 +168,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI: boolean }) {
       visible: rows => isVisibleByAction(rows, Actions.Edit),
       onClick: (selectedRows: DataSubscription[]) => {
         const row = selectedRows[0]
-        const editPath = isRAI
-          ? `edit/${row.id}`
-          : `edit/TBD/${row.id}`  //TODO: use R1 edit path later
+        const editPath = `edit/${row.id}`
         navigate({
           ...basePath,
           pathname: `${basePath.pathname}/${editPath}`
@@ -209,7 +210,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI: boolean }) {
 
   const hasDataPermission = isRAI
     ? hasPermission({ permission: 'WRITE_DATA_SUBSCRIPTIONS' })
-    : false //TODO: implement R1 permission later
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const allowedRowActions = filterByAccess(rowActions)
 
