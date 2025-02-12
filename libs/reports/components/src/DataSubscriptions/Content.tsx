@@ -21,7 +21,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
   const basePath = useTenantLink('/dataSubscriptions')
   const breadCrumb = isRAI ? [
     { text: $t({ defaultMessage: 'Business Insights' }) }
-  ]: generateBreadcrumb({ isRAI, isList: true })
+  ]: generateBreadcrumb()
 
   return (<>
     <PageHeader

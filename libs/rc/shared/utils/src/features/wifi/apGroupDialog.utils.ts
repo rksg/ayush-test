@@ -24,7 +24,7 @@ export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCus
     return {
       vlanString: vlanPool.name,
       vlanType: VlanType.Pool,
-      vlanText: $t(vlanContents.vlanPool, { isCustom: true, poolName: vlanPool.name })
+      vlanText: $t(vlanContents.vlanPool, { isCustom, poolName: vlanPool.name })
     }
   }
 
