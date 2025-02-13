@@ -160,26 +160,6 @@ export default function AICanvas () {
         || !historyData?.length){
             getAllChatsQuery.refetch()
           }
-          // const response: RuckusAiChat = {
-          //   sessionId: '001',
-          //   messages: [
-          //     {
-          //       id: '1',
-          //       role: 'USER',
-          //       text: 'Generate Network Health Overview Widget'
-          //     },
-          //     {
-          //       id: '555',
-          //       role: 'AI',
-          //       text: `2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to
-          //        the canvas on the right.`,
-          //       widgets: [{
-          //         title: '',
-          //         chartType: 'pie'
-          //       }]
-          //     }
-          //   ]
-          // }
           if(sessionId && isNewChat) {
             setIsNewChat(false)
           }

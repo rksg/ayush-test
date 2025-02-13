@@ -38,27 +38,6 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       }
     }),
-    // getChats2: build.query<RuckusAiChat, RequestPayload>({
-    //   query: ({ params, payload }) => {
-    //     const req = createHttpRequest(RuckusAiChatUrlInfo.getChats, params)
-    //     return {
-    //       ...req,
-    //       body: payload
-    //     }
-    //   },
-    //     // Only have one cache entry because the arg always maps to one string
-    //     serializeQueryArgs: ({ endpointName }) => {
-    //       return endpointName
-    //     },
-    //     // Always merge incoming data to the cache entry
-    //     merge: (currentCache, newItems) => {
-    //       currentCache.messages.push(...newItems.messages)
-    //     },
-    //     // Refetch when the page arg changes
-    //     forceRefetch({ currentArg, previousArg }) {
-    //       return currentArg !== previousArg
-    //     },
-    // }),
     updateChat: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.updateChat, params)

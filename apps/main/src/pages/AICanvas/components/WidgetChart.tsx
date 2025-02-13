@@ -181,14 +181,6 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups }) => {
 }
 
 export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
-  // const queryResults = useChatChartQuery({
-  //   params: {
-  //     sessionId: data.sessionId,
-  //     chatId: data.chatId
-  //   }
-  // }, { skip: data.type !== 'card' })
-  // console.log('WidgetChart: ', data)
-
   const queryResults = useGetWidgetQuery({
     params: {
       canvasId: data.canvasId,
