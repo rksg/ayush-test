@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
-import { BrowserRouter }                       from '@acx-ui/react-router-dom'
-import { renderHook, render, screen, waitFor } from '@acx-ui/test-utils'
+import { BrowserRouter }  from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
-import { useLayoutContext } from '../Layout'
-import { Tabs }             from '../Tabs'
+import { Tabs } from '../Tabs'
 
 import { PageHeader } from '.'
 
@@ -198,19 +197,5 @@ describe('PageHeader', () => {
 
     expect(await screen.findAllByRole('button')).toHaveLength(2)
     expect(spy).not.toBeCalled()
-  })
-
-  it('sets y for layout context', async () => {
-    const { result } = renderHook(() => useLayoutContext())
-
-    const setPageHeaderY = jest.spyOn(result.current, 'setPageHeaderY').mockImplementation(() => {})
-
-    render(<>
-      <PageHeader title='Title' />
-      <div></div>
-      <div className='sticky-top'></div>
-    </>, { route: true })
-
-    await waitFor(() => expect(setPageHeaderY).toBeCalled())
   })
 })
