@@ -222,19 +222,21 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
     newApi: true,
-    opsApi: 'DELETE:/tenantActivations/supportStatus/:mspEcTenantIds'
+    opsApi: 'DELETE:/tenantActivations/supportStatus/:mspEcTenantId'
   },
   assignMspEcToIntegrator: {
     method: 'put',
     url: '/tenants/:mspIntegratorId/tenantDelegations',
     oldUrl: '/mspIntegrators/:mspIntegratorId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/tenants/:mspIntegratorId/tenantDelegations'
   },
   assignMspEcToMultiIntegrators: {
     method: 'PATCH',
     url: '/tenantDelegations',
     oldUrl: '/mspCustomers/delegations',
-    newApi: true
+    newApi: true,
+    opsApi: 'PATCH:/tenantDelegations'
   },
   getAssignedMspEcToIntegrator: {
     method: 'get',
@@ -425,7 +427,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/adminDelegations',
     newApi: true,
-    opsApi: 'PUT:/adminDelegations'
+    opsApi: 'PATCH:/adminDelegations'
   },
   getLicenseMileageReports: {
     method: 'post',

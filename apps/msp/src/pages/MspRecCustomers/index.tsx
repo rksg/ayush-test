@@ -79,7 +79,13 @@ export function MspRecCustomers () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)])
-    : true
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasAssignTechPartnerPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const {
     state
@@ -255,7 +261,7 @@ export function MspRecCustomers () {
       },
       render: function (_, row) {
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin || hasAssignAdminPermission) && !userProfile?.support
             ? <Link to=''>{mspUtils.transformAdminCount(row, tenantType)}</Link>
             : mspUtils.transformAdminCount(row, tenantType)
         )
@@ -284,7 +290,7 @@ export function MspRecCustomers () {
           : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
             : noDataDisplay
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          (isPrimeAdmin || isAdmin || hasAssignTechPartnerPermission) && !drawerIntegratorVisible
             ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
@@ -313,7 +319,7 @@ export function MspRecCustomers () {
           : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
             : noDataDisplay
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          (isPrimeAdmin || isAdmin || hasAssignTechPartnerPermission) && !drawerIntegratorVisible
             ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }

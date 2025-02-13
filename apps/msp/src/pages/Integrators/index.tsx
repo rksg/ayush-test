@@ -75,7 +75,13 @@ export function Integrators () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)])
-    : true
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasAssignEcPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToIntegrator)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const defaultPayload = {
     searchString: '',
@@ -138,7 +144,8 @@ export function Integrators () {
       },
       render: function (_, { mspAdminCount }) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
+          (isPrimeAdmin || isAdmin || hasAssignAdminPermission)
+            ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
         )
       }
     },
@@ -158,7 +165,7 @@ export function Integrators () {
         } : {}
       },
       render: function (_, row) {
-        return (isPrimeAdmin || isAdmin)
+        return (isPrimeAdmin || isAdmin || hasAssignEcPermission)
           ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
           : transformAssignedCustomerCount(row)
       }
