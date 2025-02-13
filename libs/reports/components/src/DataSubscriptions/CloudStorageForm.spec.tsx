@@ -11,14 +11,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('CloudStorageForm', () => {
   it('(RAI) should render New CloudStorageForm correct', async () => {
-    render(<CloudStorageForm isRAI/>, {
+    render(<CloudStorageForm />, {
       route: {},
       wrapper: Provider
     })
     expect(await screen.findByText('New Cloud Storage')).toBeVisible()
   })
   it('(RAI) should render Edit CloudStorageForm correct', async () => {
-    render(<CloudStorageForm isRAI editMode/>, {
+    render(<CloudStorageForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -26,7 +26,7 @@ describe('CloudStorageForm', () => {
   })
   it('should log for fields on apply click', async () => {
     const spyLog = jest.spyOn(console, 'log')
-    render(<CloudStorageForm isRAI editMode/>, {
+    render(<CloudStorageForm editMode/>, {
       route: {},
       wrapper: Provider
     })
@@ -46,7 +46,7 @@ describe('CloudStorageForm', () => {
     })
   })
   it('should navigate to previous route on cancel click', async () => {
-    render(<CloudStorageForm isRAI/>, {
+    render(<CloudStorageForm />, {
       route: {},
       wrapper: Provider
     })

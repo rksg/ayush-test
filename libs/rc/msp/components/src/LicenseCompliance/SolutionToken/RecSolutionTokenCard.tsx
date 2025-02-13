@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Col }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Col, Form } from 'antd'
+import { useIntl }   from 'react-intl'
 
 import { Button, Card, Drawer, Tabs } from '@acx-ui/components'
 import { LicenseCardProps }           from '@acx-ui/msp/utils'
@@ -17,6 +17,8 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
   const [currentTab, setCurrentTab] = useState<string | undefined>('summary')
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false)
   const { title, data, trialType } = props
+
+  const [form] = Form.useForm()
 
   function onTabChange (tab: string) {
     setCurrentTab(tab)
@@ -57,6 +59,16 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
         isTabSelected={currentTab === 'settings'}/>,
       visible: true
     }
+  }
+
+  const onSubmitHandler = () => {
+    form.submit()
+  }
+
+  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation()
+    setOpenSettingsDrawer(false)
+    form.resetFields()
   }
 
   return <Col style={{ width: '395px', paddingLeft: 0, marginTop: '15px' }}>
@@ -110,15 +122,15 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
             footer={
               <div><Button
                 type='primary'
-                onClick={() => {}}>
+                onClick={() => onSubmitHandler()}>
                 {$t({ defaultMessage: 'Save' })}
               </Button>
-              <Button type='default' onClick={() => {}}>
+              <Button type='default' onClick={closeDrawer}>
                 {$t({ defaultMessage: 'Close' })}
               </Button></div>
             }
           >
-            <SolutionTokenSettingsForm />
+            <SolutionTokenSettingsForm form={form}/>
           </Drawer>
         }
       </div>

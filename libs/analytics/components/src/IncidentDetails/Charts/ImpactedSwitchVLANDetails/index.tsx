@@ -39,7 +39,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       return { ...response, rows }
     } })
 
-  const impactedSwitches = response.data!
+  const impactedSwitcheVLANs = response.data!
 
   const removeDuplicateMismatchVLANs = (impactedSwitches: ImpactedSwitchPortRow[]) =>
     _.isEmpty(impactedSwitches)
@@ -47,7 +47,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       : _.uniqBy(impactedSwitches, (item) =>
         item.mismatchedVlans ? item.mismatchedVlans[0]?.id : [])
 
-  const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
+  const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitcheVLANs)
     ?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
       .map(({ id, name }) => ({ mac, id, name }))
     )
@@ -61,15 +61,16 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       return agg
     }, {} as Record<number, { macs: string[]; names: string[] }>)), ([id]) => parseInt(id, 10))
 
-  const uniqueSwitchCount = impactedSwitches?.length || 0
+  const uniqueSwitchs = _.uniqBy(
+    impactedSwitcheVLANs?.map(({ name, mac: title }) => ({ name, title })), 'title')
   const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
     ? _.flatMap(uniqImpactedVlans, ([, { macs }]) => macs).length : 0
   const impactedTypes = [
     {
       icon: 'switch',
       max: 3,
-      count: uniqueSwitchCount,
-      data: impactedSwitches?.map(({ name, mac: title }) => ({ name, title })),
+      count: uniqueSwitchs.length,
+      data: uniqueSwitchs,
       title: $t({ defaultMessage: 'Impacted switches' }),
       // eslint-disable-next-line max-len
       details: $t({ defaultMessage: 'Out of {switchCount} {switchCount, plural, one {switch} other {switches}}' }, { switchCount })
@@ -96,7 +97,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <DetailsCard
       druidRolledup={druidRolledup}
-      isImpactedSwitches={impactedSwitches?.length > 0}
+      isImpactedSwitches={impactedSwitcheVLANs?.length > 0}
       impactedTypes={impactedTypes}
     />
   </Loader>

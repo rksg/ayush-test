@@ -9,6 +9,8 @@ import ReportsRoutes from './Routes'
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   Report: () => <div data-testid={'some-report-id'} id='acx-report' />,
+  DataSubscriptionsContent: () =>
+    <div data-testid={'data-subscriptions-id'} id='acx-data-subscriptions' />,
   CloudStorageForm: () => <div data-testid={'some-ds-cloud-form'} />
 }))
 
@@ -16,6 +18,7 @@ jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
 
 test('should navigate to reports/wireless for R1', async () => {
+  get.mockReturnValue('')
   const { container }=render(<Provider><ReportsRoutes /></Provider>, {
     route: {
       path: '/tenantId/t/reports/wireless',
@@ -59,4 +62,27 @@ describe('should navigate correct for RAI', () => {
     })
     expect(screen.getByTestId('some-ds-cloud-form')).toBeDefined()
   })
+})
+
+test('should navigate to dataSubscriptions for R1', async () => {
+  get.mockReturnValue('')
+  const { container }=render(<Provider><ReportsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/dataSubscriptions',
+      wrapRoutes: false
+    }
+  })
+  logRoles(container)
+  expect(screen.getByTestId('data-subscriptions-id')).toBeDefined()
+})
+
+test('should navigate to dataSubscriptions for RA', async () => {
+  get.mockReturnValue('true')
+  render(<Provider><ReportsRoutes /></Provider>, {
+    route: {
+      path: MLISA_BASE_PATH+'/dataSubscriptions',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('data-subscriptions-id')).toBeDefined()
 })

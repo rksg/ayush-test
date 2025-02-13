@@ -49,9 +49,10 @@ import { RolesEnum } from '@acx-ui/types'
 import { hasRoles }  from '@acx-ui/user'
 import { getIntl }   from '@acx-ui/utils'
 
-import { AdaptivePolicySetForm }  from '../../AdaptivePolicySetForm'
-import { ExpirationDateSelector } from '../../ExpirationDateSelector'
-import { IdentityGroupForm }      from '../../users/IdentityGroupForm'
+import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
+import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
+import { hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
+import { IdentityGroupForm }                from '../../users/IdentityGroupForm'
 
 import { FieldSpace } from './styledComponents'
 
@@ -287,7 +288,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
               />
             </Form.Item>
             {
-              (!editMode && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+              (!editMode && hasCreateIdentityGroupPermission()) &&
               <>
                 <Space align='center'>
                   <Button

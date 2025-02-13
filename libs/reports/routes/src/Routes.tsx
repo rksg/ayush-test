@@ -15,7 +15,7 @@ import { Provider }         from '@acx-ui/store'
 import { hasRaiPermission } from '@acx-ui/user'
 
 export default function ReportsRoutes () {
-  const isRa = get('IS_MLISA_SA')
+  const isRa = Boolean(get('IS_MLISA_SA'))
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const hasDCStoragePermission = isRa ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE') : false
   const reports = {
@@ -46,19 +46,17 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      {isRa ? (<>
-        <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI />} />
-        <Route path='dataSubscriptions/create' element={<SubscriptionForm isRAI />} />
-        <Route path='dataSubscriptions/edit/:settingId'
-          element={<SubscriptionForm isRAI editMode />} />
-        <Route path='dataSubscriptions/auditLog/:settingId'
-          element={<DataSubscriptionsAuditLog isRAI/>} />
-      </>) : []}
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
+      <Route path='dataSubscriptions/edit/:settingId'
+        element={<SubscriptionForm editMode />} />
+      <Route path='dataSubscriptions/auditLog/:settingId'
+        element={<DataSubscriptionsAuditLog />} />
       {hasDCStoragePermission ? (<>
         <Route path='dataSubscriptions/cloudStorage/create'
-          element={<CloudStorageForm isRAI/>} />
+          element={<CloudStorageForm />} />
         <Route path='dataSubscriptions/cloudStorage/edit/:csId'
-          element={<CloudStorageForm isRAI editMode />} />
+          element={<CloudStorageForm editMode />} />
       </>): []}
     </Route>
   )

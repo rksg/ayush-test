@@ -70,12 +70,17 @@ export interface UserProfile {
   externalId: string
   cloudCertStatus: string
   email: string
+  phoneNumber: string
   initials?: string
   fullName: string
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: []
+  scopes?: [],
+  preferredNotifications?: {
+    emailPreferences: boolean,
+    smsPreferences: boolean
+  }
 }
 
 export type GuestErrorRes = {
@@ -103,6 +108,14 @@ export interface PlmMessageBanner {
   startTime: string,
   tenantType: string,
   updatedDate: string
+}
+
+export interface AllowedOperation {
+  scope: string[]
+  uri: string[]
+};
+export interface AllowedOperationsResponse {
+  allowedOperations: AllowedOperation[]
 }
 
 // not sure if it is really belongs to user
