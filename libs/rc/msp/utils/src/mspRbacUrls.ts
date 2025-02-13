@@ -41,7 +41,8 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/tenants/:mspEcTenantId'
   },
   // getMspAdminList: {
   //   method: 'post',
@@ -176,13 +177,15 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants',
     oldUrl: '/mspCustomers',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/tenants'
   },
   updateMspEcAccount: {
     method: 'put',
     url: '/tenants/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/tenants/:mspEcTenantId'
   },
   getMspEcDelegatedAdmins: {
     method: 'get',
@@ -206,13 +209,15 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/tenantActivations/supportStatus/:mspEcTenantId'
   },
   disableMspEcSupport: {
     method: 'delete',
     url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/tenantActivations/supportStatus/:mspEcTenantIds'
   },
   assignMspEcToIntegrator: {
     method: 'put',
@@ -370,7 +375,8 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addBrandCustomers: {
     method: 'post',
     url: '/tenants',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/tenants'
   },
   getUploadURL: {
     method: 'post',

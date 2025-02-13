@@ -28,6 +28,7 @@ import {
 } from '@acx-ui/msp/services'
 import {
   MspEc,
+  MspRbacUrlsInfo,
   MSPUtils
 } from '@acx-ui/msp/utils'
 import {
@@ -36,10 +37,10 @@ import {
 import {
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, noDataDisplay }                                             from '@acx-ui/utils'
+import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { AccountType, getOpsApi, noDataDisplay }                                                            from '@acx-ui/utils'
 
 import HspContext                  from '../../HspContext'
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
@@ -75,6 +76,10 @@ export function MspRecCustomers () {
   const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)])
+    : true
 
   const {
     state
@@ -400,6 +405,8 @@ export function MspRecCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.enableMspEcSupport),
+          getOpsApi(MspRbacUrlsInfo.disableMspEcSupport)]],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -425,6 +432,7 @@ export function MspRecCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -546,7 +554,7 @@ export function MspRecCustomers () {
             </TenantLink> : null,
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
-                hidden={userProfile?.support || !onBoard}
+                hidden={userProfile?.support || !onBoard || !hasAddPermission}
                 type='primary'>{$t({ defaultMessage: 'Add Property' })}</Button>
             </MspTenantLink>
           ]
