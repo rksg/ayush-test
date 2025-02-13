@@ -45,12 +45,16 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
     updateSubscription({ ...data, userName: getUserName() })
       .unwrap()
       .then(() => {
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'Subscription saved successfully!' })
+        })
         navigate(-1)
       })
       .catch(({ data: { error } }) => {
         showToast({ type: 'error', content: error })
       })
-  }, [form, editMode, selectedSubscription.data?.id, navigate, updateSubscription])
+  }, [form, editMode, selectedSubscription.data?.id, navigate, updateSubscription, $t])
   const initialValues =
     editMode ? selectedSubscription.data : { frequency: 'daily' }
 
