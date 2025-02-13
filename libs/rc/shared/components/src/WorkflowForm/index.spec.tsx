@@ -28,6 +28,12 @@ const list: NewAPITableResult<Workflow> = {
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort&excludeContent=:excludeContent'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
 
+const FormWrapper = (props: {isEdit:boolean, policyId?: string})=> {
+  const [form] = Form.useForm()
+  return <WorkflowForm  {...props} />
+}
+
+
 describe('WorkflowForm', () => {
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -48,9 +54,7 @@ describe('WorkflowForm', () => {
         layout={'vertical'}
         name={'workflowForm'}
       >
-        <WorkflowForm
-          isEdit={false}
-        />
+        <WorkflowForm isEdit={false}/>
       </Form>
     </Provider>)
     // eslint-disable-next-line max-len
@@ -71,7 +75,6 @@ describe('WorkflowForm', () => {
       >
         <WorkflowForm
           isEdit
-          defaultValue={workflows[0]}
           policyId={workflows[0].id}
         />
       </Form>
