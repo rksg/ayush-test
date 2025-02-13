@@ -32,9 +32,9 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                                   from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                            from '@acx-ui/rc/services'
+import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary, MspRbacUrlsInfo } from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                                       from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }                                from '@acx-ui/rc/services'
 import {
   AdminRbacUrlsInfo,
   dateSort,
@@ -100,8 +100,8 @@ export function Subscriptions () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([
-      [getOpsApi(MspUrlsInfo.addMspAssignment), getOpsApi(MspUrlsInfo.updateMspAssignment),
-        getOpsApi(MspUrlsInfo.deleteMspAssignment)]
+      [getOpsApi(MspRbacUrlsInfo.addMspAssignment), getOpsApi(MspRbacUrlsInfo.updateMspAssignment),
+        getOpsApi(MspRbacUrlsInfo.deleteMspAssignment)]
     ])
     : hasCrossVenuesPermission()
 
@@ -285,6 +285,7 @@ export function Subscriptions () {
     },
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')

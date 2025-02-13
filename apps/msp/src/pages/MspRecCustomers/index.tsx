@@ -420,6 +420,8 @@ export function MspRecCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations),
+          getOpsApi(MspRbacUrlsInfo.updateMspMultipleEcDelegations)]],
         visible: (selectedRows) => {
           const len = selectedRows.length
           return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)

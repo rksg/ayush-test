@@ -129,7 +129,7 @@ export function MspCustomers () {
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspecAccount)])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)])
     : true
 
   if ((tenantType === AccountType.VAR || tenantType === AccountType.REC) &&
@@ -583,6 +583,8 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations),
+          getOpsApi(MspRbacUrlsInfo.updateMspMultipleEcDelegations)]],
         visible: (selectedRows) => {
           const len = selectedRows.length
           return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
@@ -595,6 +597,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.mspEcFirmwareUpgradeSchedules)],
         visible: (selectedRows) => {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
@@ -609,6 +612,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.resendEcInvitation)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },

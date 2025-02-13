@@ -96,21 +96,18 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/assignments',
     oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-    opsApi: 'POST:/assignments',
     newApi: true
   },
   updateMspAssignment: {
     method: 'PATCH',
     url: '/assignments',
     oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-    opsApi: 'PATCH:/assignments',
     newApi: true
   },
   deleteMspAssignment: {
     method: 'delete',
     url: '/assignments',
     oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-    opsApi: 'DELETE:/assignments',
     newApi: true
   },
   resendEcInvitation: {
