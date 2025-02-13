@@ -55,6 +55,12 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
     isLoading: isLoadingEthPortList } =
     useQueryEthernetPortProfilesWithOverwritesQuery({
       payload: {
+        fields: [
+          'id','name','isDefault','type','untagId','vlanMembers','authType','authRadiusId',
+          'accountingRadiusId','bypassMacAddressAuthentication','supplicantAuthenticationOptions',
+          'dynamicVlanEnabled','unauthenticatedGuestVlan','enableAuthProxy','enableAccountingProxy',
+          'apSerialNumbers','venueIds','venueActivations','apActivations','apPortOverwrites','vni'
+        ],
         sortField: 'name',
         sortOrder: 'ASC',
         pageSize: 1000
@@ -135,6 +141,10 @@ export const convertEthernetPortListToDropdownItems = (
   selectedPortCaps: LanPort
 ): DefaultOptionType[] => {
   return ethernetPortList.filter((m) => {
+    // A profile with VNI configuration is hidden and should not be accessible
+    if(m.vni) {
+      return false
+    }
     // Not allow port-based ethernet port when LAN port is single port
     if(selectedModelCaps.lanPorts.length === 1 &&
         m.authType === EthernetPortAuthType.PORT_BASED) {

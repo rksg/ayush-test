@@ -21,6 +21,7 @@ export enum Features {
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
+  CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
@@ -268,6 +269,7 @@ export enum Features {
   ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
+  ACX_UI_DATE_RANGE_RESET_MSG ='acx-ui-date-range-event-limit-90-days-toggle',
   VENUE_TABLE_ADD_STATUS_COLUMN = 'acx-ui-venue-table-add-status-column-toggle',
   NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
@@ -285,7 +287,8 @@ export enum Features {
   ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
-  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

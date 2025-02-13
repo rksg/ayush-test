@@ -1,4 +1,4 @@
-import { EdgeMvSdLanViewData, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -63,7 +63,7 @@ export type DsaeOnboardNetwork = {
   securityProtocol?: string
 }
 
-export interface Network extends BaseNetwork{
+export interface Network extends BaseNetwork, EnforceableFields {
   children?: BaseNetwork[]
   dsaeOnboardNetwork?: DsaeOnboardNetwork
   securityProtocol?: string
