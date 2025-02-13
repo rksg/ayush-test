@@ -16,7 +16,8 @@ import {
   useExportDeviceInventoryMutation
 } from '@acx-ui/msp/services'
 import {
-  EcDeviceInventory
+  EcDeviceInventory,
+  MspUrlsInfo
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -29,8 +30,10 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
-import { AccountType, exportMessageMapping } from '@acx-ui/utils'
+import { TenantLink, useParams }                          from '@acx-ui/react-router-dom'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { AccountType, exportMessageMapping, getOpsApi }   from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -102,6 +105,10 @@ export function DeviceInventory () {
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantId = tenantDetailsData.data?.mspEc?.parentMspId
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasExportPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspUrlsInfo.exportMspEcDeviceInventory)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const filterPayload = {
     searchString: '',
@@ -238,7 +245,7 @@ export function DeviceInventory () {
     {
       label: $t(exportMessageMapping.EXPORT_TO_CSV),
       onClick: () => ExportInventory(),
-      disabled: (list && list.totalCount === 0)
+      disabled: (list && list.totalCount === 0) || !hasExportPermission
     }
   ]
 
