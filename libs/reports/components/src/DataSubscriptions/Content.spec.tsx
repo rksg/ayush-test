@@ -4,14 +4,12 @@ import userEvent          from '@testing-library/user-event'
 import { get }                               from '@acx-ui/config'
 import { Provider }                          from '@acx-ui/store'
 import { notificationApiURL }                from '@acx-ui/store'
-import { mockServer, render, screen }        from '@acx-ui/test-utils'
+import { render, screen }                    from '@acx-ui/test-utils'
 import { mockRestApiQuery }                  from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
-
-import { mockSubscriptionQuery } from './__fixtures__'
-import DataSubscriptionsContent  from './Content'
-import { dataSubscriptionApis }  from './services'
+import DataSubscriptionsContent from './Content'
+import { dataSubscriptionApis } from './services'
 
 const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
@@ -65,9 +63,7 @@ describe('DataSubscriptionsContent', () => {
         WRITE_DATA_SUBSCRIPTIONS: true
       } as RaiPermissions)
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
-      mockServer.use(
-        mockSubscriptionQuery()
-      )
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
     it('should render DataSubscriptionsContent correct when storage not configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {

@@ -1,6 +1,5 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { getUserProfile as getRaiUserProfile }  from '@acx-ui/analytics/utils'
 import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { doProfileDelete }                      from '@acx-ui/rc/services'
@@ -10,13 +9,18 @@ import { RolesEnum }                            from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
-  getUserProfile as getR1userProfile,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
 
-import { DataSubscription, useDataSubscriptionsQuery, useDeleteDataSubscriptionsMutation, usePatchDataSubscriptionsMutation } from './services'
-import { Actions, isVisibleByAction }                                                                                         from './Utils'
+import {
+  DataSubscription,
+  useDataSubscriptionsQuery,
+  useDeleteDataSubscriptionsMutation,
+  usePatchDataSubscriptionsMutation
+} from './services'
+import { Actions, isVisibleByAction } from './Utils'
+import { getUserId }                  from './utils'
 
 export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
   const { $t } = useIntl()
@@ -24,8 +28,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
   const basePath = useTenantLink('/dataSubscriptions')
   const [deleteDataSubscriptions] = useDeleteDataSubscriptionsMutation()
   const [patchDataSubscriptions] = usePatchDataSubscriptionsMutation()
-  // For R1, mlisa-rbac uses externalId as x-mlisa-user-id
-  const userId = isRAI ? getRaiUserProfile().userId : getR1userProfile().profile.externalId
+  const userId = getUserId()
 
   const showToastByAction = (isSuccess: boolean, action: Actions, count: number) => {
     let verb = ''
@@ -133,13 +136,14 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
             status: true
           }
         }
-        try {
-          await patchDataSubscriptions({ payload }).unwrap()
-          showToastByAction(true, Actions.Resume, selectedRows.length)
-          clearSelection()
-        } catch (error) {
-          showToastByAction(false, Actions.Resume, selectedRows.length)
-        }
+        patchDataSubscriptions({ payload }).unwrap()
+          .then(() => {
+            showToastByAction(true, Actions.Resume, selectedRows.length)
+            clearSelection()
+          })
+          .catch(() => {
+            showToastByAction(false, Actions.Resume, selectedRows.length)
+          })
       }
     },
     {
@@ -153,13 +157,14 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
             status: false
           }
         }
-        try {
-          await patchDataSubscriptions({ payload }).unwrap()
-          showToastByAction(true, Actions.Pause, selectedRows.length)
-          clearSelection()
-        } catch (error) {
-          showToastByAction(false, Actions.Pause, selectedRows.length)
-        }
+        patchDataSubscriptions({ payload }).unwrap()
+          .then(() => {
+            showToastByAction(true, Actions.Pause, selectedRows.length)
+            clearSelection()
+          })
+          .catch(() => {
+            showToastByAction(false, Actions.Pause, selectedRows.length)
+          })
       }
     },
     {
@@ -187,14 +192,12 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
 
   const deleteSubscriptionsWithToast =
     async (selectedRows: DataSubscription[], callback: () => void) => {
-      try {
-        await deleteDataSubscriptions({
-          payload: selectedRows.map(row => row.id) }).unwrap()
-        showToastByAction(true, Actions.Delete, selectedRows.length)
-        callback()
-      } catch (error) {
-        showToastByAction(false, Actions.Delete, selectedRows.length)
-      }
+      deleteDataSubscriptions({ payload: selectedRows.map(row => row.id) }).unwrap()
+        .then(() => {
+          showToastByAction(true, Actions.Delete, selectedRows.length)
+          callback()
+        })
+        .catch(() => showToastByAction(false, Actions.Delete, selectedRows.length))
     }
 
   const doDelete = (selectedRows: DataSubscription[], callback: () => void) => {

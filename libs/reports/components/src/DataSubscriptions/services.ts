@@ -42,14 +42,9 @@ export type StorageData = {
   config: StoragePayload,
   id: string
 }
-export type DataSubscription = {
+export type DataSubscription = Omit<SubscriptionPayload, 'id'> & {
   id: string
-  name: string
-  userId: string
-  userName: string
-  columns: string[]
   status: boolean,
-  frequency: string,
   updatedAt: string
 }
 
@@ -67,7 +62,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'Notification', id: 'GET_STORAGE' }],
+      providesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }],
       transformResponse: (response: { data: StorageData }) => {
         return response.data
       }
@@ -84,7 +79,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Notification', id: 'GET_STORAGE' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }]
     }),
     getSubscription: build.query<SubscriptionPayload, { id?: string }>({
       query: ({ id }) => {
@@ -94,7 +89,6 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'Notification', id: 'GET_SUBSCRIPTION' }],
       transformResponse: (response: { data: SubscriptionPayload }) => {
         return response.data
       }
@@ -113,7 +107,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Notification', id: 'GET_SUBSCRIPTION' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
     }),
     dataSubscriptions: build.query<
       TableResult<DataSubscription>,
@@ -125,7 +119,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      providesTags: [{ type: 'DataSubscription', id: 'LIST' }],
+      providesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }],
       transformResponse: (response: TableResult<DataSubscription>) => {
         return {
           data: response.data,
@@ -144,7 +138,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      invalidatesTags: [{ type: 'DataSubscription', id: 'LIST' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
     }),
     deleteDataSubscriptions: build.mutation<
       void,
@@ -156,7 +150,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      invalidatesTags: [{ type: 'DataSubscription', id: 'LIST' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
     })
   })
 })
