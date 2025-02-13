@@ -117,10 +117,10 @@ describe('Test apGroupPipes.utils', () => {
       isDefault: true,
       apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
       apGroupName: 'APs not assigned to any group',
-      vlanId: 1
+      vlanId: 10
     }] }, network, vlanPoolingNameMap))
 
-    expect(screen.getByText('VLAN-1 (Custom)')).toBeDefined()
+    expect(screen.getByText('VLAN-10 (Custom)')).toBeDefined()
 
     view.unmount()
     view = render(transformVLAN({ ...networkVenue_apgroup, apGroups: [{

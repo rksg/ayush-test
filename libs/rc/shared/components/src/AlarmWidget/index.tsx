@@ -38,7 +38,6 @@ export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartDat
 
 export function AlarmWidgetV2 () {
   const { $t } = useIntl()
-
   // Dashboard overview query
   const { venueIds } = useDashboardFilter()
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)

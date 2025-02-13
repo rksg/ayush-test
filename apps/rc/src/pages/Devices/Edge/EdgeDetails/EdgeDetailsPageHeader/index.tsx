@@ -10,9 +10,9 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker }       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }              from '@acx-ui/rc/components'
+import { Button, CaretDownSolidIcon, Dropdown, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }                                 from '@acx-ui/rc/components'
 import {
   EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
@@ -31,8 +31,11 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 import EdgeDetailsTabs from './EdgeDetailsTabs'
 
 export const EdgeDetailsPageHeader = () => {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const params = useParams()
   const { serialNumber } = params
   const { currentEdgeStatus: currentEdge, currentCluster } = useContext(EdgeDetailsDataContext)
@@ -44,7 +47,6 @@ export const EdgeDetailsPageHeader = () => {
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const menuConfig = [
     {
