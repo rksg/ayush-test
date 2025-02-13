@@ -218,10 +218,10 @@ export function ConfigurationProfileForm () {
 
   }
 
-  const updateVlanPortsData = async (data: Partial<SwitchConfigurationProfile>) => {
-    // eslint-disable-next-line no-console
-    console.log('updateVlanPortsData: ', data)
-  }
+  // const updateVlanPortsData = async (data: Partial<SwitchConfigurationProfile>) => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('updateVlanPortsData: ', data)
+  // }
 
   const updateVlanCurrentData = async (
     data: Partial<SwitchConfigurationProfile>,
@@ -387,8 +387,8 @@ export function ConfigurationProfileForm () {
       const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
 
       // eslint-disable-next-line no-console
-      console.log('handleEditProfile: ', proceedData(formData) )
-      return
+      // console.log('handleEditProfile: ', proceedData(formData) )
+      // return
 
       await disassociateWithCliProfile(disassociateSwitch)
       await updateSwitchConfigProfile({
@@ -440,7 +440,7 @@ export function ConfigurationProfileForm () {
 
           { isBulkVlanProvisioningEnabled && <StepsForm.StepForm
             title={$t({ defaultMessage: 'Ports' })}
-            onFinish={(data:Partial<SwitchConfigurationProfile>) => updateVlanPortsData(data)}
+            onFinish={(data:Partial<SwitchConfigurationProfile>) => updateVlanCurrentData(data)}
           >
             <VlanPortSetting />
           </StepsForm.StepForm> }

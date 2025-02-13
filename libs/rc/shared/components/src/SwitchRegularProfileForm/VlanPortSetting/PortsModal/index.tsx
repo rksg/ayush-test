@@ -6,7 +6,7 @@ import { useIntl }          from 'react-intl'
 import { Modal, ModalType, StepsForm, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
-  SwitchModelPortData,
+  // SwitchModelPortData,
   SwitchSlot2,
   Vlan,
   ICX_MODELS_MODULES
@@ -28,7 +28,7 @@ export interface PortsModalSetting {
   portSettings: PortSetting[]
   slots: SwitchSlot2[]
   ///
-  switchFamilyModels?: SwitchModelPortData
+  // switchFamilyModels?: SwitchModelPortData
 }
 
 export function PortsModal (props: {
@@ -42,8 +42,6 @@ export function PortsModal (props: {
   vlanPortList: GroupedVlanPort[],
 }) {
   const { $t } = useIntl()
-  // const { tenantId, serialNumber } = useParams()
-  // const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const {
     open, editRecord, onSave, onCancel, vlanList, vlanPortList
     // switchFamilyModel, portSlotsData = [], stackMember, vlanId
@@ -65,22 +63,6 @@ export function PortsModal (props: {
   //     model: '',
   //     trustedPorts: []
   //   })
-
-  // const isSwitchLevel = !!switchFamilyModel
-
-  // const portPayload = {
-  //   page: 1,
-  //   pageSize: 10000,
-  //   filters: { switchId: [serialNumber] },
-  //   sortField: 'portIdentifierFormatted',
-  //   sortOrder: 'ASC',
-  //   fields: [...SwitchPortViewModelQueryFields]
-  // }
-  // const { data: portList } = useSwitchPortlistQuery({
-  //   params: { tenantId },
-  //   payload: portPayload,
-  //   enableRbac: true
-  // }, { skip: !isSwitchFlexAuthEnabled })
 
   const modules = Object.keys(ICX_MODELS_MODULES).filter(
     key => isSupport8100 || key !== 'ICX8100'
@@ -174,31 +156,16 @@ export function PortsModal (props: {
 
     } else if (open) {
       form.setFieldValue('slots', [])
-      form.setFieldValue('switchFamilyModels', {
-        id: '',
-        model: '',
-        slots: []
-        // taggedPorts: [],
-        // untaggedPorts: []
-      })
+      form.setFieldValue('portSettings', [])
+
+      // form.setFieldValue('switchFamilyModels', {
+      //   id: '',
+      //   model: '',
+      //   slots: []
+      //   // taggedPorts: [],
+      //   // untaggedPorts: []
+      // })
     }
-
-
-    // if (open && isSwitchLevel) {
-    //   const [ family, model ] = switchFamilyModel.split('-')
-    //   const initValues = {
-    //     family, model,
-    //     slots: portSlotsData as unknown as SwitchSlot2[],
-    //     switchFamilyModels: {
-    //       id: '',
-    //       model: switchFamilyModel,
-    //       slots: portSlotsData as unknown as SwitchSlot2[],
-    //       taggedPorts: [],
-    //       untaggedPorts: []
-    //     },
-    //     trustedPorts: [],
-    //     stackMember
-    //   }
 
     //   if (editRecord) {
     //     setVlanSettingValues({
@@ -236,12 +203,7 @@ export function PortsModal (props: {
     return isValid
   }
 
-  // const onSavePorts = async (data: PortsModalSetting) => {
-  //   console.log('onSavePorts: ', data)
-  // }
-
   const onFinish = async (data: PortsModalSetting) => {
-    // console.log('onFinish data: ', data)
     const isValid = !!(
       data.portSettings?.map(p => p.untaggedVlan.concat(p.taggedVlans)).flat()?.length
     )
@@ -257,58 +219,6 @@ export function PortsModal (props: {
     }
 
     onSave(data)
-
-    // const switchFamilyModelsData = {
-    //   ...data.switchFamilyModels,
-    //   title: '',
-    //   vlanConfigName: ''
-    // }
-    // const enableSlot2 = isSwitchLevel
-    //   ? vlanSettingValues?.enableSlot2 : data.enableSlot2
-    // const enableSlot3 = isSwitchLevel
-    //   ? vlanSettingValues?.enableSlot3 : data.enableSlot3
-    // const slots = isSwitchLevel
-    //   ? vlanSettingValues.switchFamilyModels?.slots : data.switchFamilyModels.slots
-
-    // const untaggedPorts = isSwitchLevel
-    //   ? vlanSettingValues.switchFamilyModels?.untaggedPorts
-    //   : vlanSettingValues.switchFamilyModels?.untaggedPorts
-    //     ?.filter((value: string) => value.startsWith('1/1/') ||
-    //       (enableSlot2 && value.startsWith('1/2/')) ||
-    //       (enableSlot3 && value.startsWith('1/3/')))
-
-    // const taggedPorts = isSwitchLevel
-    //   ? vlanSettingValues.switchFamilyModels?.taggedPorts
-    //   : vlanSettingValues.switchFamilyModels?.taggedPorts
-    //     ?.filter((value: string) => value.startsWith('1/1/') ||
-    //       (enableSlot2 && value.startsWith('1/2/')) ||
-    //       (enableSlot3 && value.startsWith('1/3/')))
-
-    // if (_.isEmpty(taggedPorts) && _.isEmpty(untaggedPorts)) {
-    //   showActionModal({
-    //     type: 'error',
-    //     title: $t({ defaultMessage: 'Tagged or Untagged Port is not Configured' }),
-    //     content: $t({  // eslint-disable-next-line max-len
-    //       defaultMessage: 'Please ensure that at least one Tagged or Untagged Port is configured.'
-    //     })
-    //   })
-    //   return
-    // }
-
-    // switchFamilyModelsData.model
-    //   = isSwitchLevel ? switchFamilyModel : data.family + '-' + data.model
-
-    // switchFamilyModelsData.slots
-    //   = slots?.map((slot: { slotNumber: number; enable: boolean }) => ({
-    //     slotNumber: slot.slotNumber,
-    //     enable: slot.enable,
-    //     option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
-    //   }))
-    // switchFamilyModelsData.untaggedPorts = untaggedPorts
-    // switchFamilyModelsData.taggedPorts = taggedPorts
-
-
-
   }
 
   return (
@@ -341,12 +251,12 @@ export function PortsModal (props: {
             </label>
           </div>
           {noModelMsg &&
-              <Typography.Text style={{ fontSize: '12px' }} type='danger'>
-                {$t({ defaultMessage: 'No model selected' })}
-              </Typography.Text>
+            <Typography.Text style={{ fontSize: '12px' }} type='danger'>
+              {$t({ defaultMessage: 'No model selected' })}
+            </Typography.Text>
           }
           <SelectModelStep
-            editMode={editRecord !== undefined}
+            editMode={editMode}
             editRecord={editRecord}
             families={familiesData}
           />
@@ -363,7 +273,6 @@ export function PortsModal (props: {
         </StepsForm.StepForm>
 
       </StepsForm>
-
     </Modal>
   )
 }

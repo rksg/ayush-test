@@ -135,11 +135,12 @@ export function VlanSetting () {
       }
     })
 
-    const transformData = vlans.map((item) => {
+    const allowedVlanRangeConfigure = isBulkVlanProvisioningEnabled && !drawerEditMode
+    const transformData = vlans.map((item) => { //TODO
       return {
         ..._.omit(data, ['switchFamilyModels']),
         vlanId: Number(item),
-        ...(!isBulkVlanProvisioningEnabled || drawerFormRule?.vlanId?.toString() === item
+        ...(!allowedVlanRangeConfigure || drawerFormRule?.vlanId?.toString() === item
           ? { switchFamilyModels: sfm } : {}
         )
       }
@@ -179,13 +180,22 @@ export function VlanSetting () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
+        const hasExtraContent = isBulkVlanProvisioningEnabled
+          && selectedRows.find(row => row.switchFamilyModels?.length)
+
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Vlan' }),
+            entityName: $t({ defaultMessage: 'VLAN' }),
             entityValue: selectedRows[0].vlanId.toString()
           },
+          ...(hasExtraContent ? {
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: `This VLAN has already been configured on some ports (can be looked up in the Ports section). Deleting this VLAN will result in the port configuration getting updated. 
+              {br}{br}Are you sure you want to delete this VLAN?` }, { br: <br/> })
+          } : {}
+          ),
           onOk: () => {
             const vlanRows = vlanTable?.filter((option: { vlanId: number }) => {
               return !selectedRows

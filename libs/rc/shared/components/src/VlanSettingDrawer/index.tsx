@@ -160,7 +160,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
     switchFamilyModel, portSlotsData,
-    enablePortModelConfigure = true, enableVlanRangeConfigure = false,
+    enablePortModelConfigure = true, enableVlanRangeConfigure,
     portsUsedBy, stackMember, gptObject, switchFirmware } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
@@ -330,7 +330,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         <Form.Item
           label={<>
             {$t({ defaultMessage: 'VLAN ID' })}
-            {enableVlanRangeConfigure &&
+            {enableVlanRangeConfigure && !editMode &&
               <Tooltip
                 title={$t({
                   defaultMessage: `Type one or more VLAN IDs. Examples: {br}
@@ -350,7 +350,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
-            ...(enableVlanRangeConfigure ? [{
+            ...(enableVlanRangeConfigure && !editMode ? [{
               validator: (_: RuleObject, value: string) => {
                 const re = new RegExp(/^(\d+(-\d+)?)(,\s*\d+(-\d+)?)*$/)
                 if (!re.test(value)) {
@@ -393,7 +393,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
             <Input
               style={{ width: '400px' }}
               disabled={isRuckusAiMode}
-              placeholder={enableVlanRangeConfigure
+              placeholder={enableVlanRangeConfigure && !editMode
                 ? $t({ defaultMessage: 'ex: 11, 21, 31-40, 100' }) : ''
               }
             />}

@@ -6,24 +6,25 @@ import _                                            from 'lodash'
 import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
 import { ArrowExpand, ArrowChevronRight }                from '@acx-ui/icons-new'
 import {
-  Vlan,
-  SWITCH_DEFAULT_VLAN_NAME
+  defaultSort,
+  sortProp,
+  SWITCH_DEFAULT_VLAN_NAME,
+  SwitchVlans,
+  Vlan
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
-import * as UI                from './styledComponents'
-import { PortsModal }         from './VlanPortSetting/PortsModal'
-import { checkIfModuleFixed } from './VlanPortSetting/VlanPortSetting.utils'
-
-export interface Slot {
-  slotNumber: number
-  enable: boolean
-  option: string
-}
-
+import {
+  checkIfModuleFixed,
+  formatSlotConfigForSaving,
+  getModuleKey,
+  Slot
+} from './index.utils'
+import { PortsModal } from './PortsModal'
+import * as UI        from './styledComponents'
 export interface PortSetting {
   id?: string
   port: string
@@ -45,6 +46,15 @@ export interface GroupedVlanPort {
   id: string ////
   familymodel: string
   groupbyModules: VlanPort[]
+}
+
+interface VlanMap {
+  [vlan: string]: {
+    model: string
+    slots: Slot[]
+    taggedPorts: string
+    untaggedPorts: string
+  };
 }
 
 export function VlanPortSetting () {
@@ -79,24 +89,11 @@ export function VlanPortSetting () {
 
           const moduleFixed = checkIfModuleFixed(family, model)
           const isDefaultModule = moduleFixed?.moduleSelectionEnable === false
-
-          const enableModuleInfo = switchModel.slots
-            .filter(slot => slot.slotNumber !== 1)
-            .map(slot => {
-              return `Module ${slot.slotNumber}: ${slot.option}`
-            }).sort()
-
-          const moduleCategory = isDefaultModule ? ['Module: Default'] : enableModuleInfo
-          const moduleCategorykey = moduleCategory?.length ?
-            `${switchModel.model}_${moduleCategory.toString()}` : `${switchModel.model}_--`
-
-          // console.log('existingModel: ', existingModel)
-          // console.log(family, model, switchModel.slots)
-          // console.log('moduleInfo: ', enableModuleInfo)
+          const modulekey = getModuleKey(family, model, switchModel.slots)
 
           if (existingModel) {
             const existingModules
-              = existingModel.groupbyModules.find(module => module.key === moduleCategorykey)
+              = existingModel.groupbyModules.find(module => module.key === modulekey)
 
             if (existingModules) {
               ports.forEach((port) => {
@@ -123,7 +120,7 @@ export function VlanPortSetting () {
               })
             } else {
               existingModel.groupbyModules.push({
-                key: moduleCategorykey,
+                key: modulekey,
                 familymodel: switchModel.model,
                 isDefaultModule,
                 slots: switchModel.slots as Slot[],
@@ -141,7 +138,7 @@ export function VlanPortSetting () {
               familymodel: switchModel.model,
               groupbyModules: [
                 {
-                  key: moduleCategorykey,
+                  key: modulekey,
                   familymodel: switchModel.model,
                   isDefaultModule,
                   slots: switchModel.slots as Slot[],
@@ -169,12 +166,13 @@ export function VlanPortSetting () {
     }
   }, [currentData, editMode])
 
-  const vlansColumns: TableProps<GroupedVlanPort>['columns']= [{
+  const modelColumns: TableProps<GroupedVlanPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'familymodel',
     key: 'familymodel',
     width: 900,
     defaultSortOrder: 'ascend',
+    sorter: { compare: sortProp('familymodel', defaultSort) },
     render: (_, data: GroupedVlanPort) => {
       const isDefaultModule = data?.groupbyModules.filter(module => module.isDefaultModule)?.length
       return <Space size={16}>
@@ -191,36 +189,15 @@ export function VlanPortSetting () {
         }
       </Space>
     }
-    // render: (_, { familymodel,  }) => { // slots, ports
-    //   const [family, model] = familymodel?.split('-') ?? []
-    //   const moduleInfo = checkIfModuleFixed(family, model)
-    //   const moduleString = moduleInfo?.moduleSelectionEnable ? ( ///TODO:check
-    //     moduleInfo?.enableSlot3
-    //       ? moduleInfo.selectedOptionOfSlot3
-    //       : (moduleInfo?.enableSlot2 ? moduleInfo.selectedOptionOfSlot2 : '')
-    //   ) : ''
-
-    //   return <Space size={20}>
-    //     <span style={{ fontWeight: 'bold' }}>{ `Model: ${familymodel}`}</span>
-    //     {/* {moduleString && ` Module ${slots.length}: ${moduleString}`} */}
-    //   </Space>
-    // }
-  // }, {
-  //   title: $t({ defaultMessage: 'Untagged VLANs' }),
-  //   dataIndex: 'untaggedVlan',
-  //   key: 'untaggedVlan'
-  // }, {
-  //   title: $t({ defaultMessage: 'Tagged VLANs' }),
-  //   dataIndex: 'taggedVlan',
-  //   key: 'taggedVlan'
   }]
 
-  const vlansColumns2: TableProps<VlanPort>['columns']= [{
+  const moduleColumns: TableProps<VlanPort>['columns']= [{
     title: $t({ defaultMessage: 'Module' }),
     dataIndex: 'key',
     key: 'key',
     width: 800,
     defaultSortOrder: 'ascend',
+    sorter: { compare: sortProp('key', defaultSort) },
     render: (_, data: VlanPort) => {
       const module2 = data.slots.find(s => s.slotNumber === 2)
       const module3 = data.slots.find(s => s.slotNumber === 3)
@@ -239,11 +216,12 @@ export function VlanPortSetting () {
     }
   }]
 
-  const vlansColumns3: TableProps<PortSetting>['columns']= [{
+  const portColumns: TableProps<PortSetting>['columns']= [{
     title: $t({ defaultMessage: 'Port' }),
     dataIndex: 'port',
     key: 'port',
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    sorter: { compare: sortProp('port', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Untagged VLANs' }),
     dataIndex: 'untaggedVlan',
@@ -342,23 +320,11 @@ export function VlanPortSetting () {
         { vlanPortList?.length
           ? <UI.TableWrapper>
             <Table
-              columns={vlansColumns}
+              columns={modelColumns}
               style={{ minWidth: '900px' }}
               className='wrapper-table'
               enableResizableColumn={false}
-              dataSource={_.sortBy(vlanPortList.map(model => { //TODO
-                return {
-                  ...model,
-                  groupbyModules: _.sortBy([
-                    ...model.groupbyModules.map(module => {
-                      return {
-                        ...module,
-                        ports: _.sortBy(module.ports, ['id'])
-                      }
-                    })
-                  ], ['key'])
-                }
-              }), ['id'])}
+              dataSource={vlanPortList}
               expandable={{
                 defaultExpandedRowKeys: vlanPortList?.map(vlanPort => vlanPort.id),
                 // defaultExpandAllRows: true,
@@ -374,7 +340,7 @@ export function VlanPortSetting () {
                     enableResizableColumn={false}
                     tableAlertRender={false}
                     type={'tall'}
-                    columns={vlansColumns2}
+                    columns={moduleColumns}
                     showHeader={false}
                     stickyHeaders={false}
                     pagination={{
@@ -419,7 +385,7 @@ export function VlanPortSetting () {
                           className='ports-table'
                           enableResizableColumn={false}
                           tableAlertRender={false}
-                          columns={vlansColumns3}
+                          columns={portColumns}
                           // showHeader={false}
                           stickyHeaders={false}
                           pagination={{
@@ -473,7 +439,7 @@ export function VlanPortSetting () {
             />
           </UI.TableWrapper>
           : <Table
-            columns={vlansColumns3}
+            columns={portColumns}
             style={{ minWidth: '900px' }}
             dataSource={[]}
             rowKey='id'
@@ -516,48 +482,40 @@ export function VlanPortSetting () {
             const existingModel
               = filteredVlanPortList.find(list => list.familymodel === familymodel)
 
-            const moduleFixed = checkIfModuleFixed(values.family, values.model) //TODO
+            const moduleFixed = checkIfModuleFixed(values.family, values.model)
             const isDefaultModule = moduleFixed?.moduleSelectionEnable === false
-            const enableModuleInfo = values.slots
-              ?.filter(slot => slot.slotNumber !== 1)
-              .map(slot => {
-                return `Module ${slot.slotNumber}: ${slot.option}`
-              }).sort()
-
-            const moduleCategory = isDefaultModule ? ['Module: Default'] : enableModuleInfo
-            const moduleCategorykey = moduleCategory?.length ?
-              `${familymodel}_${moduleCategory.toString()}` : `${familymodel}_--`
+            const modulekey = getModuleKey(values.family, values.model, values.slots)
 
             if (existingModel) {
-              const existingModules
-              = existingModel.groupbyModules.find(module => module.key === moduleCategorykey)
+              const existingModules = existingModel.groupbyModules.find(
+                module => module.key === modulekey
+              )
               if (existingModules) {
-                // TODO
-                // existingModules.ports.forEach((port) => {
-                //   let existingPort = existingModules.ports?.find((p) => p.port === port)
-                //   if (existingPort) {
-                //     if (untagged.includes(port)) {
-                //       existingPort.untaggedVlan.push(item.vlanId?.toString())
-                //       existingPort.untaggedVlan
-                //         = Array.from(new Set(existingPort.untaggedVlan)).sort()
-                //     }
-                //     if (tagged.includes(port)) {
-                //       existingPort.taggedVlans.push(item.vlanId?.toString())
-                //       existingPort.taggedVlans
-                //         = Array.from(new Set(existingPort.taggedVlans)).sort()
-                //     }
-                //   } else {
-                //     existingModules.ports?.push({
-                //       id: `${switchModel.model}-${port}`,
-                //       port,
-                //       untaggedVlan: untagged.includes(port) ? [item.vlanId?.toString()] : [],
-                //       taggedVlans: tagged.includes(port) ? [item.vlanId?.toString()] : []
-                //     })
-                //   }
-                // })
+                existingModules.ports = values.portSettings?.reduce((result, port) => {
+                  const existingPort = existingModules.ports.find(p => p.port === port.port)
+                  if (existingPort) {
+                    return [
+                      ...result.filter(p => p.port !== port.port),
+                      {
+                        ...existingPort,
+                        untaggedVlan: existingPort?.untaggedVlan.concat(port.untaggedVlan),
+                        taggedVlans: existingPort?.taggedVlans.concat(port.taggedVlans)
+                      }
+                    ]
+                  }
+                  return [
+                    ...result,
+                    {
+                      id: `${familymodel}-${port?.port}`,
+                      port: port?.port,
+                      untaggedVlan: port?.untaggedVlan,
+                      taggedVlans: port?.taggedVlans
+                    }
+                  ]
+                }, existingModules.ports)
               } else {
                 existingModel.groupbyModules.push({
-                  key: moduleCategorykey,
+                  key: modulekey,
                   familymodel: familymodel,
                   isDefaultModule,
                   slots: values.slots as Slot[],
@@ -569,13 +527,12 @@ export function VlanPortSetting () {
                   }))
                 })
               }
-
             } else {
               filteredVlanPortList.push({
                 id: familymodel,
                 familymodel: familymodel,
                 groupbyModules: [{
-                  key: moduleCategorykey,
+                  key: modulekey,
                   familymodel: familymodel,
                   isDefaultModule,
                   slots: values.slots as Slot[],
@@ -596,60 +553,188 @@ export function VlanPortSetting () {
             setVlanPortList(filteredVlanPortList) ////TODO: update vlan list - switchFamilyModels
 
             const vlans = form.getFieldValue('vlans') || []
-            console.log(vlans)
+            console.log('vlans: ', vlans)
 
             /////
-            const vlanMap: Record<number, Record<string, {
-              slots: Slot[]; taggedPorts: Set<string>; untaggedPorts: Set<string>
-            }>> = {}
 
-            filteredVlanPortList.forEach(switchData => {
-              switchData.groupbyModules.forEach(module => {
-                module.ports?.forEach(port => {
-                  port.untaggedVlan.forEach(vid => {
-                    const vlanId = Number(vid)
-                    if (!vlanMap[vlanId]) {
-                      vlanMap[vlanId] = {}
-                    }
-                    // if (!vlanMap[vlanId][switchData.familymodel].slots) {
-                    //   vlanMap[vlanId] = {};
-                    // }
-                    if (!vlanMap[vlanId][switchData.familymodel]) {
-                      vlanMap[vlanId][switchData.familymodel] = {
-                        slots: module.slots, taggedPorts: new Set(), untaggedPorts: new Set()
-                      }
-                    }
-                    vlanMap[vlanId][switchData.familymodel].untaggedPorts.add(port.port)
-                  })
-                  port.taggedVlans.forEach(vid => {
-                    const vlanId = Number(vid)
-                    if (!vlanMap[vlanId]) {
-                      vlanMap[vlanId] = {}
-                    }
-                    if (!vlanMap[vlanId][switchData.familymodel]) {
-                      vlanMap[vlanId][switchData.familymodel] = {
-                        slots: module.slots, taggedPorts: new Set(), untaggedPorts: new Set()
-                      }
-                    }
-                    vlanMap[vlanId][switchData.familymodel].taggedPorts.add(port.port)
-                  })
-                })
+
+            console.log('selectedRow: ', selectedRow)
+            console.log('current: ', values)
+
+            const orinVlanMap = selectedRow?.ports?.reduce<VlanMap>((result, row) => {
+              row.taggedVlans.concat(row.untaggedVlan).forEach((vlan: string) => {
+                if (!result[vlan]) {
+                  result[vlan] = {
+                    model: selectedRow.familymodel as string,
+                    slots: selectedRow.slots,
+                    taggedPorts: row.taggedVlans.includes(vlan) ? row.port : '',
+                    untaggedPorts: row.untaggedVlan.includes(vlan) ? row.port : ''
+                  }
+                } else {
+                  result[vlan].taggedPorts = row.taggedVlans.includes(vlan)
+                    ? `${result[vlan].taggedPorts},${row.port}`.replace(/^,/, '')
+                    : result[vlan].taggedPorts
+
+                  result[vlan].untaggedPorts = row.untaggedVlan.includes(vlan)
+                    ? `${result[vlan].untaggedPorts},${row.port}`.replace(/^,/, '')
+                    : result[vlan].untaggedPorts
+                }
               })
+              return result
+            }, {}) ?? {}
+
+            const newVlanMap = values.portSettings.reduce<VlanMap>((result, row) => {
+              row.taggedVlans.concat(row.untaggedVlan).forEach((vlan: string) => {
+                if (!result[vlan]) {
+                  result[vlan] = {
+                    model: `${values.family}-${values.model}`,
+                    slots: values.slots,
+                    taggedPorts: row.taggedVlans.includes(vlan) ? row.port : '',
+                    untaggedPorts: row.untaggedVlan.includes(vlan) ? row.port : ''
+                  }
+                } else {
+                  result[vlan].taggedPorts = row.taggedVlans.includes(vlan)
+                    ? `${result[vlan].taggedPorts},${row.port}`.replace(/^,/, '')
+                    : result[vlan].taggedPorts
+
+                  result[vlan].untaggedPorts = row.untaggedVlan.includes(vlan)
+                    ? `${result[vlan].untaggedPorts},${row.port}`.replace(/^,/, '')
+                    : result[vlan].untaggedPorts
+                }
+              })
+              return result
+            }, {})
+
+            console.log('orinVlanMap: ', orinVlanMap)
+            console.log('newVlanMap: ', newVlanMap)
+
+            const updatedVlans = vlans.map((vlan: SwitchVlans) => {
+              const selectedVlan = orinVlanMap[vlan.vlanId]
+              const selectedVlanSlots = formatSlotConfigForSaving(selectedVlan?.slots)
+              // orinVlanMap[vlan.vlanId]?.slots.map(slot => {
+              //   return {
+              //     slotNumber: slot.slotNumber,
+              //     enable: slot.enable,
+              //     ...( slot.slotNumber !== 1 ? { option: slot.option } : {})
+              //   }
+              // })
+              const existingModule = vlan.switchFamilyModels?.find(
+                v => _.isEqual(_.sortBy(v.slots, 'slotNumber'), selectedVlanSlots)
+              )
+              return {
+                ...vlan,
+                ...(existingModule ? {
+                  switchFamilyModels: vlan.switchFamilyModels.map(model => {
+                    if (model.id === existingModule.id) {
+                      // eslint-disable-next-line max-len
+                      const updatedTagged = _.difference(model.taggedPorts?.split(','), selectedVlan.taggedPorts?.split(',')).toString()
+                      // eslint-disable-next-line max-len
+                      const updatedUntagged = _.difference(model.untaggedPorts?.split(','), selectedVlan.untaggedPorts?.split(',')).toString()
+                      if (!updatedTagged && !updatedTagged) {
+                        return null
+                      }
+                      return {
+                        ...model,
+                        taggedPorts: updatedUntagged,
+                        untaggedPorts: updatedUntagged
+                      }
+                    }
+                    return model
+                  }).filter(model => model)
+                } : {})
+              }
+            }).map((vlan: SwitchVlans) => {
+              const updatedVlan = newVlanMap[vlan.vlanId]
+              const updatedVlanSlots = formatSlotConfigForSaving(updatedVlan?.slots)
+              const existingModule = vlan.switchFamilyModels?.find(
+                v => _.isEqual(_.sortBy(v.slots, 'slotNumber'), updatedVlanSlots)
+              )
+              return {
+                ...( updatedVlan ? _.omit(vlan, 'id') : vlan),
+                ...(existingModule ? {
+                  switchFamilyModels: vlan.switchFamilyModels.map(model => {
+                    if (model.id === existingModule.id) {
+                      // eslint-disable-next-line max-len
+                      const updatedTagged = model.taggedPorts?.split(',').concat(updatedVlan.taggedPorts?.split(',')).toString()
+                      // eslint-disable-next-line max-len
+                      const updatedUntagged = model.untaggedPorts?.split(',').concat(updatedVlan.untaggedPorts?.split(',')).toString()
+                      if (!updatedTagged && !updatedTagged) {
+                        return null
+                      }
+                      return {
+                        ...model,
+                        taggedPorts: updatedUntagged,
+                        untaggedPorts: updatedUntagged
+                      }
+                    }
+                    return model
+                  }).filter(model => model)
+                } : ( updatedVlan ? {
+                  switchFamilyModels: (vlan.switchFamilyModels ?? []).concat({
+                    id: '',
+                    model: `${values.family}-${values.model}`,
+                    slots: updatedVlanSlots,
+                    taggedPorts: updatedVlan?.taggedPorts.toString(),
+                    untaggedPorts: updatedVlan?.untaggedPorts.toString()
+                  })
+                } : {}))
+              }
             })
 
-            // TODO
-            console.log(
-              Object.entries(vlanMap).map(([vlanId, models]) => ({
-                vlanId: Number(vlanId),
-                switchFamilyModels: Object.entries(models).map(([model, details]) => ({
-                  model,
-                  slots: details.slots,
-                  taggedPorts: Array.from(details.taggedPorts).join(','),
-                  untaggedPorts: Array.from(details.untaggedPorts).join(',')
-                }))
-              }))
-            )
+            console.log('** filteredVlans: ', updatedVlans)
+
+            // const vlanMap: Record<number, Record<string, {
+            //   slots: Slot[]; taggedPorts: Set<string>; untaggedPorts: Set<string>
+            // }>> = {}
+
+            // filteredVlanPortList.forEach(switchData => {
+            //   switchData.groupbyModules.forEach(module => {
+            //     module.ports?.forEach(port => {
+            //       port.untaggedVlan.forEach(vid => {
+            //         const vlanId = Number(vid)
+            //         if (!vlanMap[vlanId]) {
+            //           vlanMap[vlanId] = {}
+            //         }
+            //         // if (!vlanMap[vlanId][switchData.familymodel].slots) {
+            //         //   vlanMap[vlanId] = {};
+            //         // }
+            //         if (!vlanMap[vlanId][switchData.familymodel]) {
+            //           vlanMap[vlanId][switchData.familymodel] = {
+            //             slots: module.slots, taggedPorts: new Set(), untaggedPorts: new Set()
+            //           }
+            //         }
+            //         vlanMap[vlanId][switchData.familymodel].untaggedPorts.add(port.port)
+            //       })
+            //       port.taggedVlans.forEach(vid => {
+            //         const vlanId = Number(vid)
+            //         if (!vlanMap[vlanId]) {
+            //           vlanMap[vlanId] = {}
+            //         }
+            //         if (!vlanMap[vlanId][switchData.familymodel]) {
+            //           vlanMap[vlanId][switchData.familymodel] = {
+            //             slots: module.slots, taggedPorts: new Set(), untaggedPorts: new Set()
+            //           }
+            //         }
+            //         vlanMap[vlanId][switchData.familymodel].taggedPorts.add(port.port)
+            //       })
+            //     })
+            //   })
+            // })
+
+            // // TODO
+            // console.log('****** ',
+            //   Object.entries(vlanMap).map(([vlanId, models]) => ({
+            //     vlanId: Number(vlanId),
+            //     switchFamilyModels: Object.entries(models).map(([model, details]) => ({
+            //       model,
+            //       slots: details.slots,
+            //       taggedPorts: Array.from(details.taggedPorts).join(','),
+            //       untaggedPorts: Array.from(details.untaggedPorts).join(',')
+            //     }))
+            //   }))
+            // )
             ////
+            form.setFieldValue('vlans', updatedVlans)
 
             setSelectedModuleKeys([])
             setSelectedModelKeys([])

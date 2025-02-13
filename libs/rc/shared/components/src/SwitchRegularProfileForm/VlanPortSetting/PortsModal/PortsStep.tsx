@@ -17,7 +17,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import {
-  SwitchSlot2 as SwitchSlot,
+  // SwitchSlot2 as SwitchSlot,
   getSwitchPortLabel,
   PortStatusMessages,
   // SwitchModelPortData,
@@ -28,17 +28,17 @@ import { getIntl } from '@acx-ui/utils'
 
 // import { getTooltipTemplate } from '../'
 import { GroupedVlanPort, PortSetting, VlanPort } from '..'
+import { getModuleKey }                           from '../index.utils'
 
-import * as UI            from './styledComponents'
 import {
-  checkIfModuleFixed,
   getPortsModule,
   getUnit,
   // getUnitTitle,
   getModule,
   PortsType,
   selectedGroupByPrefix
-} from './VlanPortSetting.utils'
+} from './PortsModal.utils'
+import * as UI from './styledComponents'
 
 type PortSettings = Record<string, { untaggedVlan: string[], taggedVlans: string[] }>
 
@@ -84,13 +84,13 @@ export function PortsStep (props:{
   ]
 
   const getModelPortList = (
-    moduleCategorykey: string,
+    modulekey: string,
     data?: GroupedVlanPort, isFiltered: boolean = false
   ) => {
     return data?.groupbyModules
       .filter(module => {
         return !isFiltered || (
-          editRecord ? module.key === editRecord?.key : module.key === moduleCategorykey
+          editRecord ? module.key === editRecord?.key : module.key === modulekey
         )
       }).reduce((result, module) => {
         return {
@@ -175,19 +175,9 @@ export function PortsStep (props:{
       value: item.vlanId.toString()
     })).sort((a, b) => Number(a.value) - Number(b.value))
 
-    const moduleFixed = checkIfModuleFixed(family, model) ////
-    const isDefaultModule = moduleFixed?.moduleSelectionEnable === false
-    const enableModuleInfo = (slots as SwitchSlot[]).filter(slot => slot.slotNumber !== 1)
-      .map(slot => {
-        return `Module ${slot.slotNumber}: ${slot.option}`
-      }).sort()
-
-    const moduleCategory = isDefaultModule ? ['Module: Default'] : enableModuleInfo ///TODO
-    const moduleCategorykey = moduleCategory?.length ?
-      `${family}-${model}_${moduleCategory.toString()}` : `${family}-${model}_--`
-
-    const currentModelPortList = getModelPortList(moduleCategorykey, modelPorts)
-    const filteredModelPortList = getModelPortList(moduleCategorykey, modelPorts, true)
+    const modulekey = getModuleKey(family, model, slots)
+    const currentModelPortList = getModelPortList(modulekey, modelPorts)
+    const filteredModelPortList = getModelPortList(modulekey, modelPorts, true)
 
     setFamily(family)
     setModel(model)
@@ -502,10 +492,6 @@ export function PortsStep (props:{
             {
               moduleOptions.map((module, i) => {
                 const index = i+1
-                // const moduleInfo = slots.find(
-                //   (slot: { slotNumber: number }) => slot.slotNumber === index
-                // )?.slotPortInfo?.split('X').join(' X ')
-
                 return module && <Col>
                   <Row gutter={20}>
                     <Col>

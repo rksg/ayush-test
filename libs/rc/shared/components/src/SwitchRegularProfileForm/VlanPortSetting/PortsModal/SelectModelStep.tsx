@@ -11,26 +11,13 @@ import { ICX_MODELS_MODULES, SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
 import { PortSetting, VlanPort } from '..'
+import { checkIfModuleFixed }    from '../index.utils'
 
-import * as UI from './styledComponents'
-// import VlanPortsContext from './VlanPortsContext'
 import {
   getSlots,
-  getModelModules,
-  checkIfModuleFixed as checkIfModuleFixedTemp
-} from './VlanPortSetting.utils'
-// import { set } from 'lodash'
-
-// export interface ModelsType {
-//   label: string
-//   value: string
-// }
-
-// export interface PortsType {
-//   slotNumber: number,
-//   portNumber: number
-//   portTagged: string
-// }
+  getModelModules
+} from './PortsModal.utils'
+import * as UI from './styledComponents'
 
 export function SelectModelStep (props: {
   editMode: boolean
@@ -406,7 +393,7 @@ export function SelectModelStep (props: {
       enableSlot3
       // selectedOptionOfSlot2,
       // selectedOptionOfSlot3
-    } = checkIfModuleFixedTemp(family, model)
+    } = checkIfModuleFixed(family, model)
 
     if (moduleSelectionEnable !== undefined) {
       setModuleSelectionEnable(moduleSelectionEnable)
