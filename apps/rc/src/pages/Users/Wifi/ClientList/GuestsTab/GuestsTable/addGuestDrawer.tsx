@@ -11,7 +11,8 @@ import {
   Radio,
   Row,
   Select,
-  RadioChangeEvent
+  RadioChangeEvent,
+  Tooltip
 } from 'antd'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
@@ -22,6 +23,7 @@ import { useParams }                                  from 'react-router-dom'
 import { Button, Drawer, cssStr, showActionModal, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { SNRSolid }                                               from '@acx-ui/icons'
 import { PhoneInput }                                             from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
@@ -404,11 +406,31 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
       rules={[
         { required: true }
       ]}
-      children={<Select
-        options={allowedNetworkList?.map(p => ({ label: p.name, value: p.id }))}
-        disabled={allowedNetworkList?.length === 1}
-      />}
-    />
+    >
+      <Select>
+        {allowedNetworkList?.map((network, index, list) => {
+          return (
+            <Select.Option
+              value={network.id}
+              label={network.name}
+              key={network.id}
+              disabled={list.length === 1}
+            >
+              {network.name}
+              {
+                (isCaptivePortalOWETransitionEnabled) &&
+                (network?.securityProtocol === WlanSecurityEnum.OWETransition) &&
+                (network?.isOweMaster) &&
+                (<Tooltip title='A network with OWE transition mode will also be allowed as long as its parent OWE network is selected'>
+                  <SNRSolid style={{ verticalAlign: 'bottom' }}/>
+                </Tooltip>)
+              }
+            </Select.Option>
+
+          )
+        })}
+      </Select>
+    </Form.Item>
 
     <Row>
       <Col span={12}>
