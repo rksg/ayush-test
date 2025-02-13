@@ -277,7 +277,8 @@ export function VenuesForm (props: VenuesFormProps) {
     if (isEdit && !address.country) {
       return Promise.reject(
         intl.$t(
-          { defaultMessage: '<VenueSingular></VenueSingular> address is invalid' }
+          { defaultMessage:
+            'Please select <VenueSingular></VenueSingular> address from suggested list' }
         )
       )
     }
