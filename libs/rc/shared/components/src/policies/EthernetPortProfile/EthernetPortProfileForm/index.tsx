@@ -23,14 +23,16 @@ import {
   getEthernetPortTypeOptions,
   getEthernetPortAuthTypeOptions,
   getEthernetPortCredentialTypeOptions,
-  EthernetPortType
+  EthernetPortType,
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { EthernetPortAAASettings } from '../AAASettings/EthernetPortAAASettings'
 
 interface EthernetPortProfileFormProps {
-  title: string
   submitButtonLabel: string
   onFinish: (values: EthernetPortProfileFormType) => void
   form: FormInstance
@@ -41,7 +43,6 @@ interface EthernetPortProfileFormProps {
 
 export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
   const {
-    title,
     submitButtonLabel,
     onFinish,
     form: formRef,
@@ -50,14 +51,33 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     isEmbedded = false
   } = props
   const { $t } = useIntl()
-  const portType = Form.useWatch('type', formRef)
-  const untagId = Form.useWatch('untagId', formRef)
-  const authTypeRole = Form.useWatch('authTypeRole', formRef)
-  const supplicantType = Form.useWatch(['supplicantAuthenticationOptions', 'type'], formRef)
-  const dynamicVlanEnabled = Form.useWatch('dynamicVlanEnabled', formRef)
-  const authEnabled = Form.useWatch('authEnabled', formRef)
+  const { isTemplate } = useConfigTemplate()
+
+  const { useWatch } = Form
+  const portType = useWatch('type', formRef)
+  const untagId = useWatch('untagId', formRef)
+  const authTypeRole = useWatch('authTypeRole', formRef)
+  const supplicantType = useWatch(['supplicantAuthenticationOptions', 'type'], formRef)
+  const dynamicVlanEnabled = useWatch('dynamicVlanEnabled', formRef)
+  const authEnabled = useWatch('authEnabled', formRef)
+
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+
+  const wifiBreadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
+  const switchBreadcrumb = [
+    { text: $t({ defaultMessage: 'Network Control' }) },
+    {
+      text: $t({ defaultMessage: 'Policies & Profiles' }),
+      link: getPolicyListRoutePath(true)
+    },
+    {
+      text: $t({ defaultMessage: 'Ethernet Port Profile' }),
+      link: '/policies/portProfile/wifi'
+    }
+  ]
+  const breadcrumb = (isSwitchPortProfileEnabled && !isTemplate)? switchBreadcrumb : wifiBreadcrumb
+  const pageTitle = usePolicyPageHeaderTitle(isEditMode, PolicyType.ETHERNET_PORT_PROFILE)
 
   const tablePath = getPolicyRoutePath({
     type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -175,18 +195,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     <>
       {!isEmbedded &&
       <PageHeader
-        title={title}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Ethernet Port Profile' }),
-            link: isSwitchPortProfileEnabled ? '/policies/portProfile/wifi' : tablePath
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
       }
       <StepsForm

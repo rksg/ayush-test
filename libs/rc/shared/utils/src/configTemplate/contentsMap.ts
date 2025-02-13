@@ -14,7 +14,8 @@ export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, Pol
   [ConfigTemplateType.DEVICE_POLICY]: PolicyType.DEVICE_POLICY,
   [ConfigTemplateType.APPLICATION_POLICY]: PolicyType.APPLICATION_POLICY,
   [ConfigTemplateType.SYSLOG]: PolicyType.SYSLOG,
-  [ConfigTemplateType.ROGUE_AP_DETECTION]: PolicyType.ROGUE_AP_DETECTION
+  [ConfigTemplateType.ROGUE_AP_DETECTION]: PolicyType.ROGUE_AP_DETECTION,
+  [ConfigTemplateType.ETHERNET_PORT_PROFILE]: PolicyType.ETHERNET_PORT_PROFILE
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {

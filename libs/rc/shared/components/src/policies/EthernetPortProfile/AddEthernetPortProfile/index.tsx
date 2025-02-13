@@ -54,7 +54,6 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
     <Row>
       <Col span={12}>
         <EthernetPortProfileForm
-          title={$t({ defaultMessage: 'Add Ethernet Port Profile' })}
           submitButtonLabel={$t({ defaultMessage: 'Add' })}
           onFinish={handleAddEthernetPortProfile}
           form={form}

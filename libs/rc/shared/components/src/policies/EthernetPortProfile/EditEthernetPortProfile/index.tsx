@@ -113,7 +113,6 @@ export const EditEthernetPortProfile = () => {
   return (
     <Loader states={[{ isLoading }]}>
       <EthernetPortProfileForm
-        title={$t({ defaultMessage: 'Edit Ethernet Port Profile' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handleEditEthernetPortProfile}
         form={form}
