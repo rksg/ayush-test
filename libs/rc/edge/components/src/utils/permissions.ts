@@ -53,7 +53,7 @@ export const EdgePermissions = {
   ],
   editEdgeClusterNetworkControl: [
     getOpsApi(EdgeDhcpUrls.activateDhcpService),
-    getOpsApi(EdgeDhcpUrls.DeactivateDhcpService),
+    getOpsApi(EdgeDhcpUrls.deactivateDhcpService),
     getOpsApi(EdgeHqosProfilesUrls.activateEdgeCluster),
     getOpsApi(EdgeHqosProfilesUrls.deactivateEdgeCluster),
     getOpsApi(EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster),
