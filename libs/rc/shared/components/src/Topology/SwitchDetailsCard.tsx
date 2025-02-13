@@ -3,7 +3,8 @@ import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
-import { Card, Descriptions, Loader }                                               from '@acx-ui/components'
+import { Card, Descriptions, getDefaultEarliestStart, Loader }                      from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                              from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus }             from '@acx-ui/rc/utils'
@@ -24,7 +25,8 @@ export function SwitchDetailsCard (props: {
   const { switchDetail, isLoading, onClose } = props
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
-  const { dateFilter } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const location = useLocation()
 
   const filters = {

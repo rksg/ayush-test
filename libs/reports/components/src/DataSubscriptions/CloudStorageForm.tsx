@@ -110,12 +110,16 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
     updateStorage(data)
       .unwrap()
       .then(() => {
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'Storage saved successfully!' })
+        })
         navigate(-1)
       })
       .catch(({ data: { error } }) => {
         showToast({ type: 'error', content: error })
       })
-  }, [form, editMode, storage.data?.id, navigate, updateStorage])
+  }, [form, editMode, storage.data?.id, navigate, updateStorage, $t])
   const initialValues =
     editMode ? selectedCloudStorage : { connectionType: 'azure' }
   return <>
