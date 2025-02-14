@@ -57,6 +57,7 @@ const defaultPayload: {
     'switchMacAddress',
     'apModel',
     'minimumRequiredVersion',
+    'clearTime',
     'clearedBy'
   ]
 }
@@ -190,7 +191,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Alarm' }),
       key: 'message',
       dataIndex: 'message',
-      width: 290,
+      width: 270,
       render: function (_, row) {
         return (<UI.ListItem>
           <UI.Meta
@@ -214,7 +215,19 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
           <UI.Meta title={formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startTime)} />
         </UI.ListItem>)
       }
-    }, {
+    },
+    ...(newAlarmType ? [] : [{
+      title: $t({ defaultMessage: 'Cleared on' }),
+      key: 'clearTime',
+      dataIndex: 'clearTime',
+      width: 140,
+      render: function (_: React.ReactNode, row: Alarm) {
+        return (<UI.ListItem>
+          <UI.Meta title={formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.clearTime)} />
+        </UI.ListItem>)
+      }
+    }]),
+    {
       title: $t({ defaultMessage: 'Device Type' }),
       key: 'entityType',
       dataIndex: 'entityType',

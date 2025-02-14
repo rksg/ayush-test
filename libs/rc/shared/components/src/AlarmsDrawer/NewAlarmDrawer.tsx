@@ -84,7 +84,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
   </>
 
   return <Drawer
-    width={765}
+    width={845}
     title={$t({ defaultMessage: 'Alarms' })}
     visible={visible}
     destroyOnClose={true}
