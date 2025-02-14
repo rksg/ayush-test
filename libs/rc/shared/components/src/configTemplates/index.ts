@@ -2,6 +2,9 @@ import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/
 import { ConfigTemplateType }                                     from '@acx-ui/rc/utils'
 
 export * from './ConfigTemplateLink'
+export * from './utils'
+export { ProtectedEnforceTemplateToggle } from './EnforceTemplateToggle'
+export { EnforcedButton, useEnforcedStatus } from './EnforcedButton'
 
 export function useIsConfigTemplateBeta (): boolean {
   return useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE)

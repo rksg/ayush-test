@@ -7,10 +7,10 @@ import _                          from 'lodash'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
-import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
+import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip, getDefaultEarliestStart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                       from '@acx-ui/formatter'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                                                from '@acx-ui/rc/components'
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
@@ -22,6 +22,7 @@ import {
   getStackUnitsMinLimitation,
   getStackUnitsMinLimitationV1002,
   getSwitchModelGroup,
+  SwitchRbacUrlsInfo,
   SwitchRow,
   SwitchStatusEnum,
   SwitchViewModel
@@ -34,7 +35,7 @@ import {
 }                  from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { useDateFilter }                 from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }      from '@acx-ui/utils'
 
 import AddStackMember from './AddStackMember'
 import SwitchTabs     from './SwitchTabs'
@@ -68,6 +69,7 @@ function SwitchPageHeader () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
@@ -95,7 +97,8 @@ function SwitchPageHeader () {
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {
@@ -253,11 +256,16 @@ function SwitchPageHeader () {
     }, 3000)
   }
 
-  const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
-  const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
+  const hasUpdatePermission = hasPermission({
+    scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)] })
+  const hasDeletPermission = hasPermission({
+    scopes: [SwitchScopes.DELETE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitches)]
+  })
   const showAddMember = isStack && (maxMembers > 0) && hasUpdatePermission
   const showDivider = (hasUpdatePermission && (isSyncedSwitchConfig || isOperational))
-    && (showAddMember || hasDeletaPermission)
+    && (showAddMember || hasDeletPermission)
 
   const menu = (
     <Menu
@@ -293,7 +301,7 @@ function SwitchPageHeader () {
           label: $t({ defaultMessage: 'Add Member' })
         }] : []),
 
-        ...(hasDeletaPermission ? [{
+        ...(hasDeletPermission ? [{
           key: MoreActions.DELETE,
           label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
             {isStack ?
@@ -334,6 +342,10 @@ function SwitchPageHeader () {
           />,
           ...filterByAccess([
             <Dropdown overlay={menu}
+              rbacOpsIds={[
+                getOpsApi(SwitchRbacUrlsInfo.updateSwitch),
+                getOpsApi(SwitchRbacUrlsInfo.deleteSwitches)
+              ]}
               scopeKey={[SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
                 <Button>
                   <Space>
@@ -344,6 +356,7 @@ function SwitchPageHeader () {
               }</Dropdown>,
             <Button
               type='primary'
+              rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.updateSwitch)]}
               scopeKey={[SwitchScopes.UPDATE]}
               onClick={() =>
                 navigate({

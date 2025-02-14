@@ -27,11 +27,12 @@ import {
   EntitlementDeviceType,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { filterByAccess }           from '@acx-ui/user'
+import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponent'
 
@@ -270,6 +271,7 @@ export const RbacSubscriptionTable = () => {
   const actions: TableProps<Entitlement>['actions'] = [
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
@@ -277,6 +279,7 @@ export const RbacSubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: refreshFunc
     }
   ]

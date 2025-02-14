@@ -3255,6 +3255,7 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       status: PropertyUnitStatus.ENABLED,
       dpsks: [],
       personaId: 'persona-1',
+      identityCount: 2,
       vni: 0
     }, {
       id: 'unit-id-2',
@@ -3262,6 +3263,7 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       status: PropertyUnitStatus.ENABLED,
       dpsks: [],
       personaId: 'persona-2',
+      identityCount: 0,
       vni: 1
     }
   ]

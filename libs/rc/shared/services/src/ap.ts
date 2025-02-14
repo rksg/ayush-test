@@ -485,17 +485,20 @@ export const apApi = baseApApi.injectEndpoints({
         if(ap) {
           ap.serialNumber = params?.serialNumber ?? ''
           ap.venueId = params?.venueId ?? ''
-          const apGroupPayload = {
-            fields: ['id'],
+
+          // get AP group ID from the AP list data from the view model
+          const apListQueryPayload = {
+            fields: ['name', 'serialNumber', 'apGroupId'],
             pageSize: 1,
-            filters: { apSerialNumbers: [ap.serialNumber] }
+            filters: { id: [ap.serialNumber] }
           }
-          const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
-          const apGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(apGroupPayload) })
-          const apGroupList = apGroupListRes.data as TableResult<ApGroup>
-          const targetApGroup = apGroupList.data[0]
-          if(targetApGroup) {
-            ap.apGroupId = targetApGroup.id
+          const apListQuery = await fetchWithBQ({
+            ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
+            body: JSON.stringify(apListQueryPayload)
+          })
+          const aps = apListQuery.data as TableResult<NewAPModel>
+          if(aps?.data) {
+            ap.apGroupId = aps.data[0].apGroupId
           }
         }
         return { data: ap }
@@ -968,6 +971,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni'],
               pageSize: 1000
             })
           }

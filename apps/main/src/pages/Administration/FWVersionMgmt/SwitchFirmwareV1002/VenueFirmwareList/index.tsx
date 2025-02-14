@@ -36,16 +36,16 @@ import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
   compareSwitchVersion,
-  SwitchModelGroupDisplayText
+  SwitchModelGroupDisplayText,
+  FirmwareRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                               from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
-  hasPermission,
   hasRoles
 } from '@acx-ui/user'
-import { noDataDisplay } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 
@@ -298,6 +298,7 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<FirmwareSwitchVenueV1002>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(FirmwareRbacUrlsInfo.updateSwitchVenueSchedules)],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
@@ -309,6 +310,7 @@ export function VenueFirmwareList () {
   {
     label: $t({ defaultMessage: 'Change Update Schedule' }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(FirmwareRbacUrlsInfo.updateSwitchVenueSchedules)],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
@@ -320,6 +322,7 @@ export function VenueFirmwareList () {
   {
     label: $t({ defaultMessage: 'Skip Update' }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(FirmwareRbacUrlsInfo.skipSwitchUpgradeSchedules)],
     disabled: (selectedRows) => {
       let disabledUpdate = false
       selectedRows.forEach((row) => {
@@ -337,10 +340,6 @@ export function VenueFirmwareList () {
     }
   }]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE]
-  })
-
   const isPreferencesVisible
   = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
@@ -357,7 +356,7 @@ export function VenueFirmwareList () {
         enableApiFilter={true}
         rowKey='venueId'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox' }}
+        rowSelection={filterByAccess(rowActions).length > 0 && { type: 'checkbox' }}
         actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
