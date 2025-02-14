@@ -50,9 +50,6 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
   const binMins = binMinsMap[granularity] ?? 60 // 60 minutes as default when rollup happens
   const noOfBinsForBuffer = noOfBinsForBufferMap[granularity] ?? 6 // 6 bins as default for 60 minutes granularity when rollup happens
 
-  console.log('@@@@@@@@@@@@@@@@binMins', binMins)
-  console.log('@@@@@@@@@@@@@@@@noOfBinsForBuffer', noOfBinsForBuffer)
-
   const buffer = {
     front: { value: binMins * noOfBinsForBuffer, unit: 'minutes' as unitOfTime.Base },
     back: { value: binMins * noOfBinsForBuffer, unit: 'minutes' as unitOfTime.Base }

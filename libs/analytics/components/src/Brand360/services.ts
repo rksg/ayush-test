@@ -4,15 +4,6 @@ import { IncidentsToggleFilter, calculateGranularity, incidentsToggle }   from '
 import { dataApi }                                                        from '@acx-ui/store'
 import { generateDomainFilter, emptyFilter, FilterNameNode, NodesFilter } from '@acx-ui/utils'
 
-export const calcGranularityForBrand360 = (
-  start: string, end: string
-): string => calculateGranularity(start, end, undefined, [
-  { granularity: 'PT72H', hours: 24 * 30 }, // > 1 month
-  { granularity: 'PT24H', hours: 24 * 7 }, // 8 days to 30 days
-  { granularity: 'PT1H', hours: 8 }, // 8 hours to 7 days
-  { granularity: 'PT15M', hours: 0 } // less than 8 hours
-])
-
 const getDomainFilters = (tenantIds: string[]) => {
   if (tenantIds.length === 0) {
     return emptyFilter
@@ -80,7 +71,7 @@ const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilt
     start,
     end,
     ssidRegex,
-    granularity: granularity || calcGranularityForBrand360(start, end),
+    granularity: granularity || calculateGranularity(start, end),
     severity: { gt: 0.9, lte: 1 },
     code: incidentsToggle(payload),
     filter: getDomainFilters(tenantIds as string[])
