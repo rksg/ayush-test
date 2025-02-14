@@ -421,7 +421,7 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
                 (isCaptivePortalOWETransitionEnabled) &&
                 (network?.securityProtocol === WlanSecurityEnum.OWETransition) &&
                 (network?.isOweMaster) &&
-                (<Tooltip title='A network with OWE transition mode will also be allowed as long as its parent OWE network is selected'>
+                (<Tooltip title='This network supports OWE-transition mode.'>
                   <SNRSolid style={{ verticalAlign: 'bottom' }}/>
                 </Tooltip>)
               }
