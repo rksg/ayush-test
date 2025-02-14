@@ -19,7 +19,7 @@ exports[`useDateFilter sets period params when calling setDateFilter 1`] = `
 exports[`useDateFilter sets period params when calling setDateFilter 2`] = `
 <DocumentFragment>
   <div>
-    {"dateFilter":{"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours"},"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours"}
+    {"dateFilter":{"startDate":"2021-12-02T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 30 Days"},"startDate":"2021-12-02T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 30 Days"}
   </div>
 </DocumentFragment>
 `;

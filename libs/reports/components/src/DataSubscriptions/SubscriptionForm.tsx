@@ -11,11 +11,10 @@ import { generateBreadcrumb } from './utils'
 
 type DataSubscriptionsFormProps = {
   editMode?: boolean
-  isRAI?: boolean
 }
 
 
-const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, editMode=false }) => {
+const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   // To be fetched from api
@@ -45,7 +44,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
       title={editMode
         ? $t({ defaultMessage: 'Edit Subscription' })
         : $t({ defaultMessage: 'New Subscription' })}
-      breadcrumb={generateBreadcrumb({ isRAI })}
+      breadcrumb={generateBreadcrumb()}
     />
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>

@@ -17,7 +17,9 @@ import {
   getVlanPool,
   getVlanString,
   NetworkApGroup,
-  NetworkSaveData, VlanPool,
+  NetworkSaveData,
+  vlanContents,
+  VlanPool,
   VlanType
 } from '@acx-ui/rc/utils'
 
@@ -58,11 +60,22 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange, sel
 
   useEffect(() => {
     // onChange(selectedVlan)
-    const label = getVlanString(
-      selectedVlan.vlanType === VlanType.Pool ? selectedVlan.vlanPool : null,
-      selectedVlan.vlanId,
-      selectedVlan.vlanId !== 1
-    ).vlanText
+    const { vlanType, vlanPool, vlanId=1 } = selectedVlan
+    const isVlanPool = vlanType === VlanType.Pool
+    let label = ''
+    if (isVlanPool) {
+      const defaultValue = wlan?.advancedCustomization?.vlanPool?.id ?? ''
+      label = $t(vlanContents.vlanPool, {
+        poolName: vlanPool?.name,
+        isCustom: vlanPool && (vlanPool.id !== defaultValue)
+      })
+    } else {
+      const defaultValue = wlan?.vlanId ?? 1
+      label = $t(vlanContents.vlan, {
+        id: vlanId.toString(),
+        isCustom: vlanId && (vlanId !== defaultValue)
+      })
+    }
 
     setVlanLabel(label)
     setDirty(!_.isEqual(selectedVlan, initVlanData))

@@ -25,9 +25,9 @@ import {
   useLazyGetVenueQuery,
   useLazyGetAdaptivePolicySetQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }             from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }            from '@acx-ui/utils'
+import { PersonaGroup, PersonaUrls }                    from '@acx-ui/rc/utils'
+import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -38,16 +38,20 @@ function PersonaGroupDetailsPageHeader (props: {
   const { title, onClick } = props
 
   const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
-    && [
-      <Button type={'primary'} onClick={onClick} >
+    ? [
+      <Button
+        type={'primary'}
+        onClick={onClick}
+        rbacOpsIds={[getOpsApi(PersonaUrls.updatePersonaGroup)]}
+      >
         {$t({ defaultMessage: 'Configure' })}
       </Button>
-    ]
+    ] : []
 
   return (
     <PageHeader
       title={title}
-      extra={extra}
+      extra={filterByOperations(extra)}
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
