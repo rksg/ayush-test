@@ -7,66 +7,50 @@ import { useIntl }                 from 'react-intl'
 import {
   Table,
   TableProps,
-  Loader,
   Button,
   ProgressBarV2
 } from '@acx-ui/components'
-import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
 import {
-  EdgeNokiaOltData,
   EdgeNokiaOnuData,
   getOltPoeClassText
 } from '@acx-ui/rc/utils'
 
 interface EdgeNokiaOnuTableProps {
-  oltData: EdgeNokiaOltData | undefined
+  data: EdgeNokiaOnuData[] | undefined
   cageName: string | undefined
-  onClick: (onu: EdgeNokiaOnuData | undefined) => void
+  onClickRow: (onu: EdgeNokiaOnuData | undefined) => void
+  onClearSelection: () => void
 }
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
-  const { oltData, cageName } = props
+  const { data, cageName, onClickRow, onClearSelection } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-
-  const { data, isLoading, isFetching } = useGetEdgeOnuListQuery({
-    params: {
-      venueId: oltData?.venueId,
-      edgeClusterId: oltData?.edgeClusterId,
-      oltId: oltData?.serialNumber
-    },
-    payload: { cageId: cageName }
-  }, { skip: !oltData || !cageName })
 
   // eslint-disable-next-line max-len
   const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[], selectedRows: EdgeNokiaOnuData[]) => {
     setSelectedRowKeys(selectedRowKeys)
-    props.onClick(selectedRowKeys.length === 0 ? undefined : selectedRows[0])
+    onClickRow(selectedRowKeys.length === 0 ? undefined : selectedRows[0])
   }
 
   const clearSelection = () => {
     setSelectedRowKeys([])
-    props.onClick(undefined)
+    onClearSelection()
   }
 
   useEffect(() => {
     clearSelection()
   }, [cageName])
 
-  return <Loader
-    states={[{ isLoading, isFetching }]}
-    style={{ minHeight: '100px', backgroundColor: 'transparent' }}
-  >
-    <Table
-      rowKey='name'
-      columns={useColumns(props)}
-      dataSource={data}
-      rowSelection={{
-        type: 'radio',
-        onChange: handleRowSelectChange,
-        selectedRowKeys
-      }}
-    />
-  </Loader>
+  return <Table
+    rowKey='name'
+    columns={useColumns(props)}
+    dataSource={data}
+    rowSelection={{
+      type: 'radio',
+      onChange: handleRowSelectChange,
+      selectedRowKeys
+    }}
+  />
 }
 
 function useColumns (props: EdgeNokiaOnuTableProps) {
@@ -79,7 +63,7 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
       sorter: true,
       fixed: 'left',
       render: (_, row) =>
-        <Button type='link' onClick={() => props.onClick(row)}>
+        <Button type='link' onClick={() => props.onClickRow(row)}>
           {row.name}
         </Button>
     },
