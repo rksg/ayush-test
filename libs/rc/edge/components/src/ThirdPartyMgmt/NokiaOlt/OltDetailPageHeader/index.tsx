@@ -10,6 +10,7 @@ import {
   EdgeNokiaOltData,
   EdgeNokiaOltStatusEnum,
   getOltStatusConfig,
+  isOltOnline,
   isOltValidSerialNumber
 } from '@acx-ui/rc/utils'
 
@@ -27,6 +28,8 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
 
+  const isOnline = isOltOnline(currentOlt)
+
   const {
     upCages,
     totalCages,
@@ -39,6 +42,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
       oltId: currentOlt.serialNumber
     }
   }, {
+    skip: !isOnline,
     selectFromResult: ({ data, isLoading, isFetching }) => ({
       upCages: data?.filter(item => item.state === EdgeNokiaCageStateEnum.UP).length ?? 0,
       totalCages: data?.length ?? 0,
