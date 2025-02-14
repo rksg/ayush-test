@@ -110,7 +110,7 @@ export const ArpTerminationFormItem = (props: {
               <Space style={{ alignItems: 'flex-start' }}>
                 {$t({ defaultMessage: 'ARP Termination Aging Timer' })}
                 <Tooltip.Question
-                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries.' })}
+                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries. Disabling the aging timer will make cached entries permanent.' })}
                   placement='right'
                   iconStyle={tooltipIconStyle}
                 />
@@ -129,26 +129,29 @@ export const ArpTerminationFormItem = (props: {
         <Form.Item dependencies={['arpTerminationSwitch', 'arpAgingTimerSwitch']}>
           {({ getFieldValue }) => {
             return getFieldValue('arpTerminationSwitch') && getFieldValue('arpAgingTimerSwitch') &&
-              <Space align='center'>
-                <StyledFormItem
-                  name='agingTimeSec'
-                  label=''
-                  initialValue={600}
-                  rules={[{
-                    required: true, message: $t({ defaultMessage: 'Please enter ARP Aging Timer' })
-                  },
-                  { type: 'number', min: 600, max: 2147483647 }]}
-                  children={
-                    <InputNumber style={{ width: '120px' }} />
-                  }
-                />
-                {$t({ defaultMessage: 'seconds' })}
-              </Space>
+              <StyledFormItem
+                name='agingTimeSec'
+                label=''
+                initialValue={600}
+                rules={[{
+                  required: true, message: $t({ defaultMessage: 'Please enter ARP Aging Timer' })
+                },
+                { type: 'number', min: 600, max: 2147483647 }]}
+                children={<AgingTimerFormItem />}
+              />
           }}
         </Form.Item>
       </Col>
     </Row>
   </>
+}
+
+const AgingTimerFormItem = (props: { value?: number, onChange?: (value: number) => void }) => {
+  const { $t } = useIntl()
+  return <Space>
+    <InputNumber {...props} style={{ width: '120px' }} />
+    {$t({ defaultMessage: 'seconds' })}
+  </Space>
 }
 
 export const useHandleApplyArpTermination = (form: FormInstance, venueId?: string, clusterId?: string) => {
