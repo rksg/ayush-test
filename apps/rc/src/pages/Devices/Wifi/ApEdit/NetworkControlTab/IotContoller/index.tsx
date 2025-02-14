@@ -20,7 +20,7 @@ import {
   useUpdateApIotMutation
 } from '@acx-ui/rc/services'
 import {
-  domainNameRegExp,
+  validDomainNameRegExp,
   transformDisplayOnOff
 } from '@acx-ui/rc/utils'
 import { ApIot, VenueIot } from '@acx-ui/rc/utils'
@@ -257,7 +257,7 @@ export function IotController (props: ApEditItemProps) {
                       // eslint-disable-next-line max-len
                       message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
                     },
-                    { validator: (_, value) => domainNameRegExp(value) }
+                    { validator: (_, value) => validDomainNameRegExp(value) }
                   ]}
                   label={
                     <>

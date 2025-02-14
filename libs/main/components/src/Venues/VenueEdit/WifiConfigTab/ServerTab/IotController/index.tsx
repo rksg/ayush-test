@@ -18,7 +18,7 @@ import {
   useGetVenueTemplateApIotSettingsQuery,
   useUpdateVenueTemplateApIotSettingsMutation
 } from '@acx-ui/rc/services'
-import { domainNameRegExp, VenueIot } from '@acx-ui/rc/utils'
+import { validDomainNameRegExp, VenueIot } from '@acx-ui/rc/utils'
 
 import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
 import {
@@ -159,7 +159,7 @@ export function IotController (props: VenueWifiConfigItemProps) {
                   // eslint-disable-next-line max-len
                   message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
                 },
-                { validator: (_, value) => domainNameRegExp(value) }
+                { validator: (_, value) => validDomainNameRegExp(value) }
               ]}
               label={
                 <>
