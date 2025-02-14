@@ -210,7 +210,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
   }
 
   const hasDataPermission = isRAI
-    ? hasPermission({ permission: 'WRITE_DATA_SUBSCRIPTIONS' })
+    ? hasPermission({ permission: 'WRITE_DATA_CONNECTOR' })
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const allowedRowActions = filterByAccess(rowActions)
