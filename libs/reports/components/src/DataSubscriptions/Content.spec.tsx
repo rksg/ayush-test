@@ -132,7 +132,7 @@ describe('DataSubscriptionsContent', () => {
         READ_DATA_CONNECTOR_STORAGE: false,
         WRITE_DATA_CONNECTOR_STORAGE: false
       } as RaiPermissions)
-      render(<DataSubscriptionsContent isRAI/>, {
+      render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })

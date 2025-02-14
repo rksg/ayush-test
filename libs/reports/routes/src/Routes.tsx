@@ -15,7 +15,7 @@ import { Provider }         from '@acx-ui/store'
 import { hasRaiPermission } from '@acx-ui/user'
 
 export default function ReportsRoutes () {
-  const isRa = Boolean(get('IS_MLISA_SA'))
+  const isRa = get('IS_MLISA_SA')
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const hasDCStoragePermission = isRa ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE') : false
   const reports = {
@@ -46,7 +46,7 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent />} />
       <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
       <Route path='dataSubscriptions/edit/:settingId'
         element={<SubscriptionForm editMode />} />
