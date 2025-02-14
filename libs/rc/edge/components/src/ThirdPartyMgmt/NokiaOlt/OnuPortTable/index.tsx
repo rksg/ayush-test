@@ -97,8 +97,9 @@ function useColumns (onuName: string | undefined, handleVlanIdChange: (portIdx: 
   return columns
 }
 
-const stringToNumber = (value: string | undefined) => {
-  if (!value) return 0
-
-  return isNaN(parseInt(value, 10)) ? 0 : +value
-}
+/**
+ * Converts a string to a number.
+ * @param value The string to convert.
+ * @returns The numeric value of the string, or 0 if the string is not a valid number.
+ */
+const stringToNumber = (value?: string): number => value ? (+value || 0) : 0

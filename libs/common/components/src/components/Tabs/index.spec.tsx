@@ -3,16 +3,6 @@ import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { Tabs, TabsType } from '.'
 
-jest.mock('../Layout', () => {
-  const React = jest.requireActual('react')
-  return {
-    useLayoutTrackStickyNodes: jest.fn().mockImplementation(() => ({
-      ref: React.useRef(null),
-      rect: () => ({ top: 10 })
-    }))
-  }
-})
-
 describe('Tabs', () => {
   function renderTab (type?: TabsType, stickyTop?: boolean) {
     return <Tabs type={type} stickyTop={stickyTop}>

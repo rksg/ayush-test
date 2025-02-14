@@ -13,7 +13,7 @@ import { fireEvent, act, render, screen, waitFor, within } from '@acx-ui/test-ut
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
 
-import { Layout, useLayoutContext, useLayoutTrackStickyNodes } from '.'
+import { Layout } from '.'
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
@@ -272,39 +272,5 @@ describe('Layout', () => {
       fireEvent(global.window, new Event('resize'))
     })
     await waitFor(() => screen.findByText('Hey, you are missing the bigger picture'))
-  })
-  it('handles multiple sticky nodes', async () => {
-    jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
-      .mockReturnValueOnce({ top: 0, height: 10 } as unknown as DOMRect)
-      .mockReturnValueOnce({ top: 10, height: 10 } as unknown as DOMRect)
-      .mockReturnValueOnce({ top: 0, height: 10 } as unknown as DOMRect)
-      .mockReturnValueOnce({ top: 10, height: 10 } as unknown as DOMRect)
-    const Sticky = (props: React.HTMLAttributes<HTMLDivElement>) => {
-      const { ref, rect } = useLayoutTrackStickyNodes()
-      return <div
-        {...props}
-        ref={ref}
-        style={{ width: 200, height: 10 }}
-      >top: {rect()?.top}</div>
-    }
-
-    const Other = () => {
-      const { pageHeaderY } = useLayoutContext()
-      return <div data-testid='Other'>Top: {pageHeaderY}</div>
-    }
-
-    render(<Layout
-      logo={<div />}
-      menuConfig={menuConfig}
-      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
-      rightHeaderContent={<div>Right header</div>}
-      content={<div>
-        <Sticky data-testid='Sticky1' />
-        <Sticky data-testid='Sticky2' />
-        <Other />
-      </div>}
-    />, { route })
-
-    expect(await screen.findByTestId('Other')).toHaveTextContent('Top: 20')
   })
 })

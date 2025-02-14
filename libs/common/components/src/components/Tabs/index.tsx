@@ -1,10 +1,8 @@
 import { Tabs as AntTabs, TabsProps as AntTabsProps, TabPaneProps as AntTabPaneProps } from 'antd'
 import { TabsType as AntTabsType }                                                     from 'antd/lib/tabs'
 import _                                                                               from 'lodash'
-import TabNavList                                                                      from 'rc-tabs/lib/TabNavList'
 
-import { getTitleWithIndicator }     from '../BetaIndicator'
-import { useLayoutTrackStickyNodes } from '../Layout'
+import { getTitleWithIndicator } from '../BetaIndicator'
 
 import * as UI from './styledComponents'
 
@@ -23,7 +21,6 @@ export type TabPaneProps = {
 
 export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
   const $type = type = type ?? 'line'
-  const { ref, rect } = useLayoutTrackStickyNodes()
 
   if (type !== 'third' && stickyTop === undefined) {
     stickyTop = true // stickyTop is true by default for card and line
@@ -60,16 +57,13 @@ export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
           : undefined
     } : {})
   }
-  const renderTabBar = (
-    (props, TabBar: typeof TabNavList) => <TabBar {...props} ref={ref} />
-  ) as AntTabsProps['renderTabBar']
 
   return <UI.Tabs
-    renderTabBar={renderTabBar}
+    className={stickyTop ? 'sticky-top' : ''} // for PageHeader to count pageHeaderY
     {...transformedProps}
     type={type as AntTabsType}
     $type={$type}
-    $stickyTop={stickyTop ? rect()?.top : undefined}
+    $stickyTop={stickyTop}
   />
 }
 
