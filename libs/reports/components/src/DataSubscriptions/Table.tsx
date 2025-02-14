@@ -29,19 +29,18 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
   const [patchDataSubscriptions] = usePatchDataSubscriptionsMutation()
   const userId = getUserId()
 
-  const showToastByAction = (isSuccess: boolean, action: Actions, count: number) => {
-    let verb = ''
-    switch (action) {
-      case Actions.Delete:
-        verb = isSuccess ? 'deleted' : 'delete'
-        break
-      case Actions.Pause:
-        verb = isSuccess ? 'paused' : 'pause'
-        break
-      case Actions.Resume:
-        verb = isSuccess ? 'resumed' : 'resume'
-        break
-    }
+  type ActionsWithoutEdit = Exclude<Actions, Actions.Edit>
+  const actionToSuccessVerbMap = {
+    [Actions.Delete]: 'deleted',
+    [Actions.Pause]: 'paused',
+    [Actions.Resume]: 'resumed'
+  }
+  const actionToErrorVerbMap = {
+    [Actions.Delete]: 'delete',
+    [Actions.Pause]: 'pause',
+    [Actions.Resume]: 'resume'
+  }
+  const showToastByAction = (isSuccess: boolean, action: ActionsWithoutEdit, count: number) => {
     isSuccess
       ? showToast({
         type: 'success',
@@ -53,7 +52,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
               other {data subscriptions have}} been {verb} successfully.`}
             values={{
               totalCount: count,
-              verb
+              verb: actionToSuccessVerbMap[action]
             }}
           />
       })
@@ -67,7 +66,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
               other {data subscriptions}}.`}
             values={{
               totalCount: count,
-              verb
+              verb: actionToErrorVerbMap[action]
             }}
           />
       })
