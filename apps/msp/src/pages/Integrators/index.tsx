@@ -144,7 +144,7 @@ export function Integrators () {
       },
       render: function (_, { mspAdminCount }) {
         return (
-          (isPrimeAdmin || isAdmin || hasAssignAdminPermission)
+          (hasAssignAdminPermission)
             ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
         )
       }
@@ -156,7 +156,7 @@ export function Integrators () {
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) ? {
+        return (hasAssignEcPermission) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
@@ -165,7 +165,7 @@ export function Integrators () {
         } : {}
       },
       render: function (_, row) {
-        return (isPrimeAdmin || isAdmin || hasAssignEcPermission)
+        return (hasAssignEcPermission)
           ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
           : transformAssignedCustomerCount(row)
       }

@@ -47,10 +47,10 @@ import {
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
-import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                                from '@acx-ui/types'
-import { filterByAccess, getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasRoles } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                                                 from '@acx-ui/utils'
+import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                        from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles }   from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                         from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -103,13 +103,12 @@ export function Subscriptions () {
       [getOpsApi(MspRbacUrlsInfo.addMspAssignment), getOpsApi(MspRbacUrlsInfo.updateMspAssignment),
         getOpsApi(MspRbacUrlsInfo.deleteMspAssignment)]
     ])
-    : hasCrossVenuesPermission()
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
   const [hasAttentionNotes, setHasAttentionNotes] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
@@ -583,7 +582,7 @@ export function Subscriptions () {
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive || !isAdmin || !hasPermission}
+              hidden={!isAssignedActive || !hasPermission}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           !isHspSupportEnabled ? <TenantLink to='/dashboard'>

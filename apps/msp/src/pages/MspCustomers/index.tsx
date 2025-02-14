@@ -119,14 +119,6 @@ export function MspCustomers () {
      tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
   const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
-
-  const allowManageAdmin =
-      ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
-  const allowSelectTechPartner =
-      ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
-  const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
-
-  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)])
@@ -137,6 +129,14 @@ export function MspCustomers () {
   const hasAssignTechPartnerPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)])
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
+  const allowManageAdmin =
+      (hasAssignAdminPermission && !userProfile?.support) || isSupportToMspDashboardAllowed
+  const allowSelectTechPartner =
+      (hasAssignTechPartnerPermission && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
+  const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
+
+  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
 
   if ((tenantType === AccountType.VAR || tenantType === AccountType.REC) &&
       (userProfile?.support === false || isSupportToMspDashboardAllowed)) {
@@ -365,7 +365,7 @@ export function MspCustomers () {
         },
         render: function (_, row) {
           return (
-            (allowManageAdmin && hasAssignAdminPermission)
+            allowManageAdmin
               ? <Link to=''>{mspUtils.transformAdminCount(row, tenantType)}</Link>
               : mspUtils.transformAdminCount(row, tenantType)
           )
@@ -411,7 +411,7 @@ export function MspCustomers () {
             : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
               : noDataDisplay
           return (
-            (allowSelectTechPartner || hasAssignTechPartnerPermission)
+            allowSelectTechPartner
               ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }

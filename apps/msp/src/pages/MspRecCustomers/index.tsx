@@ -252,7 +252,7 @@ export function MspRecCustomers () {
       sorter: true,
       width: 140,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+        return (hasAssignAdminPermission && !userProfile?.support) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
@@ -261,7 +261,7 @@ export function MspRecCustomers () {
       },
       render: function (_, row) {
         return (
-          (isPrimeAdmin || isAdmin || hasAssignAdminPermission) && !userProfile?.support
+          (hasAssignAdminPermission && !userProfile?.support)
             ? <Link to=''>{mspUtils.transformAdminCount(row, tenantType)}</Link>
             : mspUtils.transformAdminCount(row, tenantType)
         )
@@ -276,7 +276,7 @@ export function MspRecCustomers () {
       sorter: isMspSortOnTpEnabled,
       width: 130,
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return (hasAssignTechPartnerPermission && !drawerIntegratorVisible) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -290,7 +290,7 @@ export function MspRecCustomers () {
           : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
             : noDataDisplay
         return (
-          (isPrimeAdmin || isAdmin || hasAssignTechPartnerPermission) && !drawerIntegratorVisible
+          (hasAssignTechPartnerPermission && !drawerIntegratorVisible)
             ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
@@ -304,7 +304,7 @@ export function MspRecCustomers () {
       sorter: isMspSortOnTpEnabled,
       width: 120,
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return (hasAssignTechPartnerPermission && !drawerIntegratorVisible) ? {
           onClick: () => {
             setDrawerIntegratorVisible(false)
             setTenantId(data.id)
@@ -319,7 +319,7 @@ export function MspRecCustomers () {
           : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
             : noDataDisplay
         return (
-          (isPrimeAdmin || isAdmin || hasAssignTechPartnerPermission) && !drawerIntegratorVisible
+          (hasAssignTechPartnerPermission && !drawerIntegratorVisible)
             ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
