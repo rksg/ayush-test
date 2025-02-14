@@ -17,23 +17,17 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import {
-  // SwitchSlot2 as SwitchSlot,
   getSwitchPortLabel,
   PortStatusMessages,
-  // SwitchModelPortData,
-  // SwitchPortViewModel,
   Vlan
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-// import { getTooltipTemplate } from '../'
-import { GroupedVlanPort, PortSetting, VlanPort } from '..'
-import { getModuleKey }                           from '../index.utils'
+import { getModuleKey, GroupedVlanPort, PortSetting, VlanPort } from '../index.utils'
 
 import {
   getPortsModule,
   getUnit,
-  // getUnitTitle,
   getModule,
   PortsType,
   selectedGroupByPrefix
@@ -41,6 +35,12 @@ import {
 import * as UI from './styledComponents'
 
 type PortSettings = Record<string, { untaggedVlan: string[], taggedVlans: string[] }>
+type VlanType = 'untaggedVlan' | 'taggedVlans'
+
+enum VlanTypes {
+  UNTAGGED = 'untaggedVlan',
+  TAGGED = 'taggedVlans'
+}
 
 export function PortsStep (props:{
   editRecord?: VlanPort
@@ -49,39 +49,39 @@ export function PortsStep (props:{
 }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { editRecord, vlanList, modelPorts } = props //portsData,
-  // const {
-  //   family, model, vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel,
-  // } = useContext(VlanPortsContext)
+  const { editRecord, vlanList, modelPorts } = props
 
+  // const [family, setFamily] = useState('')
+  // const [model, setModel] = useState('')
   const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [family, setFamily] = useState('')
-  const [model, setModel] = useState('')
   const [vlanOptions, setVlanOptions] = useState([] as DefaultOptionType[])
-  // const [switchFamilyModels, setSwitchFamilyModels] = useState({} as SwitchModelPortData)
 
   const [currentModelPortList, setCurrentModelPortList] = useState({} as PortSettings)
-  const [filteredModelPortList, setFilteredModelPortList] = useState({} as PortSettings)
+  const [currentModulePortList, setCurrentModulePortList] = useState({} as PortSettings)
 
   // const [defaultModuleOptions, setDefaultModuleOptions] = useState<CheckboxOptionType[]>()
   // const [slot2, setSlot2] = useState<SwitchSlot>()
   // const [slot3, setSlot3] = useState<SwitchSlot>()
 
-  const { slots } = form.getFieldsValue(true)
+  const { family, model, slots } = form.getFieldsValue(true)
+  const familymodel = `${family}-${model}`
   const selectedModuleInfo = Array.from({ length: 3 }, (_, index) => {
     const slotNumber = index + 1
     const slot = slots.find((slot: { slotNumber: number }) => slot.slotNumber === slotNumber)
     return slot?.slotPortInfo?.split('X').join(' X ') || ''
   })
 
-  // console.log('moduleInfo: ', selectedModuleInfo)
-
-  const [ untaggedVlan, taggedVlans ] = [ //portSettings
-    // Form.useWatch('portSettings', form),
+  const [ untaggedVlan, taggedVlans, portSettings ] = [
     Form.useWatch('untaggedVlan', form),
-    Form.useWatch('taggedVlans', form)
+    Form.useWatch('taggedVlans', form),
+    Form.useWatch('portSettings', form)
   ]
+
+  /* eslint-disable no-console */
+  console.log('selectedModuleInfo: ', selectedModuleInfo)
+  console.log('portSettings: ', portSettings)
+  console.log('currentModulePortList: ', currentModulePortList)
 
   const getModelPortList = (
     modulekey: string,
@@ -119,19 +119,20 @@ export function PortsStep (props:{
       }, {} as PortSettings)
   }
 
-  const getUntaggedSelectorDisabled = (selectedItems: string[]) => {
-    const isAssignedInCurrentModel
-      = !!currentModelPortList?.[selectedItems[0]]?.untaggedVlan?.length
-    const isAssignedInCurrentModule
-      = !!filteredModelPortList?.[selectedItems[0]]?.untaggedVlan?.length
-    return isAssignedInCurrentModel && !isAssignedInCurrentModule
+  const getUntaggedSelectorDisabled = ([selectedItem]: string[]) => {
+    if (!selectedItem) return false
+
+    const hasUntaggedVlanInModel = !!currentModelPortList?.[selectedItem]?.untaggedVlan?.length
+    const hasUntaggedVlanInModule = !!currentModulePortList?.[selectedItem]?.untaggedVlan?.length
+
+    return hasUntaggedVlanInModel && !hasUntaggedVlanInModule
   }
 
   const getVlanOptionDisabled = (
-    portIdentifier: string, type: 'taggedVlans' | 'untaggedVlan'
+    portIdentifier: string, type: VlanType
   ) => {
     const portSettings: PortSetting[] = form.getFieldValue('portSettings')
-    const checkField = type === 'untaggedVlan' ? 'taggedVlans' : 'untaggedVlan'
+    const checkField = type === VlanTypes.UNTAGGED ? VlanTypes.TAGGED : VlanTypes.UNTAGGED
     const assignedVlan = portSettings.filter(port => {
       return selectedItems.includes(port.port)
     }).map(port => port[checkField]).flat()
@@ -139,8 +140,8 @@ export function PortsStep (props:{
     return assignedVlan.includes(portIdentifier)
   }
 
-  const getVlanOptions = (type: 'untaggedVlan' | 'taggedVlans') => {
-    const isUntaggedType = type === 'untaggedVlan'
+  const getVlanOptions = (type: VlanType) => {
+    const isUntaggedType = type === VlanTypes.UNTAGGED
     return vlanOptions.map(opt => {
       const value = opt.value as string
       const disabled = getVlanOptionDisabled(value, type)
@@ -166,62 +167,38 @@ export function PortsStep (props:{
   // console.log(form.getFieldValue('portSettings'))
 
   useEffect(() => {
-    const { family, model, slots } = form.getFieldsValue(true)
-    // console.log('----- PortsStep ----- ')
-    // console.log('slots: ', slots)
-    // console.log('switchFamilyModels: ', switchFamilyModels)
+    // const { family, model, slots } = form.getFieldsValue(true)
     const vlanOptions = vlanList.map((item) => ({
       label: item.vlanId,
       value: item.vlanId.toString()
     })).sort((a, b) => Number(a.value) - Number(b.value))
 
     const modulekey = getModuleKey(family, model, slots)
-    const currentModelPortList = getModelPortList(modulekey, modelPorts)
-    const filteredModelPortList = getModelPortList(modulekey, modelPorts, true)
+    const currentModelPortList = getModelPortList(modulekey, modelPorts) //cross module data
+    const currentModulePortList = getModelPortList(modulekey, modelPorts, true)
 
-    setFamily(family)
-    setModel(model)
+    // setFamily(family)
+    // setModel(model)
     setVlanOptions(vlanOptions as DefaultOptionType[])
     setCurrentModelPortList(currentModelPortList as PortSettings)
-    setFilteredModelPortList(filteredModelPortList as PortSettings)
-    // setSwitchFamilyModels(switchFamilyModels as SwitchModelPortData) ///
+    setCurrentModulePortList(currentModulePortList as PortSettings)
 
-    // console.log('currentModelPortList: ', currentModelPortList)
-    // console.log('filteredModelPortList: ', filteredModelPortList)
+    console.log('currentModelPortList: ', currentModelPortList)
+    console.log('currentModulePortList: ', currentModulePortList)
 
-    // console.log('switchFamilyModels: ', switchFamilyModels)
-    // setDefaultModuleOptions(defaultModuleOptions)
   }, [])
 
 
   useEffect(() => {
     const portSettings = form.getFieldValue('portSettings')
     const selectPort = portSettings?.filter(
-      (p: { port: string }) => selectedItems.includes(p.port))?.[0] //TODO
+      (p: { port: string }) => selectedItems.includes(p.port))?.[0] //TODO: multiple ports
 
     form.setFieldsValue({
       untaggedVlan: selectPort?.untaggedVlan ?? [],
       taggedVlans: selectPort?.taggedVlans ?? []
     })
   }, [selectedItems])
-
-  // useEffect(() => {
-  //   const { slots } = switchFamilyModels
-  //   if (slots) {
-  //     const module = getPortsModule(slots, false)
-  //     setPortsModule(module as unknown as PortsType[][][])
-
-  //     const slot2Data = slots.find(item => item.slotNumber === 2)
-  //     if(slot2Data?.portStatus){
-  //       setSlot2(slot2Data)
-  //     }
-
-  //     const slot3Data = slots.find(item => item.slotNumber === 3)
-  //     if(slot3Data?.portStatus){
-  //       setSlot3(slot3Data)
-  //     }
-  //   }
-  // }, [switchFamilyModels])
 
   useEffect(() => {
     if (slots) {
@@ -272,73 +249,53 @@ export function PortsStep (props:{
       tmpSelectedItem = _.uniq(tmpSelectedItem)
     },
     onSelectionEnd: () => {
-      const selectedVlanPort = selectedItems //form.getFieldValue(['switchFamilyModels', 'untaggedPorts']) || []
+      const selectedVlanPort = selectedItems
       const vlanPorts = _.xor(selectedVlanPort, tmpSelectedItem)
 
       if (tmpSelectedItem) {
         setSelectedItems(vlanPorts)
       }
 
-      // form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], vlanPorts)
-
-      // setVlanSettingValues({
-      //   ...vlanSettingValues,
-      //   switchFamilyModels: {
-      //     id: vlanSettingValues.switchFamilyModels?.id,
-      //     model: vlanSettingValues.switchFamilyModels?.model || '',
-      //     slots: vlanSettingValues.switchFamilyModels?.slots || [],
-      //     untaggedPorts: vlanPorts,
-      //     taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
-      //   }
-      // })
       tmpSelectedItem = []
     },
     isEnabled: true
   })
 
   const handleCheckboxGroupChange = (checkedValues: string[], moduleGroup: string) => {
-    const selectedUntaggedPorts = selectedItems //form.getFieldValue(['switchFamilyModels', 'untaggedPorts'])
-    const selectedUntaggedGroupByPrefix = selectedGroupByPrefix(selectedUntaggedPorts)
+    const selectedPorts = selectedItems
+    const selectedPortsGroupByPrefix = selectedGroupByPrefix(selectedPorts)
 
     const selected = _.uniq([
-      ...Object.values(_.omit(selectedUntaggedGroupByPrefix, moduleGroup)).flat(),
+      ...Object.values(_.omit(selectedPortsGroupByPrefix, moduleGroup)).flat(),
       ...checkedValues
     ])
     setSelectedItems(selected)
-
-    // form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], selected)
-    // setVlanSettingValues({
-    //   ...vlanSettingValues,
-    //   switchFamilyModels: {
-    //     id: vlanSettingValues.switchFamilyModels?.id,
-    //     model: vlanSettingValues.switchFamilyModels?.model || '',
-    //     slots: vlanSettingValues.switchFamilyModels?.slots || [],
-    //     untaggedPorts: selected,
-    //     taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
-    //   }
-    // })
   }
 
-  // const checkAuthPort = (timeslot: string) => {
-  //   let isAuthPort = false
-  //   if(portsData) {
-  //     isAuthPort = !!portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan
-  //   }
-  //   return isAuthPort
-  // }
-
-
-
-  const getTooltip = (port: string) => {
+  const getPortInfoTooltip = (port: string) => {
     const { $t } = getIntl()
-    const isSelectedPort = selectedItems?.length === 1 && selectedItems[0] === port
+    const isCurrentPortSelected = selectedItems?.length === 1 && selectedItems[0] === port //TODO: multiple ports
 
-    // const portInfo = portSettings?.filter((p: { port: string }) => port.includes(p.port))?.[0]
-    const portInfo = currentModelPortList?.[port]
-    const untagged = isSelectedPort
-      ? untaggedVlan?.toString().split(',').join(', ') : portInfo?.untaggedVlan //portInfo?.untaggedVlan?.join(', ')
-    const tagged = isSelectedPort
-      ? taggedVlans.join(', ') : portInfo?.taggedVlans?.join(', ')
+    const modelUntaggedVlans = currentModelPortList?.[port]?.untaggedVlan ?? []
+    const modelTaggedVlans = currentModelPortList?.[port]?.taggedVlans ?? []
+
+    const selectedPortVlans = {
+      untaggedVlan: _.uniq([
+        ...modelUntaggedVlans, ...(untaggedVlan?.length ? untaggedVlan.toString().split(',') : [])
+      ]),
+      taggedVlans: _.uniq([...modelTaggedVlans, ...taggedVlans])
+    }
+
+    const modulePortVlans = {
+      untaggedVlan: _.uniq([
+        ...modelUntaggedVlans, ...(currentModulePortList?.[port]?.untaggedVlan ?? [])
+      ]),
+      taggedVlans: _.uniq([
+        ...modelTaggedVlans, ...(currentModulePortList?.[port]?.taggedVlans ?? [])
+      ])
+    }
+
+    const portVlanInfo = isCurrentPortSelected ? selectedPortVlans : modulePortVlans
 
     return <div>
       <UI.TooltipTitle>{
@@ -348,21 +305,19 @@ export function PortsStep (props:{
         <UI.TagsTitle>
           <UI.TagsOutlineIcon />{ $t({ defaultMessage: 'Untagged' }) }
         </UI.TagsTitle>
-        <UI.PortSpan>{ untagged || '-' }</UI.PortSpan></div>
+        <UI.PortSpan>{ portVlanInfo.untaggedVlan.join(', ') || '-' }</UI.PortSpan></div>
       <div>
         <UI.TagsTitle>
           <UI.TagsSolidIcon />{ $t({ defaultMessage: 'Tagged' }) }
         </UI.TagsTitle>
-        <UI.PortSpan>{ tagged || '-' }</UI.PortSpan>
+        <UI.PortSpan>{ portVlanInfo.taggedVlans.join(', ') || '-' }</UI.PortSpan>
       </div>
     </div>
   }
 
   const getPortLabel = (port: number, slot: number) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [family, model] = editRecord?.familymodel?.split('-') ?? []
-    // const model = vlanSettingValues.switchFamilyModels?.model || ''
-    const portLabel = getSwitchPortLabel(model, slot) + port.toString()
+    // const { family, model } = form.getFieldsValue(true)
+    const portLabel = getSwitchPortLabel(familymodel, slot) + port.toString()
     return portLabel
   }
 
@@ -371,14 +326,13 @@ export function PortsStep (props:{
   ) => {
     return modulePorts?.map((port, i) => ({
       label: <Tooltip
-        title={getTooltip(port.value)}
+        title={getPortInfoTooltip(port.value)}
       >
         <div
           id={`module${unit}_${moduleIndex}_${i+1}`}
           data-value={port.value}
           data-testid={`module${unit}_${moduleIndex}_${i+1}`}
           data-disabled={false}
-          // data-disabled={getDisabledPorts(timeslot.value)}
           style={{ width: '20px', height: '20px' }}
         >
         </div>
@@ -386,11 +340,10 @@ export function PortsStep (props:{
       </Tooltip>,
       value: port.value,
       disabled: false
-      // disabled: getDisabledPorts(timeslot.value)
     }))
   }
 
-  const getModuleBlock = () => {
+  const getPortsView = () => {
     return portsModule.map((module, index) => {
       const unit = getUnit(module)
       const module2 = getModule(module, '2', unit)
@@ -408,121 +361,36 @@ export function PortsStep (props:{
       return <React.Fragment key={`module${index}`}>
         <UI.CardStyle key={`card${index}`}>
           <Row gutter={20} className='content'>
-            {/* <Col>
-              <div>
-                <Typography.Text style={{ fontWeight: 'bold' }}>
-                  {$t({ defaultMessage: 'Module 1' })}
-                </Typography.Text>
-              </div>
-              { switchFamilyModels?.slots[0] &&
-            <Typography.Paragraph>
-              {$t({ defaultMessage: '{module1}' },
-                { module1: switchFamilyModels?.slots[0].slotPortInfo
-                  ?.split('X').join(' X ') })}
-            </Typography.Paragraph>
-              }
-              <UI.Module>
-                <Checkbox.Group
-                  key={`checkboxGroup_module${unit}_1`}
-                  className='lightblue'
-                  onChange={(checkedValues) =>
-                    handleCheckboxGroupChange(
-                    checkedValues as string[], `${unit}/1`
-                    )
-                  }
-                  value={selectedItems}
-                  options={formattedModuleOptions[0]}
-                />
-              </UI.Module>
-            </Col>
-            { module2 && <Col>
-              <Row gutter={20}>
-                <Col>
-                  <div>
-                    <Typography.Text style={{ fontWeight: 'bold' }}>
-                      {$t({ defaultMessage: 'Module 2' })}
-                    </Typography.Text>
-                  </div>
-                  <Typography.Paragraph>
-                    {$t({ defaultMessage: '{module2}' },
-                      { module2: slot2?.slotPortInfo?.split('X').join(' X ') })}
-                  </Typography.Paragraph>
-                  <UI.Module>
-                    <Checkbox.Group
-                      key={`checkboxGroup_module${unit}_2`}
-                      className='lightblue'
-                      onChange={(checkedValues) =>
-                        handleCheckboxGroupChange(
-                        checkedValues as string[], `${unit}/2`
-                        )
-                      }
-                      value={selectedItems}
-                      options={formattedModuleOptions[1]}
-                    />
-                  </UI.Module>
-                </Col>
-              </Row>
-            </Col>
-            }
-            { module3 && <Col>
-              <div>
-                <Typography.Text style={{ fontWeight: 'bold' }}>
-                  {$t({ defaultMessage: 'Module 3' })}
-                </Typography.Text>
-              </div>
-              <Typography.Paragraph>
-                {$t({ defaultMessage: '{module3}' },
-                  { module3: slot3?.slotPortInfo?.split('X').join(' X ') })}
-              </Typography.Paragraph>
-              <UI.Module>
-                <Checkbox.Group
-                  key={`checkboxGroup_module${unit}_3`}
-                  className='lightblue'
-                  onChange={(checkedValues) =>
-                    handleCheckboxGroupChange(
-                    checkedValues as string[], `${unit}/3`
-                    )
-                  }
-                  value={selectedItems}
-                  options={formattedModuleOptions[2]}
-                />
-              </UI.Module>
-            </Col> */}
-
-            {
-              moduleOptions.map((module, i) => {
-                const index = i+1
-                return module && <Col>
-                  <Row gutter={20}>
-                    <Col>
-                      <div>
-                        <Typography.Text style={{ fontWeight: 'bold' }}>
-                          { $t({ defaultMessage: 'Module {index}' }, { index }) }
-                        </Typography.Text>
-                      </div>
-                      <Typography.Paragraph>{
-                        $t({ defaultMessage: '{moduleInfo}' }, {
-                          moduleInfo: selectedModuleInfo[i]
-                        })
-                      }</Typography.Paragraph>
-                      <UI.Module>
-                        <Checkbox.Group
-                          key={`checkboxGroup_module${unit}_${index}`}
-                          className='lightblue'
-                          onChange={(checkedValues) =>
-                            handleCheckboxGroupChange(
-                          checkedValues as string[], `${unit}/${index}`
-                            )
-                          }
-                          value={selectedItems}
-                          options={formattedModuleOptions[i]}
-                        />
-                      </UI.Module>
-                    </Col>
-                  </Row>
-                </Col>
-              })
-            }
+            { moduleOptions.map((module, i) => {
+              const index = i+1
+              return module && <Col>
+                <Row gutter={20}>
+                  <Col>
+                    <div>
+                      <Typography.Text style={{ fontWeight: 'bold' }}>
+                        { $t({ defaultMessage: 'Module {index}' }, { index }) }
+                      </Typography.Text>
+                    </div>
+                    <Typography.Paragraph>{
+                      $t({ defaultMessage: '{moduleInfo}' }, {
+                        moduleInfo: selectedModuleInfo[i]
+                      })
+                    }</Typography.Paragraph>
+                    <UI.Module>
+                      <Checkbox.Group
+                        key={`checkboxGroup_module${unit}_${index}`}
+                        className='lightblue'
+                        onChange={(checkedValues) => {
+                          handleCheckboxGroupChange(checkedValues as string[], `${unit}/${index}`)
+                        }}
+                        value={selectedItems}
+                        options={formattedModuleOptions[i]}
+                      />
+                    </UI.Module>
+                  </Col>
+                </Row>
+              </Col>
+            }) }
           </Row>
         </UI.CardStyle>
         <Button
@@ -543,11 +411,24 @@ export function PortsStep (props:{
     const { untaggedVlan, taggedVlans, portSettings = [] } = form.getFieldsValue()
     const updatePortSettings = selectedItems?.map((port) => {
       return {
-        id: `${family}-${model}-${port}`,
+        id: `${familymodel}-${port}`,
         port,
         untaggedVlan: Array.isArray(untaggedVlan) ? untaggedVlan : [untaggedVlan] as string[],
         taggedVlans: taggedVlans as string[]
       }
+    })
+
+    setCurrentModulePortList({
+      ..._.omitBy(currentModulePortList, (value, key) => selectedItems.includes(key)),
+      ...updatePortSettings.reduce((result, port) => {
+        return {
+          ...result,
+          [port.port]: {
+            untaggedVlan: port.untaggedVlan,
+            taggedVlans: port.taggedVlans
+          }
+        }
+      }, {})
     })
 
     form.setFieldValue('portSettings', [
@@ -562,8 +443,8 @@ export function PortsStep (props:{
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
             { $t({ defaultMessage:
-                  'Select the ports to configure VLAN(s) for this model ({family}-{model}):' },
-            { family, model })
+                  'Select the ports to configure VLAN(s) for this model ({familymodel}):' },
+            { familymodel })
             }
           </label>
         </Col>
@@ -571,7 +452,7 @@ export function PortsStep (props:{
       {/* ----- Ports ----- */}
       <Row gutter={20} style={{ marginTop: '12px', minHeight: '175px' }} id='portsContainer'>
         <Col>
-          { getModuleBlock() }
+          { getPortsView() }
           <DragSelectionPorts />
         </Col>
       </Row>
@@ -607,33 +488,29 @@ export function PortsStep (props:{
               onChange={handleVlansChange}
               allowClear
               disabled={!selectedItems?.length
-                || getUntaggedSelectorDisabled(selectedItems) //TODO
+                || getUntaggedSelectorDisabled(selectedItems)
               }
             >{
-                getVlanOptions('untaggedVlan')
+                getVlanOptions(VlanTypes.UNTAGGED)
               }</Select>}
           />
           <Form.Item
             name='taggedVlans'
             label={$t({ defaultMessage: 'Tagged VLANs' })}
             style={{ width: '300px' }}
-            children={<Select
-              mode='multiple'
-              placeholder={$t({ defaultMessage: 'Select VLANs...' })}
-              disabled={!selectedItems?.length}
-              onChange={handleVlansChange}
-            >{
-                getVlanOptions('taggedVlans')
-              }</Select>}
+            children={
+              <Select
+                mode='multiple'
+                placeholder={$t({ defaultMessage: 'Select VLANs...' })}
+                disabled={!selectedItems?.length}
+                onChange={handleVlansChange}
+              >{
+                  getVlanOptions(VlanTypes.TAGGED)
+                }</Select>
+            }
           />
         </Col>
-      </Row>}
-
-      {/* <Form.Item
-        name={['switchFamilyModels', 'untaggedPorts']}
-        hidden={true}
-        children={<Input />}
-      /> */}
+      </Row> }
 
     </div>
   )

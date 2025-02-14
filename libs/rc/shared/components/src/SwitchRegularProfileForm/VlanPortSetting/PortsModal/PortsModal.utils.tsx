@@ -50,17 +50,6 @@ export const getModule = (module: PortsType[][], slot: string, unit: number) => 
   return module[index]
 }
 
-////////refactor
-// type SlotOptionsResult = {
-//   slots: Slot[]
-//   slotOptionLists: ModelsType[][]
-// }
-
-// export interface ModelsType {
-//   label: string
-//   value: string
-// }
-
 export const getModelModules = (family: string, model: string): string[][] => {
   const familyIndex = family as keyof typeof ICX_MODELS_MODULES
   const modelIndex = model as keyof typeof familyList
@@ -81,9 +70,20 @@ export const getSlots = (family: string, model: string): DefaultOptionType[][] =
 }
 
 export const selectedGroupByPrefix = (selected: string[]) => {
+  // Output:
+  // {
+  //   '1/1': ['1/1/1', '1/1/2', '1/1/3'],
+  //   '1/2': ['1/2/1', '1/2/2'],
+  //   '2/1': ['2/1/1'],
+  //   '3/1': ['3/1/1', '3/1/2', '3/1/3']
+  // }
+
+  if (selected.length === 0) {
+    return {}
+  }
   return selected.reduce((acc: { [key: string]: string[] }, str: string) => {
     const parts = str.split('/')
-    const prefix = parts.slice(0, 2).join('/') // 1/1, 1/2, 1/3, 2/1, 2/2, 3/1
+    const prefix = parts.slice(0, 2).join('/')
     if (!acc[prefix]) {
       acc[prefix] = []
     }
