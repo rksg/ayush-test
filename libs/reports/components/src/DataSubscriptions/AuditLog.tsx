@@ -8,11 +8,7 @@ import AuditLogTable                       from './AuditLogTable'
 import { useGetDataSubscriptionByIdQuery } from './services'
 import { generateBreadcrumb }              from './utils'
 
-type DataSubscriptionsAuditLogProps = {
-  isRAI?: boolean
-}
-
-const DataSubscriptionsAuditLog: React.FC<DataSubscriptionsAuditLogProps> = ({ isRAI }) => {
+const DataSubscriptionsAuditLog: React.FC = () => {
   const { $t } = useIntl()
   const { settingId } = useParams <{ settingId: string }>()
   const { data: dataSubscription, isLoading } = useGetDataSubscriptionByIdQuery(settingId)
@@ -22,7 +18,7 @@ const DataSubscriptionsAuditLog: React.FC<DataSubscriptionsAuditLogProps> = ({ i
       <PageHeader
         title={dataSubscription?.name}
         subTitle={$t({ defaultMessage: 'Audit Log' })}
-        breadcrumb={generateBreadcrumb({ isRAI })}
+        breadcrumb={generateBreadcrumb()}
         extra={<Button size='middle' icon={<DownloadOutlined />} type='default'>
           {$t({ defaultMessage: 'Download Audit' })}
         </Button>}

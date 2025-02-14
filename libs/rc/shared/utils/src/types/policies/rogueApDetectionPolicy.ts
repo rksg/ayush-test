@@ -1,3 +1,4 @@
+import { EnforceableFields }  from '..'
 import { ApDeviceStatusEnum } from '../../constants'
 
 export interface RogueAPDetectionContextType {
@@ -52,7 +53,7 @@ export interface RogueAPDetectionTempType {
     rules: RogueAPRule[]
 }
 
-export interface VenueRoguePolicyType {
+export interface VenueRoguePolicyType extends EnforceableFields {
   id: string,
   name: string,
   city?: string,
