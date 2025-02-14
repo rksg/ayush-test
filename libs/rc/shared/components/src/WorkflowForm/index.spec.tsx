@@ -28,12 +28,6 @@ const list: NewAPITableResult<Workflow> = {
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort&excludeContent=:excludeContent'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
 
-const FormWrapper = (props: {isEdit:boolean, policyId?: string})=> {
-  const [form] = Form.useForm()
-  return <WorkflowForm  {...props} />
-}
-
-
 describe('WorkflowForm', () => {
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
