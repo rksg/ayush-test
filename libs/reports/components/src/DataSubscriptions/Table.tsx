@@ -19,8 +19,7 @@ import {
   useDeleteDataSubscriptionsMutation,
   usePatchDataSubscriptionsMutation
 } from './services'
-import { Actions, isVisibleByAction } from './Utils'
-import { getUserId }                  from './utils'
+import { Actions, getUserId, isVisibleByAction } from './utils'
 
 export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
   const { $t } = useIntl()
