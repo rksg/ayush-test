@@ -52,7 +52,6 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 export function VenuesDashboardWidgetV2 () {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/venues/')
-
   const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)

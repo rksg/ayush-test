@@ -34,6 +34,13 @@ export class RadioParams6G {
 
   venueHeight?: VenueHeight
 
+  enableMulticastDownlinkRateLimiting?: boolean
+  enableMulticastUplinkRateLimiting?: boolean
+  enableMulticastRateLimiting?: boolean
+
+  multicastDownlinkRateLimiting?: number
+  multicastUplinkRateLimiting?: number
+
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
 
