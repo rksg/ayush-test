@@ -83,7 +83,11 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   addUnitLinkedIdentity: {
     method: 'PUT',
     newApi: true,
-    url: '/venues/:venueId/units/:unitId/identities/:identityId'
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deletePropertyUnit: {
     method: 'delete',

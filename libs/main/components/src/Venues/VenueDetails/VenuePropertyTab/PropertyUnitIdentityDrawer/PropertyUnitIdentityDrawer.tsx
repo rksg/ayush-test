@@ -15,8 +15,8 @@ import {
 export interface PropertyUnitIdentityDrawerProps {
   visible: boolean,
   onClose: () => void,
-  groupId: string,
-  venueId: string,
+  groupId?: string,
+  venueId?: string,
   unitId?: string
 }
 
@@ -77,7 +77,8 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'revoked',
       align: 'center',
-      render: (_, row) => row.revoked ? 'Blocked' : 'Active'
+      render: (_, row) => row.revoked ? $t({ defaultMessage: 'Blocked' })
+        : $t({ defaultMessage: 'Active' })
     },{
       key: 'deviceCount',
       title: $t({ defaultMessage: 'Devices' }),

@@ -129,7 +129,7 @@ export function VenuePropertyTab () {
     isEdit: false,
     visible: false
   })
-  const [selectedUnits, setSelectedUnits] = useState<PropertyUnit[]>([])
+  const [selectedUnit, setSelectedUnit] = useState<PropertyUnit>()
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [addIdentityDrawerVisible, setAddIdentityDrawerVisible] = useState(false)
 
@@ -413,8 +413,7 @@ export function VenuePropertyTab () {
           label: $t({ defaultMessage: 'Add Identity Association' }),
           visible: (selectedItems => selectedItems.length <= 1 && isMultipleIdentityUnits),
           onClick: (units, clearSelection) => {
-            setSelectedUnits(units.map(u=> {return {
-              ...u }}))
+            setSelectedUnit(units.at(0))
             clearSelection()
             setAddIdentityDrawerVisible(true)
           }
@@ -614,9 +613,9 @@ export function VenuePropertyTab () {
       }
       {groupId && <PropertyUnitIdentityDrawer
         visible={addIdentityDrawerVisible}
-        groupId={groupId ? groupId : ''}
-        venueId={venueId ? venueId : ''}
-        unitId={selectedUnits.at(0)?.id}
+        groupId={groupId}
+        venueId={venueId}
+        unitId={selectedUnit?.id}
         onClose={() => {
           setAddIdentityDrawerVisible(false)
         }}
