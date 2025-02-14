@@ -6,11 +6,11 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
-import { useApActions }                                                  from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                                                                    from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { APStatus, LowPowerBannerAndModal }                                                       from '@acx-ui/rc/components'
+import { useApActions }                                                                           from '@acx-ui/rc/components'
 import {
   useApDetailHeaderQuery,
   isAPLowPower,
@@ -41,10 +41,12 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
   const { data } = useApDetailHeaderQuery({ params })

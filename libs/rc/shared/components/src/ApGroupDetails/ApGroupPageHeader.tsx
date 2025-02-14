@@ -3,7 +3,7 @@ import moment                       from 'moment-timezone'
 import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Button, PageHeader, RangePicker }                                    from '@acx-ui/components'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker }           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { LocationOutlined }                                                   from '@acx-ui/icons'
 import { ApGroupDetailHeader, useConfigTemplateBreadcrumb, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
@@ -19,11 +19,13 @@ import { ApGroupDetailSubTitle } from './styledComponents'
 
 
 function ApGroupPageHeader () {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
 
   const { apGroupId, activeTab, name, venueName, members, networks } = useApGroupContext()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
 
   const apgHeaderData = {
     title: name || '',
