@@ -611,7 +611,7 @@ export function VenuePropertyTab () {
           onClose={() => setDrawerState({ isEdit: false, visible: false, units: undefined })}
         />
       }
-      {groupId && <PropertyUnitIdentityDrawer
+      {groupId && addIdentityDrawerVisible && <PropertyUnitIdentityDrawer
         visible={addIdentityDrawerVisible}
         groupId={groupId}
         venueId={venueId}
