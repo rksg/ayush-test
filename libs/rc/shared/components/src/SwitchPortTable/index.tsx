@@ -26,6 +26,7 @@ import {
   isFirmwareVersionAbove10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
+import { ErrorDisableRecoveryDrawer }                   from '@acx-ui/switch/components'
 import { SwitchScopes }                                 from '@acx-ui/types'
 import { filterByAccess, hasPermission }                from '@acx-ui/user'
 import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
@@ -50,10 +51,12 @@ export function SwitchPortTable (props: {
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE) || true
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+  const [recoveryDrawerVisible, setRecoveryDrawerVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
@@ -399,10 +402,17 @@ export function SwitchPortTable (props: {
           }
         } : undefined}
       actions={!isVenueLevel
-        ? filterByAccess([{
-          label: $t({ defaultMessage: 'Manage LAG' }),
-          onClick: () => {setLagDrawerVisible(true)}
-        }])
+        ? [
+          ...filterByAccess(isSwitchErrorRecoveryEnabled ? [{
+            label: $t({ defaultMessage: 'Error Disable Recovery' }),
+            onClick: () => { setRecoveryDrawerVisible(true) }
+          }] : []),
+
+          ...filterByAccess([{
+            label: $t({ defaultMessage: 'Manage LAG' }),
+            onClick: () => { setLagDrawerVisible(true) }
+          }])
+        ]
         : []
       }
     />
@@ -411,6 +421,12 @@ export function SwitchPortTable (props: {
       visible={lagDrawerVisible}
       setVisible={setLagDrawerVisible}
     />}
+
+    {isSwitchErrorRecoveryEnabled && recoveryDrawerVisible &&
+      <ErrorDisableRecoveryDrawer
+        visible={recoveryDrawerVisible}
+        setVisible={setRecoveryDrawerVisible}
+      />}
 
     { drawerVisible && <EditPortDrawer
       key='edit-port'

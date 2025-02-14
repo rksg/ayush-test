@@ -1073,3 +1073,19 @@ export enum PortProfileTabsEnum {
   WIFI = 'wifi',
   SWITCH = 'switch',
 }
+
+export interface PortDisableRecoverySetting {
+  bpduGuard: boolean,
+  loopDetection: boolean,
+  packetInError: boolean,
+  loamRemoteCriticalEvent: boolean,
+  pvstplusProtect: boolean,
+  bpduTunnelThreshold: boolean,
+  lagOperationalSpeedMismatch: boolean,
+  recoveryInterval?: number
+}
+
+export interface PortDisableRecoverySettingForm {
+  recoveryInterval: number,
+  recoverySetting: PortDisableRecoverySetting,
+}

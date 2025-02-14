@@ -284,7 +284,8 @@ export enum Features {
   ACX_UI_SHOW_ADMIN_TYPE_COLUMN_TOGGLE='acx-ui-show-admin-type-column-toggle',
   ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
-  LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy'
+  LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
+  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
