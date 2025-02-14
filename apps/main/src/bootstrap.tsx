@@ -140,11 +140,13 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
+  const rbacOpsApiEnabled = userProfile.rbacOpsApiEnabled
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
+        (rbacOpsApiEnabled ? !Boolean(userProfile.allowedOperations.length) : false) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}

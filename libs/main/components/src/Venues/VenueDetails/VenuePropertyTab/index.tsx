@@ -145,6 +145,7 @@ export function VenuePropertyTab () {
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
@@ -515,6 +516,11 @@ export function VenuePropertyTab () {
           return ''
         }
       }]: [],
+    ...isMultipleIdentityUnits ? [{
+      key: 'identityCount',
+      title: $t({ defaultMessage: 'Identities' }),
+      dataIndex: ['identityCount']
+    }] : [],
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),

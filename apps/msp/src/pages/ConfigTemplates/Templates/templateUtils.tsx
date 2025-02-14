@@ -63,6 +63,14 @@ export function getConfigTemplateDriftStatusLabel (driftStatus: ConfigTemplateDr
   return $t(configTemplateDriftTypeLabelMap[driftStatus])
 }
 
+export function getConfigTemplateEnforcementLabel (enforced: boolean | undefined): string {
+  const { $t } = getIntl()
+
+  if (enforced === undefined) return ''
+
+  return enforced ? $t({ defaultMessage: 'Enforced' }) : $t({ defaultMessage: 'Not enforced' })
+}
+
 type DriftStatusCallback = Partial<Record<ConfigTemplateDriftType, () => void>>
 
 // eslint-disable-next-line max-len
