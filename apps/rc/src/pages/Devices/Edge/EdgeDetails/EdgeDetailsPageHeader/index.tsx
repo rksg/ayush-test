@@ -156,8 +156,15 @@ export const EdgeDetailsPageHeader = () => {
         />,
         ...filterByAccess([
           <Dropdown
-            // scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
-            overlay={menu}>{()=>
+            overlay={menu}
+            scopeKey={[EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE]}
+            rbacOpsIds={[
+              getOpsApi(EdgeUrlsInfo.reboot),
+              getOpsApi(EdgeUrlsInfo.shutdown),
+              getOpsApi(EdgeUrlsInfo.factoryReset),
+              getOpsApi(EdgeUrlsInfo.deleteEdge)
+            ]}
+          >{()=>
               <Button>
                 <Space>
                   {$t({ defaultMessage: 'More Actions' })}

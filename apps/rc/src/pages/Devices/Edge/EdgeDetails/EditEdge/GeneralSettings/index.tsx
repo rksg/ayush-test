@@ -60,7 +60,7 @@ const GeneralSettings = () => {
       form={form}
       onFinish={handleUpdateEdge}
       onCancel={() => navigate(linkToEdgeList)}
-      buttonLabel={{ submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
+      buttonLabel={{ apply: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
     >
       <StepsForm.StepForm>
         <Row gutter={20}>
