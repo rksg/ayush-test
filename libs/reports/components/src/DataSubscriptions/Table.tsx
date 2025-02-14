@@ -1,6 +1,7 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { get }                                  from '@acx-ui/config'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { doProfileDelete }                      from '@acx-ui/rc/services'
 import { useTableQuery }                        from '@acx-ui/rc/utils'
@@ -21,7 +22,7 @@ import {
 } from './services'
 import { Actions, getUserId, isVisibleByAction } from './utils'
 
-export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
+export function DataSubscriptionsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
@@ -209,7 +210,7 @@ export function DataSubscriptionsTable ({ isRAI }: { isRAI?: boolean }) {
     )
   }
 
-  const hasDataPermission = isRAI
+  const hasDataPermission = get('IS_MLISA_SA')
     ? hasPermission({ permission: 'WRITE_DATA_SUBSCRIPTIONS' })
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
