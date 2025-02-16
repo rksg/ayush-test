@@ -32,7 +32,7 @@ Object {
     "p-cov-clientrssi-low",
   ],
   "end": "2022-09-29T00:00:00.000Z",
-  "granularity": "PT180S",
+  "granularity": "PT15M",
   "path": Array [
     Object {
       "name": "Default Zone",

@@ -6,7 +6,7 @@ exports[`apDisconnectionCountChartQuery should call corresponding api 1`] = `
               $path: [HierarchyNodeInput]
               $start: DateTime
               $end: DateTime
-              
+              $granularity: String
               $code: String
             ) {
               network(start: $start, end: $end) {
@@ -15,7 +15,7 @@ exports[`apDisconnectionCountChartQuery should call corresponding api 1`] = `
   relatedIncidents: incidents(filter: {code: [$code]}) {
     id severity code startTime endTime
   }
-  apDisconnectionCountChart: timeSeries(granularity: \\"PT3M\\") {
+  apDisconnectionCountChart: timeSeries(granularity: $granularity) {
     time
     apDisconnectionCount
   }

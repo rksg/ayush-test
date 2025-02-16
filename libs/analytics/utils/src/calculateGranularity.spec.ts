@@ -29,11 +29,7 @@ it('should return correct granularity based on interval and min granularity', ()
     },
     {
       input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
-      output: 'PT180S'
-    },
-    {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-02-02T00:00:00+08:00' },
-      output: 'PT72H'
+      output: 'PT15M'
     },
     {
       input: {
@@ -42,6 +38,14 @@ it('should return correct granularity based on interval and min granularity', ()
         minGranularity: 'PT15M'
       },
       output: 'PT15M'
+    },
+    {
+      input: {
+        start: '2022-01-01T00:00:00+08:00',
+        end: '2022-01-01T00:10:00+08:00',
+        minGranularity: 'PT30M'
+      },
+      output: 'PT30M'
     }
   ]
   data.forEach(({ input, output }) => {
@@ -58,11 +62,11 @@ describe('Rollup', () => {
     jest.resetModules()
     jest.doMock('@acx-ui/config', () => ({ get: mockGet }))
   })
-  it('Should return 72H granularity when rollup is set', () => {
+  it('Should return 24H granularity when rollup is set', () => {
     mockGet.mockReturnValue('32')
     expect(require('.').calculateGranularity(
       moment().subtract(60, 'days').format(),
       moment().format()
-    )).toStrictEqual('PT72H')
+    )).toStrictEqual('PT24H')
   })
 })

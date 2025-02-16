@@ -30,7 +30,7 @@ Object {
     "i-apinfra-poe-low",
   ],
   "end": "2022-08-08T06:00:00.000Z",
-  "granularity": "PT72H",
+  "granularity": "PT24H",
   "path": Array [
     Object {
       "name": "Fong@Home",

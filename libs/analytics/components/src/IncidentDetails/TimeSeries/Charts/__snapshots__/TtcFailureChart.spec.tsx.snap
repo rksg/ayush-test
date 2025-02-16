@@ -33,7 +33,7 @@ Object {
     "ttc",
   ],
   "end": "2022-08-26T02:03:00.000Z",
-  "granularity": "PT180S",
+  "granularity": "PT15M",
   "path": Array [
     Object {
       "name": "EDU-MeshZone_orig",
