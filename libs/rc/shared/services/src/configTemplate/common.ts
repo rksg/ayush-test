@@ -495,7 +495,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           ...createHttpRequest(apiInfo, { templateId }),
           body: JSON.stringify({ name })
         }
-      }
+      },
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     updateEnforcementStatus: build.mutation<CommonResult, RequestPayload<{ enabled: boolean }>>({
       query: ({ params, payload }) => {
