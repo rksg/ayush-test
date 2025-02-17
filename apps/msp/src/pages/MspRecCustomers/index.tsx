@@ -79,7 +79,7 @@ export function MspRecCustomers () {
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    : isAdmin
   const hasAssignAdminPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)])
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
@@ -555,14 +555,14 @@ export function MspRecCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'Brand Properties' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink> : null,
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
-                hidden={userProfile?.support || !onBoard || !hasAddPermission}
+                hidden={userProfile?.support || !onBoard}
                 type='primary'>{$t({ defaultMessage: 'Add Property' })}</Button>
             </MspTenantLink>
           ]
