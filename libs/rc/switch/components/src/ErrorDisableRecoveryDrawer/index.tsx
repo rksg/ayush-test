@@ -188,6 +188,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                 style={{ marginBottom: '15px' }}
                 children={
                   <InputNumber
+                    data-testid='recoveryInterval'
                     style={{ width: '300px' }}
                     placeholder={$t({ defaultMessage: 'ex: 10 - 65535' })}
                   />}
@@ -199,6 +200,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
               style={{ marginBottom: '15px' }}
             >
               <Select
+                data-testid='recoverySetting'
                 value={value}
                 onChange={handleChange}
                 mode='multiple'
@@ -209,9 +211,11 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                   ? 0 : 'responsive'}
                 // eslint-disable-next-line max-len
                 maxTagPlaceholder={() => <span>{value.filter(item => item !== 'all').length} {$t({ defaultMessage: 'selected' })}</span>}
+                showSearch={false}
                 showArrow
               >
                 <Select.Option
+                  key={'all'}
                   value={'all'}
                   style={{ borderBottom: '1px solid #d9d9d9' }}
                 >
@@ -219,6 +223,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                 </Select.Option>
                 {options.map((option) => (
                   <Select.Option
+                    key={option.value}
                     value={option.value}
                   >
                     {option.label}
