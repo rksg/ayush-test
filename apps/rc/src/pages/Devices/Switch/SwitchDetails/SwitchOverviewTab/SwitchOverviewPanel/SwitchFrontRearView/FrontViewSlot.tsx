@@ -42,8 +42,7 @@ export function FrontViewSlot (props:{
       return 'lightgray'
     }
 
-    if (isSwitchErrorDisableEnabled &&
-      !!port.errorDisableStatus && port.errorDisableStatus !== 'None') {
+    if (isSwitchErrorDisableEnabled && !!port.errorDisableStatus) {
       return 'red'
     } else if (status === 'Up') {
       return 'green'

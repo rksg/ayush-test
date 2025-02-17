@@ -195,10 +195,9 @@ export function SwitchPortTable (props: {
     sorter: true,
     show: false,
     render: (_, row) => {
-      const isErrorDisabled = row.errorDisableStatus && row.errorDisableStatus !== 'None'
       return (
-        <span style={{ color: isErrorDisabled ? 'red' : 'inherit' }}>
-          {isErrorDisabled ? 'Yes' : 'No'}
+        <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
+          {row.errorDisableStatus ? 'Yes' : 'No'}
         </span>
       )
     }
@@ -209,10 +208,9 @@ export function SwitchPortTable (props: {
     sorter: true,
     show: false,
     render: (_, row) => {
-      const isErrorDisabled = row.errorDisableStatus && row.errorDisableStatus !== 'None'
       return (
-        <span style={{ color: isErrorDisabled ? 'red' : 'inherit' }}>
-          {isErrorDisabled ? row.errorDisableStatus : '--' }
+        <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
+          {row.errorDisableStatus ? row.errorDisableStatus : '--' }
         </span>
       )
     }
