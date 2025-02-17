@@ -23,7 +23,7 @@ import { useParams }                                  from 'react-router-dom'
 import { Button, Drawer, cssStr, showActionModal, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { SNRSolid }                                               from '@acx-ui/icons'
+import { OweTransition }                                          from '@acx-ui/icons'
 import { PhoneInput }                                             from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
@@ -415,6 +415,7 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
               label={network.name}
               key={network.id}
               disabled={list.length === 1}
+              style={{ lineHeight: '24px' }}
             >
               {network.name}
               {
@@ -422,7 +423,9 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
                 (network?.securityProtocol === WlanSecurityEnum.OWETransition) &&
                 (network?.isOweMaster) &&
                 (<Tooltip title='This network supports OWE-transition mode.'>
-                  <SNRSolid style={{ verticalAlign: 'bottom' }}/>
+                  <OweTransition style={{
+                    verticalAlign: 'bottom'
+                  }}/>
                 </Tooltip>)
               }
             </Select.Option>
