@@ -41,7 +41,8 @@ import {
   useDelSyslogPolicyTemplateMutation,
   useDelRoguePolicyTemplateMutation,
   useDeleteSwitchConfigProfileTemplateMutation,
-  useDeleteApGroupsTemplateMutation
+  useDeleteApGroupsTemplateMutation,
+  useDelEthernetPortProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -391,6 +392,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
   const [ deleteRogueAPTemplate ] = useDelRoguePolicyTemplateMutation()
   const [ deleteSwitchConfigProfileTemplate ] = useDeleteSwitchConfigProfileTemplateMutation()
   const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
+  const [ deleteEthernetPortTemplate ] = useDelEthernetPortProfileTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -410,6 +412,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
     [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
     [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
     [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
-    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate
+    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
+    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate
   }
 }

@@ -194,10 +194,10 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   return (
     <>
       {!isEmbedded &&
-      <PageHeader
-        title={pageTitle}
-        breadcrumb={breadcrumb}
-      />
+        <PageHeader
+          title={pageTitle}
+          breadcrumb={breadcrumb}
+        />
       }
       <StepsForm
         form={formRef}
@@ -300,44 +300,46 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               </Form.Item>
             </Col>
           </Row>
-          <Subtitle level={3}>
-            {$t({ defaultMessage: '802.1X' })}
-          </Subtitle>
-          <StepsForm.FieldLabel width={'280px'}>
-            {$t({ defaultMessage: '802.1X Authentication' })}
-            <Form.Item
-              name='authEnabled'
-              valuePropName={'checked'}
-            >
-              <Switch disabled={isEditMode} />
-            </Form.Item>
-          </StepsForm.FieldLabel>
-          {authEnabled && <>
-            <Row>
-              <Col span={12}>
-                <Form.Item
-                  name='authTypeRole'
-                  label={<>
-                    {$t({ defaultMessage: '802.1X Role' })}
-                    <Tooltip.Question
-                      title={
-                        (portType === EthernetPortType.TRUNK) ?
-                          $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_TRUNK):
-                          $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_ACCESS)
-                      }
-                      placement='bottom'
+          {!isTemplate &&
+          <>
+            <Subtitle level={3}>
+              {$t({ defaultMessage: '802.1X' })}
+            </Subtitle>
+            <StepsForm.FieldLabel width={'280px'}>
+              {$t({ defaultMessage: '802.1X Authentication' })}
+              <Form.Item
+                name='authEnabled'
+                valuePropName={'checked'}
+              >
+                <Switch disabled={isEditMode} />
+              </Form.Item>
+            </StepsForm.FieldLabel>
+            {authEnabled && <>
+              <Row>
+                <Col span={12}>
+                  <Form.Item
+                    name='authTypeRole'
+                    label={<>
+                      {$t({ defaultMessage: '802.1X Role' })}
+                      <Tooltip.Question
+                        title={
+                          (portType === EthernetPortType.TRUNK) ?
+                            $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_TRUNK):
+                            $t(EthernetPortProfileMessages.AUTH_TYPE_ROLE_ACCESS)
+                        }
+                        placement='bottom'
+                      />
+                    </>
+                    }
+                  >
+                    <Select
+                      options={authTypeRoleOptionsArray}
+                      disabled={isEditMode}
                     />
-                  </>
-                  }
-                >
-                  <Select
-                    options={authTypeRoleOptionsArray}
-                    disabled={isEditMode}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            {authTypeRole === EthernetPortAuthType.SUPPLICANT &&
+                  </Form.Item>
+                </Col>
+              </Row>
+              {authTypeRole === EthernetPortAuthType.SUPPLICANT &&
               <Row>
                 <Col span={12}>
                   <Form.Item
@@ -355,8 +357,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Form.Item>
                 </Col>
               </Row>
-            }
-            {supplicantType === EthernetPortSupplicantType.CUSTOM &&
+              }
+              {supplicantType === EthernetPortSupplicantType.CUSTOM &&
               <>
                 <Row>
                   <Col span={12}>
@@ -399,8 +401,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Col>
                 </Row>
               </>
-            }
-            {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
+              }
+              {authTypeRole !== EthernetPortAuthType.SUPPLICANT &&
               <>
                 <EthernetPortAAASettings />
                 <Row>
@@ -423,8 +425,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Col>
                 </Row>
               </>
-            }
-            {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled) &&
+              }
+              {(authTypeRole === EthernetPortAuthType.MAC_BASED && isDynamicVLANEnabled) &&
             <StepsForm.FieldLabel width={'280px'}>
               <Space >
                 {$t({ defaultMessage: 'Dynamic VLAN' })}
@@ -441,10 +443,10 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 <Switch />
               </Form.Item>
             </StepsForm.FieldLabel>
+              }
+            </>
             }
-          </>
-          }
-          {dynamicVlanEnabled &&
+            {dynamicVlanEnabled &&
           <Row>
             <Col span={12}>
               <Form.Item
@@ -469,7 +471,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
               </Form.Item>
             </Col>
           </Row>
-          }
+            }
+          </>}
         </StepsForm.StepForm>
       </StepsForm>
     </>

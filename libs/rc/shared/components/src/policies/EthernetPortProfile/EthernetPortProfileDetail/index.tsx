@@ -11,6 +11,7 @@ import {
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
+  useGetEthernetPortProfileTemplateQuery,
   useGetEthernetPortProfileWithRelationsByIdQuery
 } from '@acx-ui/rc/services'
 import {
@@ -23,7 +24,9 @@ import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  getScopeKeyByPolicy
+  getScopeKeyByPolicy,
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -34,17 +37,21 @@ export const EthernetPortProfileDetail = () => {
 
   const { $t } = useIntl()
   const { policyId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+
   const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
-  const { data: ethernetPortProfileData } = useGetEthernetPortProfileWithRelationsByIdQuery({
+
+  const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
+    useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
+    enableRbac: true,
+    extraParams: { id: policyId },
     payload: {
       sortField: 'name',
       sortOrder: 'ASC',
       filters: {
         id: [policyId]
       }
-    },
-    params: {
-      id: policyId
     }
   })
 
@@ -52,7 +59,7 @@ export const EthernetPortProfileDetail = () => {
     {
       params: { policyId: ethernetPortProfileData?.authRadiusId }
     }, {
-      skip: !!!ethernetPortProfileData?.authRadiusId
+      skip: !!!ethernetPortProfileData?.authRadiusId || isTemplate
     }
   )
 
@@ -60,7 +67,7 @@ export const EthernetPortProfileDetail = () => {
     {
       params: { policyId: ethernetPortProfileData?.accountingRadiusId }
     }, {
-      skip: !!!ethernetPortProfileData?.accountingRadiusId
+      skip: !!!ethernetPortProfileData?.accountingRadiusId || isTemplate
     }
   )
 
@@ -82,7 +89,8 @@ export const EthernetPortProfileDetail = () => {
       content: () => {
         return ethernetPortProfileData?.vlanMembers
       }
-    }, {
+    },
+    ...(isTemplate? [] : [{
       title: $t({ defaultMessage: '802.1X Authentication' }),
       content: () => {
         const authTypeString = getEthernetPortAuthTypeString(ethernetPortProfileData?.authType)
@@ -125,8 +133,8 @@ export const EthernetPortProfileDetail = () => {
       content: () => {
         return (ethernetPortProfileData?.bypassMacAddressAuthentication)? 'On' : 'Off'
       }
-    },
-    ...(supportDynamicVLAN &&
+    }]),
+    ...(supportDynamicVLAN && !isTemplate &&
       ethernetPortProfileData?.authType === EthernetPortAuthType.MAC_BASED ?
       [{
         title: $t({ defaultMessage: 'Dynamic VLAN' }),
