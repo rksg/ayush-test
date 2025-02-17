@@ -16,8 +16,10 @@ import {
   GridRow,
   GridCol,
   Loader,
-  HistoricalCard
+  HistoricalCard,
+  getDefaultEarliestStart
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { NetworkTypeEnum, networkTypes }      from '@acx-ui/rc/utils'
 import { useDateFilter, generateVenueFilter } from '@acx-ui/utils'
 import type { AnalyticsFilter }               from '@acx-ui/utils'
@@ -25,8 +27,9 @@ import type { AnalyticsFilter }               from '@acx-ui/utils'
 import { extractSSIDFilter, useGetNetwork } from '../services'
 
 export function NetworkOverviewTab ({ selectedVenues }: { selectedVenues?: string[] }) {
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const { $t } = useIntl()
-  const { dateFilter } = useDateFilter()
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const network = useGetNetwork()
   let filter = { ssids: extractSSIDFilter(network) }
   if (selectedVenues?.length) {
