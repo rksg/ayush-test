@@ -879,7 +879,8 @@ export function EditPortDrawer ({
           disabled={getOverrideDisabled(field)}
         />}
       />}
-      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) } {tooltip}</UI.ExtraLabel> }
+      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }
+        <UI.FieldTemplateTooltip>{tooltip}</UI.FieldTemplateTooltip></UI.ExtraLabel> }
       { content }
     </UI.FormItem>
   }
@@ -2251,9 +2252,7 @@ export function EditPortDrawer ({
         { getFieldTemplate({
           field: 'stpBpduGuard',
           extraLabel: true,
-          tooltip: <UI.FieldTemplateTooltip>
-            <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>
-          </UI.FieldTemplateTooltip>,
+          tooltip: <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>,
           content: <Form.Item
             noStyle
             label={false}
