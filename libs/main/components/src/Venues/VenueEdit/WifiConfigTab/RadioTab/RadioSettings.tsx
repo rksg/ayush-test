@@ -401,6 +401,13 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       if (!isAFCEnabled) {
         set(data, 'radioParams6G.enableAfc', false)
       }
+      const { radioParams6G } = data
+      if (radioParams6G) {
+        const { enableMulticastUplinkRateLimiting, enableMulticastDownlinkRateLimiting } = radioParams6G
+        if (enableMulticastUplinkRateLimiting || enableMulticastDownlinkRateLimiting) {
+          set(data, 'radioParams6G.enableMulticastRateLimiting', true)
+        }
+      }
 
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
@@ -571,14 +578,19 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     const validateChannels = (channels: unknown[] | undefined, method: ScanMethodEnum | undefined,
       title: string, dual5GName?: string) => {
 
-      const content = dual5GName?
+      const content = dual5GName? ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
         $t(
           // eslint-disable-next-line max-len
-          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz that uses Manual channel selection.{br}Please select Custom Settings on {dual5GName} block with at least one channel' },
           { dual5GName, br: <br /> }
-        ): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
-          $t({ defaultMessage: 'Please select one channel' }):
-          $t({ defaultMessage: 'Please select at least two channels' })
+        ):
+        $t(
+          // eslint-disable-next-line max-len
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please use Custom Settings and select at least two channels under the {dual5GName} block' },
+          { dual5GName, br: <br /> }
+        )): (method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?
+        $t({ defaultMessage: 'Please select one channel' }):
+        $t({ defaultMessage: 'Please select at least two channels' })
       if (Array.isArray(channels) && ((method === ScanMethodEnum.MANUAL && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
         showActionModal({
           type: 'error',
@@ -628,7 +640,13 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
     const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
       ''
-    if (outdoorChannel6 && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
+    if (isVenueChannelSelectionManualEnabled) {
+      const supportCh6G = supportRadioChannels[ApRadioTypeEnum.Radio6G]
+      const isSupportOutdoor6G = !isEmpty(supportCh6G.outdoor)
+      if (outdoorChannel6 && isSupportOutdoor6G && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
+    } else {
+      if (outdoorChannel6 && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
+    }
     if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
       if (!validate320MHzIsolatedGroup(indoorChannel6, indoorTitle6)) return false
       if (outdoorChannel6 && !validate320MHzIsolatedGroup(outdoorChannel6, outdoorTitle6)) return false
@@ -660,7 +678,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     }
 
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
-    const lowerMethod5 = radioParamsLower5G?.method
+    const lowerMethod5 = inheritParamsLower5G ? radioParams50G?.method : radioParamsLower5G?.method
 
     const indoorLowerChannel5 = inheritParamsLower5G
       ? indoorLower5GChs
@@ -679,7 +697,7 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     if (!validateChannels(outdoorLowerChannel5, lowerMethod5, outdoorLowerTitle5, lower5GName)) return false
 
     const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
-    const upperMethod5 = radioParamsUpper5G?.method
+    const upperMethod5 = inheritParamsUpper5G ? radioParams50G?.method : radioParamsUpper5G?.method
 
     const indoorUpperChannel5 = inheritParamsUpper5G
       ? indoorUpper5GChs

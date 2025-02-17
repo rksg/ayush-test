@@ -36,6 +36,7 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { useEnforcedStatus }                                                                   from '../../configTemplates'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                                from '../../NetworkApGroupDialog'
 import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
@@ -98,7 +99,9 @@ const defaultRbacPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId',
-    'venueApGroups'
+    'venueApGroups',
+    'isEnforced',
+    'isManagedByTemplate'
   ],
   searchTargetFields: ['name']
 }
@@ -211,6 +214,8 @@ export function Venues (props: VenuesProps) {
   })
   // hooks for tunnel column - end
 
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+
   useEffect(() => {
     // need to make sure table data is ready.
     // should avoid triggering in editMode/cloneMode
@@ -275,6 +280,8 @@ export function Venues (props: VenuesProps) {
         })
         return !enabled
       },
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows) => {
         handleActivateVenue(true, rows)
       }
@@ -287,6 +294,8 @@ export function Venues (props: VenuesProps) {
         })
         return !enabled
       },
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows) => {
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
           rows.map(item => item.id),
@@ -449,20 +458,20 @@ export function Venues (props: VenuesProps) {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (_, row) {
-        let disabled = false
-        // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
-        if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
-          disabled = true
-        }else{
-          title = ''
-        }
+        const isDhcpDisabled = data && data.enableDhcp && row.mesh && row.mesh.enabled
+        const dhcpDisabledMsg = isDhcpDisabled
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          : ''
+
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
 
         return <Tooltip
-          title={title}
+          title={dhcpDisabledMsg || enforcedActionMsg}
           placement='bottom'>
           <Switch
-            disabled={disabled}
+            disabled={isDhcpDisabled || isEnforcedByTemplate}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()

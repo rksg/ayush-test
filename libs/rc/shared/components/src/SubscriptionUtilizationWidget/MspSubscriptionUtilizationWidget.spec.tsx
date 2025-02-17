@@ -12,6 +12,7 @@ describe('MSP Subscription utilization widget', () => {
     render(<MspSubscriptionUtilizationWidget
       deviceType={EntitlementDeviceType.WIFI}
       title='Wi-Fi'
+      extendedTrial={false}
       used={10}
       assigned={5}
       total={105}
@@ -24,6 +25,7 @@ describe('MSP Subscription utilization widget', () => {
   it('should correctly display zero quantity', async () => {
     render(<MspSubscriptionUtilizationWidget
       deviceType={EntitlementDeviceType.SWITCH}
+      extendedTrial={false}
       title='Switch'
       used={0}
       assigned={0}

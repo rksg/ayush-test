@@ -1,11 +1,18 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { MspRbacUrlsInfo }            from '@acx-ui/msp/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { MspRbacUrlsInfo }                             from '@acx-ui/msp/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen }                  from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
 import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  isPrimeAdmin
+} as UserProfileContextProps
 
 const list = [
   {
@@ -37,6 +44,10 @@ describe('SolutionTokenLicenses', () => {
       rest.get(
         MspRbacUrlsInfo.getSolutionTokenSettings.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.patch(
+        MspRbacUrlsInfo.updateSolutionTokenSettings.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
       )
     )
     params = {
@@ -50,12 +61,18 @@ describe('SolutionTokenLicenses', () => {
   it('should render settings content', async () => {
     render(
       <Provider>
-        <SolutionTokenSettingsTabContent isTabSelected={true} />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <SolutionTokenSettingsTabContent isTabSelected={true} />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
       })
 
     expect(await screen.findByText('Personal Identity Network')).toBeVisible()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Personal Identity Network' }))
+    expect(await screen.findByText('Personal Identity Network is Enabled')).toBeVisible()
   })
 })
