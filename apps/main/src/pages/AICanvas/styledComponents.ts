@@ -473,6 +473,9 @@ export const Widget = styled(Card)`
       border-top: 1px solid var(--acx-primary-white);
     }
   }
+  .chart {
+    margin: 5px;
+  }
 `
 
 export const Badge = styled(AntBadge)`

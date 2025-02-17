@@ -240,7 +240,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
   const getChart = (type: string, width:number, height:number, chartData:WidgetListData) => {
     if(type === 'pie') {
       return <DonutChart
-        style={{ width, height }}
+        style={{ width: width-5, height: height-5 }}
         size={'medium'}
         data={chartData?.chartOption || []}
         animation={true}
@@ -248,13 +248,13 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
       />
     } else if(type === 'line') {
       return <StackedAreaChart
-        style={{ width, height }}
+        style={{ width: width-5, height: height-5 }}
         data={chartData?.chartOption || []}
         xAxisType={chartData?.axisType}
       />
     } else if(type === 'bar') {
       return <BarChart
-        style={{ width: width-30, height }}
+        style={{ width: width-30, height: height-5 }}
         grid={{ right: '10px', top: chartData?.multiseries ? '15%': '0' }}
         data={(chartData?.chartOption || []) as BarChartData}
         barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
@@ -266,7 +266,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
       />
     } else if(type === 'table') {
       return <Table
-        style={{ width: width-30 }}
+        style={{ width: width-30, height: height-5 }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
           .map(i => ({ ...i, searchable: true })) || []}
         dataSource={chartData?.chartOption?.dataSource}
@@ -319,8 +319,8 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
-          {({ height, width }) => getChart(
-            data.chartType, width, height, chartData as WidgetListData)}
+          {({ height, width }) => <div className='chart'>{getChart(
+            data.chartType, width, height, chartData as WidgetListData)}</div>}
         </AutoSizer>
       </UI.Widget>
       {
