@@ -181,11 +181,11 @@ export function useIntentAIActions () {
     }
   }
 
-  const getR1WlanPayload = (venueId:string, code:string) => ({
+  const getR1WlanPayload = (venueId: string, code: string) => ({
     params: { venueId },
     radio: codeToRadio[code],
     payload: {
-      venueId,
+      ...(isWifiRbacEnabled && { venueId }),
       fields: isWifiRbacEnabled ? ['id', 'name', 'venueApGroups', 'ssid'] : ['id', 'name', 'ssid'],
       page: 1,
       sortField: 'name',
