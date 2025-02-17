@@ -10,8 +10,7 @@ import {
   EdgeNokiaOltData,
   EdgeNokiaOltStatusEnum,
   getOltStatusConfig,
-  isOltOnline,
-  isOltValidSerialNumber
+  isOltOnline
 } from '@acx-ui/rc/utils'
 
 import OltImage                    from '../../../assets/images/olt/olt.png'
@@ -81,8 +80,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
               <Typography.Text>{$t({ defaultMessage: 'Status' })}</Typography.Text>
               <StyledEdgeNokiaOltStatus
                 config={getOltStatusConfig()}
-                // eslint-disable-next-line max-len
-                status={isOltValidSerialNumber(currentOlt.serialNumber) ? currentOlt.status : EdgeNokiaOltStatusEnum.UNKNOWN}
+                status={currentOlt.status || EdgeNokiaOltStatusEnum.UNKNOWN}
                 showText />
             </GridCol>
             <GridCol col={{ span: 5 }}>
