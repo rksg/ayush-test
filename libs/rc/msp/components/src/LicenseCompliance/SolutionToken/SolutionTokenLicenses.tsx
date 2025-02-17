@@ -7,7 +7,7 @@ import { DateFormatEnum, formatter }                                            
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
 import { useGetTenantDetailsQuery }                                              from '@acx-ui/rc/services'
-import { EntitlementUtil, useTableQuery }                                        from '@acx-ui/rc/utils'
+import { EntitlementNetworkDeviceType, EntitlementUtil, useTableQuery }          from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                         from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
@@ -111,7 +111,8 @@ export default function SolutionTokenLicenses () {
       sorter: false,
       width: 140,
       render: function (data: React.ReactNode, row: MspEc) {
-        return mspUtils.transformDeviceEntitlement(row.entitlements)
+        return mspUtils.transformDeviceEntitlement(row.entitlements,
+          EntitlementNetworkDeviceType.SLTN_TOKEN)
       }
     },
     {
@@ -124,7 +125,8 @@ export default function SolutionTokenLicenses () {
       render: function (data: React.ReactNode, row: MspEc) {
         const nextExpirationDate = mspUtils.transformExpirationDate(row)
         const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
-        return remainingDays < 0 ? 0 : mspUtils.transformAvailableLicenses(row.entitlements)
+        return remainingDays < 0 ? 0 : mspUtils.transformAvailableLicenses(row.entitlements,
+          EntitlementNetworkDeviceType.SLTN_TOKEN)
       }
     },
     {
@@ -135,7 +137,8 @@ export default function SolutionTokenLicenses () {
       sorter: false,
       width: 140,
       render: function (_: React.ReactNode, row: MspEc) {
-        return mspUtils.transformInstalledDevice(row.entitlements)
+        return mspUtils.transformInstalledDevice(row.entitlements,
+          EntitlementNetworkDeviceType.SLTN_TOKEN)
       }
     },
     ...(adaptivePolicyToggle ? [{
