@@ -23,7 +23,8 @@ import {
   SwitchViewModel,
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
-  isFirmwareVersionAbove10020b
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010fCd2Or10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { ErrorDisableRecoveryDrawer }                   from '@acx-ui/switch/components'
@@ -57,6 +58,7 @@ export function SwitchPortTable (props: {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [recoveryDrawerVisible, setRecoveryDrawerVisible] = useState(false)
+  const [switchSupportErrorRecovery, setSwitchSupportErrorRecovery] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
@@ -112,6 +114,8 @@ export function SwitchPortTable (props: {
           .concat(vlanUnion.profileVlan || [])
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
+        setSwitchSupportErrorRecovery(isSwitchErrorRecoveryEnabled &&
+          isFirmwareVersionAbove10010fCd2Or10020b(switchDetail?.firmware))
       }
     }
     setData()
@@ -403,10 +407,11 @@ export function SwitchPortTable (props: {
         } : undefined}
       actions={!isVenueLevel
         ? [
-          ...filterByAccess(isSwitchErrorRecoveryEnabled ? [{
-            label: $t({ defaultMessage: 'Error Disable Recovery' }),
-            onClick: () => { setRecoveryDrawerVisible(true) }
-          }] : []),
+          ...filterByAccess(
+            switchSupportErrorRecovery ? [{
+              label: $t({ defaultMessage: 'Error Disable Recovery' }),
+              onClick: () => { setRecoveryDrawerVisible(true) }
+            }] : []),
 
           ...filterByAccess([{
             label: $t({ defaultMessage: 'Manage LAG' }),
@@ -422,7 +427,7 @@ export function SwitchPortTable (props: {
       setVisible={setLagDrawerVisible}
     />}
 
-    {isSwitchErrorRecoveryEnabled && recoveryDrawerVisible &&
+    {switchSupportErrorRecovery && recoveryDrawerVisible &&
       <ErrorDisableRecoveryDrawer
         visible={recoveryDrawerVisible}
         setVisible={setRecoveryDrawerVisible}
