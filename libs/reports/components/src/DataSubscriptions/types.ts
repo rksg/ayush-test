@@ -1,6 +1,6 @@
 export type Response <T> = { data: T }
 
-export type AzureStoragePayload = {
+type AzureStoragePayload = {
   azureConnectionType: string,
   azureAccountName: string,
   azureAccountKey: string,
@@ -8,14 +8,14 @@ export type AzureStoragePayload = {
   azureCustomerName: string
 }
 
-export type FTPStroagePayload = {
+type FTPStoragePayload = {
   ftpHost: string,
   ftpPort: string,
   ftpUserName: string,
   ftpPassword: string
 }
 
-export type SFTPStoragePayload = {
+type SFTPStoragePayload = {
   sftpHost: string,
   sftpPort: string,
   sftpUserName: string,
@@ -26,7 +26,7 @@ export type SFTPStoragePayload = {
 export type StoragePayload = {
   connectionType: 'azure' | 'ftp' | 'sftp',
   id?: string
-} & (AzureStoragePayload | FTPStroagePayload | SFTPStoragePayload) & { isEdit: boolean }
+} & (AzureStoragePayload | FTPStoragePayload | SFTPStoragePayload) & { isEdit: boolean }
 
 export type SubscriptionPayload = {
   name: string,
@@ -59,7 +59,7 @@ export type PatchDataSubscriptions = {
 export enum AuditStatusEnum {
   Success = 'success',
   Failure = 'failure',
-  InProgess = 'inProgress',
+  InProgress = 'inProgress',
   Scheduled = 'scheduled'
 }
 

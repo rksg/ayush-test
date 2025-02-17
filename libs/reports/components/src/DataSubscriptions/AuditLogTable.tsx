@@ -1,17 +1,28 @@
-import { FC, ReactNode, useCallback, useMemo } from 'react'
+import { FC, ReactNode, useMemo } from 'react'
 
 import { Badge }                  from 'antd'
 import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { cssStr, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { DateFormatEnum, formats, formatter }         from '@acx-ui/formatter'
-import { useTableQuery }                              from '@acx-ui/rc/utils'
+import {
+  cssStr,
+  Loader,
+  showToast,
+  Table,
+  TableProps,
+  Tooltip
+} from '@acx-ui/components'
+import { DateFormatEnum, formats, formatter } from '@acx-ui/formatter'
+import { useTableQuery }                      from '@acx-ui/rc/utils'
+import { getIntl }                            from '@acx-ui/utils'
 
 import { useGetAuditsQuery, useRetryAuditMutation } from './services'
 import { AuditDto, AuditStatusEnum }                from './types'
 
-const retirableStatus = ['failure', 'success']
+export const retryableStatus = [
+  AuditStatusEnum.Failure,
+  AuditStatusEnum.Success
+]
 const settingsId = 'data-subscription-audit-table'
 
 const statusColorMapping = (status: AuditDto['status']) => {
@@ -20,14 +31,17 @@ const statusColorMapping = (status: AuditDto['status']) => {
       return cssStr('--acx-semantics-red-50')
     case AuditStatusEnum.Success:
       return cssStr('--acx-semantics-green-50')
-    case AuditStatusEnum.InProgess: // fallthrough
+    case AuditStatusEnum.InProgress: // fallthrough
     case AuditStatusEnum.Scheduled: // fallthrough
     default:
       return cssStr('--acx-neutrals-50')
   }
 }
 
-const renderStatusWithBadge = (status: AuditDto['status'], error?: string) => (
+export const renderStatusWithBadge = (
+  status: AuditDto['status'],
+  error?: string
+) => (
   <Badge
     color={statusColorMapping(status)}
     text={
@@ -44,64 +58,73 @@ const renderStatusWithBadge = (status: AuditDto['status'], error?: string) => (
 )
 
 interface AuditLogTableProps {
-  dataSubscriptionId: string
+  dataSubscriptionId: string;
+}
+
+export const getRetryError = (audit?: AuditDto): string | undefined => {
+  if (!audit) return undefined
+  const { $t } = getIntl()
+  const { status, start } = audit
+
+  if (!retryableStatus.includes(status)) {
+    return $t({ defaultMessage: 'Subscription is {status}' }, { status })
+  }
+
+  const inputDate = moment(start)
+  const now = moment()
+  const diffDays = now.diff(inputDate, 'days')
+
+  if (diffDays >= 3) {
+    return $t(
+      defineMessage({
+        defaultMessage:
+          'Subscription can only be retried within 3 days from start date'
+      })
+    )
+  }
+
+  return undefined
 }
 
 const AuditLogTable: FC<AuditLogTableProps> = ({ dataSubscriptionId }) => {
   const { $t } = useIntl()
-
   const [retryAudit] = useRetryAuditMutation()
-
   const tableQuery = useTableQuery<AuditDto>({
     useQuery: useGetAuditsQuery,
     pagination: { settingsId },
     defaultPayload: { filters: { dataSubscriptionId } }
   })
 
-  const getRetryError = useCallback(
-    (audit: AuditDto): string | undefined => {
-      if (!audit) return undefined
-
-      const { status, start } = audit
-
-      if (!retirableStatus.includes(status)) {
-        return $t(
-          { defaultMessage: 'Subscription is {status}' },
-          { status }
-        )
-      }
-
-      const inputDate = moment(start)
-      const now = moment()
-      const diffDays = now.diff(inputDate, 'days')
-
-      if (diffDays >= 3) {
-        return $t(
-          defineMessage({
-            defaultMessage:
-              'Subscription can only be retried within 3 days from start date'
-          })
-        )
-      }
-
-      return undefined
-    },
-    [$t]
-  )
-
   const rowActions: TableProps<AuditDto>['rowActions'] = useMemo(
     () => [
       {
         label: $t(defineMessage({ defaultMessage: 'Retry' })),
         onClick: ([{ id }], clearSelection) => {
-          retryAudit(id)
-          clearSelection()
+          retryAudit(id).unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t({
+                  defaultMessage:
+                    'The selected audit has been retried successfully.'
+                })
+              })
+              clearSelection()
+            })
+            .catch(() => {
+              showToast({
+                type: 'error',
+                content: $t({
+                  defaultMessage: 'Failed to retry selected audit.'
+                })
+              })
+            })
         },
         disabled: ([selectedRow]) => !!getRetryError(selectedRow),
         tooltip: ([selectedRow]) => getRetryError(selectedRow)
       }
     ],
-    [$t, retryAudit, getRetryError]
+    [$t, retryAudit]
   )
 
   const columns: TableProps<AuditDto>['columns'] = useMemo(
@@ -146,8 +169,8 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataSubscriptionId }) => {
     <Loader states={[tableQuery]}>
       <Table
         columns={columns}
+        settingsId={settingsId}
         dataSource={tableQuery.data?.data}
-        onChange={tableQuery.handleTableChange}
         pagination={tableQuery.pagination}
         rowKey='id'
         rowActions={rowActions}

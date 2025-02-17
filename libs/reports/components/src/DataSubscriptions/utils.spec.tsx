@@ -1,6 +1,6 @@
 import { get } from '@acx-ui/config'
 
-import { DataSubscription }                                            from './services'
+import { DataSubscription }                                            from './types'
 import { Actions, generateBreadcrumb, getUserName, isVisibleByAction } from './utils'
 
 jest.mock('@acx-ui/analytics/utils', () => ({

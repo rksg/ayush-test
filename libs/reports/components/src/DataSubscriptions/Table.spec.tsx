@@ -12,8 +12,8 @@ import {
 } from '@acx-ui/user'
 
 import { mockedSubscriptions, mockedUserId } from './__fixtures__'
-import { DataSubscription }                  from './services'
 import { DataSubscriptionsTable }            from './Table'
+import { DataSubscription }                  from './types'
 
 const { click } = userEvent
 const mockedUsedNavigate = jest.fn()

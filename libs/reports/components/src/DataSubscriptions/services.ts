@@ -126,9 +126,8 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         method: 'POST',
         credentials: 'include',
         body: payload
-      })
-      ,
-      providesTags: [{ type: 'DataSubscription', id: 'AUDIT_LIST' }]
+      }),
+      providesTags: [{ type: 'DataSubscription', id: 'GET_AUDIT_LIST' }]
     }),
     retryAudit: build.mutation<AuditDto['id'], AuditDto['id']>({
       query: (id) => ({
@@ -136,7 +135,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         method: 'POST',
         credentials: 'include'
       }),
-      invalidatesTags: [{ type: 'DataSubscription', id: 'AUDIT_LIST' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_AUDIT_LIST' }]
     })
   })
 })
