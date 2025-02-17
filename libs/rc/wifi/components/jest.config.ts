@@ -6,6 +6,10 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: './test-results', outputName: 'wifi-components.xml' }]
+  ],
   coverageDirectory: '../../../../coverage/libs/rc/wifi/components',
   coverageThreshold: {
     global: {
