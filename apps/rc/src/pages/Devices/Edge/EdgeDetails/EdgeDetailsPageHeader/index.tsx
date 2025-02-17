@@ -11,10 +11,11 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, CaretDownSolidIcon, Dropdown, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { EdgePermissions }                                                                        from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }                                 from '@acx-ui/rc/components'
 import {
-  EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
+  EdgeStatusEnum, EdgeUrlsInfo, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -23,7 +24,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { EdgeScopes, RbacOpsIds, ScopeKeys } from '@acx-ui/types'
 import { filterByAccess, hasPermission }     from '@acx-ui/user'
-import { useDateFilter }                     from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }          from '@acx-ui/utils'
 
 import { HaStatusBadge }          from '../../HaStatusBadge'
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
@@ -51,24 +52,28 @@ export const EdgeDetailsPageHeader = () => {
   const menuConfig = [
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.reboot)],
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
       showupstatus: rebootShutdownEdgeStatusWhiteList
     },
     ...(isGracefulShutdownReady ? [{
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
       label: $t({ defaultMessage: 'Shutdown' }),
       key: 'shutdown',
       showupstatus: rebootShutdownEdgeStatusWhiteList
     }] : []),
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],
       label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
       showupstatus: resettabaleEdgeStatuses
     },
     {
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteEdge)],
       label: $t({ defaultMessage: 'Delete RUCKUS Edge' }),
       key: 'delete',
       showupstatus: [...Object.values(EdgeStatusEnum)]
@@ -151,8 +156,15 @@ export const EdgeDetailsPageHeader = () => {
         />,
         ...filterByAccess([
           <Dropdown
-            // scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
-            overlay={menu}>{()=>
+            overlay={menu}
+            scopeKey={[EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE]}
+            rbacOpsIds={[
+              getOpsApi(EdgeUrlsInfo.reboot),
+              getOpsApi(EdgeUrlsInfo.shutdown),
+              getOpsApi(EdgeUrlsInfo.factoryReset),
+              getOpsApi(EdgeUrlsInfo.deleteEdge)
+            ]}
+          >{()=>
               <Button>
                 <Space>
                   {$t({ defaultMessage: 'More Actions' })}
@@ -162,6 +174,7 @@ export const EdgeDetailsPageHeader = () => {
             }</Dropdown>,
           <Button
             scopeKey={[EdgeScopes.UPDATE]}
+            rbacOpsIds={EdgePermissions.editEdgeNode}
             type='primary'
             onClick={() =>
               navigate({

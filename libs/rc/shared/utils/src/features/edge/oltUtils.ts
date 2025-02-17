@@ -4,6 +4,7 @@ import { defineMessage } from 'react-intl'
 import { getIntl } from '@acx-ui/utils'
 
 import { EdgeNokiaCageStateEnum, EdgeNokiaOltStatusEnum } from '../../models/EdgeNokiaOltEnum'
+import { EdgeNokiaOltData }                               from '../../types/edgeOlt'
 
 export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment (
 
@@ -81,3 +82,5 @@ export const getOltPoeClassText = (poeClass: string): string => {
 }
 
 export const isOltValidSerialNumber = (serialNumber: string): boolean => !!serialNumber
+export const isOltOnline = (oltData: EdgeNokiaOltData) =>
+  oltData.status === EdgeNokiaOltStatusEnum.ONLINE
