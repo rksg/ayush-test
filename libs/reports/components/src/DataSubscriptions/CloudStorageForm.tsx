@@ -42,11 +42,11 @@ const getStorageMap = () => {
       component: <Input data-testid='azureAccountKey' />
     }, {
       id: 'azureShareName',
-      name: $t({ defaultMessage: 'Azure share Name' }),
+      name: $t({ defaultMessage: 'Azure share name' }),
       component: <Input data-testid='azureShareName' />
     }, {
       id: 'azureCustomerName',
-      name: $t({ defaultMessage: 'Azure customer Name' }),
+      name: $t({ defaultMessage: 'Azure customer name' }),
       component: <Input data-testid='azureCustomerName' />
     }],
     ftp: [{
@@ -98,7 +98,6 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const [form] = Form.useForm()
   const selectedConnectionType: string = Form.useWatch('connectionType', form)
   const connectionType = selectedConnectionType || selectedCloudStorage?.connectionType
-  const comps = storageMap[connectionType as keyof typeof storageMap]
   const [updateStorage, { isLoading }] = useSaveStorageMutation()
 
   const saveStorage = useCallback(() => {
@@ -150,18 +149,19 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
                 options={StorageOptions}
               />
             </Form.Item>
-            {comps?.map((item: { id: string, name: string, component: ReactElement }) =>
-              <Form.Item
-                key={item.id}
-                name={item.id}
-                label={item.name}
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
-                }]}
-              >
-                {item.component}
-              </Form.Item>)}
+            {storageMap[connectionType as keyof typeof storageMap]
+              ?.map((item: { id: string, name: string, component: ReactElement }) =>
+                <Form.Item
+                  key={item.id}
+                  name={item.id}
+                  label={item.name}
+                  rules={[{
+                    required: true,
+                    message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
+                  }]}
+                >
+                  {item.component}
+                </Form.Item>)}
           </Form>
         </GridCol>
       </GridRow>

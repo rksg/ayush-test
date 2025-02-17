@@ -4,9 +4,11 @@ import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
 import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
+import { EdgePermissions }                            from '@acx-ui/edge/components'
 import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
 import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
 import { IncompatibilityFeatures }                    from '@acx-ui/rc/utils'
+import { hasPermission }                              from '@acx-ui/user'
 
 import EdgeMdnsProfileSelectionForm from './EdgeMdnsProfileSelectionForm'
 
@@ -46,6 +48,8 @@ export const MdnsProxyFormItem = (props: {
     })
   }, [currentEdgeMdns])
 
+  const hasUpdatePermission = hasPermission({ rbacOpsIds: EdgePermissions.switchEdgeClusterMdns })
+
   return <>
     <Row gutter={20}>
       <Col flex='250px'>
@@ -64,7 +68,7 @@ export const MdnsProxyFormItem = (props: {
                 name='edgeMdnsSwitch'
                 valuePropName='checked'
               >
-                <Switch />
+                <Switch disabled={!hasUpdatePermission}/>
               </Form.Item>
             </Space>
           </StepsForm.FieldLabel>

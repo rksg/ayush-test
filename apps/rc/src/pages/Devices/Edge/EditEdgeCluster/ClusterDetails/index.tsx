@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { StepsForm }                                          from '@acx-ui/components'
 import { EdgeClusterSettingForm, EdgeClusterSettingFormType } from '@acx-ui/rc/components'
 import { usePatchEdgeClusterMutation }                        from '@acx-ui/rc/services'
-import { EdgeClusterStatus }                                  from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeUrlsInfo }                    from '@acx-ui/rc/utils'
 import { useTenantLink }                                      from '@acx-ui/react-router-dom'
 import { EdgeScopes }                                         from '@acx-ui/types'
 import { hasPermission }                                      from '@acx-ui/user'
+import { getOpsApi }                                          from '@acx-ui/utils'
 
 interface ClusterDetailsProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -44,7 +45,10 @@ export const ClusterDetails = (props: ClusterDetailsProps) => {
     navigate(clusterListPage)
   }
 
-  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const hasUpdatePermission = hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeCluster)]
+  })
 
   return (
     <StepsForm

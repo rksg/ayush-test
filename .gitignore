@@ -20,6 +20,8 @@ node_modules
 
 # testing
 /coverage
+/test-results
+flaky-test-detector-results.xml
 
 # IDEs and editors
 /.idea

@@ -19,8 +19,8 @@ import {
   useDeleteDataSubscriptionsMutation,
   usePatchDataSubscriptionsMutation
 } from './services'
-import { DataSubscription }                      from './types'
-import { Actions, getUserId, isVisibleByAction } from './utils'
+import { DataSubscription, Frequency }                         from './types'
+import { Actions, frequencyMap, getUserId, isVisibleByAction } from './utils'
 
 export function DataSubscriptionsTable () {
   const { $t } = useIntl()
@@ -124,7 +124,8 @@ export function DataSubscriptionsTable () {
     {
       key: 'frequency',
       title: $t({ defaultMessage: 'Frequency' }),
-      dataIndex: 'frequency'
+      dataIndex: 'frequency',
+      render: (_, row) => $t(frequencyMap[row.frequency as Frequency])
     },
     {
       key: 'updatedAt',
@@ -213,7 +214,8 @@ export function DataSubscriptionsTable () {
   const doDelete = (selectedRows: DataSubscription[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Data Subscription' }),
+      $t({ defaultMessage: 'Data Subscriptio{plural}' },
+        { plural: selectedRows.length > 1 ? 'ns' : 'n' }),
       selectedRows[0].name,
       // no need to check the relation fields
       [],

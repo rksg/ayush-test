@@ -81,8 +81,8 @@ export interface GetAuditsPayload {
   }
 }
 
-export enum DataSubscriptionFrequencyEnum {
-  Daily = 'daily',
+export enum Frequency {
+  Daily = 'daily'
 }
 
 export interface DataSubscriptionDto {
@@ -90,5 +90,5 @@ export interface DataSubscriptionDto {
   name: string
   dataSource: string
   columns: string[]
-  frequency: DataSubscriptionFrequencyEnum
+  frequency: Frequency
 }

@@ -27,11 +27,11 @@ describe('getUserName', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  it('should reutrn username for RAI', () => {
+  it('should return username for RAI', () => {
     jest.mocked(get).mockReturnValue('true')
     expect(getUserName()).toEqual('RAI username')
   })
-  it('should reutrn username for R1', () => {
+  it('should return username for R1', () => {
     jest.mocked(get).mockReturnValue('')
     expect(getUserName()).toEqual('R1 username')
   })
