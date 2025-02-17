@@ -66,7 +66,7 @@ describe('DataSubscriptionsContent', () => {
       } as RaiPermissions)
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
     })
-    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
+    it('should render DataSubscriptionsContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
         data: {
           config: {
@@ -101,20 +101,16 @@ describe('DataSubscriptionsContent', () => {
         search: ''
       })
     })
-    it('should render DataSubscriptionsContent correct whenstorage configured', async () => {
+    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
       render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
-      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
-      expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/create',
-        hash: '',
-        search: ''
-      })
+      const subscriptionButton = screen.getByRole('button', { name: 'New Subscription' })
+      expect(subscriptionButton).toBeVisible()
+      expect(subscriptionButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
