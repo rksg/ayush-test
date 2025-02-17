@@ -17,12 +17,14 @@ import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
   EdgeStatusEnum,
+  EdgeUrlsInfo,
   IncompatibilityFeatures,
   deriveEdgeModel,
   edgeSerialNumberValidator,
   isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
-import { compareVersions } from '@acx-ui/utils'
+import { hasPermission }              from '@acx-ui/user'
+import { compareVersions, getOpsApi } from '@acx-ui/utils'
 
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { showDeleteModal, useIsEdgeFeatureReady }         from '../../useEdgeActions'
@@ -154,7 +156,8 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     return isAaSelected() ? maxActiveActiveNodes : maxActiveStandbyNodes
   }
   const isDisableAddEdgeButton = () => {
-    return (smartEdges?.length ?? 0) >= getMaxNodes()
+    return (smartEdges?.length ?? 0) >= getMaxNodes() ||
+    !hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addEdge)] })
   }
   const isAaNotSuportedByFirmware = () => {
     let venueVersion = getVenueFirmware(venueId)

@@ -5,6 +5,10 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: './test-results', outputName: 'ui-react-router-dom.xml' }]
+  ],
   coverageDirectory: '../../../coverage/libs/common/react-router-dom',
   coverageThreshold: {
     global: {
