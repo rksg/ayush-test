@@ -171,6 +171,7 @@ export function Venues (props: VenuesProps) {
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
 
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
@@ -385,6 +386,28 @@ export function Venues (props: VenuesProps) {
 
           handleVenueSaveData(newActivatedNetworkVenues)
           setTableDataActivate(tableData, newActivatedNetworkVenues.map(i=>i.venueId))
+        }
+      // eslint-disable-next-line max-len
+      } else if (default6gEnablementToggle && prevIsWPA3securityRef.current === false && isSupport6G) {
+        if (activatedNetworkVenues?.length > 0) {
+          // add 6G when switching to WPA3
+          const newActivatedNetworkVenues = activatedNetworkVenues.map(venue => {
+            const { allApGroupsRadioTypes, apGroups } = venue
+            if (allApGroupsRadioTypes && !allApGroupsRadioTypes.includes(RadioTypeEnum._6_GHz)) {
+              allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
+            }
+            if (apGroups && apGroups.length > 0) {
+              apGroups.forEach(apGroup => {
+                if (apGroup.radioTypes && !apGroup.radioTypes.includes(RadioTypeEnum._6_GHz)) {
+                  apGroup.radioTypes.push(RadioTypeEnum._6_GHz)
+                }
+              })
+            }
+            return venue
+          })
+
+          handleVenueSaveData(newActivatedNetworkVenues)
+          setTableDataActivate(tableData, newActivatedNetworkVenues.map(i => i.venueId))
         }
       }
       prevIsWPA3securityRef.current = isSupport6G
