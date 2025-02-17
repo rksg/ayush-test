@@ -2,13 +2,13 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { GridRow, GridCol, Banner, Button, PageHeader, Loader } from '@acx-ui/components'
-import { get }                                                  from '@acx-ui/config'
-import { SettingsOutlined }                                     from '@acx-ui/icons'
-import { useRaiR1HelpPageLink }                                 from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                           from '@acx-ui/react-router-dom'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { hasRaiPermission, hasRoles }                           from '@acx-ui/user'
+import { GridRow, GridCol, Banner, Button, PageHeader, Loader, DisabledButton } from '@acx-ui/components'
+import { get }                                                                  from '@acx-ui/config'
+import { SettingsOutlined }                                                     from '@acx-ui/icons'
+import { useRaiR1HelpPageLink }                                                 from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                            from '@acx-ui/types'
+import { hasRaiPermission, hasRoles }                                           from '@acx-ui/user'
 
 import { StorageOptions }         from './CloudStorageForm'
 import { useGetStorageQuery }     from './services'
@@ -33,39 +33,49 @@ const DataSubscriptionsContent: React.FC<{}> = () => {
   const headerButtons = []
   if (hasDCSubscriptionsPermission) {
     headerButtons.push(
-      <Button
-        type='primary'
-        onClick={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/create`
-        })}
-      >
-        {$t({ defaultMessage: 'New Subscription' })}
-      </Button>
+      storage?.id
+        ? <Button
+          key='new-subscription-button'
+          type='primary'
+          onClick={() => navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/create`
+          })}
+        >
+          {$t({ defaultMessage: 'New Subscription' })}
+        </Button>
+        : <DisabledButton
+          key='disabled-new-subscription-button'
+          title={$t(
+            { defaultMessage: 'Cloud storage needs to be configured first, by prime admin.' }
+          )}
+          size='middle'
+        >
+          {$t({ defaultMessage: 'New Subscription' })}
+        </DisabledButton>
     )
   }
   if (hasDCStoragePermission) {
     headerButtons.push(
-      <Loader states={[{ isLoading: isStorageLoading }]}>
-        <Button
-          size='middle'
-          icon={<SettingsOutlined />}
-          type='default'
-          onClick={() => navigate({
-            ...basePath,
-            pathname: storage?.id
-              ? `${basePath.pathname}/cloudStorage/edit/${storage.id}`
-              : `${basePath.pathname}/cloudStorage/create`
-          })}
-        >
-          {storage?.config
-            ? $t(
-              { defaultMessage: 'Cloud Storage: {connectionType}' },
-              { connectionType: StorageLabel }
-            )
-            : $t({ defaultMessage: 'New Cloud Storage' })}
-        </Button>
-      </Loader>
+      <Button
+        key='cloud-storage-button'
+        size='middle'
+        icon={<SettingsOutlined />}
+        type='default'
+        onClick={() => navigate({
+          ...basePath,
+          pathname: storage?.id
+            ? `${basePath.pathname}/cloudStorage/edit/${storage.id}`
+            : `${basePath.pathname}/cloudStorage/create`
+        })}
+      >
+        {storage?.config
+          ? $t(
+            { defaultMessage: 'Cloud Storage: {connectionType}' },
+            { connectionType: StorageLabel }
+          )
+          : $t({ defaultMessage: 'New Cloud Storage' })}
+      </Button>
     )
   }
 
@@ -73,14 +83,20 @@ const DataSubscriptionsContent: React.FC<{}> = () => {
     <PageHeader
       title={$t({ defaultMessage: 'Data Subscriptions' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
-      extra={headerButtons}
+      extra={headerButtons.length > 0
+        ? <Loader
+          states={[{ isLoading: isStorageLoading }]}
+          style={{ flexDirection: 'row', gap: '10px' }}>
+          {headerButtons}
+        </Loader>
+        : []}
     />
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
         <Banner
           title={$t({ defaultMessage: 'Simplify Data Integration' })}
           subTitles={[$t({
-            defaultMessage: `Seamlessly transfer data between RUCKUS AI 
+            defaultMessage: `Seamlessly transfer data between RUCKUS AI
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
           helpUrl={helpUrl} />

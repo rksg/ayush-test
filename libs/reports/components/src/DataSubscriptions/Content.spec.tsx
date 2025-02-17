@@ -81,7 +81,7 @@ describe('DataSubscriptionsContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
-    it('should render DataSubscriptionsContent correct when storage configured', async () => {
+    it('should render DataSubscriptionsContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
         data: {
           config: {
@@ -101,6 +101,8 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText('New Subscription')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -108,8 +110,6 @@ describe('DataSubscriptionsContent', () => {
         hash: '',
         search: ''
       })
-
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -125,15 +125,11 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
-      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
-      expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/create',
-        hash: '',
-        search: ''
-      })
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const subscriptionButton = screen.getByRole('button', { name: 'New Subscription' })
+      expect(subscriptionButton).toBeVisible()
+      expect(subscriptionButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -155,9 +151,9 @@ describe('DataSubscriptionsContent', () => {
         wrapper: Provider
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText('New Subscription')).toBeVisible()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
@@ -174,9 +170,9 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
-      expect(screen.queryByText('New Subscription')).toBeNull()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.queryByText('New Subscription')).toBeNull()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
   })
@@ -202,7 +198,7 @@ describe('DataSubscriptionsContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
-    it('should render DataSubscriptionsContent correct when storage configured', async () => {
+    it('should render DataSubscriptionsContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
         data: {
           config: {
@@ -222,6 +218,8 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText('New Subscription')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -229,8 +227,6 @@ describe('DataSubscriptionsContent', () => {
         hash: '',
         search: ''
       })
-
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -246,15 +242,11 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
-      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
-      expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/dataSubscriptions/create`,
-        hash: '',
-        search: ''
-      })
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const subscriptionButton = screen.getByRole('button', { name: 'New Subscription' })
+      expect(subscriptionButton).toBeVisible()
+      expect(subscriptionButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -271,9 +263,9 @@ describe('DataSubscriptionsContent', () => {
         wrapper: Provider
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText('New Subscription')).toBeVisible()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
@@ -285,10 +277,10 @@ describe('DataSubscriptionsContent', () => {
       })
 
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
-      expect(screen.getByTestId(bannerTestId)).toBeVisible()
-      expect(screen.queryByText('New Subscription')).toBeNull()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByTestId(bannerTestId)).toBeVisible()
+      expect(screen.queryByText('New Subscription')).toBeNull()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
   })
