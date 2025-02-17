@@ -62,6 +62,13 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
       return
     }
 
+    const isLt20M = file.size / 1024 / 1024 < 20
+    if (!isLt20M) {
+      const content = $t({ defaultMessage: 'File must smaller than 20MB!' })
+      openToastAndResetFile({ ...fileValidation, isValidFileSize: false }, content)
+      return
+    }
+
     if (file.type === 'application/pdf') {
       const uid = (file as RcFile).uid
       convertPdfToImage(file, uid).then(uploadedFile => {
@@ -75,13 +82,6 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
           return
         })
     } else {
-      const isLt20M = file.size / 1024 / 1024 < 20
-      if (!isLt20M) {
-        const content = $t({ defaultMessage: 'File must smaller than 20MB!' })
-        openToastAndResetFile({ ...fileValidation, isValidFileSize: false }, content)
-        return
-      }
-
       setFileValidation({ ...fileValidation, file: file })
       validateFile({ ...fileValidation, file: file })
       const reader = new FileReader()
