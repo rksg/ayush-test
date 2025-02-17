@@ -330,6 +330,9 @@ export const EditPortMessages = {
   }),
   CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE: defineMessage({
     defaultMessage: 'Port Profile cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
+  }),
+  STP_BPDU_GUARD: defineMessage({
+    defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level for the FI 10010f_cd2 and 10020b versions.'
   })
 }
 

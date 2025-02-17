@@ -856,9 +856,10 @@ export function EditPortDrawer ({
   const getFieldTemplate = (props: {
     content: React.ReactNode,
     field: string,
-    extraLabel?: boolean
+    extraLabel?: boolean,
+    tooltip?: React.ReactNode
   }) => {
-    const { content, field, extraLabel } = props
+    const { content, field, extraLabel, tooltip } = props
     const shouldControlHiddenFields = [
       'changeAuthOrder', 'restrictedVlan', 'criticalVlan'
     ]
@@ -878,7 +879,7 @@ export function EditPortDrawer ({
           disabled={getOverrideDisabled(field)}
         />}
       />}
-      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }</UI.ExtraLabel> }
+      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) } {tooltip}</UI.ExtraLabel> }
       { content }
     </UI.FormItem>
   }
@@ -2250,6 +2251,9 @@ export function EditPortDrawer ({
         { getFieldTemplate({
           field: 'stpBpduGuard',
           extraLabel: true,
+          tooltip: <UI.FieldTemplateTooltip>
+            <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>
+          </UI.FieldTemplateTooltip>,
           content: <Form.Item
             noStyle
             label={false}
