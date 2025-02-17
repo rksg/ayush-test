@@ -44,6 +44,10 @@ jest.mock('./DetailsDrawer', () => ({
   ...jest.requireActual('./ShowDriftsDrawer'),
   DetailsDrawer: () => <div>DetailsDrawer</div>
 }))
+jest.mock('./CloneModal', () => ({
+  ...jest.requireActual('./CloneModal'),
+  ConfigTemplateCloneModal: () => <div>ConfigTemplateCloneModal</div>
+}))
 
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
@@ -441,10 +445,30 @@ describe('ConfigTemplateList component', () => {
     )
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
     const targetTemplate = mockedConfigTemplateList.data[0]
     await userEvent.click(screen.getByRole('button', { name: targetTemplate.name }))
 
     expect(await screen.findByText('DetailsDrawer')).toBeInTheDocument()
+  })
+  it('should execute clone action', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_CLONE)
+
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // eslint-disable-next-line max-len
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === ConfigTemplateType.NETWORK)!
+    const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Clone/ }))
+    expect(await screen.findByText('ConfigTemplateCloneModal')).toBeInTheDocument()
   })
 })

@@ -1,9 +1,10 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
-import { EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { screen, render, within, mockServer }  from '@acx-ui/test-utils'
+import { EdgeNokiaOnuPortData, EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
+import { screen, render, within, mockServer }                        from '@acx-ui/test-utils'
 
 import { EdgeNokiaOnuPortTable } from './'
 
@@ -11,18 +12,19 @@ const { mockOlt, mockOltCageList, mockOnuList } = EdgeOltFixtures
 
 jest.mock('./TextInlineEditor', () => ({
   TextInlineEditor: (props: { value: number, onChange: (data: number) => Promise<void> }) =>
-    <div data-test='TextInlineEditor'>
-      <div data-test='value'>{props.value}</div>
+    <div data-testid='TextInlineEditor'>
+      <div data-testid='value'>{props.value}</div>
       <button onClick={async () => props.onChange(12)}>Test onChange</button>
     </div>
 }))
 describe('EdgeNokiaOnuPortTable', () => {
   const mockCageName = mockOltCageList[0].cage
   const mockOnuName = mockOnuList[0].name
+  const mockPortList = mockOnuList[0].portDetails as EdgeNokiaOnuPortData[]
 
   it('renders with valid props', () => {
     const props = {
-      data: mockOnuList[0].portDetails,
+      data: mockPortList,
       oltData: mockOlt,
       cageName: mockCageName,
       onuName: mockOnuName
@@ -60,7 +62,7 @@ describe('EdgeNokiaOnuPortTable', () => {
         }))
 
     const props = {
-      data: mockOnuList[1].portDetails,
+      data: mockPortList,
       oltData: mockOlt,
       cageName: mockCageName,
       onuName: mockOnuName
@@ -73,5 +75,44 @@ describe('EdgeNokiaOnuPortTable', () => {
     const onChangeButton = within(row).getByRole('button', { name: 'Test onChange' })
     await userEvent.click(onChangeButton)
     expect(mockSetVlanReq).toBeCalled()
+  })
+
+  it('translate vlan to 0 when it is invalid string number', () => {
+    const mockInvalidVlanData = cloneDeep(mockPortList)
+    mockInvalidVlanData[0].vlan = ['test']
+
+    const props = {
+      data: mockInvalidVlanData,
+      oltData: mockOlt,
+      cageName: mockCageName,
+      onuName: mockOnuName
+    }
+    render(<Provider>
+      <EdgeNokiaOnuPortTable {...props} />
+    </Provider>)
+    expect(screen.getByText('Port')).toBeVisible()
+    expect(screen.getByText('Status')).toBeVisible()
+    const targetRow= screen.getByRole('row', { name: /1 UP 5% \(2.5 \/ 50 W\)/ })
+    expect(within(within(targetRow).getByTestId('TextInlineEditor'))
+      .getByTestId('value')).toHaveTextContent('0')
+  })
+
+  it('translate vlan to 0 when it is undefined', () => {
+    const mockInvalidVlanData = mockOnuList[1].portDetails as EdgeNokiaOnuPortData[]
+
+    const props = {
+      data: mockInvalidVlanData,
+      oltData: mockOlt,
+      cageName: mockCageName,
+      onuName: mockOnuName
+    }
+    render(<Provider>
+      <EdgeNokiaOnuPortTable {...props} />
+    </Provider>)
+    expect(screen.getByText('Port')).toBeVisible()
+    expect(screen.getByText('Status')).toBeVisible()
+    const targetRow= screen.getByRole('row', { name: /1 DOWN 0% \(0 \/ 50 W\)/ })
+    expect(within(within(targetRow).getByTestId('TextInlineEditor'))
+      .getByTestId('value')).toHaveTextContent('0')
   })
 })

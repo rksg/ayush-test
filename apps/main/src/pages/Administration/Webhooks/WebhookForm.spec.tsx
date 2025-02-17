@@ -62,7 +62,7 @@ describe('WebhookForm', () => {
     expect(screen.getByRole('tab', { name: 'Events' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Create' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
-    expect(screen.getByRole('switch', { name: 'Disabled' })).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Enabled' })).toBeVisible()
   })
   it('should save correctly', async () => {
     render(
