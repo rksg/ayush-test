@@ -70,7 +70,7 @@ describe('DataSubscriptions table', () => {
         mockedSubscriptions[0].name,
         mockedSubscriptions[0].userName,
         'Paused',
-        mockedSubscriptions[0].frequency,
+        'Daily',
         formatter(DateFormatEnum.DateTimeFormat)(mockedSubscriptions[0].updatedAt),
         '' // settings
       ])
@@ -291,7 +291,7 @@ describe('DataSubscriptions table', () => {
         mockedSubscriptions[0].name,
         mockedSubscriptions[0].userName,
         'Paused',
-        mockedSubscriptions[0].frequency,
+        'Daily',
         formatter(DateFormatEnum.DateTimeFormat)(mockedSubscriptions[0].updatedAt),
         '' // settings
       ])

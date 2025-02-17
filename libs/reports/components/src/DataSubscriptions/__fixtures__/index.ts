@@ -1,4 +1,5 @@
 import { DataSubscription } from '../services'
+import { Frequency }        from '../utils'
 
 export const mockedUserId = 'userId-fake'
 export const mockedSubscriptions = Array(10).fill(null).map((_, index) => ({
@@ -8,6 +9,6 @@ export const mockedSubscriptions = Array(10).fill(null).map((_, index) => ({
   userName: 'userName-fake',
   columns: [`column-${index}`],
   status: Boolean(index % 2),
-  frequency: 'daily',
+  frequency: Frequency.Daily,
   updatedAt: new Date().toISOString()
 })) as DataSubscription[]

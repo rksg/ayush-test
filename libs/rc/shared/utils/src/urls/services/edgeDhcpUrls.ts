@@ -60,17 +60,20 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
   restartDhcpService: {
     method: 'PATCH',
     url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PATCH:/edgeDhcpServices/{id}/venues/{id}/edgeClusters/{id}'
   },
   activateDhcpService: {
     method: 'put',
     url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/edgeDhcpServices/{id}/venues/{id}/edgeClusters/{id}'
   },
   deactivateDhcpService: {
     method: 'delete',
     url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:clusterId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/edgeDhcpServices/{id}/venues/{id}/edgeClusters/{id}'
   },
   getDhcpEdgeCompatibilities: {
     method: 'post',
