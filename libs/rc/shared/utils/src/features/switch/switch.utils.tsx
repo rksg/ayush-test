@@ -786,7 +786,7 @@ export const isFirmwareVersionAbove10010fCd2Or10020b = function (firmwareVersion
   2. > 10020b
   */
   if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10010f_cd2', false) &&
+    return isVerGEVer(firmwareVersion, '10010f_cd2', true) &&
     (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
   } else {
     return false
