@@ -94,9 +94,36 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
     return false
   }
 
+  const readAsBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve((reader.result as string)?.split(',')[1]) // Get Base64 without data URI prefix
+      reader.onerror = (error) => reject(error)
+      reader.readAsDataURL(file) // Read as Base64 Data URL
+    })
+  }
+
+  const base64ToArrayBuffer = (base64: string) => {
+    const binaryString = atob(base64)
+    const len = binaryString.length
+    const bytes = new Uint8Array(len)
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    return bytes.buffer
+  }
+
   const convertPdfToImage = async (pdfFile: File, uid: string): Promise<RcFile> => {
-    const pdf = await getDocument(URL.createObjectURL(pdfFile)).promise
-    const page = await pdf.getPage(1) // Get the first page
+
+    // Convert PDF to Base64
+    const base64Pdf = await readAsBase64(pdfFile)
+
+    // Decode Base64 to ArrayBuffer
+    const pdfUint8Array = new Uint8Array(base64ToArrayBuffer(base64Pdf))
+
+    // Load the PDF document from ArrayBuffer
+    const pdf = await getDocument({ data: pdfUint8Array }).promise
+    const page = await pdf.getPage(1)
 
     const scale = 1.5
     const viewport = page.getViewport({ scale })
@@ -113,14 +140,22 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
 
     await page.render(renderContext).promise
 
-    const blob: Blob = await new Promise((resolve) => {
-      canvas.toBlob((blob) => {
-        resolve(blob as Blob)
-      }, 'image/jpeg')
-    })
 
-    // Convert Blob to RcFile
-    const rcFile = await new File([blob], `${pdfFile.name.split('.')[0]}.jpg`, {
+    // Convert canvas to Base64 Data URL
+    const base64Image = canvas.toDataURL('image/jpeg')
+
+    // Convert the Base64 string to a Blob
+    const byteString = window.atob(base64Image.split(',')[1])
+    const arrayBuffer = new ArrayBuffer(byteString.length)
+    const uint8Array = new Uint8Array(arrayBuffer)
+
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i)
+    }
+
+    const blob = new Blob([uint8Array], { type: 'image/jpeg' })
+
+    const rcFile = new File([blob], `${pdfFile.name.split('.')[0]}.jpg`, {
       type: 'image/jpeg'
     }) as RcFile
 
