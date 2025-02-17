@@ -63,22 +63,14 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
   moduleSelectionEnable?: boolean,
   module2SelectionEnable?: boolean,
   enableSlot2?: boolean,
-  enableSlot3?: boolean,
-  // selectedOptionOfSlot2?: DefaultOptionType['value'],
-  // selectedOptionOfSlot3?: DefaultOptionType['value']
+  enableSlot3?: boolean
 } => {
   if (!family) return {}
-
-  // const { slotOptionLists } = getSlots(family, model)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const [ optionListForSlot1, optionListForSlot2, optionListForSlot3 ] = slotOptionLists
-
   if (family === 'ICX7550') {
     return {
       moduleSelectionEnable: true,
       module2SelectionEnable: false,
       enableSlot2: true
-      // selectedOptionOfSlot2: optionListForSlot2[0]?.value
     }
   }
 
@@ -87,7 +79,6 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
       moduleSelectionEnable: false,
       module2SelectionEnable: false,
       enableSlot2: true
-      // selectedOptionOfSlot2: optionListForSlot2[0]?.value ?? ''
     }
   }
 
@@ -96,7 +87,6 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
       moduleSelectionEnable: false,
       module2SelectionEnable: false,
       enableSlot2: true
-      // selectedOptionOfSlot2: optionListForSlot2[0]?.value
     }
   }
 
@@ -115,14 +105,7 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
           moduleSelectionEnable: false,
           enableSlot2: true,
           enableSlot3: true
-          // selectedOptionOfSlot2: optionListForSlot2[0]?.value,
-          // selectedOptionOfSlot3: optionListForSlot3[0]?.value
         }
-        // setModuleSelectionEnable(false)
-        // form.setFieldValue('enableSlot2', true)
-        // form.setFieldValue('enableSlot3', true)
-        // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
-        // form.setFieldValue('selectedOptionOfSlot3', optionListForSlot3[0]?.value)
         break
 
       case 'C08P':
@@ -133,19 +116,13 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
         return {
           moduleSelectionEnable: false,
           enableSlot2: true
-          // selectedOptionOfSlot2: optionListForSlot2[0]?.value
         }
-
-        // setModuleSelectionEnable(false)
-        // form.setFieldValue('enableSlot2', true)
-        // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
         break
 
       default:
         return {
           moduleSelectionEnable: true
         }
-        // setModuleSelectionEnable(true)
         break
     }
   }
@@ -249,10 +226,13 @@ export const getUpdatedVlans = (
       ...( existingModule ? {
         switchFamilyModels: vlan.switchFamilyModels.map(model => {
           if (model.id === existingModule.id) {
-            // eslint-disable-next-line max-len
-            const updatedTagged = model.taggedPorts?.split(',').concat(updatedVlan.taggedPorts?.split(',')).toString()
-            // eslint-disable-next-line max-len
-            const updatedUntagged = model.untaggedPorts?.split(',').concat(updatedVlan.untaggedPorts?.split(',')).toString()
+            const updatedTaggedPorts = updatedVlan.taggedPorts?.split(',')
+            const updatedUntaggedPorts = updatedVlan.untaggedPorts?.split(',')
+
+            const updatedTagged
+              = model.taggedPorts?.split(',').concat(updatedTaggedPorts).toString()
+            const updatedUntagged
+              = model.untaggedPorts?.split(',').concat(updatedUntaggedPorts).toString()
             if (!updatedTagged && !updatedTagged) {
               return null
             }
@@ -328,7 +308,6 @@ export const getUpdatedVlanPortList = (
       let existingModule = existingModel.groupbyModules.find(module => module.key === modulekey)
 
       if (existingModule) {
-        // 合併 ports 設定
         existingModule.ports = updatedValues.portSettings.reduce((result, port) => {
           const existingPort = existingModule?.ports.find(p => p.port === port.port)
           if (existingPort) {

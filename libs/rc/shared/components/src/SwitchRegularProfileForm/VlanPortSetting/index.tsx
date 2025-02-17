@@ -45,7 +45,7 @@ export function VlanPortSetting () {
   useEffect(() => {
     // eslint-disable-next-line no-console
     console.log('VlanPortSetting currentData: ', currentData)
-    if(currentData.vlans){
+    if (currentData.vlans) {
       form.setFieldsValue(currentData)
       const vlanList = currentData.vlans.filter(
         item => item.vlanName !== SWITCH_DEFAULT_VLAN_NAME
@@ -251,8 +251,8 @@ export function VlanPortSetting () {
           const updatedVlans = getUpdatedVlans(selectedRows, vlans)
 
           /* eslint-disable no-console */
-          console.log('filteredVlanPortList: ', filteredVlanPortList)
-          console.log('updatedVlans: ', updatedVlans)
+          // console.log('filteredVlanPortList: ', filteredVlanPortList)
+          // console.log('updatedVlans: ', updatedVlans)
 
           setVlanPortList(filteredVlanPortList as GroupedVlanPort[])
           form.setFieldValue('vlans', updatedVlans)
@@ -324,14 +324,20 @@ export function VlanPortSetting () {
     ])
   }
 
+  const handleClickSetPorts = () => {
+    setSelectedRow(null as unknown as VlanPort)
+    setModalVisible(true)
+  }
+
   const handleSavePorts = (values: PortsModalSetting) => {
     const vlans = form.getFieldValue('vlans') || []
     const filteredVlanPortList = getUpdatedVlanPortList(vlanPortList, selectedModuleKeys, values)
     const updatedVlans = getUpdatedVlans([selectedRow], vlans, values)
 
     /* eslint-disable no-console */
-    console.log('filteredVlanPortList: ', filteredVlanPortList)
-    console.log('** filteredVlans: ', updatedVlans)
+    // console.log('filteredVlanPortList: ', filteredVlanPortList)
+    // console.log('** filteredVlans: ', updatedVlans)
+    console.log('*** handleSavePorts', updatedVlans)
 
     form.setFieldValue('vlans', updatedVlans)
     setVlanPortList(filteredVlanPortList)
@@ -417,10 +423,8 @@ export function VlanPortSetting () {
               rowActions={rowActions}
               actions={filterByAccess([{
                 label: $t({ defaultMessage: 'Set Ports' }),
-                onClick: () => {
-                  setSelectedRow(null as unknown as VlanPort)
-                  setModalVisible(true)
-                }
+                disabled: vlanList.length === 0,
+                onClick: handleClickSetPorts
               }])}
             />
           </UI.TableWrapper>
@@ -431,10 +435,8 @@ export function VlanPortSetting () {
             rowKey='id'
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Set Ports' }),
-              onClick: () => {
-                setSelectedRow(null as unknown as VlanPort)
-                setModalVisible(true)
-              }
+              disabled: vlanList.length === 0,
+              onClick: handleClickSetPorts
             }])}
           />
         }

@@ -1,0 +1,620 @@
+import '@testing-library/jest-dom'
+import userEvent       from '@testing-library/user-event'
+import { Form, Modal } from 'antd'
+
+import { StepsForm }                       from '@acx-ui/components'
+import { SwitchConfigurationProfile }      from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
+import { render, screen, within, waitFor } from '@acx-ui/test-utils'
+
+import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
+
+import { VlanPortSetting } from '.'
+
+const currentData = {
+  name: 'test-profile',
+  description: '',
+  acls: [],
+  vlans: [{ arpInspection: true, switchFamilyModels: [] }]
+}
+
+describe('Wired - VlanPortSetting', () => {
+  const configureProfileContextValues = {
+    editMode: false,
+    currentData
+  } as unknown as ConfigurationProfileType
+
+  const vlans = [{
+    arpInspection: false,
+    id: '545d08c0e7894501846455233ad60cc5',
+    igmpSnooping: 'none',
+    ipv4DhcpSnooping: false,
+    spanningTreePriority: 32768,
+    spanningTreeProtocol: 'none',
+    vlanId: 2,
+    vlanName: 'vlan-01'
+  }, {
+    arpInspection: false,
+    id: '1af3d29b5dcc46a5a20a651fda55e2df',
+    igmpSnooping: 'none',
+    ipv4DhcpSnooping: false,
+    spanningTreePriority: 32768,
+    spanningTreeProtocol: 'none',
+    switchFamilyModels: [{
+      id: '9874453239bc479fac68bc050d0cf729',
+      model: 'ICX7550-24P',
+      slots: [
+        { slotNumber: 1, enable: true },
+        { slotNumber: 3, enable: true, option: '2X40G' },
+        { slotNumber: 2, enable: true, option: '2X40G' }
+      ],
+      taggedPorts: '1/2/2',
+      untaggedPorts: '1/1/20,1/3/2'
+    }],
+    vlanId: 3,
+    vlanName: 'vlan-02'
+  }]
+
+  afterEach(() => {
+    Modal.destroyAll()
+  })
+
+  it('should disable set ports botton when the VLAN field is empty', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'add'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <Form>
+            <VlanPortSetting />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    // expect(await screen.findByRole('button', { name: 'Set Ports' })).toBeDisabled() //TODO
+  })
+
+  it('should handle set port when no selected model correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <Form>
+            <VlanPortSetting />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+    await userEvent.click(await screen.findByText('ICX-7650'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
+    expect(await screen.findByText(/No model selected/)).toBeVisible()
+  })
+
+  it('should handle set port when no ports are configured correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <Form>
+            <VlanPortSetting />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+    await userEvent.click(await screen.findByText('ICX-7650'))
+    await userEvent.click(await screen.findByText('48ZP'))
+    await userEvent.click(await screen.findByText('Module 2:'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
+
+    expect(await within(dialog).findByText(
+      /Select the ports to configure VLAN\(s\) for this model \(ICX7650-48ZP\)/
+    )).toBeVisible()
+    expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
+    expect(await within(dialog).findByText('1 X 40/100G')).toBeVisible()
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
+
+    expect(await screen.findByText(/Port is not Configured/)).toBeVisible()
+  })
+
+  it('should handle set ports correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+    await userEvent.click(await screen.findByText('ICX-7650'))
+    await userEvent.click(await screen.findByText('48ZP'))
+    await userEvent.click(await screen.findByText('Module 2:'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
+
+    expect(await within(dialog).findByText(
+      /Select the ports to configure VLAN\(s\) for this model \(ICX7650-48ZP\)/
+    )).toBeVisible()
+    expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
+    expect(await within(dialog).findByText('1 X 40/100G')).toBeVisible()
+
+
+    await userEvent.click(await within(dialog).findByTestId('module1_1_3'))
+
+    await userEvent.click(await screen.findByLabelText('Untagged VLANs'))
+    const text3 = await screen.findAllByText('3') //TODO
+    await userEvent.click(text3[2])
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(onFinishSpy).toBeCalledTimes(1)
+    const call = onFinishSpy.mock.calls[0]
+    expect(call[0]).toStrictEqual({
+      ...currentData,
+      vlans: [{
+        arpInspection: false,
+        id: '545d08c0e7894501846455233ad60cc5',
+        igmpSnooping: 'none',
+        ipv4DhcpSnooping: false,
+        spanningTreePriority: 32768,
+        spanningTreeProtocol: 'none',
+        vlanId: 2,
+        vlanName: 'vlan-01'
+      }, {
+        arpInspection: false,
+        igmpSnooping: 'none',
+        ipv4DhcpSnooping: false,
+        spanningTreePriority: 32768,
+        spanningTreeProtocol: 'none',
+        switchFamilyModels: [{
+          id: '9874453239bc479fac68bc050d0cf729',
+          model: 'ICX7550-24P',
+          slots: [
+            { slotNumber: 1, enable: true },
+            { slotNumber: 3, enable: true, option: '2X40G' },
+            { slotNumber: 2, enable: true, option: '2X40G' }
+          ],
+          taggedPorts: '1/2/2',
+          untaggedPorts: '1/1/20,1/3/2'
+        }, {
+          id: '',
+          model: 'ICX7650-48ZP',
+          slots: [
+            { slotNumber: 1, enable: true },
+            { slotNumber: 2, enable: true, option: '1X40/100G' }
+          ],
+          taggedPorts: '',
+          untaggedPorts: '1/1/3'
+        }],
+        vlanId: 3,
+        vlanName: 'vlan-02'
+      }]
+    })
+  })
+
+  it('should handle edit port correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByText('ICX7550-24P'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(onFinishSpy).toBeCalledTimes(1)
+    const call = onFinishSpy.mock.calls[0]
+    expect(call[0]).toStrictEqual({
+      ...currentData,
+      vlans: [{
+        arpInspection: false,
+        id: '545d08c0e7894501846455233ad60cc5',
+        igmpSnooping: 'none',
+        ipv4DhcpSnooping: false,
+        spanningTreePriority: 32768,
+        spanningTreeProtocol: 'none',
+        vlanId: 2,
+        vlanName: 'vlan-01'
+      }, {
+        arpInspection: false,
+        igmpSnooping: 'none',
+        ipv4DhcpSnooping: false,
+        spanningTreePriority: 32768,
+        spanningTreeProtocol: 'none',
+        switchFamilyModels: [{
+          id: '',
+          model: 'ICX7550-24P',
+          slots: [
+            { slotNumber: 1, enable: true },
+            { slotNumber: 2, enable: true, option: '2X40G' },
+            { slotNumber: 3, enable: true, option: '2X40G' }
+          ],
+          taggedPorts: '1/2/2',
+          untaggedPorts: '1/1/20,1/3/2'
+        }],
+        vlanId: 3,
+        vlanName: 'vlan-02'
+      }]
+    })
+
+  })
+
+  it('should handle add port to existing module correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans: [
+              vlans[0],
+              {
+                ...vlans[1],
+                switchFamilyModels: [{
+                  id: '9874453239bc479fac68bc050d0cf729',
+                  model: 'ICX7550-24P',
+                  slots: [
+                    { slotNumber: 1, enable: true },
+                    { slotNumber: 2, enable: true, option: '2X40G' },
+                    { slotNumber: 3, enable: true, option: '2X40G' }
+                  ],
+                  taggedPorts: '1/2/2',
+                  untaggedPorts: '1/1/20,1/3/2'
+                }, {
+                  id: '9874453239bc479fac68bc050d0cf728',
+                  model: 'ICX7650-48ZP',
+                  slots: [
+                    { slotNumber: 1, enable: true },
+                    { slotNumber: 2, enable: true, option: '1X40/100G' }
+                  ],
+                  taggedPorts: '1/1/2',
+                  untaggedPorts: '1/1/3'
+                }, {
+                  id: '9874453239bc479fac68bc050d0cf727',
+                  model: 'ICX7650-48ZP',
+                  slots: [
+                    { slotNumber: 1, enable: true }
+                  ],
+                  taggedPorts: '1/1/40',
+                  untaggedPorts: '1/1/38'
+                }]
+              }
+            ]
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+    await userEvent.click(await screen.findByText('ICX-7650'))
+    await userEvent.click(await screen.findByText('48ZP'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
+
+    expect(await within(dialog).findByText(
+      /Select the ports to configure VLAN\(s\) for this model \(ICX7650-48ZP\)/
+    )).toBeVisible()
+    expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
+
+    await userEvent.click(await within(dialog).findByTestId('module1_1_4'))
+    await userEvent.click(await within(dialog).findByLabelText('Untagged VLANs'))
+    const text3 = await screen.findAllByText('3') //TODO
+    await userEvent.click(text3[2])
+
+    // await userEvent.click(await within(dialog).findByRole('button', { name: 'Clear Selection' }) )
+    // await userEvent.click(await within(dialog).findByTestId('module1_1_5'))
+    // await userEvent.click(await within(dialog).findByLabelText('Untagged VLANs'))
+    // await userEvent.click(text3[2])
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(onFinishSpy).toBeCalledTimes(1)
+    const call = onFinishSpy.mock.calls[0]
+    expect(call[0]).toStrictEqual({
+      ...currentData,
+      vlans: [{
+        arpInspection: false,
+        id: '545d08c0e7894501846455233ad60cc5',
+        igmpSnooping: 'none',
+        ipv4DhcpSnooping: false,
+        spanningTreePriority: 32768,
+        spanningTreeProtocol: 'none',
+        vlanId: 2,
+        vlanName: 'vlan-01'
+      }, {
+        arpInspection: false,
+        igmpSnooping: 'none',
+        ipv4DhcpSnooping: false,
+        spanningTreePriority: 32768,
+        spanningTreeProtocol: 'none',
+        switchFamilyModels: [{
+          id: '9874453239bc479fac68bc050d0cf729',
+          model: 'ICX7550-24P',
+          slots: [
+            { slotNumber: 1, enable: true },
+            { slotNumber: 2, enable: true, option: '2X40G' },
+            { slotNumber: 3, enable: true, option: '2X40G' }
+          ],
+          taggedPorts: '1/2/2',
+          untaggedPorts: '1/1/20,1/3/2'
+        }, {
+          id: '9874453239bc479fac68bc050d0cf728',
+          model: 'ICX7650-48ZP',
+          slots: [
+            { slotNumber: 1, enable: true },
+            { slotNumber: 2, enable: true, option: '1X40/100G' }
+          ],
+          taggedPorts: '1/1/2',
+          untaggedPorts: '1/1/3'
+        }, {
+          id: '9874453239bc479fac68bc050d0cf727',
+          model: 'ICX7650-48ZP',
+          slots: [
+            { slotNumber: 1, enable: true }
+          ],
+          taggedPorts: '1/1/38,1/1/4', //TODO
+          untaggedPorts: '1/1/38,1/1/4'
+        }],
+        vlanId: 3,
+        vlanName: 'vlan-02'
+      }]
+    })
+
+  })
+
+  it('should handle cancel modal correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans: [
+              vlans[0],
+              {
+                ...vlans[1],
+                switchFamilyModels: [{
+                  id: '9874453239bc479fac68bc050d0cf729',
+                  model: 'ICX7550-24P',
+                  slots: [
+                    { slotNumber: 1, enable: true },
+                    { slotNumber: 2, enable: true, option: '2X40G' },
+                    { slotNumber: 3, enable: true, option: '2X40G' }
+                  ],
+                  taggedPorts: '1/2/2',
+                  untaggedPorts: '1/1/20,1/3/2'
+                }, {
+                  id: '9874453239bc479fac68bc050d0cf728',
+                  model: 'ICX7650-48ZP',
+                  slots: [
+                    { slotNumber: 1, enable: true },
+                    { slotNumber: 2, enable: true, option: '1X40/100G' }
+                  ],
+                  taggedPorts: '1/1/2',
+                  untaggedPorts: '1/1/3'
+                }, {
+                  id: '9874453239bc479fac68bc050d0cf727',
+                  model: 'ICX7650-48ZP',
+                  slots: [
+                    { slotNumber: 1, enable: true }
+                  ],
+                  taggedPorts: '1/1/40',
+                  untaggedPorts: '1/1/38'
+                }]
+              }
+            ]
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByText('ICX7550-24P'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+    expect(dialog).not.toBeVisible()
+  })
+
+  it('should delete module correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans: [
+              vlans[0],
+              {
+                ...vlans[1],
+                switchFamilyModels: [{
+                  id: '9874453239bc479fac68bc050d0cf729',
+                  model: 'ICX7550-24P',
+                  slots: [
+                    { slotNumber: 1, enable: true },
+                    { slotNumber: 2, enable: true, option: '2X40G' },
+                    { slotNumber: 3, enable: true, option: '2X40G' }
+                  ],
+                  taggedPorts: '1/2/2',
+                  untaggedPorts: '1/1/20,1/3/2'
+                }, {
+                  id: '9874453239bc479fac68bc050d0cf728',
+                  model: 'ICX7650-48ZP',
+                  slots: [
+                    { slotNumber: 1, enable: true },
+                    { slotNumber: 2, enable: true, option: '1X40/100G' }
+                  ],
+                  taggedPorts: '1/1/2',
+                  untaggedPorts: '1/1/3'
+                }, {
+                  id: '9874453239bc479fac68bc050d0cf727',
+                  model: 'ICX7650-48ZP',
+                  slots: [
+                    { slotNumber: 1, enable: true }
+                  ],
+                  taggedPorts: '1/1/40',
+                  untaggedPorts: '1/1/38'
+                }]
+              }
+            ]
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByText('ICX7550-24P'))
+    // await userEvent.click(await screen.findByText(/Module 2:/))
+    // await userEvent.click(await screen.findByText(/Module 2: --/))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+    // expect(await screen.findByText(/Delete "2 Modules"/)).toBeVisible()
+    const dialog = await screen.findByRole('dialog')
+    expect(await screen.findByText(/Are you sure you want to delete this Module?/)).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Module' }))
+
+    await waitFor(()=>{
+      expect(dialog).not.toBeVisible()
+    })
+    expect(screen.queryByText('ICX7550-24P')).toBeNull()
+  })
+
+})

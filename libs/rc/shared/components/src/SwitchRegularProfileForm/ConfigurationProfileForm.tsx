@@ -218,11 +218,6 @@ export function ConfigurationProfileForm () {
 
   }
 
-  // const updateVlanPortsData = async (data: Partial<SwitchConfigurationProfile>) => {
-  //   // eslint-disable-next-line no-console
-  //   console.log('updateVlanPortsData: ', data)
-  // }
-
   const updateVlanCurrentData = async (
     data: Partial<SwitchConfigurationProfile>,
     timing?: string

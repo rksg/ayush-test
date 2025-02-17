@@ -204,6 +204,6 @@ describe('Wired - VlanSetting', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     const deleteButton2 = await screen.findByRole('button', { name: /Delete/i })
     await userEvent.click(deleteButton2)
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Vlan' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete VLAN' }))
   })
 })

@@ -133,11 +133,24 @@ export function PortsStep (props:{
   ) => {
     const portSettings: PortSetting[] = form.getFieldValue('portSettings')
     const checkField = type === VlanTypes.UNTAGGED ? VlanTypes.TAGGED : VlanTypes.UNTAGGED
+
+    //TODO
+    const currentModelVlans = _.uniq(
+      Object.values(currentModelPortList ?? {}).reduce((result: string[], port) => {
+        return result.concat(port.untaggedVlan, port.taggedVlans)
+      }, []))
+    const currentModuleVlans = _.uniq(
+      Object.values(currentModulePortList ?? {}).reduce((result: string[], port) => {
+        return result.concat(port.untaggedVlan, port.taggedVlans)
+      }, []))
+
+    const unavailableVlans = _.difference(currentModelVlans, currentModuleVlans)
+
     const assignedVlan = portSettings.filter(port => {
       return selectedItems.includes(port.port)
     }).map(port => port[checkField]).flat()
 
-    return assignedVlan.includes(portIdentifier)
+    return assignedVlan.includes(portIdentifier) || unavailableVlans.includes(portIdentifier)
   }
 
   const getVlanOptions = (type: VlanType) => {
@@ -151,7 +164,7 @@ export function PortsStep (props:{
 
       return <Select.Option
         value={opt.value}
-        key={opt.value}
+        key={`${type}_${opt.value}`}
         disabled={disabled}
         children={disabled
           ? <Tooltip placement='topLeft' title={tooltipTitle}>
@@ -168,9 +181,10 @@ export function PortsStep (props:{
 
   useEffect(() => {
     // const { family, model, slots } = form.getFieldsValue(true)
+    console.log('vlanList: ', vlanList)
     const vlanOptions = vlanList.map((item) => ({
       label: item.vlanId,
-      value: item.vlanId.toString()
+      value: item.vlanId?.toString()
     })).sort((a, b) => Number(a.value) - Number(b.value))
 
     const modulekey = getModuleKey(family, model, slots)
@@ -363,7 +377,7 @@ export function PortsStep (props:{
           <Row gutter={20} className='content'>
             { moduleOptions.map((module, i) => {
               const index = i+1
-              return module && <Col>
+              return module && <Col key={`module${unit}_${index}`}>
                 <Row gutter={20}>
                   <Col>
                     <div>
@@ -409,6 +423,7 @@ export function PortsStep (props:{
 
   const handleVlansChange = () => {
     const { untaggedVlan, taggedVlans, portSettings = [] } = form.getFieldsValue()
+    console.log('**** handleVlansChange: ', untaggedVlan, taggedVlans, portSettings)
     const updatePortSettings = selectedItems?.map((port) => {
       return {
         id: `${familymodel}-${port}`,
@@ -430,6 +445,13 @@ export function PortsStep (props:{
         }
       }, {})
     })
+
+    console.log(
+      [
+        ...portSettings.filter((p: { port: string }) => !selectedItems.includes(p.port)),
+        ...updatePortSettings
+      ]
+    )
 
     form.setFieldValue('portSettings', [
       ...portSettings.filter((p: { port: string }) => !selectedItems.includes(p.port)),

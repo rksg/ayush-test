@@ -61,9 +61,9 @@ export const getModelModules = (family: string, model: string): string[][] => {
 export const getSlots = (family: string, model: string): DefaultOptionType[][] => {
   const modelModules = getModelModules(family, model)
   const slotOptionLists = [
-    createSlotOptions(modelModules, 1) ?? [],
-    createSlotOptions(modelModules, 2) ?? [],
-    createSlotOptions(modelModules, 3) ?? []
+    createSlotOptions(modelModules, 1),
+    createSlotOptions(modelModules, 2),
+    createSlotOptions(modelModules, 3)
   ]
 
   return slotOptionLists

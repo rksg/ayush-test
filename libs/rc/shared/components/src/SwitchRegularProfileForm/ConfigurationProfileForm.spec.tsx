@@ -627,7 +627,8 @@ describe('Wired', () => {
   })
 
   it('Edit Switch Configuration Profile form with configuring voice vlan', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.BULK_VLAN_PROVISIONING)
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(profileWithVoiceVlan))
@@ -1042,6 +1043,52 @@ describe('Wired', () => {
         expect(mockedDisassociate).toHaveBeenCalledTimes(1)
         expect(mockedUpdateFn).toHaveBeenCalledTimes(1)
         expect(mockedAssociate).toHaveBeenCalledTimes(0)
+      })
+    })
+  })
+
+  describe('Bulk VLAN provisioning', () => {
+    describe('Edit mode', () => {
+      const params = {
+        tenantId: 'tenant-id',
+        profileId: 'b27ddd7be108495fb9175cec5930ce63',
+        action: 'edit'
+      }
+
+      it('should update correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.SWITCH_RBAC_API || ff === Features.BULK_VLAN_PROVISIONING
+        )
+
+        render(
+          <Provider>
+            <ConfigurationProfileFormContext.Provider value={{
+              ...configureProfileContextValues,
+              editMode: true
+            }}>
+              <ConfigurationProfileForm />
+            </ConfigurationProfileFormContext.Provider>
+          </Provider>, {
+            // eslint-disable-next-line max-len
+            route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+          })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/General Properties/)).toBeVisible()
+        expect(await screen.findByText(/Ports/)).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Ports' }) )
+        expect(await screen.findByText(/Set Ports/)).toBeVisible()
+        expect(await screen.findByText(/ICX7150-24/)).toBeVisible()
+        expect(await screen.findByText(/Module/)).toBeVisible()
+        expect(await screen.findByText(/Default/)).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdateFn).toHaveBeenCalledTimes(1))
+
       })
     })
   })
