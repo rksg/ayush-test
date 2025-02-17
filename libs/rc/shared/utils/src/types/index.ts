@@ -1,5 +1,6 @@
 import { defineMessage } from 'react-intl'
 
+import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
   ServiceStatus,
@@ -65,7 +66,7 @@ export interface KeyValue<K, V> {
   value: V;
 }
 
-export interface Venue {
+export interface Venue extends EnforceableFields {
   id: string
   venueId?: string
   name: string
@@ -116,6 +117,7 @@ export interface AlarmBase {
   entityId: string
   sourceType: string,
   switchMacAddress: string,
+  clearTime?: string,
   clearedBy?: string
 }
 
