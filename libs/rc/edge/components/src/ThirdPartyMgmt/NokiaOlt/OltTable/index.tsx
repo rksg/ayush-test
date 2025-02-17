@@ -18,7 +18,9 @@ import {
   filterByAccessForServicePolicyMutation,
   VenueLink,
   EdgeNokiaOltData,
-  getOltStatusConfig
+  getOltStatusConfig,
+  isOltValidSerialNumber,
+  EdgeNokiaOltStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -49,14 +51,14 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
   }))
 
   const rowActions: TableProps<EdgeNokiaOltData>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (rows) => {
-        setCurrentOlt(rows[0])
-        setVisible(true)
-      },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
-    },
+    // {
+    //   label: $t({ defaultMessage: 'Edit' }),
+    //   onClick: (rows) => {
+    //     setCurrentOlt(rows[0])
+    //     setVisible(true)
+    //   },
+    //   scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
+    // },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -74,7 +76,8 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
               params: {
                 venueId: row.venueId,
                 edgeClusterId: row.edgeClusterId,
-                oltId: row.serialNumber }
+                // special case for OLT which has no serial number (ex: before it onboard to R1)
+                oltId: isOltValidSerialNumber(row.serialNumber) ? row.serialNumber : row.ip }
             }).unwrap())).then(clearSelection)
           }
         })
@@ -87,7 +90,7 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
 
   return <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
     <Table
-      rowKey='serialNumber'
+      rowKey='ip'
       settingsId={settingsId}
       columns={useColumns()}
       dataSource={data}
@@ -134,7 +137,10 @@ function useColumns () {
       width: 80,
       render: (_, row) =>
         <Row>
-          <EdgeNokiaOltStatus config={getOltStatusConfig()} status={row.status} showText />
+          <EdgeNokiaOltStatus
+            config={getOltStatusConfig()}
+            status={row.status || EdgeNokiaOltStatusEnum.UNKNOWN}
+            showText />
         </Row>
     },
     {

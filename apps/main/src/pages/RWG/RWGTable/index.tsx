@@ -1,12 +1,13 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                          from '@acx-ui/components'
-import { useRwgActions }                                                                                      from '@acx-ui/rc/components'
-import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
-import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess, useUserProfileContext }                                                   from '@acx-ui/user'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                              from '@acx-ui/components'
+import { useRwgActions }                                                                                                          from '@acx-ui/rc/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                                                     from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                                                     from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess, useUserProfileContext }                                                                       from '@acx-ui/user'
+import { getOpsApi }                                                                                                              from '@acx-ui/utils'
 
 
 
@@ -158,6 +159,7 @@ export function RWGTable () {
 
   const rowActions: TableProps<RWGRow>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1 && !selectedRows[0].isCluster,
+    rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].venueId}/${selectedRows[0].rwgId}/edit`, { replace: false })
@@ -166,6 +168,7 @@ export function RWGTable () {
   {
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Configure' }),
+    rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.updateGateway)],
     onClick: (selectedRows) => {
       window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
         '_blank')
@@ -173,6 +176,7 @@ export function RWGTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.deleteGateway)],
     onClick: (rows, clearSelection) => {
       rwgActions.deleteGateways(rows, tenantId, clearSelection)
     }
@@ -202,7 +206,8 @@ export function RWGTable () {
       <PageHeader
         title={$t({ defaultMessage: 'RUCKUS WAN Gateway ({count})' }, { count })}
         extra={!isCustomRole && filterByAccess([
-          <TenantLink to='/ruckus-wan-gateway/add'>
+          <TenantLink to='/ruckus-wan-gateway/add'
+            rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
           </TenantLink>
         ])}

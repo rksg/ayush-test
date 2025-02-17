@@ -52,7 +52,12 @@ export const PoeUtilizationBox = (props: PoeUtilizationBoxProps) => {
               suffix={`(${formatter('percentFormatRound')(calculatePercentage(value, totalVal))})`}
               formatter={statisticFormatter}
             />
-            : <Typography.Title level={3}>{noDataDisplay}</Typography.Title>}
+            : <StyledAntStatistic
+              title={title}
+              value={noDataDisplay}
+              formatter={(val: valueType) => <Typography.Title level={3}>{val}</Typography.Title>}
+            />
+          }
         </GridCol>
       </GridRow>
     </Loader>

@@ -5,11 +5,11 @@ import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { Cascader, Button, Loader }           from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
-import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
+import { Cascader, Button, Loader, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                               from '@acx-ui/config'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                         from '@acx-ui/formatter'
+import { useEncodedParameter, useDateFilter }                from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -69,7 +69,10 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const intl = useIntl()
   const { $t } = intl
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
-  const { startDate, endDate, range } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, range } = useDateFilter({
+    showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const toggles = useIncidentToggles()
   const isMLISA = get('IS_MLISA_SA')
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)

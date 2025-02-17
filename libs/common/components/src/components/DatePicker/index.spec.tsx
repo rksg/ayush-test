@@ -5,23 +5,22 @@ import userEvent          from '@testing-library/user-event'
 import moment, { Moment } from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
-import { render, screen }            from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }      from '@acx-ui/formatter'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 import {
   DateRange,
   useDateFilter,
-  getJwtTokenPayload,
   AccountTier
 } from '@acx-ui/utils'
 
 import { DatePicker, DateTimePicker, RangePicker, restrictDateToMonthsRange } from '.'
 
-const mockGetJwtTokenPayload = getJwtTokenPayload as jest.Mock
 const mockUseDateFilter = useDateFilter as jest.Mock
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getJwtTokenPayload: jest.fn(),
   useDateFilter: jest.fn()
 }))
 
@@ -46,12 +45,18 @@ describe('RangePicker', () => {
       endDate: '2022-01-02T00:00:00+08:00',
       range: 'Last 24 Hours'
     })
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.PLATINUM
+    })
+  })
 
-    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.PLATINUM })
-  })
+
   afterEach(() => {
-    mockGetJwtTokenPayload.mockClear()
+    jest.mocked(useIsSplitOn).mockImplementation(false)
   })
+
   it('should open when click on date select', async () => {
     render(
       <IntlProvider locale='en'>
@@ -264,6 +269,33 @@ describe('RangePicker', () => {
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
   })
+  it('should reset when select startTime greater than allowedMonthRange', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ACX_UI_DATE_RANGE_LIMIT)
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          maxMonthRange={1}
+          allowedMonthRange={1}
+          selectedRange={{
+            startDate: moment('03/01/2022').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[0])
+    const hourSelect = await screen.findAllByText('20')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+  })
   it('should limit to 3months sliding window within 12months for reports', async () => {
     render(
       <IntlProvider locale='en'>
@@ -376,7 +408,11 @@ describe('RangePicker', () => {
   })
 
   it('should restrict date for gold tier license', async () => {
-    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.GOLD })
+    setUserProfile({
+      allowedOperations: [],
+      profile: getUserProfile().profile,
+      accountTier: AccountTier.GOLD
+    })
     const apply = jest.fn()
     render(
       <IntlProvider locale='en'>
