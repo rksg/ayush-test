@@ -20,13 +20,14 @@ import {
   useUpdateApIotMutation
 } from '@acx-ui/rc/services'
 import {
-  validDomainNameRegExp,
+  domainNameRegExp,
   transformDisplayOnOff
 } from '@acx-ui/rc/utils'
 import { ApIot, VenueIot } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 import { FieldLabel }                                    from '../../styledComponents'
@@ -257,7 +258,9 @@ export function IotController (props: ApEditItemProps) {
                       // eslint-disable-next-line max-len
                       message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
                     },
-                    { validator: (_, value) => validDomainNameRegExp(value) }
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t(validationMessages.validDomain)
+                    }
                   ]}
                   label={
                     <>
