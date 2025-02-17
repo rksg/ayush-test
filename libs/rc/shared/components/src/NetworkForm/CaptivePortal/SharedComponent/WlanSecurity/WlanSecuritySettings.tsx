@@ -62,7 +62,6 @@ export const WlanSecurityFormItems = () => {
   const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
   // eslint-disable-next-line max-len
   const isCaptivePortalOWETransitionEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION)
-    && !isGuestNetworkTypeDirectoryServer()
 
   useEffect(() => {
     const transNetworkSecurity =
