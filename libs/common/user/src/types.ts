@@ -110,6 +110,14 @@ export interface PlmMessageBanner {
   updatedDate: string
 }
 
+export interface AllowedOperation {
+  scope: string[]
+  uri: string[]
+};
+export interface AllowedOperationsResponse {
+  allowedOperations: AllowedOperation[]
+}
+
 // not sure if it is really belongs to user
 export interface CloudVersion {
   scheduleVersionList: string[]

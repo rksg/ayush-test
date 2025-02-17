@@ -16,14 +16,21 @@ interface TextInlineEditorProps {
   onChange: (data: number) => Promise<void>,
 }
 export const TextInlineEditor = (props: TextInlineEditorProps) => {
-  const { onChange } = props
+  const { value: propsValue, onChange } = props
 
   const [isEditMode, setEditMode] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [initialValue, setInitialValue] = useState<number>(props.value)
-  const [editingValue, setEditingValue] = useState<number>(props.value)
+  const [initialValue, setInitialValue] = useState<number>(propsValue)
+  const [editingValue, setEditingValue] = useState<number>(propsValue)
 
+  // update initial value when props value change
+  useEffect(() => {
+    setInitialValue(propsValue)
+  }, [propsValue])
+
+  // update editing value when initial value change
+  // this is used to reset the value to initial when API failed, or API call is success initial value changed
   useEffect(() => {
     setEditingValue(initialValue)
   }, [initialValue])
