@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 import { getUserName as getUserNameRAI, getUserProfile as getUserProfileRAI } from '@acx-ui/analytics/utils'
 import { get }                                                                from '@acx-ui/config'
 import { getUserName as getUserNameR1, getUserProfile as getUserProfileR1 }   from '@acx-ui/user'
@@ -40,4 +42,12 @@ export const isVisibleByAction = (rows: DataSubscription[], action: Actions) => 
     default:
       return false
   }
+}
+
+export enum Frequency {
+  Daily = 'daily'
+}
+
+export const frequencyMap = {
+  [Frequency.Daily]: defineMessage({ defaultMessage: 'Daily' })
 }

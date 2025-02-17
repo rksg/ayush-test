@@ -20,7 +20,7 @@ import {
   useDeleteDataSubscriptionsMutation,
   usePatchDataSubscriptionsMutation
 } from './services'
-import { Actions, getUserId, isVisibleByAction } from './utils'
+import { Actions, Frequency, frequencyMap, getUserId, isVisibleByAction } from './utils'
 
 export function DataSubscriptionsTable () {
   const { $t } = useIntl()
@@ -113,7 +113,8 @@ export function DataSubscriptionsTable () {
     {
       key: 'frequency',
       title: $t({ defaultMessage: 'Frequency' }),
-      dataIndex: 'frequency'
+      dataIndex: 'frequency',
+      render: (_, row) => $t(frequencyMap[row.frequency as Frequency])
     },
     {
       key: 'updatedAt',
