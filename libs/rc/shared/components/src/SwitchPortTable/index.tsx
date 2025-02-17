@@ -23,7 +23,8 @@ import {
   SwitchViewModel,
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
-  isFirmwareVersionAbove10020b
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010fCd2Or10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
@@ -56,6 +57,9 @@ export function SwitchPortTable (props: {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
+
+  const [isSwitchErrorDisableFw, setIsSwitchErrorDisableFw] = useState(false)
+  const [isSwitchPortProfileFw, setIsSwitchPortProfileFw] = useState(false)
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
@@ -113,6 +117,15 @@ export function SwitchPortTable (props: {
       }
     }
     setData()
+
+    if (switchDetail) {
+      const switchFirmware = switchDetail?.firmware
+      setIsSwitchPortProfileFw(isSwitchPortProfileEnabled
+        && isFirmwareVersionAbove10020b(switchFirmware))
+      setIsSwitchErrorDisableFw(isSwitchErrorDisableEnabled
+        && isFirmwareVersionAbove10010fCd2Or10020b(switchFirmware))
+    }
+
   }, [isVenueLevel, switchDetail])
 
   const statusFilterOptions = [
@@ -378,45 +391,17 @@ export function SwitchPortTable (props: {
     sorter: true
   }]
 
-  const featureSupport = {
-    switchPortProfile:
-      isSwitchPortProfileEnabled && isFirmwareVersionAbove10020b(switchDetail?.firmware),
-    switchErrorDisable:
-      isSwitchErrorDisableEnabled && isFirmwareVersionAbove10020b(switchDetail?.firmware)
+  const columnFilters = {
+    switchName: () => isVenueLevel,
+    switchPortProfileName: () => isVenueLevel ? isSwitchPortProfileEnabled : isSwitchPortProfileFw,
+    switchPortProfileType: () => isVenueLevel ? isSwitchPortProfileEnabled : isSwitchPortProfileFw,
+    errDisable: () => isVenueLevel ? isSwitchErrorDisableEnabled : isSwitchErrorDisableFw,
+    errDisableReason: () => isVenueLevel ? isSwitchErrorDisableEnabled : isSwitchErrorDisableFw
   }
 
-  const hidenColumns = {
-    venueLevel: ['switchName'],
-    unsupportedFeatures: {
-      switchPortProfile: ['switchPortProfileName', 'switchPortProfileType'],
-      switchErrorDisable: ['errDisable', 'errDisableReason']
-    }
-  }
-
-  const isColumnHiddenForUnsupportedFeature = (columnKey: string) =>
-    Object.entries(hidenColumns.unsupportedFeatures).some(([feature, cols]) => {
-      const isFeatureSupported = featureSupport[feature as keyof typeof featureSupport]
-      return !isFeatureSupported && cols.includes(columnKey)
-    })
-
-  const getColumns = () => columns.filter(item => {
-    if (isVenueLevel) {
-      if (hidenColumns.unsupportedFeatures.switchPortProfile.includes(item.key)) {
-        return isSwitchPortProfileEnabled
-      }
-      if (hidenColumns.unsupportedFeatures.switchErrorDisable.includes(item.key)) {
-        return isSwitchErrorDisableEnabled
-      }
-
-      return true
-    } else {
-      if (hidenColumns.venueLevel.includes(item.key)) {
-        return false
-      }
-
-      return !isColumnHiddenForUnsupportedFeature(item.key)
-    }
-  })
+  const getColumns = () => columns.filter(item =>
+    columnFilters[item.key as keyof typeof columnFilters]?.() ?? true
+  )
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),

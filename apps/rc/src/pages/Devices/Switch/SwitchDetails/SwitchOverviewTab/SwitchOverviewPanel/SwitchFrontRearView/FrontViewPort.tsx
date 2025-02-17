@@ -4,15 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip, cssStr }                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { getInactiveTooltip }                                                      from '@acx-ui/rc/components'
-import { useLazyGetLagListQuery }                                                  from '@acx-ui/rc/services'
-import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10020b } from '@acx-ui/rc/utils'
-import { useParams }                                                               from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                                            from '@acx-ui/types'
-import { hasPermission }                                                           from '@acx-ui/user'
-import { getOpsApi }                                                               from '@acx-ui/utils'
+import { Tooltip, cssStr }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { getInactiveTooltip }                                                                 from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery }                                                             from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus, SwitchRbacUrlsInfo, isFirmwareVersionAbove10010fCd2Or10020b } from '@acx-ui/rc/utils'
+import { useParams }                                                                          from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                       from '@acx-ui/types'
+import { hasPermission }                                                                      from '@acx-ui/user'
+import { getOpsApi }                                                                          from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -110,36 +110,37 @@ export function FrontViewPort (props:{
           label={$t({ defaultMessage: 'Port State' })}
           children={port.status}
         />
-        {isSwitchErrorDisableEnabled && isFirmwareVersionAbove10020b(switchFirmware) && (<>
-          <UI.TooltipStyle.Item
-            label={$t({ defaultMessage: 'ErrDisable' })}
-            children={
-              !port.errorDisableStatus || port.errorDisableStatus === 'None' ? 'No'
-                : <>
-                  <Tooltip.Warning
-                    isFilled
-                    isTriangle
-                    iconStyle={incompatibleIconStyle}
-                  />
-                  {'Yes'}
-                </>
-            }
-          />
-          <UI.TooltipStyle.Item
-            label={$t({ defaultMessage: 'ErrDisable Reason' })}
-            children={
-              !port.errorDisableStatus || port.errorDisableStatus === 'None' ? '--'
-                : <>
-                  <Tooltip.Warning
-                    isFilled
-                    isTriangle
-                    iconStyle={incompatibleIconStyle}
-                  />
-                  {port.errorDisableStatus}
-                </>
-            }
-          />
-        </>)}
+        {// eslint-disable-next-line max-len
+          isSwitchErrorDisableEnabled && isFirmwareVersionAbove10010fCd2Or10020b(switchFirmware) && (<>
+            <UI.TooltipStyle.Item
+              label={$t({ defaultMessage: 'ErrDisable' })}
+              children={
+                !port.errorDisableStatus || port.errorDisableStatus === 'None' ? 'No'
+                  : <>
+                    <Tooltip.Warning
+                      isFilled
+                      isTriangle
+                      iconStyle={incompatibleIconStyle}
+                    />
+                    {'Yes'}
+                  </>
+              }
+            />
+            <UI.TooltipStyle.Item
+              label={$t({ defaultMessage: 'ErrDisable Reason' })}
+              children={
+                !port.errorDisableStatus || port.errorDisableStatus === 'None' ? '--'
+                  : <>
+                    <Tooltip.Warning
+                      isFilled
+                      isTriangle
+                      iconStyle={incompatibleIconStyle}
+                    />
+                    {port.errorDisableStatus}
+                  </>
+              }
+            />
+          </>)}
         <UI.TooltipStyle.Item
           label={$t({ defaultMessage: 'Connected Device' })}
           children={port.neighborName || port.neighborMacAddress || '--'}
