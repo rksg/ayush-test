@@ -10,7 +10,7 @@ import {
   EdgeNokiaOltData,
   EdgeNokiaOltStatusEnum,
   getOltStatusConfig,
-  isOltValidSerialNumber
+  isOltOnline
 } from '@acx-ui/rc/utils'
 
 import OltImage                    from '../../../assets/images/olt/olt.png'
@@ -27,6 +27,8 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
 
+  const isOnline = isOltOnline(currentOlt)
+
   const {
     upCages,
     totalCages,
@@ -39,6 +41,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
       oltId: currentOlt.serialNumber
     }
   }, {
+    skip: !isOnline,
     selectFromResult: ({ data, isLoading, isFetching }) => ({
       upCages: data?.filter(item => item.state === EdgeNokiaCageStateEnum.UP).length ?? 0,
       totalCages: data?.length ?? 0,
@@ -77,8 +80,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
               <Typography.Text>{$t({ defaultMessage: 'Status' })}</Typography.Text>
               <StyledEdgeNokiaOltStatus
                 config={getOltStatusConfig()}
-                // eslint-disable-next-line max-len
-                status={isOltValidSerialNumber(currentOlt.serialNumber) ? currentOlt.status : EdgeNokiaOltStatusEnum.UNKNOWN}
+                status={currentOlt.status || EdgeNokiaOltStatusEnum.UNKNOWN}
                 showText />
             </GridCol>
             <GridCol col={{ span: 5 }}>

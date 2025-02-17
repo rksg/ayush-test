@@ -44,7 +44,7 @@ export function WebhookForm (props: {
   const [incidents, setIncidents] = useState<string[]>([])
   const [activities, setActivities] = useState<string[]>([])
   const [events, setEvents] = useState<string[]>([])
-  const [enabled, setEnabled] = useState<boolean>()
+  const [enabled, setEnabled] = useState<boolean>(true)
   const webhook = props.selected ?? undefined
   const [addWebhook] = useAddWebhookMutation()
   const [updateWebhook] = useUpdateWebhookMutation()
@@ -133,7 +133,8 @@ export function WebhookForm (props: {
       component: <SettingsTab
         form={form}
         webhookData={props.webhookData}
-        isEditMode={props.selected ? true : false} />
+        selected={props.selected}
+      />
     },
     {
       key: 'incidents',
