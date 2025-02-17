@@ -6,9 +6,11 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, Tooltip }                                                from '@acx-ui/components'
-import { usePingEdgeMutation }                                                    from '@acx-ui/rc/services'
-import { EdgeTroubleshootingMessages, EdgeTroubleshootingType, targetHostRegExp } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip }                                                              from '@acx-ui/components'
+import { usePingEdgeMutation }                                                                  from '@acx-ui/rc/services'
+import { EdgeTroubleshootingMessages, EdgeTroubleshootingType, EdgeUrlsInfo, targetHostRegExp } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                        from '@acx-ui/user'
+import { getOpsApi }                                                                            from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
@@ -81,7 +83,9 @@ export function EdgePingForm () {
           <Button
             type='primary'
             htmlType='submit'
-            disabled={!isValid || isPingingEdge}
+            disabled={!isValid || isPingingEdge ||
+              !hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.pingEdge)] })
+            }
             onClick={handlePingEdge}>
             {$t({ defaultMessage: 'Run' })}
           </Button>
