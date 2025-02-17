@@ -21,6 +21,8 @@ import {
   NetworkRadiusSettings,
   ConfigTemplateDriftsResponse,
   transformWifiNetwork,
+  ConfigTemplateCloneUrlsInfo,
+  AllowedCloneTemplateTypes,
   VlanPool
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
@@ -484,6 +486,18 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
       }
     }),
+    cloneTemplate: build.mutation<CommonResult, RequestPayload<{ type: AllowedCloneTemplateTypes, templateId: string, name: string }>>({
+      query: (queryArgs) => {
+        const { payload } = queryArgs
+        const { type, templateId, name } = payload!
+        const apiInfo = ConfigTemplateCloneUrlsInfo[type]
+        return {
+          ...createHttpRequest(apiInfo, { templateId }),
+          body: JSON.stringify({ name })
+        }
+      },
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
     updateEnforcementStatus: build.mutation<CommonResult, RequestPayload<{ enabled: boolean }>>({
       query: ({ params, payload }) => {
         return {
@@ -543,6 +557,7 @@ export const {
   useGetDriftInstancesQuery,
   useLazyGetDriftReportQuery,
   usePatchDriftReportMutation,
+  useCloneTemplateMutation,
   useUpdateEnforcementStatusMutation,
   useGetConfigTemplateInstanceEnforcedQuery
 } = configTemplateApi
