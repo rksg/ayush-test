@@ -214,7 +214,7 @@ export const showErrorModal = (details: {
       title,
       content,
       ...(type === 'error' && { customContent: {
-        action: 'SHOW_API_ERRORS',
+        action: 'SHOW_ERRORS',
         errorDetails: errors,
         path,
         errorCode

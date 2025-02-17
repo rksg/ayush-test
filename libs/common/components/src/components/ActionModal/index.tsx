@@ -41,13 +41,6 @@ type ErrorContent = {
   errorCode?: number
 }
 
-type ApiErrorContent = {
-  action: 'SHOW_API_ERRORS',
-  errorDetails?: ErrorDetailsProps,
-  path?: string,
-  errorCode?: number
-}
-
 type CustomButtonsContent = {
   action: 'CUSTOM_BUTTONS',
   buttons: CustomButtonProps[]
@@ -64,8 +57,7 @@ type CodeContent = {
 
 export interface ActionModalProps extends ModalFuncProps {
   type: ActionModalType,
-  // eslint-disable-next-line max-len
-  customContent?: DeleteContent | ErrorContent | ApiErrorContent | CustomButtonsContent | CodeContent,
+  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent,
 }
 
 export interface ModalRef {
@@ -120,7 +112,6 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
   const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
-  const { errorDetails, path, errorCode } = props.customContent
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -154,7 +145,8 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
         ...props
       }
       break
-    case 'SHOW_API_ERRORS':
+    case 'SHOW_ERRORS':
+      const { errorDetails, path, errorCode } = props.customContent
       props = {
         ...props,
         content: enabledDialogImproved ? <ApiErrorTemplate
@@ -165,21 +157,6 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
           modal={modal}
           onOk={props.onOk}
         /> : <ErrorTemplate
-          content={props.content}
-          path={path}
-          errorCode={errorCode}
-          errors={errorDetails}
-          modal={modal}
-          onOk={props.onOk}
-        />,
-        okText: ' ',
-        className: 'modal-custom'
-      }
-      break
-    case 'SHOW_ERRORS':
-      props = {
-        ...props,
-        content: <ErrorTemplate
           content={props.content}
           path={path}
           errorCode={errorCode}
@@ -258,7 +235,7 @@ function ApiErrorTemplate ({ errors, ...props }: {
       {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
         {code && <ApiCollapsePanel
-          expanded={code.expanded}
+          expanded={false}
           header={code.label}
           content={code.content}
           path={props.path}
@@ -388,14 +365,14 @@ function ApiCollapsePanel (props: {
     const content = props.content
     const object = JSON.parse(content)
     const errorObj = object.errors?.[0] || {}
-    return <UI.ErrorDescriptions labelWidthPercent={errorObj.message? 25 : 28}
+    return <UI.ErrorDescriptions labelWidthPercent={errorObj.message? 26 : 28}
       contentStyle={{ alignItems: 'center' }}>
       {/* model  */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'URL' })}
         children={props.path} />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Error Code' })}
+        label={$t({ defaultMessage: 'HTTP Code' })}
         children={props.errorCode} />
       {object.requestId &&
         <Descriptions.Item
@@ -408,7 +385,7 @@ function ApiCollapsePanel (props: {
       {errorObj.code &&
          <Descriptions.Item
            style={{ paddingTop: '16px' }}
-           label={$t({ defaultMessage: 'Code' })}
+           label={$t({ defaultMessage: 'RUCKUS Code' })}
            children={errorObj.code} />
       }
       {errorObj.message &&
