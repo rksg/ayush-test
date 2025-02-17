@@ -1724,9 +1724,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
 
         const wifiNetworksQuery = await fetchWithBQ(wifiNetworksReq) as { data: { data: (Network & { venueApGroups: NetworkVenue[] })[] } }
-        const filterNetworks = (wifiNetworksQuery.data).data.filter(
-          network => network.venueApGroups.some(venue => venue.venueId === arg.params?.venueId))
-        const networkIds = filterNetworks.map((network) => network.id)
+        const networkIds = wifiNetworksQuery.data.data.map((network) => network.id)
         const networksQueryResults = await Promise.all(networkIds.map(async (id) => {
           if (id) {
             const networksQuery = await fetchWithBQ({

@@ -185,7 +185,14 @@ export function useIntentAIActions () {
     params: { venueId },
     radio: codeToRadio[code],
     payload: {
-      ...(isWifiRbacEnabled && { venueId }),
+      ...(isWifiRbacEnabled
+        ? {
+          filters: {
+            'venueApGroups.venueId': [venueId]
+          }
+        }
+        : { venueId }
+      ),
       fields: isWifiRbacEnabled ? ['id', 'name', 'venueApGroups', 'ssid'] : ['id', 'name', 'ssid'],
       page: 1,
       sortField: 'name',
