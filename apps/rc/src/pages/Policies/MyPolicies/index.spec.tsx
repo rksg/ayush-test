@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsBetaEnabled, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   connectionMeteringApi,
   policyApi
