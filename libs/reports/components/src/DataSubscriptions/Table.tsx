@@ -203,8 +203,10 @@ export function DataSubscriptionsTable () {
   const doDelete = (selectedRows: DataSubscription[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Data Subscriptio{plural}' },
-        { plural: selectedRows.length > 1 ? 'ns' : 'n' }),
+      $t(
+        { defaultMessage: `{deleteCount, plural, 
+        one {Data Subscription} other {Data Subscriptions}}` },
+        { deleteCount: selectedRows.length }),
       selectedRows[0].name,
       // no need to check the relation fields
       [],
