@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
@@ -74,6 +74,7 @@ function Card (props: CardProps) {
     isShadow
   } = props.card
   const { margin, rowHeight, calWidth } = props.layout
+  const [visible, setVisible] = useState(false)
   const { x, y } = utils.calGridItemPosition(
     gridx,
     gridy,
@@ -172,7 +173,13 @@ function Card (props: CardProps) {
               >
                 <Minus />
               </div>
-              <div className='icon disabled'>
+              <div
+                data-testid='editCard'
+                className='icon'
+                onClick={() => {
+                  setVisible(true)
+                }}
+              >
                 <EditOutlined />
               </div>
               <div
@@ -187,7 +194,11 @@ function Card (props: CardProps) {
             </div>
             {
               card.chartType &&
-              <WidgetChart data={card as unknown as WidgetListData} />
+              <WidgetChart
+                data={card as unknown as WidgetListData}
+                visible={visible}
+                setVisible={setVisible}
+              />
             }
           </div>
       }

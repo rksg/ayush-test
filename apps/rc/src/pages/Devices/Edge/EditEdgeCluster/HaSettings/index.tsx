@@ -15,10 +15,11 @@ import {
   useGetEdgeClusterNetworkSettingsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
-import { EdgeClusterStatus } from '@acx-ui/rc/utils'
-import { useTenantLink }     from '@acx-ui/react-router-dom'
-import { EdgeScopes }        from '@acx-ui/types'
-import { hasPermission }     from '@acx-ui/user'
+import { EdgeClusterStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { useTenantLink }                   from '@acx-ui/react-router-dom'
+import { EdgeScopes }                      from '@acx-ui/types'
+import { hasPermission }                   from '@acx-ui/user'
+import { getOpsApi }                       from '@acx-ui/utils'
 
 interface HaSettingsProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -70,7 +71,10 @@ export const HaSettings = (props: HaSettingsProps) => {
     navigate(clusterListPage)
   }
 
-  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const hasUpdatePermission = hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings)]
+  })
 
   return (
     <Loader states={[{

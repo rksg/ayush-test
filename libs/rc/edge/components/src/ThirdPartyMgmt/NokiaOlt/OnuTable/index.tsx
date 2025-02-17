@@ -58,7 +58,7 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
   const columns: TableProps<EdgeNokiaOnuData>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'ONU Name' }),
+      title: $t({ defaultMessage: 'ONU/ONT Name' }),
       dataIndex: 'name',
       sorter: true,
       fixed: 'left',
