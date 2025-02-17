@@ -1,16 +1,31 @@
 import { AuditDto, AuditStatusEnum, DataSubscription } from '../types'
 
 export const mockedUserId = 'userId-fake'
-export const mockedSubscriptions = Array(10).fill(null).map((_, index) => ({
-  id: `id-${index}`,
-  name: `dataSubscription-${index}`,
-  userId: mockedUserId,
-  userName: 'userName-fake',
-  columns: [`column-${index}`],
-  status: Boolean(index % 2),
-  frequency: 'daily',
-  updatedAt: new Date().toISOString()
-})) as DataSubscription[]
+export const mockedSubscriptions = [
+  ...Array(9)
+    .fill(null)
+    .map((_, index) => ({
+      id: `id-${index}`,
+      name: `dataSubscription-${index}`,
+      userId: mockedUserId,
+      userName: 'userName-fake',
+      columns: [`column-${index}`],
+      status: Boolean(index % 2),
+      frequency: 'daily',
+      updatedAt: new Date().toISOString()
+    })),
+  // not owned by user
+  {
+    id: 'id-9',
+    name: 'dataSubscription-9',
+    userId: 'another-user-id',
+    userName: 'another-userName-fake',
+    columns: ['column-9'],
+    status: true,
+    frequency: 'daily',
+    updatedAt: new Date().toISOString()
+  }
+] as DataSubscription[]
 
 // now = '2025-01-20T02:48:40.069Z'
 export const mockAuditLogs: AuditDto[] = [

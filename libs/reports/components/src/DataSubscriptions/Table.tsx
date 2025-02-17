@@ -1,12 +1,12 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { get }                                  from '@acx-ui/config'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
-import { doProfileDelete }                      from '@acx-ui/rc/services'
-import { useTableQuery }                        from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }           from '@acx-ui/react-router-dom'
-import { RolesEnum }                            from '@acx-ui/types'
+import { Loader, showToast, Table, TableProps }   from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
+import { DateFormatEnum, formatter }              from '@acx-ui/formatter'
+import { doProfileDelete }                        from '@acx-ui/rc/services'
+import { useTableQuery }                          from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                              from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
