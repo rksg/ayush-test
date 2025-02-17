@@ -12,10 +12,7 @@ import { StorageOptions }         from './CloudStorageForm'
 import { useGetStorageQuery }     from './services'
 import { DataSubscriptionsTable } from './Table'
 
-type DataSubscriptionsContentProps = {
-  isRAI?: boolean
-}
-const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isRAI }) => {
+const DataSubscriptionsContent: React.FC<{}> = () => {
   const { $t } = useIntl()
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
@@ -68,7 +65,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
           helpUrl={helpUrl} />
       </GridCol>
     </GridRow>
-    <DataSubscriptionsTable isRAI={isRAI} />
+    <DataSubscriptionsTable />
   </>)
 }
 

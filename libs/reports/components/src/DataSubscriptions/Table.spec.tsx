@@ -55,7 +55,7 @@ describe('DataSubscriptions table', () => {
     })
 
     it('renders table with data and correct columns', async () => {
-      render(<DataSubscriptionsTable isRAI={true} />, { wrapper: Provider, route: {} })
+      render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(mockedSubscriptions.length)
@@ -77,7 +77,7 @@ describe('DataSubscriptions table', () => {
     })
 
     const findRowInTable = async (data: DataSubscription) => {
-      render(<DataSubscriptionsTable isRAI={true} />, { wrapper: Provider, route: {} })
+      render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
 
       const element = await findTBody()
       expect(element).toBeVisible()
@@ -276,7 +276,7 @@ describe('DataSubscriptions table', () => {
     })
 
     it('renders table with data and correct columns', async () => {
-      render(<DataSubscriptionsTable isRAI={false} />, { wrapper: Provider, route: {} })
+      render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(mockedSubscriptions.length)
