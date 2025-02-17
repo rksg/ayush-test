@@ -21,9 +21,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { defaultNetworkPayload }                from '../../../NetworkTable'
-import { SimpleListTooltip }                    from '../../../SimpleListTooltip'
 import { AddModeProps }                         from '../../AccessControlForm'
 import { ApplicationDrawer }                    from '../../AccessControlForm/ApplicationDrawer'
+import { getToolTipByNetworkFilterOptions }     from '../AccessControlPolicy'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
 
 const defaultPayload = {
@@ -223,12 +223,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (_, row) => {
-        if (!row.networkIds || row.networkIds.length === 0) return 0
-        // eslint-disable-next-line max-len
-        const tooltipItems = networkFilterOptions.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
-      }
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

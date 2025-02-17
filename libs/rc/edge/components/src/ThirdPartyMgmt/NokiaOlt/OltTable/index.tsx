@@ -90,7 +90,7 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
 
   return <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
     <Table
-      rowKey='serialNumber'
+      rowKey='ip'
       settingsId={settingsId}
       columns={useColumns()}
       dataSource={data}
@@ -139,8 +139,7 @@ function useColumns () {
         <Row>
           <EdgeNokiaOltStatus
             config={getOltStatusConfig()}
-            // eslint-disable-next-line max-len
-            status={isOltValidSerialNumber(row.serialNumber) ? row.status : EdgeNokiaOltStatusEnum.UNKNOWN}
+            status={row.status || EdgeNokiaOltStatusEnum.UNKNOWN}
             showText />
         </Row>
     },

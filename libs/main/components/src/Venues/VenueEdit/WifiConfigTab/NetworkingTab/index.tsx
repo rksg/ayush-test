@@ -4,15 +4,24 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                                from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }                                                              from '@acx-ui/rc/components'
-import { useLazyApListQuery }                                                                        from '@acx-ui/rc/services'
-import { VenueApModelCellular, redirectPreviousPage, WifiRbacUrlsInfo, VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                                                    from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }                                                                      from '@acx-ui/user'
-import { directedMulticastInfo, getOpsApi }                                                          from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
+import { useLazyApListQuery }                     from '@acx-ui/rc/services'
+import {
+  VenueApModelCellular,
+  redirectPreviousPage,
+  WifiRbacUrlsInfo,
+  VenueConfigTemplateUrlsInfo,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }   from '@acx-ui/user'
+import {
+  directedMulticastInfo,
+  getOpsApi
+} from '@acx-ui/utils'
 
 import { VenueUtilityContext }                  from '..'
 import { useVenueConfigTemplateOpsApiSwitcher } from '../../../venueConfigTemplateApiSwitcher'
@@ -42,9 +51,12 @@ export function NetworkingTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { tenantId, venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
+  const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
+  const isLegacyTemplateLanPortEnabled = !isTemplate || isLegacyLanPortEnabled
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
@@ -124,7 +136,7 @@ export function NetworkingTab () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
-  const items = [{
+  const items = [...(isLegacyTemplateLanPortEnabled ? [{
     title: $t({ defaultMessage: 'LAN Ports' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='lan-ports'>
@@ -132,7 +144,7 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <LanPorts isAllowEdit={isAllowEditLanPort}/>
     </>
-  }, {
+  }] : []), {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='mesh-network'>

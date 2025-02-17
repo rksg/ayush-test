@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
-import { MspRbacUrlsInfo, MspUrlsInfo }                          from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { render, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn, Features }                                           from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo }                                     from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { render, screen, mockServer, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps }                      from '@acx-ui/user'
 
 import { LicenseCompliance } from '.'
 
@@ -155,7 +156,7 @@ const list = [
     featureType: 'SLTN_ADAPT_POLICY',
     featureName: 'Adaptive Policy',
     maxQuantity: 0,
-    enabled: false,
+    enabled: true,
     capped: true,
     licenseToken: 5,
     featureCostUnit: 'per Policy',
@@ -181,6 +182,11 @@ const fakeTenantDetails = {
   status: 'active',
   tenantType: 'REC'
 }
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  isPrimeAdmin
+} as UserProfileContextProps
 
 const services = require('@acx-ui/msp/services')
 describe('LicenseCompliance', () => {
@@ -216,6 +222,10 @@ describe('LicenseCompliance', () => {
       rest.get(
         MspRbacUrlsInfo.getSolutionTokenSettings.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.patch(
+        MspRbacUrlsInfo.updateSolutionTokenSettings.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
       )
     )
     params = {
@@ -354,7 +364,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={false}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={false}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -382,7 +396,15 @@ describe('LicenseCompliance', () => {
 
     expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
 
-    userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[0])
+    expect(screen.getByRole('switch', { name: 'Uncapped' } )).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Capped' } )).toBeVisible()
+
+    await userEvent.click((await screen.findByRole('button', { name: 'Save' })))
+
+    expect(await screen.findByText('Solution Usage Cap Updated!')).toBeVisible()
+
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[1])
+
   })
 
   it('should render msp solution token card settings tab', async () => {
@@ -390,7 +412,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isExtendedTrial={true} isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isExtendedTrial={true} isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -419,6 +445,22 @@ describe('LicenseCompliance', () => {
 
     expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
 
-    userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[0])
+    expect(screen.getByRole('switch', { name: 'Uncapped' } )).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Capped' } )).toBeVisible()
+
+    expect(screen.getAllByRole('spinbutton')).toHaveLength(1)
+
+    await userEvent.click(screen.getByRole('switch', { name: 'Capped' }))
+
+    expect(screen.getAllByRole('spinbutton')).toHaveLength(2)
+
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'Tunnels' }), { target: { value: 12 } })
+
+    await userEvent.click((await screen.findByRole('button', { name: 'Save' })))
+
+    expect(await screen.findByText('Solution Usage Cap Updated!')).toBeVisible()
+
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[1])
+
   })
 })

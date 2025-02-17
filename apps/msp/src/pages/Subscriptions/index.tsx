@@ -111,6 +111,7 @@ export function Subscriptions () {
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
   const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
   const isSubscriptionPagesizeToggleEnabled = useIsSplitOn(Features.SUBSCRIPTIONS_PAGESIZE_TOGGLE)
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
 
   const entitlementListPayload = {
     fields: [
@@ -132,7 +133,7 @@ export function Subscriptions () {
     sortField: 'expirationDate',
     sortOrder: 'DESC',
     filters: {
-      licenseType: ['APSW'],
+      licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
       usageType: 'ASSIGNED'
     }
   }
@@ -165,7 +166,7 @@ export function Subscriptions () {
 
   const getCourtesyTooltip = (total: number, courtesy: number) => {
     const purchased = total-courtesy
-    return $t({ defaultMessage: 'purchased:{purchased}, courtesy:{courtesy}' },
+    return $t({ defaultMessage: 'purchased: {purchased}, courtesy: {courtesy}' },
       { purchased, courtesy })
   }
 
@@ -304,10 +305,16 @@ export function Subscriptions () {
     } }
 
     deviceTypeList.forEach(item => {
-      const isApswTrial = item.value === EntitlementDeviceType.MSP_APSW_TEMP
-      const licenseTypeType = !isApswTrial ? item.value : EntitlementDeviceType.APSW
+      const isTrial = [EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP,
+        EntitlementDeviceType.MSP_APSW_TEMP]
+        .includes(item.value)
+      const licenseTypeType = !isTrial
+        ? item.value
+        : item.value === EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP
+          ? EntitlementDeviceType.SLTN_TOKEN
+          : EntitlementDeviceType.APSW
       const summaryData =
-        data.filter(n => n.licenseType === licenseTypeType && n.isTrial === isApswTrial)
+        data.filter(n => n.licenseType === licenseTypeType && n.isTrial === isTrial)
       let quantity = 0
       let used = 0
       let courtesy = 0
@@ -330,7 +337,7 @@ export function Subscriptions () {
           assigned: assigned,
           courtesy: courtesy,
           tooltip: getCourtesyTooltip(quantity, courtesy),
-          trial: isApswTrial
+          trial: isTrial
         }
       }
     })
@@ -352,12 +359,18 @@ export function Subscriptions () {
     } }
 
     deviceTypeList.forEach(item => {
-      const isApswTrial = item.value === EntitlementDeviceType.MSP_APSW_TEMP
-      const deviceType = !isApswTrial ? item.value : EntitlementDeviceType.MSP_APSW
+      const isTrial = [EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP,
+        EntitlementDeviceType.MSP_APSW_TEMP]
+        .includes(item.value)
+      const deviceType = !isTrial
+        ? item.value
+        : item.value === EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP
+          ? EntitlementDeviceType.MSP_SLTN_TOKEN
+          : EntitlementDeviceType.MSP_APSW
       const summaryData =
-        data.filter(n => n.deviceType === deviceType && n.trial === isApswTrial)
+        data.filter(n => n.deviceType === deviceType && n.trial === isTrial)
       const assignedData =
-        assignedSummary.filter(n => n.deviceType === deviceType && n.trial === isApswTrial)
+        assignedSummary.filter(n => n.deviceType === deviceType && n.trial === isTrial)
       let quantity = 0
       let used = 0
       let courtesy = 0
@@ -382,7 +395,7 @@ export function Subscriptions () {
           assigned: assigned,
           courtesy: courtesy,
           tooltip: getCourtesyTooltip(quantity, courtesy),
-          trial: isApswTrial
+          trial: isTrial
         }
       }
     })
@@ -432,8 +445,8 @@ export function Subscriptions () {
         </Subtitle>
 
         <SpaceWrapper
-          fullWidth
-          size={100}
+          wrap={solutionTokenFFToggled}
+          size={solutionTokenFFToggled ? 40 : 100}
           justifycontent='flex-start'
           style={{ marginBottom: '20px' }}>
           {
@@ -442,8 +455,12 @@ export function Subscriptions () {
                 && isExtendedTrialToggleEnabled
               const summary = summaryData[item.value]
               const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
-                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive))
-              if (isvSmartEdgeEnabled) {
+                  (![EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP,
+                    EntitlementDeviceType.MSP_APSW_TEMP]
+                    .includes(item.value) || isAssignedActive))
+
+              if (isvSmartEdgeEnabled && ![EntitlementDeviceType.MSP_SLTN_TOKEN,
+                EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP].includes(item.value)) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }
               return showUtilBar ? <MspSubscriptionUtilizationWidget
