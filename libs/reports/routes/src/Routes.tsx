@@ -11,13 +11,16 @@ import {
   DataSubscriptionsAuditLog,
   CloudStorageForm
 } from '@acx-ui/reports/components'
-import { Provider }         from '@acx-ui/store'
-import { hasRaiPermission } from '@acx-ui/user'
+import { Provider }                   from '@acx-ui/store'
+import { RolesEnum }                  from '@acx-ui/types'
+import { hasRaiPermission, hasRoles } from '@acx-ui/user'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
-  const hasDCStoragePermission = isRa ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE') : false
+  const hasDCStoragePermission = isRa
+    ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE')
+    : hasRoles(RolesEnum.PRIME_ADMIN)
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
     wireless: <Report type={ReportType.WIRELESS}/>,

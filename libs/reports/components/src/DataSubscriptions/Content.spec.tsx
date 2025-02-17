@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userEvent          from '@testing-library/user-event'
 
-import { get }                               from '@acx-ui/config'
-import { Provider }                          from '@acx-ui/store'
-import { notificationApiURL }                from '@acx-ui/store'
-import { render, screen }                    from '@acx-ui/test-utils'
-import { mockRestApiQuery }                  from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { get }                                                               from '@acx-ui/config'
+import { Provider }                                                          from '@acx-ui/store'
+import { notificationApiURL }                                                from '@acx-ui/store'
+import { render, screen, waitForElementToBeRemoved }                         from '@acx-ui/test-utils'
+import { mockRestApiQuery }                                                  from '@acx-ui/test-utils'
+import { RolesEnum }                                                         from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import DataSubscriptionsContent from './Content'
 import { dataSubscriptionApis } from './services'
@@ -20,6 +21,19 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+
+function setRole (props: {
+  role: RolesEnum
+}) {
+  const profile = getUserProfile()
+  setUserProfile({
+    ...profile,
+    profile: {
+      ...profile.profile,
+      roles: [props.role]
+    }
+  })
+}
 
 const mockUseLocationValue = {
   pathname: '/services/list',
@@ -67,7 +81,7 @@ describe('DataSubscriptionsContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
-    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
+    it('should render DataSubscriptionsContent correct when storage configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
         data: {
           config: {
@@ -94,6 +108,8 @@ describe('DataSubscriptionsContent', () => {
         hash: '',
         search: ''
       })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -102,7 +118,7 @@ describe('DataSubscriptionsContent', () => {
         search: ''
       })
     })
-    it('should render DataSubscriptionsContent correct whenstorage configured', async () => {
+    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
       render(<DataSubscriptionsContent />, {
         route: { params },
         wrapper: Provider
@@ -116,6 +132,8 @@ describe('DataSubscriptionsContent', () => {
         hash: '',
         search: ''
       })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -125,7 +143,7 @@ describe('DataSubscriptionsContent', () => {
       })
     })
 
-    it('should render DataSubscriptionsContent correct(no storage permission)', async () => {
+    it('should render DataSubscriptionsContent correct (no storage permission)', async () => {
       setRaiPermissions({
         READ_DATA_CONNECTOR: true,
         WRITE_DATA_CONNECTOR: true,
@@ -138,10 +156,12 @@ describe('DataSubscriptionsContent', () => {
       })
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByText('New Subscription')).toBeVisible()
-      expect(screen.queryByText(/Cloud Storage:/)).toBeNull()
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
-    it('should render DataSubscriptionsContent correct(no write permisson)', async () => {
+    it('should render DataSubscriptionsContent correct (no write permisson)', async () => {
       setRaiPermissions({
         READ_DATA_CONNECTOR: true,
         WRITE_DATA_CONNECTOR: false,
@@ -155,7 +175,121 @@ describe('DataSubscriptionsContent', () => {
       expect(await screen.findByText('Data Subscriptions')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
       expect(screen.queryByText('New Subscription')).toBeNull()
-      expect(screen.queryByText(/Cloud Storage:/)).toBeNull()
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.queryByText(/Cloud Storage/)).toBeNull()
+    })
+  })
+
+  describe('R1', () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+    const store = configureStore({
+      reducer: {
+        [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+    })
+    afterEach(() => {
+      store.dispatch(dataSubscriptionApis.util.resetApiState())
+    })
+    beforeEach(() => {
+      jest.clearAllMocks()
+      jest.mocked(get).mockReturnValue('') //R1
+      setRole({ role: RolesEnum.PRIME_ADMIN })
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
+    })
+    it('should render DataSubscriptionsContent correct when storage configured', async () => {
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+        data: {
+          config: {
+            connectionType: 'azure',
+            azureConnectionType: 'Azure Files',
+            azureAccountName: 'some name',
+            azureAccountKey: 'key',
+            azureShareName: 'share name',
+            azureCustomerName: 'name'
+          },
+          id: 'id'
+        }
+      })
+      render(<DataSubscriptionsContent />, {
+        route: { params },
+        wrapper: Provider
+      })
+      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(screen.getByTestId(bannerTestId)).toBeVisible()
+      expect(screen.getByText('New Subscription')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/dataSubscriptions/create`,
+        hash: '',
+        search: ''
+      })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/dataSubscriptions/cloudStorage/edit/id`,
+        hash: '',
+        search: ''
+      })
+    })
+    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
+      render(<DataSubscriptionsContent />, {
+        route: { params },
+        wrapper: Provider
+      })
+      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(screen.getByTestId(bannerTestId)).toBeVisible()
+      expect(screen.getByText('New Subscription')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/dataSubscriptions/create`,
+        hash: '',
+        search: ''
+      })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/t/dataSubscriptions/cloudStorage/create`,
+        hash: '',
+        search: ''
+      })
+    })
+
+    it('should render DataSubscriptionsContent correct (no storage permission)', async () => {
+      setRole({ role: RolesEnum.ADMINISTRATOR })
+      render(<DataSubscriptionsContent />, {
+        route: { params },
+        wrapper: Provider
+      })
+      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(screen.getByText('New Subscription')).toBeVisible()
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.queryByText(/Cloud Storage/)).toBeNull()
+    })
+
+    it('should render DataSubscriptionsContent correct (no write permisson)', async () => {
+      setRole({ role: RolesEnum.READ_ONLY })
+      render(<DataSubscriptionsContent />, {
+        route: { params },
+        wrapper: Provider
+      })
+
+      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(screen.getByTestId(bannerTestId)).toBeVisible()
+      expect(screen.queryByText('New Subscription')).toBeNull()
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
   })
 })
