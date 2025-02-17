@@ -1,10 +1,9 @@
-import { useIntl }                  from 'react-intl'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { Button, Drawer }                                                                                                         from '@acx-ui/components'
 import { ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility, isAccessControlSubPolicy, subPolicyMappingType } from '@acx-ui/rc/components'
 import { ConfigTemplate, getConfigTemplateEditPath, PolicyType }                                                                  from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                          from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink }                                                                                from '@acx-ui/react-router-dom'
 
 import { DetailsContent } from './DetailsContent'
 
