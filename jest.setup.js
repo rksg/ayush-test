@@ -17,7 +17,6 @@ jest.retryTimes(2, { logErrorsBeforeRetry: true })
 // turn off warning from async-validator
 global.ASYNC_VALIDATOR_NO_WARNING = 1
 
-
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
