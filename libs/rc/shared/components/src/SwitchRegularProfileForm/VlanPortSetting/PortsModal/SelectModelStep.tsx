@@ -206,16 +206,28 @@ export function SelectModelStep (props: {
     const modelModules = getModelModules(family, model)
     const moduleCount = modelModules?.length ?? 0
 
-    Array.from({ length: moduleCount }, (_, i) => {
-      const slotNumber = i+1
-      const enable = form.getFieldValue(`enableSlot${slotNumber}`)
-      const index = slots?.findIndex(s => s.slotNumber === slotNumber) || -1
-      if (!enable && index !== -1) {
-        slots?.splice(index, 1)
-      }
-      generateSlotData(slotNumber, family, model)
-    })
+    // Array.from({ length: moduleCount }, (_, i) => {
+    //   const slotNumber = i+1
+    //   const enable = form.getFieldValue(`enableSlot${slotNumber}`)
+    //   const index = slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+    //   if (!enable && index !== -1) {
+    //     slots?.splice(index, 1)
+    //   }
+    //   generateSlotData(slotNumber, family, model)
+    // })
 
+    const newSlots = Array.from({ length: moduleCount }, (_, i) => {
+      const slotNumber = i+1
+      // const enable = form.getFieldValue(`enableSlot${slotNumber}`)
+      // const index = slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+      // if (!enable && index !== -1) {
+      //   slots?.splice(index, 1)
+      // }
+      return generateSlotData2(slotNumber, family, model)
+    }).filter(Boolean)
+
+    form.setFieldValue('slots', newSlots)
+    // console.log('newSlots: ', newSlots)
   }
 
   // eslint-disable-next-line no-console
@@ -223,14 +235,11 @@ export function SelectModelStep (props: {
   // eslint-disable-next-line no-console
   console.log('modelModules: ', modelModules)
 
-  const generateSlotData =(
+  const generateSlotData2 =(
     slotNumber: number,
-    // slotEnable: boolean,
-    //slotOptions: DefaultOptionType[],
-    // slotOption: string,
     selectedFamily: string, selectedModel: string
   ) => {
-    const slots: SwitchSlot[] = form.getFieldValue('slots')
+    // const slots: SwitchSlot[] = form.getFieldValue('slots')
     const slotOptionLists = getSlots(selectedFamily, selectedModel)
     const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
 
@@ -257,29 +266,84 @@ export function SelectModelStep (props: {
         totalPortNumber = slotPortInfo.split('X')[0]
       }
 
-      const slotData = {
+      // console.log('generateSlotData: ', slots, slotNumber, {
+      //   slotNumber: slotNumber,
+      //   enable: isEnable,
+      //   option: slotOption,
+      //   slotPortInfo: slotPortInfo,
+      //   portStatus: generatePortData(totalPortNumber)
+      // })
+
+      return {
         slotNumber: slotNumber,
         enable: isEnable,
         option: slotOption,
         slotPortInfo: slotPortInfo,
         portStatus: generatePortData(totalPortNumber)
       }
-
-      const index = slots.findIndex(slot => slot.slotNumber === slotNumber)
-      if (index === -1) {
-        slots.push(slotData)
-      } else {
-        if(slots){
-          slots[index] = slotData
-        }
-      }
-
-      form.setFieldValue('slots', slots?.sort((a, b) => {
-        return a.slotNumber > b.slotNumber ? 1 : -1
-      }))
-
     }
+    return null
   }
+
+  // const generateSlotData =(
+  //   slotNumber: number,
+  //   // slotEnable: boolean,
+  //   //slotOptions: DefaultOptionType[],
+  //   // slotOption: string,
+  //   selectedFamily: string, selectedModel: string
+  // ) => {
+  //   const slots: SwitchSlot[] = form.getFieldValue('slots')
+  //   const slotOptionLists = getSlots(selectedFamily, selectedModel)
+  //   const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
+
+  //   const isEnable = slotNumber === 1 ? true : form.getFieldValue(`enableSlot${slotNumber}`)
+  //   const selectedOption = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
+
+  //   if (isEnable) {
+  //     let totalPortNumber: string = '0'
+  //     let slotPortInfo: string = ''
+  //     const defaultOption = optionList[0]?.value
+  //     const slotOption = optionList?.length > 1 && !selectedOption
+  //       ? defaultOption : selectedOption
+
+  //     if (optionList?.length > 1) {
+  //       slotPortInfo = slotOption
+  //       totalPortNumber = slotPortInfo.split('X', 1)[0]
+  //     }
+  //     if ((optionList?.length === 1 || totalPortNumber === '0') &&
+  //     selectedFamily !== '' && selectedModel !== '') {
+  //       const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
+  //       const familyList = ICX_MODELS_MODULES[familyIndex]
+  //       const modelIndex = selectedModel as keyof typeof familyList
+  //       slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
+  //       totalPortNumber = slotPortInfo.split('X')[0]
+  //     }
+
+  //     const slotData = {
+  //       slotNumber: slotNumber,
+  //       enable: isEnable,
+  //       option: slotOption,
+  //       slotPortInfo: slotPortInfo,
+  //       portStatus: generatePortData(totalPortNumber)
+  //     }
+
+  //     console.log('generateSlotData: ', slots, slotNumber, slotData)
+
+  //     const index = slots.findIndex(slot => slot.slotNumber === slotNumber)
+  //     if (index === -1) {
+  //       slots.push(slotData)
+  //     } else {
+  //       if(slots){
+  //         slots[index] = slotData
+  //       }
+  //     }
+
+  //     form.setFieldValue('slots', slots?.sort((a, b) => {
+  //       return a.slotNumber > b.slotNumber ? 1 : -1
+  //     }))
+
+  //   }
+  // }
 
   const generatePortData = (totalNumber: string) => {
     let ports = []

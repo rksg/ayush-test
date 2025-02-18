@@ -446,7 +446,7 @@ export function PortsStep (props:{
       }, {})
     })
 
-    console.log(
+    console.log('*** portSettings: ',
       [
         ...portSettings.filter((p: { port: string }) => !selectedItems.includes(p.port)),
         ...updatePortSettings

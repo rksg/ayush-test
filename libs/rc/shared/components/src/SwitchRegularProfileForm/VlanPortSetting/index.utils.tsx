@@ -155,6 +155,10 @@ export const getModuleKey = (family: string, model: string, slots: SwitchModelSl
     `${familymodel}_${moduleCategory.join(', ')}` : `${familymodel}_--`
 }
 
+const getPortArray = (ports?: string) => {
+  return ports ? ports.split(',') : []
+}
+
 export const getVlanMap = (ports: PortSetting[], familymodel: string, slots: Slot[]): VlanMap => {
   return ports?.reduce<VlanMap>((result, row) => {
     const vlans = row.taggedVlans.concat(row.untaggedVlan)
@@ -221,24 +225,25 @@ export const getUpdatedVlans = (
     const existingModule = vlan.switchFamilyModels?.find(
       v => _.isEqual(_.sortBy(v.slots, 'slotNumber'), updatedVlanSlots)
     )
+
     return {
       ...( updatedVlan ? _.omit(vlan, 'id') : vlan),
       ...( existingModule ? {
         switchFamilyModels: vlan.switchFamilyModels.map(model => {
           if (model.id === existingModule.id) {
-            const updatedTaggedPorts = updatedVlan.taggedPorts?.split(',')
-            const updatedUntaggedPorts = updatedVlan.untaggedPorts?.split(',')
+            const orinTaggedPorts = getPortArray(model.taggedPorts)
+            const orinUntaggedPorts = getPortArray(model.untaggedPorts)
+            const updatedTaggedPorts = getPortArray(updatedVlan.taggedPorts)
+            const updatedUntaggedPorts = getPortArray(updatedVlan.untaggedPorts)
 
-            const updatedTagged
-              = model.taggedPorts?.split(',').concat(updatedTaggedPorts).toString()
-            const updatedUntagged
-              = model.untaggedPorts?.split(',').concat(updatedUntaggedPorts).toString()
-            if (!updatedTagged && !updatedTagged) {
+            const updatedTagged = orinTaggedPorts.concat(updatedTaggedPorts).toString()
+            const updatedUntagged = orinUntaggedPorts.concat(updatedUntaggedPorts).toString()
+            if (!updatedTagged && !updatedUntagged) {
               return null
             }
             return {
               ...model,
-              taggedPorts: updatedUntagged,
+              taggedPorts: updatedTagged,
               untaggedPorts: updatedUntagged
             }
           }

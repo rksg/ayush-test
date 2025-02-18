@@ -335,6 +335,7 @@ export function VlanPortSetting () {
     const updatedVlans = getUpdatedVlans([selectedRow], vlans, values)
 
     /* eslint-disable no-console */
+    // console.log('vlanPortList: ', vlanPortList)
     // console.log('filteredVlanPortList: ', filteredVlanPortList)
     // console.log('** filteredVlans: ', updatedVlans)
     console.log('*** handleSavePorts', updatedVlans)
@@ -376,8 +377,7 @@ export function VlanPortSetting () {
                     stickyHeaders={false}
                     pagination={{
                       defaultPageSize: 10000,
-                      showSizeChanger: false,
-                      showQuickJumper: false
+                      showSizeChanger: false
                     }}
                     dataSource={record.groupbyModules}
                     rowKey='key'
@@ -402,8 +402,7 @@ export function VlanPortSetting () {
                           stickyHeaders={false}
                           pagination={{
                             defaultPageSize: 10000,
-                            showSizeChanger: false,
-                            showQuickJumper: false
+                            showSizeChanger: false
                           }}
                           dataSource={record.ports}
                           rowKey='id'

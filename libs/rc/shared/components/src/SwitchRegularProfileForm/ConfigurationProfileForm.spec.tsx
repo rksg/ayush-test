@@ -1055,9 +1055,75 @@ describe('Wired', () => {
         action: 'edit'
       }
 
+      it('should show drawer correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.SWITCH_RBAC_API
+          || ff === Features.SWITCH_LEVEL_VLAN
+          || ff === Features.BULK_VLAN_PROVISIONING
+        )
+
+        render(
+          <Provider>
+            <ConfigurationProfileFormContext.Provider value={{
+              ...configureProfileContextValues,
+              editMode: true
+            }}>
+              <ConfigurationProfileForm />
+            </ConfigurationProfileFormContext.Provider>
+          </Provider>, {
+            // eslint-disable-next-line max-len
+            route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+          })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/General Properties/)).toBeVisible()
+        await userEvent.click(await screen.findByRole('button', { name: 'VLANs' }) )
+        await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+        expect(screen.queryByRole('button', { name: /Add Model/i })).toBeNull()
+      })
+
+      it('should add vlan correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.SWITCH_RBAC_API
+          || ff === Features.SWITCH_LEVEL_VLAN
+          || ff === Features.BULK_VLAN_PROVISIONING
+        )
+
+        render(
+          <Provider>
+            <ConfigurationProfileFormContext.Provider value={{
+              ...configureProfileContextValues,
+              editMode: true
+            }}>
+              <ConfigurationProfileForm />
+            </ConfigurationProfileFormContext.Provider>
+          </Provider>, {
+            // eslint-disable-next-line max-len
+            route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+          })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/General Properties/)).toBeVisible()
+        await userEvent.click(await screen.findByRole('button', { name: 'VLANs' }) )
+        await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+
+        await userEvent.type(await screen.findByLabelText('VLAN ID'), '10-12')
+        await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+        expect(await screen.findByRole('row', { name: /11/i })).toBeVisible()
+        expect(await screen.findByRole('row', { name: /12/i })).toBeVisible()
+      })
+
       it('should update correctly', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
-          ff === Features.SWITCH_RBAC_API || ff === Features.BULK_VLAN_PROVISIONING
+          ff === Features.SWITCH_RBAC_API
+          || ff === Features.SWITCH_LEVEL_VLAN
+          || ff === Features.BULK_VLAN_PROVISIONING
         )
 
         render(
@@ -1088,8 +1154,8 @@ describe('Wired', () => {
 
         await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
         await waitFor(() => expect(mockedUpdateFn).toHaveBeenCalledTimes(1))
-
       })
+
     })
   })
 })
