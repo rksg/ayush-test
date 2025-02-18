@@ -7,8 +7,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Loader, StepsForm }             from '@acx-ui/components'
 import { EdgeStaticRouteTable }          from '@acx-ui/rc/components'
 import { useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
-import { EdgeStaticRoute }               from '@acx-ui/rc/utils'
+import { EdgeStaticRoute, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { hasPermission }                 from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -56,12 +58,18 @@ const StaticRoutes = () => {
     }
   }
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(EdgeUrlsInfo.updateStaticRoutes)
+    ] })
+
   return (
     <StepsForm<StaticRoutesFormType>
       form={form}
       onFinish={handleFinish}
       onCancel={() => navigate(linkToEdgeList)}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Apply Static Routes' }) }}
+      buttonLabel={{
+        submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply Static Routes' }) : '' }}
     >
       <StepsForm.StepForm>
         <Row>

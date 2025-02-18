@@ -105,6 +105,7 @@ export interface Venue extends EnforceableFields {
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
+  addressLine?: string
 }
 
 export interface AlarmBase {
@@ -117,6 +118,7 @@ export interface AlarmBase {
   entityId: string
   sourceType: string,
   switchMacAddress: string,
+  clearTime?: string,
   clearedBy?: string
 }
 

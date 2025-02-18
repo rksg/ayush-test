@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
+import { Features, useIsBetaEnabled, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   connectionMeteringApi,
   policyApi
@@ -57,6 +57,12 @@ const mockNewTableResult = {
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('MyPolicies', () => {
@@ -232,6 +238,7 @@ describe('MyPolicies', () => {
   it('should render edge hqos bandwidth correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+    jest.mocked(useIsBetaEnabled).mockReturnValue(true)
 
     mockServer.use(
       rest.post(
@@ -261,6 +268,7 @@ describe('MyPolicies', () => {
 
     const edgeQosBandwidthTitle = 'HQoS Bandwidth (1)'
     expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
+    expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
   })
 
   it('should render Authentication correctly', async () => {

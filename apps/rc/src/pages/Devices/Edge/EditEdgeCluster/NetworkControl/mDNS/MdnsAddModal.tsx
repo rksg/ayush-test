@@ -2,9 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType }                 from '@acx-ui/components'
-import { AddEdgeMdnsProxyForm, useEdgeMdnsActions } from '@acx-ui/rc/components'
-import { EdgeMdnsProxyViewData  }                   from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }                  from '@acx-ui/components'
+import { AddEdgeMdnsProxyForm, useEdgeMdnsActions }  from '@acx-ui/rc/components'
+import { EdgeMdnsProxyUrls, EdgeMdnsProxyViewData  } from '@acx-ui/rc/utils'
+import { getOpsApi }                                 from '@acx-ui/utils'
 
 export const MdnsAddModal = () => {
   const { $t } = useIntl()
@@ -21,7 +22,9 @@ export const MdnsAddModal = () => {
 
   return (
     <>
-      <Button type='link' onClick={() => setVisible(true)}>
+      <Button type='link'
+        rbacOpsIds={[getOpsApi(EdgeMdnsProxyUrls.addEdgeMdnsProxy)]}
+        onClick={() => setVisible(true)}>
         {$t({ defaultMessage: 'Add Service' })}
       </Button>
       <Modal

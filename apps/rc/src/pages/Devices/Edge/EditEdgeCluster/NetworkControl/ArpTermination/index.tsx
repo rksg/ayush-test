@@ -4,16 +4,18 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { ApCompatibilityToolTip }                         from '@acx-ui/rc/components'
+import { getTitleWithBetaIndicator, Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { TierFeatures, useIsBetaEnabled }                                            from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip }                                                    from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterArpTerminationSettingsQuery,
   useGetEdgeFeatureSetsQuery,
   useGetVenueEdgeFirmwareListQuery,
   useUpdateEdgeClusterArpTerminationSettingsMutation
 } from '@acx-ui/rc/services'
-import { ClusterArpTerminationSettings, EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { compareVersions }                                                           from '@acx-ui/utils'
+import { ClusterArpTerminationSettings, EdgeClusterStatus, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                           from '@acx-ui/user'
+import { compareVersions, getOpsApi }                                                              from '@acx-ui/utils'
 
 import { StyledFormItem, tooltipIconStyle } from '../styledComponents'
 
@@ -78,6 +80,12 @@ export const ArpTerminationFormItem = (props: {
 
   const isLoading = isArpTerminationSettingsLoading || isArpRequiredFwLoading || isVenueEdgeFwLoading
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings)
+    ]
+  })
+
   return <>
     <Row gutter={20}>
       <Col flex='250px'>
@@ -85,6 +93,7 @@ export const ArpTerminationFormItem = (props: {
           <StepsForm.FieldLabel width='90%'>
             <Space>
               {$t({ defaultMessage: 'ARP Termination' })}
+              { useIsBetaEnabled(TierFeatures.EDGE_ARPT) ? getTitleWithBetaIndicator('') : null }
               <ApCompatibilityToolTip
                 title={$t({ defaultMessage: 'Reply to ARP requests using local IP to MAC cache. Reduces broadcast traffic but cache can be stale if IPs are reassigned between hosts.' })}
                 showDetailButton
@@ -95,7 +104,7 @@ export const ArpTerminationFormItem = (props: {
               name='arpTerminationSwitch'
               valuePropName='checked'
             >
-              <Switch disabled={!isArpControllable}/>
+              <Switch disabled={!isArpControllable || !hasUpdatePermission}/>
             </Form.Item>
           </StepsForm.FieldLabel>
         </Loader>
