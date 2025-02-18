@@ -98,11 +98,9 @@ export const ErrorDescriptions = styled(Descriptions)`
   .ant-descriptions-item-label {
     color: #333333 !important;
     font-size: 11px !important;
-    font-family: 'Open Sans !important';
   }
   .ant-descriptions-item-content {
     font-size: 11px !important;
-    font-family: 'Open Sans !important';
   }
   .ant-descriptions-item {
     padding-bottom: 0px;
