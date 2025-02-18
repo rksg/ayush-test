@@ -121,14 +121,11 @@ export function MspCustomers () {
   const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
   const hasAssignAdminPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
   const hasAssignTechPartnerPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)]) : isAdmin
 
   const allowManageAdmin =
       (hasAssignAdminPermission && !userProfile?.support) || isSupportToMspDashboardAllowed

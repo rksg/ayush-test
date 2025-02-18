@@ -74,14 +74,11 @@ export function Integrators () {
       tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
   const hasAssignAdminPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
   const hasAssignEcPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToIntegrator)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToIntegrator)]) : isAdmin
 
   const defaultPayload = {
     searchString: '',
