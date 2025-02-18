@@ -80,6 +80,7 @@ import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
 import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
 import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
 import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
+import { SAMLForm }                from './CaptivePortal/SAMLForm'
 import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
 import { WISPrForm }               from './CaptivePortal/WISPrForm'
 import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
@@ -717,6 +718,8 @@ export function NetworkForm (props:{
         return <WISPrForm />
       case GuestNetworkTypeEnum.Directory:
         return <DirectoryServerForm directoryServerDataRef={directoryServerDataRef} />
+      case GuestNetworkTypeEnum.SAML:
+        return <SAMLForm />
       default:
       // eslint-disable-next-line no-console
         console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
@@ -1315,7 +1318,8 @@ function isPortalWebRender (saveState: NetworkSaveData): boolean {
     GuestNetworkTypeEnum.SelfSignIn,
     GuestNetworkTypeEnum.GuestPass,
     GuestNetworkTypeEnum.HostApproval,
-    GuestNetworkTypeEnum.Directory
+    GuestNetworkTypeEnum.Directory,
+    GuestNetworkTypeEnum.SAML
   ]
 
   // eslint-disable-next-line max-len
