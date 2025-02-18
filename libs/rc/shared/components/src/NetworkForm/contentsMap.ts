@@ -116,6 +116,10 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   [GuestNetworkTypeEnum.Directory]: defineMessage({
     defaultMessage: 'Active Directory/ LDAP Server',
     description: 'Guest network type - Active Directory/ LDAP Server'
+  }),
+  [GuestNetworkTypeEnum.SAML]: defineMessage({
+    defaultMessage: 'SSO via SAML Identity Provider (IdP)',
+    description: 'Guest network type - SSO via SAML Identity Provider (IdP)'
   })
 }
 
@@ -137,7 +141,9 @@ export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
   [GuestNetworkTypeEnum.HostApproval]: 'Host Approval',
   [GuestNetworkTypeEnum.GuestPass]: 'Guest Pass',
   [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)',
-  [GuestNetworkTypeEnum.Directory]: 'Active Directory/ LDAP Server'
+  [GuestNetworkTypeEnum.Directory]: 'Active Directory/ LDAP Server',
+  [GuestNetworkTypeEnum.SAML]: 'SSO via SAML Identity Provider (IdP)'
+
 }
 
 export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
@@ -147,7 +153,8 @@ export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> =
   [GuestNetworkTypeEnum.HostApproval]: 'Users register their details in the portal including their host email - the host needs to approve the request',
   [GuestNetworkTypeEnum.GuestPass]: 'Users sign in with personal password which they need to get in advance from the network administration staff',
   [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
-  [GuestNetworkTypeEnum.Directory]: 'Users are required to enter an organizational username and password to gain access to the network'
+  [GuestNetworkTypeEnum.Directory]: 'Users are required to enter an organizational username and password to gain access to the network',
+  [GuestNetworkTypeEnum.SAML]: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.'
 }
 
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
@@ -194,8 +201,8 @@ export const captiveTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
   [GuestNetworkTypeEnum.HostApproval]: defineMessage({ defaultMessage: 'Host Approval' }),
   [GuestNetworkTypeEnum.GuestPass]: defineMessage({ defaultMessage: 'Guest Pass' }),
   [GuestNetworkTypeEnum.WISPr]: defineMessage({ defaultMessage: '3rd Party Captive Portal(WISPr)' }),
-  [GuestNetworkTypeEnum.Directory]: defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' })
-
+  [GuestNetworkTypeEnum.Directory]: defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
+  [GuestNetworkTypeEnum.SAML]: defineMessage({ defaultMessage: 'SSO via SAML Identity Provider (IdP)' })
 }
 
 /* eslint-disable max-len */
@@ -227,6 +234,10 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   [GuestNetworkTypeEnum.Directory]: defineMessage({
     defaultMessage: 'Users are required to enter an organizational username and password to gain access to the network',
     description: 'Description for Active Directory/ LDAP Server'
+  }),
+  [GuestNetworkTypeEnum.SAML]: defineMessage({
+    defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.',
+    description: 'Description for SSO via SAML Identity Provider (IdP)'
   })
 }
 
