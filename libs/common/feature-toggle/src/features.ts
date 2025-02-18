@@ -289,7 +289,8 @@ export enum Features {
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
-  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE = 'wifi-captive-portal-sso-saml-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
