@@ -3,7 +3,8 @@ import {
   RuckusAiChatUrlInfo,
   WidgetListData,
   ChatHistory,
-  Canvas
+  Canvas,
+  RuckusAiChats
 } from '@acx-ui/rc/utils'
 import { baseRuckusAiChatApi } from '@acx-ui/store'
 import { RequestPayload }      from '@acx-ui/types'
@@ -25,6 +26,15 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         const req = createHttpRequest(RuckusAiChatUrlInfo.getChat, params)
         return {
           ...req
+        }
+      }
+    }),
+    getChats: build.mutation<RuckusAiChats, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getChats, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     }),
@@ -89,6 +99,34 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getWidget: build.query<WidgetListData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getWidget, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Widget', id: 'DATA' }]
+    }),
+    createWidget: build.mutation<{ id: string }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.createWidget, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateWidget: build.mutation<WidgetListData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.updateWidget, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Widget', id: 'DATA' }]
     })
   })
 })
@@ -97,6 +135,7 @@ export const {
   useGetAllChatsQuery,
   useGetChatQuery,
   useLazyGetChatQuery,
+  useGetChatsMutation,
   useGetCanvasQuery,
   useLazyGetCanvasQuery,
   useUpdateCanvasMutation,
@@ -104,5 +143,8 @@ export const {
   useChatAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,
-  useChatChartQuery
+  useChatChartQuery,
+  useGetWidgetQuery,
+  useCreateWidgetMutation,
+  useUpdateWidgetMutation
 } = ruckusAiChatApi

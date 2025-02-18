@@ -4,12 +4,12 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps }  from '@acx-ui/components'
-import { EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum, getEdgePortIpModeString } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                   from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                                                      from '@acx-ui/types'
-import { hasPermission }                                                                   from '@acx-ui/user'
-import { getIntl }                                                                         from '@acx-ui/utils'
+import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps }                from '@acx-ui/components'
+import { EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum, getEdgePortIpModeString, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                 from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                                    from '@acx-ui/types'
+import { hasPermission }                                                                                 from '@acx-ui/user'
+import { getIntl, getOpsApi }                                                                            from '@acx-ui/utils'
 
 interface LagsTabProps {
   isConfigurable: boolean
@@ -99,9 +99,18 @@ export const LagsTab = (props: LagsTabProps) => {
     })
   }
 
+  const hasUpdatePermission = hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [
+      getOpsApi(EdgeUrlsInfo.addEdgeLag),
+      getOpsApi(EdgeUrlsInfo.updateEdgeLag),
+      getOpsApi(EdgeUrlsInfo.deleteEdgeLag)
+    ]
+  })
+
   return (
     <GridRow justify='end'>
-      {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
+      {hasUpdatePermission && isConfigurable &&
       <Button
         size='small'
         type='link'

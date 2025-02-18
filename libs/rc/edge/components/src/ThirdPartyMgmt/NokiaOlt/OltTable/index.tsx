@@ -139,8 +139,7 @@ function useColumns () {
         <Row>
           <EdgeNokiaOltStatus
             config={getOltStatusConfig()}
-            // eslint-disable-next-line max-len
-            status={isOltValidSerialNumber(row.serialNumber) ? row.status : EdgeNokiaOltStatusEnum.UNKNOWN}
+            status={row.status || EdgeNokiaOltStatusEnum.UNKNOWN}
             showText />
         </Row>
     },

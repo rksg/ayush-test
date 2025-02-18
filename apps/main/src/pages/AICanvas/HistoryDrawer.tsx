@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import moment      from 'moment'
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import moment          from 'moment'
+import { useIntl }     from 'react-intl'
 
 import { Drawer, DrawerTypes, showActionModal, Tooltip } from '@acx-ui/components'
-import { DeleteOutlined, EditOutlined }                  from '@acx-ui/icons-new'
+import { DeleteOutlined, EditOutlined, Check, Close }    from '@acx-ui/icons-new'
 import { useDeleteChatMutation, useUpdateChatMutation }  from '@acx-ui/rc/services'
 import { ChatHistory, HistoryListItem }                  from '@acx-ui/rc/utils'
 
@@ -23,6 +24,8 @@ export default function HistoryDrawer (props: DrawerProps) {
   const [updateChat] = useUpdateChatMutation()
   const [deleteChat] = useDeleteChatMutation()
   const [history, setHistory] = useState([] as HistoryListItem[])
+  const [editModeId, setEditModeId] = useState('')
+  const [form] = Form.useForm()
 
   const checkDate = (chats: ChatHistory[]) => {
     const list = {
@@ -53,29 +56,29 @@ export default function HistoryDrawer (props: DrawerProps) {
   }
 
   const setHistoryList = (response: ChatHistory[]) => {
-    const list = checkDate(response)
+    const list = checkDate([...response].reverse())
     const historyList = [] as HistoryListItem[]
     Object.keys(list).forEach(key => {
       if(list[key].length) {
         if(key === 'today') {
           historyList.push({
             duration: $t({ defaultMessage: 'Today' }),
-            history: list[key].reverse()
+            history: list[key]
           })
         } else if(key === 'yesterday') {
           historyList.push({
             duration: $t({ defaultMessage: 'Yesterday' }),
-            history: list[key].reverse()
+            history: list[key]
           })
         } else if(key === 'sevendays') {
           historyList.push({
             duration: $t({ defaultMessage: 'Previous 7 days' }),
-            history: list[key].reverse()
+            history: list[key]
           })
         } else {
           historyList.push({
             duration: key,
-            history: list[key].reverse()
+            history: list[key]
           })
         }
       }
@@ -91,11 +94,14 @@ export default function HistoryDrawer (props: DrawerProps) {
     }
   }, [historyData])
 
-  const onEditChatTitle = (chat: ChatHistory) => {
-    //TODO: edit title UI
+  const onSubmit = (chat: ChatHistory) => {
     updateChat({
       params: { sessionId: chat.id },
-      payload: 'test123'
+      payload: form.getFieldValue('chatTitle')
+    }).then(()=>{
+      setTimeout(()=>{
+        onCancelEditChat()
+      }, 300)
     })
   }
 
@@ -115,13 +121,67 @@ export default function HistoryDrawer (props: DrawerProps) {
     })
   }
 
-  const content = <UI.History>
+  const isEditMode = (chat: ChatHistory) : boolean => {
+    return (editModeId === chat.id)
+  }
+
+  const onEditChatTitle = (chat: ChatHistory) => {
+    form.setFieldValue('chatTitle', chat.name)
+    setEditModeId(chat.id)
+  }
+
+  const onCancelEditChat = () => {
+    setEditModeId('')
+  }
+
+  const handleDrawerClose = () => {
+    form.setFieldValue('chatTitle', '')
+    onCancelEditChat()
+    onClose()
+  }
+
+  const editChatTitle = (j: ChatHistory) =>
+    <div className={'chat' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
+      <div className='edit-input'>
+        <Form.Item
+          name='chatTitle'
+          rules={[
+            { required: true },
+            { min: 1 },
+            { max: 64 }
+          ]}
+          validateFirst
+          children={<Input/>}
+        />
+      </div>
+      <div className='action button-group'>
+        <div className='button confirm'
+          data-testid='confirm'
+          onClick={() => {
+            onSubmit(j)
+          }}>
+          <Check size='sm'/>
+        </div>
+        <div className='button cancel'
+          data-testid='cancel'
+          onClick={() => {
+            onCancelEditChat()
+          }}>
+          <Close size='sm'/>
+        </div>
+      </div>
+    </div>
+
+  const content = <Form form={form} onFinish={onSubmit}><UI.History>
     {
       history.map(i => <div className='duration' key={i.duration}>
         <div className='time'>{i.duration}</div>
         {
           i.history.map(j =>
-            <div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>
+            // eslint-disable-next-line max-len
+            isEditMode(j) ? (
+              editChatTitle(j)
+            ) : (<div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>
               <Tooltip title={j.name}>
                 <div className='title' onClick={() => onClickChat(j.id)}>
                   {j.name}
@@ -130,7 +190,6 @@ export default function HistoryDrawer (props: DrawerProps) {
               <div className='action'>
                 <div className='button'
                   data-testid='edit'
-                  style={{ cursor: 'not-allowed' }}
                   onClick={()=> { onEditChatTitle(j) }}>
                   <EditOutlined size='sm' />
                 </div>
@@ -140,17 +199,17 @@ export default function HistoryDrawer (props: DrawerProps) {
                   <DeleteOutlined size='sm' />
                 </div>
               </div>
-            </div>)
+            </div>))
         }
       </div>)
     }
-  </UI.History>
+  </UI.History></Form>
 
   return (
     <Drawer
       drawerType={DrawerTypes.Left}
       visible={visible}
-      onClose={onClose}
+      onClose={handleDrawerClose}
       children={content}
       placement={'left'}
       width={'320px'}

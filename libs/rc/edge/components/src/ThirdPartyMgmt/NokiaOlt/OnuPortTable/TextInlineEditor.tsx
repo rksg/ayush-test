@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import {
@@ -16,20 +16,15 @@ interface TextInlineEditorProps {
   onChange: (data: number) => Promise<void>,
 }
 export const TextInlineEditor = (props: TextInlineEditorProps) => {
-  const { onChange } = props
+  const { value: propsValue, onChange } = props
 
   const [isEditMode, setEditMode] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [initialValue, setInitialValue] = useState<number>(props.value)
-  const [editingValue, setEditingValue] = useState<number>(props.value)
-
-  useEffect(() => {
-    setEditingValue(initialValue)
-  }, [initialValue])
+  const [editingValue, setEditingValue] = useState<number>(propsValue)
 
   const handleEdit = () => {
-    setEditingValue(editingValue)
+    setEditingValue(propsValue)
     setEditMode(true)
   }
 
@@ -37,9 +32,6 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
     setIsSubmitting(true)
 
     onChange(editingValue)
-      .then(() => {
-        setInitialValue(editingValue)
-      })
       .catch(() => {
         handleResetValue()
       })
@@ -50,7 +42,7 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
   }
 
   const handleResetValue = () => {
-    setEditingValue(initialValue)
+    setEditingValue(propsValue)
   }
 
   const handleCancel = () => {
@@ -92,7 +84,7 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
           />
         </>
       ) : (<>
-        <label>{editingValue ? editingValue : noDataDisplay}</label>
+        <label>{propsValue ? propsValue : noDataDisplay}</label>
         <Button type='link' icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
       </>
       )}

@@ -107,13 +107,15 @@ function useColumns (
     {
       title: $t({ defaultMessage: 'Address' }),
       width: Infinity,
-      key: 'country',
+      key: 'addressLine',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
+      searchable: searchable,
       filterable: filterables ? filterables['city'] : false,
-      render: function (_, row) {
-        return `${row.country}, ${row.city}`
+      render: function (_, row, __, highlightFn) {
+        return searchable ? highlightFn(row.addressLine as string)
+          : row.addressLine
       }
     },
     ...(isStatusColumnEnabled ? [{
@@ -258,9 +260,10 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'isManagedByTemplate'
+      'isManagedByTemplate',
+      'addressLine'
     ],
-    searchTargetFields: ['name'],
+    searchTargetFields: ['name', 'addressLine'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'

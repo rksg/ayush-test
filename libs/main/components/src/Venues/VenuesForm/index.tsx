@@ -229,7 +229,8 @@ export function VenuesForm (props: VenuesFormProps) {
 
   useEffect(() => {
     if (action === 'edit' && address.country && data ) {
-      const isSameCountry = (data.address.country === address.country) || false
+      const isSameCountry =
+        (!data.address.country || (data.address.country === address.country)) || false
       let errors = []
       if (!isSameCountry) {
         errors.push(intl.$t(
@@ -270,7 +271,17 @@ export function VenuesForm (props: VenuesFormProps) {
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value === formRef.current?.getFieldValue('address')?.addressLine
-    const isSameCountry = (data && (data?.address.country === address?.country)) || false
+    const isSameCountry =
+      (!data?.address.country || (data?.address.country === address?.country)) || false
+
+    if (isEdit && !address.country) {
+      return Promise.reject(
+        intl.$t(
+          { defaultMessage:
+            'Please select <VenueSingular></VenueSingular> address from suggested list' }
+        )
+      )
+    }
 
     if(!address.addressLine){
       return Promise.reject(
@@ -390,7 +401,7 @@ export function VenuesForm (props: VenuesFormProps) {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
+                    { max: 63, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)

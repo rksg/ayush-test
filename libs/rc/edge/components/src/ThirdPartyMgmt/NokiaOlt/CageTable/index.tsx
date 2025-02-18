@@ -8,12 +8,11 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useGetEdgeCageListQuery, useToggleEdgeCageStateMutation } from '@acx-ui/rc/services'
+import { useToggleEdgeCageStateMutation } from '@acx-ui/rc/services'
 import {
   EdgeNokiaCageData,
   EdgeNokiaCageStateEnum,
   EdgeNokiaOltData,
-  EdgeNokiaOltStatusEnum,
   getCageStatusConfig
 } from '@acx-ui/rc/utils'
 
@@ -22,19 +21,19 @@ import { EdgeNokiaOltStatus } from '../OltStatus'
 import { CageDetailsDrawer } from './CageDetailsDrawer'
 
 interface EdgeNokiaCageTableProps {
-  oltData: EdgeNokiaOltData
+  oltData: EdgeNokiaOltData,
+  cagesList: EdgeNokiaCageData[] | undefined,
+  isLoading: boolean,
+  isFetching: boolean
 }
 export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
-  const { oltData } = props
+  const { oltData, cagesList: data, isLoading, isFetching } = props
   const { venueId, edgeClusterId, serialNumber: oltId } = oltData
 
   const [visible, setVisible] = useState<boolean>(false)
   const [currentCage, setCurrentCage] = useState<EdgeNokiaCageData | undefined>(undefined)
 
   const [toggleEdgeCageState, { isLoading: isUpdating }] = useToggleEdgeCageStateMutation()
-  const { data, isLoading, isFetching } = useGetEdgeCageListQuery({
-    params: { venueId, edgeClusterId, oltId }
-  })
 
   const handleRowClick = (cage: string) => {
     setCurrentCage(data?.find(item => item.cage === cage))
@@ -68,9 +67,11 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
         searchable: true,
         fixed: 'left',
         render: (_, row) =>
-          <Button type='link' onClick={() => handleRowClick(row.cage)}>
-            {row.cage}
-          </Button>
+          row.state === EdgeNokiaCageStateEnum.UP
+            ? <Button type='link' onClick={() => handleRowClick(row.cage)}>
+              {row.cage}
+            </Button>
+            : row.cage
       },
       {
         title: $t({ defaultMessage: 'State' }),
@@ -103,23 +104,24 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
     return columns
   }
 
-  return <><Loader states={[
-    { isLoading, isFetching },
-    { isLoading: false, isFetching: isUpdating }
-  ]}
-  style={{ minHeight: '100px', backgroundColor: 'transparent' }}
-  >
-    <Table
-      rowKey='cage'
-      columns={useColumns()}
-      dataSource={oltData.status === EdgeNokiaOltStatusEnum.ONLINE ? data : []}
+  return <>
+    <Loader states={[
+      { isLoading, isFetching },
+      { isLoading: false, isFetching: isUpdating }
+    ]}
+    style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+    >
+      <Table
+        rowKey='cage'
+        columns={useColumns()}
+        dataSource={data}
+      />
+    </Loader>
+    <CageDetailsDrawer
+      visible={visible}
+      setVisible={setVisible}
+      oltData={oltData}
+      currentCage={currentCage}
     />
-  </Loader>
-  <CageDetailsDrawer
-    visible={visible}
-    setVisible={setVisible}
-    oltData={oltData}
-    currentCage={currentCage}
-  />
   </>
 }
