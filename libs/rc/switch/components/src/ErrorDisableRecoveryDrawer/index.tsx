@@ -47,7 +47,6 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
       form.setFieldValue('recoveryInterval', recoveryInterval)
 
       const errorDisableRecoveryDataArray = Object.entries(errorDisableRecoveryData)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, value]) => value === true)
         .map(([key]) => key)
 
@@ -56,7 +55,6 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
   }, [data])
 
   function transformConfig (input: PortDisableRecoverySettingForm) {
-    // Create base output object with UUID
     const output: PortDisableRecoverySetting = {
       recoveryInterval: input.recoveryInterval,
       bpduGuard: false,
