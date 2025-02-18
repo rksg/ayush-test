@@ -49,6 +49,21 @@ describe('TextInlineEditor', () => {
     expect(screen.getByText('10')).toBeInTheDocument()
   })
 
+  it('should display props value when it changed', async () => {
+    const { rerender } = render(<TextInlineEditor {...props} />)
+    screen.getByText('10')
+    const editButton = screen.getByRole('button', { name: 'edit' })
+    await userEvent.click(editButton)
+    const input = screen.getByRole('spinbutton')
+    await userEvent.type(input, '30')
+    const cancelButton = screen.getByRole('button', { name: 'close' })
+    await userEvent.click(cancelButton)
+    expect(screen.getByText('10')).toBeInTheDocument()
+
+    rerender(<TextInlineEditor {...props} value={66} />)
+    screen.getByText('66')
+  })
+
   it('handles VLAN change', async () => {
     render(<TextInlineEditor {...props} value={2} />)
     const editButton = screen.getByRole('button', { name: 'edit' })
