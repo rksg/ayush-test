@@ -4,9 +4,10 @@ import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
 import { Table, TableProps }             from '@acx-ui/components'
-import { EdgeStaticRoute }               from '@acx-ui/rc/utils'
+import { EdgeStaticRoute, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { EdgeScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { StaticRoutesDrawer } from './StaticRoutesDrawer'
 
@@ -42,6 +43,7 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
   const rowActions: TableProps<EdgeStaticRoute>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateStaticRoutes)],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -50,6 +52,7 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateStaticRoutes)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
         onChange?.(value.filter(item => {
@@ -73,6 +76,7 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
   const actionButtons = [
     {
       scopeKey: [EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateStaticRoutes)],
       label: $t({ defaultMessage: 'Add Route' }),
       onClick: () => openDrawer()
     }

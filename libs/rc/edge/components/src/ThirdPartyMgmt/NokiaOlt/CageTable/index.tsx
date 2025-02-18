@@ -27,6 +27,7 @@ interface EdgeNokiaCageTableProps {
 export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
   const { oltData } = props
   const { venueId, edgeClusterId, serialNumber: oltId } = oltData
+  const isOltOnline = oltData.status === EdgeNokiaOltStatusEnum.ONLINE
 
   const [visible, setVisible] = useState<boolean>(false)
   const [currentCage, setCurrentCage] = useState<EdgeNokiaCageData | undefined>(undefined)
@@ -34,7 +35,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
   const [toggleEdgeCageState, { isLoading: isUpdating }] = useToggleEdgeCageStateMutation()
   const { data, isLoading, isFetching } = useGetEdgeCageListQuery({
     params: { venueId, edgeClusterId, oltId }
-  })
+  }, { skip: !isOltOnline })
 
   const handleRowClick = (cage: string) => {
     setCurrentCage(data?.find(item => item.cage === cage))
@@ -68,9 +69,11 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
         searchable: true,
         fixed: 'left',
         render: (_, row) =>
-          <Button type='link' onClick={() => handleRowClick(row.cage)}>
-            {row.cage}
-          </Button>
+          row.state === EdgeNokiaCageStateEnum.UP
+            ? <Button type='link' onClick={() => handleRowClick(row.cage)}>
+              {row.cage}
+            </Button>
+            : row.cage
       },
       {
         title: $t({ defaultMessage: 'State' }),
@@ -103,23 +106,24 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
     return columns
   }
 
-  return <><Loader states={[
-    { isLoading, isFetching },
-    { isLoading: false, isFetching: isUpdating }
-  ]}
-  style={{ minHeight: '100px', backgroundColor: 'transparent' }}
-  >
-    <Table
-      rowKey='cage'
-      columns={useColumns()}
-      dataSource={oltData.status === EdgeNokiaOltStatusEnum.ONLINE ? data : []}
+  return <>
+    <Loader states={[
+      { isLoading, isFetching },
+      { isLoading: false, isFetching: isUpdating }
+    ]}
+    style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+    >
+      <Table
+        rowKey='cage'
+        columns={useColumns()}
+        dataSource={data}
+      />
+    </Loader>
+    <CageDetailsDrawer
+      visible={visible}
+      setVisible={setVisible}
+      oltData={oltData}
+      currentCage={currentCage}
     />
-  </Loader>
-  <CageDetailsDrawer
-    visible={visible}
-    setVisible={setVisible}
-    oltData={oltData}
-    currentCage={currentCage}
-  />
   </>
 }
