@@ -295,6 +295,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     opsApi: 'DELETE:/roleAuthentications/customRoles/{id}',
     newApi: true
   },
+  getCustomRoleFeatures: {
+    method: 'get',
+    url: '/roleAuthentications/features?showScopes=false',
+    newApi: true
+  },
   getOnePrivilegeGroup: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',

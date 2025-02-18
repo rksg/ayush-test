@@ -8,13 +8,16 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Loader } from '@acx-ui/components'
+  Loader, showActionModal
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { EnrollmentPortalLink, WorkflowActionPreviewModal, WorkflowDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowsMutation,
   useSearchInProgressWorkflowListQuery,
   useLazySearchWorkflowsVersionListQuery,
-  doProfileDelete
+  useCloneWorkflowMutation, doProfileDelete,
+  useLazyGetWorkflowStepsByIdQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -29,7 +32,7 @@ import {
   WorkflowDetailsTabKey,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation, InitialEmptyStepsCount
 } from '@acx-ui/rc/utils'
 import {
   TenantLink
@@ -101,6 +104,8 @@ export default function WorkflowTable () {
   const [deleteWorkflows,
     { isLoading: isDeleteWorkflowing }
   ] = useDeleteWorkflowsMutation()
+  const [cloneWorkflow] = useCloneWorkflowMutation()
+  const [getWorkflowStepsById]= useLazyGetWorkflowStepsByIdQuery()
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const settingsId = 'workflow-table'
   const [previewVisible, setPreviewVisible] = useState(false)
@@ -113,6 +118,8 @@ export default function WorkflowTable () {
     defaultPayload: {},
     pagination: { settingsId }
   })
+
+  const isWorkflowTemplateEnable = useIsSplitOn(Features.WORKFLOW_TEMPLATE_TOGGLE)
 
   const fetchVersionHistory = async (workflows: Workflow[]) => {
     try {
@@ -147,6 +154,45 @@ export default function WorkflowTable () {
         clearSelection()
       },
       visible: (selectedItems => selectedItems.length === 1)
+    },
+    {
+      scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.CREATE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.WORKFLOW, PolicyOperation.CREATE),
+      label: $t({ defaultMessage: 'Clone' }),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      onClick: ([data], clearSelection) => {
+        // eslint-disable-next-line max-len
+        getWorkflowStepsById({ params: { policyId: data.id, pageSize: '1', page: '0', sort: 'id,ASC', excludeContent: 'true' } })
+          .unwrap()
+          .then((result) => {
+            if ((result?.paging?.totalCount ?? 0 ) <= InitialEmptyStepsCount) {
+              showActionModal({
+                type: 'warning',
+                // eslint-disable-next-line max-len
+                content: $t({ defaultMessage: 'You are unable to clone a workflow without any steps' }),
+                customContent: {
+                  action: 'SHOW_ERRORS'
+                }
+              })
+            } else {
+              // eslint-disable-next-line max-len
+              cloneWorkflow({ params: { id: data.id } })
+                .unwrap()
+                .then(() => {
+                  clearSelection()
+                })
+                .catch((e) => {
+                  // eslint-disable-next-line no-console
+                  console.log(e)
+                })
+            }
+          })
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.log(e)
+          })
+      },
+      visible: (selectedItems => selectedItems.length === 1 && isWorkflowTemplateEnable)
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.WORKFLOW, PolicyOperation.DETAIL),
