@@ -107,11 +107,17 @@ export const showActionModal = (props: ActionModalProps) => {
   return pick(modal, 'destroy')
 }
 
+export const getEnabledDialogImproved = () => {
+  return isLocalHost() || isDev() || isIntEnv()
+}
+
 const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
-  const enabledDialogImproved = isLocalHost() || isDev() || isIntEnv()
+  const enabledDialogImproved = getEnabledDialogImproved()
+  // eslint-disable-next-line no-console
+  console.log(enabledDialogImproved)
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -235,7 +241,6 @@ function ApiErrorTemplate ({ errors, ...props }: {
       {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
         {code && <ApiCollapsePanel
-          expanded={false}
           header={code.label}
           content={code.content}
           path={props.path}
@@ -349,7 +354,6 @@ function CustomButtonsTemplate (props: {
 function ApiCollapsePanel (props: {
   header: string
   content: string
-  expanded?: boolean
   path?: string
   errorCode?: number
 }) {
@@ -418,8 +422,8 @@ function ApiCollapsePanel (props: {
       marginBottom: '-10px'
     }
 
-    return isActive ? <ReportsSolid style={iconStyle} />:
-      <ReportsOutlined style={iconStyle} />
+    return isActive ? <ReportsSolid style={iconStyle} data-testid='activeButton' />:
+      <ReportsOutlined style={iconStyle} data-testid='deactiveButton' />
   }
 
   return (
@@ -427,7 +431,6 @@ function ApiCollapsePanel (props: {
       ghost
       expandIconPosition='end'
       expandIcon={({ isActive }) => getExpandIcon(isActive)}
-      defaultActiveKey={props.expanded ? [props.header] : undefined}
     >
       <Panel header={undefined} key={props.header}>
         <div style={{ backgroundColor: '#F8F8FA', borderRadius: '4px' }}>
@@ -435,6 +438,7 @@ function ApiCollapsePanel (props: {
         </div>
         <UI.CopyButton
           type='link'
+          data-testid='copyButton'
           onClick={copyText}
         >
           <CopyOutlined />
