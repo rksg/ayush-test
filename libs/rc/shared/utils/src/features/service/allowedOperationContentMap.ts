@@ -5,6 +5,7 @@ import { ServiceOperation, ServiceType } from '../../constants'
 import { PolicyOperation, PolicyType }   from '../../types'
 import {
   ApSnmpRbacUrls,
+  DirectoryServerUrls,
   EdgeDhcpUrls,
   EdgeHqosProfilesUrls,
   EdgeMdnsProxyUrls,
@@ -13,6 +14,7 @@ import {
   EthernetPortProfileUrls,
   IdentityProviderUrls,
   LbsServerProfileUrls,
+  SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
   WifiOperatorUrls
@@ -201,5 +203,17 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(EthernetPortProfileUrls.updateEthernetPortProfile)],
     [PolicyOperation.DELETE]: [getOpsApi(EthernetPortProfileUrls.deleteEthernetPortProfile)],
     [PolicyOperation.LIST]: [getOpsApi(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)]
+  },
+  [PolicyType.SOFTGRE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SoftGreUrls.createSoftGre)],
+    [PolicyOperation.EDIT]: [getOpsApi(SoftGreUrls.updateSoftGre)],
+    [PolicyOperation.DELETE]: [getOpsApi(SoftGreUrls.deleteSoftGre)],
+    [PolicyOperation.LIST]: [getOpsApi(SoftGreUrls.getSoftGreViewDataList)]
+  },
+  [PolicyType.DIRECTORY_SERVER]: {
+    [PolicyOperation.CREATE]: [getOpsApi(DirectoryServerUrls.createDirectoryServer)],
+    [PolicyOperation.EDIT]: [getOpsApi(DirectoryServerUrls.updateDirectoryServer)],
+    [PolicyOperation.DELETE]: [getOpsApi(DirectoryServerUrls.deleteDirectoryServer)],
+    [PolicyOperation.LIST]: [getOpsApi(DirectoryServerUrls.getDirectoryServerViewDataList)]
   }
 }
