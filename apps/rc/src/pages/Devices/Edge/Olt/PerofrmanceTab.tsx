@@ -1,13 +1,18 @@
-import { useIntl } from 'react-intl'
-
-import { GridRow, HistoricalCard, NoData } from '@acx-ui/components'
+import { GridRow }                                                        from '@acx-ui/components'
+import { EdgeOltResourceUtilizationWidget, EdgeOltTrafficByVolumeWidget } from '@acx-ui/edge/components'
 
 import { WidgetContainer } from './styledComponents'
 
 export const PerformanceTab = () => {
-  const { $t } = useIntl()
   return (
     <GridRow>
+      <WidgetContainer col={{ span: 12 }}>
+        <EdgeOltTrafficByVolumeWidget />
+      </WidgetContainer>
+      <WidgetContainer col={{ span: 12 }}>
+        <EdgeOltResourceUtilizationWidget />
+      </WidgetContainer>
+      {/*
       <WidgetContainer col={{ span: 12 }}>
         <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Traffic by Volume' })} />
       </WidgetContainer>
@@ -20,12 +25,13 @@ export const PerformanceTab = () => {
       <WidgetContainer col={{ span: 16 }}>
         <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Top 10 Ports by Errors' })} />
       </WidgetContainer>
+      */}
     </GridRow>
   )
 }
 
-const OltStatisticNoDataWidget = (props: { title: string }) => {
-  return <HistoricalCard title={props.title}>
-    <NoData />
-  </HistoricalCard>
-}
+// const OltStatisticNoDataWidget = (props: { title: string }) => {
+//   return <HistoricalCard title={props.title}>
+//     <NoData />
+//   </HistoricalCard>
+// }
