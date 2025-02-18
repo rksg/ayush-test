@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+
 import {
   CommonResult,
   onActivityMessageReceived,
@@ -30,12 +32,14 @@ import {
   RoguePolicyRequest,
   RogueApSettingsRequest,
   EthernetPortProfile,
-  EthernetPortProfileViewData
+  EthernetPortProfileViewData,
+  EthernetPortType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
+import { createDefaultEthPort }      from '../ethernetPortProfile'
 import {
   addRoguePolicyFn,
   commonQueryFn,
@@ -581,6 +585,34 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       providesTags: [{ type: 'EthernetPortProfileTemplate', id: 'LIST' }]
     }),
+    getEthernetPortProfilesTemplateWithOverwrites: build.query<TableResult<EthernetPortProfileViewData>, RequestPayload>({
+      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+        const tenantId = params?.tenantId ?? ''
+        const viewDataReq = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEthernetPortProfileViewDataList, params)
+        const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+
+        // Do a workaround to avoid the default ethPort data doesn't be added (data migrate not completed)
+        const ethListData = ethList.data
+        const predefinedEthPortData = [] as EthernetPortProfileViewData[]
+        if (!ethListData.find(d => d?.isDefault && d?.id.includes('_ACCESS'))) {
+          predefinedEthPortData.push(createDefaultEthPort(tenantId, EthernetPortType.ACCESS, true))
+        }
+        if (!ethListData.find(d => d?.isDefault && d?.id.includes('_TRUNK'))) {
+          predefinedEthPortData.push(createDefaultEthPort(tenantId, EthernetPortType.TRUNK, true))
+        }
+
+        ethList.data = [
+          ...predefinedEthPortData,
+          ...ethList.data
+        ]
+
+        return ethList.data
+          ? { data: ethList }
+          : { error: ethListQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'EthernetPortProfileTemplate', id: 'LIST' }]
+    }),
     getEthernetPortProfileTemplate: build.query<EthernetPortProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEthernetPortProfile, params)
@@ -691,6 +723,7 @@ export const {
   useActivateVlanPoolTemplateOnWifiNetworkMutation,
   useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useGetEthernetPortProfileTemplateListQuery,
+  useGetEthernetPortProfilesTemplateWithOverwritesQuery,
   useGetEthernetPortProfileTemplateQuery,
   useAddEthernetPortProfileTemplateMutation,
   useUpdateEthernetPortProfileTemplateMutation,

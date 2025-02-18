@@ -102,6 +102,7 @@ export function LanPortSettings (props: {
   const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
+
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
@@ -112,6 +113,13 @@ export function LanPortSettings (props: {
 
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
+
+  // template
+  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+
+  const isShowEthPortProfile = (isTemplate)
+    ? isEthernetPortTemplate : isEthernetPortProfileEnabled
+
 
   const isUnderAPNetworking = !!serialNumber
 
@@ -165,7 +173,7 @@ export function LanPortSettings (props: {
     />}
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
       defaultMessage={`<section>
-        <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
+        <p>* The following LAN Port settings can't work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
           to the <venueSingular></venueSingular> which already has enabled DHCP service.</p>
       </section>`}
@@ -217,7 +225,7 @@ export function LanPortSettings (props: {
       name={['lan', index, 'portId']}
       children={<Input />}
     />
-    {!isTemplate && isEthernetPortProfileEnabled ?
+    {isShowEthPortProfile ?
       (isEthernetPortEnable && <>
         <EthernetPortProfileFields
           index={index}
