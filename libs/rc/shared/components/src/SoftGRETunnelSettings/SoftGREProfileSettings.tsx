@@ -6,8 +6,11 @@ import { useIntl }                     from 'react-intl'
 
 import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  PolicyOperation,
+  PolicyType,
   SoftGreDuplicationChangeDispatcher,
-  SoftGreDuplicationChangeState
+  SoftGreDuplicationChangeState,
+  hasPolicyPermission
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -154,13 +157,16 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
             }}>
             {$t({ defaultMessage: 'Profile Details' })}
           </Button>
-          <Button type='link'
-            disabled={readonly}
-            onClick={() => {
-              setAddDrawerVisible(true)
-            }}>
-            {$t({ defaultMessage: 'Add Profile' })}
-          </Button>
+          {hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE }) &&
+            <Button type='link'
+              disabled={readonly}
+              onClick={() => {
+                setAddDrawerVisible(true)
+              }}>
+              {$t({ defaultMessage: 'Add Profile' })}
+            </Button>
+          }
+
         </Space>
       </Space>
       <SoftGreDrawer
