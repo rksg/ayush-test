@@ -17,9 +17,9 @@ import {
 } from '@acx-ui/rc/components'
 import { ConfigTemplate, ConfigTemplateDriftType, PolicyType } from '@acx-ui/rc/utils'
 
-import { ShowDriftsDrawer }                                      from '../ShowDriftsDrawer'
-import { ConfigTemplateDriftStatus, getConfigTemplateTypeLabel } from '../templateUtils'
-import { useEcFilters }                                          from '../templateUtils'
+import { ShowDriftsDrawer }                                                                         from '../ShowDriftsDrawer'
+import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel } from '../templateUtils'
+import { useEcFilters }                                                                             from '../templateUtils'
 
 import * as UI from './styledComponents'
 
@@ -36,6 +36,7 @@ export function DetailsContent (props: DetailsContentProps) {
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+  const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
   const basicDetails = [
     {
@@ -54,6 +55,10 @@ export function DetailsContent (props: DetailsContentProps) {
           [ConfigTemplateDriftType.DRIFT_DETECTED]: () => setShowDriftsDrawerVisible(true)
         }}
       />
+    }] : []),
+    ...(enforcementEnabled ? [{
+      label: $t({ defaultMessage: 'Enforcement' }),
+      value: getConfigTemplateEnforcementLabel(template.isEnforced)
     }] : [])
   ]
 

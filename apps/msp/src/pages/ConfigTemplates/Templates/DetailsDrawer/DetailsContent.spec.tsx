@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                                          from '@acx-ui/msp/utils'
 import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateDriftType, ConfigTemplateType, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
@@ -53,10 +53,12 @@ describe('DetailsContent', () => {
     expect(screen.getByText(mockTemplate.name)).toBeInTheDocument()
     expect(screen.getByText('Created By')).toBeInTheDocument()
     expect(screen.getByText(mockTemplate.createdBy)).toBeInTheDocument()
+    expect(screen.queryByText('Drift Status')).not.toBeInTheDocument()
+    expect(screen.queryByText('Enforcement')).not.toBeInTheDocument()
   })
 
   it('renders ShowDriftsDrawer when drift is detected', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_DRIFTS)
 
     render(<Provider>
       <DetailsContent
@@ -104,5 +106,19 @@ describe('DetailsContent', () => {
         }
       })
     )
+  })
+
+  it('renders the enforcement status', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_ENFORCED)
+
+    render(<Provider>
+      <DetailsContent
+        template={{ ...mockTemplate, isEnforced: true }}
+        setAccessControlSubPolicyVisible={jest.fn()}
+      />
+    </Provider>, { route: { params, path } })
+
+    expect(screen.getByText('Enforcement')).toBeInTheDocument()
+    expect(screen.getByText('Enforced')).toBeInTheDocument()
   })
 })
