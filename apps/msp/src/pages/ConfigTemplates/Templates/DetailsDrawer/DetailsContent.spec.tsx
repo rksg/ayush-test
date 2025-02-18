@@ -92,7 +92,7 @@ describe('DetailsContent', () => {
       />
     </Provider>, { route: { params, path } })
 
-    const templateNameButton = screen.getByRole('button', { name: mockedLayer2Template.name })
+    const templateNameButton = screen.getByRole('button', { name: 'View Configuration' })
     expect(templateNameButton).toBeInTheDocument()
 
     await userEvent.click(templateNameButton)

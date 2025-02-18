@@ -41,8 +41,7 @@ export function DetailsContent (props: DetailsContentProps) {
   const basicDetails = [
     {
       label: $t({ defaultMessage: 'Template Name' }),
-      // eslint-disable-next-line max-len
-      value: <TemplateNameLink template={template} setAclSubPolicyVisible={setAccessControlSubPolicyVisible} />
+      value: template.name
     },
     {
       label: $t({ defaultMessage: 'Type' }),
@@ -75,6 +74,11 @@ export function DetailsContent (props: DetailsContentProps) {
     {
       label: $t({ defaultMessage: 'Last Applied' }),
       value: template.lastApplied ? moment(template.lastApplied).format(dateFormat) : ''
+    },
+    {
+      label: $t({ defaultMessage: 'Configuration Details' }),
+      // eslint-disable-next-line max-len
+      value: <ViewDetailsLink template={template} setAclSubPolicyVisible={setAccessControlSubPolicyVisible} />
     }
   ]
 
@@ -99,8 +103,8 @@ export function DetailsContent (props: DetailsContentProps) {
 function DetailRow ({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <Row gutter={16}>
-      <Col span={8} style={{ fontWeight: 600 }}>{label}</Col>
-      <Col span={16}>{value}</Col>
+      <Col flex='165px' style={{ fontWeight: 600 }}>{label}</Col>
+      <Col flex='auto'>{value}</Col>
     </Row>
   )
 }
@@ -135,8 +139,10 @@ interface TemplateNameLinkProps {
   template: ConfigTemplate
   setAclSubPolicyVisible: (visibility: AccessControlSubPolicyVisibility) => void
 }
-function TemplateNameLink (props: TemplateNameLinkProps) {
+function ViewDetailsLink (props: TemplateNameLinkProps) {
+  const { $t } = useIntl()
   const { template, setAclSubPolicyVisible } = props
+  const label = $t({ defaultMessage: 'View Configuration' })
 
   if (isAccessControlSubPolicy(template.type)) {
     return <Button
@@ -152,8 +158,8 @@ function TemplateNameLink (props: TemplateNameLinkProps) {
           }
         })
       }}>
-      {template.name}
+      {label}
     </Button>
   }
-  return renderConfigTemplateDetailsComponent(template.type, template.id!, template.name)
+  return renderConfigTemplateDetailsComponent(template.type, template.id!, label)
 }
