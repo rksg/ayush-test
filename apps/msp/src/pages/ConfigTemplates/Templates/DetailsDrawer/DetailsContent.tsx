@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-import { Col, Divider, Row, Space } from 'antd'
-import moment                       from 'moment'
-import { useIntl }                  from 'react-intl'
+import { Divider, Space } from 'antd'
+import moment             from 'moment'
+import { useIntl }        from 'react-intl'
 
-import { Button, Loader }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
-import { useMspCustomerListQuery }            from '@acx-ui/msp/services'
+import { Button, cssStr, Descriptions, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }   from '@acx-ui/formatter'
+import { useMspCustomerListQuery }              from '@acx-ui/msp/services'
 import {
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
   AccessControlSubPolicyVisibility,
@@ -20,9 +20,6 @@ import { ConfigTemplate, ConfigTemplateDriftType, PolicyType } from '@acx-ui/rc/
 import { ShowDriftsDrawer }                                                                         from '../ShowDriftsDrawer'
 import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel } from '../templateUtils'
 import { useEcFilters }                                                                             from '../templateUtils'
-
-import * as UI from './styledComponents'
-
 
 interface DetailsContentProps {
   template: ConfigTemplate
@@ -38,75 +35,63 @@ export function DetailsContent (props: DetailsContentProps) {
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const basicDetails = [
-    {
-      label: $t({ defaultMessage: 'Template Name' }),
-      value: template.name
-    },
-    {
-      label: $t({ defaultMessage: 'Type' }),
-      value: getConfigTemplateTypeLabel(template.type)
-    },
-    ...(driftsEnabled ? [{
-      label: $t({ defaultMessage: 'Drift Status' }),
-      value: <ConfigTemplateDriftStatus row={template}
-        callbackMap={{
-          [ConfigTemplateDriftType.DRIFT_DETECTED]: () => setShowDriftsDrawerVisible(true)
-        }}
-      />
-    }] : []),
-    ...(enforcementEnabled ? [{
-      label: $t({ defaultMessage: 'Enforcement' }),
-      value: getConfigTemplateEnforcementLabel(template.isEnforced)
-    }] : [])
-  ]
-
-  const metadataDetails = [
-    { label: $t({ defaultMessage: 'Created By' }), value: template.createdBy },
-    {
-      label: $t({ defaultMessage: 'Created On' }),
-      value: moment(template.createdOn).format(dateFormat)
-    },
-    {
-      label: $t({ defaultMessage: 'Last Modified' }),
-      value: moment(template.lastModified).format(dateFormat)
-    },
-    {
-      label: $t({ defaultMessage: 'Last Applied' }),
-      value: template.lastApplied ? moment(template.lastApplied).format(dateFormat) : ''
-    },
-    {
-      label: $t({ defaultMessage: 'Configuration Details' }),
-      // eslint-disable-next-line max-len
-      value: <ViewDetailsLink template={template} setAclSubPolicyVisible={setAccessControlSubPolicyVisible} />
-    }
-  ]
-
   return <>
-    <Space split={<Divider style={{ margin: '4px 0' }} />} direction='vertical' size={8}>
-      <UI.DetailBlock>
-        {basicDetails.map(detail => <DetailRow key={detail.label} {...detail} />)}
-      </UI.DetailBlock>
-      <UI.DetailBlock>
-        {metadataDetails.map(detail => <DetailRow key={detail.label} {...detail} />)}
-      </UI.DetailBlock>
-      <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
-    </Space>
+    <Descriptions labelWidthPercent={35}>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Template Name' })}
+        children={template.name}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Type' })}
+        children={getConfigTemplateTypeLabel(template.type)}
+      />
+      {driftsEnabled && <Descriptions.Item
+        label={$t({ defaultMessage: 'Drift Status' })}
+        children={<ConfigTemplateDriftStatus row={template}
+          callbackMap={{
+            [ConfigTemplateDriftType.DRIFT_DETECTED]: () => setShowDriftsDrawerVisible(true)
+          }}
+        />}
+      />}
+      {enforcementEnabled && <Descriptions.Item
+        label={$t({ defaultMessage: 'Enforcement' })}
+        children={getConfigTemplateEnforcementLabel(template.isEnforced)}
+      />}
+    </Descriptions>
+    <Divider/>
+    <Descriptions labelWidthPercent={35}>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Created By' })}
+        children={template.createdBy}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Created On' })}
+        children={moment(template.createdOn).format(dateFormat)}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Last Modified' })}
+        children={moment(template.lastModified).format(dateFormat)}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Last Applied' })}
+        children={template.lastApplied ? moment(template.lastApplied).format(dateFormat) : ''}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Configuration Details' })}
+        children={<ViewDetailsLink
+          template={template}
+          setAclSubPolicyVisible={setAccessControlSubPolicyVisible}
+        />}
+      />
+    </Descriptions>
+    <Divider/>
+    <AppliedToTenantList appliedOnTenants={template.appliedOnTenants} />
     {showDriftsDrawerVisible &&
       <ShowDriftsDrawer
         setVisible={setShowDriftsDrawerVisible}
         selectedTemplate={template}
       />}
   </>
-}
-
-function DetailRow ({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <Row gutter={16}>
-      <Col flex='165px' style={{ fontWeight: 600 }}>{label}</Col>
-      <Col flex='auto'>{value}</Col>
-    </Row>
-  )
 }
 
 function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[] }) {
@@ -126,7 +111,9 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
   )
 
   return <Space direction='vertical' size={6}>
-    <span style={{ fontWeight: 600 }}>{ $t({ defaultMessage: 'Applied to' })}</span>
+    <span style={{ fontWeight: 700, color: cssStr('--acx-neutrals-60') }}>
+      { $t({ defaultMessage: 'Applied to' })}
+    </span>
     <Loader states={[{ isLoading }]} style={{ width: '100%', backgroundColor: 'transparent' }}>
       <Space direction='vertical' size={4}>
         {data?.data.map(mspEcTenant => <div key={mspEcTenant.id}>{mspEcTenant.name}</div>)}
@@ -135,11 +122,11 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
   </Space>
 }
 
-interface TemplateNameLinkProps {
+interface ViewDetailsLinkProps {
   template: ConfigTemplate
   setAclSubPolicyVisible: (visibility: AccessControlSubPolicyVisibility) => void
 }
-function ViewDetailsLink (props: TemplateNameLinkProps) {
+function ViewDetailsLink (props: ViewDetailsLinkProps) {
   const { $t } = useIntl()
   const { template, setAclSubPolicyVisible } = props
   const label = $t({ defaultMessage: 'View Configuration' })
