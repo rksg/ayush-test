@@ -500,6 +500,7 @@ export interface ClusterNetworkSettings {
     }
     loadDistribution: ClusterHaLoadDistributionEnum
   }
+  subInterfaceSettings?: NodeSubInterfaces[]
 }
 
 export interface ClusterSubInterfaceSettings {

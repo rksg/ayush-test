@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 
@@ -38,7 +39,7 @@ export const PortGeneralTable = (props: PortGeneralTableProps) => {
       tableData.push({
         serialNumber: serialNumber,
         edgeName: targetNode?.name ?? '',
-        interfaceName: portSetting.interfaceName ?? '',
+        interfaceName: _.capitalize(portSetting.interfaceName ?? ''),
         adminStatus: portSetting.enabled ?
           $t({ defaultMessage: 'Enabled' }) :
           $t({ defaultMessage: 'Disabled' }),

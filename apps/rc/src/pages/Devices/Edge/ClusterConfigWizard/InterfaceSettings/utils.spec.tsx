@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
+import moment    from 'moment-timezone'
 
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
 import {
+  ClusterHighAvailabilityModeEnum,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
   EdgeLag,
@@ -17,6 +19,7 @@ import { render, screen, within } from '@acx-ui/test-utils'
 
 import {
   getTargetInterfaceFromInterfaceSettingsFormData,
+  mockClusterConfigWizardData,
   mockFailedNetworkConfig
 } from '../__tests__/fixtures'
 
@@ -27,9 +30,10 @@ import {
   interfaceCompatibilityCheck,
   interfaceNameComparator,
   lagSettingsCompatibleCheck,
-  transformFromApiToFormData } from './utils'
+  transformFromApiToFormData,
+  transformFromFormToApiData } from './utils'
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 const node1SN = nodeList[0].serialNumber
 const node2SN = nodeList[1].serialNumber
@@ -49,6 +53,412 @@ jest.mock('antd', () => {
   )
   return { ...antdComponents }
 })
+
+const expectedFormData = {
+  fallbackSettings: {
+    enable: true,
+    schedule: {
+      time: moment('00:00', 'HH:mm:ss'),
+      type: 'DAILY'
+    }
+  },
+  lagSettings: [
+    {
+      lags: [
+        {
+          corePortEnabled: false,
+          description: 'string',
+          gateway: '',
+          id: 0,
+          ip: '',
+          ipMode: 'DHCP',
+          lacpMode: 'ACTIVE',
+          lacpTimeout: 'SHORT',
+          lagEnabled: true,
+          lagMembers: [],
+          lagType: 'LACP',
+          natEnabled: true,
+          portType: 'LAN',
+          subnet: ''
+        }
+      ],
+      serialNumber: 'serialNumber-1'
+    },
+    {
+      lags: [
+        {
+          corePortEnabled: false,
+          description: 'string',
+          gateway: '127.1.1.0',
+          id: 1,
+          ip: '1.10.10.1',
+          ipMode: 'STATIC',
+          lacpMode: 'ACTIVE',
+          lacpTimeout: 'SHORT',
+          lagEnabled: true,
+          lagMembers: [],
+          lagType: 'LACP',
+          natEnabled: false,
+          portType: 'LAN',
+          subnet: '255.255.0.0'
+        }
+      ],
+      serialNumber: 'serialNumber-2'
+    }
+  ],
+  lagSubInterfaces: {
+    'serialNumber-1': {
+      0: [
+        {
+          id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+          ip: '1.1.3.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    },
+    'serialNumber-2': {
+      1: [
+        {
+          id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+          ip: '',
+          ipMode: 'DHCP',
+          portType: 'LAN',
+          subnet: '',
+          vlan: 3
+        }
+      ]
+    }
+  },
+  loadDistribution: 'AP_GROUP',
+  portSettings: {
+    'serialNumber-1': {
+      port1: [
+        {
+          corePortEnabled: false,
+          enabled: false,
+          gateway: '1.1.1.1',
+          id: 'port_id_0',
+          interfaceName: 'port1',
+          ip: '1.1.1.1',
+          ipMode: 'STATIC',
+          mac: '00:0c:29:b6:ad:00',
+          maxSpeedCapa: 0,
+          name: '',
+          natEnabled: false,
+          portType: 'WAN',
+          subnet: '255.255.255.0'
+        }
+      ],
+      port2: [
+        {
+          corePortEnabled: true,
+          enabled: true,
+          gateway: '2.2.2.1',
+          id: 'port_id_1',
+          interfaceName: 'port2',
+          ip: '2.2.2.3',
+          ipMode: 'STATIC',
+          mac: '00:11:00:22:00:01',
+          maxSpeedCapa: 0,
+          name: '',
+          natEnabled: false,
+          portType: 'LAN',
+          subnet: '255.255.255.0'
+        }
+      ]
+    },
+    'serialNumber-2': {
+      port1: [
+        {
+          corePortEnabled: false,
+          enabled: false,
+          gateway: '',
+          id: 'port_id_0',
+          interfaceName: 'port1',
+          ip: '',
+          ipMode: 'DHCP',
+          mac: '00:0c:29:b6:ad:02',
+          name: '',
+          natEnabled: false,
+          portType: 'WAN',
+          subnet: ''
+        }
+      ],
+      port2: [
+        {
+          corePortEnabled: true,
+          enabled: true,
+          gateway: '2.2.2.1',
+          id: 'port_id_1',
+          interfaceName: 'port2',
+          ip: '2.2.2.2',
+          ipMode: 'STATIC',
+          mac: '00:11:00:22:00:03',
+          name: '',
+          natEnabled: false,
+          portType: 'LAN',
+          subnet: '255.255.255.0'
+        }
+      ]
+    }
+  },
+  portSubInterfaces: {
+    'serialNumber-1': {
+      port_id_0: [
+        {
+          id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+          ip: '1.1.5.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 123
+        }
+      ],
+      port_id_1: []
+    },
+    'serialNumber-2': {
+      port_id_0: [],
+      port_id_1: [
+        {
+          id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+          ip: '1.1.2.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    }
+  },
+  timeout: 6,
+  vipConfig: [
+    {
+      interfaces: [
+        {
+          portName: 'port2',
+          serialNumber: 'serialNumber-1'
+        },
+        {
+          portName: 'port2',
+          serialNumber: 'serialNumber-2'
+        }
+      ],
+      vip: '1.1.1.1'
+    }
+  ]
+}
+
+const expectedApiData = {
+  lagSettings: [
+    {
+      lags: [
+        {
+          corePortEnabled: false,
+          description: 'string',
+          gateway: '',
+          id: 0,
+          ip: '',
+          ipMode: 'DHCP',
+          lacpMode: 'ACTIVE',
+          lacpTimeout: 'SHORT',
+          lagEnabled: true,
+          lagMembers: [],
+          lagType: 'LACP',
+          natEnabled: true,
+          portType: 'LAN',
+          subnet: ''
+        }
+      ],
+      serialNumber: 'serialNumber-1'
+    },
+    {
+      lags: [
+        {
+          corePortEnabled: false,
+          description: 'string',
+          gateway: '127.1.1.0',
+          id: 1,
+          ip: '1.10.10.1',
+          ipMode: 'STATIC',
+          lacpMode: 'ACTIVE',
+          lacpTimeout: 'SHORT',
+          lagEnabled: true,
+          lagMembers: [],
+          lagType: 'LACP',
+          natEnabled: false,
+          portType: 'LAN',
+          subnet: '255.255.0.0'
+        }
+      ],
+      serialNumber: 'serialNumber-2'
+    }
+  ],
+  portSettings: [
+    {
+      ports: [
+        {
+          corePortEnabled: false,
+          enabled: false,
+          gateway: '1.1.1.1',
+          id: 'port_id_0',
+          interfaceName: 'port1',
+          ip: '1.1.1.1',
+          ipMode: 'STATIC',
+          mac: '00:0c:29:b6:ad:00',
+          maxSpeedCapa: 0,
+          name: '',
+          natEnabled: false,
+          portType: 'WAN',
+          subnet: '255.255.255.0'
+        },
+        {
+          corePortEnabled: true,
+          enabled: true,
+          gateway: '2.2.2.1',
+          id: 'port_id_1',
+          interfaceName: 'port2',
+          ip: '2.2.2.3',
+          ipMode: 'STATIC',
+          mac: '00:11:00:22:00:01',
+          maxSpeedCapa: 0,
+          name: '',
+          natEnabled: false,
+          portType: 'LAN',
+          subnet: '255.255.255.0'
+        }
+      ],
+      serialNumber: 'serialNumber-1'
+    },
+    {
+      ports: [
+        {
+          corePortEnabled: false,
+          enabled: false,
+          gateway: '',
+          id: 'port_id_0',
+          interfaceName: 'port1',
+          ip: '',
+          ipMode: 'DHCP',
+          mac: '00:0c:29:b6:ad:02',
+          name: '',
+          natEnabled: false,
+          portType: 'WAN',
+          subnet: ''
+        },
+        {
+          corePortEnabled: true,
+          enabled: true,
+          gateway: '2.2.2.1',
+          id: 'port_id_1',
+          interfaceName: 'port2',
+          ip: '2.2.2.2',
+          ipMode: 'STATIC',
+          mac: '00:11:00:22:00:03',
+          name: '',
+          natEnabled: false,
+          portType: 'LAN',
+          subnet: '255.255.255.0'
+        }
+      ],
+      serialNumber: 'serialNumber-2'
+    }
+  ],
+  subInterfaceSettings: [
+    {
+      lags: [
+        {
+          lagId: 0,
+          subInterfaces: [
+            {
+              id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+              ip: '1.1.3.1',
+              ipMode: 'STATIC',
+              portType: 'LAN',
+              subnet: '255.255.255.0',
+              vlan: 1
+            }
+          ]
+        }
+      ],
+      ports: [
+        {
+          portId: 'port_id_0',
+          subInterfaces: [
+            {
+              id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+              ip: '1.1.5.1',
+              ipMode: 'STATIC',
+              portType: 'LAN',
+              subnet: '255.255.255.0',
+              vlan: 123
+            }
+          ]
+        },
+        {
+          portId: 'port_id_1',
+          subInterfaces: []
+        }
+      ],
+      serialNumber: 'serialNumber-1'
+    },
+    {
+      lags: [
+        {
+          lagId: 1,
+          subInterfaces: [
+            {
+              id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+              ip: '',
+              ipMode: 'DHCP',
+              portType: 'LAN',
+              subnet: '',
+              vlan: 3
+            }
+          ]
+        }
+      ],
+      ports: [
+        {
+          portId: 'port_id_0',
+          subInterfaces: []
+        },
+        {
+          portId: 'port_id_1',
+          subInterfaces: [
+            {
+              id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+              ip: '1.1.2.1',
+              ipMode: 'STATIC',
+              portType: 'LAN',
+              subnet: '255.255.255.0',
+              vlan: 1
+            }
+          ]
+        }
+      ],
+      serialNumber: 'serialNumber-2'
+    }
+  ],
+  virtualIpSettings: [
+    {
+      ports: [
+        {
+          portName: 'port2',
+          serialNumber: 'serialNumber-1'
+        },
+        {
+          portName: 'port2',
+          serialNumber: 'serialNumber-2'
+        }
+      ],
+      timeoutSeconds: 3,
+      virtualIp: '1.1.1.1'
+    }
+  ]
+}
 
 describe('Interface Compatibility Check', () => {
   it('when node is missing in port setting', async () => {
@@ -449,7 +859,7 @@ describe('Compatibility status result rendering', () => {
             }
           }
         }]
-      } as CompatibilityCheckResult
+      } as unknown as CompatibilityCheckResult
 
       render(<CompatibilityStatusBar
         type={CompatibilityStatusEnum.FAIL}
@@ -503,7 +913,7 @@ describe('Compatibility status result rendering', () => {
             }
           }
         }]
-      } as CompatibilityCheckResult
+      } as unknown as CompatibilityCheckResult
 
       render(<CompatibilityStatusBar
         type={CompatibilityStatusEnum.FAIL}
@@ -549,5 +959,22 @@ describe('interfaceNameComparator', () => {
       'port1', 'port1.1', 'port1.2', 'port1.10',
       'port2', 'port2.1'
     ])
+  })
+})
+
+describe('Function test', () => {
+  it('should transformFromApiToFormData correctly', () => {
+    const result = transformFromApiToFormData(mockedHaNetworkSettings)
+    expect(result).toStrictEqual(expectedFormData)
+  })
+
+  it('should transformFromFormToApiData correctly', () => {
+    // eslint-disable-next-line max-len
+    const result = transformFromFormToApiData(
+      mockClusterConfigWizardData as unknown as InterfaceSettingsFormType,
+      ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      true
+    )
+    expect(result).toStrictEqual(expectedApiData)
   })
 })

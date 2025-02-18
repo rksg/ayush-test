@@ -1,24 +1,35 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 
-import { Form, Typography }       from 'antd'
+import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps }        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { CompatibilityStatusBar, CompatibilityStatusEnum, EdgeHaSettingsForm, TypeForm } from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { CompatibilityStatusBar, CompatibilityStatusEnum, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
-import { ClusterHighAvailabilityModeEnum, convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                     from '@acx-ui/react-router-dom'
+import {
+  ClusterHighAvailabilityModeEnum,
+  convertEdgePortsConfigToApiPayload,
+  EdgeIpModeEnum,
+  EdgeNodesPortsInfo,
+  EdgePort,
+  EdgePortTypeEnum,
+  EdgeSerialNumber
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { VirtualIpFormType }                                               from '../../EditEdgeCluster/VirtualIp'
+import { ClusterConfigWizardContext }                                      from '../ClusterConfigWizardDataProvider'
+import { getSubInterfaceCompatibilityFields, subInterfaceCompatibleCheck } from '../SubInterfaceSettings/utils'
 
+import { HaSettingForm }      from './HaSettingForm'
 import { LagForm }            from './LagForm'
 import { PortForm }           from './PortForm'
+import { SubInterfaceForm }   from './SubInterfaceForm'
 import { Summary }            from './Summary'
 import {
   CompatibilityCheckResult,
@@ -26,6 +37,7 @@ import {
   InterfaceSettingsFormType
 } from './types'
 import {
+  getAllInterfaceAsPortInfoFromForm,
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
   interfaceCompatibilityCheck,
@@ -37,10 +49,12 @@ import { VirtualIpForm } from './VirtualIpForm'
 
 const lagCompatibleErrorFields = getLagFormCompatibilityFields()
 const portCompatibleErrorFields = getPortFormCompatibilityFields()
+const subInterfaceCompatibleErrorFields = getSubInterfaceCompatibilityFields()
 
 const enum InterfaceSettingsTypeEnum {
   LAGS = 'lagSettings',
   PORTS = 'portSettings',
+  SUB_INTERFACE = 'subInterfaceSettings',
   VIRTUAL_IP = 'virtualIpSettings',
   HA_SETTING = 'haSettings'
 }
@@ -48,6 +62,8 @@ const enum InterfaceSettingsTypeEnum {
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
   const isEdgeHaAaOn = useIsSplitOn(Features.EDGE_HA_AA_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeCoreAccessSeparationReady = useIsEdgeFeatureReady(Features.EDGE_CORE_ACCESS_SEPARATION_TOGGLE)
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
@@ -77,6 +93,20 @@ export const InterfaceSettings = () => {
     let checkResult: CompatibilityCheckResult
     if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
       checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
+    } else if (typeKey === InterfaceSettingsTypeEnum.SUB_INTERFACE) {
+      const allInterfaces = getAllInterfaceAsPortInfoFromForm(configWizardForm)
+      checkResult = subInterfaceCompatibleCheck(
+        _.get(configWizardForm.getFieldsValue(true), 'portSubInterfaces'),
+        _.get(configWizardForm.getFieldsValue(true), 'lagSubInterfaces'),
+        clusterInfo?.edgeList,
+        _.reduce(Object.entries(allInterfaces), (result, [serialNumber, interfaces]) => {
+          result[serialNumber] = interfaces.filter((item) => !item.isLag)
+          return result
+        }, {} as EdgeNodesPortsInfo),
+        _.reduce(Object.entries(allInterfaces), (result, [serialNumber, interfaces]) => {
+          result[serialNumber] = interfaces.filter((item) => item.isLag)
+          return result
+        }, {} as EdgeNodesPortsInfo)) as unknown as CompatibilityCheckResult
     } else {
       const lagFormData = _.get(configWizardForm.getFieldsValue(true), 'lagSettings')
       checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList)
@@ -92,6 +122,8 @@ export const InterfaceSettings = () => {
     let errorFieldsConfig
     if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
       errorFieldsConfig = lagCompatibleErrorFields
+    } else if(typeKey === InterfaceSettingsTypeEnum.SUB_INTERFACE) {
+      errorFieldsConfig = subInterfaceCompatibleErrorFields
     } else {
       errorFieldsConfig = portCompatibleErrorFields
     }
@@ -166,10 +198,6 @@ export const InterfaceSettings = () => {
       .catch(() => {/* do nothing */})
   }, 1000), [configWizardForm])
 
-  const haSettingHeader = <Typography.Title level={2}>
-    {$t({ defaultMessage: 'HA Settings' })}
-  </Typography.Title>
-
   const steps = useMemo(() => [
     {
       title: $t({ defaultMessage: 'LAG' }),
@@ -232,15 +260,34 @@ export const InterfaceSettings = () => {
       }
     },
     ...(
+      isEdgeCoreAccessSeparationReady ?
+        [{
+          title: $t({ defaultMessage: 'Sub-interface Settings' }),
+          id: InterfaceSettingsTypeEnum.SUB_INTERFACE,
+          content: <SubInterfaceForm />,
+          onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
+            handleValuesChange(InterfaceSettingsTypeEnum.SUB_INTERFACE, changedValues),
+          onFinish: async (typeKey: string, event?: React.MouseEvent) => {
+            const isBackBtn = isStepsFormBackStepClicked(event)
+
+            const checkResult = getCompatibleCheckResult(typeKey)
+            if (isBackBtn) {
+              updateAlertMessage({ isError: false } as CompatibilityCheckResult)
+              return true
+            } else {
+              updateAlertMessage(checkResult, typeKey)
+              return !checkResult.isError
+            }
+          }
+        }] : []
+    ),
+    ...(
       isEdgeHaAaOn &&
       clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
         [{
           title: $t({ defaultMessage: 'HA Settings' }),
           id: InterfaceSettingsTypeEnum.HA_SETTING,
-          content: <TypeForm
-            header={haSettingHeader}
-            content={<EdgeHaSettingsForm />}
-          />
+          content: <HaSettingForm />
         }]:
         [{
           title: $t({ defaultMessage: 'Cluster Virtual IP' }),
@@ -265,7 +312,7 @@ export const InterfaceSettings = () => {
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
           content: $t({
-            defaultMessage: `Changing any virtual IP configurations might 
+            defaultMessage: `Changing any virtual IP configurations might
             temporarily cause network disruption and alter the active/backup roles
             of this cluster. Are you sure you want to continue?`
           }),

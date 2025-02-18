@@ -35,7 +35,61 @@ export const mockClusterConfigWizardData = {
       vip: item.virtualIp
     }
   }),
-  timeout: 3
+  timeout: 3,
+  lagSubInterfaces: {
+    [mockEdgeClusterList.data[0].edgeList[0].serialNumber]: {
+      0: [
+        {
+          id: '392d0d59-566b-486e-ad55-fa9610b1a96b',
+          ip: '1.1.3.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    },
+    [mockEdgeClusterList.data[0].edgeList[1].serialNumber]: {
+      1: [
+        {
+          id: 'b4bca3e8-4f2a-463d-9b8f-0a4c3b21f5ec',
+          ip: '',
+          ipMode: 'DHCP',
+          portType: 'LAN',
+          subnet: '',
+          vlan: 3
+        }
+      ]
+    }
+  },
+  portSubInterfaces: {
+    [mockEdgeClusterList.data[0].edgeList[0].serialNumber]: {
+      port_id_0: [
+        {
+          id: '2deb8142-13fd-4658-a38c-a5be78aa894e',
+          ip: '1.1.5.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 123
+        }
+      ],
+      port_id_1: []
+    },
+    [mockEdgeClusterList.data[0].edgeList[1].serialNumber]: {
+      port_id_0: [],
+      port_id_1: [
+        {
+          id: '2165e0d4-4aae-4d2d-8fc7-bcae11c7bacb',
+          ip: '1.1.2.1',
+          ipMode: 'STATIC',
+          portType: 'LAN',
+          subnet: '255.255.255.0',
+          vlan: 1
+        }
+      ]
+    }
+  }
 }
 
 export const defaultCxtData = {

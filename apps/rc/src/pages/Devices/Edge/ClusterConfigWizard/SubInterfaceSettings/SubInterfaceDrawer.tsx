@@ -28,8 +28,8 @@ interface SubInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: SubInterface
-  handleAdd: (data: SubInterface) => Promise<unknown>
-  handleUpdate: (data: SubInterface) => Promise<unknown>
+  handleAdd: (data: SubInterface) => void
+  handleUpdate: (data: SubInterface) => void
   allSubInterfaceVlans: { id: String, vlan: number }[]
 }
 
@@ -96,9 +96,9 @@ const SubInterfaceDrawer = (props: SubInterfaceDrawerProps) => {
 
     try {
       if(data) {
-        await handleUpdate(payload)
+        handleUpdate(payload)
       } else {
-        await handleAdd(payload)
+        handleAdd(payload)
       }
     } catch (error) {
       // TODO error message not be defined

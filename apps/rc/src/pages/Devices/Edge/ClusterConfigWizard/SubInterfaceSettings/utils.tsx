@@ -173,8 +173,8 @@ export const subInterfaceCompatibleCheck = (
     result.nodeId = serialNumber
     result.nodeName = nodeName
 
-    const nodePortSubInterfaces = portSubInterfaces[serialNumber]
-    const nodeLagSubInterfaces = lagSubInterfaces[serialNumber]
+    const nodePortSubInterfaces = portSubInterfaces[serialNumber] ?? {}
+    const nodeLagSubInterfaces = lagSubInterfaces[serialNumber] ?? {}
 
     const totalPortSubInterfaces = _.flatMap(nodePortSubInterfaces).length
     const totalLagSubInterfaces = _.flatMap(nodeLagSubInterfaces).length

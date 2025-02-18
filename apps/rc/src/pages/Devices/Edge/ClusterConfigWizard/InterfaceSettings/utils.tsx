@@ -1,7 +1,7 @@
-import { Space, Typography } from 'antd'
-import _, { cloneDeep }      from 'lodash'
-import moment                from 'moment-timezone'
-import { defineMessage }     from 'react-intl'
+import { FormInstance, Space, Typography } from 'antd'
+import _, { cloneDeep }                    from 'lodash'
+import moment                              from 'moment-timezone'
+import { defineMessage }                   from 'react-intl'
 
 import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
 import {
@@ -10,8 +10,10 @@ import {
   ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
   EdgeClusterStatus,
+  EdgePortInfo,
   EdgePortTypeEnum,
   EdgeSerialNumber,
+  NodeSubInterfaces,
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
 
@@ -53,13 +55,30 @@ export const transformFromApiToFormData =
      fallbackSettings.schedule.time = moment(time, 'HH:mm:ss')
    }
 
+   const portSubInterfaces = {} as InterfaceSettingsFormType['portSubInterfaces']
+   const lagSubInterfaces = {} as InterfaceSettingsFormType['lagSubInterfaces']
+
+   apiData?.subInterfaceSettings?.forEach(item => {
+     // eslint-disable-next-line max-len
+     portSubInterfaces[item.serialNumber] = _.reduce(item.ports ?? [], (result, portSubInterface) => {
+       result[portSubInterface.portId] = portSubInterface.subInterfaces
+       return result
+     }, {} as InterfaceSettingsFormType['portSubInterfaces'][EdgeSerialNumber])
+     lagSubInterfaces[item.serialNumber] = _.reduce(item.lags ?? [], (result, lagSubInterface) => {
+       result[lagSubInterface.lagId] = lagSubInterface.subInterfaces
+       return result
+     }, {} as InterfaceSettingsFormType['lagSubInterfaces'][EdgeSerialNumber])
+   })
+
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
      timeout,
      vipConfig,
      fallbackSettings: fallbackSettings,
-     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution
+     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution,
+     portSubInterfaces,
+     lagSubInterfaces
    } as InterfaceSettingsFormType
  }
 
@@ -342,7 +361,8 @@ export const lagSettingsCompatibleCheck = (
 
 export const transformFromFormToApiData = (
   data: InterfaceSettingsFormType,
-  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum,
+  isEdgeCoreAccessSeparationReady?: boolean
 ): ClusterNetworkSettings => {
   const portSettings = []
   for(let [k, v] of Object.entries(data.portSettings)) {
@@ -393,6 +413,36 @@ export const transformFromFormToApiData = (
   const shouldPatchHaSetting = fallbackSettings &&
     highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
+  const subInterfaceSettings = [] as NodeSubInterfaces[]
+  Object.entries(data.lagSubInterfaces ?? []).forEach(([serialNumber, lagSubInterfaces = {}]) => {
+    subInterfaceSettings.push({
+      serialNumber,
+      lags: Object.entries(lagSubInterfaces).map(([lagId, subInterfaces]) => ({
+        lagId: Number(lagId),
+        subInterfaces
+      }))
+    } as NodeSubInterfaces)
+  })
+  Object.entries(data.portSubInterfaces ?? []).forEach(([serialNumber, portSubInterfaces = {}]) => {
+    // eslint-disable-next-line max-len
+    const currentSubInterfaceItem = subInterfaceSettings.find(item => item.serialNumber === serialNumber)
+    if(currentSubInterfaceItem) {
+      // eslint-disable-next-line max-len
+      currentSubInterfaceItem.ports = Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
+        portId: portId,
+        subInterfaces
+      }))
+    } else {
+      subInterfaceSettings.push({
+        serialNumber,
+        ports: Object.entries(portSubInterfaces).map(([portId, subInterfaces]) => ({
+          portId: portId,
+          subInterfaces
+        }))
+      } as NodeSubInterfaces)
+    }
+  })
+
   return {
     lagSettings: data.lagSettings,
     portSettings,
@@ -404,7 +454,10 @@ export const transformFromFormToApiData = (
         fallbackSettings,
         loadDistribution: data.loadDistribution
       }
-    } : {})
+    } : {}),
+    ...(isEdgeCoreAccessSeparationReady ?
+      { subInterfaceSettings } :
+      {})
   }
 }
 
@@ -449,4 +502,50 @@ export const interfaceNameComparator =
     }
   }
   return 0
+}
+
+// eslint-disable-next-line max-len
+export const getAllInterfaceAsPortInfoFromForm = (form: FormInstance): Record<EdgeSerialNumber, EdgePortInfo[]> => {
+  // eslint-disable-next-line max-len
+  const lagSettings = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings'] ?? []
+  // eslint-disable-next-line max-len
+  const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings'] ?? []
+
+  const result =_.reduce(Object.keys(portSettings), (acc, serialNumber) => {
+    const currentLagSettings = lagSettings.find(item => item.serialNumber === serialNumber)?.lags
+    // eslint-disable-next-line max-len
+    const currentLagMembers = currentLagSettings?.flatMap(item => item.lagMembers.map(member => member.portId))
+    const currentPortInfo = Object.values(portSettings[serialNumber]).map(item => ({
+      serialNumber,
+      id: item[0].id,
+      portName: item[0].interfaceName,
+      ipMode: item[0].ipMode,
+      ip: item[0].ip,
+      mac: item[0].mac,
+      subnet: item[0].subnet,
+      portType: item[0].portType,
+      isCorePort: item[0].corePortEnabled,
+      isLag: false,
+      isLagMember: currentLagMembers?.includes(item[0].id) ?? false,
+      portEnabled: item[0].enabled
+    })) as EdgePortInfo[]
+    const currentLagInfo = (currentLagSettings?.map(item => ({
+      serialNumber,
+      id: item.id + '',
+      portName: `Lag${item.id}`,
+      ipMode: item.ipMode,
+      ip: item.ip,
+      mac: '',
+      subnet: item.subnet,
+      portType: item.portType,
+      isCorePort: item.corePortEnabled,
+      isLag: true,
+      isLagMember: false,
+      portEnabled: item.lagEnabled
+    })) ?? []) as EdgePortInfo[]
+    acc[serialNumber] = [...currentPortInfo, ...currentLagInfo]
+    return acc
+  }, {} as Record<EdgeSerialNumber, EdgePortInfo[]>)
+
+  return result
 }
