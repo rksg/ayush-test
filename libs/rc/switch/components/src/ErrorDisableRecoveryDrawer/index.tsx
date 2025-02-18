@@ -205,7 +205,6 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                 mode='multiple'
                 optionFilterProp='label'
                 style={{ width: '300px' }}
-                placeholder='Select...'
                 maxTagCount={value.some(item => item === 'all') || value.length >= 2
                   ? 0 : 'responsive'}
                 // eslint-disable-next-line max-len
@@ -216,9 +215,9 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                 <Select.Option
                   key={'all'}
                   value={'all'}
-                  style={{ borderBottom: '1px solid #d9d9d9' }}
+                  style={{ borderBottom: '1px solid var(--acx-neutrals-25)' }}
                 >
-                  {'Select All'}
+                  {$t({ defaultMessage: 'Select All' })}
                 </Select.Option>
                 {options.map((option) => (
                   <Select.Option

@@ -406,18 +406,17 @@ export function SwitchPortTable (props: {
           }
         } : undefined}
       actions={!isVenueLevel
-        ? [
-          ...filterByAccess(
+        ? filterByAccess([
+          ...(
             switchSupportErrorRecovery ? [{
               label: $t({ defaultMessage: 'Error Disable Recovery' }),
               onClick: () => { setRecoveryDrawerVisible(true) }
             }] : []),
-
-          ...filterByAccess([{
+          {
             label: $t({ defaultMessage: 'Manage LAG' }),
             onClick: () => { setLagDrawerVisible(true) }
-          }])
-        ]
+          }
+        ])
         : []
       }
     />
