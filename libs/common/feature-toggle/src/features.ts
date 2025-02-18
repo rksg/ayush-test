@@ -288,7 +288,8 @@ export enum Features {
   ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
-  MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units'
+  MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
