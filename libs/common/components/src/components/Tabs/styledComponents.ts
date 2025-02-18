@@ -28,12 +28,7 @@ const lineStyle = css`
 const cardStyle = css`
   &.ant-tabs-top > .ant-tabs-nav {
     padding-left: 15px;
-    padding-bottom: 16px;
-    margin: 0;
-    &:before {
-      border-bottom: 1px solid var(--acx-accents-orange-50);
-      bottom: 16px;
-    }
+    &:before { border-bottom: 1px solid var(--acx-accents-orange-50); }
     > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
       padding: 9.5px 18.5px;
       background: transparent;
@@ -57,12 +52,14 @@ const cardStyle = css`
   }
 `
 
-const stickyStyle = css`
+const secondStyle = css`
   &.ant-tabs-top > .ant-tabs-nav {
+    // height: calc(57px - 16px);
     position: sticky;
-    top: ${(props: { $stickyTop?: number }) => props.$stickyTop}px;
+    top: calc(var(--acx-pageheader-height) - 57px);
     background: var(--acx-primary-white);
     z-index: 6;
+    box-shadow: 0px 16px 0 var(--acx-primary-white);
   }
 `
 
@@ -136,8 +133,8 @@ const styles: Record<TabsType, FlattenSimpleInterpolation> = {
 }
 
 export const Tabs = styled(AntTabs)<
-  TabsProps & { $type: TabsType, $stickyTop?: number }
+  TabsProps & { $type: TabsType, $stickyTop?: boolean }
 >`
-  ${props => styles[props.$type]}
-  ${props => (props.$type === 'card' && typeof props.$stickyTop !== 'undefined') ? stickyStyle : ''}
+  ${props => styles[props.$type]}}
+  ${props => (props.$type === 'card' && props.$stickyTop) ? secondStyle : ''}}
 `

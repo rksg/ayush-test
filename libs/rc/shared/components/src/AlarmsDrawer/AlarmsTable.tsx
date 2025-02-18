@@ -24,7 +24,7 @@ import { TenantLink, useParams }                          from '@acx-ui/react-ro
 import { store }                                          from '@acx-ui/store'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { getOpsApi }                                      from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                       from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -57,12 +57,13 @@ const defaultPayload: {
     'switchMacAddress',
     'apModel',
     'minimumRequiredVersion',
+    'clearTime',
     'clearedBy'
   ]
 }
 
 interface AlarmsTableProps {
-  newAlarmType: boolean
+  isNewAlarm: boolean
   venueId?: string
   serialNumber?: string
   selectedFilters: { severity?: (boolean | Key)[],product?: (boolean | Key)[] },
@@ -75,7 +76,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
   const { $t } = useIntl()
   const { rbacOpsApiEnabled } = getUserProfile()
 
-  const { newAlarmType, venueId, serialNumber, selectedFilters, setSelectedFilters } = props
+  const { isNewAlarm, venueId, serialNumber, selectedFilters, setSelectedFilters } = props
 
   const venuesListPayload = {
     fields: ['name', 'country', 'id'],
@@ -96,12 +97,12 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
 
   const { data: venuesList } =
     useGetVenuesQuery({ params: useParams(), payload: venuesListPayload },
-      { skip: !newAlarmType })
+      { skip: !isNewAlarm })
 
   const tableQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
     defaultPayload: { ...defaultPayload,
-      filters: { alarmType: newAlarmType ? ['new'] : ['clear'] } },
+      filters: { alarmType: isNewAlarm ? ['new'] : ['clear'] } },
     sorter: {
       sortField: 'startTime',
       sortOrder: 'DESC'
@@ -119,7 +120,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     pageSize: 10000 }
 
   const { data: allAlarms } = useAlarmsListQuery({ payload: allAlarmsPayload },
-    { skip: !newAlarmType }
+    { skip: !isNewAlarm }
   )
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
@@ -190,7 +191,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Alarm' }),
       key: 'message',
       dataIndex: 'message',
-      width: 290,
+      width: 270,
       render: function (_, row) {
         return (<UI.ListItem>
           <UI.Meta
@@ -214,7 +215,22 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
           <UI.Meta title={formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startTime)} />
         </UI.ListItem>)
       }
-    }, {
+    },
+    ...(isNewAlarm ? [] : [{
+      title: $t({ defaultMessage: 'Cleared on' }),
+      key: 'clearTime',
+      dataIndex: 'clearTime',
+      width: 140,
+      render: function (_: React.ReactNode, row: Alarm) {
+        return (<UI.ListItem>
+          <UI.Meta title={row.clearTime
+            ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.clearTime)
+            : noDataDisplay
+          } />
+        </UI.ListItem>)
+      }
+    }]),
+    {
       title: $t({ defaultMessage: 'Device Type' }),
       key: 'entityType',
       dataIndex: 'entityType',
@@ -223,7 +239,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
           <UI.Meta title={getDeviceType(row.entityType)} />
         </UI.ListItem>)
       }
-    }, newAlarmType ? {
+    }, isNewAlarm ? {
       title: '',
       key: 'clearBtn',
       dataIndex: 'clearBtn',
@@ -309,7 +325,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       ...productFilter,
       ...{ venueId: venueId ? [venueId] : undefined },
       ...{ serialNumber: serialNumber ? [serialNumber] : undefined },
-      ...{ alarmType: newAlarmType ? ['new'] : ['clear'] }
+      ...{ alarmType: isNewAlarm ? ['new'] : ['clear'] }
     }
     tableQuery.handleFilterChange(_customFilters, customSearch)
     setSelectedFilters({ ...severityFilter, ...productFilter })
@@ -368,7 +384,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
 
   return <Loader states={[
     tableQuery,{ isLoading: false,
-      isFetching: newAlarmType && (isAlarmCleaning || isAlarmByVenueCleaning) }
+      isFetching: isNewAlarm && (isAlarmCleaning || isAlarmByVenueCleaning) }
   ]}>
     <UI.TableWrapper>
       <Table<Alarm>
@@ -378,7 +394,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
         dataSource={tableQuery.data?.data}
         pagination={{ ...tableQuery.pagination, defaultPageSize: 0, showSizeChanger: false }}
         enablePagination={true}
-        actions={newAlarmType ? actions : []}
+        actions={isNewAlarm ? actions : []}
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
