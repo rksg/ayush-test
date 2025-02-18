@@ -20,11 +20,11 @@ import {
   defaultRichTextFormatValues,
   Select
 } from '@acx-ui/components'
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
-import { InformationOutlined }       from '@acx-ui/icons'
-import { EdgePortTrafficTimeSeries } from '@acx-ui/rc/utils'
-import type { TimeStamp }            from '@acx-ui/types'
-import { getIntl  }                  from '@acx-ui/utils'
+import { formatter, DateFormatEnum }                                            from '@acx-ui/formatter'
+import { InformationOutlined }                                                  from '@acx-ui/icons'
+import { EdgePortTrafficTimeSeries, EdgeNokiaCageData, EdgeNokiaCageStateEnum } from '@acx-ui/rc/utils'
+import type { TimeStamp }                                                       from '@acx-ui/types'
+import { getIntl  }                                                             from '@acx-ui/utils'
 
 import { generateRandomPortTrafficData } from './cannedData'
 
@@ -62,28 +62,29 @@ const transformTrafficSeriesFragment = (data: {
   })
 }
 
-export const EdgeOltTrafficByVolumeWidget = () => {
+export const EdgeOltTrafficByVolumeWidget = (props: {
+  cages: EdgeNokiaCageData[] | undefined,
+  isLoading: boolean
+}) => {
   const { $t } = useIntl()
+  const { cages, isLoading } = props
+
   const seriesMapping = [
     { key: 'tx', name: $t({ defaultMessage: 'Tx' }) },
     { key: 'rx', name: $t({ defaultMessage: 'Rx' }) },
     { key: 'total', name: $t({ defaultMessage: 'Total' }) }
   ] as Array<{ key: Key, name: string }>
 
-  const cageOptions = [
-    {
-      label: $t({ defaultMessage: 'S1/4' }),
-      value: 'S1/4'
-    },
-    {
-      label: $t({ defaultMessage: 'S1/6' }),
-      value: 'S1/6'
-    }
-  ]
+  const [currentDataType, setCurrentDataType] = useState<string | undefined>(undefined)
 
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentDataType, setCurrentDataType] = useState(cageOptions[0].value)
+  const cageOptions = useMemo(() => cages
+    ?.filter(({ state }) => state === EdgeNokiaCageStateEnum.UP)
+    .map(({ cage }) =>
+      ({
+        label: cage,
+        value: cage
+      })) ?? []
+  , [cages])
 
   const endTime = new Date() // current time
   const dataPoints = 144 // Number of data points
@@ -108,13 +109,9 @@ export const EdgeOltTrafficByVolumeWidget = () => {
   }, [])
 
   useEffect(() => {
-    const randomLoadingTime = Math.random() * 4 - 2.2
-    setIsLoading(true)
-
-    setTimeout(() => {
-      setIsLoading(false)
-    }, randomLoadingTime)
-  }, [])
+    if (cageOptions.length > 0)
+      setCurrentDataType(cageOptions[0].value)
+  }, [cageOptions])
 
   const defaultOption: EChartsOption = {
     tooltip: {
@@ -126,7 +123,7 @@ export const EdgeOltTrafficByVolumeWidget = () => {
         const graphParameters = Array.isArray(parameters) ? parameters : [parameters]
         const [ time ] = graphParameters[0].data as [TimeStamp, number]
         const graphDataIndex = graphParameters[0].dataIndex as number
-        const selectedCageData = cagesData[currentDataType]
+        const selectedCageData = currentDataType ? get(cagesData, currentDataType): null
 
         return renderToString(<RawIntlProvider value={intl}>
           <TooltipWrapper maxWidth={300}>
@@ -134,7 +131,7 @@ export const EdgeOltTrafficByVolumeWidget = () => {
               {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
             </time>
             <ul>
-              {!isEmpty(selectedCageData.time) &&
+              {!isEmpty(get(selectedCageData, 'time')) && selectedCageData &&
                 transformTrafficSeriesFragment(selectedCageData, seriesMapping)
                   .map((traffic: TrafficSeriesFragment, index)=> {
                     // eslint-disable-next-line max-len
@@ -165,7 +162,7 @@ export const EdgeOltTrafficByVolumeWidget = () => {
       }
     } as TooltipComponentOption
   }
-  const selectedCageData = cagesData[currentDataType]
+  const selectedCageData = currentDataType ? get(cagesData, currentDataType) : null
   const queryResults = isLoading ? [] : getSeriesData(selectedCageData, seriesMapping)
 
   return (
@@ -190,7 +187,7 @@ export const EdgeOltTrafficByVolumeWidget = () => {
           </Typography.Text >
         </Space>
         <AutoSizer>
-          { isEmpty(selectedCageData.time) ?
+          { isEmpty(get(selectedCageData, 'time')) ?
             () =><NoData />:
             ({ height, width }) =>
               <MultiLineTimeSeriesChart

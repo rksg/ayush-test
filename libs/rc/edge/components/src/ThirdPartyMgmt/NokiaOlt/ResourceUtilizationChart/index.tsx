@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { Typography, Space }                          from 'antd'
 import { zipWith, isEmpty }                           from 'lodash'
 import { renderToString }                             from 'react-dom/server'
@@ -30,9 +28,8 @@ import type { EChartsOption, TooltipComponentOption } from 'echarts'
 
 type Key = keyof Omit<EdgeResourceTimeSeries, 'time'>
 
-export const EdgeOltResourceUtilizationWidget = () => {
+export const EdgeOltResourceUtilizationWidget = ({ isLoading }: { isLoading: boolean }) => {
   const { $t } = useIntl()
-  const [isLoading, setIsLoading] = useState(false)
 
   const seriesMapping = [
     { key: 'cpu', name: $t({ defaultMessage: 'CPU' }) },
@@ -43,15 +40,6 @@ export const EdgeOltResourceUtilizationWidget = () => {
   const endTime = new Date() // current time
   const dataPoints = 144 // Number of data points
   const chartData = generateRandomChartData(endTime, dataPoints)
-
-  useEffect(() => {
-    const randomLoadingTime = Math.random() * 4 - 2.2
-    setIsLoading(true)
-
-    setTimeout(() => {
-      setIsLoading(false)
-    }, randomLoadingTime)
-  }, [])
 
   const queryResults = isLoading ? [] : getSeriesData(chartData, seriesMapping)
 

@@ -1,10 +1,14 @@
 import React from 'react'
 
-import userEvent from '@testing-library/user-event'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { EdgeOltFixtures, EdgeNokiaCageStateEnum } from '@acx-ui/rc/utils'
+import { render, screen }                          from '@acx-ui/test-utils'
 
 import { EdgeOltTrafficByVolumeWidget } from './index'
+
+const { mockOltCageList } = EdgeOltFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -40,14 +44,36 @@ jest.mock('@acx-ui/components', () => ({
 describe('EdgeOltTrafficByVolumeWidget', () => {
 
   it('renders chart correctly', async () => {
-    render(<EdgeOltTrafficByVolumeWidget />)
+    render(<EdgeOltTrafficByVolumeWidget
+      cages={mockOltCageList}
+      isLoading={false}
+    />)
     await screen.findByText('Traffic by Volume')
     const chart = screen.getByText('MultiLineTimeSeriesChart')
     expect(chart).toBeInTheDocument()
   })
 
+  it('should correctly render loading icon', async () => {
+    render(<EdgeOltTrafficByVolumeWidget
+      cages={mockOltCageList}
+      isLoading={true}
+    />)
+    screen.getByRole('img', { name: 'loader' })
+    expect(screen.queryByText('Traffic by Volume')).toBeNull()
+  })
+
   it('renders chart series with the selected data type', async () => {
-    render(<EdgeOltTrafficByVolumeWidget />)
+    const mockData = cloneDeep(mockOltCageList)
+    mockData.forEach((cage, idx) => {
+      if (cage.cage === 'S1/6') {
+        mockData[idx].state = EdgeNokiaCageStateEnum.UP
+      }
+    })
+
+    render(<EdgeOltTrafficByVolumeWidget
+      cages={mockData}
+      isLoading={false}
+    />)
     await screen.findByText('Traffic by Volume')
     const chart = screen.getByText('MultiLineTimeSeriesChart')
     expect(chart).toBeInTheDocument()
