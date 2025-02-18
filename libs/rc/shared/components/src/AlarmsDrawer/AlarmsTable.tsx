@@ -24,7 +24,7 @@ import { TenantLink, useParams }                          from '@acx-ui/react-ro
 import { store }                                          from '@acx-ui/store'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { getOpsApi }                                      from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                       from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -223,7 +223,10 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       width: 140,
       render: function (_: React.ReactNode, row: Alarm) {
         return (<UI.ListItem>
-          <UI.Meta title={formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.clearTime)} />
+          <UI.Meta title={row.clearTime
+            ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.clearTime)
+            : noDataDisplay
+          } />
         </UI.ListItem>)
       }
     }]),
