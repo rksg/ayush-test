@@ -47,6 +47,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
       form.setFieldValue('recoveryInterval', recoveryInterval)
 
       const errorDisableRecoveryDataArray = Object.entries(errorDisableRecoveryData)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, value]) => value === true)
         .map(([key]) => key)
 
