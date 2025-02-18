@@ -4,7 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { PageHeader, StepsForm }                              from '@acx-ui/components'
 import { EdgeClusterSettingForm, EdgeClusterSettingFormType } from '@acx-ui/rc/components'
 import { useAddEdgeClusterMutation }                          from '@acx-ui/rc/services'
+import { EdgeUrlsInfo }                                       from '@acx-ui/rc/utils'
 import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { hasPermission }                                      from '@acx-ui/user'
+import { getOpsApi }                                          from '@acx-ui/utils'
 
 const AddEdgeCluster = () => {
   const { $t } = useIntl()
@@ -36,6 +39,9 @@ const AddEdgeCluster = () => {
   const handleCancel = () => {
     navigate(clusterListPage)
   }
+
+  const hasAddPermission = hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addEdgeCluster)] })
+
   return (
     <>
       <PageHeader
@@ -47,6 +53,7 @@ const AddEdgeCluster = () => {
       <StepsForm
         onFinish={handleFinish}
         onCancel={handleCancel}
+        buttonLabel={{ submit: hasAddPermission ? $t({ defaultMessage: 'Add' }) : '' }}
       >
         <StepsForm.StepForm>
           <EdgeClusterSettingForm />

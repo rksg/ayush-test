@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Col }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Col, Form } from 'antd'
+import { useIntl }   from 'react-intl'
 
 import { Button, Card, Drawer, Tabs } from '@acx-ui/components'
 import { MspLicenseCardProps }        from '@acx-ui/msp/utils'
@@ -19,6 +19,8 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
   const [currentTab, setCurrentTab] = useState<string | undefined>('mspSubscriptions')
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false)
   const { title, selfData, mspData, isExtendedTrial, footerContent } = props
+
+  const [form] = Form.useForm()
 
   function onTabChange (tab: string) {
     setCurrentTab(tab)
@@ -61,6 +63,16 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
         isTabSelected={currentTab === 'settings'}/>,
       visible: true
     }
+  }
+
+  const onSubmitHandler = () => {
+    form.submit()
+  }
+
+  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation()
+    setOpenSettingsDrawer(false)
+    form.resetFields()
   }
 
   return <Col style={{ width: '395px', paddingLeft: 0, marginTop: '15px' }}>
@@ -117,15 +129,15 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
             footer={
               <div><Button
                 type='primary'
-                onClick={() => {}}>
+                onClick={() => onSubmitHandler()}>
                 {$t({ defaultMessage: 'Save' })}
               </Button>
-              <Button type='default' onClick={() => {}}>
+              <Button type='default' onClick={closeDrawer}>
                 {$t({ defaultMessage: 'Close' })}
               </Button></div>
             }
           >
-            <SolutionTokenSettingsForm />
+            <SolutionTokenSettingsForm form={form}/>
           </Drawer>
         }
       </div>

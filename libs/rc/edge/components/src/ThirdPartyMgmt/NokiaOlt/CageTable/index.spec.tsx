@@ -8,7 +8,7 @@ import { screen, render, within, mockServer, waitForElementToBeRemoved, waitFor 
 
 import { EdgeNokiaCageTable } from './'
 
-const { mockOlt, mockOltCageList } = EdgeOltFixtures
+const { mockOlt, mockOfflineOlt, mockOltCageList } = EdgeOltFixtures
 
 jest.mock( './CageDetailsDrawer', () => ({
   // eslint-disable-next-line max-len
@@ -21,15 +21,18 @@ describe('EdgeNokiaCageTable', () => {
   const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
   const mockPath = '/:tenantId/devices/optical/:oltId/details'
   const mockToggleCageReq = jest.fn()
+  const mockGetCagesReq = jest.fn()
 
   beforeEach(() => {
     store.dispatch(edgeTnmServiceApi.util.resetApiState())
     mockToggleCageReq.mockClear()
+    mockGetCagesReq.mockClear()
 
     mockServer.use(
       rest.get(
         EdgeTnmServiceUrls.getEdgeCageList.url,
         (_, res, ctx) => {
+          mockGetCagesReq()
           return res(ctx.json(mockOltCageList))
         }),
       rest.put(
@@ -48,7 +51,10 @@ describe('EdgeNokiaCageTable', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = screen.getByRole('row', { name: /S1\/2 UP/ })
     expect(row).toBeVisible()
-    screen.getByRole('row', { name: /S1\/1 DOWN/ })
+
+    const downCageRow = screen.getByRole('row', { name: /S1\/1 DOWN/ })
+    // should be unclickable when cage is DOWN
+    expect(within(downCageRow).queryByRole('button', { name: 'S1/1' })).toBeNull()
   })
 
   it('should show cage details drawer', async () => {
@@ -118,5 +124,14 @@ describe('EdgeNokiaCageTable', () => {
     const row = screen.getByRole('row', { name: /S1\/2 UP/ })
     await userEvent.click(within(row).getByRole('switch'))
     await waitFor(() => expect(spyOnConsole).toHaveBeenCalled())
+  })
+
+  it('should not trigger getCages API when OLT is offline', async () => {
+    render(<Provider>
+      <EdgeNokiaCageTable oltData={mockOfflineOlt} />
+    </Provider>, { route: { params, path: mockPath } })
+    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
+    expect(screen.queryAllByRole('row', { name: /S.* (UP|DOWN)/ })).toHaveLength(0)
+    expect(mockGetCagesReq).not.toBeCalled()
   })
 })
