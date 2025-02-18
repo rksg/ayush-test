@@ -422,7 +422,7 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
                 (isCaptivePortalOWETransitionEnabled) &&
                 (network?.securityProtocol === WlanSecurityEnum.OWETransition) &&
                 (network?.isOweMaster) &&
-                (<Tooltip title='This network supports OWE-transition mode.'>
+                (<Tooltip title={$t({ defaultMessage: 'This network supports OWE-transition mode.' })}>
                   <OweTransition style={{
                     verticalAlign: 'bottom'
                   }}/>
