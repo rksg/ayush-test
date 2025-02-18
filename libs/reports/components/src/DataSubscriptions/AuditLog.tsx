@@ -16,8 +16,7 @@ const DataSubscriptionsAuditLog: React.FC = () => {
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={dataSubscription?.name}
-        subTitle={$t({ defaultMessage: 'Audit Log' })}
+        title={`${$t({ defaultMessage: 'Audit Log' })} (${dataSubscription?.name})`}
         breadcrumb={generateBreadcrumb()}
         extra={<Button size='middle' icon={<DownloadOutlined />} type='default'>
           {$t({ defaultMessage: 'Download Audit' })}
