@@ -1,3 +1,4 @@
+import { FormInstance }      from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 
 import {
@@ -90,4 +91,62 @@ export const selectedGroupByPrefix = (selected: string[]) => {
     acc[prefix].push(str)
     return acc
   }, {} as { [key: string]: string[] })
+}
+
+export const generateSlotData = (
+  slotNumber: number, family: string, model: string, form: FormInstance
+) => {
+  // const slots: SwitchSlot[] = form.getFieldValue('slots')
+  const slotOptionLists = getSlots(family, model)
+  const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
+
+  const isEnable = slotNumber === 1 ? true : form.getFieldValue(`enableSlot${slotNumber}`)
+  const selectedOption = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
+
+  if (isEnable) {
+    let totalPortNumber: string = '0'
+    let slotPortInfo: string = ''
+    const defaultOption = optionList[0]?.value
+    const slotOption = optionList?.length > 1 && !selectedOption
+      ? defaultOption : selectedOption
+
+    if (optionList?.length > 1) {
+      slotPortInfo = slotOption
+      totalPortNumber = slotPortInfo.split('X', 1)[0]
+    }
+    if ((optionList?.length === 1 || totalPortNumber === '0') &&
+    family !== '' && model !== '') {
+      const familyIndex = family as keyof typeof ICX_MODELS_MODULES
+      const familyList = ICX_MODELS_MODULES[familyIndex]
+      const modelIndex = model as keyof typeof familyList
+      slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
+      totalPortNumber = slotPortInfo.split('X')[0]
+    }
+
+    // console.log('generateSlotData: ', slots, slotNumber, {
+    //   slotNumber: slotNumber,
+    //   enable: isEnable,
+    //   option: slotOption,
+    //   slotPortInfo: slotPortInfo,
+    //   portStatus: generatePortData(totalPortNumber)
+    // })
+
+    return {
+      slotNumber: slotNumber,
+      enable: isEnable,
+      option: slotOption,
+      slotPortInfo: slotPortInfo,
+      portStatus: generatePortData(totalPortNumber)
+    }
+  }
+  return null
+}
+
+export const generatePortData = (totalNumber: string) => {
+  let ports = []
+  for (let i = 1; i <= Number(totalNumber); i++) {
+    let port = { portNumber: i, portTagged: '' }
+    ports.push(port)
+  }
+  return ports
 }

@@ -106,7 +106,6 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
           enableSlot2: true,
           enableSlot3: true
         }
-        break
 
       case 'C08P':
       case 'C08PT':
@@ -117,13 +116,11 @@ export const checkIfModuleFixed = (family: string, model: string): { //TODO
           moduleSelectionEnable: false,
           enableSlot2: true
         }
-        break
 
       default:
         return {
           moduleSelectionEnable: true
         }
-        break
     }
   }
   return {}

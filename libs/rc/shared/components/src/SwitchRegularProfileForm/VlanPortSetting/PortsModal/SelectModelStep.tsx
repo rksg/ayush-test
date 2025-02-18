@@ -12,11 +12,8 @@ import { getIntl }                                       from '@acx-ui/utils'
 
 import { checkIfModuleFixed, PortSetting, VlanPort } from '../index.utils'
 
-import {
-  getSlots,
-  getModelModules
-} from './PortsModal.utils'
-import * as UI from './styledComponents'
+import { getSlots, getModelModules, generateSlotData } from './PortsModal.utils'
+import * as UI                                         from './styledComponents'
 
 export function SelectModelStep (props: {
   editMode: boolean
@@ -218,72 +215,18 @@ export function SelectModelStep (props: {
 
     const newSlots = Array.from({ length: moduleCount }, (_, i) => {
       const slotNumber = i+1
-      // const enable = form.getFieldValue(`enableSlot${slotNumber}`)
-      // const index = slots?.findIndex(s => s.slotNumber === slotNumber) || -1
-      // if (!enable && index !== -1) {
-      //   slots?.splice(index, 1)
-      // }
-      return generateSlotData2(slotNumber, family, model)
+      return generateSlotData(slotNumber, family, model, form)
     }).filter(Boolean)
 
+    // eslint-disable-next-line no-console
+    console.log('newSlots: ', newSlots)
     form.setFieldValue('slots', newSlots)
-    // console.log('newSlots: ', newSlots)
   }
 
   // eslint-disable-next-line no-console
   console.log('slots: ', slots)
   // eslint-disable-next-line no-console
   console.log('modelModules: ', modelModules)
-
-  const generateSlotData2 =(
-    slotNumber: number,
-    selectedFamily: string, selectedModel: string
-  ) => {
-    // const slots: SwitchSlot[] = form.getFieldValue('slots')
-    const slotOptionLists = getSlots(selectedFamily, selectedModel)
-    const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
-
-    const isEnable = slotNumber === 1 ? true : form.getFieldValue(`enableSlot${slotNumber}`)
-    const selectedOption = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
-    if (isEnable) {
-      let totalPortNumber: string = '0'
-      let slotPortInfo: string = ''
-      const defaultOption = optionList[0]?.value
-      const slotOption = optionList?.length > 1 && !selectedOption
-        ? defaultOption : selectedOption
-
-      if (optionList?.length > 1) {
-        slotPortInfo = slotOption
-        totalPortNumber = slotPortInfo.split('X', 1)[0]
-      }
-      if ((optionList?.length === 1 || totalPortNumber === '0') &&
-      selectedFamily !== '' && selectedModel !== '') {
-        const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
-        const familyList = ICX_MODELS_MODULES[familyIndex]
-        const modelIndex = selectedModel as keyof typeof familyList
-        slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
-        totalPortNumber = slotPortInfo.split('X')[0]
-      }
-
-      // console.log('generateSlotData: ', slots, slotNumber, {
-      //   slotNumber: slotNumber,
-      //   enable: isEnable,
-      //   option: slotOption,
-      //   slotPortInfo: slotPortInfo,
-      //   portStatus: generatePortData(totalPortNumber)
-      // })
-
-      return {
-        slotNumber: slotNumber,
-        enable: isEnable,
-        option: slotOption,
-        slotPortInfo: slotPortInfo,
-        portStatus: generatePortData(totalPortNumber)
-      }
-    }
-    return null
-  }
 
   // const generateSlotData =(
   //   slotNumber: number,
@@ -344,15 +287,6 @@ export function SelectModelStep (props: {
 
   //   }
   // }
-
-  const generatePortData = (totalNumber: string) => {
-    let ports = []
-    for (let i = 1; i <= Number(totalNumber); i++) {
-      let port = { portNumber: i, portTagged: '' }
-      ports.push(port)
-    }
-    return ports
-  }
 
   return (
     <>
