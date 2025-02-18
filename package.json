@@ -172,6 +172,7 @@
     "msw": "0.39.2",
     "nx": "14.1.2",
     "patch-package": "6.5.1",
+    "pdfjs-dist": "2.10.377",
     "prettier": "2.5.1",
     "react-dnd-test-backend": "16.0.1",
     "react-scripts": "5.0.1",
