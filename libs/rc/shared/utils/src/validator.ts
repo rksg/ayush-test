@@ -9,7 +9,7 @@ import {
   isEmpty,
   uniq,
   isInteger
-}                from 'lodash'
+} from 'lodash'
 
 import { RolesEnum }                                from '@acx-ui/types'
 import { roleStringMap }                            from '@acx-ui/user'

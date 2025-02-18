@@ -761,8 +761,8 @@ function getSelectedModelData (list: VenueLanPorts[], model: string) {
 
 // eslint-disable-next-line max-len
 function getModelWithDefaultEthernetPortProfile (
-  selectedModel: VenueLanPorts, 
-  lanPortsCaps: LanPort[], 
+  selectedModel: VenueLanPorts,
+  lanPortsCaps: LanPort[],
   tenantId?: string,
   isTemplate?: boolean
 ) {
