@@ -78,14 +78,11 @@ export function MspRecCustomers () {
   const mspUtils = MSPUtils()
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasAddPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)])
-    : isAdmin
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)]) : isAdmin
   const hasAssignAdminPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
   const hasAssignTechPartnerPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)]) : isAdmin
 
   const {
     state

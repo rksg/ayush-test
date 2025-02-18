@@ -135,7 +135,7 @@ export function Integrators () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) ? {
+        return (hasAssignAdminPermission) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
