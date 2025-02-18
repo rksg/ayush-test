@@ -24,6 +24,12 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsTierAllowed: jest.fn(),
+  useIsSplitOn: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
 const editViewPath = '/:tenantId/t/policies/tunnelProfile/:policyId/edit'
 
 describe('EditTunnelProfile', () => {

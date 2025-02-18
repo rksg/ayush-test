@@ -3,12 +3,13 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
-import { Loader, StepsForm, useStepFormContext }      from '@acx-ui/components'
-import { EdgePermissions }                            from '@acx-ui/edge/components'
-import { ApCompatibilityToolTip, useEdgeMdnsActions } from '@acx-ui/rc/components'
-import { useGetEdgeMdnsProxyViewDataListQuery }       from '@acx-ui/rc/services'
-import { IncompatibilityFeatures }                    from '@acx-ui/rc/utils'
-import { hasPermission }                              from '@acx-ui/user'
+import { getTitleWithBetaIndicator, Loader, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { EdgePermissions }                                                  from '@acx-ui/edge/components'
+import { TierFeatures, useIsBetaEnabled }                                   from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, useEdgeMdnsActions }                       from '@acx-ui/rc/components'
+import { useGetEdgeMdnsProxyViewDataListQuery }                             from '@acx-ui/rc/services'
+import { IncompatibilityFeatures }                                          from '@acx-ui/rc/utils'
+import { hasPermission }                                                    from '@acx-ui/user'
 
 import EdgeMdnsProfileSelectionForm from './EdgeMdnsProfileSelectionForm'
 
@@ -57,6 +58,8 @@ export const MdnsProxyFormItem = (props: {
           <StepsForm.FieldLabel width='90%'>
             <Space>
               {$t({ defaultMessage: 'mDNS Proxy' })}
+              { useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+                ? getTitleWithBetaIndicator('') : null }
               <ApCompatibilityToolTip
                 title=''
                 showDetailButton
