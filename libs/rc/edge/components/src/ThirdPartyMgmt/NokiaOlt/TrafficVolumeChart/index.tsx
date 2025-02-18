@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
-import { Col, Row }                                   from 'antd'
+import { Col, Row, Typography, Space }                from 'antd'
 import { zipWith, isEmpty, get, capitalize }          from 'lodash'
 import { renderToString }                             from 'react-dom/server'
 import { RawIntlProvider, useIntl, FormattedMessage } from 'react-intl'
 import AutoSizer                                      from 'react-virtualized-auto-sizer'
+
 
 import { getSeriesData } from '@acx-ui/analytics/utils'
 import {
@@ -20,6 +21,7 @@ import {
   Select
 } from '@acx-ui/components'
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
+import { InformationOutlined }       from '@acx-ui/icons'
 import { EdgePortTrafficTimeSeries } from '@acx-ui/rc/utils'
 import type { TimeStamp }            from '@acx-ui/types'
 import { getIntl  }                  from '@acx-ui/utils'
@@ -62,9 +64,6 @@ const transformTrafficSeriesFragment = (data: {
 
 export const EdgeOltTrafficByVolumeWidget = () => {
   const { $t } = useIntl()
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentDataType, setCurrentDataType] = useState('S1/4')
-
   const seriesMapping = [
     { key: 'tx', name: $t({ defaultMessage: 'Tx' }) },
     { key: 'rx', name: $t({ defaultMessage: 'Rx' }) },
@@ -82,19 +81,31 @@ export const EdgeOltTrafficByVolumeWidget = () => {
     }
   ]
 
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [currentDataType, setCurrentDataType] = useState(cageOptions[0].value)
+
   const endTime = new Date() // current time
   const dataPoints = 144 // Number of data points
   const cageAmount = cageOptions.length //Number of OLT UP cage
+
   const cagesData: Record<string, {
     time: number[],
     tx: number[], rx: number[], total: number[]
-  }> = {}
+  }> = useMemo(() => {
+    const mockData: Record<string, {
+      time: number[],
+      tx: number[], rx: number[], total: number[]
+    }> = {}
 
-  for (let i = 0; i < cageAmount; i++) {
-    const cageName = cageOptions[i].value
-    const chartData = generateRandomPortTrafficData(endTime, dataPoints)
-    cagesData[cageName] = chartData
-  }
+    for (let i = 0; i < cageAmount; i++) {
+      const cageName = cageOptions[i].value
+      const chartData = generateRandomPortTrafficData(endTime, dataPoints)
+      mockData[cageName] = chartData
+    }
+
+    return mockData
+  }, [])
 
   useEffect(() => {
     const randomLoadingTime = Math.random() * 4 - 2.2
@@ -160,21 +171,30 @@ export const EdgeOltTrafficByVolumeWidget = () => {
   return (
     <Loader states={[{ isLoading }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
-        <Row justify='end' style={{ position: 'relative', top: -30 }}>
+        <Row justify='end' style={{ position: 'absolute', top: -35, right: 0 }}>
           <Col>
             <Select
-              defaultValue={cageOptions[0].value}
+              value={currentDataType}
               options={cageOptions}
               onChange={(value) => setCurrentDataType(value)}
             />
           </Col>
         </Row>
+        <Space style={{ width: '100%' }}>
+          <InformationOutlined />
+          <Typography.Text type='secondary'>
+            {
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'The following data is a prototype.' })
+            }
+          </Typography.Text >
+        </Space>
         <AutoSizer>
           { isEmpty(selectedCageData.time) ?
             () =><NoData />:
             ({ height, width }) =>
               <MultiLineTimeSeriesChart
-                style={{ width, height }}
+                style={{ width, height: height-20 }}
                 data={queryResults}
                 dataFormatter={formatter('bytesFormat')}
                 echartOptions={defaultOption}

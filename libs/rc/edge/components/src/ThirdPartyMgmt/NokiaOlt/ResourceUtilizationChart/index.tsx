@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Typography, Space }                          from 'antd'
 import { zipWith, isEmpty }                           from 'lodash'
 import { renderToString }                             from 'react-dom/server'
 import { RawIntlProvider, useIntl, FormattedMessage } from 'react-intl'
@@ -18,6 +19,7 @@ import {
   defaultRichTextFormatValues
 } from '@acx-ui/components'
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
+import { InformationOutlined }       from '@acx-ui/icons'
 import { EdgeResourceTimeSeries }    from '@acx-ui/rc/utils'
 import type { TimeStamp }            from '@acx-ui/types'
 import { getIntl }                   from '@acx-ui/utils'
@@ -149,12 +151,21 @@ export const EdgeOltResourceUtilizationWidget = () => {
   return (
     <Loader states={[{ isLoading }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
+        <Space style={{ width: '100%' }}>
+          <InformationOutlined />
+          <Typography.Text type='secondary'>
+            {
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'The following data is a prototype.' })
+            }
+          </Typography.Text >
+        </Space>
         <AutoSizer>
           {(isEmpty(queryResults)|| isEmpty(queryResults[0].data)) ?
             () =><NoData />:
             ({ height, width }) =>
               <MultiLineTimeSeriesChart
-                style={{ width, height }}
+                style={{ width, height: height-20 }}
                 data={queryResults}
                 dataFormatter={formatter('percent')}
                 echartOptions={defaultOption}
