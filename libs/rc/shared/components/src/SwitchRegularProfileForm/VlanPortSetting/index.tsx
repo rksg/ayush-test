@@ -133,7 +133,6 @@ export function VlanPortSetting () {
 
       setVlanList(vlanList)
       setVlanPortList(vlanPortList)
-
       // eslint-disable-next-line no-console
       console.log('vlanPortList: ', vlanPortList)
     }
@@ -367,6 +366,8 @@ export function VlanPortSetting () {
                 expandedRowRender: (record: GroupedVlanPort) => {
                   const isDefaultModule
                     = record.groupbyModules.find(module => module.isDefaultModule)
+                  const defaultExpandedRowKeys
+                    = record.groupbyModules.map((module: VlanPort) => module.key)
                   return <Table
                     className={`groupby-module-table ${isDefaultModule ? 'default-module' : ''}`}
                     enableResizableColumn={false}
@@ -388,8 +389,7 @@ export function VlanPortSetting () {
                       onChange: (selectedKeys) => handleChangeModule(record, selectedKeys)
                     }}
                     expandable={{
-                      defaultExpandedRowKeys: record.groupbyModules
-                        .map((module: VlanPort) => module.key),
+                      defaultExpandedRowKeys: defaultExpandedRowKeys,
                       columnWidth: '65px',
                       expandIcon: expandIcon,
                       expandedRowRender: (record) => {

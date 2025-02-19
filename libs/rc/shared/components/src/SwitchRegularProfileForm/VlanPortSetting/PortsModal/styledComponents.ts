@@ -1,5 +1,5 @@
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import { Form as AntdForm, Space } from 'antd'
+import styled                      from 'styled-components/macro'
 
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
 
@@ -219,4 +219,74 @@ export const CardStyle = styled.div`
   &:last-child {
     margin-bottom: 60px;
   }
+`
+
+export const Form = styled(AntdForm)`
+  > .ant-form-item {
+    margin-bottom: 0 !important;
+  }
+  &.ant-form.ant-form-horizontal {
+    > .ant-form-item {
+      margin-bottom: 10px !important;
+    }
+  }
+`
+
+export const FormItem = styled(AntdForm.Item)`
+  &.ant-form-item {
+    margin-bottom: 10px;
+  }
+  
+  .ant-form-item-control-input-content {
+    padding-bottom: 4px;
+    &:first-child {
+      display: flex;
+      width: 100%;
+    }
+  }
+
+  .ant-checkbox-wrapper {
+    align-items: center;
+    max-height: 32px;
+    .ant-checkbox {
+      top: 0;
+    }
+  }
+
+  .ant-form-item-row {
+    display: flex;
+    flex-flow: row wrap;
+    min-width: 0;
+  }
+
+  .ant-form-item-label {
+    align-content: center;
+  }
+
+  // .ant-form-item {
+  //   width: 358px;
+  // }
+
+  label ~ .ant-form-item {
+    margin-bottom: 10px;
+  }
+
+  label + .ant-form-item,
+  label + div {
+    padding-left: 8px;
+  }
+
+  .ant-switch-checked.ant-switch-disabled.switch-checked-fade {
+      opacity: 50%;
+      border-color: var(--acx-accents-blue-50);
+      .ant-switch-handle::before {
+        background: var(--acx-accents-blue-50);
+      }
+    }
+  }
+`
+export const ExtraLabel = styled('div')`
+  display: inline-flex;
+  width: 172px;
+  font-size: var(--acx-body-4-font-size)
 `

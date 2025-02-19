@@ -6,12 +6,13 @@ import {
   boxesIntersect,
   useSelectionContainer
 } from '@air/react-drag-to-select'
-import { Row, Col, Form, Typography, Checkbox, Input, Divider, Space } from 'antd'
-import { DefaultOptionType }                                           from 'antd/lib/select'
-import _                                                               from 'lodash'
+import { Row, Col, Form, FormInstance, Typography, Checkbox, Input, Divider, Space } from 'antd'
+import { DefaultOptionType }                                                         from 'antd/lib/select'
+import _                                                                             from 'lodash'
 
 import {
   Button,
+  cssStr,
   Select,
   Subtitle,
   Tooltip
@@ -72,10 +73,16 @@ export function PortsStep (props:{
     return slot?.slotPortInfo?.split('X').join(' X ') || ''
   })
 
-  const [ untaggedVlan, taggedVlans, portSettings ] = [
+  const [
+    untaggedVlan, taggedVlans, portSettings,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    untaggedVlanCheckbox, taggedVlansCheckbox
+  ] = [
     Form.useWatch('untaggedVlan', form),
     Form.useWatch('taggedVlans', form),
-    Form.useWatch('portSettings', form)
+    Form.useWatch('portSettings', form),
+    Form.useWatch('untaggedVlanCheckbox', form),
+    Form.useWatch('taggedVlansCheckbox', form)
   ]
 
   /* eslint-disable no-console */
@@ -284,6 +291,11 @@ export function PortsStep (props:{
       ...checkedValues
     ])
     setSelectedItems(selected)
+
+    const checkboxChecked = Object.entries(form.getFieldsValue())
+      .filter(v => v?.[1] && v?.[0].includes('Checkbox')).map(v => v?.[0])
+    const resetList = checkboxChecked.reduce((obj, c) => ({ ...obj, [c]: false }), {})
+    form.setFieldsValue(resetList)
   }
 
   const getPortInfoTooltip = (port: string) => {
@@ -459,6 +471,80 @@ export function PortsStep (props:{
     ])
   }
 
+  ///
+  const getFieldDisabled = (field: string) => {
+    const checkboxEnabled = form?.getFieldValue(`${field}Checkbox`)
+    switch (field) {
+      default:
+        return selectedItems?.length > 1 && !checkboxEnabled
+    }
+  }
+
+  const getOverrideDisabled = (field: string) => {
+    switch (field) {
+      default:
+        return false
+    }
+  }
+
+  const getFieldTemplate = (props: {
+      content: React.ReactNode,
+      field: string,
+      extraLabel?: boolean
+    }) => {
+    const { content, field } = props
+    return <UI.FormItem>
+      {selectedItems?.length > 1 && <Form.Item
+        noStyle
+        label={false}
+        name={`${field}Checkbox`}
+        valuePropName='checked'
+        initialValue={false}
+        children={<Checkbox
+          data-testid={`${field}-override-checkbox`}
+          disabled={getOverrideDisabled(field)}
+        />}
+      />}
+      {/* { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }</UI.ExtraLabel> } */}
+      { content }
+    </UI.FormItem>
+  }
+
+  const getFormItemLayout = (isMultipleEdit: boolean) => {
+    return isMultipleEdit && {
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
+      style: { width: '100%' }
+    }
+  }
+
+  const shouldRenderMultipleText = (props: {
+    field: string,
+    isMultipleEdit?: boolean,
+    hasMultipleValue?: string[],
+    form?: FormInstance,
+    ignoreCheckbox?: boolean
+  }) => {
+    const { field, hasMultipleValue = [], form, ignoreCheckbox = false } = props
+    const checkboxEnabled = form?.getFieldValue(`${field}Checkbox`)
+    return selectedItems?.length > 1
+      && (!checkboxEnabled || ignoreCheckbox)
+      && hasMultipleValue.includes(field)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const MultipleText = (props: any) => {
+    const { $t } = getIntl()
+    return <Space data-testid={props?.['data-testid']}
+      style={{
+        fontSize: '12px',
+        fontStyle: 'italic',
+        color: cssStr('--acx-accents-orange-50')
+      }}>
+      {$t({ defaultMessage: 'Multiple values' })}
+    </Space>
+  }
+
   return (
     <div style={{ height: '80%', minHeight: '200px', marginBottom: '100px' }}>
       <Row gutter={20}>
@@ -488,6 +574,7 @@ export function PortsStep (props:{
           <Subtitle level={4} style={{ marginBottom: '20px' }} >
             { $t({ defaultMessage: 'VLAN Configuration' }) }
           </Subtitle>
+
           <Form.Item
             name='portSettings'
             hidden={true}
@@ -501,36 +588,89 @@ export function PortsStep (props:{
             </Space>
             }
           />
-          <Form.Item
-            name='untaggedVlan'
-            label={$t({ defaultMessage: 'Untagged VLANs' })}
-            style={{ width: '300px' }}
-            children={<Select
-              placeholder={$t({ defaultMessage: 'Select VLANs...' })}
-              onChange={handleVlansChange}
-              allowClear
-              disabled={!selectedItems?.length
-                || getUntaggedSelectorDisabled(selectedItems)
-              }
-            >{
-                getVlanOptions(VlanTypes.UNTAGGED)
-              }</Select>}
-          />
-          <Form.Item
-            name='taggedVlans'
-            label={$t({ defaultMessage: 'Tagged VLANs' })}
-            style={{ width: '300px' }}
-            children={
-              <Select
-                mode='multiple'
-                placeholder={$t({ defaultMessage: 'Select VLANs...' })}
-                disabled={!selectedItems?.length}
+
+          <UI.Form
+            form={form}
+            layout={selectedItems?.length > 1 ? 'horizontal' : 'vertical'}
+          >
+
+            { getFieldTemplate({
+              field: 'untaggedVlan',
+              content: <Form.Item
+                {...getFormItemLayout(selectedItems?.length > 1)}
+                name='untaggedVlan'
+                label={$t({ defaultMessage: 'Untagged VLAN' })}
+                style={{ width: selectedItems?.length > 1 ? '455px' : '300px' }}
+                children={shouldRenderMultipleText({
+                  field: 'untaggedVlan'
+                }) ? <MultipleText />
+                  : <Select
+                    placeholder={$t({ defaultMessage: 'Select VLAN...' })}
+                    onChange={handleVlansChange}
+                    allowClear
+                    disabled={!selectedItems?.length
+                    || getUntaggedSelectorDisabled(selectedItems)
+                    || getFieldDisabled('untaggedVlan')
+                    }
+                  >{ getVlanOptions(VlanTypes.UNTAGGED)
+                    }</Select>}
+              />
+            })}
+
+            { getFieldTemplate({
+              field: 'taggedVlans',
+              content: <Form.Item
+                {...getFormItemLayout(selectedItems?.length > 1)}
+                name='taggedVlans'
+                label={$t({ defaultMessage: 'Tagged VLANs' })}
+                style={{ width: selectedItems?.length > 1 ? '455px' : '300px' }}
+                children={shouldRenderMultipleText({
+                  field: 'taggedVlans'
+                }) ? <MultipleText />
+                  : <Select
+                    mode='multiple'
+                    placeholder={$t({ defaultMessage: 'Select VLANs...' })}
+                    disabled={!selectedItems?.length
+                    || getFieldDisabled('taggedVlans')
+                    }
+                    onChange={handleVlansChange}
+                  >{
+                      getVlanOptions(VlanTypes.TAGGED)
+                    }</Select>}
+              />
+            })}
+
+            {/* <Form.Item
+              name='untaggedVlan'
+              label={$t({ defaultMessage: 'Untagged VLAN' })}
+              style={{ width: '300px' }}
+              children={<Select
+                placeholder={$t({ defaultMessage: 'Select VLAN...' })}
                 onChange={handleVlansChange}
-              >{
-                  getVlanOptions(VlanTypes.TAGGED)
-                }</Select>
-            }
-          />
+                allowClear
+                disabled={!selectedItems?.length
+                  || getUntaggedSelectorDisabled(selectedItems)
+                }
+              >{ getVlanOptions(VlanTypes.UNTAGGED)
+                }</Select>}
+            />
+            <Form.Item
+              name='taggedVlans'
+              label={$t({ defaultMessage: 'Tagged VLANs' })}
+              style={{ width: '300px' }}
+              children={
+                <Select
+                  mode='multiple'
+                  placeholder={$t({ defaultMessage: 'Select VLANs...' })}
+                  disabled={!selectedItems?.length}
+                  onChange={handleVlansChange}
+                >{
+                    getVlanOptions(VlanTypes.TAGGED)
+                  }</Select>
+              }
+            /> */}
+
+          </UI.Form>
         </Col>
       </Row> }
 

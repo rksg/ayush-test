@@ -203,7 +203,7 @@ describe('Wired - VlanPortSetting', () => {
 
     await userEvent.click(await within(dialog).findByTestId('module1_1_3'))
 
-    await userEvent.click(await screen.findByLabelText('Untagged VLANs'))
+    await userEvent.click(await screen.findByLabelText('Untagged VLAN'))
     const text3 = await screen.findAllByText('3') //TODO
     await userEvent.click(text3[2])
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
@@ -389,13 +389,13 @@ describe('Wired - VlanPortSetting', () => {
     expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
 
     await userEvent.click(await within(dialog).findByTestId('module1_1_4'))
-    await userEvent.click(await within(dialog).findByLabelText('Untagged VLANs'))
+    await userEvent.click(await within(dialog).findByLabelText('Untagged VLAN'))
     const text3 = await screen.findAllByText('3') //TODO
     await userEvent.click(text3[2])
 
     // await userEvent.click(await within(dialog).findByRole('button', { name: 'Clear Selection' }) )
     // await userEvent.click(await within(dialog).findByTestId('module1_1_5'))
-    // await userEvent.click(await within(dialog).findByLabelText('Untagged VLANs'))
+    // await userEvent.click(await within(dialog).findByLabelText('Untagged VLAN'))
     // await userEvent.click(text3[2])
 
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
