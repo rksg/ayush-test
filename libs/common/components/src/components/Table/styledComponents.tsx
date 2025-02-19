@@ -211,7 +211,7 @@ const tallStyle = css<StyledTable>`
       }
       &-footer {
         background: transparent;
-        padding: 8px 0; 
+        padding: 8px 0;
       }
     }
 
@@ -288,9 +288,9 @@ const tallStyle = css<StyledTable>`
           path {
             stroke: var(--acx-accents-blue-50);
           }
-        }      
+        }
       }
-  
+
       .ant-pro-table {
         margin: -8px !important;
         .ant-table {
@@ -503,7 +503,7 @@ export const Wrapper = styled.div<StyledTable>`
         }
         .ant-table-cell-with-append {
           .ant-table-row-expand-icon {
-            display: none;
+            left: -32px;
           }
         }
       }

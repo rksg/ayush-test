@@ -1,10 +1,10 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select }       from 'antd'
-import { TransferItem }                        from 'antd/lib/transfer'
-import _                                       from 'lodash'
-import { useIntl }                             from 'react-intl'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Button, Col, Form, Input, Row, Select, Tag } from 'antd'
+import { TransferItem }                               from 'antd/lib/transfer'
+import _                                              from 'lodash'
+import { useIntl }                                    from 'react-intl'
+import { useLocation, useNavigate, useParams }        from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
 import {
@@ -35,6 +35,9 @@ import {
 import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 import { ApGroupEditContext }           from '../context'
 
+import type { TransferProps } from 'antd'
+
+
 const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
   pageSize: 10000,
@@ -62,6 +65,8 @@ export function ApGroupGeneralTab () {
     venueId
   } = useContext(ApGroupEditContext)
   const [apsOption, setApsOption] = useState([] as TransferItem[])
+  const [tableDataOption, setTableDataOption] = useState([] as TransferItem[])
+  const [isHide, setIsHide] = useState(false)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -290,6 +295,59 @@ export function ApGroupGeneralTab () {
     })
   }
 
+  const leftColumns = [
+    {
+      dataIndex: 'name',
+      title: 'Name'
+    },
+    {
+      dataIndex: 'key',
+      title: 'key'
+    },
+    {
+      dataIndex: 'key',
+      title: 'Tag',
+      render: (tag: string) => (
+        <Tag style={{ marginInlineEnd: 0 }} color='cyan'>
+          {tag.toUpperCase()}
+        </Tag>
+      )
+    }
+  ]
+
+  const rightColumns = [
+    {
+      dataIndex: 'name',
+      title: 'Name'
+    }
+  ]
+
+  const renderFooter: TransferProps<TransferItem>['footer'] = (_, info) => {
+    if (info?.direction === 'left') {
+      return (
+        <Button
+          size='small'
+          style={{ display: 'flex', margin: 8, marginInlineEnd: 'auto' }}
+          type={'link'}
+          onClick={() => {
+            if (isHide) {
+              setTableDataOption(apsOption)
+            } else {
+              setTableDataOption(apsOption.filter(option => option.name.includes('AP')))
+            }
+            setIsHide(!isHide)
+          }}
+        >
+          {isHide
+            ? $t({ defaultMessage: 'Show assigned APs' })
+            : $t({ defaultMessage: 'Hide assigned APs' })
+          }
+        </Button>
+      )
+    }
+    return <></>
+  }
+
   return (
     <StepsFormLegacy
       formRef={formRef}
@@ -354,14 +412,22 @@ export function ApGroupGeneralTab () {
                 valuePropName='targetKeys'
               >
                 <Transfer
-                  listStyle={{ width: 250, height: 316 }}
+                  listStyle={{ width: 400, height: 400 }}
+                  type={'table'}
+                  tableData={tableDataOption}
+                  leftColumns={leftColumns}
+                  rightColumns={rightColumns}
                   showSearch
                   showSelectAll={false}
                   filterOption={(inputValue, item) =>
-                    (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                    Object.keys(item).some(key => {
+                      // eslint-disable-next-line max-len
+                      return (item[key] && item[key].toString().toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                    })
                   }
                   dataSource={apsOption}
                   render={item => item.name}
+                  footer={renderFooter}
                   operations={['Add', 'Remove']}
                   titles={[$t({ defaultMessage: 'Available APs' }),
                     $t({ defaultMessage: 'Selected APs' })]}

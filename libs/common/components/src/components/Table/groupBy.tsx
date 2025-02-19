@@ -1,16 +1,16 @@
 /* eslint-disable */
-import { useMemo, Key, isValidElement } from 'react'
+import React, { useMemo, Key, isValidElement } from 'react'
 
-import { Select }    from 'antd'
+import {Divider, Select} from 'antd'
 import _             from 'lodash'
 import { IntlShape } from 'react-intl'
 
 import * as UI from './styledComponents'
-import type { ParamsType }        from '@ant-design/pro-provider'
 
 import { TableProps } from '.'
 
 import type { TableColumnState } from './types'
+import {NewAPModelExtended} from "@acx-ui/rc/utils";
 
 export function GroupSelect<RecordType> ({
   $t, value, setValue, groupable, style
@@ -70,16 +70,26 @@ export function useGroupBy<RecordType> (
       if('children' in record && !expanded)
       expandedRows?.splice(expandedRows?.indexOf(key as Key), 1);
     }
-    const renderGroupRow = (record: RecordType) => (
-      <UI.GroupRow>
+    const renderGroupRow = (record: RecordType) => {
+      return <UI.GroupRow>
         <UI.GroupCell>
-          {attributes.map(({ key, renderer }) => <div key={key}>{renderer(record)}</div>)}
+          {attributes.map(({ key, renderer }, index) => {
+            // ungrouped aps no need to show the venue information
+            if (key === 'venue' && !(record as unknown as NewAPModelExtended).deviceGroupName) {
+              return null
+            }
+              return <div key={key} style={{ display: 'flex' }}>
+                <div style={{ fontWeight: index === 0 ? 'bold' : 'none' }}>{renderer(record)}</div>
+                {index > 0 && index < attributes.length - 1 && <Divider type='vertical' style={{ right: '-10px', borderColor: 'grey' }}/>}
+              </div>
+            }
+          )}
         </UI.GroupCell>
         <UI.GroupCell>
           {actionsList.map(({ key, renderer }) => <div key={key}>{renderer(record)}</div>)}
         </UI.GroupCell>
       </UI.GroupRow>
-    )
+  }
     const columnCount = columns.reduce((count, column) => columnsState
       && columnsState[column.key]
       && columnsState[column.key].show !== false
@@ -87,6 +97,7 @@ export function useGroupBy<RecordType> (
       : count, 0)
     const addColSpan = (colSpan: number) =>
       (record: RecordType) => 'children' in record && !('isFirstLevel' in record) ? ({ colSpan }) : ({})
+
     return {
       groupable,
       columns: isGroupByActive
@@ -119,7 +130,12 @@ export function useGroupBy<RecordType> (
         })
         : columns,
       isGroupByActive,
-      expandable: isGroupByActive ? { expandedRowKeys : expandedRows, showExpandColumn: true } : undefined,
+      expandable: isGroupByActive
+        ? {
+          expandedRowKeys : expandedRows,
+          showExpandColumn: true
+        }
+        : undefined,
       onExpand
     }
   }, [columns, groupByValue, expandedRowKeys, columnsState])

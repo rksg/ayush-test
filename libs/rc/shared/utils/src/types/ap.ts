@@ -109,6 +109,7 @@ export interface NewAPModel {
   name?: string
   apGroupId?: string
   venueId?: string
+  venueName? : string
   tags?: string[]
   model?: string
   supportSecureBoot?: boolean
@@ -200,6 +201,8 @@ export interface NewAPModelExtended extends NewAPModel {
   rogueCategory?: { [key: string]: number }
   incompatible?: number
   compatibilityStatus?: string
+  children?: NewAPModel[]
+  deviceGroupName?: string
 }
 export interface NewCelluarInfo {
   activeSim: string,

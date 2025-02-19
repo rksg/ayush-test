@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, InputNumber } from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import { cloneDeep }         from 'lodash'
-import { useIntl }           from 'react-intl'
+import { Form, InputNumber, Space } from 'antd'
+import { DefaultOptionType }        from 'antd/lib/select'
+import { cloneDeep }                from 'lodash'
+import { useIntl }                  from 'react-intl'
 
-import { Drawer, Select }                                       from '@acx-ui/components'
+import { Drawer, Select, Tooltip }                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { IsNetworkSupport6g, Network, RadioTypeEnum, VlanType } from '@acx-ui/rc/utils'
 
 import { getCurrentVenue } from '../../ApGroupNetworkTable'
+import VLANPoolModal       from '../../NetworkForm/VLANPoolInstance/VLANPoolModal'
 
 import { ApGroupVlanRadioContext } from './index'
 
@@ -116,7 +117,13 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
     }
   }, [visible, editData])
 
-  const vlanPoolOptions = vlanPoolingNameMap?.map(vp => ({ label: vp.value, value: vp.key })) ?? []
+  const [ vlanPoolList, setVlanPoolList ]= useState<DefaultOptionType[]>()
+
+  useEffect(() => {
+    if (vlanPoolingNameMap) {
+      setVlanPoolList(vlanPoolingNameMap.map(vp => ({ label: vp.value, value: vp.key })))
+    }
+  },[vlanPoolingNameMap])
 
   const formContent = (
     <Form form={form} layout='vertical'>
@@ -151,16 +158,25 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
             />
           } />
       ) : (
-        <Form.Item
-          name='vlanPoolId'
-          label={$t({ defaultMessage: 'VLAN Pool' })}
-          rules={[{ required: true }]}
-          children={
-            <Select
-              placeholder={$t({ defaultMessage: 'Select profile...' })}
-              options={vlanPoolOptions as unknown as DefaultOptionType[]}
-              style={{ width: '250px' }} />
-          } />
+        <Form.Item><Space>
+          <Form.Item
+            name='vlanPoolId'
+            label={$t({ defaultMessage: 'VLAN Pool' })}
+            rules={[{ required: true }]}
+            children={
+              <Select
+                placeholder={$t({ defaultMessage: 'Select profile...' })}
+                options={vlanPoolList as unknown as DefaultOptionType[]}
+                style={{ width: '250px' }} />
+            } />
+          <Tooltip><VLANPoolModal updateInstance={(data)=>{
+            vlanPoolList &&
+            setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
+            form.setFieldValue(['vlanPoolId'], data.id)
+          }}
+          vlanCount={vlanPoolList?.length||0}
+          /></Tooltip>
+        </Space></Form.Item>
       )}
       <Form.Item
         name='radioTypes'
