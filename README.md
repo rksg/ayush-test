@@ -156,6 +156,16 @@ Use command below if you intend to run test for selected packages
 npx nx run-many --target=test --projects=rc,rc-utils --coverage --runInBand --verbose
 ```
 
+### Check for flaky tests
+
+This project uses [flaky-test-detector](https://www.npmjs.com/package/@smartesting/flaky-test-detector) to identify inconsistent test results. The `./tools/dev/run-flaky-test-detector.sh` script runs updated/added JavaScript/TypeScript test files (`.spec.js`, `.test.ts`, - as determined by `git diff` against `origin/master`) 7 times. And identifies flaky tests based on their XML test output in `./flaky-test-detector-results.xml`.
+
+To detect flaky tests, run:
+
+```sh
+./tools/dev/run-flaky-test-detector.sh
+```
+
 ### Run lint
 
 The `--fix` will help resolve error for simple lint rules.
