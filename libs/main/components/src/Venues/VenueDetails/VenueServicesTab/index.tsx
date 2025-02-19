@@ -3,9 +3,9 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Tabs }                                                                                                  from '@acx-ui/components'
-import { Features }                                                                                                      from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsBetaEnabled }                                                                      from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useIsEdgeReady }                                                                         from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetEdgePinViewDataListQuery } from '@acx-ui/rc/services'
+import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeSdLanP2ViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
 
 
@@ -32,6 +32,7 @@ export function VenueServicesTab () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE) && !isTemplate
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeMdnsBetaFeature = useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
 
   const { $t } = useIntl()
 
@@ -164,6 +165,7 @@ export function VenueServicesTab () {
                   <Tabs.TabPane
                     tab={$t({ defaultMessage: 'RUCKUS Edge' })}
                     key={'smartEdge'}
+                    isBetaFeature={isEdgeMdnsBetaFeature}
                   >
                     <EdgeMdnsTab/>
                   </Tabs.TabPane>

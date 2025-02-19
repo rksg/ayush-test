@@ -4,9 +4,10 @@ import { Col }                    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { GridRow, Tabs }                 from '@acx-ui/components'
-import { EdgeNokiaOltDetailsPageHeader } from '@acx-ui/edge/components'
-import { EdgeNokiaOltData }              from '@acx-ui/rc/utils'
+import { GridRow, Tabs, Loader }                    from '@acx-ui/components'
+import { EdgeNokiaOltDetailsPageHeader }            from '@acx-ui/edge/components'
+import { useGetEdgeCageListQuery }                  from '@acx-ui/rc/services'
+import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum } from '@acx-ui/rc/utils'
 
 import { CagesTab }       from './CagesTab'
 import { PerformanceTab } from './PerofrmanceTab'
@@ -15,12 +16,26 @@ enum OverviewInfoType {
     PERFORMANCE = 'peromance',
     CAGES = 'cages',
 }
+
 export const EdgeNokiaOltDetails = () => {
   const { $t } = useIntl()
   const { activeSubTab } = useParams()
   const oltDetails = useLocation().state as EdgeNokiaOltData
 
+  const venueId = oltDetails?.venueId
+  const edgeClusterId = oltDetails?.edgeClusterId
+  const oltId = oltDetails?.serialNumber
+  const isOltOnline = oltDetails?.status === EdgeNokiaOltStatusEnum.ONLINE
+
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
+
+  const {
+    data: cagesList,
+    isLoading: isCagesLoading,
+    isFetching: isCagesFetching
+  } = useGetEdgeCageListQuery({
+    params: { venueId, edgeClusterId, oltId }
+  }, { skip: !isOltOnline || !venueId || !edgeClusterId || !oltId })
 
   const handleTabChange = (val: string) => {
     setCurrentTab(val)
@@ -34,11 +49,21 @@ export const EdgeNokiaOltDetails = () => {
   const tabs = [{
     label: $t({ defaultMessage: 'Performance' }),
     value: 'performance',
-    children: <PerformanceTab />
+    children: <PerformanceTab
+      isOltOnline={isOltOnline}
+      cagesList={cagesList}
+      isLoading={isCagesLoading}
+      isFetching={isCagesFetching}
+    />
   }, {
     label: $t({ defaultMessage: 'Cages' }),
     value: 'cages',
-    children: <CagesTab oltData={oltDetails} />
+    children: <CagesTab
+      oltData={oltDetails}
+      cagesList={cagesList}
+      isLoading={isCagesLoading}
+      isFetching={isCagesFetching}
+    />
   }]
 
   return (
@@ -46,6 +71,9 @@ export const EdgeNokiaOltDetails = () => {
       <Col span={24}>
         <EdgeNokiaOltDetailsPageHeader
           currentOlt={oltDetails}
+          cagesList={cagesList}
+          isLoading={isCagesLoading}
+          isFetching={isCagesFetching}
         />
       </Col>
       <Col span={24}>
@@ -59,7 +87,12 @@ export const EdgeNokiaOltDetails = () => {
               tab={tab.label}
               key={tab.value}
             >
-              {tab.children}
+              <Loader
+                states={[{ isLoading: isCagesLoading, isFetching: isCagesFetching }]}
+                style={{ minHeight: '100px' }}
+              >
+                {tab.children}
+              </Loader>
             </Tabs.TabPane>
           ))}
         </Tabs>

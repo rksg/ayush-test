@@ -8,15 +8,15 @@ import {
   RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
 import {
+  ServiceOperation,
   ServiceType,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation,
-  isServiceCardSetEnabled,
-  isServiceCardEnabled
+  isServiceCardEnabled,
+  isServiceCardSetEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -94,7 +94,8 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady
+          disabled: !isEdgeMdnsReady,
+          isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,
@@ -161,6 +162,7 @@ export default function SelectServiceForm () {
                               serviceType={item.type}
                               categories={item.categories}
                               type={'radio'}
+                              isBetaFeature={item.isBetaFeature}
                             />
                           </GridCol>
                         })

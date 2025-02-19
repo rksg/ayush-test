@@ -14,7 +14,7 @@ import {
 import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
-  const isRa = Boolean(get('IS_MLISA_SA'))
+  const isRa = get('IS_MLISA_SA')
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -44,7 +44,7 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI={isRa} />} />
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent />} />
       <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
       <Route path='dataSubscriptions/edit/:settingId'
         element={<SubscriptionForm editMode />} />
