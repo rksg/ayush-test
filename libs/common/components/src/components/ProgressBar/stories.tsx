@@ -22,5 +22,26 @@ storiesOf('ProgressBar', module)
       <p style={{ width: '100px' }}><div>100</div><ProgressBarV2 percent={100}/></p>
     </>
   })
+  .add('HealthV2 usage case', () => {
+    return <>
+      <p style={{ width: '100px' }}><div>0</div><ProgressBarV2
+        percent={0}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }}/></p>
+      <p style={{ width: '100px' }}><div>25</div><ProgressBarV2
+        percent={25}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }}/></p>
+      <p style={{ width: '100px' }}><div>50</div><ProgressBarV2
+        percent={50}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }}/></p>
+
+      <p style={{ width: '100px' }}><div>75</div><ProgressBarV2
+        percent={75}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }} /></p>
+    </>
+  })
 
 export {}

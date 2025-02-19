@@ -3,9 +3,13 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, TrendPill, Loader } from '@acx-ui/components'
 
-import { useIntentContext }                 from '../../IntentContext'
-import { getGraphKPIs, useIntentKPIsQuery } from '../../useIntentDetailsQuery'
-import { KpiField }                         from '../KpiField'
+import { useIntentContext } from '../../IntentContext'
+import {
+  getGraphKPIs,
+  useIntentParams,
+  useIntentKPIsQuery
+} from '../../useIntentDetailsQuery'
+import { KpiField } from '../KpiField'
 
 import * as UI from './styledComponents'
 
@@ -26,13 +30,14 @@ export const KPICard: React.FC<{
 }
 
 export const useKPIsQuery = () => {
+  const params = useIntentParams()
   const { intent, kpis, isDataRetained, isHotTierData } = useIntentContext()
   const sanitisedKPIs = kpis
     // pick only 2 required field
     // which its value is primitive value type
     // to prevent RTK Query unable to use param as cache key
     .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-  const query = useIntentKPIsQuery({ ...intent, kpis: sanitisedKPIs }, { skip: kpis.length === 0 })
+  const query = useIntentKPIsQuery({ ...params, kpis: sanitisedKPIs }, { skip: kpis.length === 0 })
 
   const intentKPIs = query.data
 

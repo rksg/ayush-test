@@ -1,5 +1,10 @@
 export type Response <T> = { data: T }
 
+export type DataQuotaUsage = {
+    used: number
+    allowed: number
+}
+
 type AzureStoragePayload = {
   azureConnectionType: string,
   azureAccountName: string,

@@ -5,6 +5,7 @@ import { RequestPayload }  from '@acx-ui/types'
 import {
   Response,
   AuditDto,
+  DataQuotaUsage,
   DataSubscription,
   DataSubscriptionDto,
   PatchDataSubscriptions,
@@ -64,7 +65,16 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION' }]
+    }),
+    getQuotaUsage: build.query<DataQuotaUsage, void>({
+      query: () => {
+        return {
+          url: 'dataSubscriptions/quota',
+          method: 'GET',
+          credentials: 'include'
+        }
+      }
     }),
     dataSubscriptions: build.query<
       TableResult<DataSubscription>,
@@ -145,6 +155,7 @@ export const {
   useSaveStorageMutation,
   useSaveSubscriptionMutation,
   useGetSubscriptionQuery,
+  useGetQuotaUsageQuery,
   useDataSubscriptionsQuery,
   usePatchDataSubscriptionsMutation,
   useDeleteDataSubscriptionsMutation,
