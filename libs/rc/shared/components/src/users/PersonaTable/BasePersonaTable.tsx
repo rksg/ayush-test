@@ -14,9 +14,9 @@ import {
   useLazyBatchGetPropertyUnitsByIdsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }                    from '@acx-ui/user'
-import { exportMessageMapping, useTrackLoadTime, widgetsMapping }      from '@acx-ui/utils'
+import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }                                 from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -189,14 +189,16 @@ export interface PersonaTableProps {
   onChange?: (persona?: Persona) => void
   personaGroupId?: string,
   colProps: PersonaTableColProps,
-  settingsId?: string
+  settingsId?: string,
+  disableAddDevices?: boolean
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const {
     mode, personaGroupId,
-    colProps, settingsId = 'base-persona-table', onChange
+    colProps, settingsId = 'base-persona-table', onChange,
+    disableAddDevices
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
@@ -299,6 +301,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersona)],
         onClick: () => {
         // if user is under PersonaGroup page, props groupId into Drawer
           setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
@@ -308,6 +311,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         ? []
         : [{
           label: $t({ defaultMessage: 'Import From File' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.importPersonas)],
           onClick: () => setUploadCsvDrawerVisible(true)
         }]] : []
 
@@ -316,6 +320,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           onClick: ([data], clearSelection) => {
             setDrawerState({ data, isEdit: true, visible: true })
             clearSelection()
@@ -324,6 +329,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonas)],
           // We would not allow the user to delete the persons which was created by the Unit.
           disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
           onClick: (selectedItems, clearSelection) => {
@@ -436,6 +442,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         data={drawerState.data}
         isEdit={drawerState.isEdit}
         onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
+        disableAddDevices={disableAddDevices}
       />}
       {uploadCsvDrawerVisible && <ImportFileDrawer
         title={$t({ defaultMessage: 'Import from file' })}

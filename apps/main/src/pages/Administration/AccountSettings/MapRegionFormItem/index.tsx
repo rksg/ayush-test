@@ -3,12 +3,19 @@ import { useIntl }                            from 'react-intl'
 
 import { useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
 import { countryCodes, usePreference } from '@acx-ui/rc/components'
-import { hasCrossVenuesPermission }    from '@acx-ui/user'
+import { AdministrationUrlsInfo }      from '@acx-ui/rc/utils'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission
+}    from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
 const MapRegionFormItem = () => {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const {
@@ -30,6 +37,11 @@ const MapRegionFormItem = () => {
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
 
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.updatePreferences)
+    ]) : hasCrossVenuesPermission()
+
   return (
     <Row gutter={24}>
       <Col span={10}>
@@ -42,7 +54,7 @@ const MapRegionFormItem = () => {
               onChange={handleMapRegionChange}
               showSearch
               optionFilterProp='children'
-              disabled={!hasCrossVenuesPermission() || isUpdatingPreference || isLoadingPreference}
+              disabled={!hasPermission || isUpdatingPreference || isLoadingPreference}
             >
               {countryCodes.map(({ label, value }) =>
                 (<Select.Option value={value} key={value} children={label}/>)

@@ -38,12 +38,13 @@ type AAASettingFormProps = {
   edit: boolean,
   saveState: AAAPolicyType,
   type?: string,
-  networkView?: boolean
+  networkView?: boolean,
+  forceDisableRadsec?: boolean
 }
 
 export const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
-  const { edit, saveState } = props
+  const { edit, saveState, forceDisableRadsec } = props
   const { data: instanceListResult } = useGetAAAPolicyInstanceList({
     queryOptions: {
       refetchOnMountOrArgChange: 30,
@@ -359,15 +360,21 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             name={['radSecOptions', 'tlsEnabled']}
             initialValue={props.saveState.radSecOptions?.tlsEnabled}
             valuePropName='checked'
-            children={<Switch disabled={showCertificateAuthorityDrawer || showCertificateDrawer}
-              onChange={handleTlsEnabledOnChange} />}
+            children={
+              <Switch
+                disabled={
+                  showCertificateAuthorityDrawer || showCertificateDrawer || !!forceDisableRadsec
+                }
+                onChange={handleTlsEnabledOnChange}
+              />
+            }
           />
         </UI.StyledSpace>}
         {tlsEnabled &&
         <UI.RacSecDiv>
           <Form.Item
             name={['radSecOptions', 'cnSanIdentity']}
-            label={<>{$t({ defaultMessage: 'CN/SAN Identity' })}
+            label={<>{$t({ defaultMessage: 'SAN Identity' })}
               <Tooltip.Question
                 placement='right'
                 title={$t(MessageMapping.cn_san_identity_tooltip)}

@@ -1,7 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import {
-  CommonRbacUrlsInfo,
   CommonResult, CommonUrlsInfo,
   EnhancedRoguePolicyType,
   PoliciesConfigTemplateUrlsInfo,
@@ -10,7 +9,8 @@ import {
   RogueApUrls,
   RoguePolicyRequest,
   TableResult,
-  VenueRogueAp
+  VenueRogueAp,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
@@ -104,7 +104,7 @@ export function getVenueRoguePolicyFn (isTemplate : boolean = false) : QueryFn<V
       const api = isTemplate ? PoliciesConfigTemplateUrlsInfo : RogueApUrls
       if (enableRbac) {
         const [venueRogueApResponse, roguePolicyResponse] = await Promise.all([
-          fetchWithBQ(createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.getVenueRogueApRbac : CommonRbacUrlsInfo.getVenueRogueAp, params)),
+          fetchWithBQ(createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.getVenueRogueApRbac : WifiRbacUrlsInfo.getVenueRogueAp, params)),
           fetchWithBQ({
             ...createHttpRequest(api.getRoguePolicyListRbac, params),
             body: JSON.stringify({ filters: { venueIds: [params?.venueId] }, fields: ['id'] })
@@ -154,7 +154,7 @@ export function updateVenueRoguePolicyFn (isTemplate : boolean = false) : QueryF
 
           if (currentReportThreshold !== reportThreshold) {
             const updateVenueRogueApPromise = fetchWithBQ({
-              ...createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.updateVenueRogueApRbac : CommonRbacUrlsInfo.updateVenueRogueAp, params),
+              ...createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.updateVenueRogueApRbac : WifiRbacUrlsInfo.updateVenueRogueAp, params),
               body: JSON.stringify({ reportThreshold })
             })
             promises.push(updateVenueRogueApPromise)

@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Features }                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsBetaEnabled }                                 from '@acx-ui/feature-toggle'
 import { getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 import { render, renderHook, screen }                                 from '@acx-ui/test-utils'
 
@@ -36,8 +36,8 @@ jest.mock('../../ApCompatibility/ApCompatibilityToolTip', () => ({
     </div>
 }))
 
-jest.mock('../../Compatibility/EdgeCompatibilityDrawer', () => ({
-  ...jest.requireActual('../../Compatibility/EdgeCompatibilityDrawer'),
+jest.mock('../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
+  ...jest.requireActual('../../Compatibility/Edge/EdgeCompatibilityDrawer'),
   EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
     <div data-testid='EdgeCompatibilityDrawer'>
       <span>Feature:{props.featureName}</span>
@@ -48,6 +48,11 @@ jest.mock('../../Compatibility/EdgeCompatibilityDrawer', () => ({
 jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('TunnelProfileForm', () => {
@@ -376,6 +381,16 @@ describe('TunnelProfileForm', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.NAT_TRAVERSAL)
+    })
+
+    it('should show BetaIndicator when "NAT Traversal" is beta feature', async () => {
+      jest.mocked(useIsBetaEnabled).mockReturnValue(true)
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
     })
   })
 })

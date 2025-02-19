@@ -174,9 +174,18 @@ export interface RegisteredUserSelectOption {
   email: string;
 }
 
+export enum NotificationRecipientType {
+  GLOBAL = 'GLOBAL',
+  PRIVILEGEGROUP = 'PRIVILEGEGROUP'
+}
+
 export interface NotificationRecipientUIModel {
   id: string;
   description: string;
+  recipientType: NotificationRecipientType;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean,
+  privilegeGroup?: string;
   endpoints: NotificationEndpoint[];
   email: string;
   emailEnabled: boolean;
@@ -197,6 +206,9 @@ export interface NotificationEndpoint {
 export interface NotificationRecipientResponse {
   id: string;
   description: string;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean,
+  privilegeGroupId?: string;
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
@@ -311,6 +323,7 @@ export interface CustomRole {
   createdDate?: string,
   updatedDate?: string,
   scopes?: string[],
+  features?: string[],
   preDefinedRole?: string
 }
 
@@ -407,6 +420,8 @@ export interface NotificationSmsConfig
   accountSid?: string,
   authToken?: string,
   fromNumber?: string,
+  enableWhatsapp?: boolean,
+  authTemplateSid?: string,
   // esendex
   apiKey?: string,
   // others
@@ -421,6 +436,27 @@ export interface TwiliosIncommingPhoneNumbers
 export interface TwiliosMessagingServices
 {
   messagingServiceResources?: string[]
+}
+
+export interface TwiliosWhatsappServices
+{
+  approvalFetch?: {
+    sid: string,
+    whatsapp: {
+      allow_category_change: boolean,
+      category: string,
+      content_type: string,
+      flows: string | null,
+      name: string,
+      rejection_reason: string,
+      status: string,
+      type: string
+    },
+    url: string,
+    accountSid: string
+  },
+  hasError?: boolean,
+  errorMessage?: string
 }
 
 export interface ErrorsResult<T> {
@@ -490,4 +526,42 @@ export interface Webhook {
   incident: Record<string, string[]>,
   activity: Record<string, string[]>,
   event: Record<string, string[]>
+}
+
+export interface ScopePermission extends Record<string, string|boolean> {
+  name: string
+  id: string
+  read: boolean
+  create: boolean
+  update: boolean
+  delete: boolean
+}
+
+export enum PermissionType {
+  read = 'r',
+  create = 'c',
+  update = 'u',
+  delete = 'd'
+}
+
+export enum PrivacyFeatureName {
+  ARC='ARC',
+  APP_VISIBILITY='APP_VISIBILITY'
+}
+
+export interface PrivacySettings {
+  featureName: PrivacyFeatureName,
+  isEnabled: boolean
+}
+
+export interface PrivacyFeatures {
+  privacyFeatures: PrivacySettings[]
+}
+
+export interface ScopeFeature {
+  id: string,
+  name: string,
+  description: string,
+  category: string,
+  subFeatures?: ScopeFeature[]
 }

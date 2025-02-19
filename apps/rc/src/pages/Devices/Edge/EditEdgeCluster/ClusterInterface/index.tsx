@@ -12,6 +12,7 @@ import {
   EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
+  EdgeUrlsInfo,
   VirtualIpSetting,
   filterByAccessForServicePolicyMutation,
   getEdgePortIpFromStatusIp,
@@ -21,6 +22,7 @@ import {
 import { useTenantLink }                           from '@acx-ui/react-router-dom'
 import { EdgeScopes }                              from '@acx-ui/types'
 import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                               from '@acx-ui/utils'
 
 import * as CommUI from '../styledComponents'
 
@@ -95,7 +97,10 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   }
 
   const hasUpdatePermission =!!hasCrossVenuesPermission({ needGlobalPermission: true })
-  && hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  && hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings)]
+  })
 
   return (
     <Loader states={[{ isLoading: isInterfaceDataLoading, isFetching: isInterfaceDataFetching }]}>

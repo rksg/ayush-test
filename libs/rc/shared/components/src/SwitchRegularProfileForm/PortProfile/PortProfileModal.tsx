@@ -75,10 +75,36 @@ export function PortProfileModal (props: {
         }
       }
 
-      if(!editMode){
-        setPortProfileSettingValues({ ...data, models: Array.from(models) })
-      }
+      setPortProfileSettingValues({ ...portProfileSettingValues, models: Array.from(models) })
       setNoModelMsg(false)
+      return true
+    }
+
+    setNoModelMsg(true)
+    return false
+  }
+
+  const onSavePortProfile = async (data: PortProfileUI) => {
+    if(data.models && data.models.length > 0){
+      const portProfileId = new Set(data.portProfileId)
+      const sameModelPortProfileIds =
+      getPortProfileIdIfModelsMatch(portProfileList,
+        { ...portProfileSettingValues, models: Array.from(portProfileId) } )
+
+      if(portProfilesList?.data){
+        const duplicateResult = validateDuplicatePortProfile(
+          sameModelPortProfileIds, portProfilesList.data)
+
+        if (duplicateResult) {
+          setDuplicatePortProfileMsg(true)
+          return false
+        } else {
+          setDuplicatePortProfileMsg(false)
+        }
+      }
+
+      setPortProfileSettingValues({
+        ...portProfileSettingValues, portProfileId: Array.from(portProfileId) })
       return true
     }
 
@@ -99,7 +125,8 @@ export function PortProfileModal (props: {
       destroyOnClose={true}
       closable={true}
       type={ModalType.ModalStepsForm}
-      title={$t({ defaultMessage: 'Select Ports By Model' })}
+      title={editMode ?
+        $t({ defaultMessage: 'Edit Port Profile' }) : $t({ defaultMessage: 'Add Port Profile' })}
       data-testid='PortProfileModal'
     >
       <StepsForm
@@ -131,6 +158,7 @@ export function PortProfileModal (props: {
         </StepsForm.StepForm>
         <StepsForm.StepForm
           title={$t({ defaultMessage: 'Port Profiles' })}
+          onFinish={onSavePortProfile}
         >
           <PortProfileStep />
         </StepsForm.StepForm>

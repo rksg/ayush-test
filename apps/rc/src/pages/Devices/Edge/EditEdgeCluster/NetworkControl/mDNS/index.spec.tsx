@@ -1,9 +1,10 @@
 import userEvent          from '@testing-library/user-event'
 import { Form }           from 'antd'
+import { Store }          from 'antd/es/form/interface'
 import { cloneDeep, get } from 'lodash'
 import { rest }           from 'msw'
 
-import { StepsForm }      from '@acx-ui/components'
+import { Button, StepsForm } from '@acx-ui/components'
 import {
   EdgeMdnsFixtures,
   EdgeMdnsProxyUrls,
@@ -13,10 +14,12 @@ import { Provider }                                                             
 import { mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { RequestPayload }                                                                     from '@acx-ui/types'
 
-import { MdnsProxyFormItem } from '.'
+import { MdnsProxyFormItem, useHandleApplyMdns } from '.'
 
 const { mockEdgeMdnsViewDataList, mockEdgeMdnsSetting } = EdgeMdnsFixtures
 const mockAddFn = jest.fn()
+const mockedActivateMdnsApi = jest.fn()
+const mockedDeactivateMdnsApi = jest.fn()
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -56,7 +59,14 @@ jest.mock('@acx-ui/rc/components', () => ({
         }}>Submit</button>
       <button data-testid='mock-cancel-btn' onClick={props.onCancel}>Cancel</button>
     </form>
-  }
+  },
+  ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
+    <div data-testid='ApCompatibilityToolTip' onClick={onClick} />
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 jest.mock('@acx-ui/rc/services', () => ({
@@ -77,6 +87,20 @@ jest.mock('@acx-ui/rc/services', () => ({
   }
 }))
 
+const MockComponentForHookTest = ({ formValues }: { formValues: Store }) => {
+  const [form] = Form.useForm()
+  form.setFieldsValue(formValues)
+  const applyDhcp = useHandleApplyMdns(form, 'testVenueId', 'testClusterId')
+
+  return (
+    <Form
+      form={form}
+      onFinish={applyDhcp}
+      children={<Button htmlType='submit'>OK</Button>}
+    />
+  )
+}
+
 describe('Edge Cluster Network Control Tab > mDNS', () => {
   const mockVenueId = 'mock_venue_1'
   const mockClusterId= 'mock_cluster_2'
@@ -87,6 +111,8 @@ describe('Edge Cluster Network Control Tab > mDNS', () => {
   }
 
   beforeEach(() => {
+    mockedActivateMdnsApi.mockReset()
+    mockedDeactivateMdnsApi.mockReset()
     mockServer.use(
       rest.post(
         EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
@@ -101,6 +127,20 @@ describe('Edge Cluster Network Control Tab > mDNS', () => {
       rest.get(
         EdgeMdnsProxyUrls.getEdgeMdnsProxy.url,
         (_, res, ctx) => res(ctx.json(mockEdgeMdnsSetting))
+      ),
+      rest.put(
+        EdgeMdnsProxyUrls.activateEdgeMdnsProxyCluster.url,
+        (req, res, ctx) => {
+          mockedActivateMdnsApi(req.url.pathname)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(
+        EdgeMdnsProxyUrls.deactivateEdgeMdnsProxyCluster.url,
+        (req, res, ctx) => {
+          mockedDeactivateMdnsApi(req.url.pathname)
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -262,5 +302,78 @@ describe('Edge Cluster Network Control Tab > mDNS', () => {
     expect(within(dialog).queryByTestId('rc-AddEdgeMdnsProxyForm')).toBeVisible()
     await userEvent.click(await within(dialog).findByTestId('mock-cancel-btn'))
     await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should invoke setEdgeFeatureName correctly when click compatibility tooltip', async () => {
+    const mockSetEdgeFeatureName = jest.fn()
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <MdnsProxyFormItem
+              venueId={mockVenueId}
+              clusterId={mockClusterId}
+              setEdgeFeatureName={mockSetEdgeFeatureName}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+        }
+      })
+    const compatibilityToolTip = await screen.findByTestId('ApCompatibilityToolTip')
+    await userEvent.click(compatibilityToolTip)
+    expect(mockSetEdgeFeatureName).toBeCalled()
+  })
+
+  it('Test apply mDNS', async () => {
+    render(
+      <Provider>
+        <MockComponentForHookTest
+          formValues={{
+            edgeMdnsSwitch: true,
+            edgeMdnsId: 'testEdgeMdnsId'
+          }}
+        />
+      </Provider>
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(mockedActivateMdnsApi).toBeCalledWith('/edgeMulticastDnsProxyProfiles/testEdgeMdnsId/venues/testVenueId/edgeClusters/testClusterId'))
+  })
+
+  it('Test deactivate mDNS', async () => {
+    render(
+      <Provider>
+        <MockComponentForHookTest
+          formValues={{
+            edgeMdnsSwitch: false,
+            originEdgeMdnsId: 'testEdgeMdnsId'
+          }}
+        />
+      </Provider>
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(mockedDeactivateMdnsApi).toBeCalledWith('/edgeMulticastDnsProxyProfiles/testEdgeMdnsId/venues/testVenueId/edgeClusters/testClusterId'))
+  })
+
+  it('should not trigger API when there is no change', async () => {
+    render(
+      <Provider>
+        <MockComponentForHookTest
+          formValues={{
+            edgeMdnsSwitch: true,
+            edgeMdnsId: 'testEdgeMdnsId',
+            originEdgeMdnsId: 'testEdgeMdnsId'
+          }}
+        />
+      </Provider>
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+    expect(mockedActivateMdnsApi).not.toBeCalled()
+    expect(mockedDeactivateMdnsApi).not.toBeCalled()
   })
 })

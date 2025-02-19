@@ -30,16 +30,19 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   deleteGuest: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
+    opsApi: 'DELETE:/wifiNetworks/{id}/guestUsers/{id}',
     newApi: true
   },
   importGuestPass: {
     method: 'post',
     url: '/wifiNetworks/:networkId/guestUsers',
+    opsApi: 'POST:/wifiNetworks/{id}/guestUsers',
     newApi: true
   },
   enableGuests: {
     method: 'PATCH',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
+    opsApi: 'PATCH:/wifiNetworks/{id}/guestUsers/{id}',
     newApi: true
   },
   validateGuestPassword: {
@@ -50,6 +53,7 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   disableGuests: {
     method: 'PATCH',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
+    opsApi: 'PATCH:/wifiNetworks/{id}/guestUsers/{id}',
     newApi: true
   },
   getGuests: {
@@ -60,11 +64,13 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   generateGuestPassword: {
     method: 'PATCH',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
+    opsApi: 'PATCH:/wifiNetworks/{id}/guestUsers/{id}',
     newApi: true
   },
   disconnectClient: {
     method: 'PATCH',
     url: '/venues/:venueId/aps/:serialNumber/clients/:clientMacAddress',
+    opsApi: 'PATCH:/venues/{id}/aps/{id}/clients/{id}',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
     newApi: true

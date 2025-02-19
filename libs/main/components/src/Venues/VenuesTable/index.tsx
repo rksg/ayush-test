@@ -18,6 +18,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useEnforcedStatus,
   getAPStatusDisplayName,
   useIsEdgeFeatureReady,
   useIsEdgeReady
@@ -34,7 +35,8 @@ import {
   ApVenueStatusEnum,
   TableQuery,
   usePollingTableQuery,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
@@ -105,13 +107,15 @@ function useColumns (
     {
       title: $t({ defaultMessage: 'Address' }),
       width: Infinity,
-      key: 'country',
+      key: 'addressLine',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
+      searchable: searchable,
       filterable: filterables ? filterables['city'] : false,
-      render: function (_, row) {
-        return `${row.country}, ${row.city}`
+      render: function (_, row, __, highlightFn) {
+        return searchable ? highlightFn(row.addressLine as string)
+          : row.addressLine
       }
     },
     ...(isStatusColumnEnabled ? [{
@@ -254,9 +258,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'latitude',
       'longitude',
       'status',
-      'id'
+      'id',
+      'isEnforced',
+      'isManagedByTemplate',
+      'addressLine'
     ],
-    searchTargetFields: ['name'],
+    searchTargetFields: ['name', 'addressLine'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
@@ -279,10 +286,8 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { tenantId } = useParams()
   const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
-  const [
-    deleteVenue,
-    { isLoading: isDeleteVenueUpdating }
-  ] = useDeleteVenueMutation()
+  const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const hasDeletePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])
@@ -291,15 +296,22 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
-    rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenue)],
+    rbacOpsIds: [
+      getOpsApi(CommonUrlsInfo.updateVenue),
+      getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+    ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    }
+    },
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: hasDeletePermission,
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -338,7 +350,11 @@ export const VenueTable = ({ settingsId = 'venues-table',
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]
+          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
+          rbacOpsIds: [
+            getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+          ]
         }) && rowSelection}
       />
     </Loader>

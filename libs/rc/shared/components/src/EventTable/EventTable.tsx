@@ -9,20 +9,20 @@ import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, Table, TableProps, Button, showToast, Filter }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                                   from '@acx-ui/formatter'
-import { DownloadOutlined }                                                                            from '@acx-ui/icons'
-import { useAddExportSchedulesMutation }                                                               from '@acx-ui/rc/services'
-import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery }                              from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, useUserProfileContext }                                             from '@acx-ui/user'
-import { computeRangeFilter, DateRangeFilter, exportMessageMapping, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button, showToast, Filter }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
+import { DownloadOutlined }                                                                                                      from '@acx-ui/icons'
+import { useAddExportSchedulesMutation }                                                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, Event, EventExportSchedule, EventScheduleFrequency, TableQuery }                                        from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                        from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, useUserProfileContext }                                 from '@acx-ui/user'
+import { computeRangeFilter, DateRangeFilter, exportMessageMapping, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 import { useIsEdgeReady } from '../useEdgeActions'
 
-import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
+import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
 import {
   severityMapping,
   eventTypeMapping,
@@ -83,6 +83,7 @@ export const EventTable = ({
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
@@ -270,7 +271,11 @@ export const EventTable = ({
     {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
-    }
+    },
+    ...(getDetail(data) ? [{
+      title: defineMessage({ defaultMessage: 'Detail' }),
+      value: getDetail(data) || noDataDisplay
+    }] : [])
   ]
 
   useTrackLoadTime({
@@ -290,7 +295,14 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={!isCustomRole && hasCrossVenuesPermission()
+      iconButton={!isCustomRole && (rbacOpsApiEnabled ?
+        hasAllowedOperations([
+          getOpsApi(CommonUrlsInfo.getEventList),
+          getOpsApi(CommonUrlsInfo.getEventListMeta),
+          getOpsApi(CommonUrlsInfo.addExportSchedules),
+          getOpsApi(CommonUrlsInfo.updateExportSchedules)
+        ])
+        : hasCrossVenuesPermission())
         ? tableIconButtonConfig : {} as IconButtonProps}
       filterPersistence={enabledUXOptFeature}
     />

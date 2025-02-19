@@ -5,9 +5,8 @@ import { sumBy }                   from 'lodash'
 
 import { CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature } from '@acx-ui/rc/utils'
 
-import { VerticalFlexDiv } from '../styledComponents'
-
-import { FeatureItem } from './FeatureItem'
+import { FeatureItem }   from './FeatureItem'
+import { StyledWrapper } from './styledComponents'
 
 export type CompatibilityItemProps = {
   deviceType: CompatibilityDeviceEnum,
@@ -28,6 +27,8 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
     isCrossDeviceType = false
   } = props
 
+  const isConnectedBlock = isCrossDeviceType && deviceType === CompatibilityDeviceEnum.SWITCH
+
   const getFeatures = (items: IncompatibleFeature[]) => {
     const isMultipleFeatures = items.length > 1
     return items?.reduce((acc: IncompatibleFeature[], cur: IncompatibleFeature) => {
@@ -35,20 +36,18 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
         return [...acc, ...cur.children]
       }
       return [...acc, cur]
-    }, []).map((itemDetail, index) => {
+    }, []).map((itemDetail) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
-      return <React.Fragment key={itemDetail.featureName}>
-        {/* `multiple device type` will have space control inside FeatureItem*/}
-        {index !== 0 && <Divider style={{ margin: isCrossDeviceType ? 0 : '10px 0' }} />}
-        <FeatureItem
-          isMultiple={!featureName || isMultipleFeatures}
-          deviceType={deviceType}
-          data={itemDetail}
-          incompatible={incompatible}
-          total={totalDevices}
-          isCrossDeviceType={isCrossDeviceType}
-        />
-      </React.Fragment>
+
+      return <FeatureItem
+        key={itemDetail.featureName}
+        isMultiple={!featureName || isMultipleFeatures}
+        deviceType={deviceType}
+        data={itemDetail}
+        incompatible={incompatible}
+        total={totalDevices}
+        hasBackgroundColor={isConnectedBlock}
+      />
     })
   }
 
@@ -58,9 +57,13 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
         {description && <Form.Item>
           {description}
         </Form.Item>}
-        <VerticalFlexDiv>
+        <StyledWrapper
+          direction='vertical'
+          split={<Divider style={{ margin: isConnectedBlock ? 0 : '10px 0' }} />}
+          size={0}
+        >
           {getFeatures(data)}
-        </VerticalFlexDiv>
+        </StyledWrapper>
       </Col>
     </Row>
   )

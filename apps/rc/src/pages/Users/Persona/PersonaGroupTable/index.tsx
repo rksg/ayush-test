@@ -32,9 +32,9 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, SEARCH, useTableQuery }            from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }               from '@acx-ui/user'
-import { exportMessageMapping, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery }          from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }                          from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -355,6 +355,7 @@ export function PersonaGroupTable () {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity Group' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersonaGroup)],
         onClick: () => {
           setDrawerState({ isEdit: false, visible: true, data: undefined })
         }
@@ -365,6 +366,7 @@ export function PersonaGroupTable () {
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersonaGroup)],
           onClick: ([data], clearSelection) => {
             setDrawerState({ data, isEdit: true, visible: true })
             clearSelection()
@@ -372,6 +374,7 @@ export function PersonaGroupTable () {
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonaGroup)],
           disabled: (([selectedItem]) =>
             selectedItem
               ? (selectedItem.identityCount ?? 0) > 0 || !!selectedItem.certificateTemplateId
@@ -430,7 +433,7 @@ export function PersonaGroupTable () {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasCrossVenuesPermission({ needGlobalPermission: true }) && { type: 'radio' }}
+          filterByAccess(rowActions).length !== 0 && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

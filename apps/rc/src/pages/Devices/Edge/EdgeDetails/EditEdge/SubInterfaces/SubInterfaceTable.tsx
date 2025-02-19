@@ -7,9 +7,10 @@ import { useIntl }             from 'react-intl'
 import { Loader, Table, TableProps, showActionModal }                             from '@acx-ui/components'
 import { Features }                                                               from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { EdgeSubInterface, TableQuery }                                           from '@acx-ui/rc/utils'
+import { EdgeSubInterface, EdgeUrlsInfo, TableQuery }                             from '@acx-ui/rc/utils'
 import { EdgeScopes, RequestPayload }                                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                          from '@acx-ui/user'
+import { getOpsApi }                                                              from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -114,6 +115,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const rowActions: TableProps<EdgeSubInterface>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateSubInterfaces)],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -123,6 +125,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteSubInterfaces)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -144,11 +147,13 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       label: $t({ defaultMessage: 'Add Sub-interface' }),
       scopeKey: [EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addSubInterfaces)],
       onClick: () => openDrawer()
     },
     ...(isEdgeSubInterfaceCSVEnabled ? [{
       label: $t({ defaultMessage: 'Import from file' }),
       scopeKey: [EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV)],
       onClick: () => setImportModalvisible(true)
     }]:[])
   ]

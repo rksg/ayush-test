@@ -52,7 +52,6 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 export function VenuesDashboardWidgetV2 () {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/venues/')
-
   const { venueIds } = useDashboardFilter()
 
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)

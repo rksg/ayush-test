@@ -28,7 +28,8 @@ import {
   PolicyType,
   useTableQuery,
   GetApiVersionHeader,
-  ApiVersionEnum
+  ApiVersionEnum,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -107,6 +108,7 @@ export default function SnmpAgentTable () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SNMP_AGENT, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -122,6 +124,7 @@ export default function SnmpAgentTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SNMP_AGENT, PolicyOperation.DELETE),
       onClick: (selectedRows, clearSelection) => {
         const ids = selectedRows.map(row => row.id)
         const hasSnmpActivityVenues = _.some(selectedRows, (r) => {
@@ -177,6 +180,7 @@ export default function SnmpAgentTable () {
         extra={((list?.totalCount as number) < 64) && filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.SNMP_AGENT, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>

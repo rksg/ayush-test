@@ -1,22 +1,22 @@
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                           from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCardCategory }                          from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
-  useGetEnhancedMdnsProxyListQuery,
+  useGetEdgeFirewallViewDataListQuery,
+  useGetEdgeMdnsProxyViewDataListQuery,
   useGetEdgePinViewDataListQuery,
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeTnmServiceListQuery,
+  useGetEnhancedMdnsProxyListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
-  useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
-  useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery,
-  useGetEdgeMdnsProxyViewDataListQuery,
-  useGetEdgeTnmServiceListQuery
+  useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -66,7 +66,8 @@ export default function MyServices () {
       }, {
         skip: !isEdgeMdnsReady
       }).data?.totalCount,
-      disabled: !isEdgeMdnsReady
+      disabled: !isEdgeMdnsReady,
+      isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
     },
     {
       type: ServiceType.DHCP,
@@ -183,6 +184,7 @@ export default function MyServices () {
                 categories={service.categories}
                 count={service.totalCount}
                 type={'default'}
+                isBetaFeature={service.isBetaFeature}
               />
             </GridCol>
           )
