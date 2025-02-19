@@ -4,6 +4,7 @@ import { Store } from 'antd/es/form/interface'
 import { rest }  from 'msw'
 
 import { Button, StepsForm } from '@acx-ui/components'
+import { useIsBetaEnabled }  from '@acx-ui/feature-toggle'
 import { firmwareApi }       from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
@@ -38,6 +39,11 @@ jest.mock('@acx-ui/rc/components', () => ({
   ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={onClick} />
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
+
 
 const { mockedVenueFirmwareList } = EdgeGeneralFixtures
 
@@ -215,5 +221,36 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     expect(mockedUpdateArptSettingsReq).not.toBeCalled()
+  })
+
+  it('should show BetaIndicator when ARP Termination is beta feature', async () => {
+    jest.mocked(useIsBetaEnabled).mockReturnValue(true)
+    const mockVenueId = 'mock_venue_2'
+    const mockClusterId= params.clusterId
+    const props = {
+      currentClusterStatus: {
+        clusterId: mockClusterId,
+        venueId: mockVenueId
+      },
+      setEdgeFeatureName: jest.fn()
+    }
+
+    render(<Provider>
+      <StepsForm>
+        <StepsForm.StepForm>
+          <ArpTerminationFormItem
+            currentClusterStatus={props.currentClusterStatus}
+            setEdgeFeatureName={jest.fn()}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+      }
+    })
+
+    expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
   })
 })

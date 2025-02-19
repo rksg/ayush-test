@@ -28,6 +28,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeNatTEnabled = useIsTierAllowed(TierFeatures.EDGE_NAT_T)
   const isEdgeArpTerminationEnabled = useIsTierAllowed(TierFeatures.EDGE_ARPT)
   const isEdgeMdnsProxyEnabled = useIsTierAllowed(TierFeatures.EDGE_MDNS_PROXY)
+  const isEdgeHqosEnabled = useIsTierAllowed(TierFeatures.EDGE_HQOS)
 
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
@@ -42,6 +43,8 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
       return isEnabledWithBooleanFlag && isEdgeArpTerminationEnabled
     case Features.EDGE_MDNS_PROXY_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeMdnsProxyEnabled
+    case Features.EDGE_QOS_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeHqosEnabled
     default:
       return isEnabledWithBooleanFlag
   }

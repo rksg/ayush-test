@@ -1,16 +1,17 @@
-import React from 'react'
+import { useState, useMemo } from 'react'
 
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import { Card, GridRow,  GridCol, PageHeader, Button, cssStr } from '@acx-ui/components'
-import { useGetEdgeCageListQuery }                             from '@acx-ui/rc/services'
+// import { useGetEdgeCageListQuery }                             from '@acx-ui/rc/services'
 import {
+  EdgeNokiaCageData,
   EdgeNokiaCageStateEnum,
   EdgeNokiaOltData,
   EdgeNokiaOltStatusEnum,
-  getOltStatusConfig,
-  isOltOnline
+  getOltStatusConfig
+  // isOltOnline
 } from '@acx-ui/rc/utils'
 
 import OltImage                    from '../../../assets/images/olt/olt.png'
@@ -20,35 +21,49 @@ import { OltDetailsDrawer }         from './DetailsDrawer'
 import { StyledEdgeNokiaOltStatus } from './styledComponents'
 interface EdgeNokiaOltDetailsPageHeaderProps {
   currentOlt: EdgeNokiaOltData
+  cagesList: EdgeNokiaCageData[] | undefined,
+  isLoading: boolean,
+  isFetching: boolean
 }
 
 export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHeaderProps) => {
-  const { currentOlt } = props
-  const { $t } = useIntl()
-  const [visible, setVisible] = React.useState(false)
-
-  const isOnline = isOltOnline(currentOlt)
-
   const {
-    upCages,
-    totalCages,
+    currentOlt,
+    cagesList,
     isLoading: isCageListLoading,
     isFetching: isCageListFetching
-  } = useGetEdgeCageListQuery({
-    params: {
-      venueId: currentOlt.venueId,
-      edgeClusterId: currentOlt.edgeClusterId,
-      oltId: currentOlt.serialNumber
+  } = props
+  const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
+
+  const { upCages, totalCages } = useMemo(() => {
+    return {
+      upCages: cagesList?.filter(item => item.state === EdgeNokiaCageStateEnum.UP).length ?? 0,
+      totalCages: cagesList?.length ?? 0
     }
-  }, {
-    skip: !isOnline,
-    selectFromResult: ({ data, isLoading, isFetching }) => ({
-      upCages: data?.filter(item => item.state === EdgeNokiaCageStateEnum.UP).length ?? 0,
-      totalCages: data?.length ?? 0,
-      isLoading,
-      isFetching
-    })
-  })
+  }, [cagesList])
+
+  // const isOnline = isOltOnline(currentOlt)
+  // const {
+  //   upCages,
+  //   totalCages,
+  //   isLoading: isCageListLoading,
+  //   isFetching: isCageListFetching
+  // } = useGetEdgeCageListQuery({
+  //   params: {
+  //     venueId: currentOlt.venueId,
+  //     edgeClusterId: currentOlt.edgeClusterId,
+  //     oltId: currentOlt.serialNumber
+  //   }
+  // }, {
+  //   skip: !isOnline,
+  //   selectFromResult: ({ data, isLoading, isFetching }) => ({
+  //     upCages: data?.filter(item => item.state === EdgeNokiaCageStateEnum.UP).length ?? 0,
+  //     totalCages: data?.length ?? 0,
+  //     isLoading,
+  //     isFetching
+  //   })
+  // })
 
   const onClickDetailsHandler = () => {
     setVisible(true)

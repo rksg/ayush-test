@@ -1,24 +1,34 @@
 import { useIntl } from 'react-intl'
 
-import { GridRow, HistoricalCard, NoData } from '@acx-ui/components'
+import { GridRow, HistoricalCard, NoData }                                from '@acx-ui/components'
+import { EdgeOltResourceUtilizationWidget, EdgeOltTrafficByVolumeWidget } from '@acx-ui/edge/components'
+import { EdgeNokiaCageData }                                              from '@acx-ui/rc/utils'
 
 import { WidgetContainer } from './styledComponents'
 
-export const PerformanceTab = () => {
+export const PerformanceTab = (props: {
+  isOltOnline: boolean,
+  cagesList: EdgeNokiaCageData[] | undefined,
+  isLoading: boolean,
+  isFetching: boolean
+ }) => {
   const { $t } = useIntl()
+  const { cagesList, isOltOnline, isLoading } = props
+
   return (
     <GridRow>
       <WidgetContainer col={{ span: 12 }}>
-        <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Traffic by Volume' })} />
+        {isOltOnline
+          ? <EdgeOltTrafficByVolumeWidget
+            cages={cagesList}
+            isLoading={isLoading}
+          />
+          : <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Traffic by Volume' })} />}
       </WidgetContainer>
       <WidgetContainer col={{ span: 12 }}>
-        <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Resource Utilization' })} />
-      </WidgetContainer>
-      <WidgetContainer col={{ span: 8 }}>
-        <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Top 10 Ports by Errors' })} />
-      </WidgetContainer>
-      <WidgetContainer col={{ span: 16 }}>
-        <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Top 10 Ports by Errors' })} />
+        {isOltOnline
+          ? <EdgeOltResourceUtilizationWidget isLoading={isLoading} />
+          : <OltStatisticNoDataWidget title={$t({ defaultMessage: 'Resource Utilization' })} />}
       </WidgetContainer>
     </GridRow>
   )
