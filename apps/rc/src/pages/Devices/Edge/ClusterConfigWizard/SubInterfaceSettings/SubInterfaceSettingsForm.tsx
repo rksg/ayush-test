@@ -69,6 +69,10 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
                   currentTab={currentTab}
                   ip={item.ip!}
                   mac={item.mac}
+                  allInterface={[
+                    ...portStatus,
+                    ...lagStatus
+                  ]}
                 />
               </Form.Item>
             }

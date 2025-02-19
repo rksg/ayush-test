@@ -3,10 +3,10 @@ import { Key, useContext, useEffect, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { showActionModal, Table, TableProps }     from '@acx-ui/components'
-import { isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
-import { EdgeScopes }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }          from '@acx-ui/user'
+import { showActionModal, Table, TableProps }                   from '@acx-ui/components'
+import { EdgePortInfo, isInterfaceInVRRPSetting, SubInterface } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                           from '@acx-ui/types'
+import { filterByAccess, hasPermission }                        from '@acx-ui/user'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import * as UI                        from '../styledComponents'
@@ -20,11 +20,12 @@ export interface SubInterfaceTableProps {
   mac: string
   value?: SubInterface[]
   onChange?: (data: SubInterface[]) => void
+  allInterface?: EdgePortInfo[]
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
-  const { currentTab, ip, mac, value = [], onChange } = props
+  const { currentTab, ip, mac, value = [], onChange, allInterface = [] } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<SubInterface>()
@@ -184,6 +185,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             allSubInterfaceVlans={
               (value as { id: string, vlan: number }[])
             }
+            allInterface={allInterface}
           />
           <Table<SubInterface>
             actions={filterByAccess(actionButtons)}
