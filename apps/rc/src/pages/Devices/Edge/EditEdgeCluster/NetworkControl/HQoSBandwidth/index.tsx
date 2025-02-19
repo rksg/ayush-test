@@ -3,8 +3,9 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, Row, Space, Switch } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext }                                                                       from '@acx-ui/components'
+import { getTitleWithBetaIndicator, Loader, StepsForm, Tooltip, useStepFormContext }                                            from '@acx-ui/components'
 import { EdgePermissions }                                                                                                      from '@acx-ui/edge/components'
+import { TierFeatures, useIsBetaEnabled }                                                                                       from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip }                                                                                               from '@acx-ui/rc/components'
 import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeClusterStatus, IncompatibilityFeatures }                                                                           from '@acx-ui/rc/utils'
@@ -60,6 +61,7 @@ export const HQoSBandwidthFormItem = (props: {
             <StepsForm.FieldLabel width='90%'>
               <Space>
                 {$t({ defaultMessage: 'Hierarchical QoS' })}
+                { useIsBetaEnabled(TierFeatures.EDGE_HQOS) ? getTitleWithBetaIndicator('') : null }
                 <ApCompatibilityToolTip
                   title=''
                   showDetailButton

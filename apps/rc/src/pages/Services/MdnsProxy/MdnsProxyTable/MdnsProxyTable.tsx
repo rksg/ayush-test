@@ -49,7 +49,7 @@ export default function MdnsProxyTable () {
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
     {
-      rbacOpsIds: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
