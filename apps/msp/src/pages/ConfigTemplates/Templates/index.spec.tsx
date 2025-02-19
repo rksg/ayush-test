@@ -41,8 +41,8 @@ jest.mock('./ShowDriftsDrawer', () => ({
 }))
 
 jest.mock('./DetailsDrawer', () => ({
-  ...jest.requireActual('./ShowDriftsDrawer'),
-  DetailsDrawer: () => <div>DetailsDrawer</div>
+  ...jest.requireActual('./DetailsDrawer'),
+  ProtectedDetailsDrawer: () => <div>DetailsDrawer</div>
 }))
 
 jest.mock('./CloneModal', () => ({
@@ -430,6 +430,8 @@ describe('ConfigTemplateList component', () => {
   })
 
   it('should show details drawer', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_NAME_DRAWER)
+
     render(
       <Provider>
         <ConfigTemplateList />

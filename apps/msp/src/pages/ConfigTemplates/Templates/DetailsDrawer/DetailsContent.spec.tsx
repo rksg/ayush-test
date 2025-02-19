@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                                          from '@acx-ui/msp/utils'
-import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateDriftType, ConfigTemplateType, PolicyType } from '@acx-ui/rc/utils'
-import { Provider }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen }                                                           from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                              from '@acx-ui/msp/utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen }                                               from '@acx-ui/test-utils'
 
 import { ConfigTemplateTabKey }  from '../..'
 import { mockedMSPCustomerList } from '../../__tests__/fixtures'
@@ -28,7 +28,6 @@ describe('DetailsContent', () => {
     appliedOnTenants: ['t1', '1969e24ce9af4348833968096ff6cb47'],
     type: ConfigTemplateType.NETWORK,
     lastModified: 1690598400000,
-    lastApplied: 1690598405000,
     driftStatus: ConfigTemplateDriftType.DRIFT_DETECTED
   }
 
@@ -62,7 +61,7 @@ describe('DetailsContent', () => {
 
     render(<Provider>
       <DetailsContent
-        template={mockTemplate}
+        template={{ ...mockTemplate, lastApplied: 1690598405000 }}
         setAccessControlSubPolicyVisible={jest.fn()}
       />
     </Provider>, { route: { params, path } })
@@ -72,40 +71,6 @@ describe('DetailsContent', () => {
     await userEvent.click(screen.getByText('Drift Detected'))
 
     expect(screen.getByText('Drift Drawer')).toBeInTheDocument()
-  })
-
-  it('calls setAccessControlSubPolicyVisible when TemplateNameLink is clicked', async () => {
-    const mockedLayer2Template = {
-      id: '4',
-      name: 'Template 4',
-      createdOn: 1690598500000,
-      createdBy: 'Author 4',
-      type: ConfigTemplateType.LAYER_2_POLICY,
-      lastModified: 1690598500000
-    }
-    const mockedSetAccessControlSubPolicyVisible = jest.fn()
-
-    render(<Provider>
-      <DetailsContent
-        template={mockedLayer2Template}
-        setAccessControlSubPolicyVisible={mockedSetAccessControlSubPolicyVisible}
-      />
-    </Provider>, { route: { params, path } })
-
-    const templateNameButton = screen.getByRole('button', { name: 'View Configuration' })
-    expect(templateNameButton).toBeInTheDocument()
-
-    await userEvent.click(templateNameButton)
-
-    expect(mockedSetAccessControlSubPolicyVisible).toHaveBeenCalledWith(
-      expect.objectContaining({
-        [PolicyType.LAYER_2_POLICY]: {
-          id: mockedLayer2Template.id,
-          visible: true,
-          drawerViewMode: true
-        }
-      })
-    )
   })
 
   it('renders the enforcement status', async () => {

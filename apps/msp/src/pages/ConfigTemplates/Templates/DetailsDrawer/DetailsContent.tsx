@@ -1,25 +1,18 @@
 import { useState } from 'react'
 
 import { Divider, Space } from 'antd'
-import moment             from 'moment'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr, Descriptions, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }   from '@acx-ui/formatter'
-import { useMspCustomerListQuery }              from '@acx-ui/msp/services'
-import {
-  ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-  AccessControlSubPolicyVisibility,
-  isAccessControlSubPolicy,
-  renderConfigTemplateDetailsComponent,
-  subPolicyMappingType
-} from '@acx-ui/rc/components'
-import { ConfigTemplate, ConfigTemplateDriftType, PolicyType } from '@acx-ui/rc/utils'
+import { cssStr, Descriptions, Loader }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { useMspCustomerListQuery }                 from '@acx-ui/msp/services'
+import { AccessControlSubPolicyVisibility }        from '@acx-ui/rc/components'
+import { ConfigTemplate, ConfigTemplateDriftType } from '@acx-ui/rc/utils'
+import { noDataDisplay }                           from '@acx-ui/utils'
 
-import { ShowDriftsDrawer }                                                                         from '../ShowDriftsDrawer'
-import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel } from '../templateUtils'
-import { useEcFilters }                                                                             from '../templateUtils'
+import { ShowDriftsDrawer }                                                                                                                               from '../ShowDriftsDrawer'
+import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useFormatTemplateDate, ViewConfigTemplateDetailsLink } from '../templateUtils'
+import { useEcFilters }                                                                                                                                   from '../templateUtils'
 
 interface DetailsContentProps {
   template: ConfigTemplate
@@ -30,7 +23,7 @@ interface DetailsContentProps {
 export function DetailsContent (props: DetailsContentProps) {
   const { $t } = useIntl()
   const { template, setAccessControlSubPolicyVisible } = props
-  const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+  const dateFormatter = useFormatTemplateDate()
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
@@ -66,21 +59,22 @@ export function DetailsContent (props: DetailsContentProps) {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Created On' })}
-        children={moment(template.createdOn).format(dateFormat)}
+        children={dateFormatter(template.createdOn)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Last Modified' })}
-        children={moment(template.lastModified).format(dateFormat)}
+        children={dateFormatter(template.lastModified)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Last Applied' })}
-        children={template.lastApplied ? moment(template.lastApplied).format(dateFormat) : ''}
+        children={dateFormatter(template.lastApplied)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Configuration Details' })}
-        children={<ViewDetailsLink
+        children={<ViewConfigTemplateDetailsLink
           template={template}
           setAclSubPolicyVisible={setAccessControlSubPolicyVisible}
+          label={$t({ defaultMessage: 'View Configuration' })}
         />}
       />
     </Descriptions>
@@ -116,37 +110,11 @@ function AppliedToTenantList ({ appliedOnTenants }: { appliedOnTenants?: string[
     </span>
     <Loader states={[{ isLoading }]} style={{ width: '100%', backgroundColor: 'transparent' }}>
       <Space direction='vertical' size={4}>
+        {!appliedOnTenants?.length && noDataDisplay}
         {data?.data.map(mspEcTenant => <div key={mspEcTenant.id}>{mspEcTenant.name}</div>)}
       </Space>
     </Loader>
   </Space>
 }
 
-interface ViewDetailsLinkProps {
-  template: ConfigTemplate
-  setAclSubPolicyVisible: (visibility: AccessControlSubPolicyVisibility) => void
-}
-function ViewDetailsLink (props: ViewDetailsLinkProps) {
-  const { $t } = useIntl()
-  const { template, setAclSubPolicyVisible } = props
-  const label = $t({ defaultMessage: 'View Configuration' })
 
-  if (isAccessControlSubPolicy(template.type)) {
-    return <Button
-      type='link'
-      size={'small'}
-      onClick={() => {
-        setAclSubPolicyVisible({
-          ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-          [subPolicyMappingType[template.type] as PolicyType]: {
-            id: template.id,
-            visible: true,
-            drawerViewMode: true
-          }
-        })
-      }}>
-      {label}
-    </Button>
-  }
-  return renderConfigTemplateDetailsComponent(template.type, template.id!, label)
-}

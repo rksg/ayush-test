@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }                   from '@acx-ui/components'
-import { AccessControlSubPolicyVisibility } from '@acx-ui/rc/components'
-import { ConfigTemplate }                   from '@acx-ui/rc/utils'
+import { Button, Drawer }                                             from '@acx-ui/components'
+import { Features }                                                   from '@acx-ui/feature-toggle'
+import { AccessControlSubPolicyVisibility, withTemplateFeatureGuard } from '@acx-ui/rc/components'
+import { ConfigTemplate }                                             from '@acx-ui/rc/utils'
 
 import { DetailsContent } from './DetailsContent'
 
@@ -37,3 +38,8 @@ export function DetailsDrawer (props: DetailsDrawerProps) {
     />
   </Drawer>)
 }
+
+export const ProtectedDetailsDrawer = withTemplateFeatureGuard({
+  WrappedComponent: DetailsDrawer,
+  featureId: Features.CONFIG_TEMPLATE_NAME_DRAWER
+})
