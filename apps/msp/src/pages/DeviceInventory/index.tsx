@@ -30,10 +30,9 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                          from '@acx-ui/react-router-dom'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { AccountType, exportMessageMapping, getOpsApi }   from '@acx-ui/utils'
+import { TenantLink, useParams }                        from '@acx-ui/react-router-dom'
+import { getUserProfile, hasAllowedOperations }         from '@acx-ui/user'
+import { AccountType, exportMessageMapping, getOpsApi } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -107,8 +106,7 @@ export function DeviceInventory () {
   const parentTenantId = tenantDetailsData.data?.mspEc?.parentMspId
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasExportPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(MspUrlsInfo.exportMspEcDeviceInventory)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+    ? hasAllowedOperations([getOpsApi(MspUrlsInfo.exportMspEcDeviceInventory)]) : true
 
   const filterPayload = {
     searchString: '',

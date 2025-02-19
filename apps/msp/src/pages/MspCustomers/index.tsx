@@ -437,7 +437,7 @@ export function MspCustomers () {
             : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
               : noDataDisplay
           return (
-            (allowSelectTechPartner || hasAssignTechPartnerPermission)
+            (allowSelectTechPartner)
               ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
