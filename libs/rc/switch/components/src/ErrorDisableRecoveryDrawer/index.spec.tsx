@@ -28,7 +28,6 @@ const disabledRecoveryData = {
 }
 
 describe('ErrorDisableRecoveryDrawer', () => {
-  const requestSpy = jest.fn()
   const params = {
     tenantId: 'tenant-id',
     switchId: 'switch-id',
@@ -42,19 +41,16 @@ describe('ErrorDisableRecoveryDrawer', () => {
       rest.get(
         SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => {
-          requestSpy()
           return res(ctx.json({ venueId: 'venue-id' }))
         }),
       rest.get(
         SwitchUrlsInfo.getPortDisableRecovery.url,
         (_, res, ctx) => {
-          requestSpy()
           return res(ctx.json(disabledRecoveryData))
         }),
       rest.put(
         SwitchUrlsInfo.updatePortDisableRecovery.url,
         (_, res, ctx) => {
-          requestSpy()
           return res(ctx.json({}))
         }
       )
@@ -62,7 +58,6 @@ describe('ErrorDisableRecoveryDrawer', () => {
   })
 
   afterEach(() => {
-    requestSpy.mockClear()
     Modal.destroyAll()
   })
 
