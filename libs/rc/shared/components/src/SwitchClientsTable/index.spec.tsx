@@ -211,9 +211,7 @@ describe('SwitchClientsTable - Port link', () => {
         }
       }
     )
-    await waitFor(() => {
-      expect(mockGetSwitchList).toBeCalledTimes(2)
-    })
+    await waitFor(() => expect(mockGetSwitchList).toBeCalledTimes(1))
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
     expect(await screen.findByText('ICX7150-C12 Router')).toBeVisible()
     expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
@@ -237,9 +235,7 @@ describe('SwitchClientsTable - Port link', () => {
         }
       }
     )
-    await waitFor(() => {
-      expect(mockGetSwitchList).toBeCalledTimes(2)
-    })
+    await waitFor(() => expect(mockGetSwitchList).toBeCalledTimes(1))
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
     expect(await screen.findByText('ICX7150-C12 Router')).toBeVisible()
     expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
