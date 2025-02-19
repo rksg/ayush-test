@@ -77,11 +77,11 @@ export const isShowApiError = (request?: Request) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isShowImprovedErrorDialog = (errors: any) => {
   const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0 && errors.errors[0].message
-  return (isLocalHost() || isDev() || isIntEnv()) && hasErrors
+  return (getEnabledDialogImproved()) && hasErrors
 }
 
 export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isDev() || isIntEnv()
+  return isLocalHost() || isIntEnv()
 }
 
 export const createHttpRequest = (

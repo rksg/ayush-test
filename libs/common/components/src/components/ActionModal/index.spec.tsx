@@ -4,8 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 
 import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@acx-ui/test-utils'
+import { getEnabledDialogImproved }                                      from '@acx-ui/utils'
 
-import { showActionModal, convertToJSON, isErrorWithMessage, getEnabledDialogImproved } from '.'
+import { showActionModal, convertToJSON, isErrorWithMessage } from '.'
 
 Object.assign(navigator, {
   clipboard: {
@@ -76,7 +77,7 @@ describe('ActionModal', () => {
       })
     })
 
-    describe('modal with details - legacy', () => {
+    describe('legacy modal with details', () => {
       const mockErrorDetails = {
         message: 'Some error details'
       }
@@ -143,7 +144,7 @@ describe('ActionModal', () => {
     })
   })
 
-  xdescribe('modal with details - new', () => {
+  describe('show_errors modal with details', () => {
     const mockErrorDetails = {
       message: 'Some error details'
     }
