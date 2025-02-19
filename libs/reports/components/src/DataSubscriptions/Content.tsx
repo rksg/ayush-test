@@ -8,21 +8,15 @@ import { useRaiR1HelpPageLink }                                                 
 import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                                     from '@acx-ui/user'
 
-import { StorageOptions }     from './CloudStorageForm'
-import { useGetStorageQuery } from './services'
-import { generateBreadcrumb } from './utils'
+import { StorageOptions }         from './CloudStorageForm'
+import { useGetStorageQuery }     from './services'
+import { DataSubscriptionsTable } from './Table'
 
-type DataSubscriptionsContentProps = {
-  isRAI?: boolean
-}
-const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isRAI }) => {
+const DataSubscriptionsContent: React.FC<{}> = () => {
   const { $t } = useIntl()
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
-  const breadCrumb = isRAI ? [
-    { text: $t({ defaultMessage: 'Business Insights' }) }
-  ]: generateBreadcrumb()
   const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
   const StorageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType
@@ -30,7 +24,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
   return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Data Subscriptions' })}
-      breadcrumb={breadCrumb}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <Loader
         states={[{ isLoading: isStorageLoading }]}
         style={{ flexDirection: 'row', gap: '10px' }}>
@@ -73,12 +67,13 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
         <Banner
           title={$t({ defaultMessage: 'Simplify Data Integration' })}
           subTitles={[$t({
-            defaultMessage: `Seamlessly transfer data between RUCKUS AI 
+            defaultMessage: `Seamlessly transfer data between RUCKUS AI
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
           helpUrl={helpUrl} />
       </GridCol>
     </GridRow>
+    <DataSubscriptionsTable />
   </>)
 }
 

@@ -1,4 +1,3 @@
-
 import { configureStore } from '@reduxjs/toolkit'
 import userEvent          from '@testing-library/user-event'
 
@@ -8,7 +7,6 @@ import { notificationApiURL }                from '@acx-ui/store'
 import { render, screen }                    from '@acx-ui/test-utils'
 import { mockRestApiQuery }                  from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
-
 
 import DataSubscriptionsContent from './Content'
 import { dataSubscriptionApis } from './services'
@@ -65,6 +63,7 @@ describe('DataSubscriptionsContent', () => {
         WRITE_DATA_SUBSCRIPTIONS: true
       } as RaiPermissions)
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
+      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
     it('should render DataSubscriptionsContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
