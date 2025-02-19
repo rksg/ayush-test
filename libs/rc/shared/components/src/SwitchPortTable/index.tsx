@@ -24,7 +24,7 @@ import {
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010fCd2Or10020b
+  isFirmwareVersionAbove10010gOr10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { ErrorDisableRecoveryDrawer }                   from '@acx-ui/switch/components'
@@ -115,7 +115,7 @@ export function SwitchPortTable (props: {
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
         setSwitchSupportErrorRecovery(isSwitchErrorRecoveryEnabled &&
-          isFirmwareVersionAbove10010fCd2Or10020b(switchDetail?.firmware))
+          isFirmwareVersionAbove10010gOr10020b(switchDetail?.firmware))
       }
     }
     setData()
