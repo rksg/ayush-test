@@ -6,7 +6,7 @@
  * Some icons are checking with the designer:
  * Blocked, BulbOff, CalendarDateSolid, ChatbotLink, CheckMark, ClockSolid,
  * Drag, DeleteSolid, DevicesSolid, PlaySolid2, StopSolid, SignalDown, SignalLeft, SignalUp,
- * SpeedIndicatorSolid, StackDeviceSolid, SuccessSolid, Switch, TagsOutline, TagsSolid
+ * SpeedIndicatorSolid, StackDeviceSolid, SuccessSolid, Switch, Sync, TagsOutline, TagsSolid
  * QuestionMarkCircleOutlined, QuestionMarkCircleSolid, WarningTriangleOutlined, WarningTriangleSolid
  *
  */
@@ -242,6 +242,7 @@ export const {
   Switch,
   SwitchOutlined,
   SwitchSolid,
+  Sync,
   TabletOutlined,
   TextMinus,
   TextPlus,

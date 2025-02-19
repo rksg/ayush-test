@@ -11,6 +11,7 @@ import { RolesEnum }                                                            
 import { hasRaiPermission, hasRoles }                                           from '@acx-ui/user'
 
 import { StorageOptions }         from './CloudStorageForm'
+import { QuotaUsageBar }          from './QuotaUsageBar'
 import { useGetStorageQuery }     from './services'
 import { DataSubscriptionsTable } from './Table'
 
@@ -100,6 +101,7 @@ const DataSubscriptionsContent: React.FC<{}> = () => {
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
           helpUrl={helpUrl} />
+        <QuotaUsageBar />
       </GridCol>
     </GridRow>
     <DataSubscriptionsTable />
