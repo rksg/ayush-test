@@ -2,10 +2,18 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                                                               from '@acx-ui/feature-toggle'
-import { NewAPITableResult, PolicyOperation, PolicyType, Workflow, WorkflowUrls, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                                                                   from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                     from '@acx-ui/test-utils'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  NewAPITableResult,
+  PolicyOperation,
+  PolicyType,
+  Workflow,
+  WorkflowUrls,
+  getPolicyRoutePath,
+  WorkflowStep
+} from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import WorkflowTable from '.'
 const workflows:Workflow[] = [{
@@ -43,6 +51,30 @@ const publishedList: NewAPITableResult<Workflow> = {
   }
 }
 
+const steps: NewAPITableResult<WorkflowStep> = {
+  content: [
+    {
+      id: 'step-1',
+      enrollmentActionId: 'step-1-action-id',
+      nextStepId: 'step-2'
+    },
+    {
+      id: 'step-2',
+      enrollmentActionId: 'step-2-action-id',
+      priorStepId: 'step-1'
+    },
+    {
+      id: 'step-3',
+      enrollmentActionId: 'step-3-action-id',
+      priorStepId: 'step-2'
+    }
+  ],
+  paging: {
+    page: 0,
+    pageSize: 1,
+    totalCount: 3
+  }
+}
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort&excludeContent=:excludeContent'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
@@ -71,11 +103,13 @@ jest.mock('@acx-ui/rc/components', ()=> ({
 describe('WorkflowTable', () => {
   const deleteWorkflowApi = jest.fn()
   const searchInProgressWorkflowApi = jest.fn()
+  const cloneWorkflowApi = jest.fn()
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
   beforeEach(async () => {
     deleteWorkflowApi.mockClear()
+    cloneWorkflowApi.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
@@ -94,6 +128,19 @@ describe('WorkflowTable', () => {
         (req, res, ctx) => {
           deleteWorkflowApi()
           return res(ctx.json({}))
+        }
+      ),
+      rest.post(
+        replacePagination(WorkflowUrls.cloneWorkflow.url),
+        (req, res, ctx) => {
+          cloneWorkflowApi()
+          return res(ctx.json({}))
+        }
+      ),
+      rest.get(
+        WorkflowUrls.getWorkflowStepsById.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json(steps))
         }
       )
     )
@@ -179,5 +226,25 @@ describe('WorkflowTable', () => {
     const editButton = await screen.findByRole('button', { name: /Edit/i })
     await userEvent.click(editButton)
     await screen.findByTestId('drawer')
+  })
+
+  it('should able to clone workflow', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <WorkflowTable/>
+    </Provider>, {
+      route: { params, path: tablePath }
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // // assert link in Table view
+    await screen.findByRole('link', { name: workflows[0].name })
+
+    const row = await screen.findByRole('row', { name: new RegExp(workflows[0].name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    const cloneButton = await screen.findByRole('button', { name: /Clone/i })
+    await userEvent.click(cloneButton)
+
+    await waitFor(() => expect(cloneWorkflowApi).toHaveBeenCalled())
   })
 })

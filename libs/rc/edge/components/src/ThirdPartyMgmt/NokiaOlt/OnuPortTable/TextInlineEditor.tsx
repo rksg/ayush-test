@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import {
@@ -21,22 +21,10 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
   const [isEditMode, setEditMode] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [initialValue, setInitialValue] = useState<number>(propsValue)
   const [editingValue, setEditingValue] = useState<number>(propsValue)
 
-  // update initial value when props value change
-  useEffect(() => {
-    setInitialValue(propsValue)
-  }, [propsValue])
-
-  // update editing value when initial value change
-  // this is used to reset the value to initial when API failed, or API call is success initial value changed
-  useEffect(() => {
-    setEditingValue(initialValue)
-  }, [initialValue])
-
   const handleEdit = () => {
-    setEditingValue(editingValue)
+    setEditingValue(propsValue)
     setEditMode(true)
   }
 
@@ -44,9 +32,6 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
     setIsSubmitting(true)
 
     onChange(editingValue)
-      .then(() => {
-        setInitialValue(editingValue)
-      })
       .catch(() => {
         handleResetValue()
       })
@@ -57,7 +42,7 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
   }
 
   const handleResetValue = () => {
-    setEditingValue(initialValue)
+    setEditingValue(propsValue)
   }
 
   const handleCancel = () => {
@@ -99,7 +84,7 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
           />
         </>
       ) : (<>
-        <label>{editingValue ? editingValue : noDataDisplay}</label>
+        <label>{propsValue ? propsValue : noDataDisplay}</label>
         <Button type='link' icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
       </>
       )}
