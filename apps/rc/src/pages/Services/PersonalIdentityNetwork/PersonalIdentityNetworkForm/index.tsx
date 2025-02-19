@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
-import { isNil, omit }                         from 'lodash'
+import { omit }                                from 'lodash'
 import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
@@ -312,7 +312,6 @@ export const getStepsByTopologyType = (type: string) => {
 export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
   // `networkTopologyType` have value only when PIN enhancement FF is enabled
   const networkTopologyType = formData.networkTopologyType
-  const isEdgePinEnhanceEnabled = !isNil(networkTopologyType)
 
   const payload = {
     id: formData.id,
@@ -321,7 +320,6 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
     edgeClusterInfo: {
       edgeClusterId: formData.edgeClusterId,
       segments: formData.segments,
-      // devices: isEdgePinEnhanceEnabled ? undefined : formData.devices,
       dhcpInfoId: formData.dhcpId,
       dhcpPoolId: formData.poolId
     },
@@ -330,7 +328,7 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
     accessSwitchInfos: [] as AccessSwitch[]
   }
 
-  if (!isEdgePinEnhanceEnabled || networkTopologyType !== NetworkTopologyType.Wireless) {
+  if (networkTopologyType !== NetworkTopologyType.Wireless) {
     payload.distributionSwitchInfos = formData.distributionSwitchInfos?.map(ds => omit(
       ds, ['accessSwitches', 'name']))
 
@@ -338,7 +336,7 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
       as, ['name', 'familyId', 'firmwareVersion', 'model']))
   }
 
-  if (!isEdgePinEnhanceEnabled || networkTopologyType !== NetworkTopologyType.TwoTier) {
+  if (networkTopologyType !== NetworkTopologyType.TwoTier) {
     payload.networkIds = formData.networkIds
   }
 

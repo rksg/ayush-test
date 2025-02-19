@@ -168,8 +168,7 @@ export function genDhcpConfigByPinSetting
   ipEnd: string,
   panSize: number,
   devicePerPan: number
-): { keaDhcpConfig?: string,iscDhcpConfig?: string } {
-  // try {
+) {
   const [dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr] = calculateDHCPPool(
     ip2Long(ipStart),
     ip2Long(ipEnd),
@@ -181,7 +180,4 @@ export function genDhcpConfigByPinSetting
     keaDhcpConfig: generateKeaDHCPConfig(dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr),
     iscDhcpConfig: generateISCDHCPConfig(dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr)
   }
-  // } catch(error) {
-  //   throw error
-  // }
 }
