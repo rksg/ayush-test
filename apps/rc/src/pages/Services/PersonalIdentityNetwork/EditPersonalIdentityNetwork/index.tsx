@@ -49,7 +49,7 @@ const EditPersonalIdentityNetwork = () => {
       venueId: pinData?.venueId,
       edgeClusterId: pinData?.edgeClusterInfo?.edgeClusterId,
       segments: pinData?.edgeClusterInfo?.segments,
-      devices: pinData?.edgeClusterInfo?.devices,
+      // devices: pinData?.edgeClusterInfo?.devices,
       dhcpId: pinData?.edgeClusterInfo?.dhcpInfoId,
       poolId: pinData?.edgeClusterInfo?.dhcpPoolId,
       vxlanTunnelProfileId: pinData?.vxlanTunnelProfileId,

@@ -1,5 +1,5 @@
 export const MAX_SEGMENT_PER_VENUE = 10000
-export const MAX_DEVICE_PER_SEGMENT = 10
+export const MAX_DEVICE_PER_SEGMENT = 253
 
 export const edgePinDefaultPayloadFields = [
   'id', 'name',
@@ -168,8 +168,8 @@ export function genDhcpConfigByPinSetting
   ipEnd: string,
   panSize: number,
   devicePerPan: number
-) {
-
+): { keaDhcpConfig?: string,iscDhcpConfig?: string } {
+  // try {
   const [dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr] = calculateDHCPPool(
     ip2Long(ipStart),
     ip2Long(ipEnd),
@@ -181,4 +181,7 @@ export function genDhcpConfigByPinSetting
     keaDhcpConfig: generateKeaDHCPConfig(dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr),
     iscDhcpConfig: generateISCDHCPConfig(dhcpGwAddr, dhcpPoolStart, dhcpPoolEnd, cidr)
   }
+  // } catch(error) {
+  //   throw error
+  // }
 }
