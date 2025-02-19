@@ -24,7 +24,7 @@ import {
   usePollingTableQuery,
   SwitchRbacUrlsInfo,
   isFirmwareVersionAbove10020b,
-  isFirmwareVersionAbove10010fCd2Or10020b
+  isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
@@ -58,8 +58,7 @@ export function SwitchPortTable (props: {
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
 
-  const [isSwitchErrorDisableFw, setIsSwitchErrorDisableFw] = useState(false)
-  const [isSwitchPortProfileFw, setIsSwitchPortProfileFw] = useState(false)
+  const switchFirmware = switchDetail?.firmware
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
@@ -117,15 +116,6 @@ export function SwitchPortTable (props: {
       }
     }
     setData()
-
-    if (switchDetail) {
-      const switchFirmware = switchDetail?.firmware
-      setIsSwitchPortProfileFw(isSwitchPortProfileEnabled
-        && isFirmwareVersionAbove10020b(switchFirmware))
-      setIsSwitchErrorDisableFw(isSwitchErrorDisableEnabled
-        && isFirmwareVersionAbove10010fCd2Or10020b(switchFirmware))
-    }
-
   }, [isVenueLevel, switchDetail])
 
   const statusFilterOptions = [
@@ -171,12 +161,15 @@ export function SwitchPortTable (props: {
     dataIndex: 'name',
     searchable: true,
     sorter: true
-  }, {
-    key: 'switchName',
-    title: $t({ defaultMessage: 'Switch' }),
-    dataIndex: 'switchName',
-    sorter: true
-  }, {
+  },
+  ...( isVenueLevel
+    ? [{
+      key: 'switchName',
+      title: $t({ defaultMessage: 'Switch' }),
+      dataIndex: 'switchName',
+      sorter: true
+    }] : [])
+  , {
     key: 'status',
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
@@ -188,33 +181,39 @@ export function SwitchPortTable (props: {
     title: $t({ defaultMessage: 'Admin Status' }),
     dataIndex: 'adminStatus',
     sorter: true
-  }, {
-    key: 'errDisable',
-    title: $t({ defaultMessage: 'ErrDisable' }),
-    dataIndex: 'errorDisableStatus',
-    sorter: true,
-    show: false,
-    render: (_, row) => {
-      return (
-        <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
-          {row.errorDisableStatus ? 'Yes' : 'No'}
-        </span>
-      )
-    }
-  }, {
-    key: 'errDisableReason',
-    title: $t({ defaultMessage: 'ErrDisable Reason' }),
-    dataIndex: 'errorDisableStatus',
-    sorter: true,
-    show: false,
-    render: (_, row) => {
-      return (
-        <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
-          {row.errorDisableStatus ? row.errorDisableStatus : '--' }
-        </span>
-      )
-    }
-  }, {
+  },
+  ...( isSwitchErrorDisableEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
+    ? [{
+      key: 'errDisable',
+      title: $t({ defaultMessage: 'ErrDisabled' }),
+      dataIndex: 'errorDisableStatus',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return (
+          <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
+            {row.errorDisableStatus ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' }) }
+          </span>
+        )}
+    }] : [])
+  ,
+  ...( isSwitchErrorDisableEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
+    ? [{
+      key: 'errDisableReason',
+      title: $t({ defaultMessage: 'ErrDisable Reason' }),
+      dataIndex: 'errorDisableStatus',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return (
+          <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
+            {row.errorDisableStatus ? row.errorDisableStatus : '--' }
+          </span>
+        )}
+    }] : [])
+  , {
     key: 'portSpeed',
     title: $t({ defaultMessage: 'Speed' }),
     dataIndex: 'portSpeed',
@@ -249,26 +248,32 @@ export function SwitchPortTable (props: {
       }
     }
   },
-  {
-    key: 'switchPortProfileName',
-    title: $t({ defaultMessage: 'Port Profile Name' }),
-    dataIndex: 'switchPortProfileName',
-    show: false,
-    sorter: true,
-    render: (_, row) => {
-      return row.switchPortProfileName ? row.switchPortProfileName : ''
-    }
-  },
-  {
-    key: 'switchPortProfileType',
-    title: $t({ defaultMessage: 'Port Profile Type' }),
-    dataIndex: 'switchPortProfileType',
-    show: false,
-    sorter: true,
-    render: (_, row) => {
-      return row.switchPortProfileType ? row.switchPortProfileType : ''
-    }
-  },
+  ...( isSwitchPortProfileEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
+    ? [{
+      key: 'switchPortProfileName',
+      title: $t({ defaultMessage: 'Port Profile Name' }),
+      dataIndex: 'switchPortProfileName',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.switchPortProfileName ? row.switchPortProfileName : ''
+      }
+    }] : [])
+  ,
+  ...( isSwitchPortProfileEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
+    ? [{
+      key: 'switchPortProfileType',
+      title: $t({ defaultMessage: 'Port Profile Type' }),
+      dataIndex: 'switchPortProfileType',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.switchPortProfileType ? row.switchPortProfileType : ''
+      }
+    }] : [])
+  ,
   {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
@@ -389,18 +394,6 @@ export function SwitchPortTable (props: {
     sorter: true
   }]
 
-  const columnFilters = {
-    switchName: () => isVenueLevel,
-    switchPortProfileName: () => isVenueLevel ? isSwitchPortProfileEnabled : isSwitchPortProfileFw,
-    switchPortProfileType: () => isVenueLevel ? isSwitchPortProfileEnabled : isSwitchPortProfileFw,
-    errDisable: () => isVenueLevel ? isSwitchErrorDisableEnabled : isSwitchErrorDisableFw,
-    errDisableReason: () => isVenueLevel ? isSwitchErrorDisableEnabled : isSwitchErrorDisableFw
-  }
-
-  const getColumns = () => columns.filter(item =>
-    columnFilters[item.key as keyof typeof columnFilters]?.() ?? true
-  )
-
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)],
@@ -419,7 +412,7 @@ export function SwitchPortTable (props: {
   return <Loader states={[tableQuery]}>
     <Table
       settingsId={settingsId}
-      columns={getColumns()}
+      columns={columns}
       dataSource={transformData(tableQuery.data?.data)}
       getAllPagesData={getAllPagesData}
       pagination={tableQuery.pagination}
