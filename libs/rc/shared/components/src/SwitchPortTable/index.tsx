@@ -196,11 +196,7 @@ export function SwitchPortTable (props: {
             {row.errorDisableStatus ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' }) }
           </span>
         )}
-    }] : [])
-  ,
-  ...( isSwitchErrorDisableEnabled
-    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
-    ? [{
+    }, {
       key: 'errDisableReason',
       title: $t({ defaultMessage: 'ErrDisable Reason' }),
       dataIndex: 'errorDisableStatus',
@@ -259,11 +255,7 @@ export function SwitchPortTable (props: {
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
         return row.switchPortProfileName ? row.switchPortProfileName : ''
       }
-    }] : [])
-  ,
-  ...( isSwitchPortProfileEnabled
-    && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
-    ? [{
+    }, {
       key: 'switchPortProfileType',
       title: $t({ defaultMessage: 'Port Profile Type' }),
       dataIndex: 'switchPortProfileType',
@@ -273,8 +265,7 @@ export function SwitchPortTable (props: {
         return row.switchPortProfileType ? row.switchPortProfileType : ''
       }
     }] : [])
-  ,
-  {
+  , {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
