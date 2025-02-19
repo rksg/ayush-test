@@ -288,7 +288,8 @@ export enum Features {
   ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
-  MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units'
+  MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -304,6 +305,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_NAT_T = 'EDGE-NAT-T',
   EDGE_ARPT = 'EDGE-ARPT',
   EDGE_MDNS_PROXY = 'EDGE-MDNS-PROXY',
+  EDGE_HQOS = 'EDGE-HQOS',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -333,8 +335,9 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
   { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
   { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support NAT-Traversal' }), status: false },
-  { key: TierFeatures.EDGE_ARPT, description: defineMessage({ defaultMessage: 'Edge ARP Termination: The RUCKUS Edge Device intercepts ARP requests, responding on behalf of target IPs using IP/MAC mappings learned from ARP traffic. This enhances network efficiency by controlling and reducing ARP broadcast traffic, contributing to a more efficient wireless environment.' }), status: false },
+  { key: TierFeatures.EDGE_ARPT, description: defineMessage({ defaultMessage: 'Edge ARP Termination: The RUCKUS Edge Device intercepts ARP requests, responding on behalf of target IPs using IP/MAC mappings learned from ARP traffic. This enhances network efficiency by controlling and reducing ARP broadcast traffic, contributing to a more efficient wireless environment.' }), status: true },
   { key: TierFeatures.EDGE_MDNS_PROXY, description: defineMessage({ defaultMessage: 'mDNS Proxy for RUCKUS Edge: RUCKUS Edge mDNS gateway enables seamless service discovery across VLANs by overcoming Bonjour/mDNS’s Layer 2 limitations. It records services and processes client requests, allowing devices to discover and access services across network segments.' }), status: true },
+  { key: TierFeatures.EDGE_HQOS, description: defineMessage({ defaultMessage: 'Edge HQoS Bandwidth: RUCKUS Edge HQoS-Driven Egress Scheduling to enforce strict SLAs, intelligent bandwidth management, LLQ prioritization, and DSCP-based classification for seamless, end-to-end QoS.' }), status: true },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

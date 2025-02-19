@@ -4,8 +4,9 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { ApCompatibilityToolTip }                         from '@acx-ui/rc/components'
+import { getTitleWithBetaIndicator, Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { TierFeatures, useIsBetaEnabled }                                            from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip }                                                    from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterArpTerminationSettingsQuery,
   useGetEdgeFeatureSetsQuery,
@@ -92,6 +93,7 @@ export const ArpTerminationFormItem = (props: {
           <StepsForm.FieldLabel width='90%'>
             <Space>
               {$t({ defaultMessage: 'ARP Termination' })}
+              { useIsBetaEnabled(TierFeatures.EDGE_ARPT) ? getTitleWithBetaIndicator('') : null }
               <ApCompatibilityToolTip
                 title={$t({ defaultMessage: 'Reply to ARP requests using local IP to MAC cache. Reduces broadcast traffic but cache can be stale if IPs are reassigned between hosts.' })}
                 showDetailButton

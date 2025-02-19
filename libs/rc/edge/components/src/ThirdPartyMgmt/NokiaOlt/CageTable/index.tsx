@@ -8,12 +8,11 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useGetEdgeCageListQuery, useToggleEdgeCageStateMutation } from '@acx-ui/rc/services'
+import { useToggleEdgeCageStateMutation } from '@acx-ui/rc/services'
 import {
   EdgeNokiaCageData,
   EdgeNokiaCageStateEnum,
   EdgeNokiaOltData,
-  EdgeNokiaOltStatusEnum,
   getCageStatusConfig
 } from '@acx-ui/rc/utils'
 
@@ -22,20 +21,19 @@ import { EdgeNokiaOltStatus } from '../OltStatus'
 import { CageDetailsDrawer } from './CageDetailsDrawer'
 
 interface EdgeNokiaCageTableProps {
-  oltData: EdgeNokiaOltData
+  oltData: EdgeNokiaOltData,
+  cagesList: EdgeNokiaCageData[] | undefined,
+  isLoading: boolean,
+  isFetching: boolean
 }
 export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
-  const { oltData } = props
+  const { oltData, cagesList: data, isLoading, isFetching } = props
   const { venueId, edgeClusterId, serialNumber: oltId } = oltData
-  const isOltOnline = oltData.status === EdgeNokiaOltStatusEnum.ONLINE
 
   const [visible, setVisible] = useState<boolean>(false)
   const [currentCage, setCurrentCage] = useState<EdgeNokiaCageData | undefined>(undefined)
 
   const [toggleEdgeCageState, { isLoading: isUpdating }] = useToggleEdgeCageStateMutation()
-  const { data, isLoading, isFetching } = useGetEdgeCageListQuery({
-    params: { venueId, edgeClusterId, oltId }
-  }, { skip: !isOltOnline })
 
   const handleRowClick = (cage: string) => {
     setCurrentCage(data?.find(item => item.cage === cage))
