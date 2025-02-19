@@ -80,6 +80,10 @@ export const isShowImprovedErrorDialog = (errors: any) => {
   return (isLocalHost() || isDev() || isIntEnv()) && hasErrors
 }
 
+export const getEnabledDialogImproved = () => {
+  return isLocalHost() || isDev() || isIntEnv()
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,

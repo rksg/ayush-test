@@ -78,7 +78,6 @@ export enum Features {
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   EXTEND_SSID_DESPRIPTION_TOGGLE = 'acx-ui-extend-ssid-description-toggle',
-  ERROR_DIALOG_IMPROVEMENT_TOGGLE = 'acx-ui-error-dialog-improvement-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',

@@ -13,11 +13,10 @@ Object.assign(navigator, {
   }
 })
 
-jest.mock('.', () => ({
-  ...jest.requireActual('.'),
-  getEnabledDialogImproved: jest.fn()
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getEnabledDialogImproved: jest.fn().mockReturnValue(false)
 }))
-
 
 describe('ActionModal', () => {
   let [onOk, onOk2, onCancel]: jest.Mock[] = []
@@ -84,8 +83,6 @@ describe('ActionModal', () => {
       const detailsContent = convertToJSON(mockErrorDetails)
 
       beforeEach(async () => {
-        (getEnabledDialogImproved as jest.Mock).mockReturnValue(false)
-        console.log(getEnabledDialogImproved())
         showActionModal({
           type: 'error',
           title: 'Something went wrong',
@@ -152,7 +149,7 @@ describe('ActionModal', () => {
     }
     const detailsContent = convertToJSON(mockErrorDetails)
     beforeEach(async () => {
-      (getEnabledDialogImproved as jest.Mock).mockReturnValue(true)
+      jest.mocked(getEnabledDialogImproved).mockReturnValue(true)
       showActionModal({
         type: 'error',
         title: 'Something went wrong',

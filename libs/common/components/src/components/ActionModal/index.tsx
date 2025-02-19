@@ -8,7 +8,7 @@ import moment                           from 'moment'
 import { RawIntlProvider }              from 'react-intl'
 
 import { ExpandSquareUp, ExpandSquareDown, CopyOutlined, ReportsOutlined, ReportsSolid } from '@acx-ui/icons'
-import { getIntl, isDev, isIntEnv, isLocalHost }                                         from '@acx-ui/utils'
+import { getIntl, getEnabledDialogImproved }                                             from '@acx-ui/utils'
 
 import { Button, ButtonProps } from '../Button'
 import { Descriptions }        from '../Descriptions'
@@ -107,17 +107,11 @@ export const showActionModal = (props: ActionModalProps) => {
   return pick(modal, 'destroy')
 }
 
-export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isDev() || isIntEnv()
-}
-
 const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
   const enabledDialogImproved = getEnabledDialogImproved()
-  // eslint-disable-next-line no-console
-  console.log(enabledDialogImproved)
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -231,18 +225,14 @@ function ApiErrorTemplate ({ errors, ...props }: {
   modal: ModalRef
 }) {
   const { $t } = getIntl()
-  const code = errors && {
-    label: $t({ defaultMessage: 'Technical details' }),
-    content: convertToJSON(errors)
-  }
+  const code = errors && convertToJSON(errors)
   const okText = $t({ defaultMessage: 'OK' })
   return (
     <>
       {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
         {code && <ApiCollapsePanel
-          header={code.label}
-          content={code.content}
+          content={code}
           path={props.path}
           errorCode={props.errorCode}
         />
@@ -352,7 +342,6 @@ function CustomButtonsTemplate (props: {
 
 
 function ApiCollapsePanel (props: {
-  header: string
   content: string
   path?: string
   errorCode?: number
@@ -432,7 +421,7 @@ function ApiCollapsePanel (props: {
       expandIconPosition='end'
       expandIcon={({ isActive }) => getExpandIcon(isActive)}
     >
-      <Panel header={undefined} key={props.header}>
+      <Panel header={undefined} key={'ApiCollapsePanel'}>
         <div style={{ backgroundColor: '#F8F8FA', borderRadius: '4px' }}>
           {getContent()}
         </div>
