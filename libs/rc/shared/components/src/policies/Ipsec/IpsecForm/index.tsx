@@ -9,8 +9,6 @@ import { useCreateIpsecMutation, useGetIpsecByIdQuery, useUpdateIpsecMutation } 
 import {
   getPolicyRoutePath,
   Ipsec,
-  IpSecAdvancedOptionEnum,
-  IpSecFailoverModeEnum,
   IpSecFormData,
   IpSecProposalTypeEnum,
   IpSecRekeyTimeUnitEnum,
@@ -58,17 +56,6 @@ export const IpsecForm = (props: IpsecFormProps) => {
         iskRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         advancedOption: {
-          dhcpOpt43Subcode: 7,
-          retryLimit: 5,
-          replayWindow: 32,
-          ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
-          enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
-          dpdDelay: 1,
-          keepAliveIntval: 20,
-          failoverRetryPeriod: 3,
-          failoverRetryInterval: 1,
-          failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
-          failoverPrimaryCheckInterval: 3
         },
         ikeSecurityAssociation: {
           ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
@@ -85,16 +72,6 @@ export const IpsecForm = (props: IpsecFormProps) => {
   const handleFinish = async (data: IpSecFormData) => {
     try {
       if (data?.advancedOption) {
-        if (data.advancedOption.ipcompEnable) {
-          data.advancedOption.ipcompEnable = IpSecAdvancedOptionEnum.ENABLED
-        } else {
-          data.advancedOption.ipcompEnable = IpSecAdvancedOptionEnum.DISABLED
-        }
-        if (data.advancedOption?.enforceNatt) {
-          data.advancedOption.enforceNatt = IpSecAdvancedOptionEnum.ENABLED
-        } else {
-          data.advancedOption.enforceNatt = IpSecAdvancedOptionEnum.DISABLED
-        }
         if (!data.advancedOption.failoverRetryPeriod) {
           data.advancedOption.failoverRetryPeriod = 0
         }
@@ -105,7 +82,6 @@ export const IpsecForm = (props: IpsecFormProps) => {
       if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
         data.espSecurityAssociation.espProposals = []
       }
-
       if (editMode) {
         await updateIpsec({ params, payload: data }).unwrap()
       } else {

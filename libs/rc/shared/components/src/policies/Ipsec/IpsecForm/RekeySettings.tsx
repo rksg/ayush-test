@@ -29,14 +29,14 @@ export default function RekeySettings () {
       itemKey: 'ikeRekeyTime',
       itemLabel: $t({ defaultMessage: 'Internet Key Exchange (IKE)' }),
       render: true,
-      rules: [{ max: 255 }],
+      rules: [{ min: 0, max: 16384 }],
       tooltipMsg: $t(messageMapping.ike_rekey_tooltip)
     },
     {
       itemKey: 'espRekeyTime',
       itemLabel: $t({ defaultMessage: 'Encapsulating Security Payload (ESP)' }),
       render: true,
-      rules: [{ max: 255 }],
+      rules: [{ min: 0, max: 16384 }],
       tooltipMsg: $t(messageMapping.esp_rekey_tooltip)
     }
   ]
@@ -67,6 +67,7 @@ export default function RekeySettings () {
               <Space>
                 <Form.Item
                   name={itemKey}
+                  initialValue={4}
                   children={
                     <InputNumber placeholder={placeholder} style={{ width: 80 }} />
                   } />

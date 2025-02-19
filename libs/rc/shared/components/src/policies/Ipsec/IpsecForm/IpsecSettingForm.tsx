@@ -39,7 +39,12 @@ const defaultFields = [
   'name',
   'serverAddress',
   'authenticationType',
-  'activations'
+  'activations',
+  'preSharedKey',
+  'ikeProposalType',
+  'ikeProposals',
+  'espProposalType',
+  'espProposals'
 ]
 
 export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
@@ -50,6 +55,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
   const [showMoreSettings, setShowMoreSettings] = useState(false)
   const [preSharedKey] = useState('')
+  const [loadGwSettings, setLoadGwSettings] = useState(true)
+  const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
 
   const { ipsecData, isLoading } = useGetIpsecViewDataListQuery(
     { params, payload: {
@@ -68,13 +75,17 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   )
 
   useEffect(() => {
+    if(readMode) {
+      setAuthType(ipsecData?.authenticationType)
+      return
+    }
     if (initIpSecData) {
       form.setFieldsValue(initIpSecData)
       if (initIpSecData.authType) {
         setAuthType(initIpSecData.authType)
       }
     }
-  }, [initIpSecData, form])
+  }, [initIpSecData, form, ipsecData, readMode])
 
   const nameValidator = async (value: string) => {
     const payload = { ...defaultPayload, searchString: value }
@@ -119,12 +130,16 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     {
       key: 'gatewayConnection',
       display: $t({ defaultMessage: 'Gateway & Connection' }),
-      content: <GatewayConnectionSettings initIpSecData={initIpSecData} />
+      content: <GatewayConnectionSettings initIpSecData={initIpSecData}
+        loadGwSettings={loadGwSettings}
+        setLoadGwSettings={setLoadGwSettings} />
     },
     {
       key: 'failover',
       display: $t({ defaultMessage: 'Failover' }),
-      content: <FailoverSettings initIpSecData={initIpSecData} />
+      content: <FailoverSettings initIpSecData={initIpSecData}
+        loadFailoverSettings={loadFailoverSettings}
+        setLoadFailoverSettings={setLoadFailoverSettings} />
     }
   ]
   const [activeTabKey, setActiveTabKey] = useState(moreSettingsTabsInfo[0]?.key)
@@ -178,28 +193,36 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             rules={[{ required: true }]}
             initialValue={authType}
             children={
-              <Select
-                style={{ width: '380px' }}
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                children={
-                  authOptions.map((option) =>
-                    <Select.Option key={option.value} value={option.value}>
-                      {option.label}
-                    </Select.Option>)
-                }
-                onChange={onAuthTypeChange}
-              />
+              readMode ?
+                (ipsecData?.authenticationType=== IpSecAuthEnum.PSK ?
+                  $t({ defaultMessage: 'Pre-shared Key' }) :
+                  $t({ defaultMessage: 'Certificate' })) :
+                <Select
+                  style={{ width: '380px' }}
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  children={
+                    authOptions.map((option) =>
+                      <Select.Option key={option.value} value={option.value}>
+                        {option.label}
+                      </Select.Option>)
+                  }
+                  onChange={onAuthTypeChange}
+                />
             }
           />
           {authType === IpSecAuthEnum.PSK &&
             <Form.Item
-              key={preSharedKey}
               data-testid='pre-shared-key'
               name='preSharedKey'
               label={$t({ defaultMessage: 'Pre-shared Key' })}
               rules={[{ required: true }]}
               children={
-                <PasswordInput value={preSharedKey} />
+                readMode ?
+                  <PasswordInput
+                    value={ipsecData?.preSharedKey}
+                    style={{ width: '50%', border: 'none' }}
+                    readOnly /> :
+                  <PasswordInput value={preSharedKey} />
               }
             />
           }
@@ -214,23 +237,44 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
         <Col span={24}>
           <Subtitle level={5}>
             { $t({ defaultMessage: 'Security Association' }) }</Subtitle>
-          <Tabs type='third'
-            onChange={(key) => setActiveSecurityTabKey(key)}
-            activeKey={activeSecurityTabKey}
-          >
-            {secAssociationTabsInfo.map(({ key, display }) =>
-              (<Tabs.TabPane key={key} tab={<TabLabel>{display}</TabLabel>} />))}
-          </Tabs>
-          <div style={{ marginBottom: '30px' }}>
-            {secAssociationTabsInfo.find(info => (info.key === activeSecurityTabKey))?.content}
-          </div>
-          <Button type='link'
-            style={{ maxWidth: '700px' }}
-            onClick={() => setShowMoreSettings(!showMoreSettings)}>
-            {showMoreSettings
-              ? $t({ defaultMessage: 'Show less settings' })
-              : $t({ defaultMessage: 'Show more settings' })}
-          </Button>
+          {readMode &&
+            <>
+              <Form.Item
+                label={$t({ defaultMessage: 'IKE Proposal' })}
+                children={
+                  <label>{ipsecData.ikeProposalType === 'DEFAULT' ?
+                    $t({ defaultMessage: 'Default' }) :
+                    $t({ defaultMessage: 'Custom' })}</label>
+                } />
+              <Form.Item
+                label={$t({ defaultMessage: 'ESP Proposal' })}
+                children={
+                  <label>{ipsecData.espProposalType === 'DEFAULT' ?
+                    $t({ defaultMessage: 'Default' }) :
+                    $t({ defaultMessage: 'Custom' })}</label>
+                } />
+            </>
+          }
+          {!readMode &&
+            <>
+              <Tabs type='third'
+                onChange={(key) => setActiveSecurityTabKey(key)}
+                activeKey={activeSecurityTabKey}
+              >
+                {secAssociationTabsInfo.map(({ key, display }) =>
+                  (<Tabs.TabPane key={key} tab={<TabLabel>{display}</TabLabel>} />))}
+              </Tabs>
+              <div style={{ marginBottom: '30px' }}>
+                {secAssociationTabsInfo.find(info => (info.key === activeSecurityTabKey))?.content}
+              </div>
+              <Button type='link'
+                style={{ maxWidth: '700px' }}
+                onClick={() => setShowMoreSettings(!showMoreSettings)}>
+                {showMoreSettings
+                  ? $t({ defaultMessage: 'Show less settings' })
+                  : $t({ defaultMessage: 'Show more settings' })}
+              </Button>
+            </>}
           {showMoreSettings && <>
             <Tabs type='third'
               onChange={(key) => setActiveTabKey(key)}

@@ -10,13 +10,15 @@ import { Ipsec, IpSecFailoverModeEnum, IpSecRetryDurationEnum } from '@acx-ui/rc
 import { messageMapping } from './messageMapping'
 
 interface FailoverSettingsFormProps {
-  initIpSecData?: Ipsec
+  initIpSecData?: Ipsec,
+  loadFailoverSettings: boolean,
+  setLoadFailoverSettings: (state: boolean) => void
 }
 
 export default function FailoverSettings (props: FailoverSettingsFormProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { initIpSecData } = props
+  const { initIpSecData, loadFailoverSettings, setLoadFailoverSettings } = props
 
   const [retryDuration, setRetryDuration] =
   useState<IpSecRetryDurationEnum>(IpSecRetryDurationEnum.FOREVER)
@@ -24,14 +26,25 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
   useState<IpSecFailoverModeEnum>(IpSecFailoverModeEnum.NON_REVERTIVE)
 
   useEffect(() => {
-    if (initIpSecData?.advancedOption?.failoverRetryPeriod !== 0) {
+    setRetryDuration(form.getFieldValue('retryDuration'))
+    setRetryMode(form.getFieldValue(['advancedOption', 'failoverMode']))
+    if (loadFailoverSettings && initIpSecData?.advancedOption?.failoverRetryPeriod
+        && initIpSecData?.advancedOption?.failoverRetryPeriod !== 0) {
       setRetryDuration(IpSecRetryDurationEnum.SPECIFIC)
       form.setFieldValue('retryDuration', IpSecRetryDurationEnum.SPECIFIC)
     }
-    if (initIpSecData?.advancedOption?.failoverMode === IpSecFailoverModeEnum.REVERTIVE) {
+    if (loadFailoverSettings && initIpSecData?.advancedOption?.failoverMode
+        && initIpSecData?.advancedOption?.failoverMode === IpSecFailoverModeEnum.REVERTIVE) {
       setRetryMode(initIpSecData.advancedOption.failoverMode)
+      form.setFieldValue(['advancedOption', 'failoverMode'], IpSecFailoverModeEnum.REVERTIVE)
     }
-  }, [form, initIpSecData])
+
+    setLoadFailoverSettings(false)
+  }, [initIpSecData])
+
+  const onRetryDurationChange = (value: IpSecRetryDurationEnum) => {
+    setRetryDuration(value)
+  }
 
   const retryDurationOptions = [
     { label: $t({ defaultMessage: 'Forever' }), value: IpSecRetryDurationEnum.FOREVER },
@@ -52,7 +65,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
           initialValue={retryDuration}
           children={
             <Select style={{ width: '150px' }}
-              onChange={setRetryDuration}
+              onChange={onRetryDurationChange}
               children={retryDurationOptions.map((option) =>
                 <Select.Option key={option.value} value={option.value}>
                   {option.label}
@@ -63,9 +76,9 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
             <Form.Item
               label={' '}
               name={['advancedOption','failoverRetryPeriod']}
-              initialValue={0}
+              initialValue={3}
               children={
-                <InputNumber min={0} max={365} />
+                <InputNumber min={3} />
               } />
             <span> {$t({ defaultMessage: 'days' })} </span>
           </Space>
@@ -93,7 +106,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
         name={['advancedOption','failoverMode']}
         label={$t({ defaultMessage: 'Retry Mode' })}
         tooltip={$t(messageMapping.failover_retry_mode_tooltip)}
-        initialValue={IpSecFailoverModeEnum.NON_REVERTIVE}
+        initialValue={retryMode}
         children={
           <Select
             style={{ width: '150px' }}
@@ -112,7 +125,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
               <Form.Item
                 name={['advancedOption','failoverPrimaryCheckInterval']}
                 initialValue={1}
-                children={<InputNumber min={1} max={30} />} />
+                children={<InputNumber min={1} max={60} />} />
               <div style={{ height: '36px' }}> {$t({ defaultMessage: 'minute(s)' })} </div>
             </Space>} />
       }

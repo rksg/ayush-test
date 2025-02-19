@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { InputNumber, Space, Switch }    from 'antd'
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import Form                              from 'antd/lib/form'
-import { useIntl }                       from 'react-intl'
+import { Form, InputNumber, Space, Switch } from 'antd'
+import Checkbox, { CheckboxChangeEvent }    from 'antd/lib/checkbox'
+import { useIntl }                          from 'react-intl'
 
 import { GridCol, GridRow, Subtitle, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }          from '@acx-ui/icons'
@@ -14,12 +13,15 @@ import { messageMapping } from './messageMapping'
 import { Ipsec, IpSecAdvancedOptionEnum } from '@acx-ui/rc/utils'
 
 interface GatewayConnectionSettingsFormProps {
-  initIpSecData?: Ipsec
+  initIpSecData?: Ipsec,
+  loadGwSettings: boolean,
+  setLoadGwSettings: (state: boolean) => void
 }
 
 export default function GatewayConnectionSettings (props: GatewayConnectionSettingsFormProps) {
   const { $t } = useIntl()
-  const { initIpSecData } = props
+  const { initIpSecData, loadGwSettings, setLoadGwSettings } = props
+  const form = Form.useFormInstance()
   const [retryLimitEnabled, setRetryLimitEnabled] = useState(false)
   const [espReplayWindowEnabled, setEspReplayWindowEnabled] = useState(false)
   const [deadPeerDetectionDelayEnabled, setDeadPeerDetectionDelayEnabled] = useState(false)
@@ -28,15 +30,49 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
   const [forceNATTEnabled, setForceNATTEnabled] = useState(false)
 
   useEffect(() => {
-    if (initIpSecData) {
+    console.log('initIpSecData', initIpSecData)
+    const ipCompEnabled = form.getFieldValue(['advancedOption', 'ipcompEnable'])
+    if (ipCompEnabled === IpSecAdvancedOptionEnum.ENABLED) {
+      setIpCompressionEnabled(true)
+    } else if (ipCompEnabled === IpSecAdvancedOptionEnum.DISABLED) {
+      setIpCompressionEnabled(false)
+    }
+    const enforceNatt = form.getFieldValue(['advancedOption', 'enforceNatt'])
+    if (enforceNatt === IpSecAdvancedOptionEnum.ENABLED) {
+      setForceNATTEnabled(true)
+    } else if (enforceNatt === IpSecAdvancedOptionEnum.DISABLED) {
+      setForceNATTEnabled(false)
+    }
+    if (loadGwSettings && initIpSecData) {
       if (IpSecAdvancedOptionEnum.ENABLED === initIpSecData.advancedOption?.ipcompEnable) {
         setIpCompressionEnabled(true)
+      } else if(IpSecAdvancedOptionEnum.DISABLED === initIpSecData.advancedOption?.ipcompEnable) {
+        setIpCompressionEnabled(false)
       }
       if (IpSecAdvancedOptionEnum.ENABLED === initIpSecData.advancedOption?.enforceNatt) {
         setForceNATTEnabled(true)
       }
     }
+    setLoadGwSettings(false)
   }, [initIpSecData])
+
+  const onForceNattChange = (value: boolean) => {
+    setForceNATTEnabled(value)
+    if (value) {
+      form.setFieldValue(['advancedOption', 'enforceNatt'], IpSecAdvancedOptionEnum.ENABLED)
+    } else {
+      form.setFieldValue(['advancedOption', 'enforceNatt'], IpSecAdvancedOptionEnum.DISABLED)
+    }
+  }
+
+  const onIpCompChange = (value: boolean) => {
+    setIpCompressionEnabled(value)
+    if (value) {
+      form.setFieldValue(['advancedOption', 'ipcompEnable'], IpSecAdvancedOptionEnum.ENABLED)
+    } else {
+      form.setFieldValue(['advancedOption', 'ipcompEnable'], IpSecAdvancedOptionEnum.DISABLED)
+    }
+  }
 
   return (
     <>
@@ -54,10 +90,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                 </Tooltip>
               </>
             }
-            required={true}
-            rules={[{
-              required: true
-            }]}
           />
         </GridCol>
         <GridCol col={{ span: 12 }}>
@@ -65,7 +97,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             style={{ marginTop: '-4px' }}
             initialValue={7}
             children={
-              <InputNumber min={1} max={32} />
+              <InputNumber min={3} max={243} />
             }
           />
         </GridCol>
@@ -174,12 +206,13 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','ipcompEnable']}
             style={{ marginTop: '-28px' }}
+            initialValue={false}
             children={
               <Switch
                 checked={ipCompressionEnabled}
                 data-testid='advOpt-ipcompEnable'
                 onChange={async (checked: boolean) => {
-                  setIpCompressionEnabled(checked)
+                  onIpCompChange(checked)
                 }}
               />
             }
@@ -245,13 +278,14 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','enforceNatt']}
             style={{ marginTop: '-28px' }}
+            initialValue={false}
             children={
               <Switch
                 // eslint-disable-next-line max-len
                 data-testid='advOpt-enforceNatt'
                 checked={forceNATTEnabled}
                 onChange={async (checked: boolean) => {
-                  setForceNATTEnabled(checked)
+                  onForceNattChange(checked)
                 }} />
             } />
         </GridCol>

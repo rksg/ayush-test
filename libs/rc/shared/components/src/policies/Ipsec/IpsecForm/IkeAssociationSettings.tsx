@@ -36,11 +36,11 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
     dhGroup: IpSecDhGroupEnum.MODP2048
   }
 
-  const algorithmValidator = async (value: string) => {
+  const algorithmValidator = async () => {
     let isValid = true
     let proposalType = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposalType'])
     let proposals = form.getFieldValue(['ikeSecurityAssociation', 'ikeProposals'])
-    if (value && proposalType === IpSecProposalTypeEnum.SPECIFIC) {
+    if (proposalType === IpSecProposalTypeEnum.SPECIFIC) {
       if (proposals.length === MAX_PROPOSALS) {
         if (proposals[0].encAlg === proposals[1].encAlg &&
           proposals[0].authAlg === proposals[1].authAlg &&
@@ -194,7 +194,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                       ]}
                       initialValue={IpSecPseudoRandomFunctionEnum.USE_INTEGRITY_ALG}
                       children={
-                        <Select style={{ minWidth: 150 }}
+                        <Select style={{ minWidth: 180 }}
                           data-testid={`select_prf_${index}`}
                           placeholder={$t({ defaultMessage: 'Select...' })}
                           options={prfOptions}
@@ -203,9 +203,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                     <Form.Item
                       name={[field.name, 'dhGroup']}
                       label={$t({ defaultMessage: 'DH Group' })}
-                      rules={(index === MAX_PROPOSALS - 1) ?
-                        [{ required: true }, { validator: (_, value) => algorithmValidator(value) }] :
-                        [{ required: true }]}
+                      rules={[{ required: true }]}
                       initialValue={IpSecDhGroupEnum.MODP2048}
                       children={
                         <Select style={{ minWidth: 150 }}
@@ -235,6 +233,11 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                   }}>
                   {$t({ defaultMessage: 'Add another proposal' })}
                 </Button>
+              }
+              {fields.length === MAX_PROPOSALS &&
+                <Form.Item name='combinationValidator'
+                  style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
+                  rules={[{ validator: () => algorithmValidator() }]} />
               }
             </>
           )}

@@ -15,7 +15,7 @@ describe('GatewayConnectionSettings', () => {
     return render(
       <IntlProvider locale='en'>
         <Form initialValues={initialValues}>
-          <GatewayConnectionSettings />
+          <GatewayConnectionSettings loadGwSettings setLoadGwSettings={jest.fn()} />
         </Form>
       </IntlProvider>
     )

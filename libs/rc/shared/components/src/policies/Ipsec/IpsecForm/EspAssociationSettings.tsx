@@ -34,11 +34,11 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
     dhGroup: IpSecDhGroupEnum.MODP2048
   }
 
-  const algorithmValidator = async (value: string) => {
+  const algorithmValidator = async () => {
     let isValid = true
     let proposalType = form.getFieldValue(['espSecurityAssociation', 'espProposalType'])
     let proposals = form.getFieldValue(['espSecurityAssociation', 'espProposals'])
-    if (value && proposalType === IpSecProposalTypeEnum.SPECIFIC) {
+    if (proposalType === IpSecProposalTypeEnum.SPECIFIC) {
       if (proposals.length === MAX_PROPOSALS) {
         if (proposals[0].encAlg === proposals[1].encAlg &&
           proposals[0].authAlg === proposals[1].authAlg &&
@@ -145,7 +145,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     ]}
                     initialValue={IpSecEncryptionAlgorithmEnum.AES128}
                     children={
-                      <Select style={{ minWidth: 160 }}
+                      <Select style={{ minWidth: 180 }}
                         data-testid={`select_encryption_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
                         children={encryptionOptions.map(({ label, value }) =>
@@ -160,7 +160,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                       { required: true }
                     ]}
                     children={
-                      <Select style={{ minWidth: 160 }}
+                      <Select style={{ minWidth: 180 }}
                         data-testid={`select_integrity_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
                         defaultValue={IpSecIntegrityAlgorithmEnum.SHA1}
@@ -170,11 +170,9 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                   <Form.Item
                     name={[field.name, 'dhGroup']}
                     label={$t({ defaultMessage: 'DH Group' })}
-                    rules={(index === MAX_PROPOSALS - 1) ?
-                      [{ required: true }, { validator: (_, value) => algorithmValidator(value) }] :
-                      [{ required: true }]}
+                    rules={[{ required: true }]}
                     children={
-                      <Select style={{ minWidth: 160 }}
+                      <Select style={{ minWidth: 180 }}
                         data-testid={`select_dh_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
                         defaultValue={IpSecDhGroupEnum.MODP2048}
@@ -202,6 +200,11 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                 }}>
                 {$t({ defaultMessage: 'Add another proposal' })}
               </Button>
+            }
+            {fields.length === MAX_PROPOSALS &&
+              <Form.Item name='combinationValidator'
+                style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
+                rules={[{ validator: () => algorithmValidator() }]} />
             }
           </>
         )}

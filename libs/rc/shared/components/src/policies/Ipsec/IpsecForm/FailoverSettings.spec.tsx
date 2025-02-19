@@ -35,7 +35,6 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
-
 describe('FailoverSettings', () => {
   it('renders with default props', () => {
     const { result: formRef } = renderHook(() => {
@@ -43,7 +42,8 @@ describe('FailoverSettings', () => {
       form.setFieldsValue(initialFormValue)
       return form
     })
-    render(<Form form={formRef.current}><FailoverSettings /></Form>)
+    render(<Form form={formRef.current}>
+      <FailoverSettings loadFailoverSettings setLoadFailoverSettings={jest.fn()} /></Form>)
     expect(screen.getByText('Retry Duration')).toBeInTheDocument()
     expect(screen.getByText('Retry Interval')).toBeInTheDocument()
     expect(screen.getByText('Retry Mode')).toBeInTheDocument()
@@ -63,7 +63,9 @@ describe('FailoverSettings', () => {
       }
     }
     render(<Form form={formRef.current}>
-      <FailoverSettings initIpSecData={initIpSecData} /></Form>)
+      <FailoverSettings initIpSecData={initIpSecData}
+        loadFailoverSettings
+        setLoadFailoverSettings={jest.fn()} /></Form>)
     expect(screen.getByText('Retry Duration')).toBeInTheDocument()
     expect(screen.getByText('Retry Interval')).toBeInTheDocument()
     expect(screen.getByText('Retry Mode')).toBeInTheDocument()
@@ -82,7 +84,9 @@ describe('FailoverSettings', () => {
       }
     }
     render(<Form form={formRef.current}>
-      <FailoverSettings initIpSecData={initIpSecData} /></Form>)
+      <FailoverSettings initIpSecData={initIpSecData}
+        loadFailoverSettings
+        setLoadFailoverSettings={jest.fn()} /></Form>)
     expect(screen.getByText('Specific Period')).toBeInTheDocument()
 
     expect(screen.getByText('Forever')).toBeInTheDocument()
@@ -94,7 +98,10 @@ describe('FailoverSettings', () => {
       form.setFieldsValue(initialFormValue)
       return form
     })
-    render(<Form form={formRef.current}><FailoverSettings /></Form>)
+    render(<Form form={formRef.current}>
+      <FailoverSettings
+        loadFailoverSettings
+        setLoadFailoverSettings={jest.fn()} /></Form>)
 
     expect(screen.queryByText('Check Interval')).not.toBeInTheDocument()
 
