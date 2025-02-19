@@ -72,7 +72,6 @@ export function WorkflowDrawer (props: WorkflowDrawerProps) {
         >
           <WorkflowForm
             policyId={data.id!}
-            defaultValue={data}
             isEdit
           />
         </Form>
