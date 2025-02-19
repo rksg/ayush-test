@@ -243,7 +243,7 @@ exports[`Floor Plan Form should render correctly 1`] = `
                         tabindex="0"
                       >
                         <input
-                          accept="image/*"
+                          accept="image/*, application/pdf"
                           style="display: none;"
                           type="file"
                         />
@@ -267,9 +267,9 @@ exports[`Floor Plan Form should render correctly 1`] = `
           <div
             class="ant-form-item-extra"
           >
-            Max. image size: 20 MB
+            Max. file size: 20 MB
             <br />
-            Supported formats: PNG, JPEG, GIF, SVG
+            Supported formats: PNG, JPEG, GIF, SVG, PDF
           </div>
         </div>
       </div>
