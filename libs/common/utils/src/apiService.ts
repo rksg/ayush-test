@@ -75,8 +75,9 @@ export const isShowApiError = (request?: Request) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isShowImprovedErrorDialog = (errors: any) => {
-  const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0 && errors.errors[0].message
+export const isShowImprovedErrorSuggestion = (errors: any) => {
+  const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0
+    && errors.errors[0].suggestion
   return (getEnabledDialogImproved()) && hasErrors
 }
 

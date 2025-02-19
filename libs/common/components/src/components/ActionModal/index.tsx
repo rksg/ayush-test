@@ -358,7 +358,7 @@ function ApiCollapsePanel (props: {
     const content = props.content
     const object = JSON.parse(content)
     const errorObj = object.errors?.[0] || {}
-    return <UI.ErrorDescriptions labelWidthPercent={errorObj.message? 26 : 28}
+    return <UI.ErrorDescriptions labelWidthPercent={errorObj.suggestion? 26 : 28}
       contentStyle={{ alignItems: 'center' }}>
       {/* model  */}
       <Descriptions.Item
@@ -391,7 +391,7 @@ function ApiCollapsePanel (props: {
            label={$t({ defaultMessage: 'Suggestion' })}
            children={errorObj.suggestion} />
       }
-      { !errorObj.message &&
+      { !errorObj.suggestion &&
       <>
         <Descriptions.Item
           label={'Error Response'}

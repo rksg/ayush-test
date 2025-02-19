@@ -11,7 +11,7 @@ import {
   getUrlForTest,
   getOpsApi,
   batchApi,
-  isShowImprovedErrorDialog
+  isShowImprovedErrorSuggestion
 } from './apiService'
 
 const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
@@ -38,8 +38,8 @@ describe('ApiInfo', () => {
     expect(isIgnoreErrorModal()).toBe(false)
   })
 
-  it('Check the isShowImprovedErrorDialog flag', async () => {
-    expect(isShowImprovedErrorDialog({ errors: [] })).toBe(false)
+  it('Check the isShowImprovedErrorSuggestion flag', async () => {
+    expect(isShowImprovedErrorSuggestion({ errors: [] })).toBe(false)
   })
 
   it('getFilters', async () => {

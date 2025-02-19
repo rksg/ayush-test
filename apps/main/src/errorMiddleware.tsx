@@ -9,7 +9,7 @@ import {
   setUpIntl,
   IntlSetUpError,
   isShowApiError,
-  isShowImprovedErrorDialog,
+  isShowImprovedErrorSuggestion,
   isIgnoreErrorModal,
   userLogout,
   CatchErrorResponse,
@@ -178,9 +178,9 @@ export const getErrorContent = (action: ErrorAction) => {
     }
   }
 
-  if(errors && isShowImprovedErrorDialog(errors)) {
+  if(errors && isShowImprovedErrorSuggestion(errors)) {
     const errorObj = errors as { errors: CatchErrorDetails[] }
-    const description = errorObj.errors[0].suggestion || errorObj.errors[0].message || ''
+    const description = errorObj.errors[0].suggestion || ''
     content = <span>{description}</span>
   }
 
