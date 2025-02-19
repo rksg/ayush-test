@@ -8,6 +8,7 @@ import { mockRestApiQuery }                   from '@acx-ui/test-utils'
 
 import { dataSubscriptionApis } from './services'
 import SubscriptionForm         from './SubscriptionForm'
+import { Frequency }            from './utils'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -52,7 +53,7 @@ describe('DataSubscriptionsForm', () => {
         name: 'name',
         dataSource: 'apInventory',
         columns: ['apName'],
-        frequency: 'daily'
+        frequency: Frequency.Daily
       }
     })
     render(<SubscriptionForm editMode/>, {
@@ -105,7 +106,7 @@ describe('DataSubscriptionsForm', () => {
         name: 'name',
         dataSource: 'apInventory',
         columns: ['apName'],
-        frequency: 'daily'
+        frequency: Frequency.Daily
       }
     })
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'patch', {

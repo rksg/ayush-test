@@ -8,22 +8,16 @@ import { useRaiR1HelpPageLink }                                                 
 import { useNavigate, useTenantLink }                                           from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                                     from '@acx-ui/user'
 
-import { StorageOptions }     from './CloudStorageForm'
-import { QuotaUsageBar }      from './QuotaUsageBar'
-import { useGetStorageQuery } from './services'
-import { generateBreadcrumb } from './utils'
+import { StorageOptions }         from './CloudStorageForm'
+import { QuotaUsageBar }          from './QuotaUsageBar'
+import { useGetStorageQuery }     from './services'
+import { DataSubscriptionsTable } from './Table'
 
-type DataSubscriptionsContentProps = {
-  isRAI?: boolean
-}
-const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isRAI }) => {
+const DataSubscriptionsContent: React.FC<{}> = () => {
   const { $t } = useIntl()
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataSubscriptions')
-  const breadCrumb = isRAI ? [
-    { text: $t({ defaultMessage: 'Business Insights' }) }
-  ]: generateBreadcrumb()
   const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
   const StorageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType
@@ -31,7 +25,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
   return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Data Subscriptions' })}
-      breadcrumb={breadCrumb}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <Loader
         states={[{ isLoading: isStorageLoading }]}
         style={{ flexDirection: 'row', gap: '10px' }}>
@@ -81,6 +75,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
         <QuotaUsageBar />
       </GridCol>
     </GridRow>
+    <DataSubscriptionsTable />
   </>)
 }
 

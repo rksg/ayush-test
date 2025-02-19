@@ -1,4 +1,6 @@
+import { TableResult }     from '@acx-ui/rc/utils'
 import { notificationApi } from '@acx-ui/store'
+import { RequestPayload }  from '@acx-ui/types'
 
 export type DataQuotaUsage = {
     used: number
@@ -44,6 +46,16 @@ export type StorageData = {
   config: StoragePayload,
   id: string
 }
+export type DataSubscription = Omit<SubscriptionPayload, 'id'> & {
+  id: string
+  status: boolean,
+  updatedAt: string
+}
+
+type PatchDataSubscriptions = {
+  dataSubscriptionIds: string[]
+  data: Partial<DataSubscription>
+}
 export const dataSubscriptionApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
     getStorage: build.query<StorageData, {}>({
@@ -54,7 +66,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'Notification', id: 'GET_STORAGE' }],
+      providesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }],
       transformResponse: (response: { data: StorageData }) => {
         return response.data
       }
@@ -71,7 +83,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Notification', id: 'GET_STORAGE' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }]
     }),
     getSubscription: build.query<SubscriptionPayload, { id?: string }>({
       query: ({ id }) => {
@@ -81,7 +93,6 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'Notification', id: 'GET_SUBSCRIPTION' }],
       transformResponse: (response: { data: SubscriptionPayload }) => {
         return response.data
       }
@@ -100,7 +111,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Notification', id: 'GET_SUBSCRIPTION' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION' }]
     }),
     getQuotaUsage: build.query<DataQuotaUsage, void>({
       query: () => {
@@ -110,6 +121,49 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       }
+    }),
+    dataSubscriptions: build.query<
+      TableResult<DataSubscription>,
+      RequestPayload
+    >({
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions/query',
+        method: 'post',
+        credentials: 'include',
+        body: payload
+      }),
+      providesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }],
+      transformResponse: (response: TableResult<DataSubscription>) => {
+        return {
+          data: response.data,
+          page: response.page,
+          totalCount: response.totalCount
+        }
+      }
+    }),
+    patchDataSubscriptions: build.mutation<
+      void,
+      RequestPayload<PatchDataSubscriptions>
+    >({
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions',
+        method: 'PATCH',
+        credentials: 'include',
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+    }),
+    deleteDataSubscriptions: build.mutation<
+      void,
+      RequestPayload<string[]>
+    >({
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions',
+        method: 'DELETE',
+        credentials: 'include',
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
     })
   })
 })
@@ -119,5 +173,8 @@ export const {
   useSaveStorageMutation,
   useSaveSubscriptionMutation,
   useGetSubscriptionQuery,
-  useGetQuotaUsageQuery
+  useGetQuotaUsageQuery,
+  useDataSubscriptionsQuery,
+  usePatchDataSubscriptionsMutation,
+  useDeleteDataSubscriptionsMutation
 } = dataSubscriptionApis
