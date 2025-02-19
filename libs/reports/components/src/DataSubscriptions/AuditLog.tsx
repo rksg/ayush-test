@@ -1,8 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, GridCol, PageHeader, Button, Loader } from '@acx-ui/components'
-import { DownloadOutlined }                             from '@acx-ui/icons'
+import { GridRow, GridCol, PageHeader, Loader } from '@acx-ui/components'
 
 import AuditLogTable                       from './AuditLogTable'
 import { useGetDataSubscriptionByIdQuery } from './services'
@@ -18,9 +17,6 @@ const DataSubscriptionsAuditLog: React.FC = () => {
       <PageHeader
         title={`${$t({ defaultMessage: 'Audit Log' })} (${dataSubscription?.name})`}
         breadcrumb={generateBreadcrumb()}
-        extra={<Button size='middle' icon={<DownloadOutlined />} type='default'>
-          {$t({ defaultMessage: 'Download Audit' })}
-        </Button>}
       />
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
