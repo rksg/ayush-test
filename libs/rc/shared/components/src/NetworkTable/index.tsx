@@ -34,7 +34,7 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { useEnforcedStatus } from '../configTemplates/EnforcedButton'
 
@@ -332,6 +332,7 @@ export function NetworkTable ({
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
@@ -476,6 +477,12 @@ export function NetworkTable ({
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
   const showRowSelection = (selectable && hasAddNetworkPermission)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.NETWORK_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[
