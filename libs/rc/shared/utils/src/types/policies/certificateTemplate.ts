@@ -121,6 +121,7 @@ export interface CertificateTemplate {
   networkIds?: string[],
   variables?: string[],
   identityGroupId?: string
+  networkCount?: number
 }
 
 export interface OnboardCA {

@@ -1,11 +1,24 @@
-import moment from 'moment-timezone'
+import { message } from 'antd'
+import moment      from 'moment-timezone'
 
 import { BrowserRouter }      from '@acx-ui/react-router-dom'
-import { renderHook, render } from '@acx-ui/test-utils'
+import {
+  act,
+  screen,
+  renderHook,
+  render,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
 import { fixedEncodeURIComponent }                                   from './encodeURIComponent'
+
+
+
+import { showToast } from '.'
+
+
 
 const original = Date.now
 describe('useDateFilter', () => {
@@ -53,6 +66,31 @@ describe('useDateFilter', () => {
     rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('When it is set beyond available start date reset date and show toast', async () => {
+    function Component () {
+      const filters = useDateFilter({
+        showResetMsg: true,
+        earliestStart: moment('2021-07-23T18:31:00+08:00')
+      })
+      return <div>{JSON.stringify(filters)}</div>
+    }
+
+    window.history.pushState({}, 'Test Page', `/?period=${encodeURIComponent(JSON.stringify({
+      startDate: '2020-07-23T18:31:00+08:00',
+      endDate: '2020-07-24T18:31:59+08:00',
+      range: 'Custom'
+    }))}`)
+
+    render(
+      <BrowserRouter>
+        <Component />
+      </BrowserRouter>
+    )
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Note that your Calendar selection has been updated in line with current page default/max values.')).toBeInTheDocument()
+  })
+
   it('ignores period params when it is set beyond available start date', async () => {
     function Component () {
       const filters = useDateFilter(moment('2020-07-23T18:31:00+08:00'))
@@ -64,6 +102,7 @@ describe('useDateFilter', () => {
     const { asFragment } = render(component())
     expect(asFragment()).toMatchSnapshot()
   })
+
   it('should render correctly with default date from url', () => {
     function Component () {
       const filters = useDateFilter()
@@ -145,4 +184,28 @@ describe('getDateRangeFilter', () => {
       range: 'Custom'
     })
   })
+})
+
+describe('Toast', () => {
+  afterEach((done) => {
+    const toast = screen.queryByRole('img')
+    if (toast) {
+      waitForElementToBeRemoved(toast).then(done)
+      message.destroy()
+    } else {
+      done()
+    }
+  })
+
+  it('renders content success', async () => {
+    act(() => {
+      showToast({
+        type: 'success',
+        key: 'test',
+        content: 'This is a toast'
+      })
+    })
+    expect(await screen.findByText('This is a toast')).toBeInTheDocument()
+  })
+
 })

@@ -3,16 +3,15 @@ import { useState } from 'react'
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                                  from '@acx-ui/components'
-import { RadioCardCategory }                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, PageHeader, RadioCardCategory }                                               from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
+  IncompatibilityFeatures,
+  ServiceOperation,
   ServiceType,
   isServiceCardEnabled,
-  ServiceOperation,
-  isServiceCardSetEnabled,
-  IncompatibilityFeatures
+  isServiceCardSetEnabled
 } from '@acx-ui/rc/utils'
 
 import { ServiceCard } from '../ServiceCard'
@@ -27,6 +26,7 @@ interface ServiceCardItem {
     categories: RadioCardCategory[]
     disabled?: boolean
     helpIcon?: React.ReactNode
+    isBetaFeature?: boolean
   }[]
 }
 
@@ -57,7 +57,7 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
@@ -68,7 +68,7 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
           disabled: !isEdgePinReady
@@ -79,7 +79,7 @@ export default function ServiceCatalog () {
           helpIcon: isEdgeCompatibilityEnabled
             ? <ApCompatibilityToolTip
               title={''}
-              visible={true}
+              showDetailButton
               onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
             />
             : undefined,
@@ -106,9 +106,10 @@ export default function ServiceCatalog () {
           disabled: !isEdgeMdnsReady,
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
-          />
+          />,
+          isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,
@@ -156,6 +157,7 @@ export default function ServiceCatalog () {
                   categories={item.categories}
                   type={'button'}
                   helpIcon={item.helpIcon}
+                  isBetaFeature={item.isBetaFeature}
                 />
               </GridCol>
             })}

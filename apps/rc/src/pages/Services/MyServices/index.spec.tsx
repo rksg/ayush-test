@@ -20,8 +20,13 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
+
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'

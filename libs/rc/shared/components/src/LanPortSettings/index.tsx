@@ -17,7 +17,6 @@ import {
   LanPort,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
-  SoftGreProfileDispatcher,
   useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
@@ -70,7 +69,6 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
-  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   softGREProfileOptionList?: DefaultOptionType[]
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
@@ -107,7 +105,10 @@ export function LanPortSettings (props: {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
-  const isModelSupportSoftGRE = selectedModelCaps?.model !== 'R370' ?? true
+  const isR370UnsupportFeatureEnabled = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isModelSupportSoftGRE =
+    (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGre) ||
+    selectedModelCaps?.model !== 'R370'
 
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
@@ -222,6 +223,7 @@ export function LanPortSettings (props: {
           index={index}
           onGUIChanged={onGUIChanged}
           readOnly={readOnly || isDhcpEnabled}
+          useVenueSettings={useVenueSettings}
           isDhcpEnabled={isDhcpEnabled}
           hasVni={hasVni}
           serialNumber={serialNumber}
@@ -237,7 +239,8 @@ export function LanPortSettings (props: {
               !isEthernetPortEnable ||
                       isDhcpEnabled ||
                       currentEthernetPortData?.authType === EthernetPortAuthType.SUPPLICANT ||
-                      (readOnly ?? false)}
+                      (readOnly ?? false) ||
+                    hasVni}
             index={index}
             portId={selectedModel.lanPorts![index].portId}
             onGUIChanged={onGUIChanged}
@@ -272,7 +275,7 @@ export function LanPortSettings (props: {
           <ClientIsolationSettingsFields
             index={index}
             onGUIChanged={onGUIChanged}
-            readOnly={readOnly || isDhcpEnabled}
+            readOnly={readOnly || isDhcpEnabled || hasVni}
           />
         }
       </>) :
@@ -300,7 +303,7 @@ export function LanPortSettings (props: {
             {lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
               <ApCompatibilityToolTip
                 title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
-                visible={true}
+                showDetailButton
                 placement='bottom'
                 onClick={() => setDrawerVisible(true)} />
               :

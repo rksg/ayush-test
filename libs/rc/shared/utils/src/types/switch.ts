@@ -50,7 +50,8 @@ export const SwitchPortViewModelQueryFields = [
   'switchMac',
   'switchModel',
   'switchName',
-  'switchPortProfileId',
+  'switchPortProfileName',
+  'switchPortProfileType',
   'switchSerial',
   'switchUnitId',
   'syncedSwitchConfig',
@@ -533,7 +534,8 @@ export interface SwitchPortViewModel extends GridDataRow {
 	criticalVlan?: number
 	authFailAction?: string
 	authTimeoutAction?: string,
-  switchPortProfileId?: string
+  switchPortProfileName?: string,
+  switchPortProfileType?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1010,12 +1012,6 @@ export enum LldpTlvMatchingType {
   FULL_MAPPING = 'FULL_MAPPING',
   BEGIN = 'BEGIN',
   INCLUDE = 'INCLUDE'
-}
-
-export const LldpTlvMatchingTitle: Record<LldpTlvMatchingType, string> = {
-  [LldpTlvMatchingType.FULL_MAPPING]: 'Exact',
-  [LldpTlvMatchingType.BEGIN]: 'Begin with',
-  [LldpTlvMatchingType.INCLUDE]: 'Include'
 }
 
 export enum PortProfileConfigSourceType {

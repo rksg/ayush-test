@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                  from '@acx-ui/rc/components'
-import { IncompatibilityFeatures }                                from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
+import { IncompatibilityFeatures }                                                  from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
 import {
   render,
   screen
@@ -20,6 +20,13 @@ jest.mock('@acx-ui/rc/components', () => ({
       {props.featureName}
     </div>,
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('ServiceCatalog', () => {
@@ -227,6 +234,18 @@ describe('ServiceCatalog', () => {
       const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
       expect(compatibilityDrawer).toBeVisible()
       expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.EDGE_MDNS_PROXY)
+    })
+
+    it('should show BetaIndicator when Edge mDNS is beta feature', async () => {
+      jest.mocked(useIsBetaEnabled).mockReturnValue(true)
+
+      render(<Provider>
+        <ServiceCatalog />
+      </Provider>, {
+        route: { params, path }
+      })
+
+      expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
     })
   })
 })

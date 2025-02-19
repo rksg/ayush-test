@@ -61,10 +61,14 @@ const PortalInstance = (props: {
     googleEnabled: false,
     twitterEnabled: false,
     linkedInEnabled: false,
-    smsEnabled: false
+    smsEnabled: false,
+    whatsappEnabled: false
   }
   if (networkData?.guestPortal?.enableSmsLogin) {
     socials.smsEnabled = true
+  }
+  if (networkData?.guestPortal?.enableWhatsappLogin) {
+    socials.whatsappEnabled = true
   }
   if (socialIdentities) {
     socials.facebookEnabled = socialIdentities.facebook ? true : false

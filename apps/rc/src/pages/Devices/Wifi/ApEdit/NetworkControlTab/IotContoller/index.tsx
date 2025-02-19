@@ -27,16 +27,18 @@ import { ApIot, VenueIot } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { FieldLabel }                   from '../../styledComponents'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { FieldLabel }                                    from '../../styledComponents'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function IotController () {
+export function IotController (props: ApEditItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,
@@ -129,6 +131,7 @@ export function IotController () {
     } else {
       if (!isEmpty(apIot)) {
         formRef?.current?.setFieldsValue(apIot)
+        setIotEnabled(apIot.enabled)
       }
     }
 
@@ -210,6 +213,7 @@ export function IotController () {
         <StepsFormLegacy.StepForm initialValues={initData}>
           <VenueSettingsHeader
             venue={venueData}
+            disabled={!isAllowEdit}
             isUseVenueSettings={isUseVenueSettings}
             handleVenueSetting={handleVenueSetting}
           />
@@ -231,6 +235,7 @@ export function IotController () {
                       </span>
                     ) : (
                       <Switch
+                        disabled={!isAllowEdit}
                         checked={iotEnabled}
                         onChange={handleChange}
                         onClick={toggleIot}
@@ -253,7 +258,9 @@ export function IotController () {
                       // eslint-disable-next-line max-len
                       message: $t({ defaultMessage: 'Please enter the MQTT address of the VRIoT Controller' })
                     },
-                    { validator: (_, value) => domainNameRegExp(value) }
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t(validationMessages.validDomain)
+                    }
                   ]}
                   label={
                     <>
@@ -276,7 +283,7 @@ export function IotController () {
                         )}
                       </span>
                     ) : (
-                      <Input
+                      <Input disabled={!isAllowEdit}
                         onChange={handleChange}
                       />
                     )

@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { EdgeServiceStatusLight, SimpleListTooltip, useEdgeDhcpActions }  from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                      from '@acx-ui/components'
+import { EdgeTableCompatibilityWarningTooltip, EdgeServiceStatusLight, SimpleListTooltip, useEdgeDhcpActions } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpEdgeCompatibilitiesQuery,
@@ -13,6 +13,7 @@ import {
   useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
+  CompatibilityDeviceEnum,
   DhcpStats,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
@@ -20,14 +21,12 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
+  IncompatibilityFeatures,
   ServiceOperation,
   ServiceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
-
 
 
 const EdgeDhcpTable = () => {
@@ -82,12 +81,13 @@ const EdgeDhcpTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-  const { dhcpCompatibilityData = [] } = useGetDhcpEdgeCompatibilitiesQuery({
+  const { dhcpCompatibilityData } = useGetDhcpEdgeCompatibilitiesQuery({
     payload: { filters: { serviceIds: currentServiceIds } } }, {
     skip: !currentServiceIds.length,
     selectFromResult: ({ data }) => {
       return {
-        dhcpCompatibilityData: data?.compatibilities
+        // eslint-disable-next-line max-len
+        dhcpCompatibilityData: { [CompatibilityDeviceEnum.EDGE]: data?.compatibilities ?? [] }
       }
     }
   })
@@ -125,9 +125,10 @@ const EdgeDhcpTable = () => {
               })}>
               {row.serviceName}
             </TenantLink>
-            <CompatibilityCheck
+            <EdgeTableCompatibilityWarningTooltip
               serviceId={row.id!}
-              compatibilityData={dhcpCompatibilityData}
+              featureName={IncompatibilityFeatures.DHCP}
+              compatibility={dhcpCompatibilityData}
             />
           </Space>
         )
