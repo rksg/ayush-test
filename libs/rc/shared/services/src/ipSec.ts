@@ -1,5 +1,6 @@
 
-import _ from 'lodash'
+import { DefaultOptionType } from 'antd/lib/select'
+import _, { cloneDeep }                     from 'lodash'
 
 import {
   Ipsec,
@@ -14,7 +15,9 @@ import {
   Network,
   CommonRbacUrlsInfo,
   NewAPModel,
-  VenueDetail
+  VenueDetail,
+  IpSecOptionsData,
+  IpsecActivation
 } from '@acx-ui/rc/utils'
 import { baseIpSecApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -193,6 +196,89 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
       },
       providesTags: [{ type: 'IpSec', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getIpsecOptions: build.query<IpSecOptionsData, RequestPayload>({
+      queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
+        const { venueId, networkId } = params as { venueId: string, networkId?: string }
+        // const gatewayIps = new Set<string>()
+        // const gatewayIpMaps:Record<string, string[]> = {}
+        const activationProfiles:string[] = []
+
+        const ipsecListReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
+        const ipsecListRes = await fetchWithBQ({
+          ...ipsecListReq,
+          body: JSON.stringify(payload)
+        })
+        // eslint-disable-next-line max-len
+        if (ipsecListRes.error) return {
+          data: {
+            options: [],
+            isLockedOptions: true,
+            // gatewayIps: Array.from(gatewayIps),
+            // gatewayIpMaps,
+            activationProfiles
+          } as IpSecOptionsData }
+
+        let { data: listData } = ipsecListRes.data as TableResult<IpsecViewData>
+
+        let venueTotal = 0
+        let ipsecProfileId = ''
+
+        const options = listData?.map(item => {
+          let isSame = false
+
+          const profileActivations = consolidateActivations(item, venueId)
+
+          profileActivations.forEach(activation => {
+            const isEqualVenue = activation.venueId === venueId
+            if (isEqualVenue) {
+              activationProfiles.push(item.id)
+              // let isOnlyAppliedCurrentNetwork = false
+              isSame = activation.venueId === venueId
+              if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
+                ipsecProfileId = item.id
+                if (activation.wifiNetworkIds.length === 1) {
+                  // isOnlyAppliedCurrentNetwork = true
+                } else {
+                  venueTotal += 1
+                }
+              } else {
+                venueTotal += 1
+              }
+            }
+          })
+          return {
+            disabled: !isSame,
+            value: item.id,
+            label: item.name
+          } as DefaultOptionType
+        })
+        const commonData = {
+          activationProfiles
+        }
+
+        if (venueTotal >= 3) {
+          return {
+            data: {
+              options: options,
+              id: ipsecProfileId,
+              isLockedOptions: true,
+              ...commonData
+            } as IpSecOptionsData
+          }
+        }
+        return {
+          data: {
+            options: options.map((item) =>
+              ({ value: item.value, label: item.label, disabled: false })) ,
+            id: ipsecProfileId,
+            isLockedOptions: false,
+            ...commonData
+          } as IpSecOptionsData
+        }
+      },
+      providesTags: [{ type: 'IpSec', id: 'Options' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -204,5 +290,44 @@ export const {
   useDeleteIpsecMutation,
   useGetIpsecByIdQuery,
   useUpdateIpsecMutation,
-  useGetVenuesIpsecPolicyQuery
+  useGetVenuesIpsecPolicyQuery,
+  useGetIpsecOptionsQuery,
+  useLazyGetIpsecOptionsQuery
 } = ipSecApi
+
+
+
+const SPECIFIC_NETWORK_ID = 'usedByVenueApActivation'
+
+const consolidateActivations = (
+  profile: IpsecViewData,
+  venueId: string
+):IpsecActivation[] => {
+
+  let finalActivations = cloneDeep(profile.activations ?? [])
+
+  const isExistVenueActivation = profile.venueActivations?.some(v => v.venueId === venueId) || false
+  const isExistApActivation = profile.apActivations?.some(a => a.venueId === venueId) || false
+
+  if (!isExistVenueActivation && !isExistApActivation) {
+    return finalActivations
+  }
+
+  const existingActivation = finalActivations.some(va => va.venueId === venueId)
+
+  if (existingActivation) {
+    finalActivations.forEach(activation => {
+      if (activation.venueId === venueId) {
+        activation.wifiNetworkIds.push(SPECIFIC_NETWORK_ID)
+      }
+    })
+    return finalActivations
+  }
+
+  const newActivation: IpsecActivation = {
+    venueId: venueId,
+    wifiNetworkIds: [SPECIFIC_NETWORK_ID]
+  }
+
+  return [...finalActivations, newActivation]
+}

@@ -1,3 +1,4 @@
+import { DefaultOptionType }                from 'antd/lib/select'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
@@ -103,7 +104,7 @@ export interface VenueTableIpsecActivation {
 
 export interface IpsecActivation {
   venueId: string
-  softGreProfileId: string
+  softGreProfileId?: string
   wifiNetworkIds: string[]
 }
 
@@ -125,4 +126,14 @@ export interface IpsecWiredApActivation {
 export const authTypeLabelMapping: Record<IpSecAuthEnum, MessageDescriptor> = {
   [IpSecAuthEnum.PSK]: defineMessage({ defaultMessage: 'Pre-shared Key' }),
   [IpSecAuthEnum.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
+}
+
+
+export interface IpSecOptionsData {
+  options: DefaultOptionType[],
+  id?: string,
+  isLockedOptions: boolean,
+  // gatewayIpMaps: Record<string, string[]>,
+  // gatewayIps: string[]
+  activationProfiles: string[]
 }
