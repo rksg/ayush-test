@@ -32,9 +32,9 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }    from '@acx-ui/user'
-import { exportMessageMapping }                        from '@acx-ui/utils'
+import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery }          from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }                          from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -215,6 +215,7 @@ const defaultVenueListPayload = {
 export function PersonaGroupTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
@@ -354,6 +355,7 @@ export function PersonaGroupTable () {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity Group' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersonaGroup)],
         onClick: () => {
           setDrawerState({ isEdit: false, visible: true, data: undefined })
         }
@@ -364,6 +366,7 @@ export function PersonaGroupTable () {
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersonaGroup)],
           onClick: ([data], clearSelection) => {
             setDrawerState({ data, isEdit: true, visible: true })
             clearSelection()
@@ -371,6 +374,7 @@ export function PersonaGroupTable () {
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonaGroup)],
           disabled: (([selectedItem]) =>
             selectedItem
               ? (selectedItem.identityCount ?? 0) > 0 || !!selectedItem.certificateTemplateId
@@ -402,6 +406,13 @@ export function PersonaGroupTable () {
   }
 
   setIdentityGroupCount?.(tableQuery.data?.totalCount || 0)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.IDENTITY_GUOUP_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader
       states={[
@@ -422,7 +433,7 @@ export function PersonaGroupTable () {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasCrossVenuesPermission({ needGlobalPermission: true }) && { type: 'radio' }}
+          filterByAccess(rowActions).length !== 0 && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

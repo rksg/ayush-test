@@ -240,6 +240,43 @@ describe('Edge enabled evaluation', () => {
         expect(result.current).toBe(false)
       })
     })
+
+    describe('edge HQoS toggle', () => {
+      it('should return true when edge is enabled and feature flag is ready', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE ||
+          ff === Features.EDGE_QOS_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_HQOS)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE))
+        expect(result.current).toBe(true)
+      })
+
+      it('should return false when boolean feature flag is not ready', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_HQOS)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
+      it('should return false when query with HQoS and featureID is OFF', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE ||
+          ff === Features.EDGE_QOS_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_ADV)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+    })
   })
 })
 

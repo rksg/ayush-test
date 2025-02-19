@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -23,25 +23,29 @@ import {
   GridRow,
   GridCol,
   ContentSwitcherProps,
-  ContentSwitcher
+  ContentSwitcher,
+  getDefaultEarliestStart
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
 import {
   useGetVenueRadioCustomizationQuery,
   useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
-import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
-import { useNavigateToPath }                  from '@acx-ui/react-router-dom'
-import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
-import type { AnalyticsFilter }               from '@acx-ui/utils'
+import { ShowTopologyFloorplanOn }                             from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                   from '@acx-ui/react-router-dom'
+import { generateVenueFilter, useDateFilter, LoadTimeContext } from '@acx-ui/utils'
+import type { AnalyticsFilter }                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
-  const { dateFilter } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const { venueId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { onPageFilterChange } = useContext(LoadTimeContext)
 
   const venueFilter = {
     ...dateFilter,
@@ -68,6 +72,14 @@ export function VenueOverviewTab () {
     }
   ]
 
+  useEffect(() => {
+    onPageFilterChange?.(venueFilter, true)
+  }, [])
+
+  useEffect(() => {
+    onPageFilterChange?.(venueFilter)
+  }, [venueFilter])
+
   return (<>
     {
       (
@@ -81,7 +93,14 @@ export function VenueOverviewTab () {
       <LowPowerBannerAndModal from={'venue'} />
     }
     <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher tabDetails={tabDetails} size='large' />
+    <ContentSwitcher
+      tabDetails={tabDetails}
+      size='large'
+      defaultValue={localStorage.getItem('venue-tab') || tabDetails[0].value}
+      onChange={(value: string): void => {
+        localStorage.setItem('venue-tab', value)
+      }}
+    />
   </>)
 }
 

@@ -5,17 +5,13 @@ import { DownloadOutlined }                     from '@acx-ui/icons'
 
 import { generateBreadcrumb } from './utils'
 
-type DataSubscriptionsAuditLogProps = {
-  isRAI?: boolean
-}
-
-const DataSubscriptionsAuditLog: React.FC<DataSubscriptionsAuditLogProps> = ({ isRAI }) => {
+const DataSubscriptionsAuditLog: React.FC = () => {
   const { $t } = useIntl()
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Data Subscriptions AuditLog' })}
-        breadcrumb={generateBreadcrumb({ isRAI })}
+        breadcrumb={generateBreadcrumb()}
         extra={
           <Button
             size='middle'
