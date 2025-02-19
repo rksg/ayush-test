@@ -501,9 +501,9 @@ export const LoadTimeProvider = ({ children }: {
 
       if (pendo) {
         pendo.track?.(PENDO_TRACK_EVENT_NAME, trackEventData)
-        if (loadTimeStatus === LoadTimeStatus.UNACCEPTABLE) {
-          pendo.showGuideById?.('zdnqb9J5L32vRHw9CbvBQSsGhyw')
-        }
+        // if (loadTimeStatus === LoadTimeStatus.UNACCEPTABLE) {
+        //   pendo.showGuideById?.('zdnqb9J5L32vRHw9CbvBQSsGhyw')
+        // }
       }
     }
   }, [loadTimes])
