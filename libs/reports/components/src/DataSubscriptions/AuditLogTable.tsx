@@ -75,12 +75,9 @@ export const getRetryError = (audit?: AuditDto): string | undefined => {
   const diffDays = now.diff(inputDate, 'days')
 
   if (diffDays >= 3) {
-    return $t(
-      defineMessage({
-        defaultMessage:
-          'Subscription can only be retried within 3 days from start date'
-      })
-    )
+    return $t({ defaultMessage:
+      'Subscription can only be retried within 3 days from start date'
+    })
   }
 
   return undefined
