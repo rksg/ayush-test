@@ -23,7 +23,7 @@ export const QuotaUsageBar: React.FC<QuotaUsageBarProps> = ({ onClick }) => {
     if (quotaQuery.data) {
       const allowed = quotaQuery.data.allowed ?? 0
       const used = quotaQuery.data.used ?? 0
-      setRemaining(allowed - used)
+      setRemaining(Math.max(allowed - used, 0))
       setPercent(Math.round((used / allowed) * 100))
     }
   }, [quotaQuery])
