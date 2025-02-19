@@ -2,6 +2,10 @@ import { TableResult }     from '@acx-ui/rc/utils'
 import { notificationApi } from '@acx-ui/store'
 import { RequestPayload }  from '@acx-ui/types'
 
+export type DataQuotaUsage = {
+    used: number
+    allowed: number
+}
 
 type AzureStoragePayload = {
   azureConnectionType: string,
@@ -107,7 +111,16 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION' }]
+    }),
+    getQuotaUsage: build.query<DataQuotaUsage, void>({
+      query: () => {
+        return {
+          url: 'dataSubscriptions/quota',
+          method: 'GET',
+          credentials: 'include'
+        }
+      }
     }),
     dataSubscriptions: build.query<
       TableResult<DataSubscription>,
@@ -160,6 +173,7 @@ export const {
   useSaveStorageMutation,
   useSaveSubscriptionMutation,
   useGetSubscriptionQuery,
+  useGetQuotaUsageQuery,
   useDataSubscriptionsQuery,
   usePatchDataSubscriptionsMutation,
   useDeleteDataSubscriptionsMutation
