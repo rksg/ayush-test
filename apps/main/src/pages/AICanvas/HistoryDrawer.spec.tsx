@@ -53,7 +53,7 @@ jest.mock('moment', () => {
   })
 })
 
-const mockedUpdate = jest.fn()
+const mockedUpdate = jest.fn().mockResolvedValue({})
 const mockedDelete = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
   useUpdateChatMutation: () => ([ mockedUpdate ]),
@@ -111,6 +111,8 @@ describe('HistoryDrawer', () => {
     expect(mockedDelete).toBeCalledTimes(1)
     const editButton = screen.getAllByTestId('edit')
     await userEvent.click(editButton[0])
+    const confirmButton = screen.getAllByTestId('confirm')
+    await userEvent.click(confirmButton[0])
     expect(mockedUpdate).toBeCalledTimes(1)
   })
 })
