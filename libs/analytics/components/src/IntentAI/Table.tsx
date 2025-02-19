@@ -4,12 +4,13 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Loader, TableProps, Table, Tooltip, Banner }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
+import { noDataDisplay, PathFilter, useEncodedParameter, useTrackLoadTime, widgetsMapping }    from '@acx-ui/utils'
 
 import { Icon }                                       from './common/IntentIcon'
 import { AiFeatures, codes, IntentListItem }          from './config'
@@ -130,6 +131,7 @@ export function IntentAITable (
   const basePath = useTenantLink('/analytics/intentAI')
   const intentActions = useIntentAIActions()
   const revertInitialDate = useRef(getDefaultTime())
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const {
     tableQuery: queryResults,
@@ -301,6 +303,13 @@ export function IntentAITable (
       render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.INTENT_AI_TABLE,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />

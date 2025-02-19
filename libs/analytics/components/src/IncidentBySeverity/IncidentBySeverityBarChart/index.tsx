@@ -4,7 +4,6 @@ import moment                 from 'moment-timezone'
 import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-
 import { incidentSeverities, IncidentFilter, BarChartData, TrendTypeEnum } from '@acx-ui/analytics/utils'
 import {
   Card,
@@ -13,7 +12,9 @@ import {
   cssStr,
   TrendPill
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter }                        from '@acx-ui/formatter'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { useIncidentToggles }                                   from '../../useIncidentToggles'
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
@@ -47,6 +48,8 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
   const { startDate, endDate } = filters
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const currentResult = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
@@ -83,6 +86,13 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
       cssStr(incidentSeverities[p as keyof typeof incidentSeverities].color)
     )
   }
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.INCIDENT_BY_SEVERITY_BAR_CHART,
+    states: [prevResult, currentResult],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return <Loader states={[prevResult, currentResult]}>
     <Card title={$t({ defaultMessage: 'Total Incidents' })} type='no-border'>
       <UI.Container>

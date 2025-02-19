@@ -22,7 +22,11 @@ export default function ClientList () {
     search: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isSwitchRbacEnabled,
+    sorter: {
+      sortField: 'clientName',
+      sortOrder: 'ASC'
+    }
   })
 
   useEffect(() => {
