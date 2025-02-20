@@ -232,7 +232,7 @@ export function VlanPortSetting () {
           entityName: isSelectedOneModule
             ? $t({ defaultMessage: 'Module' })
             : $t({ defaultMessage: 'Modules' }),
-          entityValue: isSelectedOneModule ? selectedModuleKeys[0] : undefined,
+          entityValue: isSelectedOneModule ? selectedModuleKeys[0].replace('_', ' ') : undefined,
           numOfEntities: selectedModuleKeys.length
         },
         onOk: () => {

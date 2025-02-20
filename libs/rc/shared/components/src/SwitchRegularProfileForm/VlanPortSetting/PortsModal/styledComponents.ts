@@ -229,6 +229,10 @@ export const Form = styled(AntdForm)`
     > .ant-form-item {
       margin-bottom: 10px !important;
     }
+    .ant-form-item-label,
+    .ant-form-item-control-input-content {
+      padding-bottom: 0;
+    }
   }
 `
 
@@ -263,10 +267,6 @@ export const FormItem = styled(AntdForm.Item)`
     align-content: center;
   }
 
-  // .ant-form-item {
-  //   width: 358px;
-  // }
-
   label ~ .ant-form-item {
     margin-bottom: 10px;
   }
@@ -284,9 +284,4 @@ export const FormItem = styled(AntdForm.Item)`
       }
     }
   }
-`
-export const ExtraLabel = styled('div')`
-  display: inline-flex;
-  width: 172px;
-  font-size: var(--acx-body-4-font-size)
 `

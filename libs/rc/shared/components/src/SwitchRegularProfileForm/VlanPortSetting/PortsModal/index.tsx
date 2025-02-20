@@ -119,9 +119,9 @@ export function PortsModal (props: {
     if (!isValid) {
       showActionModal({
         type: 'error',
-        title: $t({ defaultMessage: 'Port is not Configured' }), //TODO
+        title: $t({ defaultMessage: 'Configure at least one VLAN' }), //TODO
         content: $t({  // eslint-disable-next-line max-len
-          defaultMessage: 'Please ensure that at least one Tagged or Untagged Port is configured.'
+          defaultMessage: 'Please ensure that at least one Tagged or Untagged VLAN is configured.'
         })
       })
       return

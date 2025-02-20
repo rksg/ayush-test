@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, Key } from 'react'
+import React, { useContext, useState, useEffect, Key, ReactNode } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
@@ -76,11 +76,12 @@ export function VlanSetting () {
     render: (_, { spanningTreeProtocol }) => {
       return spanningTreeProtocol ? SpanningTreeProtocolName[spanningTreeProtocol] : null
     }
-  }, {
+  },
+  ...(!isBulkVlanProvisioningEnabled ? [{
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (_, row) => {
+    render: (_: ReactNode, row: Vlan) => {
       return <Tooltip
         title={row.switchFamilyModels && generateTooltips(row.switchFamilyModels)}
       >
@@ -95,8 +96,8 @@ export function VlanSetting () {
           : 0}
       </Tooltip>
     }
-  }]
-
+  }] : [])
+  ]
 
   const generateTooltips = (switchFamilyModels: SwitchModel[]) => {
     const portTooltips = switchFamilyModels.map((item: SwitchModel) => {
@@ -135,12 +136,13 @@ export function VlanSetting () {
       }
     })
 
-    const allowedVlanRangeConfigure = isBulkVlanProvisioningEnabled && !drawerEditMode
-    const transformData = vlans.map((item) => { //TODO
+    const transformData = vlans.map((item) => {
       return {
         ..._.omit(data, ['switchFamilyModels']),
         vlanId: Number(item),
-        ...(!allowedVlanRangeConfigure || drawerFormRule?.vlanId?.toString() === item
+        ...(!isBulkVlanProvisioningEnabled //TODO
+          || drawerFormRule?.vlanId?.toString() === item
+          || vlans?.length === 1
           ? { switchFamilyModels: sfm } : {}
         )
       }

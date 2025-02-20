@@ -330,7 +330,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         <Form.Item
           label={<>
             {$t({ defaultMessage: 'VLAN ID' })}
-            {enableVlanRangeConfigure && !editMode &&
+            {enableVlanRangeConfigure &&
               <Tooltip
                 title={$t({
                   defaultMessage: `Type one or more VLAN IDs. Examples: {br}
@@ -350,19 +350,30 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
-            ...(enableVlanRangeConfigure && !editMode ? [{
+            ...(enableVlanRangeConfigure ? [{
               validator: (_: RuleObject, value: string) => {
-                const re = new RegExp(/^(\d+(-\d+)?)(,\s*\d+(-\d+)?)*$/)
+                const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
                 if (!re.test(value)) {
-                  return Promise.reject($t({ defaultMessage: 'Please input a valid format' }))
+                  // eslint-disable-next-line max-len
+                  return Promise.reject($t({ defaultMessage: 'Invalid format. Spaces, punctuation marks etc., are not allowed. Please use commas to separate VLANs, or use \'-\' to define the range or a combination of both.' }))
                 }
                 return Promise.resolve()
               }
             }, {
               validator: (_: RuleObject, value: string) => {
-                const { isValidRange, isVlanDuplicate, vlans } = checkVlanRange(value)
+                const originalVlanId = vlan?.vlanId?.toString()
+                const {
+                  isValidRange, isVlanDuplicate, isIncludeOriginal, vlans
+                } = checkVlanRange(value, originalVlanId)
+                const isOriginalVlanExcludedInEditMode //TODO
+                  = editMode && !isIncludeOriginal && vlans.length > 1
+
+                if (isOriginalVlanExcludedInEditMode) {
+                  // eslint-disable-next-line max-len
+                  return Promise.reject($t({ defaultMessage: 'The VLAN range above does not include the VLAN selected from the table. Select at least one VLAN from the range defined above and try editing again. ' }))
+                }
                 if (!isValidRange || isVlanDuplicate) {
-                  return Promise.reject($t({ defaultMessage: 'Please input a valid VLAN range' }))
+                  return Promise.reject($t({ defaultMessage: 'Please enter a valid range.' }))
                 }
                 return Promise.all(
                   vlans.map(async (v: string) => {
@@ -587,7 +598,7 @@ export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) 
   </div>
 }
 
-export const checkVlanRange = (value: string) => {
+export const checkVlanRange = (value: string, originalVlanId?: string) => {
   let isValidRange = true
   const vlans = value.toString().split(',').map(v => {
     if (v.includes('-')) {
@@ -606,5 +617,6 @@ export const checkVlanRange = (value: string) => {
 
   const vlansSet = new Set(vlans)
   const isVlanDuplicate = vlansSet.size !== vlans.length
-  return { isValidRange, isVlanDuplicate, vlans }
+  const isIncludeOriginal = originalVlanId ? vlans.includes(originalVlanId) : true
+  return { isValidRange, isVlanDuplicate, isIncludeOriginal, vlans }
 }
