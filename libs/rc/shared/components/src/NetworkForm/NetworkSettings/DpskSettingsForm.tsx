@@ -131,8 +131,10 @@ function SettingsForm () {
   ) => {
     if(dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed && isCloudpathEnabled) {
       setData && setData({ ...data, enableAccountingProxy: false, enableAuthProxy: false })
-      form.setFieldValue('enableAccountingProxy', false)
-      form.setFieldValue('enableAuthProxy', false)
+      form.setFieldsValue({
+        enableAccountingProxy: false,
+        enableAuthProxy: false
+      })
     }
   }
   useEffect(()=>{
