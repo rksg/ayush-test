@@ -1,4 +1,5 @@
 import { Row }     from 'antd'
+import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -104,7 +105,7 @@ function useColumns (onuName: string | undefined, handleVlanIdChange: (portIdx: 
       align: 'center' as const,
       render: (_, row) => {
         // eslint-disable-next-line max-len
-        return row.status === EdgeNokiaCageStateEnum.UP ? Math.ceil(Math.random() * 4) : noDataDisplay
+        return row.status === EdgeNokiaCageStateEnum.UP ? get(row, 'clientCount') : noDataDisplay
       }
     }
   ]

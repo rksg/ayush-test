@@ -163,12 +163,6 @@ export default function MyServices () {
       }).data?.totalCount,
       disabled: !propertyManagementEnabled
     }
-    // {
-    //   type: ServiceType.EDGE_OLT,
-    //   categories: [RadioCardCategory.EDGE],
-    //   totalCount: 0,
-    //   disabled: !isEdgeOltEnabled
-    // }
   ]
 
   return (

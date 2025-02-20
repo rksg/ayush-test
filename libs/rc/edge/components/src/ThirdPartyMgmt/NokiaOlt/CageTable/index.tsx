@@ -17,7 +17,8 @@ import {
   EdgeNokiaOltData,
   getCageStatusConfig,
   sortProp,
-  defaultSort
+  defaultSort,
+  oltLineCardOptions
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -25,10 +26,6 @@ import { EdgeNokiaOltStatus } from '../OltStatus'
 
 import { CageDetailsDrawer } from './CageDetailsDrawer'
 
-const lineCardOptions = [
-  { label: 'PON LC 1', value: 'S1' },
-  { label: 'PON LC 2', value: 'S2' }
-]
 
 interface EdgeNokiaCageTableProps {
   oltData: EdgeNokiaOltData,
@@ -44,7 +41,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
 
   const [visible, setVisible] = useState<boolean>(false)
   const [currentCage, setCurrentCage] = useState<EdgeNokiaCageData | undefined>(undefined)
-  const [selectedLineCard, setSelectedLineCard] = useState<string>(lineCardOptions[0].value)
+  const [selectedLineCard, setSelectedLineCard] = useState<string>(oltLineCardOptions[0].value)
 
   const [toggleEdgeCageState, { isLoading: isUpdating }] = useToggleEdgeCageStateMutation()
 
@@ -82,7 +79,6 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
       dataIndex: 'cage',
       sorter: { compare: sortProp('cage', defaultSort) } ,
       searchable: true,
-      // filterable: lineCardOptions,
       fixed: 'left',
       render: (_, row) =>
         row.state === EdgeNokiaCageStateEnum.UP
@@ -108,7 +104,9 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
       title: $t({ defaultMessage: 'Speed' }),
       dataIndex: 'speed',
       width: 80,
-      render: (_, row) => row.state === EdgeNokiaCageStateEnum.UP ? '25 Gbps' : noDataDisplay
+      render: (_, row) => row.state === EdgeNokiaCageStateEnum.UP
+        ? `${get(row, 'speed')} Gbps`
+        : noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Change State' }),
@@ -140,7 +138,7 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
         onChange={(val) => {
           setSelectedLineCard(val)
         }}>
-        {lineCardOptions.map((item) => {
+        {oltLineCardOptions.map((item) => {
           return <Tabs.TabPane tab={item.label} key={item.value} />
         })}
       </Tabs>
