@@ -40,6 +40,11 @@ jest.mock('./ShowDriftsDrawer', () => ({
   }
 }))
 
+jest.mock('./DetailsDrawer', () => ({
+  ...jest.requireActual('./DetailsDrawer'),
+  ProtectedDetailsDrawer: () => <div>DetailsDrawer</div>
+}))
+
 jest.mock('./CloneModal', () => ({
   ...jest.requireActual('./CloneModal'),
   ConfigTemplateCloneModal: () => <div>ConfigTemplateCloneModal</div>
@@ -393,13 +398,6 @@ describe('ConfigTemplateList component', () => {
     expect(await within(editDrawer).findByDisplayValue(mockedL2AclTemplate.name)).toBeInTheDocument()
     await userEvent.click(within(editDrawer).getByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
-
-    await userEvent.click(within(targetRow).getByRole('button', { name: targetTemplate.name }))
-    const detailsDrawer = await screen.findByRole('dialog')
-    // eslint-disable-next-line max-len
-    expect(await within(detailsDrawer).findByDisplayValue(mockedL2AclTemplate.name)).toBeInTheDocument()
-    await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it('should show drift', async () => {
@@ -429,6 +427,25 @@ describe('ConfigTemplateList component', () => {
     // Display Show Drifts by clicking the in-row link
     await userEvent.click(within(row).getByRole('button', { name: /Drift Detected/ }))
     expect(await screen.findByTestId('ShowDriftsDrawer')).toBeInTheDocument()
+  })
+
+  it('should show details drawer', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_NAME_DRAWER)
+
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetTemplate = mockedConfigTemplateList.data[0]
+    await userEvent.click(screen.getByRole('button', { name: targetTemplate.name }))
+
+    expect(await screen.findByText('DetailsDrawer')).toBeInTheDocument()
   })
 
   it('should execute clone action', async () => {
