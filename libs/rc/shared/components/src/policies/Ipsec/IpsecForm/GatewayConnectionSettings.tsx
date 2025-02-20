@@ -26,50 +26,41 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
   const [espReplayWindowEnabled, setEspReplayWindowEnabled] = useState(false)
   const [deadPeerDetectionDelayEnabled, setDeadPeerDetectionDelayEnabled] = useState(false)
   const [nattKeepAliveIntervalEnabled, setNattKeepAliveIntervalEnabled] = useState(false)
-  const [ipCompressionEnabled, setIpCompressionEnabled] = useState(false)
-  const [forceNATTEnabled, setForceNATTEnabled] = useState(false)
+  const [ipCompressionEnabled, setIpCompressionEnabled] = useState(IpSecAdvancedOptionEnum.DISABLED)
+  const [forceNATTEnabled, setForceNATTEnabled] = useState(IpSecAdvancedOptionEnum.DISABLED)
 
   useEffect(() => {
-    console.log('initIpSecData', initIpSecData)
     const ipCompEnabled = form.getFieldValue(['advancedOption', 'ipcompEnable'])
-    if (ipCompEnabled === IpSecAdvancedOptionEnum.ENABLED) {
-      setIpCompressionEnabled(true)
-    } else if (ipCompEnabled === IpSecAdvancedOptionEnum.DISABLED) {
-      setIpCompressionEnabled(false)
-    }
+    setIpCompressionEnabled(ipCompEnabled)
     const enforceNatt = form.getFieldValue(['advancedOption', 'enforceNatt'])
-    if (enforceNatt === IpSecAdvancedOptionEnum.ENABLED) {
-      setForceNATTEnabled(true)
-    } else if (enforceNatt === IpSecAdvancedOptionEnum.DISABLED) {
-      setForceNATTEnabled(false)
-    }
+    setForceNATTEnabled(enforceNatt)
     if (loadGwSettings && initIpSecData) {
-      if (IpSecAdvancedOptionEnum.ENABLED === initIpSecData.advancedOption?.ipcompEnable) {
-        setIpCompressionEnabled(true)
-      } else if(IpSecAdvancedOptionEnum.DISABLED === initIpSecData.advancedOption?.ipcompEnable) {
-        setIpCompressionEnabled(false)
+      if (initIpSecData.advancedOption?.ipcompEnable) {
+        setIpCompressionEnabled(initIpSecData.advancedOption?.ipcompEnable)
       }
-      if (IpSecAdvancedOptionEnum.ENABLED === initIpSecData.advancedOption?.enforceNatt) {
-        setForceNATTEnabled(true)
+      if (initIpSecData.advancedOption?.enforceNatt) {
+        setForceNATTEnabled(initIpSecData.advancedOption?.enforceNatt)
       }
     }
     setLoadGwSettings(false)
   }, [initIpSecData])
 
   const onForceNattChange = (value: boolean) => {
-    setForceNATTEnabled(value)
     if (value) {
+      setForceNATTEnabled(IpSecAdvancedOptionEnum.ENABLED)
       form.setFieldValue(['advancedOption', 'enforceNatt'], IpSecAdvancedOptionEnum.ENABLED)
     } else {
+      setForceNATTEnabled(IpSecAdvancedOptionEnum.DISABLED)
       form.setFieldValue(['advancedOption', 'enforceNatt'], IpSecAdvancedOptionEnum.DISABLED)
     }
   }
 
   const onIpCompChange = (value: boolean) => {
-    setIpCompressionEnabled(value)
     if (value) {
+      setIpCompressionEnabled(IpSecAdvancedOptionEnum.ENABLED)
       form.setFieldValue(['advancedOption', 'ipcompEnable'], IpSecAdvancedOptionEnum.ENABLED)
     } else {
+      setIpCompressionEnabled(IpSecAdvancedOptionEnum.DISABLED)
       form.setFieldValue(['advancedOption', 'ipcompEnable'], IpSecAdvancedOptionEnum.DISABLED)
     }
   }
@@ -206,10 +197,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','ipcompEnable']}
             style={{ marginTop: '-28px' }}
-            initialValue={false}
+            initialValue={ipCompressionEnabled}
             children={
               <Switch
-                checked={ipCompressionEnabled}
+                checked={ipCompressionEnabled === IpSecAdvancedOptionEnum.ENABLED ? true : false}
                 data-testid='advOpt-ipcompEnable'
                 onChange={async (checked: boolean) => {
                   onIpCompChange(checked)
@@ -278,12 +269,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','enforceNatt']}
             style={{ marginTop: '-28px' }}
-            initialValue={false}
+            initialValue={forceNATTEnabled}
             children={
               <Switch
                 // eslint-disable-next-line max-len
                 data-testid='advOpt-enforceNatt'
-                checked={forceNATTEnabled}
+                checked={forceNATTEnabled===IpSecAdvancedOptionEnum.ENABLED ? true : false}
                 onChange={async (checked: boolean) => {
                   onForceNattChange(checked)
                 }} />
