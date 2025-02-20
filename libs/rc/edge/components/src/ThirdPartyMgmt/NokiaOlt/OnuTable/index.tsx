@@ -15,6 +15,8 @@ import {
   getOltPoeClassText
 } from '@acx-ui/rc/utils'
 
+import { GreenPercentageBar } from './styledComponents'
+
 interface EdgeNokiaOnuTableProps {
   data: EdgeNokiaOnuData[] | undefined
   cageName: string | undefined
@@ -74,9 +76,9 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
       render: (_, row) =>
         <Space>
           <span>{row.ports}</span>
-          <div style={{ margin: 'auto', width: '100px' }}>
+          <GreenPercentageBar>
             <ProgressBarV2 percent={(row.usedPorts/row.ports) * 100} />
-          </div>
+          </GreenPercentageBar>
         </Space>
     },
     {

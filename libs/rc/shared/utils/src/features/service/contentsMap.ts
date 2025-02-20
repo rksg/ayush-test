@@ -37,7 +37,9 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
     { defaultMessage: 'Personal Identity Network' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
-  [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' })
+  [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' }),
+  [ServiceType.EDGE_OLT]: defineMessage(
+    { defaultMessage: 'NOKIA GPON Services' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -67,7 +69,9 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Templates of Personal Identity Network Auth Page for Switch' }),
   [ServiceType.RESIDENT_PORTAL]: defineMessage(
-    { defaultMessage: 'Resident portal for property management' })
+    { defaultMessage: 'Resident portal for property management' }),
+  [ServiceType.EDGE_OLT]: defineMessage(
+    { defaultMessage: 'Nokia OLT-ONT network management' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),

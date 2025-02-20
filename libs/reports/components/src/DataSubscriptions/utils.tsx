@@ -5,7 +5,7 @@ import { get }                                                                fr
 import { getUserName as getUserNameR1, getUserProfile as getUserProfileR1 }   from '@acx-ui/user'
 import { getIntl }                                                            from '@acx-ui/utils'
 
-import { DataSubscription } from './services'
+import { DataSubscription, Frequency } from './types'
 
 export function generateBreadcrumb () {
   const { $t } = getIntl()
@@ -42,10 +42,6 @@ export const isVisibleByAction = (rows: DataSubscription[], action: Actions) => 
     default:
       return false
   }
-}
-
-export enum Frequency {
-  Daily = 'daily'
 }
 
 export const frequencyMap = {
