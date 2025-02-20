@@ -47,7 +47,8 @@ const defaultReportsPermissions = {
   READ_HEALTH: false,
   READ_REPORTS: false,
   READ_DATA_STUDIO: false,
-  READ_DATA_SUBSCRIPTIONS: false
+  READ_DATA_CONNECTOR: false,
+  READ_DATA_CONNECTOR_STORAGE: false
 }
 
 describe('AllRoutes', () => {
@@ -107,7 +108,7 @@ describe('AllRoutes', () => {
   it('redirects to data subscriptions', async () => {
     setRaiPermissions({
       ...defaultReportsPermissions,
-      READ_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
+      READ_DATA_CONNECTOR: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
