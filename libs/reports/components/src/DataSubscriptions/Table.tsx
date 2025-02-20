@@ -226,7 +226,7 @@ export function DataSubscriptionsTable () {
   }
 
   const hasDataPermission = get('IS_MLISA_SA')
-    ? hasPermission({ permission: 'WRITE_DATA_SUBSCRIPTIONS' })
+    ? hasPermission({ permission: 'WRITE_DATA_CONNECTOR' })
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const allowedRowActions = filterByAccess(rowActions)
