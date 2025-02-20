@@ -7,8 +7,8 @@ import { GridRow, GridCol, PageHeader, Select, Button, ActionsContainer, showToa
 import { useNavigate, useParams }                                                            from '@acx-ui/react-router-dom'
 
 import { useGetSubscriptionQuery, useSaveSubscriptionMutation } from './services'
-import { Frequency, frequencyMap, getUserName }                 from './utils'
-import { generateBreadcrumb }                                   from './utils'
+import { Frequency }                                            from './types'
+import { frequencyMap, getUserName, generateBreadcrumb }        from './utils'
 
 type DataSubscriptionsFormProps = {
   editMode?: boolean
@@ -125,9 +125,12 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
             >
               <Select
                 disabled
-                options={[
-                  { value: Frequency.Daily, label: $t(frequencyMap[Frequency.Daily]) }
-                ]}
+                options={Object.values(Frequency).map(
+                  (value) => ({
+                    value,
+                    label: $t(frequencyMap[value])
+                  })
+                )}
               />
             </Form.Item>
           </Form>

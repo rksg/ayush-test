@@ -12,8 +12,8 @@ import {
 } from '@acx-ui/user'
 
 import { mockedSubscriptions, mockedUserId } from './__fixtures__'
-import { DataSubscription }                  from './services'
 import { DataSubscriptionsTable }            from './Table'
+import { DataSubscription }                  from './types'
 
 const { click } = userEvent
 const mockedUsedNavigate = jest.fn()
@@ -253,6 +253,33 @@ describe('DataSubscriptions table', () => {
       expect(await screen.findByText(
         'Failed to delete the selected data subscription.')).toBeVisible()
     })
+
+    it(
+      // eslint-disable-next-line max-len
+      'should navigate to audit log page when data subscription name is clicked and user is data subscription owner',
+      async () => {
+        const dataSubscription = mockedSubscriptions[0]
+        const { targetRow } = await findRowInTable(dataSubscription)
+        const dataSubscriptionNameLink = (
+          within(targetRow).getByRole('link', {
+            name: dataSubscription.name
+          }) as HTMLAnchorElement
+        ).href
+
+        expect(dataSubscriptionNameLink).toContain(
+          `/ai/dataSubscriptions/auditLog/${dataSubscription.id}`
+        )
+      })
+
+    it('data subscription name should not be clickable when user is not data subscription owner',
+      async () => {
+        const dataSubscription = mockedSubscriptions[9]
+        const { targetRow } = await findRowInTable(dataSubscription)
+        const dataSubscriptionNameCell = within(targetRow).getByRole('cell', {
+          name: dataSubscription.name
+        })
+        expect(dataSubscriptionNameCell).not.toHaveAttribute('href')
+      })
   })
 
   describe('R1', () => {
@@ -297,6 +324,37 @@ describe('DataSubscriptions table', () => {
       ])
     })
 
-  })
+    it(
+      // eslint-disable-next-line max-len
+      'should navigate to audit log page when data subscription name is clicked and user is data subscription owner',
+      async () => {
+        const dataSubscription = mockedSubscriptions[0]
+        render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+        const element = await findTBody()
+        const tbody = within(element)
+        const targetRow = (await tbody.findAllByRole('row'))[0]
+        const dataSubscriptionNameLink = (
+          within(targetRow).getByRole('link', {
+            name: dataSubscription.name
+          }) as HTMLAnchorElement
+        ).href
 
+        expect(dataSubscriptionNameLink).toContain(
+          `/dataSubscriptions/auditLog/${dataSubscription.id}`
+        )
+      })
+
+    it('data subscription name should not be clickable when user is not data subscription owner',
+      async () => {
+        const dataSubscription = mockedSubscriptions[9]
+        render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+        const element = await findTBody()
+        const tbody = within(element)
+        const targetRow = (await tbody.findAllByRole('row'))[9]
+        const dataSubscriptionNameCell = within(targetRow).getByRole('cell', {
+          name: dataSubscription.name
+        })
+        expect(dataSubscriptionNameCell).not.toHaveAttribute('href')
+      })
+  })
 })
