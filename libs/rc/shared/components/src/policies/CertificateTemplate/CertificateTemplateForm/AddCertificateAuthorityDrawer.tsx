@@ -4,10 +4,13 @@ import { Form, Space }  from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { useIntl }      from 'react-intl'
 
-import { Button, Drawer } from '@acx-ui/components'
+import { Button, Drawer }  from '@acx-ui/components'
+import { CertificateUrls } from '@acx-ui/rc/utils'
+import { getOpsApi }       from '@acx-ui/utils'
 
 import CertificateAuthoritySettings from '../CertificateAuthorityForm/CertificateAuthoritySettings/CertificateAuthoritySettings'
 import useCertificateAuthorityForm  from '../CertificateAuthorityForm/useCertificateAuthorityForm'
+
 
 
 interface AddCertificateAuthorityDrawerProps {
@@ -31,6 +34,12 @@ export default function AddCertificateAuthorityDrawer (props: AddCertificateAuth
           type='link'
           onClick={() => setOpen(true)}
           style={{ marginLeft: '8px', top: '0.25rem' }}
+          rbacOpsIds={[
+            getOpsApi(CertificateUrls.addCA),
+            getOpsApi(CertificateUrls.addSubCA),
+            getOpsApi(CertificateUrls.uploadCAPrivateKey)
+
+          ]}
         >
           {$t({ defaultMessage: 'Add' })}
         </Button>

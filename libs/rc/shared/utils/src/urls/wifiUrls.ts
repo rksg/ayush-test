@@ -519,7 +519,8 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   activateCertificateTemplate: {
     method: 'PUT',
     newApi: true,
-    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId',
+    opsApi: 'PUT:/wifiNetworks/{id}/certificateTemplates/{id}'
   },
   bindClientIsolation: {
     method: 'PUT',
