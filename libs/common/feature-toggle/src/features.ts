@@ -291,7 +291,8 @@ export enum Features {
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
-  SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle'
+  SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
+  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
