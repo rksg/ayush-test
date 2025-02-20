@@ -6,8 +6,8 @@ import { notificationApiURL }                 from '@acx-ui/store'
 import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 import { mockRestApiQuery }                   from '@acx-ui/test-utils'
 
+import SubscriptionForm         from './ConnectorForm'
 import { dataSubscriptionApis } from './services'
-import SubscriptionForm         from './SubscriptionForm'
 import { Frequency }            from './types'
 
 const mockNavigate = jest.fn()
