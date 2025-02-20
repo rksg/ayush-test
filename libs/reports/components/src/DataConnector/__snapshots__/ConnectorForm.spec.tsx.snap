@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DataSubscriptionsForm should handle error on save 1`] = `
+exports[`DataConnectorForm should handle error on save 1`] = `
 Object {
   "data": Object {
     "columns": Array [
@@ -17,7 +17,7 @@ Object {
 }
 `;
 
-exports[`DataSubscriptionsForm should save on apply click 1`] = `
+exports[`DataConnectorForm should save on apply click 1`] = `
 Object {
   "columns": Array [
     "apMac",

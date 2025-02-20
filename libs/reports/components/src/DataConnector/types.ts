@@ -33,7 +33,7 @@ export type StoragePayload = {
   id?: string
 } & (AzureStoragePayload | FTPStoragePayload | SFTPStoragePayload) & { isEdit: boolean }
 
-export type SubscriptionPayload = {
+export type ConnectorPayload = {
   name: string,
   dataSource: string,
   columns: string[],
@@ -50,15 +50,16 @@ export type StorageData = {
   id: string
 }
 
-export type DataSubscription = Omit<SubscriptionPayload, 'id'> & {
+export type DataConnector = Omit<ConnectorPayload, 'id'> & {
   id: string
   status: boolean,
   updatedAt: string
 }
 
-export type PatchDataSubscriptions = {
+export type PatchDataConnector = {
+  // TODO: rename with route adjustments
   dataSubscriptionIds: string[]
-  data: Partial<DataSubscription>
+  data: Partial<DataConnector>
 }
 
 export enum AuditStatusEnum {
@@ -90,7 +91,7 @@ export enum Frequency {
   Daily = 'daily'
 }
 
-export interface DataSubscriptionDto {
+export interface DataConnectorDto {
   id: string
   name: string
   dataSource: string

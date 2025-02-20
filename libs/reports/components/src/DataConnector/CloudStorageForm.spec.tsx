@@ -6,8 +6,8 @@ import { notificationApiURL }                 from '@acx-ui/store'
 import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 import { mockRestApiQuery }                   from '@acx-ui/test-utils'
 
-import CloudStorageForm         from './CloudStorageForm'
-import { dataSubscriptionApis } from './services'
+import CloudStorageForm      from './CloudStorageForm'
+import { dataConnectorApis } from './services'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -23,13 +23,13 @@ describe('CloudStorageForm', () => {
 
   const store = configureStore({
     reducer: {
-      [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+      [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+      getDefaultMiddleware().concat([dataConnectorApis.middleware])
   })
   afterEach(() => {
-    store.dispatch(dataSubscriptionApis.util.resetApiState())
+    store.dispatch(dataConnectorApis.util.resetApiState())
     components.showToast.mockClear()
     mockNavigate.mockClear()
   })

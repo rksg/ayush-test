@@ -64,7 +64,7 @@ export function useMenuConfig () {
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
   const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
-  const isDataSubscriptionsEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   type Item = ItemType & {
@@ -348,9 +348,9 @@ export function useMenuConfig () {
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
         // TODO: rename this later
-        ...(isDataSubscriptionsEnabled && isAdmin ? [{
+        ...(isDataConnectorEnabled && isAdmin ? [{
           uri: '/dataSubscriptions',
-          label: $t({ defaultMessage: 'Data Subscriptions' })
+          label: $t({ defaultMessage: 'Data Connector' })
         }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]

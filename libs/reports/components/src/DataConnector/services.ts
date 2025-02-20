@@ -6,15 +6,15 @@ import {
   Response,
   AuditDto,
   DataQuotaUsage,
-  DataSubscription,
-  DataSubscriptionDto,
-  PatchDataSubscriptions,
+  DataConnector,
+  DataConnectorDto,
+  PatchDataConnector,
   StorageData,
   StoragePayload,
-  SubscriptionPayload
+  ConnectorPayload
 } from './types'
 
-export const dataSubscriptionApis = notificationApi.injectEndpoints({
+export const dataConnectorApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
     getStorage: build.query<StorageData, {}>({
       query: () => {
@@ -24,7 +24,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }],
+      providesTags: [{ type: 'DataConnector', id: 'GET_STORAGE' }],
       transformResponse: (response: Response<StorageData>) => response.data
     }),
     saveStorage: build.mutation<{ data: { id: string } }, StoragePayload>({
@@ -39,9 +39,9 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }]
+      invalidatesTags: [{ type: 'DataConnector', id: 'GET_STORAGE' }]
     }),
-    getSubscription: build.query<SubscriptionPayload, { id?: string }>({
+    getConnector: build.query<ConnectorPayload, { id?: string }>({
       query: ({ id }) => {
         return {
           url: `/dataSubscriptions/${id}`,
@@ -49,9 +49,9 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      transformResponse: (response: Response<SubscriptionPayload>) => response.data
+      transformResponse: (response: Response<ConnectorPayload>) => response.data
     }),
-    saveSubscription: build.mutation<{ data: { id: string } }, SubscriptionPayload>({
+    saveConnector: build.mutation<{ data: { id: string } }, ConnectorPayload>({
       query: ({ isEdit, id, ...data }) => {
         return {
           url: '/dataSubscriptions',
@@ -65,7 +65,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION' }]
+      invalidatesTags: [{ type: 'DataConnector', id: 'GET_CONNECTOR' }]
     }),
     getQuotaUsage: build.query<DataQuotaUsage, void>({
       query: () => {
@@ -76,8 +76,8 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         }
       }
     }),
-    dataSubscriptions: build.query<
-      TableResult<DataSubscription>,
+    dataConnector: build.query<
+      TableResult<DataConnector>,
       RequestPayload
     >({
       query: ({ payload }) => ({
@@ -86,8 +86,8 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      providesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }],
-      transformResponse: (response: TableResult<DataSubscription>) => {
+      providesTags: [{ type: 'DataConnector', id: 'GET_CONNECTOR_LIST' }],
+      transformResponse: (response: TableResult<DataConnector>) => {
         return {
           data: response.data,
           page: response.page,
@@ -95,9 +95,9 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         }
       }
     }),
-    patchDataSubscriptions: build.mutation<
+    patchDataConnector: build.mutation<
       void,
-      RequestPayload<PatchDataSubscriptions>
+      RequestPayload<PatchDataConnector>
     >({
       query: ({ payload }) => ({
         url: 'dataSubscriptions',
@@ -105,9 +105,9 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+      invalidatesTags: [{ type: 'DataConnector', id: 'GET_CONNECTOR_LIST' }]
     }),
-    deleteDataSubscriptions: build.mutation<
+    deleteDataConnector: build.mutation<
       void,
       RequestPayload<string[]>
     >({
@@ -117,15 +117,15 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+      invalidatesTags: [{ type: 'DataConnector', id: 'GET_CONNECTOR_LIST' }]
     }),
-    getDataSubscriptionById: build.query<DataSubscriptionDto, string | undefined>({
+    getDataConnectorById: build.query<DataConnectorDto, string | undefined>({
       query: (id) => ({
         url: `/dataSubscriptions/${id}`,
         method: 'GET',
         credentials: 'include'
       }),
-      transformResponse: (response: Response<DataSubscriptionDto>) => response.data
+      transformResponse: (response: Response<DataConnectorDto>) => response.data
     }),
     getAudits: build.query<
       TableResult<AuditDto>,
@@ -137,7 +137,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         credentials: 'include',
         body: payload
       }),
-      providesTags: [{ type: 'DataSubscription', id: 'GET_AUDIT_LIST' }]
+      providesTags: [{ type: 'DataConnector', id: 'GET_AUDIT_LIST' }]
     }),
     retryAudit: build.mutation<AuditDto['id'], AuditDto['id']>({
       query: (id) => ({
@@ -145,7 +145,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
         method: 'POST',
         credentials: 'include'
       }),
-      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_AUDIT_LIST' }]
+      invalidatesTags: [{ type: 'DataConnector', id: 'GET_AUDIT_LIST' }]
     })
   })
 })
@@ -153,13 +153,13 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
 export const {
   useGetStorageQuery,
   useSaveStorageMutation,
-  useSaveSubscriptionMutation,
-  useGetSubscriptionQuery,
+  useSaveConnectorMutation,
+  useGetConnectorQuery,
   useGetQuotaUsageQuery,
-  useDataSubscriptionsQuery,
-  usePatchDataSubscriptionsMutation,
-  useDeleteDataSubscriptionsMutation,
-  useGetDataSubscriptionByIdQuery,
+  useDataConnectorQuery,
+  usePatchDataConnectorMutation,
+  useDeleteDataConnectorMutation,
+  useGetDataConnectorByIdQuery,
   useGetAuditsQuery,
   useRetryAuditMutation
-} = dataSubscriptionApis
+} = dataConnectorApis

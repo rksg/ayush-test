@@ -6,9 +6,9 @@ import {
   Report,
   ReportList,
   DataStudio,
-  DataSubscriptionsContent,
-  SubscriptionForm,
-  DataSubscriptionsAuditLog,
+  DataConnectorContent,
+  ConnectorForm,
+  DataConnectorAuditLog,
   CloudStorageForm
 } from '@acx-ui/reports/components'
 import { Provider }                   from '@acx-ui/store'
@@ -49,12 +49,12 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      <Route path='dataSubscriptions' element={<DataSubscriptionsContent />} />
-      <Route path='dataSubscriptions/create' element={<SubscriptionForm />} />
+      <Route path='dataSubscriptions' element={<DataConnectorContent />} />
+      <Route path='dataSubscriptions/create' element={<ConnectorForm />} />
       <Route path='dataSubscriptions/edit/:settingId'
-        element={<SubscriptionForm editMode />} />
+        element={<ConnectorForm editMode />} />
       <Route path='dataSubscriptions/auditLog/:settingId'
-        element={<DataSubscriptionsAuditLog />} />
+        element={<DataConnectorAuditLog />} />
       {hasDCStoragePermission ? (<>
         <Route path='dataSubscriptions/cloudStorage/create'
           element={<CloudStorageForm />} />

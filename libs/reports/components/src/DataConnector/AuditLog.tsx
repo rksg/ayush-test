@@ -3,28 +3,28 @@ import { useParams } from 'react-router-dom'
 
 import { GridRow, GridCol, PageHeader, Loader } from '@acx-ui/components'
 
-import AuditLogTable                       from './AuditLogTable'
-import { useGetDataSubscriptionByIdQuery } from './services'
-import { generateBreadcrumb }              from './utils'
+import AuditLogTable                    from './AuditLogTable'
+import { useGetDataConnectorByIdQuery } from './services'
+import { generateBreadcrumb }           from './utils'
 
-const DataSubscriptionsAuditLog: React.FC = () => {
+const DataConnectorAuditLog: React.FC = () => {
   const { $t } = useIntl()
   const { settingId } = useParams <{ settingId: string }>()
-  const { data: dataSubscription, isLoading } = useGetDataSubscriptionByIdQuery(settingId)
+  const { data: dataConnector, isLoading } = useGetDataConnectorByIdQuery(settingId)
 
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={`${$t({ defaultMessage: 'Audit Log' })} (${dataSubscription?.name})`}
+        title={`${$t({ defaultMessage: 'Audit Log' })} (${dataConnector?.name})`}
         breadcrumb={generateBreadcrumb()}
       />
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-          <AuditLogTable dataSubscriptionId={String(settingId)} />
+          <AuditLogTable dataConnectorId={String(settingId)} />
         </GridCol>
       </GridRow>
     </Loader>
   )
 }
 
-export default DataSubscriptionsAuditLog
+export default DataConnectorAuditLog

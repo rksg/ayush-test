@@ -9,8 +9,8 @@ import { mockRestApiQuery }                                                  fro
 import { RolesEnum }                                                         from '@acx-ui/types'
 import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
-import DataSubscriptionsContent from './Content'
-import { dataSubscriptionApis } from './services'
+import DataConnectorContent  from './Content'
+import { dataConnectorApis } from './services'
 
 const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
@@ -59,20 +59,20 @@ jest.mock('./QuotaUsageBar', () => ({
   QuotaUsageBar: () => <div data-testid={quotaUsageTestId}/>
 }))
 
-describe('DataSubscriptionsContent', () => {
+describe('DataConnectorContent', () => {
   describe('RAI', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     const store = configureStore({
       reducer: {
-        [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+        [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
       },
       middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+        getDefaultMiddleware().concat([dataConnectorApis.middleware])
     })
     afterEach(() => {
-      store.dispatch(dataSubscriptionApis.util.resetApiState())
+      store.dispatch(dataConnectorApis.util.resetApiState())
     })
     beforeEach(() => {
       jest.clearAllMocks()
@@ -86,7 +86,7 @@ describe('DataSubscriptionsContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
-    it('should render DataSubscriptionsContent correct when storage is configured', async () => {
+    it('should render DataConnectorContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
         data: {
           config: {
@@ -100,17 +100,17 @@ describe('DataSubscriptionsContent', () => {
           id: 'id'
         }
       })
-      render(<DataSubscriptionsContent />, {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByTestId(quotaUsageTestId)).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
-      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
+      expect(screen.getByText('New Connector')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'New Connector' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: '/ai/dataSubscriptions/create',
         hash: '',
@@ -124,18 +124,18 @@ describe('DataSubscriptionsContent', () => {
         search: ''
       })
     })
-    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
-      render(<DataSubscriptionsContent />, {
+    it('should render DataConnectorContent correct when storage not configured', async () => {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      const subscriptionButton = screen.getByRole('button', { name: 'New Subscription' })
-      expect(subscriptionButton).toBeVisible()
-      expect(subscriptionButton).toBeDisabled()
+      const connectorButton = screen.getByRole('button', { name: 'New Connector' })
+      expect(connectorButton).toBeVisible()
+      expect(connectorButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -145,40 +145,40 @@ describe('DataSubscriptionsContent', () => {
       })
     })
 
-    it('should render DataSubscriptionsContent correct (no storage permission)', async () => {
+    it('should render DataConnectorContent correct (no storage permission)', async () => {
       setRaiPermissions({
         READ_DATA_CONNECTOR: true,
         WRITE_DATA_CONNECTOR: true,
         READ_DATA_CONNECTOR_STORAGE: false,
         WRITE_DATA_CONNECTOR_STORAGE: false
       } as RaiPermissions)
-      render(<DataSubscriptionsContent />, {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      expect(screen.getByText('New Subscription')).toBeVisible()
+      expect(screen.getByText('New Connector')).toBeVisible()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
-    it('should render DataSubscriptionsContent correct (no write permisson)', async () => {
+    it('should render DataConnectorContent correct (no write permisson)', async () => {
       setRaiPermissions({
         READ_DATA_CONNECTOR: true,
         WRITE_DATA_CONNECTOR: false,
         READ_DATA_CONNECTOR_STORAGE: false,
         WRITE_DATA_CONNECTOR_STORAGE: false
       } as RaiPermissions)
-      render(<DataSubscriptionsContent />, {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      expect(screen.queryByText('New Subscription')).toBeNull()
+      expect(screen.queryByText('New Connector')).toBeNull()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
   })
@@ -189,13 +189,13 @@ describe('DataSubscriptionsContent', () => {
     }
     const store = configureStore({
       reducer: {
-        [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+        [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
       },
       middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+        getDefaultMiddleware().concat([dataConnectorApis.middleware])
     })
     afterEach(() => {
-      store.dispatch(dataSubscriptionApis.util.resetApiState())
+      store.dispatch(dataConnectorApis.util.resetApiState())
     })
     beforeEach(() => {
       jest.clearAllMocks()
@@ -204,7 +204,7 @@ describe('DataSubscriptionsContent', () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
     })
-    it('should render DataSubscriptionsContent correct when storage is configured', async () => {
+    it('should render DataConnectorContent correct when storage is configured', async () => {
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
         data: {
           config: {
@@ -218,17 +218,17 @@ describe('DataSubscriptionsContent', () => {
           id: 'id'
         }
       })
-      render(<DataSubscriptionsContent />, {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByTestId(quotaUsageTestId)).toBeVisible()
-      expect(screen.getByText('New Subscription')).toBeVisible()
-      await userEvent.click(screen.getByRole('button', { name: 'New Subscription' }))
+      expect(screen.getByText('New Connector')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'New Connector' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: `/${params.tenantId}/t/dataSubscriptions/create`,
         hash: '',
@@ -242,18 +242,18 @@ describe('DataSubscriptionsContent', () => {
         search: ''
       })
     })
-    it('should render DataSubscriptionsContent correct when storage not configured', async () => {
-      render(<DataSubscriptionsContent />, {
+    it('should render DataConnectorContent correct when storage not configured', async () => {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      const subscriptionButton = screen.getByRole('button', { name: 'New Subscription' })
-      expect(subscriptionButton).toBeVisible()
-      expect(subscriptionButton).toBeDisabled()
+      const connectorButton = screen.getByRole('button', { name: 'New Connector' })
+      expect(connectorButton).toBeVisible()
+      expect(connectorButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -263,31 +263,31 @@ describe('DataSubscriptionsContent', () => {
       })
     })
 
-    it('should render DataSubscriptionsContent correct (no storage permission)', async () => {
+    it('should render DataConnectorContent correct (no storage permission)', async () => {
       setRole({ role: RolesEnum.ADMINISTRATOR })
-      render(<DataSubscriptionsContent />, {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      expect(screen.getByText('New Subscription')).toBeVisible()
+      expect(screen.getByText('New Connector')).toBeVisible()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
 
-    it('should render DataSubscriptionsContent correct (no write permisson)', async () => {
+    it('should render DataConnectorContent correct (no write permisson)', async () => {
       setRole({ role: RolesEnum.READ_ONLY })
-      render(<DataSubscriptionsContent />, {
+      render(<DataConnectorContent />, {
         route: { params },
         wrapper: Provider
       })
 
-      expect(await screen.findByText('Data Subscriptions')).toBeVisible()
+      expect(await screen.findByText('Data Connector')).toBeVisible()
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByTestId(bannerTestId)).toBeVisible()
-      expect(screen.queryByText('New Subscription')).toBeNull()
+      expect(screen.queryByText('New Connector')).toBeNull()
       expect(screen.queryByText(/Cloud Storage/)).toBeNull()
     })
   })

@@ -6,9 +6,9 @@ import { notificationApiURL }                 from '@acx-ui/store'
 import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 import { mockRestApiQuery }                   from '@acx-ui/test-utils'
 
-import SubscriptionForm         from './ConnectorForm'
-import { dataSubscriptionApis } from './services'
-import { Frequency }            from './types'
+import ConnectorForm         from './ConnectorForm'
+import { dataConnectorApis } from './services'
+import { Frequency }         from './types'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -26,27 +26,27 @@ jest.mock('./utils', () => ({
   getUsername: jest.fn().mockReturnValue('username')
 }))
 
-describe('DataSubscriptionsForm', () => {
+describe('DataConnectorForm', () => {
   const store = configureStore({
     reducer: {
-      [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+      [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+      getDefaultMiddleware().concat([dataConnectorApis.middleware])
   })
   afterEach(() => {
-    store.dispatch(dataSubscriptionApis.util.resetApiState())
+    store.dispatch(dataConnectorApis.util.resetApiState())
     components.showToast.mockClear()
     mockNavigate.mockClear()
   })
-  it('(RAI) should render SubscriptionForm create', async () => {
-    render(<SubscriptionForm />, {
+  it('(RAI) should render ConnectorForm create', async () => {
+    render(<ConnectorForm />, {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('New Subscription')).toBeVisible()
+    expect(await screen.findByText('New Connector')).toBeVisible()
   })
-  it('(RAI) should render SubscriptionForm edit', async () => {
+  it('(RAI) should render ConnectorForm edit', async () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/id`, 'get', {
       data: {
         id: 'id',
@@ -56,18 +56,18 @@ describe('DataSubscriptionsForm', () => {
         frequency: Frequency.Daily
       }
     })
-    render(<SubscriptionForm editMode/>, {
+    render(<ConnectorForm editMode/>, {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Edit Subscription')).toBeVisible()
+    expect(await screen.findByText('Edit Connector')).toBeVisible()
   })
   it('should trigger validation for fields on apply click', async () => {
-    render(<SubscriptionForm />, {
+    render(<ConnectorForm />, {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('New Subscription')).toBeVisible()
+    expect(await screen.findByText('New Connector')).toBeVisible()
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
     fireEvent.click(applyBtn)
@@ -79,11 +79,11 @@ describe('DataSubscriptionsForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'post', {
       data: { id: 'id' }
     }, false, true)
-    render(<SubscriptionForm />, {
+    render(<ConnectorForm />, {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('New Subscription')).toBeVisible()
+    expect(await screen.findByText('New Connector')).toBeVisible()
     const dd1 = (await screen.findAllByRole('combobox')).at(0) as HTMLElement
     await userEvent.click(dd1)
     await userEvent.click(screen.getByText('AP Inventory'))
@@ -112,11 +112,11 @@ describe('DataSubscriptionsForm', () => {
     mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'patch', {
       error: { data: { error: 'server error' } }
     }, false, true)
-    render(<SubscriptionForm editMode/>, {
+    render(<ConnectorForm editMode/>, {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Edit Subscription')).toBeVisible()
+    expect(await screen.findByText('Edit Connector')).toBeVisible()
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     fireEvent.click(applyBtn)
     await waitFor(() => {
@@ -128,11 +128,11 @@ describe('DataSubscriptionsForm', () => {
     })
   })
   it('should navigate to previous route on cancel click', async () => {
-    render(<SubscriptionForm />, {
+    render(<ConnectorForm />, {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('New Subscription')).toBeVisible()
+    expect(await screen.findByText('New Connector')).toBeVisible()
     const dd = (await screen.findAllByRole('combobox')).at(0) as HTMLElement
     await userEvent.click(dd)
     await userEvent.click(screen.getByText('AP Inventory'))
