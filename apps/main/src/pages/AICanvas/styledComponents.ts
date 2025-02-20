@@ -398,6 +398,16 @@ export const Grid = styled.div`
   &:hover .card-actions{
     display: flex;
   }
+  .resizeHandle{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+    height: 20px;
+    width: 20px;
+    border-right: 2px solid #888;
+    border-bottom: 2px solid #888;
+  }
 }
 .rglb_group-item .group-item-container #card-container .card .card-footer {
   display: flex;
