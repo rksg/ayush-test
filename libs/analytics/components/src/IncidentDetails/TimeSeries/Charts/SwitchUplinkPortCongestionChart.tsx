@@ -31,6 +31,11 @@ export const SwitchUplinkPortCongestionChart = (props: TimeSeriesChartProps) => 
     props.data.uplinkPortCongestionTimeSeries as Record<string, TimeSeriesDataType[]>,
     seriesMapping)
 
+  const maxValue = chartResults.reduce((max, { data }) =>
+    Math.max(max, ...data.map((item) => item[1] ?? 0)), 0)
+
+  const yAxisBufferPercent = 0.25
+
   return <Card title={$t({ defaultMessage: 'Congested Port Count' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
@@ -41,7 +46,8 @@ export const SwitchUplinkPortCongestionChart = (props: TimeSeriesChartProps) => 
           data={chartResults}
           dataFormatter={formatter('countFormat')}
           yAxisProps={{ min: 0 }}
-          echartOptions={{ yAxis: { minInterval: 1 } }}
+          echartOptions={{ yAxis: { minInterval: 1,
+            max: Math.ceil(maxValue * (1 + yAxisBufferPercent)) } }}
         />
       )}
     </AutoSizer>
