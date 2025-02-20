@@ -1,45 +1,19 @@
+import { TableResult }     from '@acx-ui/rc/utils'
 import { notificationApi } from '@acx-ui/store'
+import { RequestPayload }  from '@acx-ui/types'
 
+import {
+  Response,
+  AuditDto,
+  DataQuotaUsage,
+  DataSubscription,
+  DataSubscriptionDto,
+  PatchDataSubscriptions,
+  StorageData,
+  StoragePayload,
+  SubscriptionPayload
+} from './types'
 
-type AzureStoragePayload = {
-  azureConnectionType: string,
-  azureAccountName: string,
-  azureAccountKey: string,
-  azureShareName: string,
-  azureCustomerName: string
-}
-type FTPStroagePayload = {
-  ftpHost: string,
-  ftpPort: string,
-  ftpUserName: string,
-  ftpPassword: string
-}
-type SFTPStoragePayload = {
-  sftpHost: string,
-  sftpPort: string,
-  sftpUserName: string,
-  sftpPassword: string,
-  sftpPrivateKey: string
-}
-export type StoragePayload = {
-  connectionType: 'azure' | 'ftp' | 'sftp',
-  id?: string
-} & (AzureStoragePayload | FTPStroagePayload | SFTPStoragePayload) & { isEdit: boolean }
-type SubscriptionPayload = {
-  name: string,
-  dataSource: string,
-  columns: string[],
-  frequency: string,
-  userName: string,
-  tenantId: string,
-  id?: string
-  userId: string,
-  isEdit: boolean
-}
-export type StorageData = {
-  config: StoragePayload,
-  id: string
-}
 export const dataSubscriptionApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
     getStorage: build.query<StorageData, {}>({
@@ -50,10 +24,8 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'Notification', id: 'GET_STORAGE' }],
-      transformResponse: (response: { data: StorageData }) => {
-        return response.data
-      }
+      providesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }],
+      transformResponse: (response: Response<StorageData>) => response.data
     }),
     saveStorage: build.mutation<{ data: { id: string } }, StoragePayload>({
       query: ({ isEdit, ...data }) => {
@@ -67,7 +39,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Notification', id: 'GET_STORAGE' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_STORAGE' }]
     }),
     getSubscription: build.query<SubscriptionPayload, { id?: string }>({
       query: ({ id }) => {
@@ -77,10 +49,7 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
-      providesTags: [{ type: 'Notification', id: 'GET_SUBSCRIPTION' }],
-      transformResponse: (response: { data: SubscriptionPayload }) => {
-        return response.data
-      }
+      transformResponse: (response: Response<SubscriptionPayload>) => response.data
     }),
     saveSubscription: build.mutation<{ data: { id: string } }, SubscriptionPayload>({
       query: ({ isEdit, id, ...data }) => {
@@ -96,7 +65,87 @@ export const dataSubscriptionApis = notificationApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Notification', id: 'GET_SUBSCRIPTION' }]
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION' }]
+    }),
+    getQuotaUsage: build.query<DataQuotaUsage, void>({
+      query: () => {
+        return {
+          url: 'dataSubscriptions/quota',
+          method: 'GET',
+          credentials: 'include'
+        }
+      }
+    }),
+    dataSubscriptions: build.query<
+      TableResult<DataSubscription>,
+      RequestPayload
+    >({
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions/query',
+        method: 'post',
+        credentials: 'include',
+        body: payload
+      }),
+      providesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }],
+      transformResponse: (response: TableResult<DataSubscription>) => {
+        return {
+          data: response.data,
+          page: response.page,
+          totalCount: response.totalCount
+        }
+      }
+    }),
+    patchDataSubscriptions: build.mutation<
+      void,
+      RequestPayload<PatchDataSubscriptions>
+    >({
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions',
+        method: 'PATCH',
+        credentials: 'include',
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+    }),
+    deleteDataSubscriptions: build.mutation<
+      void,
+      RequestPayload<string[]>
+    >({
+      query: ({ payload }) => ({
+        url: 'dataSubscriptions',
+        method: 'DELETE',
+        credentials: 'include',
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_SUBSCRIPTION_LIST' }]
+    }),
+    getDataSubscriptionById: build.query<DataSubscriptionDto, string | undefined>({
+      query: (id) => ({
+        url: `/dataSubscriptions/${id}`,
+        method: 'GET',
+        credentials: 'include'
+      }),
+      transformResponse: (response: Response<DataSubscriptionDto>) => response.data
+    }),
+    getAudits: build.query<
+      TableResult<AuditDto>,
+      RequestPayload
+    >({
+      query: ({ payload }) => ( {
+        url: '/dataSubscriptions/audit/query',
+        method: 'POST',
+        credentials: 'include',
+        body: payload
+      }),
+      providesTags: [{ type: 'DataSubscription', id: 'GET_AUDIT_LIST' }]
+    }),
+    retryAudit: build.mutation<AuditDto['id'], AuditDto['id']>({
+      query: (id) => ({
+        url: `/dataSubscriptions/retry/${id}`,
+        method: 'POST',
+        credentials: 'include'
+      }),
+      invalidatesTags: [{ type: 'DataSubscription', id: 'GET_AUDIT_LIST' }]
     })
   })
 })
@@ -105,5 +154,12 @@ export const {
   useGetStorageQuery,
   useSaveStorageMutation,
   useSaveSubscriptionMutation,
-  useGetSubscriptionQuery
+  useGetSubscriptionQuery,
+  useGetQuotaUsageQuery,
+  useDataSubscriptionsQuery,
+  usePatchDataSubscriptionsMutation,
+  useDeleteDataSubscriptionsMutation,
+  useGetDataSubscriptionByIdQuery,
+  useGetAuditsQuery,
+  useRetryAuditMutation
 } = dataSubscriptionApis
