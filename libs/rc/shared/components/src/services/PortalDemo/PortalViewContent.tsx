@@ -20,6 +20,7 @@ import PortalViewGoThrough                     from './PortalViewGoThrough'
 import PortalViewGuestConnect                  from './PortalViewGuestConnect'
 import PortalViewGuestForget                   from './PortalViewGuestForget'
 import PortalViewHostApproval                  from './PortalViewHostApproval'
+import PortalViewSAMLLogin                     from './PortalViewSAMLLogin'
 import PortalViewSelfSignConnect               from './PortalViewSelfSignConnect'
 import PortalViewSelfSignRegister              from './PortalViewSelfSignRegister'
 import PortalViewTerms                         from './PortalViewTerms'
@@ -178,6 +179,13 @@ export default function PortalViewContent (props:{
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
+      {view === PortalViewEnum.SAML &&
+        <PortalViewSAMLLogin
+          portalLang={portalLang}
+          demoValue={demoValue}
+          updateBtn={(data)=>{
+            updateViewContent({ ...demoValue, buttonColor: data.color })}}
+        />}
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm portalLang={portalLang}/>}
       {view === PortalViewEnum.TermCondition &&
