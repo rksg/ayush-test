@@ -40,7 +40,7 @@ describe('DataSubscriptions table', () => {
   describe('RAI', () => {
     beforeEach(() => {
       mockGet.mockReturnValue('true')
-      setRaiPermissions({ WRITE_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
+      setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
       mockUserProfileRA.mockReturnValue({ userId: mockedUserId } as UserProfile)
       mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {
         data: mockedSubscriptions, page: 1, totalCount: mockedSubscriptions.length

@@ -49,7 +49,7 @@ jest.mock('moment', () => {
 describe('AuditLogTable', () => {
   beforeEach(() => {
     mockGet.mockReturnValue('true')
-    setRaiPermissions({ WRITE_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
+    setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
     mockRestApiQuery(
       `${notificationApiURL}/dataSubscriptions/audit/query`,
       'post',
