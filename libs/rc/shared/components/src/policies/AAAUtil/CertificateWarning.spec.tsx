@@ -1,45 +1,56 @@
-/* eslint-disable max-len */
-import { rest } from 'msw'
 
-import { useGetCertificatesQuery }                               from '@acx-ui/rc/services'
-import { CertificateStatusType, CertificateUrls, useTableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }                from '@acx-ui/test-utils'
-
-import { CertificateTable } from '../CertificateTemplate'
-import { certificateList  } from '../CertificateTemplate/__test__/fixtures'
+import { CertificateStatusType } from '@acx-ui/rc/utils'
+import { render, screen }        from '@acx-ui/test-utils'
 
 import { CertificateWarning } from './CertificateWarning'
 
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  TenantLink: (props: { to: string, children: React.ReactNode }) => {
+    return <div><span>{props.to}</span><span>{props.children}</span></div>
+  }
+}))
+
 describe('CertificateWarning', () => {
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(CertificateUrls.getCertificates.url,
-        (_, res, ctx) => res(ctx.json(certificateList))
-      )
-    )
+  it('should render correctly', () => {
+    render(<CertificateWarning status={[CertificateStatusType.EXPIRED]}/>)
+
+    expect(screen.getByText(/This certificate has expired/i)).toBeInTheDocument()
   })
 
+  it('should render nothing when status is undefined', () => {
+    const { container } = render(<CertificateWarning status={undefined}/>)
+    expect(container).toBeEmptyDOMElement()
+  })
 
-  it('should render correctly', async () => {
-    const { result: certificateTableQuery } = renderHook(() =>
-      useTableQuery({
-        useQuery: useGetCertificatesQuery,
-        defaultPayload: {},
-        apiParams: {}
-      }), { wrapper: ({ children }) => <Provider children={children} /> })
+  it('should render expired warning when status includes EXPIRED', () => {
+    render(<CertificateWarning status={[CertificateStatusType.EXPIRED]}/>)
+    expect(screen.getByText(/This certificate has expired/i)).toBeInTheDocument()
+  })
 
-    render(<Provider>
-      <CertificateWarning status={[CertificateStatusType.EXPIRED]}/>
-      <CertificateTable tableQuery={certificateTableQuery.current}/></Provider>, {
-      route: {
-        params: { tenantId: 't-id' },
-        path: '/:tenantId/policies/certificate/list'
-      }
-    })
+  it('should render revoked warning when status includes REVOKED', () => {
+    render(<CertificateWarning status={[CertificateStatusType.REVOKED]}/>)
+    expect(screen.getByText(/This certificate has revoked/i)).toBeInTheDocument()
+  })
 
-    const result = await screen.findByText('Server & Client Certificates')
-    expect(result).toBeVisible()
+  it('should render revoked and expired warning when status includes both', () => {
+    // eslint-disable-next-line max-len
+    render(<CertificateWarning status={[CertificateStatusType.EXPIRED, CertificateStatusType.REVOKED]}/>)
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/This certificate has revoked and expired/i)).toBeInTheDocument()
+  })
+
+  it('should display correct link text when includeParentLocation is true', () => {
+    // eslint-disable-next-line max-len
+    render(<CertificateWarning status={[CertificateStatusType.EXPIRED]} includeParentLocation={true} />)
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Certificate Management/i)).toBeInTheDocument()
+  })
+
+  it('should display correct link text when includeParentLocation is false', () => {
+    // eslint-disable-next-line max-len
+    render(<CertificateWarning status={[CertificateStatusType.EXPIRED]} includeParentLocation={false} />)
+    expect(screen.queryByText(/Certificate Management/i)).not.toBeInTheDocument()
   })
 
 })

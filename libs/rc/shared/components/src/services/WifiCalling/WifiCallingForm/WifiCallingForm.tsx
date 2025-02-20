@@ -65,18 +65,23 @@ export const WifiCallingForm = () => {
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
   const pageTitle = useServicePageHeaderTitle(false, ServiceType.WIFI_CALLING)
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const handleAddWifiCallingService = async () => {
     try {
-      await createWifiCallingService({
+      const result = await createWifiCallingService({
         params,
         payload: WifiCallingFormValidate(state),
         enableRbac
       }).unwrap()
+
+      if (result.response?.id) {
+        await saveEnforcementConfig(result.response.id)
+      }
+
       navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

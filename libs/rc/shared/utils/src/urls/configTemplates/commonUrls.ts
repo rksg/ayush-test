@@ -383,6 +383,6 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PUT:/templates/{id}/enforce'
+    opsApi: 'PUT:/templates/{id}/enforcementSettings'
   }
 }

@@ -62,7 +62,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
@@ -116,19 +116,27 @@ export const AAAForm = (props: AAAFormProps) => {
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
     const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
+    let entityId: string | undefined
+
     try {
       if (isEdit) {
-        await updateInstance(requestPayload).unwrap()
+        const res = await updateInstance(requestPayload).unwrap()
         if (supportRadsec) {
           updateRadSecActivations(data, requestPayload?.params?.policyId)
         }
+        entityId = res.id
       } else {
         await createInstance(requestPayload).unwrap().then(res => {
+          entityId = res?.response?.id
           data.id = res?.response?.id
           if (supportRadsec) {
             addRadSecActivations(data, res?.response?.id)
           }
         })
+      }
+
+      if (entityId) {
+        await saveEnforcementConfig(entityId)
       }
 
       networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })

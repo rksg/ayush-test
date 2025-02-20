@@ -18,6 +18,7 @@ export interface WifiCallingDetailContextType {
 }
 
 export interface WifiCallingFormContextType {
+  id?: string
   serviceName: string
   name?: string,
   tags: string[]
