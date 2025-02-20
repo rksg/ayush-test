@@ -65,7 +65,7 @@ export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
       title={currentCage?.cage}
       visible={visible}
       onClose={onClose}
-      width={550}
+      width={600}
     >
       <Row>
         <Col span={24}>
