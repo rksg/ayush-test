@@ -1,12 +1,12 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { get }                                  from '@acx-ui/config'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
-import { doProfileDelete }                      from '@acx-ui/rc/services'
-import { useTableQuery }                        from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }           from '@acx-ui/react-router-dom'
-import { RolesEnum }                            from '@acx-ui/types'
+import { Loader, showToast, Table, TableProps }   from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
+import { DateFormatEnum, formatter }              from '@acx-ui/formatter'
+import { doProfileDelete }                        from '@acx-ui/rc/services'
+import { useTableQuery }                          from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                              from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
@@ -15,12 +15,12 @@ import {
 } from '@acx-ui/user'
 
 import {
-  DataSubscription,
   useDataSubscriptionsQuery,
   useDeleteDataSubscriptionsMutation,
   usePatchDataSubscriptionsMutation
 } from './services'
-import { Actions, Frequency, frequencyMap, getUserId, isVisibleByAction } from './utils'
+import { DataSubscription, Frequency }                         from './types'
+import { Actions, frequencyMap, getUserId, isVisibleByAction } from './utils'
 
 export function DataSubscriptionsTable () {
   const { $t } = useIntl()
@@ -95,7 +95,18 @@ export function DataSubscriptionsTable () {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
-      fixed: 'left'
+      fixed: 'left',
+      render: (
+        name,
+        { id, name: dataSubscriptionName, userId: dataSubscriptionUserId }
+      ) =>
+        userId === dataSubscriptionUserId ? (
+          <TenantLink to={`dataSubscriptions/auditLog/${id}`}>
+            {dataSubscriptionName}
+          </TenantLink>
+        ) : (
+          name
+        )
     },
     {
       key: 'userName',

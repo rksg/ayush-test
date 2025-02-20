@@ -8,7 +8,7 @@ import { mockRestApiQuery }                   from '@acx-ui/test-utils'
 
 import { dataSubscriptionApis } from './services'
 import SubscriptionForm         from './SubscriptionForm'
-import { Frequency }            from './utils'
+import { Frequency }            from './types'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
