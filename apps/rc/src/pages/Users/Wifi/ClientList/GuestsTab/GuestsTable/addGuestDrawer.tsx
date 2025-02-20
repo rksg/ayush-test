@@ -275,8 +275,7 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
     const filteredData = list.data.filter((network) => {
-      if(!isCaptivePortalOWETransitionEnabled) { return true }
-      if(network?.securityProtocol === WlanSecurityEnum.OWETransition) {
+      if(isCaptivePortalOWETransitionEnabled &&network?.securityProtocol === WlanSecurityEnum.OWETransition) {
         return network?.isOweMaster
       }
       return true
