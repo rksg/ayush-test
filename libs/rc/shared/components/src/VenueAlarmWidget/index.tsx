@@ -9,7 +9,8 @@ import {
   Alarm,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                        from '@acx-ui/react-router-dom'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { getAlarmsDonutChartData } from '../AlarmWidget'
 
@@ -50,6 +51,7 @@ export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
 export function VenueAlarmWidget () {
   const { venueId } = useParams()
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   // Alarms list query
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
@@ -66,6 +68,12 @@ export function VenueAlarmWidget () {
       data: getAlarmsDonutChartData(data),
       ...rest
     })
+  })
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.VENUE_ALARM_WIDGET,
+    states: [overviewV2Query],
+    isEnabled: isMonitoringPageEnabled
   })
 
   const { data } = overviewV2Query
