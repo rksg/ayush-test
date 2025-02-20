@@ -159,5 +159,13 @@ export const IdentityProviderFormReducer = (
         ...state,
         ...action.payload.state
       }
+    case IdentityProviderActionType.LOAD_PRECONFIGURED:
+      const { naiRealms=[], plmns=[], roamConsortiumOIs=[] } = action.payload.state
+      return {
+        ...state,
+        naiRealms,
+        plmns,
+        roamConsortiumOIs
+      }
   }
 }

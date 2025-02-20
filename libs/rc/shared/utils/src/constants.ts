@@ -252,7 +252,8 @@ export enum ConfigTypeEnum {
   ACL = 'ACL',
   VLAN = 'VLAN',
   AUTHENTICATION = 'AUTHENTICATION',
-  PORT_PROFILE = 'PORT_PROFILE'
+  PORT_PROFILE = 'PORT_PROFILE',
+  PORT_DISABLE_RECOVERY = 'PORT_DISABLE_RECOVERY'
 }
 
 export enum ConfigStatusEnum {
