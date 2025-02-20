@@ -22,13 +22,15 @@ import {
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   getScopeKeyByPolicy,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate
+  useConfigTemplate,
+  usePolicyListBreadcrumb,
+  useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
 import { ApTable }    from './InstanceTable/ApTable'
 import { VenueTable } from './InstanceTable/VenueTable'
@@ -40,6 +42,7 @@ export const EthernetPortProfileDetail = () => {
   const { isTemplate } = useConfigTemplate()
 
   const supportDynamicVLAN = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ETHERNET_PORT_PROFILE)
 
   const { data: ethernetPortProfileData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
@@ -147,33 +150,22 @@ export const EthernetPortProfileDetail = () => {
   return (<>
     <PageHeader
       title={ethernetPortProfileData?.name}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        },{
-          text: $t({ defaultMessage: 'Ethernet Port Profiles' }),
-          link: getPolicyRoutePath(
-            { type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST }
-          )
-        }
-      ]}
-      extra={
-        filterByAccessForServicePolicyMutation([
-          <TenantLink
-            scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
-            to={getPolicyDetailsLink({
-              type: PolicyType.ETHERNET_PORT_PROFILE,
-              oper: PolicyOperation.EDIT,
-              policyId: policyId as string
-            })}>
+      breadcrumb={breadcrumb}
+      extra={filterByAccessForServicePolicyMutation([
+        <PolicyConfigTemplateLinkSwitcher
+          // eslint-disable-next-line max-len
+          rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
+          scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT)}
+          type={PolicyType.ETHERNET_PORT_PROFILE}
+          oper={PolicyOperation.EDIT}
+          policyId={policyId!}
+          children={
             <Button key={'configure'} type={'primary'} disabled={isDefaultProfile}>
               {$t({ defaultMessage: 'Configure' })}
-            </Button></TenantLink>
-        ])
-      }
-
+            </Button>
+          }
+        />
+      ])}
     />
     <Space direction='vertical' size={30}>
       <SummaryCard data={ethernetPortProfileInfo} colPerRow={6} />

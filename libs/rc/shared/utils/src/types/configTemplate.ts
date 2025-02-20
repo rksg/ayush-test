@@ -18,7 +18,7 @@ export enum ConfigTemplateType {
   SWITCH_REGULAR = 'SWITCH_REGULAR',
   SWITCH_CLI = 'SWITCH_CLI',
   AP_GROUP = 'AP_GROUP',
-  ETHERNET_PORT_PROFILE = 'Ethernet Port Profile'
+  ETHERNET_PORT_PROFILE = 'ETHERNET_PORT'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {

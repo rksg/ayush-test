@@ -991,7 +991,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteEthernetPortProfile: {
     method: 'delete',
-    url: '/templates/ethernetPortProfiles/:id',
+    url: '/templates/ethernetPortProfiles/:templateId',
     opsApi: 'DELETE:/templates/ethernetPortProfiles/{id}',
     newApi: true,
     defaultHeaders: {
