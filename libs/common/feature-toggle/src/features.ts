@@ -113,6 +113,7 @@ export enum Features {
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
+  MONITORING_PAGE_LOAD_TIMES = 'acx-ui-monitoring-page-load-times-toggle',
   MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
@@ -289,8 +290,9 @@ export enum Features {
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
-  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
-  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
+  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

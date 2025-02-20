@@ -28,7 +28,7 @@ export function DpskOverview (props: DpskOverviewProps) {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
   const isTableBlocked = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   const { data } = props
-  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP) && !isTemplate
   const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const dpskInfo = [
