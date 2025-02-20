@@ -315,7 +315,7 @@ export function SwitchStackSetting (props: {
               noStyle
               name='authEnable'
               valuePropName='checked'
-              children={<Switch style={{ display: 'flex' }} />}
+              children={<Switch disabled={readOnly} style={{ display: 'flex' }} />}
             />
           </Space>
           { authEnable && <>
@@ -337,7 +337,7 @@ export function SwitchStackSetting (props: {
                 }
               ]}
               children={
-                <Input />
+                <Input disabled={readOnly} />
               }
             />
             <Form.Item
@@ -372,7 +372,7 @@ export function SwitchStackSetting (props: {
                 }
               ]}
               children={
-                <Input />
+                <Input disabled={readOnly} />
               }
             />
           </>}
