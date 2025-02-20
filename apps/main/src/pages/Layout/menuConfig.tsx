@@ -347,7 +347,6 @@ export function useMenuConfig () {
       activeIcon: BulbSolid,
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
-        // TODO: rename this later
         ...(isDataConnectorEnabled && isAdmin ? [{
           uri: '/dataConnector',
           label: $t({ defaultMessage: 'Data Connector' })
