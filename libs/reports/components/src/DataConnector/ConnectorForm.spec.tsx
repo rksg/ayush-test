@@ -47,7 +47,7 @@ describe('DataConnectorForm', () => {
     expect(await screen.findByText('New Connector')).toBeVisible()
   })
   it('(RAI) should render ConnectorForm edit', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/id`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/id`, 'get', {
       data: {
         id: 'id',
         name: 'name',
@@ -76,7 +76,7 @@ describe('DataConnectorForm', () => {
     })
   })
   it('should save on apply click', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector`, 'post', {
       data: { id: 'id' }
     }, false, true)
     render(<ConnectorForm />, {
@@ -100,7 +100,7 @@ describe('DataConnectorForm', () => {
     })
   })
   it('should handle error on save', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/id`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/id`, 'get', {
       data: {
         id: 'id',
         name: 'name',
@@ -109,7 +109,7 @@ describe('DataConnectorForm', () => {
         frequency: Frequency.Daily
       }
     })
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions`, 'patch', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector`, 'patch', {
       error: { data: { error: 'server error' } }
     }, false, true)
     render(<ConnectorForm editMode/>, {

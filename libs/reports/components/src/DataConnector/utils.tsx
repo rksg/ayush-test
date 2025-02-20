@@ -11,7 +11,7 @@ export function generateBreadcrumb () {
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Business Insights' }) },
-    { text: $t({ defaultMessage: 'DataConnector' }), link: '/dataSubscriptions' }
+    { text: $t({ defaultMessage: 'DataConnector' }), link: '/dataConnector' }
   ]
 }
 

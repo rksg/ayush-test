@@ -19,7 +19,7 @@ const DataConnectorContent: React.FC<{}> = () => {
   const { $t } = useIntl()
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/dataSubscriptions')
+  const basePath = useTenantLink('/dataConnector')
   const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
   const StorageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType

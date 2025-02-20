@@ -25,7 +25,7 @@ import { Actions, frequencyMap, getUserId, isVisibleByAction } from './utils'
 export function DataConnectorTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/dataSubscriptions')
+  const basePath = useTenantLink('/dataConnector')
   const [deleteDataConnector] = useDeleteDataConnectorMutation()
   const [patchDataConnector] = usePatchDataConnectorMutation()
   const userId = getUserId()
@@ -101,7 +101,7 @@ export function DataConnectorTable () {
         { id, name: dataConnectorName, userId: dataConnectorUserId }
       ) =>
         userId === dataConnectorUserId ? (
-          <TenantLink to={`dataSubscriptions/auditLog/${id}`}>
+          <TenantLink to={`dataConnector/auditLog/${id}`}>
             {dataConnectorName}
           </TenantLink>
         ) : (

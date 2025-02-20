@@ -10,7 +10,7 @@ const mockDataConnectorName = 'data-connector-name'
 describe('AuditLog', () => {
   it('should render audit log page correctly', async () => {
     mockRestApiQuery(
-      `${notificationApiURL}/dataSubscriptions/audit-log-id`,
+      `${notificationApiURL}/dataConnector/audit-log-id`,
       'get',
       {
         data: { name: mockDataConnectorName }
@@ -18,7 +18,7 @@ describe('AuditLog', () => {
     )
     // AuditLogTable
     mockRestApiQuery(
-      `${notificationApiURL}/dataSubscriptions/audit/query`,
+      `${notificationApiURL}/dataConnector/audit/query`,
       'post',
       {
         data: [],

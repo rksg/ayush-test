@@ -19,7 +19,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     getStorage: build.query<StorageData, {}>({
       query: () => {
         return {
-          url: '/dataSubscriptions/storage',
+          url: '/dataConnector/storage',
           method: 'get',
           credentials: 'include'
         }
@@ -30,7 +30,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     saveStorage: build.mutation<{ data: { id: string } }, StoragePayload>({
       query: ({ isEdit, ...data }) => {
         return {
-          url: isEdit ? `/dataSubscriptions/storage/${data.id}` : '/dataSubscriptions/storage',
+          url: isEdit ? `/dataConnector/storage/${data.id}` : '/dataConnector/storage',
           method: isEdit ? 'put' : 'post',
           credentials: 'include',
           body: JSON.stringify(data),
@@ -44,7 +44,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     getConnector: build.query<ConnectorPayload, { id?: string }>({
       query: ({ id }) => {
         return {
-          url: `/dataSubscriptions/${id}`,
+          url: `/dataConnector/${id}`,
           method: 'get',
           credentials: 'include'
         }
@@ -54,7 +54,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     saveConnector: build.mutation<{ data: { id: string } }, ConnectorPayload>({
       query: ({ isEdit, id, ...data }) => {
         return {
-          url: '/dataSubscriptions',
+          url: '/dataConnector',
           method: isEdit ? 'PATCH' : 'POST',
           credentials: 'include',
           body: isEdit
@@ -70,7 +70,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     getQuotaUsage: build.query<DataQuotaUsage, void>({
       query: () => {
         return {
-          url: 'dataSubscriptions/quota',
+          url: 'dataConnector/quota',
           method: 'GET',
           credentials: 'include'
         }
@@ -81,7 +81,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
       RequestPayload
     >({
       query: ({ payload }) => ({
-        url: 'dataSubscriptions/query',
+        url: 'dataConnector/query',
         method: 'post',
         credentials: 'include',
         body: payload
@@ -100,7 +100,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
       RequestPayload<PatchDataConnector>
     >({
       query: ({ payload }) => ({
-        url: 'dataSubscriptions',
+        url: 'dataConnector',
         method: 'PATCH',
         credentials: 'include',
         body: payload
@@ -112,7 +112,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
       RequestPayload<string[]>
     >({
       query: ({ payload }) => ({
-        url: 'dataSubscriptions',
+        url: 'dataConnector',
         method: 'DELETE',
         credentials: 'include',
         body: payload
@@ -121,7 +121,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     }),
     getDataConnectorById: build.query<DataConnectorDto, string | undefined>({
       query: (id) => ({
-        url: `/dataSubscriptions/${id}`,
+        url: `/dataConnector/${id}`,
         method: 'GET',
         credentials: 'include'
       }),
@@ -132,7 +132,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
       RequestPayload
     >({
       query: ({ payload }) => ( {
-        url: '/dataSubscriptions/audit/query',
+        url: '/dataConnector/audit/query',
         method: 'POST',
         credentials: 'include',
         body: payload
@@ -141,7 +141,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
     }),
     retryAudit: build.mutation<AuditDto['id'], AuditDto['id']>({
       query: (id) => ({
-        url: `/dataSubscriptions/retry/${id}`,
+        url: `/dataConnector/retry/${id}`,
         method: 'POST',
         credentials: 'include'
       }),

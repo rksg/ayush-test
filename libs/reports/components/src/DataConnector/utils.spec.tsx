@@ -19,7 +19,7 @@ describe('DataConnector utils', () => {
   it('generateBreadcrumb', () => {
     expect(generateBreadcrumb()).toMatchObject([
       { text: 'Business Insights' },
-      { link: '/dataSubscriptions', text: 'DataConnector' }
+      { link: '/dataConnector', text: 'DataConnector' }
     ])
   })
 })

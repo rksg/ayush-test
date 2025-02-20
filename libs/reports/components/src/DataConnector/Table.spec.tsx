@@ -42,7 +42,7 @@ describe('DataConnector table', () => {
       mockGet.mockReturnValue('true')
       setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
       mockUserProfileRA.mockReturnValue({ userId: mockedUserId } as UserProfile)
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
         data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
       })
     })
@@ -98,7 +98,7 @@ describe('DataConnector table', () => {
       const patchFn = jest.fn()
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (req, res, ctx) => {
             patchFn(req.body)
             return res(ctx.json(null))
@@ -124,7 +124,7 @@ describe('DataConnector table', () => {
     it('handle resume RTKQuery error', async () => {
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
@@ -146,7 +146,7 @@ describe('DataConnector table', () => {
       const patchFn = jest.fn()
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (req, res, ctx) => {
             patchFn(req.body)
             return res(ctx.json(null))
@@ -172,7 +172,7 @@ describe('DataConnector table', () => {
     it('handle pause RTKQuery error', async () => {
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
@@ -195,7 +195,7 @@ describe('DataConnector table', () => {
       await waitFor(() =>
         expect(mockedUsedNavigate).toBeCalledWith({
           hash: '',
-          pathname: `/ai/dataSubscriptions/edit/${dataConnector.id}`,
+          pathname: `/ai/dataConnector/edit/${dataConnector.id}`,
           search: ''
         })
       )
@@ -218,7 +218,7 @@ describe('DataConnector table', () => {
       const deleteFn = jest.fn()
       mockServer.use(
         rest.delete(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (req, res, ctx) => {
             deleteFn(req.body)
             return res(ctx.json(null))
@@ -242,7 +242,7 @@ describe('DataConnector table', () => {
     it('handle delete RTKQuery error', async () => {
       mockServer.use(
         rest.delete(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
@@ -267,7 +267,7 @@ describe('DataConnector table', () => {
         ).href
 
         expect(dataConnectorNameLink).toContain(
-          `/ai/dataSubscriptions/auditLog/${dataConnector.id}`
+          `/ai/dataConnector/auditLog/${dataConnector.id}`
         )
       })
 
@@ -290,7 +290,7 @@ describe('DataConnector table', () => {
         allowedOperations: [],
         profile: { ...getUserProfileR1().profile, externalId: mockedUserId }
       })
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
         data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
       })
     })
@@ -340,7 +340,7 @@ describe('DataConnector table', () => {
         ).href
 
         expect(dataConnectorNameLink).toContain(
-          `/dataSubscriptions/auditLog/${dataConnector.id}`
+          `/dataConnector/auditLog/${dataConnector.id}`
         )
       })
 

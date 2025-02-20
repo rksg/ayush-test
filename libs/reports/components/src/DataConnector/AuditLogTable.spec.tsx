@@ -51,7 +51,7 @@ describe('AuditLogTable', () => {
     mockGet.mockReturnValue('true')
     setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
     mockRestApiQuery(
-      `${notificationApiURL}/dataSubscriptions/audit/query`,
+      `${notificationApiURL}/dataConnector/audit/query`,
       'post',
       {
         data: mockAuditLogs,
@@ -144,7 +144,7 @@ describe('AuditLogTable', () => {
 
     mockServer.use(
       rest.post(
-        `${notificationApiURL}/dataSubscriptions/retry/:id`,
+        `${notificationApiURL}/dataConnector/retry/:id`,
         (req, res, ctx) => {
           postFn(req.body)
           return res(ctx.json('new-audit-id'))
@@ -180,7 +180,7 @@ describe('AuditLogTable', () => {
     const postFn = jest.fn()
     mockServer.use(
       rest.post(
-        `${notificationApiURL}/dataSubscriptions/retry/:id`,
+        `${notificationApiURL}/dataConnector/retry/:id`,
         (req, res, ctx) => {
           postFn(req.body)
           return res(ctx.status(500))

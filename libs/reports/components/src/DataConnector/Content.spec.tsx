@@ -83,11 +83,11 @@ describe('DataConnectorContent', () => {
         READ_DATA_CONNECTOR_STORAGE: true,
         WRITE_DATA_CONNECTOR_STORAGE: true
       } as RaiPermissions)
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {})
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {})
     })
     it('should render DataConnectorContent correct when storage is configured', async () => {
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
         data: {
           config: {
             connectionType: 'azure',
@@ -112,14 +112,14 @@ describe('DataConnectorContent', () => {
       expect(screen.getByText('New Connector')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Connector' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/create',
+        pathname: '/ai/dataConnector/create',
         hash: '',
         search: ''
       })
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/cloudStorage/edit/id',
+        pathname: '/ai/dataConnector/cloudStorage/edit/id',
         hash: '',
         search: ''
       })
@@ -139,7 +139,7 @@ describe('DataConnectorContent', () => {
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: '/ai/dataSubscriptions/cloudStorage/create',
+        pathname: '/ai/dataConnector/cloudStorage/create',
         hash: '',
         search: ''
       })
@@ -201,11 +201,11 @@ describe('DataConnectorContent', () => {
       jest.clearAllMocks()
       jest.mocked(get).mockReturnValue('') //R1
       setRole({ role: RolesEnum.PRIME_ADMIN })
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {})
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {})
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {})
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {})
     })
     it('should render DataConnectorContent correct when storage is configured', async () => {
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
         data: {
           config: {
             connectionType: 'azure',
@@ -230,14 +230,14 @@ describe('DataConnectorContent', () => {
       expect(screen.getByText('New Connector')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: 'New Connector' }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/dataSubscriptions/create`,
+        pathname: `/${params.tenantId}/t/dataConnector/create`,
         hash: '',
         search: ''
       })
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/dataSubscriptions/cloudStorage/edit/id`,
+        pathname: `/${params.tenantId}/t/dataConnector/cloudStorage/edit/id`,
         hash: '',
         search: ''
       })
@@ -257,7 +257,7 @@ describe('DataConnectorContent', () => {
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/dataSubscriptions/cloudStorage/create`,
+        pathname: `/${params.tenantId}/t/dataConnector/cloudStorage/create`,
         hash: '',
         search: ''
       })

@@ -217,7 +217,7 @@ export function useMenuConfig () {
     },
     ...(isDataConnectorEnabled ? [{
       permission: 'READ_DATA_CONNECTOR' as RaiPermission,
-      uri: '/dataSubscriptions',
+      uri: '/dataConnector',
       label: $t({ defaultMessage: 'Data Connector' })
     }] : []),
     {
