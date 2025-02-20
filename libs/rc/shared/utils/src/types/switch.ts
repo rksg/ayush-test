@@ -64,7 +64,8 @@ export const SwitchPortViewModelQueryFields = [
   'vlanIds',
   'vsixEgressAclName',
   'vsixIngressAclName',
-  'authDefaultVlan'
+  'authDefaultVlan',
+  'errorDisableStatus'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -536,6 +537,7 @@ export interface SwitchPortViewModel extends GridDataRow {
 	authTimeoutAction?: string,
   switchPortProfileName?: string,
   switchPortProfileType?: string
+  errorDisableStatus?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
