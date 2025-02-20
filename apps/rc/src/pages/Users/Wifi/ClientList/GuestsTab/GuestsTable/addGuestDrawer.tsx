@@ -11,7 +11,8 @@ import {
   Radio,
   Row,
   Select,
-  RadioChangeEvent
+  RadioChangeEvent,
+  Tooltip
 } from 'antd'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
@@ -40,7 +41,8 @@ import {
   Guest,
   LangCode,
   trailingNorLeadingSpaces,
-  guestPasswordValidator
+  guestPasswordValidator,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -54,13 +56,15 @@ import {
   FullWidthSpace
 } from '../styledComponents'
 
+import { OweTransitionIcon } from './styledComponents'
+
 interface AddGuestProps {
     visible: boolean
     setVisible: (visible: boolean) => void
 }
 
 const payload = {
-  fields: ['name', 'defaultGuestCountry', 'id'],
+  fields: ['name', 'defaultGuestCountry', 'id', 'isOweMaster', 'securityProtocol'],
   sortField: 'name',
   sortOrder: 'ASC',
   pageSize: 10000,
@@ -264,15 +268,22 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
+  const isCaptivePortalOWETransitionEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION)
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
   const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
-    setAllowedNetworkList(list.data)
-    if(list.data.length === 1) {
+    const filteredData = list.data.filter((network) => {
+      if(isCaptivePortalOWETransitionEnabled &&network?.securityProtocol === WlanSecurityEnum.OWETransition) {
+        return network?.isOweMaster
+      }
+      return true
+    })
+    setAllowedNetworkList(filteredData)
+    if(filteredData.length === 1) {
       form.setFieldsValue({
-        wifiNetworkId: list.data[0].id
+        wifiNetworkId: filteredData[0].id
       })
     }
   }
@@ -395,11 +406,32 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
       rules={[
         { required: true }
       ]}
-      children={<Select
-        options={allowedNetworkList?.map(p => ({ label: p.name, value: p.id }))}
-        disabled={allowedNetworkList?.length === 1}
-      />}
-    />
+    >
+      <Select>
+        {allowedNetworkList?.map((network, index, list) => {
+          return (
+            <Select.Option
+              value={network.id}
+              label={network.name}
+              key={network.id}
+              disabled={list.length === 1}
+              style={{ lineHeight: '24px' }}
+            >
+              {network.name}
+              {
+                (isCaptivePortalOWETransitionEnabled) &&
+                (network?.securityProtocol === WlanSecurityEnum.OWETransition) &&
+                (network?.isOweMaster) &&
+                (<Tooltip title={$t({ defaultMessage: 'This network supports OWE-transition mode.' })}>
+                  <OweTransitionIcon />
+                </Tooltip>)
+              }
+            </Select.Option>
+
+          )
+        })}
+      </Select>
+    </Form.Item>
 
     <Row>
       <Col span={12}>

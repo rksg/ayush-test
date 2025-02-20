@@ -293,7 +293,8 @@ export enum Features {
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
   SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
-  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle'
+  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
+  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
