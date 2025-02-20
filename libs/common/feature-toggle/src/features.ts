@@ -292,6 +292,7 @@ export enum Features {
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
   WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
   SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle'
 }
