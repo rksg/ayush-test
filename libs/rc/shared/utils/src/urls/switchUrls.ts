@@ -787,5 +787,15 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/switchPortProfiles/query',
     newApi: true
+  },
+  getPortDisableRecovery: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    newApi: true
+  },
+  updatePortDisableRecovery: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    newApi: true
   }
 }

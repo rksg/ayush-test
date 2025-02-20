@@ -113,6 +113,7 @@ export enum Features {
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
+  MONITORING_PAGE_LOAD_TIMES = 'acx-ui-monitoring-page-load-times-toggle',
   MULTIPLE_VAR_INVITATION_TOGGLE = 'ptenant-multiple-var-support-toggle',
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
@@ -290,7 +291,11 @@ export enum Features {
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
-  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
+  SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
+  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
+  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
