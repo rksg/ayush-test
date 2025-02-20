@@ -16,8 +16,8 @@ import {
 } from '@acx-ui/rc/services'
 import { ActionType, toReactFlowData, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
-import ActionLibraryDrawer from '../ActionLibraryDrawer'
-import StepDrawer          from '../StepDrawer/StepDrawer'
+import ActionsLibraryDrawer from '../ActionLibraryDrawer/ActionsLibraryDrawer'
+import StepDrawer           from '../StepDrawer/StepDrawer'
 
 import * as UI                                         from './styledComponents'
 import WorkflowCanvas                                  from './WorkflowCanvas'
@@ -31,7 +31,8 @@ export enum PanelType {
 interface WorkflowPanelProps {
   workflowId: string,
   mode?: WorkflowPanelMode,
-  type?: PanelType
+  type?: PanelType,
+  onConfigureClose: () => void
 }
 
 
@@ -88,7 +89,7 @@ const useRequiredDependency = () => {
 
 
 function WorkflowPanelWrapper (props: WorkflowPanelProps) {
-  const { workflowId: policyId, mode } = props
+  const { workflowId: policyId, mode, onConfigureClose } = props
   const {
     nodeState,
     stepDrawerState,
@@ -131,12 +132,13 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 
       {
         actionDrawerState.visible &&
-        <ActionLibraryDrawer
+        <ActionsLibraryDrawer
           visible={actionDrawerState.visible}
-          onClose={actionDrawerState.onClose}
           onClickAction={onClickAction}
+          onClose={actionDrawerState.onClose}
           existingActionTypes={nodeState.existingDependencies}
           relationshipMap={requiredDependency}
+          onConfigureClose={onConfigureClose}
         />
       }
       {
