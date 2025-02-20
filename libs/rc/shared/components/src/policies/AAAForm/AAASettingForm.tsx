@@ -24,6 +24,7 @@ import {
   URLRegExp
 } from '@acx-ui/rc/utils'
 
+import { ProtectedEnforceTemplateToggle }                         from '../../configTemplates'
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
 
@@ -620,6 +621,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               ]}
               children={<PasswordInput />}
             /></Fieldset>}
+          <ProtectedEnforceTemplateToggle templateId={saveState.id} />
         </Space>
 
         <CertificateAuthorityDrawer

@@ -35,7 +35,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
-  useServicePreviousPath
+  useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -94,6 +95,7 @@ export function DpskForm (props: DpskFormProps) {
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { saveEnforcementConfig } = useConfigTemplate()
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -120,6 +122,7 @@ export function DpskForm (props: DpskFormProps) {
   const saveData = async (data: CreateDpskFormFields) => {
     const dpskSaveData = transferFormFieldsToSaveData(data)
     let result: DpskMutationResult
+    let entityId: string | undefined
 
     try {
       if (editMode) {
@@ -128,6 +131,8 @@ export function DpskForm (props: DpskFormProps) {
           payload: _.omit(dpskSaveData, 'id'),
           enableRbac
         }).unwrap()
+
+        entityId = params.serviceId
       } else {
         if (isIdentityGroupRequired) {
           result = await createDpskWithIdentityGroup({
@@ -141,6 +146,12 @@ export function DpskForm (props: DpskFormProps) {
             enableRbac
           }).unwrap()
         }
+
+        entityId = result.id
+      }
+
+      if (entityId) {
+        await saveEnforcementConfig(entityId)
       }
 
       if (modalMode) {
