@@ -82,7 +82,7 @@ export interface GetAuditsPayload {
   page: number
   pageSize: number
   filters: {
-    dataSubscriptionId: string
+    dataConnectorId: string
   }
 }
 

@@ -89,7 +89,7 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
   const tableQuery = useTableQuery<AuditDto>({
     useQuery: useGetAuditsQuery,
     pagination: { settingsId },
-    defaultPayload: { filters: { dataSubscriptionId: dataConnectorId } }
+    defaultPayload: { filters: { dataConnectorId } }
   })
 
   const rowActions: TableProps<AuditDto>['rowActions'] = useMemo(
