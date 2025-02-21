@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { FrontViewPort } from './FrontViewPort'
@@ -19,6 +20,8 @@ export function FrontViewTooltip () {
     ...editablePort,
     syncedSwitchConfig: false
   }
+
+  const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
 
   return <Tooltip.Question
     overlayStyle={{ maxWidth: '400px' }}
@@ -108,22 +111,42 @@ export function FrontViewTooltip () {
         <div className='ports-description'>
           { $t({ defaultMessage: 'PoE' }) }
         </div>
-        <div className='ports offline'>
-          <FrontViewPort
-            labelText={''}
-            labelPosition='top'
-            portColor='lightgray'
-            portIcon=''
-            tooltipEnable={false}
-            portData={{
-              ...editablePort,
-              deviceStatus: SwitchStatusEnum.DISCONNECTED
-            }}
-          />
-        </div>
-        <div className='ports-description' >
-          { $t({ defaultMessage: 'Switch is not operational' }) }
-        </div>
+        {isSwitchErrorDisableEnabled
+          ? <>
+            <div className='ports'>
+              <FrontViewPort
+                labelText={''}
+                labelPosition='top'
+                portColor='red'
+                portIcon=''
+                tooltipEnable={false}
+                portData={editablePort}
+                disabledClick={true}
+              />
+            </div>
+            <div className='ports-description'>
+              { $t({ defaultMessage: 'ErrDisabled' }) }
+            </div>
+          </>
+          : <>
+            <div className='ports offline'>
+              <FrontViewPort
+                labelText={''}
+                labelPosition='top'
+                portColor='lightgray'
+                portIcon=''
+                tooltipEnable={false}
+                portData={{
+                  ...editablePort,
+                  deviceStatus: SwitchStatusEnum.DISCONNECTED
+                }}
+              />
+            </div>
+            <div className='ports-description' >
+              { $t({ defaultMessage: 'Switch is not operational' }) }
+            </div>
+          </>
+        }
         <div className='ports'>
           <FrontViewPort
             labelText={''}
@@ -147,6 +170,27 @@ export function FrontViewTooltip () {
         <div className='ports-description'>
           { $t({ defaultMessage: 'Uplink' }) }
         </div>
+        {isSwitchErrorDisableEnabled
+          ? <>
+            <div className='ports offline'>
+              <FrontViewPort
+                labelText={''}
+                labelPosition='top'
+                portColor='lightgray'
+                portIcon=''
+                tooltipEnable={false}
+                portData={{
+                  ...editablePort,
+                  deviceStatus: SwitchStatusEnum.DISCONNECTED
+                }}
+              />
+            </div>
+            <div className='ports-description' >
+              { $t({ defaultMessage: 'Switch is not operational' }) }
+            </div>
+          </>
+          : ''
+        }
         <div className='ports right'>
           <FrontViewPort
             labelText={''}

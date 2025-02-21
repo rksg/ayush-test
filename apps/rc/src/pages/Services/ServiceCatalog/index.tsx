@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
@@ -43,6 +44,7 @@ export default function ServiceCatalog () {
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -84,6 +86,11 @@ export default function ServiceCatalog () {
             />
             : undefined,
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        },
+        {
+          type: ServiceType.EDGE_OLT,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeOltEnabled
         }
       ]
     },
@@ -150,17 +157,28 @@ export default function ServiceCatalog () {
           </Typography.Title>
           <GridRow>
             {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
-              return <GridCol key={item.type} col={{ span: 6 }}>
-                <ServiceCard
-                  key={item.type}
-                  serviceType={item.type}
-                  categories={item.categories}
-                  type={'button'}
-                  helpIcon={item.helpIcon}
-                  isBetaFeature={item.isBetaFeature}
-                />
-              </GridCol>
+              return item.type === ServiceType.EDGE_OLT
+                ? <UI.OltCardWrapper key={item.type} col={{ span: 6 }}>
+                  <ServiceCard
+                    key={item.type}
+                    serviceType={item.type}
+                    categories={item.categories}
+                    type={'button'}
+                    isBetaFeature={false}
+                  />
+                </UI.OltCardWrapper>
+                : <GridCol key={item.type} col={{ span: 6 }}>
+                  <ServiceCard
+                    key={item.type}
+                    serviceType={item.type}
+                    categories={item.categories}
+                    type={'button'}
+                    helpIcon={item.helpIcon}
+                    isBetaFeature={item.isBetaFeature}
+                  />
+                </GridCol>
             })}
+
           </GridRow>
         </UI.CategoryContainer>
       })}
