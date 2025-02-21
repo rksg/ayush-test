@@ -5,24 +5,24 @@ import { Col, Form } from 'antd'
 import Paragraph     from 'antd/lib/typography/Paragraph'
 import { useIntl }   from 'react-intl'
 
-import { Button, Card, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps } from '@acx-ui/components'
-import { CopyOutlined }                                                                          from '@acx-ui/icons'
+import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { CopyOutlined }                                                                                           from '@acx-ui/icons'
 import {
   useDeletePersonaAssociationMutation,
   useGetPersonaIdsQuery,
   useGetPropertyConfigsQuery,
   useGetVenueQuery,
   useLazyGetPersonaByIdQuery,
-  useLazyGetPersonaGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useSearchPersonaListQuery,
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
@@ -33,41 +33,52 @@ export function PropertyUnitDetails () {
   const { $t } = useIntl()
   const { tenantId, venueId, unitId } = useParams()
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
-  const [getPersonaGroupById, personaGroupResult] = useLazyGetPersonaGroupByIdQuery()
-  const [getPersonaById, personaResult] = useLazyGetPersonaByIdQuery()
+  const [getPersonaById] = useLazyGetPersonaByIdQuery()
+  const [identitiesCount, setIdentitiesCount] = useState(0)
   const identities = useGetPersonaIdsQuery({ params: { venueId, unitId },
-    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC', filters: { unitId: unitId } } })
-  const identitiesList = useSearchPersonaListQuery({ params: { venueId, unitId },
-    payload: { ids: identities.data?.content.map(identity => identity.personaId) } })
+    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
+  const identitiesList = useTableQuery({
+    useQuery: useSearchPersonaListQuery,
+    pagination: { pageSize: 10000 },
+    defaultPayload: { keyword: '' }
+  })
+  useEffect(() => {
+    setIdentitiesCount(identitiesList.data?.totalCount || 0)
+  }, [identitiesList.data])
+
+  useEffect(() => {
+    const payload = {
+      ...identitiesList.payload,
+      ids: identities.data?.data.map(identity => identity.personaId) ?? []
+    }
+    identitiesList.setPayload(payload)
+  }, [identities.data])
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const [updatePersona] = useUpdatePersonaMutation()
   const [deletePersonaAssociation] = useDeletePersonaAssociationMutation()
-  const [enableGuestUnit, setEnableGuestUnit] = useState<boolean>(true)
   const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
-  const [withPin, setWithPin] = useState(true)
   const [residentPortalUrl, setResidentPortalUrl] = useState<string|undefined>(undefined)
   const [unitData, setUnitData] = useState<PropertyUnitFormFields>()
   const [configurePropertyUnitDrawerVisible, setConfigurePropertyUnitDrawerVisible] =
     useState(false)
   const [addIdentityAssociationDrawerVisible, setAddIdentityAssociationDrawerVisible] =
     useState(false)
+  const copyButtonTooltipDefaultText = $t({ defaultMessage: 'Copy Passphrase' })
+  const copyButtonTooltipCopiedText = $t({ defaultMessage: 'Passphrase Copied' })
+  const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
+  const [ guestCopyButtonTooltip, setGuestCopyTooltip ] = useState(copyButtonTooltipDefaultText)
 
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
       const groupId = propertyConfigsQuery.data.personaGroupId
       setPersonaGroupId(groupId)
-      setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed ?? false)
-      getPersonaGroupById({ params: { groupId } })
-        .then(result => setWithPin(!!result.data?.personalIdentityNetworkId))
     }
   }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading ])
 
   useEffect(() => {
-    // // eslint-disable-next-line no-console
-    // console.log('reset0 :: ', visible && unitId && venueId && personaGroupId)
     if (unitId && venueId && personaGroupId) {
       getUnitById({ params: { venueId, unitId } })
         .then(result => {
@@ -79,9 +90,6 @@ export function PropertyUnitDetails () {
               setResidentPortalUrl(url)
             }
           }
-        })
-        .catch(() => {
-        //   errorCloseDrawer()
         })
     }
   }, [unitId, personaGroupId])
@@ -139,7 +147,7 @@ export function PropertyUnitDetails () {
   }
 
   const UnitDetails = () => {
-    return (<Col style={{ width: '450px', paddingLeft: 0 }}>
+    return (<Col style={{ paddingLeft: 0 }}>
       <Card type='solid-bg' >
         <UI.DetailsWrapper>
           <Subtitle level={4} style={{ marginBottom: '10px' }}>
@@ -157,7 +165,8 @@ export function PropertyUnitDetails () {
             colon={false}
             label={$t({ defaultMessage: 'Status' })}
             children={<Paragraph>
-              {unitData?.status === PropertyUnitStatus.ENABLED ? 'Active' : 'Blocked'}
+              {unitData?.status === PropertyUnitStatus.ENABLED ? $t({ defaultMessage: 'Active' })
+                : $t({ defaultMessage: 'Blocked' })}
             </Paragraph>} />
           <Form.Item
             colon={false}
@@ -172,14 +181,19 @@ export function PropertyUnitDetails () {
                 value={unitData?.unitPersona?.dpskPassphrase}
                 style={{ paddingLeft: '0px', width: '200px' }}
               />
-              <Button
-                ghost
-                data-testid={'copy'}
-                icon={<CopyOutlined />}
-                onClick={() => navigator.clipboard
-                  .writeText(unitData?.unitPersona?.dpskPassphrase?.toString() ?? '')
-                }
-              />
+              <Tooltip title={copyButtonTooltip}>
+                <Button
+                  ghost
+                  data-testid={'copy'}
+                  icon={<CopyOutlined />}
+                  onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
+                  onClick={() => {
+                    const passphrase = unitData?.unitPersona?.dpskPassphrase?.toString() ?? ''
+                    navigator.clipboard.writeText(passphrase)
+                    setCopyTooltip(copyButtonTooltipCopiedText)
+                  }}
+                />
+              </Tooltip>
             </div>} />
           <Form.Item
             colon={false}
@@ -190,14 +204,19 @@ export function PropertyUnitDetails () {
                 value={unitData?.guestPersona?.dpskPassphrase}
                 style={{ paddingLeft: '0px', width: '200px' }}
               />
-              <Button
-                ghost
-                data-testid={'copy'}
-                icon={<CopyOutlined />}
-                onClick={() => navigator.clipboard
-                  .writeText(unitData?.guestPersona?.dpskPassphrase?.toString() ?? '')
-                }
-              />
+              <Tooltip title={guestCopyButtonTooltip}>
+                <Button
+                  ghost
+                  data-testid={'guest-copy'}
+                  icon={<CopyOutlined />}
+                  onMouseOut={() => setGuestCopyTooltip(copyButtonTooltipDefaultText)}
+                  onClick={() => {
+                    const passphrase = unitData?.guestPersona?.dpskPassphrase?.toString() ?? ''
+                    navigator.clipboard.writeText(passphrase)
+                    setGuestCopyTooltip(copyButtonTooltipCopiedText)
+                  }}
+                />
+              </Tooltip>
             </div>} />
         </UI.DetailsWrapper>
       </Card>
@@ -242,7 +261,8 @@ export function PropertyUnitDetails () {
     {
       key: 'deviceCount',
       title: $t({ defaultMessage: 'Devices' }),
-      dataIndex: 'deviceCount'
+      dataIndex: 'deviceCount',
+      align: 'center'
     },
     {
       key: 'assignedAP',
@@ -258,11 +278,27 @@ export function PropertyUnitDetails () {
           visible: (selectedItems => selectedItems.length <= 1 ||
           (selectedItems.length > 1)),
           onClick: (identities, clearSelection) => {
-            identities.forEach((identity) => {
-              updatePersona({
-                params: { groupId: personaGroupId, id: identity.id },
-                payload: { revoked: true }
-              }).then(() => clearSelection())
+            showActionModal({
+              type: 'confirm',
+              title: identities.length > 1 ? $t({ defaultMessage: 'Block these identities' })
+                : $t({ defaultMessage: 'Block this identity: {name}' },
+                  { name: identities[0].name }),
+              content: identities.length > 1 ?
+                $t({ defaultMessage: 'The users will be blocked. ' +
+                  'Are you sure want to block these identities?' })
+                : $t({ defaultMessage: 'The user will be blocked. ' +
+                  'Are you sure want to block this identity?' }),
+              okText: $t({ defaultMessage: 'Block' }),
+              okType: 'primary',
+              cancelText: $t({ defaultMessage: 'Cancel' }),
+              onOk: () => {
+                identities.forEach((identity) => {
+                  updatePersona({
+                    params: { groupId: personaGroupId, id: identity.id },
+                    payload: { revoked: true }
+                  }).then(() => clearSelection())
+                })
+              }
             })
           }
         },
@@ -284,10 +320,25 @@ export function PropertyUnitDetails () {
           visible: (selectedItems => selectedItems.length <= 1 ||
           (selectedItems.length > 1)),
           onClick: (identities, clearSelection) => {
-            identities.forEach((identity) => {
-              deletePersonaAssociation({
-                params: { venueId, unitId, identityId: identity.id }
-              }).then(() => clearSelection())
+            showActionModal({
+              type: 'confirm',
+              title: identities.length > 1 ?
+                $t({ defaultMessage: 'Remove these associations' })
+                : $t({ defaultMessage: 'Remove this association: {name}' },
+                  { name: identities[0].name }),
+              content: identities.length > 1 ?
+                $t({ defaultMessage: 'Are you sure want to remove these associations?' })
+                : $t({ defaultMessage: 'Are you sure want to remove this association?' }),
+              okText: $t({ defaultMessage: 'Remove Association' }),
+              okType: 'primary',
+              cancelText: $t({ defaultMessage: 'Cancel' }),
+              onOk: () => {
+                identities.forEach((identity) => {
+                  deletePersonaAssociation({
+                    params: { venueId, unitId, identityId: identity.id }
+                  }).then(() => clearSelection())
+                })
+              }
             })
           }
         }
@@ -296,9 +347,16 @@ export function PropertyUnitDetails () {
   const actions: TableProps<PropertyUnit>['actions'] =
       [{
         label: $t({ defaultMessage: 'Add Identity Association' }),
-        onClick: () => {setAddIdentityAssociationDrawerVisible(true)
-        }
+        onClick: () => {setAddIdentityAssociationDrawerVisible(true)}
       }]
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...identitiesList.payload,
+      keyword: customSearch?.searchString ?? ''
+    }
+    identitiesList.setPayload(payload)
+  }
 
   return (<>
     <PageHeader
@@ -321,17 +379,22 @@ export function PropertyUnitDetails () {
     />
     <UnitDetails />
     <Subtitle level={3} style={{ marginTop: '20px', marginBottom: '0' }}>
-      {$t({ defaultMessage: 'Identities ({count})' }, { count: 0 })}
+      {$t({ defaultMessage: 'Identities ({count})' },
+        { count: identitiesCount ?? 0 })}
     </Subtitle>
-    <Table
-      rowKey='name'
-      columns={columns}
-      enableApiFilter
-      dataSource={identitiesList.data?.data}
-      actions={actions}
-      rowActions={rowActions}
-      rowSelection={{ type: 'checkbox' }}
-    />
+    <Loader states={[ identitiesList ]}>
+      <Table
+        rowKey='name'
+        columns={columns}
+        enableApiFilter
+        dataSource={identitiesList.data?.data}
+        onChange={identitiesList.handleTableChange}
+        onFilterChange={handleFilterChange}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={{ type: 'checkbox' }}
+      />
+    </Loader>
     {venueId && configurePropertyUnitDrawerVisible &&
       <PropertyUnitDrawer
         visible={configurePropertyUnitDrawerVisible}
@@ -350,6 +413,7 @@ export function PropertyUnitDetails () {
         groupId={personaGroupId}
         onClose={() => {
           setAddIdentityAssociationDrawerVisible(false)
+          identities.refetch()
         }}
       />
     }
