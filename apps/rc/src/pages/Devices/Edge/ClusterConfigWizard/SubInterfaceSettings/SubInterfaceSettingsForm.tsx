@@ -32,15 +32,16 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
     setCurrentTab(activeKey)
   }
 
+  const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
+
   useEffect(() => {
-    const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
     if (unLagPortIdx > -1) {
       const portId = findPortIdByIfName(ports, portStatus[unLagPortIdx].portName)
       setCurrentTab(`port_${portId}`)
     } else {
       setCurrentTab(`lag_${lagStatus?.[0]?.id}`)
     }
-  }, [ports, portStatus, lagStatus])
+  }, [unLagPortIdx])
 
   return ports?.length ?
     <Tabs
@@ -73,6 +74,7 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
                     ...portStatus,
                     ...lagStatus
                   ]}
+                  currentInterfaceName={item.portName}
                 />
               </Form.Item>
             }
@@ -92,6 +94,11 @@ export const SubInterfaceSettingsForm = (props: SubInterfaceSettingsFormProps) =
                   currentTab={currentTab}
                   ip={item.ip ?? ''}
                   mac={item.mac ?? ''}
+                  allInterface={[
+                    ...portStatus,
+                    ...lagStatus
+                  ]}
+                  currentInterfaceName={item.portName}
                 />
               </Form.Item>
             }

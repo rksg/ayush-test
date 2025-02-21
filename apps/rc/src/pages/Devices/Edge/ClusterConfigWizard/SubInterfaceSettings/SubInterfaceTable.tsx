@@ -21,11 +21,14 @@ export interface SubInterfaceTableProps {
   value?: SubInterface[]
   onChange?: (data: SubInterface[]) => void
   allInterface?: EdgePortInfo[]
+  currentInterfaceName?: string
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
-  const { currentTab, ip, mac, value = [], onChange, allInterface = [] } = props
+  const {
+    currentTab, ip, mac, value = [], onChange, allInterface = [], currentInterfaceName
+  } = props
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<SubInterface>()
@@ -146,12 +149,14 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   }
 
   const handleAdd = (data: SubInterface) => {
-    onChange?.([...value, data])
+    onChange?.([...value, { ...data, interfaceName: `${currentInterfaceName}.${data.vlan}` }])
   }
 
   const handleUpdate = (data: SubInterface) => {
     const updatedData = value?.map((item: SubInterface) =>
-      item.id === data.id ? data : item
+      item.id === data.id ?
+        { ...data, interfaceName: `${currentInterfaceName}.${data.vlan}` } :
+        item
     )
     onChange?.(updatedData)
   }
