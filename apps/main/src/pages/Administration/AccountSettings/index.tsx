@@ -1,11 +1,11 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader, StepsForm }                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                  from '@acx-ui/feature-toggle'
-import { useGetMspEcProfileQuery }                                                                   from '@acx-ui/msp/services'
-import { MSPUtils }                                                                                  from '@acx-ui/msp/utils'
-import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { Loader, StepsForm }                                               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
+import { MSPUtils }                                                        from '@acx-ui/msp/utils'
+import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
 import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
@@ -42,8 +42,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params, enableRbac: mfaNewApiToggle })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const tenantDetailsData = useGetTenantDetailsQuery({ params })
-  const tenantType = tenantDetailsData.data?.tenantType
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
@@ -56,14 +54,12 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isBetaFeatureListEnabled = useIsSplitOn(Features.EARLY_ACCESS_FEATURE_LIST_TOGGLE)
-  const isTechPartner =
-  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && canMSPDelegation && (!isMspEc || isTechPartner)
+    && canMSPDelegation && !isMspEc
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
