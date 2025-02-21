@@ -5,12 +5,12 @@ import { Loader, StepsForm }                                               from 
 import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
-import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
+import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
-import { isDelegationMode, useTenantId } from '@acx-ui/utils'
+import { AccountType, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { AppTokenFormItem }              from './AppTokenFormItem'
@@ -42,6 +42,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params, enableRbac: mfaNewApiToggle })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const tenantType = tenantDetailsData.data?.tenantType
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
@@ -55,12 +57,14 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isBetaFeatureListEnabled = useIsSplitOn(Features.EARLY_ACCESS_FEATURE_LIST_TOGGLE)
 
+  const isTechPartner =
+  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
-    && canMSPDelegation && !isMspEc
+    && canMSPDelegation && && (!isMspEc || isTechPartner)
   const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
