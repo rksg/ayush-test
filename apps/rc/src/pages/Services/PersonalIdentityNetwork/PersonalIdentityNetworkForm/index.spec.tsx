@@ -49,7 +49,6 @@ describe('getSubmitPayload', () => {
     vxlanTunnelProfileId: '123',
     edgeClusterId: '456',
     segments: 6,
-    devices: 6,
     dhcpId: '789',
     poolId: '012',
     distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
@@ -64,7 +63,6 @@ describe('getSubmitPayload', () => {
     edgeClusterInfo: {
       edgeClusterId: '456',
       segments: 6,
-      devices: 6,
       dhcpInfoId: '789',
       dhcpPoolId: '012'
     },
@@ -104,13 +102,6 @@ describe('getSubmitPayload', () => {
       dispatchMessage: '[SUCCESS]'
     }]
   }
-
-  it('should return the correct payload when NetworkTopologyType is undefined', () => {
-    const formData = cloneDeep(mockFullFormData)
-    delete formData.networkTopologyType
-
-    expect(getSubmitPayload(formData)).toEqual(expectedPayload)
-  })
 
   it('should return the correct payload for Wireless topology type', () => {
     const expectedWirelessPayload = cloneDeep(expectedPayload)

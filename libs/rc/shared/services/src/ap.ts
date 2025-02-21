@@ -490,7 +490,7 @@ export const apApi = baseApApi.injectEndpoints({
           const apListQueryPayload = {
             fields: ['name', 'serialNumber', 'apGroupId'],
             pageSize: 1,
-            filters: { id: [ap.serialNumber] }
+            filters: { serialNumber: [ap.serialNumber] }
           }
           const apListQuery = await fetchWithBQ({
             ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
