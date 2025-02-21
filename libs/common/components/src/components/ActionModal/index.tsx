@@ -428,7 +428,9 @@ function ApiCollapsePanel (props: {
       expandIcon={({ isActive }) => getExpandIcon(isActive)}
     >
       <Panel header={undefined} key={'ApiCollapsePanel'}>
-        <div style={{ backgroundColor: '#F8F8FA', borderRadius: '4px' }}>
+        <div style={{
+          backgroundColor: 'var(--acx-neutrals-10)',
+          borderRadius: '4px' }}>
           {getContent()}
         </div>
         <UI.CopyButton
