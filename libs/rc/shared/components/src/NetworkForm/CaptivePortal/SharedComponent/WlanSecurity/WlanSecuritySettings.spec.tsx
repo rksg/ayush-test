@@ -119,7 +119,7 @@ describe('WlanSecuritySettings Unit Test', () => {
     it('Check that the WlanSecuritySettings render correctly if feature toggle enabled', async () => {
       for (const type of Object.values(GuestNetworkTypeEnum)) {
         render(WlanSecuritySettingsNormalTestCase(type))
-        await testWlanSecuritySettingsOWETransition(type)
+        await testWlanSecuritySettingsOWETransition()
       }
     })
 
@@ -127,14 +127,14 @@ describe('WlanSecuritySettings Unit Test', () => {
       it('Test case Edit mode match with exist record', async () => {
         for (const type of Object.values(GuestNetworkTypeEnum)) {
           render(WlanSecuritySettingsEditModeTestCase(type))
-          await testWlanSecuritySettingsOWETransition(type)
+          await testWlanSecuritySettingsOWETransition()
         }
       })
 
       it('Test case Clone mode match with exist record', async () => {
         for (const type of Object.values(GuestNetworkTypeEnum)) {
           render(WlanSecuritySettingsCloneModeTestCase(type))
-          await testWlanSecuritySettingsOWETransition(type)
+          await testWlanSecuritySettingsOWETransition()
         }
       })
     })
@@ -333,7 +333,7 @@ function testWlanSecuritySettingsOnlyOWE (guestNetworkType: GuestNetworkTypeEnum
   })()
 }
 
-function testWlanSecuritySettingsOWETransition (guestNetworkType: GuestNetworkTypeEnum) {
+function testWlanSecuritySettingsOWETransition () {
   return (async () => {
     expect(
       await screen.findByLabelText(/Secure your network/)
@@ -347,11 +347,7 @@ function testWlanSecuritySettingsOWETransition (guestNetworkType: GuestNetworkTy
     const oweNetworkSecurity = (await screen.findAllByTitle('OWE encryption'))[0]
     await userEvent.click(oweNetworkSecurity)
 
-    if (guestNetworkType === GuestNetworkTypeEnum.Directory) {
-      expect(screen.queryByTestId('owe-transition-switch')).not.toBeInTheDocument()
-    } else {
-      expect(await screen.findByTestId('owe-transition-switch')).toBeInTheDocument()
-    }
+    expect(await screen.findByTestId('owe-transition-switch')).toBeInTheDocument()
     cleanup()
   })()
 }

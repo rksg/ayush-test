@@ -23,11 +23,12 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType }                                     from '@acx-ui/react-router-dom'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasRoles  }                                      from '@acx-ui/user'
-import { AccountType  }                                   from '@acx-ui/utils'
+import { MspRbacUrlsInfo }                                 from '@acx-ui/msp/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess }  from '@acx-ui/rc/utils'
+import { TenantType }                                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                                       from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles  } from '@acx-ui/user'
+import { AccountType, getOpsApi  }                         from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -47,6 +48,12 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE), tenantType)
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasPortalSettingPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      [getOpsApi(MspRbacUrlsInfo.addMspLabel), getOpsApi(MspRbacUrlsInfo.updateMspLabel)]
+    ])
+    : true
 
   const {
     state
@@ -132,7 +139,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
         inactiveIcon: CopyOutlined,
         activeIcon: CopySolid
       }] : []),
-    ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense)
+    ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense || !hasPortalSettingPermission)
       ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Portal Settings' }),
