@@ -9,8 +9,10 @@ import {
   HistoricalCard,
   Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
-import { formatter }            from '@acx-ui/formatter'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter }                        from '@acx-ui/formatter'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
@@ -24,6 +26,7 @@ export function ConnectedClientsOverTime ({
   filters, vizType
 }: { filters : AnalyticsFilter , vizType: string }) {
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const seriesMapping = [
     { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Bands' }) },
@@ -37,6 +40,12 @@ export function ConnectedClientsOverTime ({
       ...rest,
       data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping)
     })
+  })
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.CONNECTED_CLIENTS_OVER_TIME,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

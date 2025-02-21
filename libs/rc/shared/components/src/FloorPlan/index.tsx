@@ -44,7 +44,9 @@ import {
 } from '@acx-ui/user'
 import {
   getOpsApi,
-  TABLE_QUERY_POLLING_INTERVAL
+  TABLE_QUERY_POLLING_INTERVAL,
+  useTrackLoadTime,
+  widgetsMapping
 }                   from '@acx-ui/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
@@ -120,6 +122,7 @@ export function FloorPlan () {
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
   const { isCustomRole } = useUserProfileContext()
   const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
@@ -195,6 +198,11 @@ export function FloorPlan () {
 
   }, [selectedFloorPlan, getNetworkDevices?.data])
 
+  useTrackLoadTime({
+    itemName: widgetsMapping.FLOOR_PLAN,
+    states: [floorPlanQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   const [
     deleteFloorPlan,

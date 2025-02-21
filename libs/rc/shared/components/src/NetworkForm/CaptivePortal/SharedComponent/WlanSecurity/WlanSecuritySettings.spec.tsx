@@ -105,6 +105,41 @@ describe('WlanSecuritySettings Unit Test', () => {
     })
   })
 
+  describe('Test under OWE Transition feature toggle enabled', () => {
+    beforeEach(() => {
+      jest
+        .mocked(useIsSplitOn)
+        .mockImplementation((ff) => {
+          return ff === Features.WIFI_CAPTIVE_PORTAL_OWE
+              || ff === Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION
+        })
+      cleanup()
+    })
+    // eslint-disable-next-line max-len
+    it('Check that the WlanSecuritySettings render correctly if feature toggle enabled', async () => {
+      for (const type of Object.values(GuestNetworkTypeEnum)) {
+        render(WlanSecuritySettingsNormalTestCase(type))
+        await testWlanSecuritySettingsOWETransition()
+      }
+    })
+
+    describe('Check that WlanSecuritySettings render correctly under Edit/Clone mode', () => {
+      it('Test case Edit mode match with exist record', async () => {
+        for (const type of Object.values(GuestNetworkTypeEnum)) {
+          render(WlanSecuritySettingsEditModeTestCase(type))
+          await testWlanSecuritySettingsOWETransition()
+        }
+      })
+
+      it('Test case Clone mode match with exist record', async () => {
+        for (const type of Object.values(GuestNetworkTypeEnum)) {
+          render(WlanSecuritySettingsCloneModeTestCase(type))
+          await testWlanSecuritySettingsOWETransition()
+        }
+      })
+    })
+  })
+
   describe('Test under feature toggle enabled', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -294,6 +329,25 @@ function testWlanSecuritySettingsOnlyOWE (guestNetworkType: GuestNetworkTypeEnum
     } else {
       expect(pskNetworkSecurity.length).toBe(0)
     }
+    cleanup()
+  })()
+}
+
+function testWlanSecuritySettingsOWETransition () {
+  return (async () => {
+    expect(
+      await screen.findByLabelText(/Secure your network/)
+    ).toBeInTheDocument()
+    const defaultNetworkSecurity = (await screen.findAllByTitle('None'))[0]
+    expect(defaultNetworkSecurity).toBeInTheDocument()
+    await userEvent.click(defaultNetworkSecurity)
+    expect(
+      (await screen.findAllByTitle('OWE encryption'))[0]
+    ).toBeInTheDocument()
+    const oweNetworkSecurity = (await screen.findAllByTitle('OWE encryption'))[0]
+    await userEvent.click(oweNetworkSecurity)
+
+    expect(await screen.findByTestId('owe-transition-switch')).toBeInTheDocument()
     cleanup()
   })()
 }

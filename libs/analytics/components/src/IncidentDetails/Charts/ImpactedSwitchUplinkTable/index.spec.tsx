@@ -75,9 +75,6 @@ describe('ImpactedSwitchUplinkTable', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
   it('should render', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitchesUplink', { data: response })
-    // render(<ImpactedSwitchUplinkTable
-    //   incident={fakeIncidentUplinkPortCongestion} />,
-    // { wrapper: Provider })
 
     render(
       <Provider>
