@@ -9,6 +9,7 @@ import { administrationApi }                                                 fro
 import { AdministrationUrlsInfo, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
 import { store, Provider }                                                   from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                                    from '@acx-ui/user'
 
 import { Subscriptions } from '.'
 
@@ -256,5 +257,20 @@ describe('Subscriptions', () => {
     fireEvent.click(licenseManagementButton)
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     fireEvent.click(refreshButton)
+  })
+  it('should render correctly when rbacOpsApiEnabled nabled', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params, path: '/:tenantId/mspLicenses' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getAllByText('Active')).toHaveLength(2)
+    expect(screen.queryByText('Expired')).toBeNull()
   })
 })

@@ -28,6 +28,7 @@ import {
 } from '@acx-ui/msp/services'
 import {
   MspEc,
+  MspRbacUrlsInfo,
   MSPUtils
 } from '@acx-ui/msp/utils'
 import {
@@ -36,10 +37,10 @@ import {
 import {
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, noDataDisplay }                                             from '@acx-ui/utils'
+import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { AccountType, getOpsApi, noDataDisplay }                                                            from '@acx-ui/utils'
 
 import HspContext                  from '../../HspContext'
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
@@ -75,6 +76,13 @@ export function MspRecCustomers () {
   const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addBrandCustomers)]) : isAdmin
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
+  const hasAssignTechPartnerPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)]) : isAdmin
 
   const {
     state
@@ -241,7 +249,7 @@ export function MspRecCustomers () {
       sorter: true,
       width: 140,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+        return (hasAssignAdminPermission && !userProfile?.support) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
@@ -250,7 +258,7 @@ export function MspRecCustomers () {
       },
       render: function (_, row) {
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (hasAssignAdminPermission && !userProfile?.support)
             ? <Link to=''>{mspUtils.transformAdminCount(row, tenantType)}</Link>
             : mspUtils.transformAdminCount(row, tenantType)
         )
@@ -265,7 +273,7 @@ export function MspRecCustomers () {
       sorter: isMspSortOnTpEnabled,
       width: 130,
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return (hasAssignTechPartnerPermission && !drawerIntegratorVisible) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -279,7 +287,7 @@ export function MspRecCustomers () {
           : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
             : noDataDisplay
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          (hasAssignTechPartnerPermission && !drawerIntegratorVisible)
             ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
@@ -293,7 +301,7 @@ export function MspRecCustomers () {
       sorter: isMspSortOnTpEnabled,
       width: 120,
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return (hasAssignTechPartnerPermission && !drawerIntegratorVisible) ? {
           onClick: () => {
             setDrawerIntegratorVisible(false)
             setTenantId(data.id)
@@ -308,7 +316,7 @@ export function MspRecCustomers () {
           : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
             : noDataDisplay
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          (hasAssignTechPartnerPermission && !drawerIntegratorVisible)
             ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
         )
       }
@@ -400,6 +408,8 @@ export function MspRecCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.enableMspEcSupport),
+          getOpsApi(MspRbacUrlsInfo.disableMspEcSupport)]],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -413,6 +423,8 @@ export function MspRecCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations),
+          getOpsApi(MspRbacUrlsInfo.updateMspMultipleEcDelegations)]],
         visible: (selectedRows) => {
           const len = selectedRows.length
           return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
@@ -425,6 +437,7 @@ export function MspRecCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -539,7 +552,7 @@ export function MspRecCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'Brand Properties' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
