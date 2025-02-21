@@ -49,7 +49,7 @@ export const mockGraphqlMutation = (
 
 export const mockRestApiQuery = (
   url: string,
-  type: 'get' | 'post' | 'delete',
+  type: 'get' | 'post' | 'delete' | 'put' | 'patch',
   result: { status?: number, data?: any, error?: any, totalCount?: number }, // eslint-disable-line @typescript-eslint/no-explicit-any
   omitData?: boolean,
   matchQuery?: boolean

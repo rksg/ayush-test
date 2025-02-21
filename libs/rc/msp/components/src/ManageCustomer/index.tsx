@@ -57,8 +57,8 @@ import {
   MspEcTierEnum,
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery }           from '@acx-ui/rc/services'
+import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete }                   from '@acx-ui/rc/components'
+import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -68,7 +68,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   whitespaceOnlyRegExp,
-  PrivilegeGroup
+  PrivilegeGroup,
+  PrivacyFeatureName
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -191,6 +192,7 @@ export function ManageCustomer () {
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -202,6 +204,7 @@ export function ManageCustomer () {
   const [serviceTypeSelected, setServiceType] = useState(ServiceType.PAID)
   const [trialSelected, setTrialSelected] = useState(true)
   const [ecSupportEnabled, setEcSupport] = useState(false)
+  const [arcEnabled, setArcEnabled] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
@@ -300,6 +303,17 @@ export function ManageCustomer () {
     disableMspEcSupport
   ] = useDisableMspEcSupportMutation()
 
+  const { data: privacySettingsData } =
+   useGetPrivacySettingsQuery({ params }, { skip: isEditMode || !isAppMonitoringEnabled })
+
+  useEffect(() => {
+    if (privacySettingsData) {
+      const privacyMonitoringSetting =
+         privacySettingsData.filter(item => item.featureName === PrivacyFeatureName.ARC)[0]
+      setArcEnabled(privacyMonitoringSetting.isEnabled)
+    }
+  }, [privacySettingsData])
+
   useEffect(() => {
     if (ecSupport && ecSupport.length > 0 ) {
       setEcSupport(true)
@@ -366,6 +380,10 @@ export function ManageCustomer () {
           setSwitchLicense(sLic)
         }
         setServiceType(isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL : ServiceType.PAID)
+        if (isAppMonitoringEnabled) {
+          setArcEnabled(data.privacyFeatures?.find(f =>
+            f.featureName === 'ARC')?.isEnabled ? true : false)
+        }
       }
     }
 
@@ -550,7 +568,10 @@ export function ManageCustomer () {
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
         licenses: assignLicense,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined,
+        privacyFeatures: isAppMonitoringEnabled
+          ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
+          : undefined
       }
       if (ecFormData.admin_email) {
         customer.admin_email = ecFormData.admin_email
@@ -690,7 +711,10 @@ export function ManageCustomer () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined,
+        privacyFeatures: isAppMonitoringEnabled
+          ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
+          : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -1195,12 +1219,28 @@ export function ManageCustomer () {
         <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
           {intl.$t({ defaultMessage: 'Enable access to Ruckus Support' })}</h4>
         <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
-      <div><label>
+      <UI.SwitchDescription><label>
         {intl.$t({ defaultMessage: 'If checked, Ruckus Support team is granted a temporary' +
   ' administrator-level access for 21 days.' })}</label>
-      </div>
-      <label>
-        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
+      </UI.SwitchDescription>
+      <UI.SwitchDescription>
+        <label>
+          {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
+      </UI.SwitchDescription>
+    </>
+  }
+
+  const EnableArcForm = () => {
+    return <>
+      <div>
+        <h4 style={{ display: 'inline-block', marginTop: '10px', marginRight: '25px' }}>
+          {intl.$t({ defaultMessage: 'Enable application-recognition and control' })}</h4>
+        <Switch defaultChecked={arcEnabled} onChange={setArcEnabled}/></div>
+      <UI.SwitchDescription style={{ width: '500px' }}><label>
+        {intl.$t({ defaultMessage: 'This setting determines the default behavior for new MSP ' +
+          'customers. It specifies whether Application Recognition and Control (ARC) is enabled ' +
+          'or disabled by default for the WLAN networks of newly added MSP customers.' })}</label>
+      </UI.SwitchDescription>
     </>
   }
 
@@ -1766,7 +1806,15 @@ export function ManageCustomer () {
           <Paragraph>
             {formatter(DateFormatEnum.DateFormat)(formData.service_expiration_date)}
           </Paragraph>
-        </Form.Item></>
+        </Form.Item>
+
+        {isAppMonitoringEnabled && <Form.Item
+          label={intl.$t({ defaultMessage:
+            'Application-recognition and control, application-monitoring' })}
+        >
+          <Paragraph>{arcEnabled ? 'Enabled' : 'Disabled'}</Paragraph>
+        </Form.Item>}
+      </>
     )
   }
   const TrialBanner = () => {
@@ -1864,6 +1912,7 @@ export function ManageCustomer () {
           <Form.Item children={displayCustomerAdmins()} />
           {showExtendedTrial ? <EditCustomerSubscriptionFormExtendedTrial />
             : <EditCustomerSubscriptionForm />}
+          {isAppMonitoringEnabled && <div style={{ marginTop: '38px' }}><EnableArcForm /></div>}
           <EnableSupportForm></EnableSupportForm>
         </StepsFormLegacy.StepForm>}
 
@@ -1934,6 +1983,12 @@ export function ManageCustomer () {
           >
             {showExtendedTrial ? <CustomerSubscriptionExtendedTrial /> : <CustomerSubscription />}
           </StepsFormLegacy.StepForm>
+
+          {isAppMonitoringEnabled && <StepsFormLegacy.StepForm name='privacy'
+            title={intl.$t({ defaultMessage: 'Privacy' })}>
+            <Subtitle level={3}>{intl.$t({ defaultMessage: 'Privacy' })}</Subtitle>
+            <EnableArcForm />
+          </StepsFormLegacy.StepForm>}
 
           <StepsFormLegacy.StepForm name='summary'
             title={intl.$t({ defaultMessage: 'Summary' })}>

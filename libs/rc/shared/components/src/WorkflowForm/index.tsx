@@ -1,5 +1,4 @@
 
-import { useEffect } from 'react'
 
 import { Form, Input, Space } from 'antd'
 import TextArea               from 'antd/lib/input/TextArea'
@@ -21,12 +20,10 @@ export interface WorkflowFormField extends Workflow {
 
 export function WorkflowForm (props: {
   policyId?: string,
-  defaultValue?: Workflow,
   isEdit: boolean
 }) {
   const { $t } = useIntl()
-  const { policyId, defaultValue, isEdit } = props
-  const [form] = Form.useForm()
+  const { policyId, isEdit } = props
   const [searchWorkflowList] = useLazySearchInProgressWorkflowListQuery()
   const nameValidator = async (name: string) => {
     try {
@@ -41,12 +38,6 @@ export function WorkflowForm (props: {
       return Promise.resolve()
     }
   }
-
-  useEffect(() => {
-    if (defaultValue) {
-      form.setFieldsValue(defaultValue)
-    }
-  }, [defaultValue])
 
 
 
@@ -69,7 +60,6 @@ export function WorkflowForm (props: {
               ]
             }
             hasFeedback
-            initialValue={form.getFieldValue('name')}
             children={<Input/>}
             extra={
               // eslint-disable-next-line max-len
