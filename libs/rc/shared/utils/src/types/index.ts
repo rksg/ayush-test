@@ -486,7 +486,7 @@ export interface DnsProxyContextType {
   setEnableDnsProxy: (enable: boolean)=> void
 }
 
-export interface WifiCallingSetting {
+export interface WifiCallingSetting extends EnforceableFields {
   id: string,
   serviceName: string,
   description?: string | undefined,
