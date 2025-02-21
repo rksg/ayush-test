@@ -320,7 +320,6 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
     edgeClusterInfo: {
       edgeClusterId: formData.edgeClusterId,
       segments: formData.segments,
-      devices: formData.devices,
       dhcpInfoId: formData.dhcpId,
       dhcpPoolId: formData.poolId
     },

@@ -6,7 +6,6 @@ import { Table, TableProps } from '@acx-ui/components'
 export interface SmartEdgeTableData {
   edgeName: string
   segments: string
-  devices: string
   dhcpServiceName: string
   dhcpPoolName: string
 }
@@ -29,12 +28,6 @@ export const SmartEdgeTable = (props: SmartEdgeTableProps) => {
       title: $t({ defaultMessage: 'Number of Segments' }),
       key: 'segments',
       dataIndex: 'segments',
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'Number of devices per Segment' }),
-      key: 'devices',
-      dataIndex: 'devices',
       align: 'center'
     },
     {
