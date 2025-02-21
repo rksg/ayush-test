@@ -14,7 +14,9 @@ import {
   TableResult,
   EdgeUrlsInfo,
   EdgeClusterStatus,
-  EdgeNokiaOltCreatePayload
+  EdgeNokiaOltCreatePayload,
+  EdgeNokiaCageStateEnum,
+  oltCageCannedSpeeds
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -187,6 +189,12 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
           ...req
         }
       },
+      transformResponse: (result: EdgeNokiaCageData[]) =>
+        result?.map((item) => ({
+          ...item,
+          // eslint-disable-next-line max-len
+          speed: item.state === EdgeNokiaCageStateEnum.UP ? oltCageCannedSpeeds[Math.floor(Math.random() * 2)] : undefined
+        })),
       providesTags: [{ type: 'EdgeNokiaOlt', id: 'CAGE_LIST' }]
     }),
     toggleEdgeCageState: build.mutation<CommonResult, RequestPayload>({
@@ -210,7 +218,12 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
       transformResponse: (result: Omit<EdgeNokiaOnuData, 'portIdx'>[]) =>
         result?.map((item) => ({
           ...item,
-          portDetails: item.portDetails.map((port, idx) => ({ ...port, portIdx: `${++idx}` }))
+          portDetails: item.portDetails.map((port, idx) => ({
+            ...port,
+            portIdx: `${++idx}`,
+            // eslint-disable-next-line max-len
+            clientCount: port.status === EdgeNokiaCageStateEnum.UP ? Math.floor(Math.random() * 10) : undefined
+          }))
         })),
       providesTags: [{ type: 'EdgeNokiaOlt', id: 'ONU_LIST' }]
     }),
