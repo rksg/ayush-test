@@ -391,7 +391,7 @@ function ApiCollapsePanel (props: {
            label={$t({ defaultMessage: 'Suggestion' })}
            children={errorObj.suggestion} />
       }
-      { !errorObj.reason &&
+      { !(errorObj.reason || errorObj.suggestion ) &&
       <>
         <Descriptions.Item
           label={'Error Response'}
