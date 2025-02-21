@@ -139,6 +139,12 @@ export const useCasesToRefreshApGroupTemplateList = [
   'DeleteApGroupTemplate'
 ]
 
+export const useCasesToRefreshEthernetPortTemplateList = [
+  'AddEthernetPortProfileTemplate',
+  'UpdateEthernetPortProfileTemplate',
+  'DeleteEthernetPortProfileTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   'SyncTemplate',
@@ -155,5 +161,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshSyslogTemplateList,
   ...useCasesToRefreshRogueAPTemplateList,
   ...useCasesToRefreshSwitchConfigProfileTemplateList,
-  ...useCasesToRefreshApGroupTemplateList
+  ...useCasesToRefreshApGroupTemplateList,
+  ...useCasesToRefreshEthernetPortTemplateList
 ]
