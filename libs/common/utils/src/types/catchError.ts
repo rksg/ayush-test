@@ -1,6 +1,7 @@
 export interface CatchErrorDetails {
   code: string,
   message: string,
+  reason?: string,
   suggestion?: string
 }
 

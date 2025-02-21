@@ -180,7 +180,8 @@ export const getErrorContent = (action: ErrorAction) => {
 
   if(errors && isShowImprovedErrorSuggestion(errors)) {
     const errorObj = errors as { errors: CatchErrorDetails[] }
-    const description = errorObj.errors[0].suggestion || ''
+    const description =
+      errorObj.errors[0].suggestion || errorObj.errors[0].reason || ''
     content = <span>{description}</span>
   }
 

@@ -12,6 +12,7 @@ import { getIntl, getEnabledDialogImproved }                                    
 
 import { Button, ButtonProps } from '../Button'
 import { Descriptions }        from '../Descriptions'
+import { Tooltip }             from '../Tooltip'
 
 import * as UI from './styledComponents'
 
@@ -360,7 +361,6 @@ function ApiCollapsePanel (props: {
     const errorObj = object.errors?.[0] || {}
     return <UI.ErrorDescriptions labelWidthPercent={errorObj.suggestion? 26 : 28}
       contentStyle={{ alignItems: 'center' }}>
-      {/* model  */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'URL' })}
         children={props.path} />
@@ -381,17 +381,17 @@ function ApiCollapsePanel (props: {
            label={$t({ defaultMessage: 'RUCKUS Code' })}
            children={errorObj.code} />
       }
-      {errorObj.message &&
+      {errorObj.reason &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Reason' })}
-           children={errorObj.message} />
+           children={errorObj.reason || errorObj.message} />
       }
       {errorObj.suggestion &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Suggestion' })}
            children={errorObj.suggestion} />
       }
-      { !errorObj.suggestion &&
+      { !errorObj.reason &&
       <>
         <Descriptions.Item
           label={'Error Response'}
@@ -405,14 +405,20 @@ function ApiCollapsePanel (props: {
   }
 
   const getExpandIcon = (isActive: boolean | undefined) => {
+    const { $t } = getIntl()
     const iconStyle = {
       marginLeft: '-5px',
       height: '16px',
       marginBottom: '-10px'
     }
 
-    return isActive ? <ReportsSolid style={iconStyle} data-testid='activeButton' />:
-      <ReportsOutlined style={iconStyle} data-testid='deactiveButton' />
+    return <Tooltip placement='top'
+      title={
+        $t({ defaultMessage: 'Show more details' })
+      }>
+      {isActive ? <ReportsSolid style={iconStyle} data-testid='activeButton' />:
+        <ReportsOutlined style={iconStyle} data-testid='deactiveButton' />}
+    </Tooltip>
   }
 
   return (
