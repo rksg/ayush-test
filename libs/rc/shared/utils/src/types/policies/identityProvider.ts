@@ -132,7 +132,8 @@ export enum IdentityProviderActionType {
   AUTH_RADIUS_ID = 'AUTH_RADIUS_ID',
   ACCOUNT_RADIUS_ENABLED = 'ACCOUNT_RADIUS_ENABLED',
   ACCOUNT_RADIUS_ID = 'ACCOUNT_RADIUS_ID',
-  UPDATE_STATE = 'UPDATE_STATE'
+  UPDATE_STATE = 'UPDATE_STATE',
+  LOAD_PRECONFIGURED = 'LOAD_PRECONFIGURED'
 }
 
 export type IdentityProviderActionPayload = {
@@ -190,6 +191,11 @@ export type IdentityProviderActionPayload = {
   }
 } | {
   type: IdentityProviderActionType.UPDATE_STATE,
+  payload: {
+    state: IdentityProvider
+  }
+} | {
+  type: IdentityProviderActionType.LOAD_PRECONFIGURED,
   payload: {
     state: IdentityProvider
   }
