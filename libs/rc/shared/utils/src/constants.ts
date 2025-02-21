@@ -124,7 +124,8 @@ export enum ServiceType {
   EDGE_SD_LAN = 'SD-LAN',
   EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
   EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
-  EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management'
+  EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management',
+  EDGE_OLT = 'Nokia GPON'
 }
 
 export enum ServiceOperation {
@@ -252,7 +253,8 @@ export enum ConfigTypeEnum {
   ACL = 'ACL',
   VLAN = 'VLAN',
   AUTHENTICATION = 'AUTHENTICATION',
-  PORT_PROFILE = 'PORT_PROFILE'
+  PORT_PROFILE = 'PORT_PROFILE',
+  PORT_DISABLE_RECOVERY = 'PORT_DISABLE_RECOVERY'
 }
 
 export enum ConfigStatusEnum {

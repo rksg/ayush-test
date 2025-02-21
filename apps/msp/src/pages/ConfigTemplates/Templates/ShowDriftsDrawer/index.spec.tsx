@@ -180,6 +180,8 @@ describe('ShowDriftsDrawer', () => {
       <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={venueTemplate} />
     </Provider>)
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     expect(await screen.findByText('CustomerFirmwareReminder')).toBeInTheDocument()
   })
 

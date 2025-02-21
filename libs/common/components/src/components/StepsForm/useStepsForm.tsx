@@ -234,7 +234,7 @@ export function useStepsForm <T> ({
     />,
     // TODO:
     // - handle disable when validation not passed
-    apply: <Button
+    apply: labels.apply.length === 0 ? null : <Button
       type='primary'
       value={StepsFormActionButtonEnum.SUBMIT}
       loading={loading}

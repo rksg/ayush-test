@@ -401,7 +401,7 @@ export function VenuesForm (props: VenuesFormProps) {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
+                    { max: 63, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)

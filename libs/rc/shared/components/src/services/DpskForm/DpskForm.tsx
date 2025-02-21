@@ -35,7 +35,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
-  useServicePreviousPath
+  useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -60,7 +61,8 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
-  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const { isTemplate } = useConfigTemplate()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP) && !isTemplate
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,

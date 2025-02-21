@@ -193,6 +193,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   patchEntitlementsActivations: {
     method: 'PATCH',
     url: '/entitlements/orders/:orderId',
+    opsApi: 'PATCH:/entitlements/orders/:orderId',
     newApi: true
   },
   refreshLicensesData: {
@@ -293,6 +294,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/roleAuthentications/customRoles/:customRoleId',
     opsApi: 'DELETE:/roleAuthentications/customRoles/{id}',
+    newApi: true
+  },
+  getCustomRoleFeatures: {
+    method: 'get',
+    url: '/roleAuthentications/features?showScopes=false',
     newApi: true
   },
   getOnePrivilegeGroup: {
