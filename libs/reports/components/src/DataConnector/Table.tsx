@@ -142,7 +142,7 @@ export function DataConnectorTable () {
       visible: rows => isVisibleByAction(rows, Actions.Resume),
       onClick: async (selectedRows: DataConnector[], clearSelection) => {
         const payload = {
-          dataSubscriptionIds: selectedRows.map(row => row.id),
+          ids: selectedRows.map(row => row.id),
           data: {
             status: true
           }
@@ -163,7 +163,7 @@ export function DataConnectorTable () {
       visible: rows => isVisibleByAction(rows, Actions.Pause),
       onClick: async (selectedRows: DataConnector[], clearSelection) => {
         const payload = {
-          dataSubscriptionIds: selectedRows.map(row => row.id),
+          ids: selectedRows.map(row => row.id),
           data: {
             status: false
           }

@@ -111,7 +111,7 @@ describe('DataConnector table', () => {
 
       await waitFor(() => {
         expect(patchFn).toBeCalledWith({
-          dataSubscriptionIds: [dataConnector.id],
+          ids: [dataConnector.id],
           data: {
             status: true
           }
@@ -159,7 +159,7 @@ describe('DataConnector table', () => {
 
       await waitFor(() => {
         expect(patchFn).toBeCalledWith({
-          dataSubscriptionIds: [dataConnector.id],
+          ids: [dataConnector.id],
           data: {
             status: false
           }

@@ -11,7 +11,7 @@ Object {
     "name": "name",
     "userName": "FisrtName 1234 LastName 1234",
   },
-  "dataSubscriptionIds": Array [
+  "ids": Array [
     "id",
   ],
 }

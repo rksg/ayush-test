@@ -57,8 +57,7 @@ export type DataConnector = Omit<ConnectorPayload, 'id'> & {
 }
 
 export type PatchDataConnector = {
-  // TODO: rename with route adjustments
-  dataSubscriptionIds: string[]
+  ids: string[]
   data: Partial<DataConnector>
 }
 

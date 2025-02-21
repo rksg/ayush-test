@@ -58,7 +58,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
           method: isEdit ? 'PATCH' : 'POST',
           credentials: 'include',
           body: isEdit
-            ? JSON.stringify({ data, dataSubscriptionIds: [id] })
+            ? JSON.stringify({ data, ids: [id] })
             : JSON.stringify(data),
           headers: {
             'content-type': 'application/json'
