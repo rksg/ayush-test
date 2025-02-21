@@ -32,4 +32,3 @@ export const getTimeseriesBuffer = (start: string, end: string) => {
   }
   return buffer
 }
-
