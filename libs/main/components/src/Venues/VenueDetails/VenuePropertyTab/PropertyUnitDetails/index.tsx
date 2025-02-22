@@ -275,12 +275,13 @@ export function PropertyUnitDetails () {
       [
         {
           label: $t({ defaultMessage: 'Block' }),
-          visible: (selectedItems => selectedItems.length <= 1 ||
-          (selectedItems.length > 1)),
+          visible: (selectedItems => selectedItems.length > 0 &&
+            selectedItems.some(p => !p.revoked)),
           onClick: (identities, clearSelection) => {
             showActionModal({
               type: 'confirm',
-              title: identities.length > 1 ? $t({ defaultMessage: 'Block these identities' })
+              title: identities.length > 1
+                ? $t({ defaultMessage: 'Block {count} identities' }, { count: identities.length })
                 : $t({ defaultMessage: 'Block this identity: {name}' },
                   { name: identities[0].name }),
               content: identities.length > 1 ?
@@ -304,8 +305,8 @@ export function PropertyUnitDetails () {
         },
         {
           label: $t({ defaultMessage: 'Unblock' }),
-          visible: (selectedItems => selectedItems.length <= 1 ||
-          (selectedItems.length > 1)),
+          visible: (selectedItems => selectedItems.length > 0 &&
+            selectedItems.some(p => p.revoked)),
           onClick: (identities, clearSelection) => {
             identities.forEach((identity) => {
               updatePersona({
@@ -317,13 +318,13 @@ export function PropertyUnitDetails () {
         },
         {
           label: $t({ defaultMessage: 'Remove Association' }),
-          visible: (selectedItems => selectedItems.length <= 1 ||
-          (selectedItems.length > 1)),
+          visible: (selectedItems => selectedItems.length > 0),
           onClick: (identities, clearSelection) => {
             showActionModal({
               type: 'confirm',
-              title: identities.length > 1 ?
-                $t({ defaultMessage: 'Remove these associations' })
+              title: identities.length > 1
+                ? $t({ defaultMessage: 'Remove {count} associations' },
+                  { count: identities.length })
                 : $t({ defaultMessage: 'Remove this association: {name}' },
                   { name: identities[0].name }),
               content: identities.length > 1 ?

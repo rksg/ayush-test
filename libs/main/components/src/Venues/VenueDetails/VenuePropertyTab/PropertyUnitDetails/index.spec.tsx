@@ -207,7 +207,7 @@ describe('Property Unit Details', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Block' }))
     await screen.findByRole('dialog')
-    await screen.findByText('Block these identities')
+    await screen.findByText('Block 2 identities')
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
   })
 
@@ -231,7 +231,7 @@ describe('Property Unit Details', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Remove Association' }))
     await screen.findByRole('dialog')
-    await screen.findByText('Remove these associations')
+    await screen.findByText('Remove 2 associations')
   })
 
   it('should copy passphrase correctly', async () => {
