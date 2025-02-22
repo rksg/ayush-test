@@ -46,7 +46,6 @@ const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
 mockPinStatsList.data[0].edgeClusterInfo.segments = 10
-mockPinStatsList.data[0].edgeClusterInfo.devices = 10
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 
 const mockedSetVisible = jest.fn()
@@ -188,8 +187,9 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('Identity Group')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'TestPersona' })).toBeVisible()
     expect(await screen.findByText('Number of Segments')).toBeVisible()
+    expect(await screen.findByText('10')).toBeVisible()
     expect(await screen.findByText('Number of devices per segment')).toBeVisible()
-    expect((await screen.findAllByText('10')).length).toBe(2)
+    expect(await screen.findByText('253')).toBeVisible()
     expect(await screen.findByText('DHCP Service')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'TestDhcp-1' })).toBeVisible()
     expect(await screen.findByText('Tunnel Profile')).toBeVisible()

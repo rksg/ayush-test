@@ -4,6 +4,7 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
   createSoftGre: {
     method: 'post',
     url: '/softGreProfiles',
+    opsApi: 'POST:/softGreProfiles',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -13,6 +14,7 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
   getSoftGreViewDataList: {
     method: 'post',
     url: '/softGreProfiles/query',
+    opsApi: 'POST:/softGreProfiles/query',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -22,6 +24,7 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
   deleteSoftGre: {
     method: 'delete',
     url: '/softGreProfiles/:policyId',
+    opsApi: 'DELETE:/softGreProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -40,6 +43,7 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
   updateSoftGre: {
     method: 'put',
     url: '/softGreProfiles/:policyId',
+    opsApi: 'PUT:/softGreProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

@@ -17,8 +17,11 @@ describe('Config Template shared components utils', () => {
       mockedHasAllowedOperations.mockReset()
     })
     it('returns null when isTemplate is false', () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+
       const Component = withTemplateFeatureGuard({
-        WrappedComponent: () => <div>Wrapped Component</div>
+        WrappedComponent: () => <div>Wrapped Component</div>,
+        featureId: 'test-feature-id'
       })
       const { container } = render(
         <ConfigTemplateContext.Provider value={{ isTemplate: false }}>
