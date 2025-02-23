@@ -25,11 +25,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
-const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
 
@@ -41,8 +36,6 @@ describe('MyServices', () => {
   const path = '/:tenantId/t'
   const getEnhancedMdnsProxyRequestSpy = jest.fn()
   beforeEach(() => {
-    mockedUsedNavigate.mockClear()
-
     mockServer.use(
       rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
