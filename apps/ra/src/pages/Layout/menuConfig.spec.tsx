@@ -116,7 +116,7 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
       { uri: '/dataStudio' },
-      { uri: '/dataSubscriptions' },
+      { uri: '/dataConnector' },
       { uri: '/reports' },
       { uri: '/analytics/occupancy' }
     ]

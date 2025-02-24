@@ -50,7 +50,7 @@ const getDefaultRoute = () => {
     case hasRaiPermission('READ_HEALTH'):      return 'health'
     case hasRaiPermission('READ_REPORTS'):     return 'reports'
     case hasRaiPermission('READ_DATA_STUDIO'): return 'dataStudio'
-    case hasRaiPermission('READ_DATA_CONNECTOR'): return 'dataSubscriptions'
+    case hasRaiPermission('READ_DATA_CONNECTOR'): return 'dataConnector'
   }
   return 'profile/settings'
 }
@@ -139,7 +139,7 @@ function AllRoutes () {
       <Route path='configChange' element={check('READ_CONFIG_CHANGE', <ConfigChange />)} />
       <Route path='reports/*' element={check('READ_REPORTS', <ReportsRoutes />)} />
       <Route path='dataStudio/*' element={check('READ_DATA_STUDIO', <ReportsRoutes />)} />
-      <Route path='dataSubscriptions/*'
+      <Route path='dataConnector/*'
         element={check('READ_DATA_CONNECTOR', <ReportsRoutes />)} />
       <Route path='serviceValidation/*' element={check('READ_SERVICE_VALIDATION')} >
         <Route index
