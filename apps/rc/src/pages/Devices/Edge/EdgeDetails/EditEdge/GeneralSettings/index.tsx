@@ -3,10 +3,10 @@ import { useContext, useEffect } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { StepsForm }                        from '@acx-ui/components'
-import { EdgeSettingForm }                  from '@acx-ui/rc/components'
-import { useUpdateEdgeMutation }            from '@acx-ui/rc/services'
-import { EdgeGeneralSetting, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { StepsForm }                                                         from '@acx-ui/components'
+import { EdgeSettingForm }                                                   from '@acx-ui/rc/components'
+import { useUpdateEdgeMutation }                                             from '@acx-ui/rc/services'
+import { EdgeGeneralSetting, EdgeUrlsInfo, ClusterHighAvailabilityModeEnum } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
@@ -22,7 +22,8 @@ const GeneralSettings = () => {
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const {
-    generalSettings
+    generalSettings,
+    clusterInfo
   } = useContext(EditEdgeDataContext)
   const [upadteEdge, { isLoading: isEdgeUpdating }] = useUpdateEdgeMutation()
 
@@ -31,6 +32,14 @@ const GeneralSettings = () => {
       form.setFieldsValue(generalSettings)
     }
   }, [generalSettings])
+
+  // display HA mode data on SettingForm
+  useEffect(() => {
+    if(clusterInfo) {
+      // eslint-disable-next-line max-len
+      form.setFieldValue('highAvailabilityMode', clusterInfo?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY)
+    }
+  }, [clusterInfo])
 
   const handleUpdateEdge = async (data: EdgeGeneralSetting) => {
     try {

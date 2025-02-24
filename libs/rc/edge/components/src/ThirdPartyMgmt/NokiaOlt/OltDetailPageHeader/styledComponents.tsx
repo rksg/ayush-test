@@ -71,6 +71,8 @@ export const StyledAntStatistic = styled(AntStatistic)`
 
 
 export const StyledAntdDescriptions = styled(AntdDescriptions)`
+  max-width: 550px;
+
   .ant-descriptions-row > td {
     padding-bottom: 5px;
   }

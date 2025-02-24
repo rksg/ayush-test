@@ -406,7 +406,7 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Administrators' })
               }
             ] : []),
-            ...(isMspAppMonitoringEnabled ? [
+            ...(isMspAppMonitoringEnabled && !isCustomRole ? [
               {
                 uri: '/administration/privacy',
                 label: $t({ defaultMessage: 'Privacy' })
