@@ -12,6 +12,7 @@ import {
   EdgePortWithStatus,
   getEdgePortDisplayName,
   isInterfaceInVRRPSetting,
+  SubInterface,
   validateEdgeGateway
 } from '@acx-ui/rc/utils'
 
@@ -40,6 +41,7 @@ interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsPro
   fieldHeadPath?: string[]
   isCluster?: boolean
   vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  subInterfaceList?: SubInterface[]
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -52,7 +54,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     fieldHeadPath = [],
     isCluster,
     formFieldsProps,
-    vipConfig = []
+    vipConfig = [],
+    subInterfaceList = []
   } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string>('')
@@ -98,6 +101,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
                 }
               }
             }
+            subInterfaceList={subInterfaceList}
           />
         )}
       </Form.List>,

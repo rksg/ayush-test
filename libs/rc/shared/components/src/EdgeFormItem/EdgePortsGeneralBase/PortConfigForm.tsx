@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect } from 'react'
+import { useCallback, useLayoutEffect, useMemo } from 'react'
 
 import {
   Col,
@@ -8,7 +8,7 @@ import TextArea    from 'antd/lib/input/TextArea'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { EdgeLag, EdgePortInfo } from '@acx-ui/rc/utils'
+import { EdgeLag, EdgePortInfo, SubInterface } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm, EdgePortCommonFormProps } from '../PortCommonForm'
 
@@ -22,6 +22,7 @@ interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
   isCluster?: boolean
+  subInterfaceList?: SubInterface[]
 }
 
 const { useWatch, useFormInstance } = Form
@@ -32,14 +33,28 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     statusData,
     formListItemKey,
     isEdgeSdLanRun,
-    lagData,
+    lagData = [],
     fieldHeadPath = [],
     isCluster,
-    formFieldsProps
+    formFieldsProps,
+    subInterfaceList = []
   } = props
 
   const { $t } = useIntl()
   const form = useFormInstance()
+
+  const subnetInfoForValidation = useMemo(() => {
+    return [
+      ...lagData.filter(lag => lag.lagEnabled && Boolean(lag.ip) && Boolean(lag.subnet))
+        .map(lag => ({ ip: lag.ip ?? '', subnetMask: lag.subnet ?? '' })),
+      // eslint-disable-next-line max-len
+      ...subInterfaceList.filter(subInterface => Boolean(subInterface.ip) && Boolean(subInterface.subnet))
+        .map(subInterface => ({
+          ip: subInterface.ip ?? '',
+          subnetMask: subInterface.subnet ?? ''
+        }))
+    ]
+  }, [lagData, subInterfaceList])
 
   const getFieldPathBaseFormList = useCallback((fieldName: string) =>
     [formListItemKey, fieldName],
@@ -109,6 +124,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 portsDataRootPath={portsDataRootPath}
                 formListID={id}
                 formFieldsProps={formFieldsProps}
+                subnetInfoForValidation={subnetInfoForValidation}
               />
             }}
           </Form.Item>

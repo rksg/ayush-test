@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 
 import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
@@ -60,6 +60,15 @@ const LagSettingView = (props: LagSettingViewProps) => {
     ports: item.interfaces,
     timeoutSeconds: timeout
   }))
+  // eslint-disable-next-line max-len
+  const portSubInterfaces = form.getFieldValue('portSubInterfaces') as InterfaceSettingsFormType['portSubInterfaces']
+  // eslint-disable-next-line max-len
+  const lagSubInterfaces = form.getFieldValue('lagSubInterfaces') as InterfaceSettingsFormType['lagSubInterfaces']
+
+  const allSubInterface = useMemo(() =>[
+    ...Object.values(portSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat(),
+    ...Object.values(lagSubInterfaces ?? {}).flat().flatMap(item => Object.values(item)).flat()
+  ], [portSubInterfaces, lagSubInterfaces])
 
   const cleanupLagMemberPortConfig = (lagData: EdgeLag, serialNumber: string) => {
     // reset physical port config when it is selected as LAG member
@@ -159,6 +168,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
                 edit: [EdgeScopes.UPDATE],
                 delete: [EdgeScopes.UPDATE]
               }}
+              subInterfaceList={allSubInterface}
             />
           </>
         }
