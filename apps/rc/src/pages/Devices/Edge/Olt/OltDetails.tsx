@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Col }                    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { GridRow, Tabs, Loader }                    from '@acx-ui/components'
+import { Tabs, Loader }                             from '@acx-ui/components'
 import { EdgeNokiaOltDetailsPageHeader }            from '@acx-ui/edge/components'
 import { useGetEdgeCageListQuery }                  from '@acx-ui/rc/services'
 import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum } from '@acx-ui/rc/utils'
@@ -72,37 +71,31 @@ export const EdgeNokiaOltDetails = () => {
     children: <UplinkTab />
   }]
 
-  return (
-    <GridRow>
-      <Col span={24}>
-        <EdgeNokiaOltDetailsPageHeader
-          currentOlt={oltDetails}
-          cagesList={cagesList}
-          isLoading={isCagesLoading}
-          isFetching={isCagesFetching}
-        />
-      </Col>
-      <Col span={24}>
-        <Tabs type='card'
-          activeKey={currentTab}
-          defaultActiveKey={activeSubTab || tabs[0].value}
-          onChange={handleTabChange}
+  return <>
+    <EdgeNokiaOltDetailsPageHeader
+      currentOlt={oltDetails}
+      cagesList={cagesList}
+      isLoading={isCagesLoading}
+      isFetching={isCagesFetching}
+    />
+    <Tabs type='card'
+      activeKey={currentTab}
+      defaultActiveKey={activeSubTab || tabs[0].value}
+      onChange={handleTabChange}
+    >
+      {tabs.map((tab) => (
+        <Tabs.TabPane
+          tab={tab.label}
+          key={tab.value}
         >
-          {tabs.map((tab) => (
-            <Tabs.TabPane
-              tab={tab.label}
-              key={tab.value}
-            >
-              <Loader
-                states={[{ isLoading: isCagesLoading, isFetching: isCagesFetching }]}
-                style={{ minHeight: '100px' }}
-              >
-                {tab.children}
-              </Loader>
-            </Tabs.TabPane>
-          ))}
-        </Tabs>
-      </Col>
-    </GridRow>
-  )
+          <Loader
+            states={[{ isLoading: isCagesLoading, isFetching: isCagesFetching }]}
+            style={{ minHeight: '100px' }}
+          >
+            {tab.children}
+          </Loader>
+        </Tabs.TabPane>
+      ))}
+    </Tabs>
+  </>
 }
