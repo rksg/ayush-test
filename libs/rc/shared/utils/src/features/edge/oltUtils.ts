@@ -11,6 +11,13 @@ export const oltLineCardOptions = [
   { label: 'PON LC 1', value: 'S1' },
   { label: 'PON LC 2', value: 'S2' }
 ]
+
+// OLT SN: line card SN
+export const oltLineCardSerailNumberMap = {
+  FH2302A073A: 'YP2306F4B2D',
+  FH2302A077C: 'YP2306F4B76'
+}
+
 export const oltCageCannedSpeeds = [1, 10, 25] // GB
 
 export const getOltStatusConfig = () => {
