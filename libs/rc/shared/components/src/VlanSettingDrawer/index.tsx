@@ -26,6 +26,7 @@ import {
   validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
+  validateVlanRange,
   Vlan,
   versionAbove10020a
 } from '@acx-ui/rc/utils'
@@ -178,7 +179,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   useEffect(() => {
     form.resetFields()
-  }, [])
+  }, [vlan])
 
   useEffect(() => {
     if(vlan && editMode){
@@ -351,14 +352,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             ...(enableVlanRangeConfigure ? [{
-              validator: (_: RuleObject, value: string) => {
-                const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
-                if (!re.test(value)) {
-                  // eslint-disable-next-line max-len
-                  return Promise.reject($t({ defaultMessage: 'Invalid format. Spaces, punctuation marks etc., are not allowed. Please use commas to separate VLANs, or use \'-\' to define the range or a combination of both.' }))
-                }
-                return Promise.resolve()
-              }
+              validator: (_: RuleObject, value: string) => validateVlanRange(value)
             }, {
               validator: (_: RuleObject, value: string) => {
                 const originalVlanId = vlan?.vlanId?.toString()
@@ -605,8 +599,13 @@ export const checkVlanRange = (value: string, originalVlanId?: string) => {
       const vlanRanges = v.split('-')
       const startNum = Number(vlanRanges[0])
       const endNum = Number(vlanRanges[vlanRanges.length - 1])
+      if (endNum - startNum > 4095 || endNum > 4095) {
+        isValidRange = false
+        return ''
+      }
       if (endNum > startNum) {
-        return Array.from({ length: endNum - startNum + 1 }, (_, i) => (startNum + i).toString())
+        return new Array(endNum - startNum + 1).fill(0).map((_, i) => (startNum + i).toString())
+        // return Array.from({ length: endNum - startNum + 1 }, (_, i) => (startNum + i).toString())
       }
     } else if (Number(v)) {
       return v.trim()

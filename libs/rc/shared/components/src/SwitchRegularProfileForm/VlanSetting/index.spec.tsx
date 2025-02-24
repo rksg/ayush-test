@@ -292,5 +292,51 @@ describe('Wired - VlanSetting', () => {
         expect(dialog).not.toBeVisible()
       })
     })
+
+    it('should handle change IPv4 DHCP Snooping correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+      )
+      const params = {
+        tenantId: 'tenant-id',
+        action: 'edit'
+      }
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={{
+            ...configureProfileContextValues,
+            editMode: true,
+            currentData: {
+              ...currentData,
+              vlans
+            } as unknown as SwitchConfigurationProfile
+          }}>
+            <Form>
+              <VlanSetting />
+            </Form>
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+        })
+
+      await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+      const row = await screen.findByRole('row', { name: /vlan-02/i })
+      const radio = await within(row).findByRole('radio')
+      await userEvent.click(radio)
+      await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
+
+      const dialog = await screen.findByRole('dialog')
+      await userEvent.click(await within(dialog).findByTestId('dhcpSnooping'))
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Save' }))
+
+      const confirmDialog = await screen.findByRole('dialog')
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText(/Some of the VLANs in this range have a different/)).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Proceed' }))
+      await waitFor(()=>{
+        expect(confirmDialog).not.toBeVisible()
+      })
+    })
   })
 })

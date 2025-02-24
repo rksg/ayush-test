@@ -120,6 +120,31 @@ export function VlanSetting () {
   }
 
   const handleSetVlan = (data: Vlan) => {
+    const hasIpV4Changed = !_.isEqual(drawerFormRule?.ipv4DhcpSnooping, data.ipv4DhcpSnooping)
+    if (drawerEditMode && hasIpV4Changed) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'Override Settings?' }),
+        // eslint-disable-next-line max-len
+        content: $t({ defaultMessage: 'Some of the VLANs in this range have a different \'IPv4 DHCP Snooping\' setting. Proceeding with this change will overwrite the previously configured on those VLANs with the current selection. ' }),
+        okText: $t({ defaultMessage: 'Proceed' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        onOk: async () => {
+          try {
+            applySetVlan(data)
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        }
+      })
+      return
+    } else {
+      applySetVlan(data)
+    }
+  }
+
+  const applySetVlan = (data: Vlan) => {
     const { vlans } = checkVlanRange(data.vlanId.toString())
     const filterData = drawerFormRule?.vlanId ? vlanTable.filter(
       (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
@@ -253,7 +278,10 @@ export function VlanSetting () {
         visible={vlanDrawerVisible}
         setVisible={setVlanDrawerVisible}
         vlan={(drawerFormRule)}
-        setVlan={handleSetVlan}
+        setVlan={isBulkVlanProvisioningEnabled
+          ? handleSetVlan
+          : applySetVlan
+        }
         isProfileLevel={true}
         vlansList={vlanTable.filter(item=>item.vlanId !== drawerFormRule?.vlanId)}
         enablePortModelConfigure={!isBulkVlanProvisioningEnabled}

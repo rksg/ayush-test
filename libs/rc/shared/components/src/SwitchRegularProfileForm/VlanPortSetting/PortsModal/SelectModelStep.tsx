@@ -346,7 +346,7 @@ export function SelectModelStep (props: {
             </Card>
           </UI.GroupListLayout>
         </Col>
-        <Col span={9} flex={'400px'} hidden={!moduleSelectionEnable}>
+        <Col span={9} flex='400px' hidden={!moduleSelectionEnable}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Select Modules' })}</Typography.Title>
           <Row style={{ paddingTop: '5px' }}
             hidden={!(modelModules && modelModules?.length > 1 && module2SelectionEnable)}>

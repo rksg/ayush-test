@@ -53,7 +53,48 @@ describe('Wired - VlanPortSetting', () => {
     }],
     vlanId: 3,
     vlanName: 'vlan-02'
+  }, {
+    arpInspection: false,
+    id: '545d08c0e7894501846455233ad60cc6',
+    igmpSnooping: 'none',
+    ipv4DhcpSnooping: false,
+    spanningTreePriority: 32768,
+    spanningTreeProtocol: 'none',
+    vlanId: 4,
+    vlanName: 'vlan-04'
   }]
+
+  const newVlan3 = {
+    ...vlans[1],
+    switchFamilyModels: [{
+      id: '9874453239bc479fac68bc050d0cf729',
+      model: 'ICX7550-24P',
+      slots: [
+        { slotNumber: 1, enable: true },
+        { slotNumber: 2, enable: true, option: '2X40G' },
+        { slotNumber: 3, enable: true, option: '2X40G' }
+      ],
+      taggedPorts: '1/2/2',
+      untaggedPorts: '1/1/20,1/3/2'
+    }, {
+      id: '9874453239bc479fac68bc050d0cf728',
+      model: 'ICX7650-48ZP',
+      slots: [
+        { slotNumber: 1, enable: true },
+        { slotNumber: 2, enable: true, option: '1X40/100G' }
+      ],
+      taggedPorts: '1/1/2',
+      untaggedPorts: '1/1/3'
+    }, {
+      id: '9874453239bc479fac68bc050d0cf727',
+      model: 'ICX7650-48ZP',
+      slots: [
+        { slotNumber: 1, enable: true }
+      ],
+      taggedPorts: '1/1/40',
+      untaggedPorts: '1/1/38'
+    }]
+  }
 
   afterEach(() => {
     Modal.destroyAll()
@@ -154,7 +195,7 @@ describe('Wired - VlanPortSetting', () => {
     expect(await within(dialog).findByText('1 X 40/100G')).toBeVisible()
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
 
-    expect(await screen.findByText(/Port is not Configured/)).toBeVisible()
+    expect(await screen.findByText(/Configure at least one VLAN/)).toBeVisible()
   })
 
   it('should handle set ports correctly', async () => {
@@ -203,8 +244,10 @@ describe('Wired - VlanPortSetting', () => {
 
     await userEvent.click(await within(dialog).findByTestId('module1_1_3'))
 
-    await userEvent.click(await screen.findByLabelText('Untagged VLAN'))
+    const comboboxes = await within(dialog).findAllByRole('combobox')
+    await userEvent.click(comboboxes[0]) //untagged
     const text3 = await screen.findAllByText('3') //TODO
+    expect(text3).toHaveLength(3)
     await userEvent.click(text3[2])
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
 
@@ -243,7 +286,9 @@ describe('Wired - VlanPortSetting', () => {
           }],
           vlanId: 3,
           vlanName: 'vlan-02'
-        }]
+        },
+        vlans[2]
+      ]
     })
   })
 
@@ -309,7 +354,9 @@ describe('Wired - VlanPortSetting', () => {
           }],
           vlanId: 3,
           vlanName: 'vlan-02'
-        }]
+        },
+        vlans[2]
+      ]
     })
 
   })
@@ -330,37 +377,7 @@ describe('Wired - VlanPortSetting', () => {
             ...currentData,
             vlans: [
               vlans[0],
-              {
-                ...vlans[1],
-                switchFamilyModels: [{
-                  id: '9874453239bc479fac68bc050d0cf729',
-                  model: 'ICX7550-24P',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '2X40G' },
-                    { slotNumber: 3, enable: true, option: '2X40G' }
-                  ],
-                  taggedPorts: '1/2/2',
-                  untaggedPorts: '1/1/20,1/3/2'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf728',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '1X40/100G' }
-                  ],
-                  taggedPorts: '1/1/2',
-                  untaggedPorts: '1/1/3'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf727',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true }
-                  ],
-                  taggedPorts: '1/1/40',
-                  untaggedPorts: '1/1/38'
-                }]
-              }
+              newVlan3
             ]
           } as unknown as SwitchConfigurationProfile
         }}>
@@ -389,14 +406,11 @@ describe('Wired - VlanPortSetting', () => {
     expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
 
     await userEvent.click(await within(dialog).findByTestId('module1_1_4'))
-    await userEvent.click(await within(dialog).findByLabelText('Untagged VLAN'))
-    const text3 = await screen.findAllByText('3') //TODO
+    const comboboxes = await within(dialog).findAllByRole('combobox')
+    await userEvent.click(comboboxes[0]) //untagged
+    let text3 = await screen.findAllByText('3') //TODO
+    expect(text3).toHaveLength(3)
     await userEvent.click(text3[2])
-
-    // await userEvent.click(await within(dialog).findByRole('button', { name: 'Clear Selection' }) )
-    // await userEvent.click(await within(dialog).findByTestId('module1_1_5'))
-    // await userEvent.click(await within(dialog).findByLabelText('Untagged VLAN'))
-    // await userEvent.click(text3[2])
 
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
 
@@ -464,37 +478,7 @@ describe('Wired - VlanPortSetting', () => {
             ...currentData,
             vlans: [
               vlans[0],
-              {
-                ...vlans[1],
-                switchFamilyModels: [{
-                  id: '9874453239bc479fac68bc050d0cf729',
-                  model: 'ICX7550-24P',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '2X40G' },
-                    { slotNumber: 3, enable: true, option: '2X40G' }
-                  ],
-                  taggedPorts: '1/2/2',
-                  untaggedPorts: '1/1/20,1/3/2'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf728',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '1X40/100G' }
-                  ],
-                  taggedPorts: '1/1/2',
-                  untaggedPorts: '1/1/3'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf727',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true }
-                  ],
-                  taggedPorts: '1/1/40',
-                  untaggedPorts: '1/1/38'
-                }]
-              }
+              newVlan3
             ]
           } as unknown as SwitchConfigurationProfile
         }}>
@@ -519,7 +503,7 @@ describe('Wired - VlanPortSetting', () => {
     expect(dialog).not.toBeVisible()
   })
 
-  it('should handle multiple selected ports correctly', async () => { //TODO
+  it('should handle multiple selected ports correctly', async () => {
     const onFinishSpy = jest.fn()
     const params = {
       tenantId: 'tenant-id',
@@ -535,37 +519,7 @@ describe('Wired - VlanPortSetting', () => {
             ...currentData,
             vlans: [
               vlans[0],
-              {
-                ...vlans[1],
-                switchFamilyModels: [{
-                  id: '9874453239bc479fac68bc050d0cf729',
-                  model: 'ICX7550-24P',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '2X40G' },
-                    { slotNumber: 3, enable: true, option: '2X40G' }
-                  ],
-                  taggedPorts: '1/2/2',
-                  untaggedPorts: '1/1/20,1/3/2'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf728',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '1X40/100G' }
-                  ],
-                  taggedPorts: '1/1/2',
-                  untaggedPorts: '1/1/3'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf727',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true }
-                  ],
-                  taggedPorts: '1/1/40',
-                  untaggedPorts: '1/1/38'
-                }]
-              }
+              newVlan3
             ]
           } as unknown as SwitchConfigurationProfile
         }}>
@@ -591,7 +545,9 @@ describe('Wired - VlanPortSetting', () => {
     await userEvent.click(await within(dialog).findByTestId('module1_2_1'))
     await userEvent.click(await within(dialog).findByTestId('module1_3_1'))
 
-    await userEvent.click(await within(dialog).findByLabelText('Tagged VLANs'))
+    await userEvent.click(await within(dialog).findByTestId('taggedVlans-override-checkbox'))
+    const comboboxes = await within(dialog).findAllByRole('combobox')
+    await userEvent.click(comboboxes[1]) //untagged
     const text3 = await screen.findAllByText('3') //TODO
     await userEvent.click(text3[2])
 
@@ -648,6 +604,57 @@ describe('Wired - VlanPortSetting', () => {
     // expect(dialog).not.toBeVisible()
   })
 
+  it('should handle clear selection correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans: [
+              vlans[0],
+              newVlan3
+            ]
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+    await userEvent.click(await screen.findByText('ICX7550-24P'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Set Ports' }))
+    await userEvent.click(await within(dialog).findByTestId('module1_1_1'))
+    await userEvent.click(await within(dialog).findByTestId('module1_2_1'))
+    await userEvent.click(await within(dialog).findByTestId('module1_3_1'))
+
+    await userEvent.click(await within(dialog).findByTestId('taggedVlans-override-checkbox'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Clear Selection' }) )
+
+    const comboboxes = await within(dialog).findAllByRole('combobox')
+    expect(comboboxes).toHaveLength(2)
+    expect(comboboxes[0]).toBeDisabled()
+    expect(comboboxes[1]).toBeDisabled()
+  })
+
   it('should delete module correctly', async () => {
     const onFinishSpy = jest.fn()
     const params = {
@@ -664,37 +671,7 @@ describe('Wired - VlanPortSetting', () => {
             ...currentData,
             vlans: [
               vlans[0],
-              {
-                ...vlans[1],
-                switchFamilyModels: [{
-                  id: '9874453239bc479fac68bc050d0cf729',
-                  model: 'ICX7550-24P',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '2X40G' },
-                    { slotNumber: 3, enable: true, option: '2X40G' }
-                  ],
-                  taggedPorts: '1/2/2',
-                  untaggedPorts: '1/1/20,1/3/2'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf728',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '1X40/100G' }
-                  ],
-                  taggedPorts: '1/1/2',
-                  untaggedPorts: '1/1/3'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf727',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true }
-                  ],
-                  taggedPorts: '1/1/40',
-                  untaggedPorts: '1/1/38'
-                }]
-              },
+              newVlan3,
               {
                 arpInspection: false,
                 id: '1af3d29b5dcc46a5a20a651fda55e2dg',
@@ -778,37 +755,7 @@ describe('Wired - VlanPortSetting', () => {
             ...currentData,
             vlans: [
               vlans[0],
-              {
-                ...vlans[1],
-                switchFamilyModels: [{
-                  id: '9874453239bc479fac68bc050d0cf729',
-                  model: 'ICX7550-24P',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '2X40G' },
-                    { slotNumber: 3, enable: true, option: '2X40G' }
-                  ],
-                  taggedPorts: '1/2/2',
-                  untaggedPorts: '1/1/20,1/3/2'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf728',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '1X40/100G' }
-                  ],
-                  taggedPorts: '1/1/2',
-                  untaggedPorts: '1/1/3'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf727',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true }
-                  ],
-                  taggedPorts: '1/1/40',
-                  untaggedPorts: '1/1/38'
-                }]
-              },
+              newVlan3,
               {
                 arpInspection: false,
                 id: '1af3d29b5dcc46a5a20a651fda55e2dg',
@@ -878,7 +825,7 @@ describe('Wired - VlanPortSetting', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
     const dialog = await screen.findByRole('dialog')
-    expect(await screen.findByText(/Delete "3 Modules"?/)).toBeVisible()
+    expect(await screen.findByText(/Delete Selected Module(s)?/)).toBeVisible()
     expect(await screen.findByText(/Are you sure you want to delete these Modules?/)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Delete Modules' }))
     await waitFor(()=>{
@@ -903,37 +850,7 @@ describe('Wired - VlanPortSetting', () => {
             ...currentData,
             vlans: [
               vlans[0],
-              {
-                ...vlans[1],
-                switchFamilyModels: [{
-                  id: '9874453239bc479fac68bc050d0cf729',
-                  model: 'ICX7550-24P',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '2X40G' },
-                    { slotNumber: 3, enable: true, option: '2X40G' }
-                  ],
-                  taggedPorts: '1/2/2',
-                  untaggedPorts: '1/1/20,1/3/2'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf728',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true },
-                    { slotNumber: 2, enable: true, option: '1X40/100G' }
-                  ],
-                  taggedPorts: '1/1/2',
-                  untaggedPorts: '1/1/3'
-                }, {
-                  id: '9874453239bc479fac68bc050d0cf727',
-                  model: 'ICX7650-48ZP',
-                  slots: [
-                    { slotNumber: 1, enable: true }
-                  ],
-                  taggedPorts: '1/1/40',
-                  untaggedPorts: '1/1/38'
-                }]
-              }
+              newVlan3
             ]
           } as unknown as SwitchConfigurationProfile
         }}>
@@ -950,11 +867,6 @@ describe('Wired - VlanPortSetting', () => {
     await screen.findByRole('heading', { level: 3, name: /Ports/ })
     expect(await screen.findByText(/ICX7550-24P/)).toBeVisible()
     expect(await screen.findByText(/ICX7650-48ZP/)).toBeVisible()
-
-    //TODO
-    // await waitFor(async ()=>{
-    //   expect(await screen.findAllByTestId('arrow-expand')).toHaveLength(4)
-    // })
 
     const expandArrows = await screen.findAllByTestId('arrow-expand')
     await userEvent.click(expandArrows[0])

@@ -415,6 +415,11 @@ export const validationMessages = {
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'
   }),
+  invalidVlanRange: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Invalid format. Spaces, punctuation marks etc., are not allowed. Please use commas to separate VLANs, or use \'-\' to define the range or a combination of both.',
+    description: 'Validation - validate vlan range format'
+  }),
   subnetOverlapping: defineMessage({
     defaultMessage: 'The ports have overlapping subnets',
     description: 'Validation - subnet range'

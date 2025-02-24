@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _                 from 'lodash'
+import { defineMessage } from 'react-intl'
 
 import {
   SwitchModelSlot,
@@ -58,6 +59,35 @@ export interface PortsModalSetting {
   portSettings: PortSetting[]
   slots: SwitchSlot2[]
 }
+
+/* eslint-disable max-len */
+export const VlanPortMessages = {
+  CANNOT_BE_SAME_AS_TAGGED: defineMessage({
+    defaultMessage: 'Cannot be same as Tagged VLAN'
+  }),
+  CANNOT_BE_SAME_AS_UNTAGGED: defineMessage({
+    defaultMessage: 'Cannot be same as Untagged VLAN'
+  }),
+  PORT_HAS_BEEN_CONFIGURED_UNTAGGED: defineMessage({
+    defaultMessage: 'In this model, the port has already been configured with an Untagged VLAN in a different module.'
+  }),
+  VLAN_HAS_BEEN_CONFIGURED_IN_MODEL: defineMessage({
+    defaultMessage: 'The VLAN has already been configured in other module of this model.'
+  }),
+  CANNOT_BE_EDITED: defineMessage({
+    defaultMessage: 'Editing is only possible if it\'s the same module within the same series.'
+  }),
+  NO_TAGGED_OR_UNTAGGED_VLAN: defineMessage({
+    defaultMessage: 'Please ensure that at least one Tagged or Untagged VLAN is configured.'
+  }),
+  DELETE_MODULE_WHEM_APPLY_ONBOARD_ENABLED: defineMessage({
+    defaultMessage: 'Any VLANs defined on ports of these modules\' will get removed. Are you sure you want to continue?'
+  }),
+  NO_AVAILABLE_VLANS: defineMessage({
+    defaultMessage: 'There are no VLANs available to configure the ports.'
+  })
+}
+/* eslint-enable */
 
 export const checkIfModuleFixed = (family: string, model: string): { //TODO
   moduleSelectionEnable?: boolean,

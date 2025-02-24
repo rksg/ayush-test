@@ -25,7 +25,8 @@ import {
   Slot,
   PortSetting,
   PortsModalSetting,
-  VlanPort
+  VlanPort,
+  VlanPortMessages
 } from './index.utils'
 import { PortsModal } from './PortsModal'
 import * as UI        from './styledComponents'
@@ -195,7 +196,7 @@ export function VlanPortSetting () {
     defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('port', defaultSort) }
   }, {
-    title: $t({ defaultMessage: 'Untagged VLANs' }),
+    title: $t({ defaultMessage: 'Untagged VLAN' }),
     dataIndex: 'untaggedVlan',
     key: 'untaggedVlan'
   }, {
@@ -208,10 +209,7 @@ export function VlanPortSetting () {
   const rowActions: TableProps<GroupedVlanPort>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     disabled: () => selectedModuleKeys.length > 1,
-    tooltip: selectedModuleKeys.length > 1
-      // eslint-disable-next-line max-len
-      ? $t({ defaultMessage: 'Editing is only possible if it\'s the same module within the same series.' })
-      : '',
+    tooltip: selectedModuleKeys.length > 1 ? $t(VlanPortMessages.CANNOT_BE_EDITED) : '',
     onClick: () => {
       const selectedModel
         = vlanPortList.find(vlanPort => vlanPort.id === selectedModelKeys?.[0])
@@ -225,8 +223,14 @@ export function VlanPortSetting () {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (selectedRows, clearSelection) => {
       const isSelectedOneModule = selectedModuleKeys.length === 1
+      const shouldShowOnboardWarning = editMode && currentData.applyOnboardOnly
+
       showActionModal({
         type: 'confirm',
+        title: $t({ defaultMessage: 'Delete Selected Module(s)?' }),
+        ...( shouldShowOnboardWarning
+          ? { content: $t(VlanPortMessages.DELETE_MODULE_WHEM_APPLY_ONBOARD_ENABLED) } : {}
+        ),
         customContent: {
           action: 'DELETE',
           entityName: isSelectedOneModule
@@ -261,10 +265,11 @@ export function VlanPortSetting () {
     }
   }]
 
-  const expandIcon = ({ expanded, onExpand, record }: { //TODO
+  const expandIcon = <T,>({ expanded, onExpand, record }: { //TODO
     expanded: boolean,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onExpand: (data: any, e: React.MouseEvent<HTMLElement>) => void, record: any
+    onExpand: (data: T, e: React.MouseEvent<HTMLElement>) => void,
+    record: T
   }) => {
     return expanded ? (
       <ArrowExpand
@@ -355,7 +360,7 @@ export function VlanPortSetting () {
           ? <UI.TableWrapper>
             <Table
               columns={modelColumns}
-              style={{ minWidth: '900px' }}
+              // style={{ minWidth: '900px' }}
               className='wrapper-table'
               enableResizableColumn={false}
               dataSource={vlanPortList}
@@ -372,7 +377,7 @@ export function VlanPortSetting () {
                     className={`groupby-module-table ${isDefaultModule ? 'default-module' : ''}`}
                     enableResizableColumn={false}
                     tableAlertRender={false}
-                    type={'tall'}
+                    type='tall'
                     columns={moduleColumns}
                     showHeader={false}
                     stickyHeaders={false}
@@ -394,7 +399,7 @@ export function VlanPortSetting () {
                       expandIcon: expandIcon,
                       expandedRowRender: (record) => {
                         return <Table
-                          indentSize={40}
+                          // indentSize={40}
                           className='ports-table'
                           enableResizableColumn={false}
                           tableAlertRender={false}
@@ -429,12 +434,13 @@ export function VlanPortSetting () {
           </UI.TableWrapper>
           : <Table
             columns={portColumns}
-            style={{ minWidth: '900px' }}
+            // style={{ minWidth: '900px' }}
             dataSource={[]}
             rowKey='id'
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Set Ports' }),
               disabled: vlanList.length === 0,
+              tooltip: vlanList.length === 0 ? $t(VlanPortMessages.NO_AVAILABLE_VLANS) : '',
               onClick: handleClickSetPorts
             }])}
           />

@@ -11,7 +11,7 @@ import {
   ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
 
-import { GroupedVlanPort, VlanPort, PortSetting } from '../index.utils'
+import { GroupedVlanPort, VlanPort, PortSetting, VlanPortMessages } from '../index.utils'
 
 import { PortsStep }       from './PortsStep'
 import { SelectModelStep } from './SelectModelStep'
@@ -119,10 +119,8 @@ export function PortsModal (props: {
     if (!isValid) {
       showActionModal({
         type: 'error',
-        title: $t({ defaultMessage: 'Configure at least one VLAN' }), //TODO
-        content: $t({  // eslint-disable-next-line max-len
-          defaultMessage: 'Please ensure that at least one Tagged or Untagged VLAN is configured.'
-        })
+        title: $t({ defaultMessage: 'Configure at least one VLAN' }),
+        content: $t(VlanPortMessages.NO_TAGGED_OR_UNTAGGED_VLAN)
       })
       return
     }

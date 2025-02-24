@@ -222,16 +222,27 @@ export const CardStyle = styled.div`
 `
 
 export const Form = styled(AntdForm)`
-  > .ant-form-item {
-    margin-bottom: 0 !important;
+  .ant-form-item {
+    margin-bottom: 0px !important;
+    .ant-form-item {
+      margin-bottom: 0px !important;
+    }
   }
   &.ant-form.ant-form-horizontal {
     > .ant-form-item {
-      margin-bottom: 10px !important;
+      margin-bottom: 6px !important;
     }
-    .ant-form-item-label,
+    .ant-form-item-label {
+      height: 32px;
+      margin-bottom: 16px;
+      padding-bottom: 0;
+      width: 160px;
+    }
     .ant-form-item-control-input-content {
       padding-bottom: 0;
+      .ant-form-item-control-input-content {
+        max-width: 300px;
+      }
     }
   }
 `
