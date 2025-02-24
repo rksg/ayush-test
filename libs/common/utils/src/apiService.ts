@@ -74,6 +74,17 @@ export const isShowApiError = (request?: Request) => {
   return request?.headers ? request.headers.get('Build-In-Error-Modal') === 'showApiError' : false
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isShowImprovedErrorSuggestion = (errors: any) => {
+  const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0
+    && (errors.errors[0].suggestion || errors.errors[0].reason)
+  return (getEnabledDialogImproved()) && hasErrors
+}
+
+export const getEnabledDialogImproved = () => {
+  return isLocalHost() || isIntEnv()
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
