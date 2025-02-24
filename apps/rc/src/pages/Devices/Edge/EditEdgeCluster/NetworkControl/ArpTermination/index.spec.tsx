@@ -30,7 +30,6 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetEdgeClusterArpTerminationSettingsQuery: jest.fn(() => ({
     data: {
       enabled: true,
-      agingTimerEnabled: true,
       agingTimeSec: 600
     }
   }))
@@ -118,7 +117,6 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
     expect(await screen.findByText('ARP Termination')).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: 'ARP Termination' })).toBeChecked()
     expect(screen.getByText('ARP Termination Aging Timer')).toBeInTheDocument()
-    expect(screen.getByRole('switch', { name: 'ARP Termination Aging Timer' })).toBeChecked()
     expect(screen.getByRole('spinbutton')).toHaveValue('600')
   })
 
@@ -185,11 +183,9 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
           formValues={{
             originalArpSettings: {
               enabled: true,
-              agingTimerEnabled: true,
               agingTimeSec: 600
             },
             arpTerminationSwitch: false,
-            arpAgingTimerSwitch: true,
             agingTimeSec: 600
           }}
         />
@@ -198,7 +194,7 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await waitFor(() => expect(mockedUpdateArptSettingsReq).toBeCalledWith(
       '/venues/testVenueId/edgeClusters/testClusterId/arpTerminationSettings',
-      { agingTimeSec: 600, agingTimerEnabled: true, enabled: false }
+      { agingTimeSec: 600, enabled: false }
     ))
   })
 
@@ -209,11 +205,9 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
           formValues={{
             originalArpSettings: {
               enabled: true,
-              agingTimerEnabled: true,
               agingTimeSec: 600
             },
             arpTerminationSwitch: true,
-            arpAgingTimerSwitch: true,
             agingTimeSec: 600
           }}
         />
