@@ -49,14 +49,21 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
 
-  let abacEnabled = false, isCustomRole = false, rbacOpsApiEnabled = false
+  let abacEnabled = false,
+    isCustomRole = false,
+    rbacOpsApiEnabled = false
+
   const abacFF = 'abac-policies-toggle'
   const betaListFF = 'acx-ui-selective-early-access-toggle'
   const rbacOpsApiFF = 'acx-ui-rbac-allow-operations-api-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF, betaListFF, rbacOpsApiFF] },
+      { params: { tenantId }, payload: [
+        abacFF,
+        betaListFF,
+        rbacOpsApiFF
+      ] },
       { skip: !Boolean(profile) }
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false

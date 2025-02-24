@@ -10,11 +10,13 @@ import { useGetEdgeCageListQuery }                  from '@acx-ui/rc/services'
 import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum } from '@acx-ui/rc/utils'
 
 import { CagesTab }       from './CagesTab'
-import { PerformanceTab } from './PerofrmanceTab'
+import { PerformanceTab } from './PerformanceTab'
+import { UplinkTab }      from './UplinkTab'
 
 enum OverviewInfoType {
     PERFORMANCE = 'peromance',
     CAGES = 'cages',
+    UPLINK = 'uplink'
 }
 
 export const EdgeNokiaOltDetails = () => {
@@ -48,7 +50,7 @@ export const EdgeNokiaOltDetails = () => {
 
   const tabs = [{
     label: $t({ defaultMessage: 'Performance' }),
-    value: 'performance',
+    value: OverviewInfoType.PERFORMANCE,
     children: <PerformanceTab
       isOltOnline={isOltOnline}
       cagesList={cagesList}
@@ -57,13 +59,17 @@ export const EdgeNokiaOltDetails = () => {
     />
   }, {
     label: $t({ defaultMessage: 'Cages' }),
-    value: 'cages',
+    value: OverviewInfoType.CAGES,
     children: <CagesTab
       oltData={oltDetails}
       cagesList={cagesList}
       isLoading={isCagesLoading}
       isFetching={isCagesFetching}
     />
+  }, {
+    label: $t({ defaultMessage: 'Uplink' }),
+    value: OverviewInfoType.UPLINK,
+    children: <UplinkTab />
   }]
 
   return (
