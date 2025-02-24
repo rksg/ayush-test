@@ -39,7 +39,7 @@ export function PropertyUnitDetails () {
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
   const identitiesList = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    pagination: { pageSize: 10000 },
+    pagination: { pageSize: 10 },
     defaultPayload: { keyword: '' }
   })
   useEffect(() => {
