@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataConnectorForm should handle error on save 1`] = `
+Object {
+  "data": Object {
+    "columns": Array [
+      "apName",
+    ],
+    "dataSource": "apInventory",
+    "frequency": "daily",
+    "name": "name",
+    "userName": "FisrtName 1234 LastName 1234",
+  },
+  "ids": Array [
+    "id",
+  ],
+}
+`;
+
+exports[`DataConnectorForm should save on apply click 1`] = `
+Object {
+  "columns": Array [
+    "apMac",
+  ],
+  "dataSource": "apInventory",
+  "frequency": "daily",
+  "name": "name",
+  "userName": "FisrtName 1234 LastName 1234",
+}
+`;
