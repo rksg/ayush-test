@@ -106,7 +106,7 @@ export function Unit (props:{
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const { switchDetailHeader: switchDetail, switchDetailViewModelQuery, switchQuery } = switchDetailsContextData
-  const { serialNumber, switchMac, venueId } = switchDetail
+  const { serialNumber, switchMac, venueId, firmware } = switchDetail
 
   const { $t } = useIntl()
   const [ visible, setVisible ] = useState(false)
@@ -469,6 +469,7 @@ export function Unit (props:{
                 isStack={isStack}
                 deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
                 portLabel={getPortLabel(slot) as string}
+                switchFirmware={firmware}
               />
             ))
           }

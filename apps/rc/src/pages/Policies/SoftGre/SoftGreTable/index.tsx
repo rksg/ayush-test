@@ -18,7 +18,8 @@ import {
   MtuTypeEnum,
   useTableQuery,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -62,6 +63,7 @@ export default function SoftGreTable () {
 
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
@@ -77,6 +79,7 @@ export default function SoftGreTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
@@ -125,6 +128,7 @@ export default function SoftGreTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add SoftGRE Profile' })}</Button>

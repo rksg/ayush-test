@@ -111,12 +111,12 @@ describe('useMenuConfig', () => {
       READ_REPORTS: false,
       READ_OCCUPANCY: false,
       READ_DATA_STUDIO: false,
-      READ_DATA_SUBSCRIPTIONS: false
+      READ_DATA_CONNECTOR: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
       { uri: '/dataStudio' },
-      { uri: '/dataSubscriptions' },
+      { uri: '/dataConnector' },
       { uri: '/reports' },
       { uri: '/analytics/occupancy' }
     ]

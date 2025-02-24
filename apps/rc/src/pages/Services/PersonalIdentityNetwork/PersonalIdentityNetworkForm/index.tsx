@@ -166,9 +166,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       console.log(error) // eslint-disable-line no-console
       const errorRes = error as CatchErrorResponse
 
-      // expected error format
-      // eslint-disable-next-line max-len
-      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
+      if (errorRes.data.errors.length > 0) {
         showActionModal({
           type: 'error',
           title: $t({ defaultMessage: 'Validation Error' }),
@@ -320,7 +318,6 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
     edgeClusterInfo: {
       edgeClusterId: formData.edgeClusterId,
       segments: formData.segments,
-      devices: formData.devices,
       dhcpInfoId: formData.dhcpId,
       dhcpPoolId: formData.poolId
     },
