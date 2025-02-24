@@ -56,7 +56,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
         { text: 'Optical', link: '/devices/optical' }
       ]}
     />
-    <GridRow>
+    <GridRow style={{ marginBottom: '20px' }}>
       <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
         <Card type='solid-bg'>
           <GridRow>
