@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Typography }             from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCardCategory }                                               from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                    from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
@@ -12,7 +12,9 @@ import {
   ServiceOperation,
   ServiceType,
   isServiceCardEnabled,
-  isServiceCardSetEnabled
+  isServiceCardSetEnabled,
+  serviceTypeLabelMapping,
+  serviceTypeDescMapping
 } from '@acx-ui/rc/utils'
 
 import { ServiceCard } from '../ServiceCard'
@@ -159,12 +161,14 @@ export default function ServiceCatalog () {
             {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
               return item.type === ServiceType.EDGE_OLT
                 ? <UI.OltCardWrapper key={item.type} col={{ span: 6 }}>
-                  <ServiceCard
-                    key={item.type}
-                    serviceType={item.type}
-                    categories={item.categories}
+                  <RadioCard
                     type={'button'}
-                    isBetaFeature={false}
+                    buttonText={defineMessage({ defaultMessage: 'Add' })}
+                    key={item.type}
+                    value={item.type}
+                    title={$t(serviceTypeLabelMapping[item.type])}
+                    description={$t(serviceTypeDescMapping[item.type])}
+                    categories={item.categories}
                   />
                 </UI.OltCardWrapper>
                 : <GridCol key={item.type} col={{ span: 6 }}>

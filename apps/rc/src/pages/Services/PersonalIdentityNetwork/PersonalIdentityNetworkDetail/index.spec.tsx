@@ -44,6 +44,8 @@ jest.mock('file-saver', ()=>({ saveAs: () => mockedSaveAs() }))
 const mockEdgeDhcpDataList = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
 // eslint-disable-next-line max-len
 mockEdgeDhcpDataList.content[0].dhcpPools[0].id = mockPinStatsList.data[0].edgeClusterInfo.dhcpPoolId
+mockEdgeDhcpDataList.content[0].dhcpPools[0].poolStartIp = '237.1.1.1'
+mockEdgeDhcpDataList.content[0].dhcpPools[0].poolEndIp = '237.255.255.255'
 
 describe('PIN Detail', () => {
   let params: { tenantId: string, serviceId: string }
@@ -52,6 +54,10 @@ describe('PIN Detail', () => {
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
+    mockedGenZipFile.mockClear()
+    mockedZipAddFile.mockClear()
+    mockedSaveAs.mockClear()
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
@@ -111,6 +117,36 @@ describe('PIN Detail', () => {
     expect(mockedZipAddFile).toBeCalledTimes(2)
     expect(mockedGenZipFile).toBeCalledTimes(1)
     expect(mockedSaveAs).toBeCalledTimes(1)
+  })
+
+  // eslint-disable-next-line max-len
+  it('Should catch error and zip function should not be called when DHCP pool is insufficient', async () => {
+    const user = userEvent.setup()
+    const mockEdgeDhcps = cloneDeep(EdgeDHCPFixtures.mockEdgeDhcpDataList)
+    // eslint-disable-next-line max-len
+    mockEdgeDhcps.content[0].dhcpPools[0].id = mockPinStatsList.data[0].edgeClusterInfo.dhcpPoolId
+    const spyOnConsoleLog = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(spyOnConsoleLog)
+
+    mockServer.use(
+      rest.get(
+        EdgeDhcpUrls.getDhcp.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeDhcps.content[0]))
+      )
+    )
+
+    render(
+      <Provider>
+        <PersonalIdentityNetworkDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    const downloadConfigBtn = await screen.findByRole('button', { name: 'Download configs' })
+    await user.click(downloadConfigBtn)
+    expect(spyOnConsoleLog).toBeCalledTimes(1)
+    expect(mockedZipAddFile).toBeCalledTimes(0)
+    expect(mockedGenZipFile).toBeCalledTimes(0)
+    expect(mockedSaveAs).toBeCalledTimes(0)
   })
 
   it('should have compatible warning', async () => {
