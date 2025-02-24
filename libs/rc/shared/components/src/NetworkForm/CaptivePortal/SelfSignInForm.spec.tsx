@@ -23,7 +23,8 @@ import {
   mockSMS_TWILIO_Under100,
   mockSMS_TWILIO_Over100,
   mockSMS_Unset_Over100,
-  mockSMS_Unset_Under100
+  mockSMS_Unset_Under100,
+  mock_SelfSignIn_WhatsApp_Error
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -697,6 +698,41 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       fireEvent.click(formItem)
 
       expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      expect(formItem).toBeDisabled()
+    })
+
+    it('Unset, WhatsApp still enabled',() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
+      const SelfSignInComponent = (<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            // eslint-disable-next-line max-len
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_WhatsApp_Error, isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>)
+
+      const router = { route: { params } }
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Over100 }
+      })
+      render(SelfSignInComponent, router)
+
+      const formItem = screen.getByRole('checkbox', { name: /WhatsApp/ })
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      fireEvent.click(formItem)
 
       expect(formItem).toBeDisabled()
     })

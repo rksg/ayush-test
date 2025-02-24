@@ -2548,6 +2548,27 @@ export const mock_SelfSignIn_SMS_Off = {
   }
 }
 
+export const mock_SelfSignIn_WhatsApp_Error = {
+  guestPortal: {
+    redirectUrl: '123.com',
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: false,
+    enableWhatsapp: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    socialDomains: ['http://123.com'],
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
+
 export const mockSoftGreTable = {
   totalCount: 2,
   page: 1,
