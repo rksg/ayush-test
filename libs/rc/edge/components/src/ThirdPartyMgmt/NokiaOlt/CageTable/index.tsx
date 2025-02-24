@@ -143,6 +143,8 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
             <Table
               rowKey='cage'
               columns={columns}
+              // for resolving flashing issue while doing tab switch
+              style={{ minHeight: '300px' }}
               dataSource={get(groupedLineCardCages, item.value)}
             />
           </Tabs.TabPane>
