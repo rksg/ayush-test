@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 
 import { Typography, Descriptions as AntdDescriptions } from 'antd'
+import { get }                                          from 'lodash'
 import { useIntl }                                      from 'react-intl'
 
 import { Card, GridRow,  GridCol, PageHeader, Button, cssStr } from '@acx-ui/components'
@@ -9,7 +10,8 @@ import {
   EdgeNokiaCageStateEnum,
   EdgeNokiaOltData,
   EdgeNokiaOltStatusEnum,
-  getOltStatusConfig
+  getOltStatusConfig,
+  oltLineCardSerailNumberMap
 } from '@acx-ui/rc/utils'
 
 import OltImage                    from '../../../assets/images/olt/olt.png'
@@ -54,7 +56,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
         { text: 'Optical', link: '/devices/optical' }
       ]}
     />
-    <GridRow>
+    <GridRow style={{ marginBottom: '20px' }}>
       <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
         <Card type='solid-bg'>
           <GridRow>
@@ -119,7 +121,7 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
                 <AntdDescriptions.Item
                   span={4}
                   label={$t({ defaultMessage: 'S/N' })}
-                  children={'YP2306F4B2D'}
+                  children={get(oltLineCardSerailNumberMap, currentOlt.serialNumber, 'YP2306F4B2D')}
                 />
               </StyledAntdDescriptions>
               <StyledAntdDescriptions column={12}>

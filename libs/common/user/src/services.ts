@@ -211,7 +211,7 @@ export const UserRbacUrlsInfo = {
   getAllowedOperations: {
     method: 'get',
     url: '/allowedOperations',
-    newApi: true
+    newApi: false // TODO: Awaiting backend support
   }
 }
 
