@@ -98,16 +98,15 @@ export const AaaInstance = (props: AaaInstanceProps) => {
             ]}
           />}
         />
-        <Tooltip>
-          <AAAPolicyModal updateInstance={(data) => {
-            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-            form.setFieldValue(radiusIdName, data.id)
-            form.setFieldValue(props.type, data)
-          }}
-          aaaCount={aaaDropdownItems.length}
-          type={radiusType}
-          />
-        </Tooltip></Space>
+        <AAAPolicyModal updateInstance={(data) => {
+          setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+          form.setFieldValue(radiusIdName, data.id)
+          form.setFieldValue(props.type, data)
+        }}
+        aaaCount={aaaDropdownItems.length}
+        type={radiusType}
+        />
+      </Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>

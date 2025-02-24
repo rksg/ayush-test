@@ -63,6 +63,20 @@ describe('Drawer', () => {
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
 
+  it('should match snapshot for adjustStepsFormFooterStyle drawer', () => {
+    render(<Drawer
+      title={'Test Drawer'}
+      icon={<BulbOutlined/>}
+      subTitle={'Test Drawer Subtitle'}
+      onBackClick={jest.fn()}
+      visible={true}
+      onClose={onClose}
+      children={content}
+      adjustStepsFormFooterStyle={true}
+    />)
+    expect(screen.getAllByRole('dialog')).toMatchSnapshot()
+  })
+
   it('should render test drawer correctly', async () => {
     render(<Drawer
       title={'Test Drawer'}
