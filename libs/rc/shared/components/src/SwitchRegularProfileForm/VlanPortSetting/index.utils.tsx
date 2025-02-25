@@ -21,13 +21,13 @@ export interface PortSetting {
   taggedVlans: string[]
 }
 
-export interface GroupedVlanPort {
-  id: string ////
+export interface ModuleGroupByModel {
+  id: string
   familymodel: string
-  groupbyModules: VlanPort[]
+  groupbyModules: ModulePorts[]
 }
 
-export interface VlanPort {
+export interface ModulePorts {
   key: string
   familymodel: string
   slots: Slot[]
@@ -58,6 +58,11 @@ export interface PortsModalSetting {
   selectedOptionOfSlot3?: string
   portSettings: PortSetting[]
   slots: SwitchSlot2[]
+}
+
+export interface PortsType {
+  label: string,
+  value: string
 }
 
 /* eslint-disable max-len */
@@ -215,7 +220,7 @@ export const getVlanMap = (ports: PortSetting[], familymodel: string, slots: Slo
 }
 
 export const getUpdatedVlans = (
-  selectedRows: VlanPort[],
+  selectedRows: ModulePorts[],
   vlans: SwitchVlans[],
   updatedValues?: PortsModalSetting
 ) => { //: SwitchVlans[]
@@ -307,10 +312,10 @@ export const updateSwitchModel = (
 }
 
 export const getUpdatedVlanPortList = (
-  vlanPortList: GroupedVlanPort[],
+  vlanPortList: ModuleGroupByModel[],
   selectedModuleKeys: string[],
   updatedValues?: PortsModalSetting
-): GroupedVlanPort[] => {
+): ModuleGroupByModel[] => {
   const selectedModelKeys = _.uniq(selectedModuleKeys.map(key => key.split('_')[0]))
   const filteredVlanPortList = vlanPortList.map(vlanPort => {
     // remove selected models
@@ -327,7 +332,7 @@ export const getUpdatedVlanPortList = (
 
     return vlanPort
 
-  }).filter((vlanPort): vlanPort is GroupedVlanPort => Boolean(vlanPort))
+  }).filter((vlanPort): vlanPort is ModuleGroupByModel => Boolean(vlanPort))
 
   if (updatedValues) {
     const familymodel = `${updatedValues.family}-${updatedValues.model}`

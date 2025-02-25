@@ -21,11 +21,11 @@ import {
   getModuleKey,
   getUpdatedVlans,
   getUpdatedVlanPortList,
-  GroupedVlanPort,
+  ModuleGroupByModel,
   Slot,
   PortSetting,
   PortsModalSetting,
-  VlanPort,
+  ModulePorts,
   VlanPortMessages
 } from './index.utils'
 import { PortsModal } from './PortsModal'
@@ -36,9 +36,9 @@ export function VlanPortSetting () {
   const form = Form.useFormInstance()
   const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const [ vlanList, setVlanList ] = useState<Vlan[]>([])
-  const [ vlanPortList, setVlanPortList ] = useState<GroupedVlanPort[]>([])
+  const [ vlanPortList, setVlanPortList ] = useState<ModuleGroupByModel[]>([])
   const [ modalVisible, setModalVisible ] = useState(false)
-  const [ selectedRow, setSelectedRow ] = useState<VlanPort>(null as unknown as VlanPort)
+  const [ selectedRow, setSelectedRow ] = useState<ModulePorts>(null as unknown as ModulePorts)
 
   const [ selectedModelKeys, setSelectedModelKeys ] = useState([] as string[])
   const [ selectedModuleKeys, setSelectedModuleKeys ] = useState([] as string[])
@@ -51,7 +51,7 @@ export function VlanPortSetting () {
       const vlanList = currentData.vlans.filter(
         item => item.vlanName !== SWITCH_DEFAULT_VLAN_NAME
       )
-      const vlanPortList = currentData.vlans.reduce((result: GroupedVlanPort[], item: Vlan) => {
+      const vlanPortList = currentData.vlans.reduce((result: ModuleGroupByModel[], item: Vlan) => {
         if (!item.switchFamilyModels) return result
 
         item.switchFamilyModels.forEach((switchModel) => {
@@ -139,14 +139,14 @@ export function VlanPortSetting () {
     }
   }, [currentData, editMode])
 
-  const modelColumns: TableProps<GroupedVlanPort>['columns']= [{
+  const modelColumns: TableProps<ModuleGroupByModel>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'familymodel',
     key: 'familymodel',
     width: 900,
     defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('familymodel', defaultSort) },
-    render: (_, data: GroupedVlanPort) => {
+    render: (_, data: ModuleGroupByModel) => {
       const isDefaultModule = data?.groupbyModules.filter(module => module.isDefaultModule)?.length
       return <Space size={16}>
         <Typography.Text style={{ fontWeight: 700 }}>{ data.familymodel }</Typography.Text>
@@ -164,14 +164,14 @@ export function VlanPortSetting () {
     }
   }]
 
-  const moduleColumns: TableProps<VlanPort>['columns']= [{
+  const moduleColumns: TableProps<ModulePorts>['columns']= [{
     title: $t({ defaultMessage: 'Module' }),
     dataIndex: 'key',
     key: 'key',
     width: 800,
     defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('key', defaultSort) },
-    render: (_, data: VlanPort) => {
+    render: (_, data: ModulePorts) => {
       const module2 = data.slots.find(s => s.slotNumber === 2)
       const module3 = data.slots.find(s => s.slotNumber === 3)
       return data.isDefaultModule
@@ -206,7 +206,7 @@ export function VlanPortSetting () {
     render: (_, data: PortSetting) => data.taggedVlans.join(', ')
   }]
 
-  const rowActions: TableProps<GroupedVlanPort>['rowActions'] = [{
+  const rowActions: TableProps<ModuleGroupByModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     disabled: () => selectedModuleKeys.length > 1,
     tooltip: selectedModuleKeys.length > 1 ? $t(VlanPortMessages.CANNOT_BE_EDITED) : '',
@@ -216,7 +216,7 @@ export function VlanPortSetting () {
       const selectedRow = selectedModel?.groupbyModules.find(
         module => module.key === selectedModuleKeys?.[0]
       )
-      setSelectedRow(selectedRow as VlanPort)
+      setSelectedRow(selectedRow as ModulePorts)
       setModalVisible(true)
     }
   }, {
@@ -248,7 +248,7 @@ export function VlanPortSetting () {
             )
             if (selectedRow) return selectedRow
             return {}
-          }).filter(row => row) as VlanPort[]
+          }).filter(row => row) as ModulePorts[]
 
           const filteredVlanPortList = getUpdatedVlanPortList(vlanPortList, selectedModuleKeys)
           const updatedVlans = getUpdatedVlans(selectedRows, vlans)
@@ -257,7 +257,7 @@ export function VlanPortSetting () {
           // console.log('filteredVlanPortList: ', filteredVlanPortList)
           // console.log('updatedVlans: ', updatedVlans)
 
-          setVlanPortList(filteredVlanPortList as GroupedVlanPort[])
+          setVlanPortList(filteredVlanPortList as ModuleGroupByModel[])
           form.setFieldValue('vlans', updatedVlans)
           clearSelection()
         }
@@ -315,7 +315,7 @@ export function VlanPortSetting () {
     setSelectedModelKeys(selectedKeys as string[])
   }
 
-  const handleChangeModule = (record: GroupedVlanPort, selectedKeys: Key[]) => {
+  const handleChangeModule = (record: ModuleGroupByModel, selectedKeys: Key[]) => {
     const orinSelectedModelKeys = selectedModelKeys.filter(key => key !== record?.id)
     setSelectedModelKeys([
       ...orinSelectedModelKeys,
@@ -329,7 +329,7 @@ export function VlanPortSetting () {
   }
 
   const handleClickSetPorts = () => {
-    setSelectedRow(null as unknown as VlanPort)
+    setSelectedRow(null as unknown as ModulePorts)
     setModalVisible(true)
   }
 
@@ -346,7 +346,6 @@ export function VlanPortSetting () {
 
     form.setFieldValue('vlans', updatedVlans)
     setVlanPortList(filteredVlanPortList)
-
     setSelectedModuleKeys([])
     setSelectedModelKeys([])
     setModalVisible(false)
@@ -360,7 +359,6 @@ export function VlanPortSetting () {
           ? <UI.TableWrapper>
             <Table
               columns={modelColumns}
-              // style={{ minWidth: '900px' }}
               className='wrapper-table'
               enableResizableColumn={false}
               dataSource={vlanPortList}
@@ -368,11 +366,11 @@ export function VlanPortSetting () {
                 defaultExpandedRowKeys: vlanPortList?.map(vlanPort => vlanPort.id),
                 columnWidth: '24px',
                 expandIcon: expandIcon,
-                expandedRowRender: (record: GroupedVlanPort) => {
+                expandedRowRender: (record: ModuleGroupByModel) => {
                   const isDefaultModule
                     = record.groupbyModules.find(module => module.isDefaultModule)
                   const defaultExpandedRowKeys
-                    = record.groupbyModules.map((module: VlanPort) => module.key)
+                    = record.groupbyModules.map((module: ModulePorts) => module.key)
                   return <Table
                     className={`groupby-module-table ${isDefaultModule ? 'default-module' : ''}`}
                     enableResizableColumn={false}
@@ -399,7 +397,6 @@ export function VlanPortSetting () {
                       expandIcon: expandIcon,
                       expandedRowRender: (record) => {
                         return <Table
-                          // indentSize={40}
                           className='ports-table'
                           enableResizableColumn={false}
                           tableAlertRender={false}
@@ -434,7 +431,6 @@ export function VlanPortSetting () {
           </UI.TableWrapper>
           : <Table
             columns={portColumns}
-            // style={{ minWidth: '900px' }}
             dataSource={[]}
             rowKey='id'
             actions={filterByAccess([{

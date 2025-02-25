@@ -22,14 +22,20 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { shouldRenderMultipleText, MultipleText }                                 from '../../../SwitchPortTable/editPortDrawer.utils'
-import { getModuleKey, GroupedVlanPort, PortSetting, VlanPort, VlanPortMessages } from '../index.utils'
+import { shouldRenderMultipleText, MultipleText } from '../../../SwitchPortTable/editPortDrawer.utils'
+import {
+  getModuleKey,
+  ModuleGroupByModel,
+  ModulePorts,
+  PortSetting,
+  PortsType,
+  VlanPortMessages
+} from '../index.utils'
 
 import {
-  getPortsModule,
+  // getPortsModule,
   getUnit,
   getModule,
-  PortsType,
   selectedGroupByPrefix
 } from './PortsModal.utils'
 import * as UI from './styledComponents'
@@ -45,15 +51,16 @@ enum VlanTypes {
 }
 
 export function PortsStep (props:{
-  editRecord?: VlanPort
+  editRecord?: ModulePorts
   vlanList: Vlan[],
-  modelPorts?: GroupedVlanPort
+  modelPorts?: ModuleGroupByModel
+  moduleData?: PortsType[][][]
 }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { editRecord, vlanList, modelPorts } = props
+  const { editRecord, vlanList, modelPorts, moduleData } = props
 
-  const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
+  // const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [vlanOptions, setVlanOptions] = useState([] as DefaultOptionType[])
 
@@ -92,7 +99,7 @@ export function PortsStep (props:{
 
   const getModelPortList = (
     modulekey: string,
-    data?: GroupedVlanPort, isFiltered: boolean = false
+    data?: ModuleGroupByModel, isFiltered: boolean = false
   ) => {
     return data?.groupbyModules
       ? data.groupbyModules
@@ -232,7 +239,7 @@ export function PortsStep (props:{
   useEffect(() => {
     // const { family, model, slots } = form.getFieldsValue(true)
     /* eslint-disable no-console */
-    console.log('init vlanList: ', vlanList)
+
     const portSettings: PortSetting[] = form.getFieldValue('portSettings')
     const vlanOptions = vlanList.map((item) => ({
       label: item.vlanId,
@@ -284,12 +291,12 @@ export function PortsStep (props:{
     })
   }, [selectedItems])
 
-  useEffect(() => {
-    if (slots) {
-      const module = getPortsModule(slots, false)
-      setPortsModule(module as unknown as PortsType[][][])
-    }
-  }, [slots])
+  // useEffect(() => {
+  //   if (slots) {
+  //     const module = getPortsModule(slots, false)
+  //     setPortsModule(module as unknown as PortsType[][][])
+  //   }
+  // }, [slots])
 
   let tmpSelectedItem: string[] = []
   const { DragSelection: DragSelectionPorts } = useSelectionContainer({
@@ -312,10 +319,10 @@ export function PortsStep (props:{
         left: box.left
       }
 
-      Array.from({ length: portsModule.length }).forEach((_, index) => {
-        const ports = portsModule[index].flat()
-        ports.forEach((port) => {
-          const [unit, slot, portNumber] = port.value.split('/')
+      Array.from({ length: moduleData?.length || 0 }).forEach((_, index) => {
+        const ports = moduleData?.[index].flat()
+        ports?.forEach((port) => {
+          const [unit, slot, portNumber] = port.value?.toString().split('/') ?? ''
           const itemKey = `module${unit}_${slot}_${portNumber}`
           const item = document.getElementById(itemKey)
           if(item){
@@ -524,8 +531,8 @@ export function PortsStep (props:{
     }))
   }
 
-  const getPortsView = () => {
-    return portsModule.map((module, index) => {
+  const getPortsView = (moduleData: PortsType[][][]) => {
+    return moduleData.map((module, index) => {
       const unit = getUnit(module)
       const module2 = getModule(module, '2', unit)
       const module3 = getModule(module, '3', unit)
@@ -797,9 +804,9 @@ export function PortsStep (props:{
         </Col>
       </Row>
       {/* ----- Ports ----- */}
-      <Row gutter={20} style={{ marginTop: '12px', minHeight: '175px' }} id='portsContainer'>
+      <Row gutter={20} style={{ marginTop: '12px', minHeight: '196px' }} id='portsContainer'>
         <Col>
-          { getPortsView() }
+          { getPortsView(moduleData as PortsType[][][]) }
           <DragSelectionPorts />
         </Col>
       </Row>

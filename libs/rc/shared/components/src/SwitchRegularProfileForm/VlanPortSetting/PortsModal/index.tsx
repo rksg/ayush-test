@@ -11,15 +11,21 @@ import {
   ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
 
-import { GroupedVlanPort, VlanPort, PortSetting, VlanPortMessages } from '../index.utils'
+import {
+  ModuleGroupByModel,
+  ModulePorts,
+  PortsType,
+  PortSetting,
+  VlanPortMessages
+} from '../index.utils'
 
+import { getPortsModule }  from './PortsModal.utils'
 import { PortsStep }       from './PortsStep'
 import { SelectModelStep } from './SelectModelStep'
 
 export interface PortsModalSetting {
   enableSlot2?: boolean
   enableSlot3?: boolean
-  enableSlot4?: boolean
   family: string
   model: string
   selectedOptionOfSlot2?: string
@@ -32,19 +38,19 @@ export function PortsModal (props: {
   open: boolean,
   onSave:(values: PortsModalSetting)=>void,
   onCancel?: ()=>void,
-  editRecord?: VlanPort,
+  editRecord?: ModulePorts,
   vlanList: Vlan[],
-  vlanPortList: GroupedVlanPort[],
+  vlanPortList: ModuleGroupByModel[],
 }) {
   const { $t } = useIntl()
   const {
     open, editRecord, onSave, onCancel, vlanList, vlanPortList
-    // switchFamilyModel, portSlotsData = [], stackMember, vlanId
   } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
-  const [modelPorts, setModelPorts] = useState({} as GroupedVlanPort)
+  const [modelPorts, setModelPorts] = useState({} as ModuleGroupByModel)
+  const [moduleData, setModuleData] = useState<PortsType[][][]>([])
 
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const modules = Object.keys(ICX_MODELS_MODULES).filter(
@@ -86,7 +92,7 @@ export function PortsModal (props: {
       })
 
       setModelPorts(vlanPortList?.find(
-        model => model.id === `${family}-${model}`) as GroupedVlanPort
+        model => model.id === `${family}-${model}`) as ModuleGroupByModel
       )
 
     } else if (open) {
@@ -105,8 +111,10 @@ export function PortsModal (props: {
     setNoModelMsg(!isValid)
 
     if (isValid) {
+      const module = getPortsModule(data?.slots, false)
+      setModuleData(module as PortsType[][][])
       setModelPorts(vlanPortList?.find(
-        model => model.id === `${data.family}-${data.model}`) as GroupedVlanPort
+        model => model.id === `${data.family}-${data.model}`) as ModuleGroupByModel
       )
     }
     return isValid
@@ -176,6 +184,7 @@ export function PortsModal (props: {
             editRecord={editRecord}
             vlanList={vlanList}
             modelPorts={modelPorts}
+            moduleData={moduleData}
           />
         </StepsForm.StepForm>
 

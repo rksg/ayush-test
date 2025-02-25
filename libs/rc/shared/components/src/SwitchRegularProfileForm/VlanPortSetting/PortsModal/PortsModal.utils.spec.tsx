@@ -32,14 +32,14 @@ const getSlots = (
   return slots
 }
 
-describe('Test getPortsModule', () => { //TODO
+describe('Test getPortsModule', () => {
   it('should render module ICX7150-C08P correctly', async () => {
     const family = 'ICX7150'
     const model = 'C08P'
     const slots = getSlots(family, model)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest ] = getPortsModule(slots, false)
+    const [result, ...rest] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(8)
     expect(result[1]).toHaveLength(2)
   })
@@ -53,7 +53,7 @@ describe('Test getPortsModule', () => { //TODO
     })
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest ] = getPortsModule(slots, false)
+    const [result, ...rest] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(48)
     expect(result[1]).toHaveLength(2)
     expect(result).toStrictEqual([
@@ -70,7 +70,7 @@ describe('Test getPortsModule', () => { //TODO
     const slots = getSlots(family, model)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest ] = getPortsModule(slots, false)
+    const [result, ...rest] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(12)
     expect(result[1]).toHaveLength(12)
     expect(result[2]).toHaveLength(8)
@@ -91,7 +91,7 @@ describe('Test getPortsModule', () => { //TODO
     const slots = getSlots(family, model)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest ] = getPortsModule(slots, false)
+    const [result, ...rest] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(8)
     expect(result[1]).toHaveLength(2)
   })
@@ -102,7 +102,7 @@ describe('Test getPortsModule', () => { //TODO
     const slots = getSlots(family, model)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest ] = getPortsModule(slots, false)
+    const [result, ...rest] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(24)
     expect(result[1]).toHaveLength(4)
     expect(result).toStrictEqual([

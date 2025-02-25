@@ -6,10 +6,12 @@ import {
   ICX_MODELS_MODULES
 } from '@acx-ui/rc/utils'
 
-export interface PortsType {
-  label: string,
-  value: string
-}
+import { PortsType } from '../index.utils'
+
+// export interface PortsType {
+//   label: string,
+//   value: string
+// }
 
 const createSlotOptions = (modelModules: string[][], slotIndex: number) => {
   const slotOptions = []
@@ -23,12 +25,12 @@ const createSlotOptions = (modelModules: string[][], slotIndex: number) => {
 }
 
 export const getPortsModule = (slots: SwitchSlot[], isSwitchLevel?: boolean) => {
-  const tmpSlots = isSwitchLevel ? slots : [slots] as unknown as SwitchSlot[][]
-  const module = tmpSlots.map(slotData => {
+  const normalizedSlots = isSwitchLevel ? slots : [slots] //as unknown as SwitchSlot[][]
+  return normalizedSlots.map(slotData => {
     return (slotData as SwitchSlot[])
-      ?.filter((slot: SwitchSlot) => slot?.portStatus)
-      ?.map((slot: SwitchSlot) => {
-        return slot?.portStatus?.map(item => {
+      .filter(slot => slot.portStatus)
+      .map(slot => {
+        return slot.portStatus?.map(item => {
           return {
             label: item.portNumber.toString(),
             value: item.portIdentifier || `1/${slot.slotNumber}/${item.portNumber.toString()}`
@@ -36,8 +38,32 @@ export const getPortsModule = (slots: SwitchSlot[], isSwitchLevel?: boolean) => 
         })
       })
   })
+}
 
-  return module
+export const getPortsModule2 = (slots: SwitchSlot[], isSwitchLevel?: boolean) => {
+  const normalizedSlots = isSwitchLevel ? slots : [slots] //as unknown as SwitchSlot[][]
+  return normalizedSlots.map(slotData => {
+    return (slotData as SwitchSlot[])
+      .filter(slot => slot.portStatus)
+      .map(slot => {
+        // const [slotNumber, _] = slot.slotPortInfo?.split('X') || ''
+        // return Array.from({ length: Number(slotNumber) }, (_, i) => {
+        //   const index = i+1
+        //   return {
+        //     label: index.toString(),
+        //     value: `1/${slot.slotNumber}/${index.toString()}`
+        //   }
+        // })
+
+        return slot.portStatus?.map(item => {
+          return {
+            label: item.portNumber.toString(),
+            value: item.portIdentifier || `1/${slot.slotNumber}/${item.portNumber.toString()}`
+          }
+        })
+
+      })
+  })
 }
 
 export const getUnit = (module: DefaultOptionType[][]) => {
@@ -71,8 +97,7 @@ export const getSlots = (family: string, model: string): DefaultOptionType[][] =
 }
 
 export const selectedGroupByPrefix = (selected: string[]) => {
-  // Output:
-  // {
+  // Output: {
   //   '1/1': ['1/1/1', '1/1/2', '1/1/3'],
   //   '1/2': ['1/2/1', '1/2/2'],
   //   '2/1': ['2/1/1'],
@@ -96,7 +121,6 @@ export const selectedGroupByPrefix = (selected: string[]) => {
 export const generateSlotData = (
   slotNumber: number, family: string, model: string, form: FormInstance
 ) => {
-  // const slots: SwitchSlot[] = form.getFieldValue('slots')
   const slotOptionLists = getSlots(family, model)
   const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
 
@@ -122,14 +146,6 @@ export const generateSlotData = (
       slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
       totalPortNumber = slotPortInfo.split('X')[0]
     }
-
-    // console.log('generateSlotData: ', slots, slotNumber, {
-    //   slotNumber: slotNumber,
-    //   enable: isEnable,
-    //   option: slotOption,
-    //   slotPortInfo: slotPortInfo,
-    //   portStatus: generatePortData(totalPortNumber)
-    // })
 
     return {
       slotNumber: slotNumber,

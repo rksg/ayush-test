@@ -10,14 +10,14 @@ import { Features, useIsSplitOn }                        from '@acx-ui/feature-t
 import { ICX_MODELS_MODULES, SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
-import { checkIfModuleFixed, PortSetting, VlanPort } from '../index.utils'
+import { checkIfModuleFixed, PortSetting, ModulePorts } from '../index.utils'
 
 import { getSlots, getModelModules, generateSlotData } from './PortsModal.utils'
 import * as UI                                         from './styledComponents'
 
 export function SelectModelStep (props: {
   editMode: boolean
-  editRecord?: VlanPort
+  editRecord?: ModulePorts
   families: DefaultOptionType[]
 }) {
   const { $t } = getIntl()
@@ -34,11 +34,11 @@ export function SelectModelStep (props: {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const data = form?.getFieldsValue(true)
-  const [ enableSlot2, enableSlot3, slots ] = [
+  const [ slots ] = [ // enableSlot2, enableSlot3,
     // Form.useWatch('family', form),
     // Form.useWatch('model', form),
-    Form.useWatch<boolean>('enableSlot2', form),
-    Form.useWatch<boolean>('enableSlot3', form),
+    // Form.useWatch<boolean>('enableSlot2', form),
+    // Form.useWatch<boolean>('enableSlot3', form),
     Form.useWatch<SwitchSlot[]>('slots', form)
   ]
 
@@ -62,10 +62,10 @@ export function SelectModelStep (props: {
       'model',
       'enableSlot2',
       'enableSlot3',
-      'enableSlot4',
+      // 'enableSlot4',
       'selectedOptionOfSlot2',
-      'selectedOptionOfSlot3',
-      'selectedOptionOfSlot4'
+      'selectedOptionOfSlot3'
+      // 'selectedOptionOfSlot4'
     ])
     // setFamily(e.target.value)
     familyChangeAction(e.target.value)
@@ -95,48 +95,23 @@ export function SelectModelStep (props: {
 
   const onModelChange = (e: RadioChangeEvent) => {
     const family = form.getFieldValue('family')
-
-    form.resetFields([
-      'enableSlot2',
-      'enableSlot3',
-      'enableSlot4',
-      'selectedOptionOfSlot2',
-      'selectedOptionOfSlot3',
-      'selectedOptionOfSlot4'
-    ])
-
+    form.resetFields(['enableSlot2', 'enableSlot3'])
     form.setFieldValue('model', e.target.value)
-    form.setFieldValue('selectedOptionOfSlot2', null) ///
-    form.setFieldValue('selectedOptionOfSlot3', null)
     form.setFieldValue('slots', [])
-    // form.setFieldValue('switchFamilyModels', {
-    //   ...switchFamilyModels,
-    //   model: `${family}-${model}`,
-    //   slots: []
-    // })
+    form.setFieldValue('portSettings', [])
 
-    // setEnableSlot2(false)
-    // setEnableSlot3(false)
-    // setEnableSlot4(false)
     setModuleSelectionEnable(true)
     setModule2SelectionEnable(true)
-    // setModule3SelectionEnable(true)
-    // setModel(e.target.value)
     modelChangeAction(family, e.target.value)
-
-
   }
 
   const modelChangeAction = (family: string, model: string) => {
-    // console.log('modelChangeAction: ', family, model)
     if (!editMode) {
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
-      // setModule3SelectionEnable(true)
     } else {
       setModuleSelectionEnable(true)
     }
-    // checkIfModuleFixed(family, model)
 
     const values = form.getFieldsValue(true)
     const modelModules = getModelModules(family, model)
@@ -149,8 +124,6 @@ export function SelectModelStep (props: {
       module2SelectionEnable,
       enableSlot2,
       enableSlot3
-      // selectedOptionOfSlot2,
-      // selectedOptionOfSlot3
     } = checkIfModuleFixed(family, model)
 
     if (moduleSelectionEnable !== undefined) {
@@ -163,8 +136,6 @@ export function SelectModelStep (props: {
       ...values,
       ...(enableSlot2 !== undefined ? { enableSlot2 } : {}),
       ...(enableSlot3 !== undefined ? { enableSlot3 } : {}),
-      // ...(module2SelectionEnable ? { selectedOptionOfSlot2: slotOptionLists?.[0]?.[0].value, } : {}),
-      // ...({ selectedOptionOfSlot3: slotOptionLists?.[1]?.[0].value } ),
       ...(!form.getFieldValue('enableSlot2') ? {
         selectedOptionOfSlot2: slotOptionLists?.[0]?.[0]?.value } : {}),
       ...(!form.getFieldValue('enableSlot3') ? {
@@ -172,15 +143,6 @@ export function SelectModelStep (props: {
     })
 
     updateModelPortData(family, model)
-
-    // const { slots, slotOptionLists } = getSlots(family, model)
-    // setOptionList(slotOptionLists)
-    // setSlots(slots)
-    // setSwitchFamilyModels(
-    //   { ...switchFamilyModels, slots: [] }
-    // )
-
-    // updateModelPortData(family, model)
   }
 
   const onCheckChange = function (e: CheckboxChangeEvent, slot: string) {
@@ -200,6 +162,7 @@ export function SelectModelStep (props: {
   }
 
   const updateModelPortData = (family: string, model: string) => {
+    const { portSettings } = form.getFieldsValue(true)
     const modelModules = getModelModules(family, model)
     const moduleCount = modelModules?.length ?? 0
 
@@ -213,14 +176,24 @@ export function SelectModelStep (props: {
     //   generateSlotData(slotNumber, family, model)
     // })
 
-    const newSlots = Array.from({ length: moduleCount }, (_, i) => {
+    const updatedSlots = Array.from({ length: moduleCount }, (_, i) => {
       const slotNumber = i+1
       return generateSlotData(slotNumber, family, model, form)
     }).filter(Boolean)
 
+    const updatedPortSettings = (portSettings as PortSetting[]).filter(port => {
+      const [, slot, slotNumber] = port.port.split('/')
+      const slotInfo = updatedSlots.find(s => s?.slotNumber === Number(slot))
+      const [maxSlotNumber] = slotInfo?.slotPortInfo.split('X') ?? ''
+      return slotInfo && (Number(slotNumber) <= Number(maxSlotNumber))
+    })
+
     // eslint-disable-next-line no-console
-    console.log('newSlots: ', newSlots)
-    form.setFieldValue('slots', newSlots)
+    console.log('updatedSlots: ', updatedSlots)
+    // eslint-disable-next-line no-console
+    console.log('updatedPortSettings: ', updatedPortSettings)
+    form.setFieldValue('slots', updatedSlots)
+    form.setFieldValue('portSettings', updatedPortSettings)
   }
 
   // eslint-disable-next-line no-console
@@ -288,6 +261,44 @@ export function SelectModelStep (props: {
   //   }
   // }
 
+  const ModuleSelectionRow = ({ index }: { index: number }) => {
+    const { $t } = getIntl()
+    const optionListForSlot = optionList?.[index] ?? []
+    const isSingleOption = optionListForSlot.length === 1
+    const enableSlotKey = `enableSlot${index + 2}`
+    const selectedOptionKey = `selectedOptionOfSlot${index + 2}`
+    const moduleSelectionEnable = index === 0 ? module2SelectionEnable : true
+
+    return (
+      <Row hidden={!(modelModules && modelModules.length > index + 1 && moduleSelectionEnable)}>
+        <Col span={isSingleOption ? 24 : 7}>
+          <Form.Item name={enableSlotKey} initialValue={false} valuePropName='checked'>
+            <Checkbox
+              data-testid={`module${index + 2}Checkbox`}
+              onChange={(e) => onCheckChange(e, `${index + 2}`)}
+            >
+              { $t({ defaultMessage: 'Module {num}:' }, { num: index + 2 }) }
+              { isSingleOption
+                && ` ${optionListForSlot?.[0]?.value?.toString().split('X').join(' X ')}`
+              }
+            </Checkbox>
+          </Form.Item>
+        </Col>
+        <Col span={10}>
+          {optionListForSlot.length > 0 && (
+            <Form.Item name={selectedOptionKey} hidden={isSingleOption}>
+              <Select
+                options={optionListForSlot}
+                disabled={!form.getFieldValue(enableSlotKey)}
+                onChange={onModuleChange}
+              />
+            </Form.Item>
+          )}
+        </Col>
+      </Row>
+    )
+  }
+
   return (
     <>
       <Row gutter={20} style={{ marginTop: '20px' }}>
@@ -348,9 +359,8 @@ export function SelectModelStep (props: {
         </Col>
         <Col span={9} flex='400px' hidden={!moduleSelectionEnable}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Select Modules' })}</Typography.Title>
-          <Row style={{ paddingTop: '5px' }}
+          {/* <Row style={{ paddingTop: '5px' }}
             hidden={!(modelModules && modelModules?.length > 1 && module2SelectionEnable)}>
-            {/* TODO */}
             <Col span={optionList?.[0]?.length === 1 ? 24 : 7} >
               <Form.Item
                 name='enableSlot2'
@@ -360,7 +370,6 @@ export function SelectModelStep (props: {
                   <Checkbox
                     data-testid='module2Checkbox'
                     onChange={(e)=>{ onCheckChange(e, '2') }}
-                    // onChange={onModuleChange}
                   >
                     {$t({ defaultMessage: 'Module 2:' })}
                     {optionList?.[0]?.length===1 &&
@@ -385,7 +394,6 @@ export function SelectModelStep (props: {
               </Form.Item>}
             </Col>
           </Row>
-          {/* <Row hidden={!(slots && slots?.length > 2 && module3SelectionEnable)}> */}
           <Row hidden={!(modelModules && modelModules?.length > 2)}>
             <Col span={optionList?.[1]?.length === 1 ? 24 : 7} >
               <Form.Item
@@ -396,7 +404,6 @@ export function SelectModelStep (props: {
                   <Checkbox
                     data-testid='module3Checkbox'
                     onChange={(e)=>{ onCheckChange(e, '3') }}
-                    // onChange={onModuleChange}
                   >
                     {$t({ defaultMessage: 'Module 3:' })}
                     {optionList?.[1]?.length===1 &&
@@ -417,8 +424,14 @@ export function SelectModelStep (props: {
                 />
               </Form.Item>}
             </Col>
-          </Row>
+          </Row> */}
+
+          { Array.from({ length: 2 }, (_, index) =>
+            <ModuleSelectionRow key={index} index={index} />
+          ) }
+
         </Col>
+
       </Row>
 
       <Form.Item
