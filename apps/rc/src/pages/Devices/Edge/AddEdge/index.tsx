@@ -2,6 +2,7 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
+
 import {
   PageHeader, showActionModal,
   StepsForm
@@ -16,8 +17,9 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { hasPermission }      from '@acx-ui/user'
-import { CatchErrorResponse } from '@acx-ui/utils'
+import { hasPermission }            from '@acx-ui/user'
+import { getEnabledDialogImproved } from '@acx-ui/utils'
+import { CatchErrorResponse }       from '@acx-ui/utils'
 
 import { getErrorModalInfo } from './errorMessageMapping'
 
@@ -58,7 +60,7 @@ const AddEdge = () => {
 
       navigate(clusterListPage)
     } catch (error) {
-      if (hasClusterId) {
+      if (hasClusterId && !getEnabledDialogImproved()) {
         showActionModal({
           type: 'error',
           ...getErrorModalInfo(error as CatchErrorResponse)
