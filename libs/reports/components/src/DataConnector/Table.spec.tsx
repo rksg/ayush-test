@@ -11,9 +11,9 @@ import {
   hasRoles, RaiPermissions, setRaiPermissions, setUserProfile
 } from '@acx-ui/user'
 
-import { mockedSubscriptions, mockedUserId } from './__fixtures__'
-import { DataSubscriptionsTable }            from './Table'
-import { DataSubscription }                  from './types'
+import { mockedConnectors, mockedUserId } from './__fixtures__'
+import { DataConnectorTable }             from './Table'
+import { DataConnector }                  from './types'
 
 const { click } = userEvent
 const mockedUsedNavigate = jest.fn()
@@ -36,14 +36,14 @@ jest.mock('@acx-ui/user', () => ({
 }))
 const mockHasRoles = jest.mocked(hasRoles)
 
-describe('DataSubscriptions table', () => {
+describe('DataConnector table', () => {
   describe('RAI', () => {
     beforeEach(() => {
       mockGet.mockReturnValue('true')
       setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
       mockUserProfileRA.mockReturnValue({ userId: mockedUserId } as UserProfile)
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {
-        data: mockedSubscriptions, page: 1, totalCount: mockedSubscriptions.length
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
+        data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
       })
     })
 
@@ -55,10 +55,10 @@ describe('DataSubscriptions table', () => {
     })
 
     it('renders table with data and correct columns', async () => {
-      render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+      render(<DataConnectorTable />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
-      expect(await tbody.findAllByRole('row')).toHaveLength(mockedSubscriptions.length)
+      expect(await tbody.findAllByRole('row')).toHaveLength(mockedConnectors.length)
       expect(await screen
         // column header count
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(5)
@@ -67,17 +67,17 @@ describe('DataSubscriptions table', () => {
         cell.title)
       expect(firstRowText).toEqual([
         '', // checkbox
-        mockedSubscriptions[0].name,
-        mockedSubscriptions[0].userName,
+        mockedConnectors[0].name,
+        mockedConnectors[0].userName,
         'Paused',
         'Daily',
-        formatter(DateFormatEnum.DateTimeFormat)(mockedSubscriptions[0].updatedAt),
+        formatter(DateFormatEnum.DateTimeFormat)(mockedConnectors[0].updatedAt),
         '' // settings
       ])
     })
 
-    const findRowInTable = async (data: DataSubscription) => {
-      render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+    const findRowInTable = async (data: DataConnector) => {
+      render(<DataConnectorTable />, { wrapper: Provider, route: {} })
 
       const element = await findTBody()
       expect(element).toBeVisible()
@@ -88,8 +88,8 @@ describe('DataSubscriptions table', () => {
       return { targetRow }
     }
 
-    const prepareResumeButton = async (dataSubscription: DataSubscription) => {
-      const { targetRow } = await findRowInTable(dataSubscription)
+    const prepareResumeButton = async (dataConnector: DataConnector) => {
+      const { targetRow } = await findRowInTable(dataConnector)
       await click(targetRow)
       expect(await screen.findByRole('button', { name: 'Resume' })).toBeVisible()
     }
@@ -98,46 +98,46 @@ describe('DataSubscriptions table', () => {
       const patchFn = jest.fn()
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (req, res, ctx) => {
             patchFn(req.body)
             return res(ctx.json(null))
           })
       )
 
-      const dataSubscription = mockedSubscriptions[0]
-      await prepareResumeButton(dataSubscription)
+      const dataConnector = mockedConnectors[0]
+      await prepareResumeButton(dataConnector)
       await click(await screen.findByRole('button', { name: 'Resume' }))
 
       await waitFor(() => {
         expect(patchFn).toBeCalledWith({
-          dataSubscriptionIds: [dataSubscription.id],
+          ids: [dataConnector.id],
           data: {
             status: true
           }
         })
       })
       expect(await screen.findByText(
-        'The selected data subscription has been resumed successfully.')).toBeVisible()
+        'The selected data connector has been resumed successfully.')).toBeVisible()
     })
 
     it('handle resume RTKQuery error', async () => {
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
-      const dataSubscription = mockedSubscriptions[0]
-      await prepareResumeButton(dataSubscription)
+      const dataConnector = mockedConnectors[0]
+      await prepareResumeButton(dataConnector)
       await click(await screen.findByRole('button', { name: 'Resume' }))
 
       expect(await screen.findByText(
-        'Failed to resume the selected data subscription.')).toBeVisible()
+        'Failed to resume the selected data connector.')).toBeVisible()
     })
 
-    const preparePauseButton = async (dataSubscription: DataSubscription) => {
-      const { targetRow } = await findRowInTable(dataSubscription)
+    const preparePauseButton = async (dataConnector: DataConnector) => {
+      const { targetRow } = await findRowInTable(dataConnector)
       await click(targetRow)
       expect(await screen.findByRole('button', { name: 'Pause' })).toBeVisible()
     }
@@ -146,47 +146,47 @@ describe('DataSubscriptions table', () => {
       const patchFn = jest.fn()
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (req, res, ctx) => {
             patchFn(req.body)
             return res(ctx.json(null))
           })
       )
 
-      const dataSubscription = mockedSubscriptions[1]
-      await preparePauseButton(dataSubscription)
+      const dataConnector = mockedConnectors[1]
+      await preparePauseButton(dataConnector)
       await click(await screen.findByRole('button', { name: 'Pause' }))
 
       await waitFor(() => {
         expect(patchFn).toBeCalledWith({
-          dataSubscriptionIds: [dataSubscription.id],
+          ids: [dataConnector.id],
           data: {
             status: false
           }
         })
       })
       expect(await screen.findByText(
-        'The selected data subscription has been paused successfully.')).toBeVisible()
+        'The selected data connector has been paused successfully.')).toBeVisible()
     })
 
     it('handle pause RTKQuery error', async () => {
       mockServer.use(
         rest.patch(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
-      const dataSubscription = mockedSubscriptions[1]
-      await preparePauseButton(dataSubscription)
+      const dataConnector = mockedConnectors[1]
+      await preparePauseButton(dataConnector)
       await click(await screen.findByRole('button', { name: 'Pause' }))
 
       expect(await screen.findByText(
-        'Failed to pause the selected data subscription.')).toBeVisible()
+        'Failed to pause the selected data connector.')).toBeVisible()
     })
 
     it('handle edit', async () => {
-      const dataSubscription = mockedSubscriptions[2]
-      const { targetRow } = await findRowInTable(dataSubscription)
+      const dataConnector = mockedConnectors[2]
+      const { targetRow } = await findRowInTable(dataConnector)
 
       await click(targetRow)
       expect(await screen.findByRole('button', { name: 'Edit' })).toBeVisible()
@@ -195,14 +195,14 @@ describe('DataSubscriptions table', () => {
       await waitFor(() =>
         expect(mockedUsedNavigate).toBeCalledWith({
           hash: '',
-          pathname: `/ai/dataSubscriptions/edit/${dataSubscription.id}`,
+          pathname: `/ai/dataConnector/edit/${dataConnector.id}`,
           search: ''
         })
       )
     })
 
-    const prepareDeleteDialog = async (dataSubscription: DataSubscription) => {
-      const { targetRow } = await findRowInTable(dataSubscription)
+    const prepareDeleteDialog = async (dataConnector: DataConnector) => {
+      const { targetRow } = await findRowInTable(dataConnector)
 
       await click(targetRow)
       expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
@@ -210,7 +210,7 @@ describe('DataSubscriptions table', () => {
       await click(await screen.findByRole('button', { name: 'Delete' }))
       const dialog = await screen.findByRole('dialog')
       expect(dialog).toBeVisible()
-      expect(dialog).toHaveTextContent('Are you sure you want to delete this Data Subscription?')
+      expect(dialog).toHaveTextContent('Are you sure you want to delete this Data Connector?')
       return { dialog }
     }
 
@@ -218,67 +218,67 @@ describe('DataSubscriptions table', () => {
       const deleteFn = jest.fn()
       mockServer.use(
         rest.delete(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (req, res, ctx) => {
             deleteFn(req.body)
             return res(ctx.json(null))
           })
       )
 
-      const dataSubscription = mockedSubscriptions[3]
-      const { dialog } = await prepareDeleteDialog(dataSubscription)
-      await click(await within(dialog).findByRole('button', { name: 'Delete Data Subscription' }))
+      const dataConnector = mockedConnectors[3]
+      const { dialog } = await prepareDeleteDialog(dataConnector)
+      await click(await within(dialog).findByRole('button', { name: 'Delete Data Connector' }))
 
       await waitFor(() => {
-        expect(deleteFn).toBeCalledWith([dataSubscription.id])
+        expect(deleteFn).toBeCalledWith([dataConnector.id])
       })
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).toBeNull()
       })
       expect(await screen.findByText(
-        'The selected data subscription has been deleted successfully.')).toBeVisible()
+        'The selected data connector has been deleted successfully.')).toBeVisible()
     })
 
     it('handle delete RTKQuery error', async () => {
       mockServer.use(
         rest.delete(
-          `${notificationApiURL}/dataSubscriptions`,
+          `${notificationApiURL}/dataConnector`,
           (_, res) => res.networkError('Failed to connect'))
       )
 
-      const dataSubscription = mockedSubscriptions[3]
-      const { dialog } = await prepareDeleteDialog(dataSubscription)
-      await click(await within(dialog).findByRole('button', { name: 'Delete Data Subscription' }))
+      const dataConnector = mockedConnectors[3]
+      const { dialog } = await prepareDeleteDialog(dataConnector)
+      await click(await within(dialog).findByRole('button', { name: 'Delete Data Connector' }))
 
       expect(await screen.findByText(
-        'Failed to delete the selected data subscription.')).toBeVisible()
+        'Failed to delete the selected data connector.')).toBeVisible()
     })
 
     it(
       // eslint-disable-next-line max-len
-      'should navigate to audit log page when data subscription name is clicked and user is data subscription owner',
+      'should navigate to audit log page when data connector name is clicked and user is data connector owner',
       async () => {
-        const dataSubscription = mockedSubscriptions[0]
-        const { targetRow } = await findRowInTable(dataSubscription)
-        const dataSubscriptionNameLink = (
+        const dataConnector = mockedConnectors[0]
+        const { targetRow } = await findRowInTable(dataConnector)
+        const dataConnectorNameLink = (
           within(targetRow).getByRole('link', {
-            name: dataSubscription.name
+            name: dataConnector.name
           }) as HTMLAnchorElement
         ).href
 
-        expect(dataSubscriptionNameLink).toContain(
-          `/ai/dataSubscriptions/auditLog/${dataSubscription.id}`
+        expect(dataConnectorNameLink).toContain(
+          `/ai/dataConnector/auditLog/${dataConnector.id}`
         )
       })
 
-    it('data subscription name should not be clickable when user is not data subscription owner',
+    it('data connector name should not be clickable when user is not data connector owner',
       async () => {
-        const dataSubscription = mockedSubscriptions[9]
-        const { targetRow } = await findRowInTable(dataSubscription)
-        const dataSubscriptionNameCell = within(targetRow).getByRole('cell', {
-          name: dataSubscription.name
+        const dataConnector = mockedConnectors[9]
+        const { targetRow } = await findRowInTable(dataConnector)
+        const dataConnectorNameCell = within(targetRow).getByRole('cell', {
+          name: dataConnector.name
         })
-        expect(dataSubscriptionNameCell).not.toHaveAttribute('href')
+        expect(dataConnectorNameCell).not.toHaveAttribute('href')
       })
   })
 
@@ -290,8 +290,8 @@ describe('DataSubscriptions table', () => {
         allowedOperations: [],
         profile: { ...getUserProfileR1().profile, externalId: mockedUserId }
       })
-      mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/query`, 'post', {
-        data: mockedSubscriptions, page: 1, totalCount: mockedSubscriptions.length
+      mockRestApiQuery(`${notificationApiURL}/dataConnector/query`, 'post', {
+        data: mockedConnectors, page: 1, totalCount: mockedConnectors.length
       })
     })
 
@@ -303,10 +303,10 @@ describe('DataSubscriptions table', () => {
     })
 
     it('renders table with data and correct columns', async () => {
-      render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+      render(<DataConnectorTable />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
-      expect(await tbody.findAllByRole('row')).toHaveLength(mockedSubscriptions.length)
+      expect(await tbody.findAllByRole('row')).toHaveLength(mockedConnectors.length)
       expect(await screen
         // column header count
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(5)
@@ -315,46 +315,46 @@ describe('DataSubscriptions table', () => {
         cell.title)
       expect(firstRowText).toEqual([
         '', // checkbox
-        mockedSubscriptions[0].name,
-        mockedSubscriptions[0].userName,
+        mockedConnectors[0].name,
+        mockedConnectors[0].userName,
         'Paused',
         'Daily',
-        formatter(DateFormatEnum.DateTimeFormat)(mockedSubscriptions[0].updatedAt),
+        formatter(DateFormatEnum.DateTimeFormat)(mockedConnectors[0].updatedAt),
         '' // settings
       ])
     })
 
     it(
       // eslint-disable-next-line max-len
-      'should navigate to audit log page when data subscription name is clicked and user is data subscription owner',
+      'should navigate to audit log page when data connector name is clicked and user is data connector owner',
       async () => {
-        const dataSubscription = mockedSubscriptions[0]
-        render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+        const dataConnector = mockedConnectors[0]
+        render(<DataConnectorTable />, { wrapper: Provider, route: {} })
         const element = await findTBody()
         const tbody = within(element)
         const targetRow = (await tbody.findAllByRole('row'))[0]
-        const dataSubscriptionNameLink = (
+        const dataConnectorNameLink = (
           within(targetRow).getByRole('link', {
-            name: dataSubscription.name
+            name: dataConnector.name
           }) as HTMLAnchorElement
         ).href
 
-        expect(dataSubscriptionNameLink).toContain(
-          `/dataSubscriptions/auditLog/${dataSubscription.id}`
+        expect(dataConnectorNameLink).toContain(
+          `/dataConnector/auditLog/${dataConnector.id}`
         )
       })
 
-    it('data subscription name should not be clickable when user is not data subscription owner',
+    it('data connector name should not be clickable when user is not data connector owner',
       async () => {
-        const dataSubscription = mockedSubscriptions[9]
-        render(<DataSubscriptionsTable />, { wrapper: Provider, route: {} })
+        const dataConnector = mockedConnectors[9]
+        render(<DataConnectorTable />, { wrapper: Provider, route: {} })
         const element = await findTBody()
         const tbody = within(element)
         const targetRow = (await tbody.findAllByRole('row'))[9]
-        const dataSubscriptionNameCell = within(targetRow).getByRole('cell', {
-          name: dataSubscription.name
+        const dataConnectorNameCell = within(targetRow).getByRole('cell', {
+          name: dataConnector.name
         })
-        expect(dataSubscriptionNameCell).not.toHaveAttribute('href')
+        expect(dataConnectorNameCell).not.toHaveAttribute('href')
       })
   })
 })

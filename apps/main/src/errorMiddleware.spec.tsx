@@ -14,6 +14,12 @@ import {
 
 const { setUpIntl } = utils
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getEnabledDialogImproved: jest.fn().mockReturnValue(false),
+  isShowImprovedErrorSuggestion: jest.fn().mockReturnValue(false)
+}))
+
 describe('getErrorContent', () => {
   const { location } = window
   const mockReload = jest.fn()
