@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input } from 'antd'
 import moment                             from 'moment'
-import { RawIntlProvider, useIntl }       from 'react-intl'
+import { RawIntlProvider, useIntl } from 'react-intl'
 
 import {
   Loader,
@@ -14,12 +14,10 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
   useLazyDownloadNewFlowPassphrasesQuery,
-  useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
   getDisabledActionMessage,
@@ -40,15 +38,19 @@ import {
   getScopeKeyByService,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
-  useTableQuery, IdentityDetailsLink
+  IdentityDetailsLink, TableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
-import { RolesEnum, WifiScopes } from '@acx-ui/types'
+import { RequestPayload, RolesEnum, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 import { getIntl, getOpsApi, validationMessages }                                   from '@acx-ui/utils'
 
+
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
+import { NetworkForm } from '../../NetworkForm'
+import { PassphraseViewer } from '../../PassphraseViewer'
+
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
-import ManageDevicesDrawer                              from './ManageDevicesDrawer'
+import ManageDevicesDrawer from './ManageDevicesDrawer'
 
 
 
@@ -56,21 +58,23 @@ interface UploadPassphrasesFormFields {
   usernamePrefix: string
 }
 
-const defaultPayload = {
-  filters: {}
+interface DpskPassphraseManagementProps {
+  serviceId: string,
+  tableQuery: TableQuery<NewDpskPassphrase, RequestPayload<unknown>, unknown>,
+  disableSearchable?: boolean,
+  disableImport?: boolean,
+  disableExport?: boolean,
+  disableCreate?: boolean,
+  disableAddNetwork?: boolean
 }
 
-const defaultSearch = {
-  searchTargetFields: ['username', 'mac'],
-  searchString: ''
-}
-
-const defaultSorter = {
-  sortField: 'createdDate',
-  sortOrder: 'DESC'
-}
-
-export default function DpskPassphraseManagement () {
+// FIXME: Support disable some components by props value
+export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) {
+  const {
+    serviceId, tableQuery,
+    disableSearchable = false, disableImport = false, disableExport = false,
+    disableCreate = false, disableAddNetwork = false
+  } = props
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
@@ -86,20 +90,9 @@ export default function DpskPassphraseManagement () {
   const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
-  const params = useParams()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
   const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
-
-  const settingsId = 'dpsk-passphrase-table'
-  const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedDpskPassphraseListQuery,
-    sorter: defaultSorter,
-    defaultPayload,
-    search: defaultSearch,
-    enableSelectAllPagesData: ['id'],
-    pagination: { settingsId }
-  })
 
   const { data: identityList } = useSearchPersonaListQuery(
     { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
@@ -112,7 +105,7 @@ export default function DpskPassphraseManagement () {
         pageSize: MAX_PASSPHRASES_PER_TENANT,
         ...tableQuery.search
       }
-      downloadNewFlowCsv({ params, payload }).unwrap()
+      downloadNewFlowCsv({ params: { serviceId }, payload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -137,7 +130,7 @@ export default function DpskPassphraseManagement () {
         : $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      searchable: true,
+      searchable: !disableSearchable,
       render: function (_, row) {
         if (isIdentityGroupRequired) {
           const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
@@ -176,7 +169,7 @@ export default function DpskPassphraseManagement () {
       key: 'devices',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'devices',
-      searchable: true,
+      searchable: !disableSearchable,
       render: function (_, { devices }) {
         return devices?.map(device => device.mac).join(', ')
       }
@@ -242,7 +235,7 @@ export default function DpskPassphraseManagement () {
       // eslint-disable-next-line max-len
       isIdentityGroupRequired ? [] : [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
       async () => deletePassphrases({
-        params: { ...params },
+        params: { serviceId },
         payload: selectedRows.map(p => p.id)
       }).then(callback)
     )
@@ -276,6 +269,9 @@ export default function DpskPassphraseManagement () {
   }
 
   const hasAddNetworkPermission = () => {
+    if (disableAddNetwork) {
+      return false
+    }
     if (getUserProfile().rbacOpsApiEnabled) {
       return hasAllowedOperations(['POST:/wifiNetworks'])
     }
@@ -316,7 +312,7 @@ export default function DpskPassphraseManagement () {
             selectedRows[0].username ?? '',
             async (revocationReason: string) => {
               await revokePassphrases({
-                params: { ...params },
+                params: { serviceId },
                 payload: {
                   ids: selectedRows.map(p => p.id),
                   changes: { revocationReason }
@@ -336,7 +332,7 @@ export default function DpskPassphraseManagement () {
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         canRevoke('unrevoke', selectedRows, () => {
           revokePassphrases({
-            params: { ...params },
+            params: { serviceId },
             payload: {
               ids: selectedRows.map(p => p.id),
               changes: { revocationReason: null }
@@ -365,24 +361,30 @@ export default function DpskPassphraseManagement () {
 
   const actions = [
     ...(filterDpskOperationsByPermission([
-      {
-        rbacOpsIds: [getOpsApi(DpskUrls.addPassphrase)],
-        label: $t({ defaultMessage: 'Add Passphrases' }),
-        onClick: () => {
-          setPassphrasesDrawerEditMode({ isEdit: false })
-          setAddPassphrasesDrawerVisible(true)
-        }
-      },
-      {
-        rbacOpsIds: [getOpsApi(DpskUrls.uploadPassphrases)],
-        label: $t({ defaultMessage: 'Import From File' }),
-        onClick: () => setUploadCsvDrawerVisible(true)
-      }
+      ...(disableCreate
+        ? []
+        : [{
+          rbacOpsIds: [getOpsApi(DpskUrls.addPassphrase)],
+          label: $t({ defaultMessage: 'Add Passphrases' }),
+          onClick: () => {
+            setPassphrasesDrawerEditMode({ isEdit: false })
+            setAddPassphrasesDrawerVisible(true)
+          }
+        }]),
+      ...(disableImport
+        ? []
+        : [{
+          rbacOpsIds: [getOpsApi(DpskUrls.uploadPassphrases)],
+          label: $t({ defaultMessage: 'Import From File' }),
+          onClick: () => setUploadCsvDrawerVisible(true)
+        }])
     ])),
-    {
-      label: $t({ defaultMessage: 'Export To File' }),
-      onClick: () => downloadPassphrases()
-    },
+    ...(disableExport
+      ? []
+      : [{
+        label: $t({ defaultMessage: 'Export To File' }),
+        onClick: () => downloadPassphrases()
+      }]),
     ...(hasAddNetworkPermission() ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
@@ -392,11 +394,13 @@ export default function DpskPassphraseManagement () {
   return (<>
     {addPassphrasesDrawerVisible && <DpskPassphraseDrawer
       visible={true}
+      serviceId={serviceId}
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />}
     { Object.keys(managePassphraseInfo).length > 0 && <ManageDevicesDrawer
       visible={manageDevicesVisible}
+      serviceId={serviceId}
       setVisible={setManageDevicesVisible}
       passphraseInfo={managePassphraseInfo}
       setPassphraseInfo={setManagePassphraseInfo}
@@ -416,7 +420,7 @@ export default function DpskPassphraseManagement () {
         }
         try {
           await uploadCsv({
-            params: { ...params },
+            params: { serviceId },
             payload: formData
           }).unwrap()
           setUploadCsvDrawerVisible(false)
@@ -453,7 +457,7 @@ export default function DpskPassphraseManagement () {
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
-        settingsId={settingsId}
+        settingsId={tableQuery.pagination.settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

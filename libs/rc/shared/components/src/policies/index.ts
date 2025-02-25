@@ -20,3 +20,5 @@ export { WorkflowDesigner } from './WorkflowCanvas/WorkflowDesigner'
 export * from './SoftGre'
 export { WorkflowComparator } from './WorkflowCanvas/WorkflowComparator'
 export * from './DirectoryServer'
+
+export { MacRegistrationsTable } from './MacRegistrationsTable'

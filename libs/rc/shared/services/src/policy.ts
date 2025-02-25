@@ -1126,7 +1126,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'CREATE_REGISTRATION',
             'UPDATE_REGISTRATION',
-            'DELETE_REGISTRATION'
+            'DELETE_REGISTRATION',
+            'CREATE_DEVICE'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'MacRegistration', id: 'LIST' }

@@ -3,13 +3,12 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete, getDisabledActionMessage,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
-  useSearchMacRegistrationsQuery, useSearchPersonaListQuery,
+  useSearchPersonaListQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
@@ -20,17 +19,22 @@ import {
   returnExpirationString,
   SEARCH,
   toDateTimeString,
-  useTableQuery,
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
-  PolicyType, PolicyOperation, IdentityDetailsLink
+  PolicyType, PolicyOperation, IdentityDetailsLink, TableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
 
-import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
+import { MacAddressDrawer }                                from '../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
-export function MacRegistrationsTab () {
+interface MacRegistrationTableProps {
+  tableQuery: TableQuery<MacRegistration, RequestPayload, unknown>,
+  policyId: string
+}
+
+export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const { $t } = useIntl()
-  const { policyId } = useParams()
+  const { policyId, tableQuery } = props
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
@@ -41,30 +45,11 @@ export function MacRegistrationsTab () {
 
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
-  const sorter = {
-    sortField: 'macAddress',
-    sortOrder: 'ASC'
-  }
-
   const filter = {
     filterKey: 'macAddress',
     operation: 'cn',
     value: ''
   }
-
-  const settingsId = 'mac-regs-table'
-  const tableQuery = useTableQuery({
-    useQuery: useSearchMacRegistrationsQuery,
-    sorter,
-    defaultPayload: {
-      sorter,
-      dataOption: 'all',
-      searchCriteriaList: [
-        { ...filter }
-      ]
-    },
-    pagination: { settingsId }
-  })
 
   useEffect(()=>{
     if (uploadCsvResult.isSuccess) {
@@ -241,6 +226,7 @@ export function MacRegistrationsTab () {
       ...tableQuery.payload,
       dataOption: 'all',
       searchCriteriaList: [
+        { ...(tableQuery.payload as { searchCriteriaList: { }[] })?.searchCriteriaList?.[0] },
         { ...filter, value: customSearch?.searchString ?? '' }
       ]
     }
@@ -256,6 +242,7 @@ export function MacRegistrationsTab () {
     ]}>
       <MacAddressDrawer
         visible={visible}
+        policyId={policyId}
         setVisible={setVisible}
         isEdit={isEditMode}
         editData={isEditMode ? editData : undefined}
@@ -288,7 +275,7 @@ export function MacRegistrationsTab () {
         onClose={() => setUploadCsvDrawerVisible(false)} />
       <Table
         enableApiFilter
-        settingsId={settingsId}
+        settingsId={tableQuery.pagination.settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

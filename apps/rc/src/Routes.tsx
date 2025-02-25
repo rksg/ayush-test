@@ -1685,8 +1685,10 @@ function UserRoutes () {
           />
           <Route
             path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-            element={<PersonaDetails/>}
-          />
+          >
+            <Route index element={<Navigate replace to='./overview' />} />
+            <Route path=':activeTab' element={<PersonaDetails />} />
+          </Route>
         </> : <></>}
     </Route>
   )

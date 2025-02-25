@@ -29,7 +29,7 @@ import {
   mockedDpskPassphraseDevices,
   mockedIdentityList
 } from './__tests__/fixtures'
-import DpskPassphraseManagement from './DpskPassphraseManagement'
+import { DpskPassphraseManagement } from './DpskPassphraseManagement'
 
 const mockedDownloadCsv = jest.fn()
 const mockedDownloadNewFlowCsv = jest.fn()
