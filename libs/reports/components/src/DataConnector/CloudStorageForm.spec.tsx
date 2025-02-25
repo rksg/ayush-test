@@ -70,7 +70,8 @@ describe('CloudStorageForm', () => {
           azureAccountName: 'some name',
           azureAccountKey: 'key',
           azureShareName: 'share name',
-          azureCustomerName: 'name'
+          azureCustomerName: 'name',
+          azureStoragePath: 'storage/path'
         },
         id: 'id'
       }
@@ -111,6 +112,8 @@ describe('CloudStorageForm', () => {
     fireEvent.change(azureShareName, { target: { value: 'share name' } })
     const azureCustomerName = await screen.findByTestId('azureCustomerName')
     fireEvent.change(azureCustomerName, { target: { value: 'name' } })
+    const azureStoragePath = await screen.findByTestId('azureStoragePath')
+    fireEvent.change(azureStoragePath, { target: { value: 'name' } })
 
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
@@ -141,7 +144,8 @@ describe('CloudStorageForm', () => {
           azureAccountName: 'some name',
           azureAccountKey: 'key',
           azureShareName: 'share name',
-          azureCustomerName: 'name'
+          azureCustomerName: 'name',
+          azureStoragePath: 'some/path'
         },
         id: 'id'
       }
