@@ -44,6 +44,7 @@ export const RowWrapper = styled(Row)`
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-2-line-height);
     border: 1px solid transparent;
+    cursor: pointer;
 
     &.highlight {
         background-color: var(--acx-accents-blue-10);
