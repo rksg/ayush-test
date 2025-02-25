@@ -22,7 +22,8 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   LinkedinOutlined as LinkedIn,
   Twitter,
   SMSOutlined,
-  EyeOpenSolid
+  EyeOpenSolid,
+  EnvelopClosedSolid as UIEmailOTP
 }   from '@acx-ui/icons'
 
 import { WhatsAppOutline } from '../../NetworkForm/styledComponents'
@@ -365,7 +366,7 @@ export const ViewSectionTabs = styled(UITabs)`
 `
 export const ViewSectionSocial=styled.div<{ $type: string | null }>`
   color: var(--acx-primary-white);
-  ${props => props.$type === 'sms' ? css`
+  ${props => (props.$type === 'sms' || props.$type === 'email' ) ? css`
   background-color:var(--acx-neutrals-60);
   ` : props => props.$type === 'whatsapp' ? css`
     background-color:var(--acx-semantics-green-50);
@@ -600,6 +601,15 @@ export const LinkedinOutlined = styled(LinkedIn)`
 `
 export const SMSMobileOutlined = styled(SMSOutlined)`
   ${socialIconStyle}
+`
+export const EmailOTPOutlined = styled(UIEmailOTP)`
+  ${socialIconStyle}
+  path:first-of-type {
+    fill: white;
+  }
+  path {
+    stroke: white;
+  }
 `
 export const WhatsAppOutlined = styled(WhatsAppOutline)`
   ${socialIconStyle}
