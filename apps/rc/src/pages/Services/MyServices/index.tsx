@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
 import { GridCol, GridRow, PageHeader, RadioCardCategory }                          from '@acx-ui/components'
 import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -49,6 +50,7 @@ export default function MyServices () {
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   const services = [
     {
@@ -189,7 +191,22 @@ export default function MyServices () {
             </GridCol>
           )
         })}
+        {isEdgeOltEnabled && <OltCardWrapper col={{ span: 6 }}>
+          <ServiceCard
+            key={'EDGE_OLT'}
+            serviceType={ServiceType.EDGE_OLT}
+            categories={[RadioCardCategory.EDGE]}
+            type={'default'}
+            isBetaFeature={false}
+          />
+        </OltCardWrapper>}
       </GridRow>
     </>
   )
 }
+
+const OltCardWrapper = styled(GridCol)`
+ & > div.ant-card.ant-card-bordered {
+  pointer-events: none;
+ }
+`

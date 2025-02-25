@@ -1,5 +1,5 @@
-import { Statistic as AntStatistic } from 'antd'
-import styled                        from 'styled-components/macro'
+import { Statistic as AntStatistic, Descriptions as AntdDescriptions } from 'antd'
+import styled                                                          from 'styled-components/macro'
 
 import { GridRow }   from '@acx-ui/components'
 import { PoeUsage  } from '@acx-ui/icons'
@@ -66,5 +66,21 @@ export const StyledAntStatistic = styled(AntStatistic)`
         font-size: var(--acx-body-2-font-size);
       }
     }
+  }
+`
+
+
+export const StyledAntdDescriptions = styled(AntdDescriptions)`
+  max-width: 550px;
+
+  .ant-descriptions-row > td {
+    padding-bottom: 5px;
+  }
+  .ant-descriptions-item-container .ant-descriptions-item-label,
+  .ant-descriptions-item-container .ant-descriptions-item-content {
+      font-size: 12px;
+  }
+  .ant-descriptions-item-container .ant-descriptions-item-label{
+    font-weight: bold;
   }
 `

@@ -26,14 +26,15 @@ import {
   useGetMspLabelQuery
 } from '@acx-ui/msp/services'
 import {
-  MspEc
+  MspEc,
+  MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
-import { useTableQuery }                                                          from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
+import { useTableQuery }                                                                                    from '@acx-ui/rc/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
 import {
-  AccountType, isDelegationMode
+  AccountType, getOpsApi, isDelegationMode
 } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
@@ -71,6 +72,13 @@ export function Integrators () {
     ? { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
     : { mspAdmins: [userProfile?.adminId],
       tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
+  const hasAssignEcPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToIntegrator)]) : isAdmin
 
   const defaultPayload = {
     searchString: '',
@@ -124,7 +132,7 @@ export function Integrators () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) ? {
+        return (hasAssignAdminPermission) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
@@ -133,7 +141,8 @@ export function Integrators () {
       },
       render: function (_, { mspAdminCount }) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
+          (hasAssignAdminPermission)
+            ? <Link to=''>{mspAdminCount}</Link> : mspAdminCount
         )
       }
     },
@@ -144,7 +153,7 @@ export function Integrators () {
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) ? {
+        return (hasAssignEcPermission) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
@@ -153,7 +162,7 @@ export function Integrators () {
         } : {}
       },
       render: function (_, row) {
-        return (isPrimeAdmin || isAdmin)
+        return (hasAssignEcPermission)
           ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
           : transformAssignedCustomerCount(row)
       }
@@ -196,6 +205,7 @@ export function Integrators () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.updateMspEcAccount)],
         onClick: (selectedRows) => {
           const type = selectedRows[0].tenantType
           navigate({
@@ -206,6 +216,7 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.resendEcInvitation)],
         onClick: (selectedRows) => {
           setSelTenantId(selectedRows[0].id)
           setModalVisible(true)
@@ -213,6 +224,7 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({
             type: 'confirm',
@@ -264,7 +276,7 @@ export function Integrators () {
             </TenantLink> : null,
             <MspTenantLink to='/integrators/create'>
               <Button
-                hidden={!onBoard}
+                hidden={!onBoard || !hasAddPermission}
                 type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]

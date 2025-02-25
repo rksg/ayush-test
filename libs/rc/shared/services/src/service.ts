@@ -718,6 +718,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'CREATE_DPSK_PASSPHRASE',
             'CREATE_DPSK_PASSPHRASES',
             'UPDATE_DPSK_PASSPHRASE',
+            'BULK_CREATE_PERSONAS',
             'DELETE_DPSK_PASSPHRASE',
             'UPDATE_DPSK_PASSPHRASES',
             'IMPORT_DPSK_PASSPHRASES',

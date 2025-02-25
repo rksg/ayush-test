@@ -10,7 +10,8 @@ import {
   getFilters,
   getUrlForTest,
   getOpsApi,
-  batchApi
+  batchApi,
+  isShowImprovedErrorSuggestion
 } from './apiService'
 
 const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
@@ -31,6 +32,14 @@ describe('ApiInfo', () => {
     req.headers.set('Build-In-Error-Modal', 'ignore')
     expect(isIgnoreErrorModal(req)).toBe(true)
     expect(isShowApiError(new Request('/foo/bar'))).toBe(false)
+  })
+
+  it('Check the getEnabledDialogImproved flag', async () => {
+    expect(isIgnoreErrorModal()).toBe(false)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag', async () => {
+    expect(isShowImprovedErrorSuggestion({ errors: [] })).toBe(false)
   })
 
   it('getFilters', async () => {
