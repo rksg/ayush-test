@@ -103,7 +103,7 @@ describe('Property Unit Details', () => {
   beforeEach(() => {
     openFn.mockClear()
     window.open = openFn
-    services.useGetPersonaIdsQuery = jest.fn().mockImplementation(() => {
+    services.useGetPersonaIdentitiesQuery = jest.fn().mockImplementation(() => {
       return { data: personaIds, refetch: jest.fn() }
     })
     services.useSearchPersonaListQuery = jest.fn().mockImplementation(() => {

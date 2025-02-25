@@ -13,7 +13,7 @@ type PersonaUrlType =
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
   'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet' |
-  'getPersonaIds' | 'deletePersonaAssociation'
+  'getPersonaIdentities' | 'deletePersonaAssociation'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -129,7 +129,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
     newApi: true
   },
-  getPersonaIds: {
+  getPersonaIdentities: {
     method: 'post',
     url: '/venues/:venueId/units/:unitId/identities/query',
     newApi: true,

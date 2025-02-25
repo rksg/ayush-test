@@ -9,7 +9,7 @@ import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subti
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
 import {
   useDeletePersonaAssociationMutation,
-  useGetPersonaIdsQuery,
+  useGetPersonaIdentitiesQuery,
   useGetPropertyConfigsQuery,
   useGetVenueQuery,
   useLazyGetPersonaByIdQuery,
@@ -23,6 +23,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
@@ -35,7 +36,7 @@ export function PropertyUnitDetails () {
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [identitiesCount, setIdentitiesCount] = useState(0)
-  const identities = useGetPersonaIdsQuery({ params: { venueId, unitId },
+  const identities = useGetPersonaIdentitiesQuery({ params: { venueId, unitId },
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
   const identitiesList = useTableQuery({
     useQuery: useSearchPersonaListQuery,
@@ -175,49 +176,53 @@ export function PropertyUnitDetails () {
           <Form.Item
             colon={false}
             label={$t({ defaultMessage: 'DPSK Passphrase' })}
-            children={<div onClick={(e)=> {e.stopPropagation()}}>
-              <PasswordInput
-                bordered={false}
-                value={unitData?.unitPersona?.dpskPassphrase}
-                style={{ paddingLeft: '0px', width: '200px' }}
-              />
-              <Tooltip title={copyButtonTooltip}>
-                <Button
-                  ghost
-                  data-testid={'copy'}
-                  icon={<CopyOutlined />}
-                  onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
-                  onClick={() => {
-                    const passphrase = unitData?.unitPersona?.dpskPassphrase?.toString() ?? ''
-                    navigator.clipboard.writeText(passphrase)
-                    setCopyTooltip(copyButtonTooltipCopiedText)
-                  }}
+            children={unitData?.unitPersona?.dpskPassphrase
+              ? <div onClick={(e)=> {e.stopPropagation()}}>
+                <PasswordInput
+                  bordered={false}
+                  value={unitData?.unitPersona?.dpskPassphrase}
+                  style={{ paddingLeft: '0px', width: '200px' }}
                 />
-              </Tooltip>
-            </div>} />
+                <Tooltip title={copyButtonTooltip}>
+                  <Button
+                    ghost
+                    data-testid={'copy'}
+                    icon={<CopyOutlined />}
+                    onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
+                    onClick={() => {
+                      const passphrase = unitData?.unitPersona?.dpskPassphrase?.toString() ?? ''
+                      navigator.clipboard.writeText(passphrase)
+                      setCopyTooltip(copyButtonTooltipCopiedText)
+                    }}
+                  />
+                </Tooltip>
+              </div>
+              : <Paragraph>{noDataDisplay}</Paragraph>} />
           <Form.Item
             colon={false}
             label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
-            children={<div onClick={(e)=> {e.stopPropagation()}}>
-              <PasswordInput
-                bordered={false}
-                value={unitData?.guestPersona?.dpskPassphrase}
-                style={{ paddingLeft: '0px', width: '200px' }}
-              />
-              <Tooltip title={guestCopyButtonTooltip}>
-                <Button
-                  ghost
-                  data-testid={'guest-copy'}
-                  icon={<CopyOutlined />}
-                  onMouseOut={() => setGuestCopyTooltip(copyButtonTooltipDefaultText)}
-                  onClick={() => {
-                    const passphrase = unitData?.guestPersona?.dpskPassphrase?.toString() ?? ''
-                    navigator.clipboard.writeText(passphrase)
-                    setGuestCopyTooltip(copyButtonTooltipCopiedText)
-                  }}
+            children={unitData?.guestPersona?.dpskPassphrase
+              ? <div onClick={(e)=> {e.stopPropagation()}}>
+                <PasswordInput
+                  bordered={false}
+                  value={unitData?.guestPersona?.dpskPassphrase}
+                  style={{ paddingLeft: '0px', width: '200px' }}
                 />
-              </Tooltip>
-            </div>} />
+                <Tooltip title={guestCopyButtonTooltip}>
+                  <Button
+                    ghost
+                    data-testid={'guest-copy'}
+                    icon={<CopyOutlined />}
+                    onMouseOut={() => setGuestCopyTooltip(copyButtonTooltipDefaultText)}
+                    onClick={() => {
+                      const passphrase = unitData?.guestPersona?.dpskPassphrase?.toString() ?? ''
+                      navigator.clipboard.writeText(passphrase)
+                      setGuestCopyTooltip(copyButtonTooltipCopiedText)
+                    }}
+                  />
+                </Tooltip>
+              </div>
+              : <Paragraph>{noDataDisplay}</Paragraph>} />
         </UI.DetailsWrapper>
       </Card>
     </Col>)

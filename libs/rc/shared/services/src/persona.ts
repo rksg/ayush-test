@@ -257,9 +257,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       providesTags: [{ type: 'Persona', id: 'ID' }]
     }),
-    getPersonaIds: build.query<TableResult<PersonaAssociation>, RequestPayload>({
+    getPersonaIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaIds, params)
+        const req = createHttpRequest(PersonaUrls.getPersonaIdentities, params)
         return {
           ...req,
           body: payload
@@ -423,7 +423,7 @@ export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
   useLazyGetPersonaByIdQuery,
-  useGetPersonaIdsQuery,
+  useGetPersonaIdentitiesQuery,
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,
