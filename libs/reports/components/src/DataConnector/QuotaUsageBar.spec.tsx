@@ -11,7 +11,7 @@ describe('QuotaUsageBar', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        `${notificationApiURL}/dataSubscriptions/quota`,
+        `${notificationApiURL}/dataConnector/quota`,
         (_, res, ctx) => res(ctx.json(mockedDataQuotaUsage))
       )
     )
@@ -30,7 +30,7 @@ describe('QuotaUsageBar', () => {
     const mockedOnClick = jest.fn()
     mockServer.use(
       rest.get(
-        `${notificationApiURL}/dataSubscriptions/quota`,
+        `${notificationApiURL}/dataConnector/quota`,
         (_, res, ctx) => res(ctx.json({
           ...mockedDataQuotaUsage,
           used: 10737418240 // 1024 * 1024* 1024 * 10

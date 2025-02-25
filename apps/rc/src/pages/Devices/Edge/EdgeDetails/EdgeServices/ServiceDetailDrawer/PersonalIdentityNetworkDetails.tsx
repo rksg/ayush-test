@@ -17,7 +17,8 @@ import {
   ServiceType,
   getPolicyDetailsLink,
   getServiceDetailsLink,
-  transformDisplayNumber
+  transformDisplayNumber,
+  MAX_DEVICE_PER_SEGMENT
 }              from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -121,7 +122,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
       />
       <Form.Item
         label={$t({ defaultMessage: 'Number of devices per segment' })}
-        children={pinViewData?.edgeClusterInfo?.devices}
+        children={MAX_DEVICE_PER_SEGMENT}
       />
       <Form.Item
         label={$t({ defaultMessage: 'DHCP Service' })}

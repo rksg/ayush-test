@@ -129,7 +129,8 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
         'haStatus',
         'edgeList',
         'venueId',
-        'venueName'
+        'venueName',
+        'highAvailabilityMode'
       ],
       filters: { clusterId: [clusterId] },
       pageSize: 1

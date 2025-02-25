@@ -231,7 +231,7 @@ export function AddExplicitCustomRole () {
       })
       form.setFieldValue('permissions', permissions)
     }
-  }, [form, location])
+  }, [form, location, initialPermissionList])
 
   const CustomRoleForm = () => {
     return <StepsForm

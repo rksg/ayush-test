@@ -235,7 +235,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/msps/:tenantId/ecInventories/query/csvFiles',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/msps/:tenantId/ecInventories/query/csvFiles'
   },
   deactivateMspEcAccount: {
     // method: 'PATCH',
