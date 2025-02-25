@@ -52,7 +52,8 @@ export function CertificateTable (
   const [detailId, setDetailId] = useState<string | null>(null)
 
   const { data: identityList } = useSearchPersonaListQuery(
-    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { payload: { pageSize: 1000,
+      ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data })
 
   const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
