@@ -246,6 +246,7 @@ export function PagedTable () {
       onChange={handleTableChange}
       highLightValue={entityNameSearch}
       preventRenderHeader
+      stickyOffsetY={40}
     />
   </Loader>
 }
