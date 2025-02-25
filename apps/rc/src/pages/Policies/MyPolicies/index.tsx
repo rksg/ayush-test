@@ -171,7 +171,7 @@ function useCardData (): PolicyCardData[] {
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
-  // const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
 
   return [
     {
@@ -387,8 +387,8 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       // totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SSO_SAML, oper: PolicyOperation.LIST }))
-      // disabled: !isDirectoryServerEnabled
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SSO_SAML, oper: PolicyOperation.LIST })),
+      disabled: !isCaptivePortalSsoSamlEnabled
     }
 
   ]

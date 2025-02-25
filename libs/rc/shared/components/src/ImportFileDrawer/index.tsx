@@ -41,7 +41,7 @@ export type ImportErrorRes = {
   txId: string
 } | GuestErrorRes
 
-type AcceptableType = 'csv' | 'txt' | 'xlsx'
+type AcceptableType = 'csv' | 'txt' | 'xlsx' | 'xml'
 
 interface ImportFileDrawerProps extends DrawerProps {
   templateLink?: string
@@ -69,7 +69,8 @@ export const CsvSize = {
 const fileTypeMap: Record<AcceptableType, string[]>= {
   csv: ['text/csv', 'application/vnd.ms-excel'],
   xlsx: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-  txt: ['text/plain']
+  txt: ['text/plain'],
+  xml: ['text/xml']
 }
 
 export function ImportFileDrawer (props: ImportFileDrawerProps) {

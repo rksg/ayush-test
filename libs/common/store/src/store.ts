@@ -52,7 +52,7 @@ import {
   baseDirectoryServerApi as directoryServerApi,
   baseRuckusAiChatApi as ruckusAiChatApi,
   baseClientIsolationApi as clientIsolationApi,
-  baseIdentityProviderProfileApi as identityProviderProfileApi
+  baseSamlIdpProfileApi as samlIdpProfileApi
 } from './baseApi'
 import { cancelMiddleware } from './cancelMiddleware'
 
@@ -112,7 +112,7 @@ export const store = configureStore({
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
     [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
     [clientIsolationApi.reducerPath]: clientIsolationApi.reducer,
-    [identityProviderProfileApi.reducerPath]: identityProviderProfileApi.reducer
+    [samlIdpProfileApi.reducerPath]: samlIdpProfileApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -172,7 +172,7 @@ export const store = configureStore({
       directoryServerApi.middleware,
       ruckusAiChatApi.middleware,
       clientIsolationApi.middleware,
-      identityProviderProfileApi.middleware
+      samlIdpProfileApi.middleware
     ])
   },
 

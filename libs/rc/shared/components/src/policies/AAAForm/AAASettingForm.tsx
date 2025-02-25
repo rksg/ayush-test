@@ -26,10 +26,10 @@ import {
 
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
+import CertificateDrawer                                          from '../CertificateTemplate/Certificate/CertificateDrawer'
 
 import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
 import CertificateAuthorityDrawer      from './CertificateAuthorityDrawer'
-import CertificateDrawer               from './CertificateDrawer'
 import { MessageMapping }              from './messageMapping'
 import * as UI                         from './styledComponents'
 

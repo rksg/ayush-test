@@ -20,7 +20,7 @@ export * from './ethernetPortProfile'
 export * from './edgeHqosProfile'
 export * from './softGre'
 export * from './directoryServer'
-export * from './identityProviderProfile'
+export * from './samlIdpProfile'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'

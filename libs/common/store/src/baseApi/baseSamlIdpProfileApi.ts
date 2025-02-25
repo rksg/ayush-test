@@ -1,10 +1,10 @@
 
 import { createApi, fetchBaseQuery } from './baseQuery'
 
-export const baseIdentityProviderProfileApi = createApi({
+export const baseSamlIdpProfileApi = createApi({
   baseQuery: fetchBaseQuery(),
-  reducerPath: 'identityProviderProfileApi',
-  tagTypes: ['IdentityProviderProfile'],
+  reducerPath: 'samlIdpProfileApi',
+  tagTypes: ['SamlIdpProfile'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

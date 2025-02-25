@@ -6,15 +6,15 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, Table, TableProps, showActionModal } from '@acx-ui/components'
 import {
-  useDeleteIdentityProviderProfileMutation,
-  useGetIdentityProviderProfileViewDataListQuery
+  useDeleteSamlIdpProfileMutation,
+  useGetSamlIdpProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getScopeKeyByPolicy,
-  IdentityProviderProfileViewData,
+  SamlIdpProfileViewData,
   PolicyOperation,
   PolicyType,
   useTableQuery
@@ -34,7 +34,7 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
   const navigate = useNavigate()
 
   const tableQuery = useTableQuery({
-    useQuery: useGetIdentityProviderProfileViewDataListQuery,
+    useQuery: useGetSamlIdpProfileViewDataListQuery,
     defaultPayload: defaultSsoSamlTablePayload,
     sorter: {
       sortField: 'name',
@@ -45,38 +45,7 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
     }
   })
 
-  //   const { radiusNameMap = [] } = useGetAAAPolicyViewModelListQuery({
-  //     params: { tenantId: params.tenantId },
-  //     payload: {
-  //       fields: ['name', 'id'],
-  //       sortField: 'name',
-  //       sortOrder: 'ASC',
-  //       page: 1,
-  //       pageSize: 10000
-  //     },
-  //     enableRbac: enableServicePolicyRbac
-  //   }, {
-  //     selectFromResult: ({ data }: { data?: { data: AAAViewModalType[] } }) => ({
-  //       radiusNameMap: data?.data?.map(radius => ({ key: radius.id!, value: radius.name }))
-  //     })
-  //   })
-
-  //   const { venueNameMap =[] } = useGetVenuesQuery({
-  //     params: { tenantId: params.tenantId },
-  //     payload: {
-  //       fields: ['name', 'id'],
-  //       sortField: 'name',
-  //       sortOrder: 'ASC',
-  //       page: 1,
-  //       pageSize: 2048
-  //     }
-  //   }, {
-  //     selectFromResult: ({ data }) => ({
-  //       venueNameMap: data?.data?.map(venue => ({ key: venue.id, value: venue.name }))
-  //     })
-  //   })
-
-  const [deleteIdentityProviderProfile] = useDeleteIdentityProviderProfileMutation()
+  const [deleteSamlIdpProfile] = useDeleteSamlIdpProfileMutation()
 
   useEffect(() => {
     if(tableQuery.data?.totalCount && setTableTotalCount){
@@ -84,7 +53,7 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
     }
   }, [tableQuery.data?.totalCount])
 
-  const columns: TableProps<IdentityProviderProfileViewData>['columns'] = [
+  const columns: TableProps<SamlIdpProfileViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
@@ -128,8 +97,8 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Server sertificate' }),
-      key: 'serverCertificateId',
-      dataIndex: 'serverCertificateId'
+      key: 'encryptionCertificateId',
+      dataIndex: 'encryptionCertificateId'
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
@@ -138,13 +107,7 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
     }
   ]
 
-  /*
-  responseEncryptionEnabled: boolean
-    serverCertificateId: string
-    wifiNetworkIds: string
-  */
-
-  const rowActions: TableProps<IdentityProviderProfileViewData>['rowActions'] = [{
+  const rowActions: TableProps<SamlIdpProfileViewData>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.SSO_SAML, PolicyOperation.EDIT),
     rbacOpsIds: getPolicyAllowedOperation(PolicyType.SSO_SAML, PolicyOperation.EDIT),
     // Default Ethernet Port Profile cannot Edit
@@ -175,7 +138,7 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
           numOfEntities: rows.length
         },
         onOk: () => {
-          Promise.all(rows.map(row => deleteIdentityProviderProfile({ params: { id: row.id } })))
+          Promise.all(rows.map(row => deleteSamlIdpProfile({ params: { id: row.id } })))
             .then(clearSelection)
         }
       })
@@ -187,7 +150,7 @@ const SsoSamlTable = (props: SsoSamlTableProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        rowKey={(row: IdentityProviderProfileViewData) => `${row.id}-${row.name}`}
+        rowKey={(row: SamlIdpProfileViewData) => `${row.id}-${row.name}`}
         columns={columns}
         rowActions={allowedRowActions}
         rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}

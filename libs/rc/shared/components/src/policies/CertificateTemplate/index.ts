@@ -10,4 +10,5 @@ export * from './CertificateAuthorityForm/CertificateAuthoritySettings/UploadCaS
 export * from './constants'
 export * from './Certificate/RevokeForm'
 export * from './ServerClientCertificateForm/index'
+export * from './Certificate/CertificateDrawer'
 export { caTypeShortLabel, algorithmLabel, enrollmentTypeLabel, existingCertLabel, onboardSettingsDescription, deleteDescription, certificateStatusTypeLabel, issuedByLabel, ExtendedKeyUsagesLabels, serverAlgorithmLabel } from './contentsMap'

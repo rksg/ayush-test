@@ -1,20 +1,20 @@
-export interface IdentityProviderProfileViewData {
+export interface SamlIdpProfileViewData {
     id: string
     name: string
     authnRequestSignedEnabled: boolean
     responseEncryptionEnabled: boolean
-    serverCertificateId: string
+    encryptionCertificateId: string
     wifiNetworkIds: string[]
 }
 
-export interface IdentityProviderProfile {
+export interface SamlIdpProfile {
     id: string
     name: string
     metadata: string
     authnRequestSignedEnabled: boolean
 }
 
-export interface IdentityProviderProfileFormType extends IdentityProviderProfile {
+export interface SamlIdpProfileFormType extends SamlIdpProfile {
     responseEncryptionEnabled: boolean
-    serverCertificateId: string
+    encryptionCertificateId: string
 }

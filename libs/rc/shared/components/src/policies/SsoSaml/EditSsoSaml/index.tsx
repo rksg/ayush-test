@@ -4,27 +4,29 @@ import { Form }      from 'antd'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Loader }                            from '@acx-ui/components'
+import { Loader }                   from '@acx-ui/components'
 import {
-  useGetIdentityProviderProfileWithRelationsByIdQuery,
-  useUpdateIdentityProviderProfileMutation
+  useActivateSamlIdpProfileCertificateMutation,
+  useDeactivateSamlIdpProfileCertificateMutation,
+  useGetSamlIdpProfileWithRelationsByIdQuery,
+  useUpdateSamlIdpProfileMutation
 } from '@acx-ui/rc/services'
-import { IdentityProviderProfileFormType } from '@acx-ui/rc/utils'
-import { useParams }                       from '@acx-ui/react-router-dom'
+import { SamlIdpProfileFormType } from '@acx-ui/rc/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 import { SsoSamlForm, requestPreProcess } from '../SsoSamlForm'
 
 export const EditSsoSaml = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const [ updateIdentityProviderProfile ] = useUpdateIdentityProviderProfileMutation()
-  // const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
-  // const [ deleteEthernetPortProfileRadiusId ] = useDeleteEthernetPortProfileRadiusIdMutation()
+  const [ updateSamlIdpProfile ] = useUpdateSamlIdpProfileMutation()
+  const [ activateCertificate ] = useActivateSamlIdpProfileCertificateMutation()
+  const [ deactivateCertificate ] = useDeactivateSamlIdpProfileCertificateMutation()
 
   const [form] = Form.useForm()
 
-  const { data: identityProviderProfileData, isLoading } =
-    useGetIdentityProviderProfileWithRelationsByIdQuery({
+  const { data: samlIdpProfileData, isLoading } =
+    useGetSamlIdpProfileWithRelationsByIdQuery({
       payload: {
         sortField: 'name',
         sortOrder: 'ASC',
@@ -37,81 +39,57 @@ export const EditSsoSaml = () => {
       }
     })
 
-  const handleEditIdentityProviderProfile = async (data: IdentityProviderProfileFormType) => {
+  const handleEditSamlIdpProfile = async (data: SamlIdpProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
 
-      await updateIdentityProviderProfile({
+      await updateSamlIdpProfile({
         payload,
         params: {
-          id: identityProviderProfileData?.id
+          id: policyId
         }
       }).unwrap()
 
-      // handleEthernetPortRadiusId(
-      //   ethernetPortProfileData?.id,
-      //   payload.authRadiusId,
-      //   ethernetPortProfileData?.authRadiusId
-      // )
+      if(samlIdpProfileData?.responseEncryptionEnabled &&
+        samlIdpProfileData.encryptionCertificateId !== payload.encryptionCertificateId) {
+        deactivateCertificate({ params: {
+          id: policyId,
+          certificateId: samlIdpProfileData?.encryptionCertificateId
+        } })
+      }
 
-      // handleEthernetPortRadiusId(
-      //   ethernetPortProfileData?.id,
-      //   payload.accountingRadiusId,
-      //   ethernetPortProfileData?.accountingRadiusId
-      // )
+      if(payload.responseEncryptionEnabled) {
+        activateCertificate({ params: {
+          id: policyId,
+          certificateId: payload.encryptionCertificateId
+        } })
+      }
+
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)
     }
   }
 
-  // const handleEthernetPortRadiusId = (ethernetPortId?:string, newId?:string, oldId?:string) => {
-
-  //   if (newId === oldId) {
-  //     return
-  //   }
-
-  //   if (Boolean(newId)) {
-  //     updateEthernetPortProfileRadiusId({ params: {
-  //       id: ethernetPortId,
-  //       radiusId: newId
-  //     } })
-
-  //     // If there have newId, then don't need to call delete API avoid race condition
-  //     return
-  //   }
-
-  //   if (Boolean(oldId)) {
-  //     deleteEthernetPortProfileRadiusId({ params: {
-  //       id: ethernetPortId,
-  //       radiusId: oldId
-  //     } })
-  //   }
-  // }
-
   useEffect(() => {
-    if(!identityProviderProfileData) {
+    if(!samlIdpProfileData) {
       return
     }
 
-    const sourceData = cloneDeep(identityProviderProfileData) as IdentityProviderProfileFormType
-    // if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
-    //   sourceData.authEnabled = true
-    //   sourceData.accountingEnabled = false
-    //   sourceData.authTypeRole = sourceData.authType
+    const sourceData = cloneDeep(samlIdpProfileData) as SamlIdpProfileFormType
 
-    //   sourceData.accountingEnabled = Boolean(sourceData.accountingRadiusId)
-    // }
+    sourceData.metadata = Buffer.from(samlIdpProfileData.metadata, 'base64').toString('ascii')
+
     form.setFieldsValue(sourceData)
 
-  }, [identityProviderProfileData])
+  }, [samlIdpProfileData])
 
   return (
     <Loader states={[{ isLoading }]}>
       <SsoSamlForm
-        title={$t({ defaultMessage: 'Edit SSO/SAML' })}
+        title={$t({ defaultMessage: 'Edit SAML Identity Provider' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
-        onFinish={handleEditIdentityProviderProfile}
+        onFinish={handleEditSamlIdpProfile}
         form={form}
         isEditMode={true}
       />

@@ -1,13 +1,19 @@
+import { useState } from 'react'
+
+import { Buffer } from 'buffer'
+
 import { Col, Form, FormInstance, Input, Row, Space, Switch } from 'antd'
+import { useWatch }                                           from 'antd/lib/form/Form'
 import { cloneDeep }                                          from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { PageHeader, StepsForm, Tooltip } from '@acx-ui/components'
+import { Button, PageHeader, Select, StepsForm, Tooltip } from '@acx-ui/components'
+import { useGetServerCertificatesQuery }                  from '@acx-ui/rc/services'
 import {
-  IdentityProviderProfileFormType,
   LocationExtended,
   PolicyOperation,
   PolicyType,
+  SamlIdpProfileFormType,
   SsoSamlMessages,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -15,11 +21,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
+import CertificateDrawer                                   from '../../CertificateTemplate/Certificate/CertificateDrawer'
+
 interface SsoSamlFormProps {
     title: string
     form: FormInstance
     submitButtonLabel: string
-    onFinish: (values: IdentityProviderProfileFormType) => void
+    onFinish: (values: SamlIdpProfileFormType) => void
     onCancel?: () => void
     isEditMode?: boolean
     isEmbedded?: boolean
@@ -38,13 +47,30 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
   } = props
 
   const tablePath = getPolicyRoutePath({
-    type: PolicyType.SSO_SAML,
+    type: PolicyType.IDENTITY_PROVIDER,
     oper: PolicyOperation.LIST
   })
   const navigate = useNavigate()
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const linkToTableView = useTenantLink(tablePath)
+  const [certFormVisible, setCertFormVisible] = useState(false)
+  const isResponseEncryptionEnabled = useWatch('responseEncryptionEnabled', formRef)
+  const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
+
+  const { serverCertificateOptions } =
+  useGetServerCertificatesQuery(
+    { payload: { pageSize: 1000, page: 1 } },
+    {
+      selectFromResult ({ data }) {
+        return {
+          serverCertificateOptions: data?.data?.map(
+            item => ({ label: item.name, value: item.id })
+          ) ?? []
+        }
+      }
+    }
+  )
 
   const handleFinish = async () => {
     try{
@@ -62,6 +88,16 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
       redirectPreviousPage(navigate, previousPath, linkToTableView)
   }
 
+  const handleImportRequest = (formData: FormData, values: object, content?: string)=> {
+    formRef.setFieldsValue({ metadata: content })
+    setUploadXmlDrawerVisible(false)
+  }
+
+  const handleCertificateSave = (createdCertId?:string) => {
+    formRef.setFieldsValue({ encryptionCertificateId: createdCertId })
+    setCertFormVisible(false)
+  }
+
   return (
     <>
       {!isEmbedded &&
@@ -74,8 +110,8 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
               link: getPolicyListRoutePath(true)
             },
             {
-              text: $t({ defaultMessage: 'SSO/SAML' }),
-              link: '/policies/portProfile/wifi'
+              text: $t({ defaultMessage: 'Identity Provider' }),
+              link: tablePath
             }
           ]}
         />
@@ -105,27 +141,60 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
           </Row>
           <Row>
             <Col span={12}>
-              <StepsForm.FieldLabel width='280px'>
-                <Space>
-                  {$t({ defaultMessage: 'Identity Provider (IdP) Metadata' })}
-                  <Tooltip.Question
+              <StepsForm.FieldLabel width='400px' className='required'>
+                <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Space>
+                    {$t({ defaultMessage: 'Identity Provider (IdP) Metadata' })}
+                    <Tooltip.Question
                     // eslint-disable-next-line max-len
-                    title={$t(SsoSamlMessages.METADATA_TEXTAREA) + '\n' + $t({ defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.' })}
-                    placement='bottom'
-                    iconStyle={{ width: 16, height: 16 }}
-                  />
+                      title={$t(SsoSamlMessages.METADATA_TEXTAREA) + '\n' + $t({ defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.' })}
+                      placement='bottom'
+                      iconStyle={{ width: 16, height: 16 }}
+                    />
+                  </Space>
+                  <Space>
+                    <Button
+                      data-testid='import-xml-button'
+                      type='link'
+                      onClick={() => {setUploadXmlDrawerVisible(true)}}
+                    >
+                      {$t({ defaultMessage: 'Import via XML' })}
+                    </Button>
+                    |
+                    <Button
+                      type='link'
+                      onClick={() => formRef.setFieldsValue({ metadata: '' })}
+                    >
+                      {$t({ defaultMessage: 'Clear' })}
+                    </Button>
+                  </Space>
                 </Space>
               </StepsForm.FieldLabel>
               <Form.Item
                 name='metadata'
-                // label={$t({ defaultMessage: 'Identity Provider (IdP) Metadata' })}
-                style={{ width: '300px' }}
+                style={{ width: '400px' }}
                 rules={[
-                  { max: 180 }
+                  { required: true }
                 ]}
               >
-                <Input.TextArea rows={4} />
+                <Input.TextArea
+                  // eslint-disable-next-line max-len
+                  placeholder={$t({ defaultMessage: 'Import metadata from an XML file, or manually enter a metadata URL or codes here from your identity provider. Importing will overwrite any existing information.' })}
+                  rows={10}
+                  data-testid='metadata-textarea' />
               </Form.Item>
+              <ImportFileDrawer
+                title={$t({ defaultMessage: 'Import via XML' })}
+                visible={uploadXmlDrawerVisible}
+                readAsText={true}
+                type={ImportFileDrawerType.DPSK}
+                acceptType={['xml']}
+                maxSize={CsvSize['5MB']}
+                maxEntries={1024}
+                importRequest={handleImportRequest}
+                formDataName={'unitImports'}
+                onClose={() => setUploadXmlDrawerVisible(false)}
+              />
             </Col>
           </Row>
           <Row>
@@ -166,6 +235,31 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
                   <Switch />
                 </Form.Item>
               </StepsForm.FieldLabel>
+              {isResponseEncryptionEnabled &&
+              <>
+                <Form.Item
+                  name='encryptionCertificateId'
+                  label={<>
+                    {$t({ defaultMessage: 'Server Certificate' })}
+                  </>
+                  }
+                  required
+                >
+                  <Select
+                    options={serverCertificateOptions}
+                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                  />
+                </Form.Item>
+                <Button type='link' onClick={()=>setCertFormVisible(true)}>
+                  {$t({ defaultMessage: 'Generate a server certificate' })}
+                </Button>
+                <CertificateDrawer
+                  visible={certFormVisible}
+                  setVisible={setCertFormVisible}
+                  handleSave={handleCertificateSave}
+                />
+              </>
+              }
             </Col>
           </Row>
         </StepsForm.StepForm>
@@ -174,10 +268,11 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
   )
 }
 
-export const requestPreProcess = (data: IdentityProviderProfileFormType) => {
+export const requestPreProcess = (data: SamlIdpProfileFormType) => {
   const { ...result } = cloneDeep(data)
-  //   result.authType = (authEnabled) ?
-  //     (authTypeRole ?? EthernetPortAuthType.DISABLED) : EthernetPortAuthType.DISABLED
+
+  // Convert metadata to base64 format
+  result.metadata = Buffer.from(result.metadata).toString('base64')
 
   return result
 }

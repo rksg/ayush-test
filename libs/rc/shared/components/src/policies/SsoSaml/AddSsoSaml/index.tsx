@@ -1,8 +1,8 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import {  useCreateIdentityProviderProfileMutation } from '@acx-ui/rc/services'
-import {  IdentityProviderProfileFormType }          from '@acx-ui/rc/utils'
+import { useActivateSamlIdpProfileCertificateMutation, useCreateSamlIdpProfileMutation } from '@acx-ui/rc/services'
+import { SamlIdpProfileFormType }                                                        from '@acx-ui/rc/utils'
 
 import { SsoSamlForm, requestPreProcess } from '../SsoSamlForm'
 
@@ -15,31 +15,24 @@ interface AddSsoSamlProps {
 
 export const AddSsoSaml = (props: AddSsoSamlProps) => {
   const { $t } = useIntl()
-  const [ createIdentityProviderProfileProfile ] = useCreateIdentityProviderProfileMutation()
-  // const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
+  const [ createSamlIdpProfile ] = useCreateSamlIdpProfileMutation()
+  const [ activateCertificate ] = useActivateSamlIdpProfileCertificateMutation()
   const [form] = Form.useForm()
   const { onClose, isEmbedded, updateInstance } = props
 
-  const handleAddSsoSaml = async (data: IdentityProviderProfileFormType) => {
+  const handleAddSsoSaml = async (data: SamlIdpProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
       const createResult =
-        await createIdentityProviderProfileProfile({ payload }).unwrap()
+          await createSamlIdpProfile({ payload }).unwrap()
       const createId = createResult.response?.id
       if (createId) {
-        // if (payload.authRadiusId) {
-        //   updateEthernetPortProfileRadiusId({ params: {
-        //     id: createId,
-        //     radiusId: payload.authRadiusId
-        //   } })
-        // }
-
-        // if (payload.accountingRadiusId) {
-        //   updateEthernetPortProfileRadiusId({ params: {
-        //     id: createId,
-        //     radiusId: payload.accountingRadiusId
-        //   } })
-        // }
+        if (payload.responseEncryptionEnabled) {
+          activateCertificate({ params: {
+            id: createId,
+            certificateId: payload.encryptionCertificateId
+          } })
+        }
 
         updateInstance?.(createId)
       }
@@ -54,7 +47,7 @@ export const AddSsoSaml = (props: AddSsoSamlProps) => {
     <Row>
       <Col span={12}>
         <SsoSamlForm
-          title={$t({ defaultMessage: 'Add SSO/SAML' })}
+          title={$t({ defaultMessage: 'Add SAML Identity Provider' })}
           form={form}
           submitButtonLabel={$t({ defaultMessage: 'Add' })}
           onFinish={handleAddSsoSaml}
@@ -63,6 +56,5 @@ export const AddSsoSaml = (props: AddSsoSamlProps) => {
         />
       </Col>
     </Row>
-
   )
 }
