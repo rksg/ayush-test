@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
-import { Form, Space, Select } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, Space, Select, Switch } from 'antd'
+import { useIntl }                     from 'react-intl'
 
-import { Button, PasswordInput }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
+import { Button, PasswordInput, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { InformationSolid }               from '@acx-ui/icons'
 import {
   generateHexKey,
   GuestNetworkTypeEnum,
@@ -18,11 +18,13 @@ import {
   WlanSecurityEnum,
   WisprSecurityEnum,
   WisprSecurityOptionsDescription,
-  ManagementFrameProtectionEnum
+  ManagementFrameProtectionEnum,
+  WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 
 import { MLOContext }     from '../../../NetworkForm'
 import NetworkFormContext from '../../../NetworkFormContext'
+import * as UI            from '../../../styledComponents'
 
 export const WlanSecurityFormItems = () => {
   const { $t } = useIntl()
@@ -58,6 +60,8 @@ export const WlanSecurityFormItems = () => {
     || isGuestNetworkTypeGuestPass()
     || isGuestNetworkTypeDirectoryServer()
   const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
+  // eslint-disable-next-line max-len
+  const isCaptivePortalOWETransitionEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION)
 
   useEffect(() => {
     const transNetworkSecurity =
@@ -88,17 +92,34 @@ export const WlanSecurityFormItems = () => {
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
         form.setFieldValue('networkSecurity', 'OWE')
         setEnablePreShared(false)
-      } else {
+      } else if (wlanSecurity === WlanSecurityEnum.OWETransition) {
+        form.setFieldValue('networkSecurity', 'OWE')
+        form.setFieldValue('enableOweTransition', true)
+        setEnablePreShared(false)
+      }
+      else {
         form.setFieldValue('networkSecurity', 'PSK')
         setEnablePreShared(true)
         form.setFieldValue('pskProtocol', wlanSecurity)
       }
+    }
+    if (data && 'enableOweTransition' in data) {
+      delete data['enableOweTransition']
     }
   }, [data?.wlan?.wlanSecurity])
 
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
+  }
+  const onOweTransitionChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      wlan: {
+        ...data?.wlan,
+        wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
+      }
+    })
   }
   const securityDescription = () => {
     const wlanSecurity = form.getFieldValue('pskProtocol')
@@ -239,6 +260,23 @@ export const WlanSecurityFormItems = () => {
         />
       }
 
+      {(isCaptivePortalOWETransitionEnabled && networkSecurity === 'OWE') &&
+        <UI.FieldLabel width={'250px'}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'OWE Transition mode' }) }
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_OWE_TRANSITION_TOOLTIP)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            data-testid={'owe-transition-switch'}
+            name='enableOweTransition'
+            valuePropName='checked'
+            children={<Switch onChange={onOweTransitionChange} />}/>
+        </UI.FieldLabel>
+      }
       {isCaptivePortalPskEnabled && enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
         wlanSecurity !== WlanSecurityEnum.WPA3 &&
         <Form.Item

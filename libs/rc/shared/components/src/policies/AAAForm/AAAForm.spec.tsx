@@ -136,7 +136,7 @@ describe('AAAForm', () => {
     const tlsEnabled = await screen.findByRole('switch')
     await userEvent.click(tlsEnabled)
 
-    const cnSanIdentity = await screen.findByRole('textbox', { name: 'CN/SAN Identity' })
+    const cnSanIdentity = await screen.findByRole('textbox', { name: 'SAN Identity' })
     await userEvent.type(cnSanIdentity, 'CA SAN')
 
     const comboboxes = await screen.findAllByRole('combobox')

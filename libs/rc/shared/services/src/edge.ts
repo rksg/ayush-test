@@ -423,7 +423,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     downloadEdgesCSV: build.mutation<Blob, EdgesExportPayload>({
       query: (payload) => {
-        const req = createHttpRequest(EdgeUrlsInfo.downloadSwitchsCSV,
+        const req = createHttpRequest(EdgeUrlsInfo.downloadEdgesCSV,
           { tenantId: payload.tenantId }
         )
         return {

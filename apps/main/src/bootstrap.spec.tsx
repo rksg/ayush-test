@@ -20,7 +20,12 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   renderPendo: jest.fn(),
-  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
+  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } }),
+  LoadTimeProvider: (props: { children: React.ReactNode }) => <div
+    {...props}
+    data-testid='load-time-provider'
+  />,
+  useTrackLoadTime: jest.fn()
 }))
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),

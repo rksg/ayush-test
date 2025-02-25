@@ -76,7 +76,7 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
         content: Boolean(aaaProfile?.radSecOptions?.tlsEnabled) ? 'On' : 'Off'
       },
       {
-        title: $t({ defaultMessage: 'CN/SAN Identity' }),
+        title: $t({ defaultMessage: 'SAN Identity' }),
         content: aaaProfile?.radSecOptions?.cnSanIdentity,
         visible: Boolean(aaaProfile?.radSecOptions?.tlsEnabled)
       },

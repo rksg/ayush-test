@@ -52,7 +52,7 @@ import { useCasesToRefreshVenueTemplateList } from './constants'
 
 export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
-    addVenueTemplate: build.mutation<VenueExtended, RequestPayload>({
+    addVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.addVenueTemplate),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
@@ -62,7 +62,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
-    updateVenueTemplate: build.mutation<VenueExtended, RequestPayload>({
+    updateVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueTemplate),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]

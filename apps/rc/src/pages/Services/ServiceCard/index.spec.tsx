@@ -103,6 +103,22 @@ describe('ServiceCard', () => {
     expect(await screen.findByText('mDNS Proxy (5)')).toBeVisible()
   })
 
+  it('should render service card with the BetaIndicator', async () => {
+    render(
+      <ServiceCard
+        serviceType={ServiceType.MDNS_PROXY}
+        categories={[RadioCardCategory.WIFI]}
+        type={'default'}
+        count={5}
+        isBetaFeature={true}
+      />, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
+  })
+
   it('should render readonly service card', async () => {
     setUserProfile({
       ...getUserProfile(),

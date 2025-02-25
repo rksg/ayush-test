@@ -46,7 +46,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
       key: 'new',
       title: $t({ defaultMessage: 'New Alarms' }),
       component: <AlarmsTable key={newKey}
-        newAlarmType={true}
+        isNewAlarm={true}
         venueId={venueId}
         serialNumber={serialNumber}
         selectedFilters={selectedNewAlarmFilters}
@@ -57,7 +57,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
       title: $t({ defaultMessage: 'Cleared Alarms' }),
       component:
       <AlarmsTable key={clearedKey}
-        newAlarmType={false}
+        isNewAlarm={false}
         venueId={venueId}
         serialNumber={serialNumber}
         selectedFilters={selectedClearedAlarmFilters}
@@ -84,7 +84,7 @@ export function NewAlarmsDrawer (props: AlarmsType) {
   </>
 
   return <Drawer
-    width={765}
+    width={845}
     title={$t({ defaultMessage: 'Alarms' })}
     visible={visible}
     destroyOnClose={true}

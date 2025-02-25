@@ -65,7 +65,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
 
   const { data: identityList } = useSearchPersonaListQuery(
-    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { payload: { pageSize: 1000,
+      ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data || !isIdentityRequired })
 
   const rowActions: TableProps<MacRegistration>['rowActions'] = [{

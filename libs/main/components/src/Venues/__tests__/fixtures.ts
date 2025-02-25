@@ -31,7 +31,8 @@ import {
   ManagementFrameMinimumPhyRateEnum,
   MtuTypeEnum,
   SoftGreViewData,
-  IsolatePacketsTypeEnum
+  IsolatePacketsTypeEnum,
+  Persona
 } from '@acx-ui/rc/utils'
 
 export const mockedVenueId = '__MOCKED_VENUE_ID__'
@@ -3526,6 +3527,51 @@ export const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
       name: 'persona-group-name-1'
     }
   ]
+}
+
+export const mockPersonaList: NewTableResult<Persona> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'persona-id-1',
+      name: 'persona-name-1',
+      email: 'persona1@mail.com',
+      groupId: 'persona-group-id-1',
+      dpskGuid: 'dpsk-guid-1',
+      dpskPassphrase: 'dpsk-passphrase-1',
+      deviceCount: 12,
+      revoked: false,
+      ethernetPorts: [{
+        portIndex: 1,
+        personaId: 'persona-id-1',
+        macAddress: 'ap-mac-address-1'
+      }]
+    },
+    {
+      id: 'persona-id-2',
+      name: 'persona-name-2',
+      groupId: 'persona-group-id-1',
+      email: 'persona2@mail.com',
+      dpskGuid: 'dpsk-guid-2',
+      dpskPassphrase: 'dpsk-passphrase-2',
+      revoked: true,
+      ethernetPorts: [{
+        portIndex: 1,
+        personaId: 'persona-id-2',
+        macAddress: 'ap-mac-address-2'
+      }]
+    }
+  ]
+}
+
+export const mockedUnitLinkedIdentity = {
+  unitId: '069c06765c9841fcaf35bb5dbd2319eb',
+  personaType: 'Linked',
+  personaId: 'persona-id-1',
+  requestId: 'request-id-1'
 }
 
 export const mockVenueConfigTemplates = {

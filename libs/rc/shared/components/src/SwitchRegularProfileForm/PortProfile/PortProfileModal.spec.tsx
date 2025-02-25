@@ -62,7 +62,7 @@ describe('PortProfileModal', () => {
       </IntlProvider>
     )
 
-    await screen.findByText(/Select Ports By Model/i)
+    await screen.findByText(/Add Port Profile/i)
     expect(await screen.findByTestId('PortProfileModal')).toBeInTheDocument()
 
     // Test cancel functionality

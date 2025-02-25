@@ -125,8 +125,9 @@ describe('ImpactedSwitchVLANDetails', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('Impacted switches')).toBeVisible()
-    expect(screen.getByText('Out of 1 switch')).toBeVisible()
-    expect(screen.getByText('Mismatched VLAN')).toBeVisible()
+    expect(screen.getByText('2')).toBeVisible()
+    expect(screen.getAllByText('Switch 1')).toHaveLength(1)
+    expect(screen.getAllByText('Switch 2')).toHaveLength(1)
     expect(screen.getByText('6 configured VLANs')).toBeVisible()
   })
   it('should hide chart when under druidRollup', async () => {

@@ -11,8 +11,8 @@ import { mockedConfigTemplate, mockedDriftTenants, mockedMSPCustomers } from './
 
 import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
 
-jest.mock('./CustomerFirmwareReminder', () => ({
-  ...jest.requireActual('./CustomerFirmwareReminder'),
+jest.mock('../CustomerFirmwareReminder', () => ({
+  ...jest.requireActual('../CustomerFirmwareReminder'),
   CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
 }))
 
@@ -179,6 +179,8 @@ describe('ShowDriftsDrawer', () => {
     render(<Provider>
       <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={venueTemplate} />
     </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('CustomerFirmwareReminder')).toBeInTheDocument()
   })

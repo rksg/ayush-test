@@ -110,6 +110,14 @@ export interface PlmMessageBanner {
   updatedDate: string
 }
 
+export interface AllowedOperation {
+  scope: string[]
+  uri: string[]
+};
+export interface AllowedOperationsResponse {
+  allowedOperations: AllowedOperation[]
+}
+
 // not sure if it is really belongs to user
 export interface CloudVersion {
   scheduleVersionList: string[]
@@ -204,8 +212,10 @@ export enum raiPermissionsList {
 
   'READ_DATA_STUDIO',
   'WRITE_DATA_STUDIO',
-  'READ_DATA_SUBSCRIPTIONS',
-  'WRITE_DATA_SUBSCRIPTIONS',
+  'READ_DATA_CONNECTOR',
+  'WRITE_DATA_CONNECTOR',
+  'READ_DATA_CONNECTOR_STORAGE',
+  'WRITE_DATA_CONNECTOR_STORAGE',
   'READ_REPORTS',
   'READ_OCCUPANCY',
   'WRITE_OCCUPANCY',

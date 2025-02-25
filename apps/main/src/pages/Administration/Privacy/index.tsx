@@ -30,7 +30,7 @@ export default function Privacy () {
   const [isPrivacyMonitoringSettingsEnabled, setIsPrivacyMonitoringSettingsEnabled]
     = useState<boolean>(false)
 
-  const { data } = useGetPrivacySettingsQuery({ params }, { skip: !isPrimeAdminUser })
+  const { data } = useGetPrivacySettingsQuery({ params })
 
   const payload: RequestPayload = {
     privacyFeatures: [

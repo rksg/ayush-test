@@ -19,7 +19,8 @@ import {
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery
+  useTableQuery,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                           from '@acx-ui/utils'
@@ -61,6 +62,7 @@ export default function DirectoryServerTable () {
 
   const rowActions: TableProps<DirectoryServerViewData>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DIRECTORY_SERVER, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.DIRECTORY_SERVER, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: DirectoryServerViewData[], clearSelection) => {
@@ -68,6 +70,7 @@ export default function DirectoryServerTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DIRECTORY_SERVER, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.DIRECTORY_SERVER, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows?.length === 1,
@@ -104,6 +107,8 @@ export default function DirectoryServerTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.CREATE })}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.DIRECTORY_SERVER, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.DIRECTORY_SERVER, PolicyOperation.CREATE)}
           >
             <Button type='primary'

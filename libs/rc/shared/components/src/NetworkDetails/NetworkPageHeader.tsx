@@ -3,14 +3,16 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
-import { TenantType }                                                                       from '@acx-ui/react-router-dom'
-import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                       from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission }                                         from '@acx-ui/user'
-import { useDateFilter }                                                                    from '@acx-ui/utils'
+import { getDefaultEarliestStart, PageHeader, RangePicker }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                               from '@acx-ui/feature-toggle'
+import { ConfigTemplateType, generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
+import { TenantType }                                                                                           from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink, useParams }                                                   from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                                           from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission }                                                             from '@acx-ui/user'
+import { useDateFilter }                                                                                        from '@acx-ui/utils'
+
+import { EnforcedButton } from '../configTemplates/EnforcedButton'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
@@ -23,7 +25,10 @@ function NetworkPageHeader ({
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
 }) {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()
@@ -34,7 +39,6 @@ function NetworkPageHeader ({
   const { $t } = useIntl()
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const GenBreadcrumb = () => {
     const { isTemplate } = useConfigTemplate()
@@ -81,7 +85,9 @@ function NetworkPageHeader ({
           />
           : <></>,
         ...(hasCrossVenuesPermission()? filterByAccess([
-          <Button
+          <EnforcedButton
+            configTemplateType={ConfigTemplateType.NETWORK}
+            instanceId={networkId}
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'
             hidden={disableConfigure}
@@ -96,7 +102,7 @@ function NetworkPageHeader ({
                 }
               })
             }
-          >{$t({ defaultMessage: 'Configure' })}</Button>
+          >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>
         ]) : [])
       ]}
       footer={<NetworkTabs />}

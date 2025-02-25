@@ -358,21 +358,31 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDriftReport: {
     method: 'get',
-    url: '/templates/:templateId/tenants/:tenantId/diffReport',
+    url: '/templates/:templateId/tenants/:tenantId/diffReports',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'GET:/templates/{id}/tenants/{id}/diffReport'
+    opsApi: 'GET:/templates/{id}/tenants/{id}/diffReports'
   },
   patchDriftReport: {
     method: 'PATCH',
-    url: '/templates/:templateId/tenants/:tenantId/diffReport',
+    url: '/templates/:templateId/tenants/:tenantId/diffReports',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReport'
+    opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReports'
+  },
+  updateEnforcement: {
+    method: 'put',
+    url: '/templates/:templateId/enforcementSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PUT:/templates/{id}/enforce'
   }
 }

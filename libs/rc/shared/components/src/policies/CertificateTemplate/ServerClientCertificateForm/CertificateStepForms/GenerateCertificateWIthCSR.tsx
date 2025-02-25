@@ -158,7 +158,7 @@ export const GenerateCertificateWithCSR = (props: GenerateCertificateWithCSRForm
         <GridRow>
           <GridCol col={{ span: 10 }} >
             <Form.Item
-              name={'extendedkeyUsages'}
+              name={'extendedKeyUsages'}
               label={$t({ defaultMessage: 'Extended Key Usage' })}
               initialValue={props?.extendedKeyUsages}
               children={

@@ -232,6 +232,7 @@ export { ReactComponent as StorageDeviceOutlined } from './StorageDeviceOutlined
 export { ReactComponent as Switch } from './Switch.svg'
 export { ReactComponent as SwitchOutlined } from './SwitchOutlined.svg'
 export { ReactComponent as SwitchSolid } from './SwitchSolid.svg'
+export { ReactComponent as Sync } from './Sync.svg'
 export { ReactComponent as TabletOutlined } from './TabletOutlined.svg'
 export { ReactComponent as TextMinus } from './TextMinus.svg'
 export { ReactComponent as TextPlus } from './TextPlus.svg'

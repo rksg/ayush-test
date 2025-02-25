@@ -30,6 +30,11 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid IP address or domain',
     description: 'Validation - IP address checks'
   }),
+  validDomain: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Please provide a valid IP address (e.g., 192.168.1.1) or FQDN (e.g., example.com)',
+    description: 'Validation - IP address and domain checks'
+  }),
   domain: defineMessage({
     defaultMessage: 'Please enter a valid domain',
     description: 'Validation - domain checks'

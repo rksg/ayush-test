@@ -95,7 +95,8 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
   const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const { data: identityList } = useSearchPersonaListQuery(
-    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { payload: { pageSize: 1000,
+      ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data || !isIdentityGroupRequired })
 
   const downloadPassphrases = async () => {

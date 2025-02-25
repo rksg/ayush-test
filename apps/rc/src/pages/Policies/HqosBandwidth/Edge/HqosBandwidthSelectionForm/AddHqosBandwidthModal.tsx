@@ -5,10 +5,13 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast } from '@acx-ui/components'
 import { useCreateEdgeHqosProfileMutation }            from '@acx-ui/rc/services'
+import { EdgeHqosProfilesUrls }                        from '@acx-ui/rc/utils'
+import { getOpsApi }                                   from '@acx-ui/utils'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { SettingsForm }                              from '../HqosBandwidthForm/SettingsForm'
 import { SummaryForm }                               from '../HqosBandwidthForm/SummaryForm'
+
 
 export const AddHqosBandwidthModal = () => {
   const { $t } = useIntl()
@@ -58,7 +61,11 @@ export const AddHqosBandwidthModal = () => {
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)} data-testid='addHqosBandwidthButton'>
+      <Button type='link'
+        rbacOpsIds={[getOpsApi(EdgeHqosProfilesUrls.addEdgeHqosProfile)]}
+        onClick={()=>setVisible(true)}
+        data-testid='addHqosBandwidthButton'
+      >
         {$t({ defaultMessage: 'Add' })}
       </Button>
       <Modal

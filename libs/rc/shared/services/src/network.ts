@@ -1713,6 +1713,47 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         WifiRbacUrlsInfo.updateVenueApGroups
       ),
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    venueWifiRadioActiveNetworks: build.query<Network[], RequestPayload & { radio: RadioTypeEnum }>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, arg.params, apiCustomHeader)
+        const wifiNetworksReq = {
+          ...networkListReq,
+          body: JSON.stringify(arg.payload)
+        }
+
+        const wifiNetworksQuery = await fetchWithBQ(wifiNetworksReq) as { data: { data: (Network & { venueApGroups: NetworkVenue[] })[] } }
+        const networkIds = wifiNetworksQuery.data.data.map((network) => network.id)
+        const networksQueryResults = await Promise.all(networkIds.map(async (id) => {
+          if (id) {
+            const networksQuery = await fetchWithBQ({
+              ...createHttpRequest(WifiRbacUrlsInfo.getNetworkVenue, { ...arg.params, networkId: id })
+            }) as { data: { data: NetworkVenue[] } }
+            return {
+              ...networksQuery.data,
+              networkId: id
+            }
+          }
+          return { data: { data: [] }, networkId: '' }
+        })) as { data: { data: NetworkVenue[] }, networkId: string }[]
+        const filteredNetworks = networksQueryResults.filter(network => Object.keys(network).length > 1) as unknown as NetworkVenue[]
+
+        const active = filteredNetworks.reduce(
+          (active: Record<string, boolean>, network: NetworkVenue) => {
+            if (network.allApGroupsRadioTypes?.includes(arg.radio)) {
+              active[network.networkId as string] = true
+            }
+            return active
+          },
+          {} as Record<string, boolean>
+        )
+
+        return {
+          data: wifiNetworksQuery.data.data.filter(network => active[network.id as string])
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
     })
   })
 })
@@ -2073,7 +2114,9 @@ export const {
   useUnbindClientIsolationMutation,
   useActivateVenueApGroupMutation,
   useDeactivateVenueApGroupMutation,
-  useUpdateVenueApGroupMutation
+  useUpdateVenueApGroupMutation,
+  useVenueWifiRadioActiveNetworksQuery,
+  useLazyVenueWifiRadioActiveNetworksQuery
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

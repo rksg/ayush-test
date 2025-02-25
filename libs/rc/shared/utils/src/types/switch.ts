@@ -64,7 +64,8 @@ export const SwitchPortViewModelQueryFields = [
   'vlanIds',
   'vsixEgressAclName',
   'vsixIngressAclName',
-  'authDefaultVlan'
+  'authDefaultVlan',
+  'errorDisableStatus'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -536,6 +537,7 @@ export interface SwitchPortViewModel extends GridDataRow {
 	authTimeoutAction?: string,
   switchPortProfileName?: string,
   switchPortProfileType?: string
+  errorDisableStatus?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1072,4 +1074,20 @@ export interface SwitchPortProfilesAppliedTargets {
 export enum PortProfileTabsEnum {
   WIFI = 'wifi',
   SWITCH = 'switch',
+}
+
+export interface PortDisableRecoverySetting {
+  bpduGuard: boolean,
+  loopDetection: boolean,
+  packetInError: boolean,
+  loamRemoteCriticalEvent: boolean,
+  pvstplusProtect: boolean,
+  bpduTunnelThreshold: boolean,
+  lagOperationalSpeedMismatch: boolean,
+  recoveryInterval?: number
+}
+
+export interface PortDisableRecoverySettingForm {
+  recoveryInterval: number,
+  recoverySetting: PortDisableRecoverySetting,
 }

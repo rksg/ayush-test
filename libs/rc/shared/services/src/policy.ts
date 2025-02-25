@@ -1552,6 +1552,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
+    getPreconfiguredIdentityProvider: build.query<IdentityProvider[], RequestPayload>({
+      query: () => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.getPreconfiguredIdentityProvider, {}, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
     activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -3816,6 +3825,7 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetPreconfiguredIdentityProviderQuery,
   useActivateIdentityProviderRadiusMutation,
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,

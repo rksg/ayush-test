@@ -7,10 +7,10 @@ import _                          from 'lodash'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
-import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
+import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip, getDefaultEarliestStart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                       from '@acx-ui/formatter'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                                                from '@acx-ui/rc/components'
 import {
   useGetJwtTokenQuery,
   useLazyGetSwitchListQuery,
@@ -69,6 +69,7 @@ function SwitchPageHeader () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
@@ -96,7 +97,8 @@ function SwitchPageHeader () {
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {

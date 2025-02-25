@@ -155,7 +155,7 @@ describe('AAA Instance Page', () => {
     const tlsEnabled = await screen.findByRole('switch')
     await userEvent.click(tlsEnabled)
 
-    const cnSanIdentity = await screen.findByRole('textbox', { name: 'CN/SAN Identity' })
+    const cnSanIdentity = await screen.findByRole('textbox', { name: 'SAN Identity' })
     await userEvent.type(cnSanIdentity, radSecAAA.radSecOptions.cnSanIdentity)
 
     const comboboxes = await screen.findAllByRole('combobox')

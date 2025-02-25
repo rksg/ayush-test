@@ -557,3 +557,11 @@ export interface PrivacySettings {
 export interface PrivacyFeatures {
   privacyFeatures: PrivacySettings[]
 }
+
+export interface ScopeFeature {
+  id: string,
+  name: string,
+  description: string,
+  category: string,
+  subFeatures?: ScopeFeature[]
+}

@@ -12,11 +12,13 @@ import {
   EdgeCluster,
   EdgeClusterStatus,
   EdgePortTypeEnum,
+  EdgeUrlsInfo,
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }    from '@acx-ui/types'
 import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import * as CommUI from '../styledComponents'
 
@@ -123,7 +125,10 @@ export const VirtualIp = (props: VirtualIpProps) => {
     navigate(clusterListPage)
   }
 
-  const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const hasUpdatePermission = hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeCluster)]
+  })
 
   return (
     <Loader states={[{ isLoading: isLanInterfacesLoading }]}>
