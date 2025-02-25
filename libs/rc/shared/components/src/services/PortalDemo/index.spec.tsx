@@ -11,6 +11,7 @@ import { Provider }                              from '@acx-ui/store'
 import { render, fireEvent, screen, mockServer } from '@acx-ui/test-utils'
 
 import { PortalDemoDefaultSize } from './commonUtils'
+import PortalViewSelfSignConnect from './PortalViewSelfSignConnect'
 
 import { PortalDemo } from './index'
 
@@ -146,5 +147,29 @@ describe('PortalDemo', () => {
     expect(await screen.findAllByText(
       'Terms & conditions is enabled but not configured!'
     )).not.toBeNull()
+  })
+})
+
+describe('PortalViewSelfSignConnect', () => {
+  it('should render PortalViewSelfSignConnect successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <PortalViewSelfSignConnect
+            portalLang={{
+              connectWithEmail: 'Connect with Email'
+            }}
+            networkSocial={{
+              smsEnabled: true,
+              emailEnabled: true,
+              facebookEnabled: true,
+              googleEnabled: true,
+              twitterEnabled: true,
+              linkedInEnabled: true
+            }} />
+        </Form>
+      </Provider>
+    )
+    expect(await screen.findByTestId('self-sign-in-email-otp')).toBeInTheDocument()
   })
 })
