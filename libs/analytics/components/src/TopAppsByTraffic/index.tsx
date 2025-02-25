@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -9,8 +11,12 @@ import {
   qualitativeColorSet
 } from '@acx-ui/components'
 import type { DonutChartData }              from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
+import { useGetPrivacySettingsQuery }       from '@acx-ui/rc/services'
+import { PrivacyFeatureName }               from '@acx-ui/rc/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
@@ -42,7 +48,26 @@ export function TopAppsByTraffic ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
+  const isMlisaSa = Boolean(get('IS_MLISA_SA'))
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const params = useParams()
+  const { data: privacySettings } = useGetPrivacySettingsQuery({ params })
+  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
+  const isAppPrivacyFeatureEnabled = useIsSplitOn(
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
+
+  useEffect(() => {
+    if(!isAppPrivacyFeatureEnabled || isMlisaSa){
+      setIsAppVisibilityEnabled(true)
+    }
+    else if (privacySettings) {
+      const privacyVisibilitySetting = privacySettings
+        .filter(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)[0]
+      if(privacyVisibilitySetting.isEnabled){
+        setIsAppVisibilityEnabled(true)
+      }
+    }
+  }, [isAppPrivacyFeatureEnabled, isMlisaSa, privacySettings])
 
   const queryResults = useTopAppsByTrafficQuery(filters,{
     selectFromResult: ({ data, ...rest }) => ({
@@ -51,7 +76,8 @@ export function TopAppsByTraffic ({
     })
   })
 
-  const isDataAvailable = queryResults.data && queryResults.data.length > 0
+  const isDataAvailable = isAppVisibilityEnabled &&
+   queryResults.data && queryResults.data.length > 0
 
   useTrackLoadTime({
     itemName: widgetsMapping.TOP_APPS_BY_TRAFFIC,
