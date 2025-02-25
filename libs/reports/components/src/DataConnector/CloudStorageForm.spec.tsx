@@ -6,8 +6,8 @@ import { notificationApiURL }                 from '@acx-ui/store'
 import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 import { mockRestApiQuery }                   from '@acx-ui/test-utils'
 
-import CloudStorageForm         from './CloudStorageForm'
-import { dataSubscriptionApis } from './services'
+import CloudStorageForm      from './CloudStorageForm'
+import { dataConnectorApis } from './services'
 
 const mockNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -23,13 +23,13 @@ describe('CloudStorageForm', () => {
 
   const store = configureStore({
     reducer: {
-      [dataSubscriptionApis.reducerPath]: dataSubscriptionApis.reducer
+      [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataSubscriptionApis.middleware])
+      getDefaultMiddleware().concat([dataConnectorApis.middleware])
   })
   afterEach(() => {
-    store.dispatch(dataSubscriptionApis.util.resetApiState())
+    store.dispatch(dataConnectorApis.util.resetApiState())
     components.showToast.mockClear()
     mockNavigate.mockClear()
   })
@@ -42,7 +42,7 @@ describe('CloudStorageForm', () => {
     expect(await screen.findByText('New Cloud Storage')).toBeVisible()
   })
   it('(RAI) should render Edit CloudStorageForm correct', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
       data: {
         config: {
           connectionType: 'azure',
@@ -62,7 +62,7 @@ describe('CloudStorageForm', () => {
     expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
   })
   it('should save on apply click for edit', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
       data: {
         config: {
           connectionType: 'azure',
@@ -75,7 +75,7 @@ describe('CloudStorageForm', () => {
         id: 'id'
       }
     })
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage/id`, 'put', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage/id`, 'put', {
       data: { id: 'id' }
     }, false, true)
     render(<CloudStorageForm editMode/>, {
@@ -91,7 +91,7 @@ describe('CloudStorageForm', () => {
     })
   })
   it('should save on apply click for create', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'post', {
       data: { id: 'id' }
     }, false, true)
     render(<CloudStorageForm />, {
@@ -133,7 +133,7 @@ describe('CloudStorageForm', () => {
     })
   })
   it('should show error on apply click', async () => {
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
       data: {
         config: {
           connectionType: 'azure',
@@ -146,7 +146,7 @@ describe('CloudStorageForm', () => {
         id: 'id'
       }
     })
-    mockRestApiQuery(`${notificationApiURL}/dataSubscriptions/storage/id`, 'put', {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage/id`, 'put', {
       error: { data: { error: 'server error' } }
     }, false, true)
     render(<CloudStorageForm editMode/>, {
