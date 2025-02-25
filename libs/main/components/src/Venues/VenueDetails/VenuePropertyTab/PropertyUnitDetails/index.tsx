@@ -267,7 +267,10 @@ export function PropertyUnitDetails () {
     {
       key: 'assignedAP',
       title: $t({ defaultMessage: 'Assigned AP' }),
-      dataIndex: 'assignedAP'
+      dataIndex: 'assignedAP',
+      render: function (_, row) {
+        return row?.ethernetPorts?.[0]?.name
+      }
     }
   ]
 
