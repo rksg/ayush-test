@@ -65,7 +65,7 @@ const getStorageMap = () => {
       },
       {
         id: 'azureStoragePath',
-        name: $t({ defaultMessage: 'Azure stor path' }),
+        name: $t({ defaultMessage: 'Azure storage path' }),
         component: <Input data-testid='azureStoragePath' />
       }
     ],
