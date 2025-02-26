@@ -342,8 +342,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
   const actions: TableProps<Alarm>['actions'] = [
     {
       label: $t({ defaultMessage: 'Clear all alarms' }),
-      // disabled: !hasPermission || tableQuery.data?.totalCount === 0,
-      disabled: !hasPermission,
+      disabled: !hasPermission || tableQuery.data?.totalCount === 0,
       onClick: async () => {
         if (isClearAllAlarmsToggleEnabled) {
           await clearAllAlarms({ params })
