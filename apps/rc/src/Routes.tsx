@@ -1654,14 +1654,22 @@ function PolicyRoutes () {
             type: PolicyType.SSO_SAML ,
             oper: PolicyOperation.CREATE
           })}
-          element={<AddSsoSaml/>}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.CREATE}>
+              <AddSsoSaml/>
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.SSO_SAML ,
             oper: PolicyOperation.EDIT
           })}
-          element={<EditSsoSaml/>}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.EDIT}>
+              <EditSsoSaml/>
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({

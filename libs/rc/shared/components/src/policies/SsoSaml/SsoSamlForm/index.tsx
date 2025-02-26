@@ -257,6 +257,7 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
                   visible={certFormVisible}
                   setVisible={setCertFormVisible}
                   handleSave={handleCertificateSave}
+                  width={1000}
                 />
               </>
               }
