@@ -96,8 +96,14 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'SoftGRE' }),
-      dataIndex: 'addressLine',
-      key: 'addressLine'
+      dataIndex: 'softGreProfileId',
+      key: 'softGreProfileId',
+      render: (_, row) => {
+        const { softGreProfileId, softGreProfileName } = row
+        return <TenantLink to={`/policies/softGre/${softGreProfileId}/detail`}>
+          {softGreProfileName}
+        </TenantLink>
+      }
     },
     {
       key: 'networkCount',
@@ -147,6 +153,7 @@ function getAggregatedActivations (
       activation.wifiNetworkIds.forEach(id =>
         aggregated[activation.venueId].wifiNetworkIds.add(id)
       )
+      aggregated[activation.venueId].softGreProfileId = activation.softGreProfileId
     })
   }
 
@@ -170,5 +177,8 @@ function getAggregatedActivations (
       aggregated[activation.venueId].apSerialNumbers.add(activation.apSerialNumber)
     })
   }
+
+  // // eslint-disable-next-line no-console
+  // console.log(aggregated)
   return aggregated
 }

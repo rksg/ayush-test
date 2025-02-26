@@ -46,7 +46,7 @@ export interface AdvancedOption {
   ipcompEnable: IpSecAdvancedOptionEnum
   enforceNatt: IpSecAdvancedOptionEnum
   dpdDelay: number
-  keepAliveIntval: number
+  keepAliveInterval: number
   failoverRetryPeriod: number
   failoverRetryInterval: number
   failoverMode: IpSecFailoverModeEnum
@@ -67,6 +67,10 @@ export interface EspProposal {
 }
 
 export interface IpSecFormData extends Ipsec {
+  retryLimitEnabledCheckbox?: boolean
+  deadPeerDetectionDelayEnabledCheckbox?: boolean
+  espReplayWindowEnabledCheckbox?: boolean
+  nattKeepAliveIntervalEnabledCheckbox?: boolean
 }
 
 export interface IpsecViewData {
@@ -100,6 +104,7 @@ export interface VenueTableUsageByIpsec extends IpsecActivation {
 export interface VenueTableIpsecActivation {
   wifiNetworkIds: Set<string>
   apSerialNumbers: Set<string>
+  softGreProfileId?: string
 }
 
 export interface IpsecActivation {

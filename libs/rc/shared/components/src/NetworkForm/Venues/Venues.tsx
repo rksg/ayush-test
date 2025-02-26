@@ -36,14 +36,14 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                                from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                             from '../../NetworkTunnelActionModal/types'
-import { NetworkVenueScheduleDialog }                                                          from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                                  from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                               from '../../useEdgeActions'
-import NetworkFormContext                                                                      from '../NetworkFormContext'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                                           from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                                                           from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionDrawer, NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                                                                        from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                                                                                     from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                                                             from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                                                                                          from '../../useEdgeActions'
+import NetworkFormContext                                                                                                 from '../NetworkFormContext'
 
 import { useTunnelColumn }                                    from './TunnelColumn/useTunnelColumn'
 import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
@@ -168,6 +168,7 @@ export function Venues (props: VenuesProps) {
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
@@ -673,11 +674,18 @@ export function Venues (props: VenuesProps) {
             />
           </Form.Provider>
           {(isEdgeSdLanMvEnabled || isSoftGreEnabled) && tunnelModalState.visible &&
+          <>
+            {!isIpSecEnabled &&
             <NetworkTunnelActionModal
               {...tunnelModalState}
               onFinish={handleNetworkTunnelActionFinish}
-              onClose={handleCloseTunnelModal}
-            />
+              onClose={handleCloseTunnelModal}/>}
+            {isIpSecEnabled &&
+            <NetworkTunnelActionDrawer
+              {...tunnelModalState}
+              onFinish={handleNetworkTunnelActionFinish}
+              onClose={handleCloseTunnelModal}/>}
+          </>
           }
         </Loader>
       </Form.Item>

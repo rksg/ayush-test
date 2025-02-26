@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
-
-import { createContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import {  Col, Form, Row }   from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
@@ -30,18 +28,13 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
   const [form] = Form.useForm()
   const [ createIpsec ] = useCreateIpsecMutation()
 
-  const IpsecContext = createContext({})
-
   useEffect(() => {
-    console.log(form.getFieldsValue())
     if (!readMode) {
       form.setFieldsValue({
         iskRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         advancedOption: {
-          dhcpOpt43Subcode: 7
         },
-        serverAddress: '1.1.1.1',
         ikeSecurityAssociation: {
           ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
           ikeProposals: []
@@ -49,9 +42,12 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
         espSecurityAssociation: {
           espProposalType: IpSecProposalTypeEnum.DEFAULT,
           espProposals: []
-        }
+        },
+        retryLimitEnabledCheckbox: false,
+        espReplayWindowEnabledCheckbox: false,
+        deadPeerDetectionDelayEnabledCheckbox: false,
+        nattKeepAliveIntervalEnabledCheckbox: false
       })
-      console.log('after setFieldsValue: ', form.getFieldsValue())
     }
   }, [form, readMode, visible])
 
@@ -67,15 +63,30 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
     if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
       data.espSecurityAssociation.espProposals = []
     }
+    if (data.retryLimitEnabledCheckbox === false) {
+      if (data.advancedOption && data.advancedOption.retryLimit)
+        data.advancedOption.retryLimit = 5
+    }
+    if (data.deadPeerDetectionDelayEnabledCheckbox === false) {
+      if (data.advancedOption && data.advancedOption.dpdDelay)
+        data.advancedOption.dpdDelay = 0
+    }
+    if (data.espReplayWindowEnabledCheckbox === false) {
+      if (data.advancedOption && data.advancedOption.replayWindow)
+        data.advancedOption.replayWindow = 32
+    }
+    if (data.nattKeepAliveIntervalEnabledCheckbox === false) {
+      if (data.advancedOption && data.advancedOption.keepAliveInterval)
+        data.advancedOption.keepAliveInterval = 20
+    }
   }
 
   const handleAdd = async () => {
     try {
       if (!readMode) {
         await form.validateFields()
-        const values = form.getFieldsValue()
+        const values = form.getFieldsValue(true)
         preSave(values)
-        console.log('values', values)
         const resData = await createIpsec({ params, payload: values }).unwrap()
         if (resData.response?.id) {
           const newOption = {
@@ -105,35 +116,29 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
       visible={visible}
       width={readMode ? 450 : 750}
       children={visible &&
-        <IpsecContext.Provider value={form}>
-          <Form<Ipsec> layout='vertical' form={form} >
-            <Row gutter={20}>
-              <Col span={24}>
-                <IpsecSettingForm
-                  editMode={false}
-                  readMode={readMode}
-                  policyId={policyId}
-                />
-              </Col>
-            </Row>
-          </Form>
-        </IpsecContext.Provider>}
+        <Form<Ipsec> layout='vertical' form={form} >
+          <Row gutter={20}>
+            <Col span={24}>
+              <IpsecSettingForm
+                editMode={false}
+                readMode={readMode}
+                policyId={policyId}
+              />
+            </Col>
+          </Row>
+        </Form>
+      }
       onClose={handleClose}
       destroyOnClose={true}
-      footer={readMode ?
-        <Drawer.FormFooter
-          buttonLabel={{
-            cancel: $t({ defaultMessage: 'OK' })
-          }}
-          showSaveButton={false}
-          onCancel={handleClose}
-        /> :
+      footer={!readMode &&
         <Drawer.FormFooter
           buttonLabel={{
             save: $t({ defaultMessage: 'Add' })
           }}
           onCancel={handleClose}
-          onSave={handleAdd}
+          onSave={() => {
+            return handleAdd()
+          }}
         />
       }
     />

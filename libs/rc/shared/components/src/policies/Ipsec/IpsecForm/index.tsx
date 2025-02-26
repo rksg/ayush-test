@@ -64,7 +64,11 @@ export const IpsecForm = (props: IpsecFormProps) => {
         espSecurityAssociation: {
           espProposalType: IpSecProposalTypeEnum.DEFAULT,
           espProposals: []
-        }
+        },
+        retryLimitEnabledCheckbox: false,
+        espReplayWindowEnabledCheckbox: false,
+        deadPeerDetectionDelayEnabledCheckbox: false,
+        nattKeepAliveIntervalEnabledCheckbox: false
       })
     }
   }, [dataFromServer, editMode, form])
@@ -82,6 +86,25 @@ export const IpsecForm = (props: IpsecFormProps) => {
       if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
         data.espSecurityAssociation.espProposals = []
       }
+      if (data.retryLimitEnabledCheckbox === false) {
+        if (data.advancedOption && data.advancedOption.retryLimit)
+          data.advancedOption.retryLimit = 5
+      }
+      if (data.deadPeerDetectionDelayEnabledCheckbox === false) {
+        if (data.advancedOption && data.advancedOption.dpdDelay)
+          data.advancedOption.dpdDelay = 0
+      }
+      if (data.espReplayWindowEnabledCheckbox === false) {
+        if (data.advancedOption && data.advancedOption.replayWindow)
+          data.advancedOption.replayWindow = 32
+      }
+      if (data.nattKeepAliveIntervalEnabledCheckbox === false) {
+        if (data.advancedOption && data.advancedOption.keepAliveInterval)
+          data.advancedOption.keepAliveInterval = 20
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('data', data)
       if (editMode) {
         await updateIpsec({ params, payload: data }).unwrap()
       } else {

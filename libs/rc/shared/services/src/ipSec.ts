@@ -1,6 +1,6 @@
 
 import { DefaultOptionType } from 'antd/lib/select'
-import _, { cloneDeep }                     from 'lodash'
+import _, { cloneDeep }      from 'lodash'
 
 import {
   Ipsec,
@@ -17,7 +17,9 @@ import {
   NewAPModel,
   VenueDetail,
   IpSecOptionsData,
-  IpsecActivation
+  IpsecActivation,
+  SoftGreUrls,
+  SoftGreViewData
 } from '@acx-ui/rc/utils'
 import { baseIpSecApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -107,6 +109,9 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
         const apNameMap:{ [key:string]: string[] } = {}
         let apSerialNumbers: string[] = []
 
+        const venueSoftGreMap:{ [key:string]: string } = {}
+        let softGreIds: string[] = []
+
         Object.entries(activations).forEach(([venueId, activation]) => {
           if (activation) {
             venueNetworksMap[venueId] = Array.from(activation.wifiNetworkIds)
@@ -114,6 +119,11 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
 
             apNameMap[venueId] = Array.from(activation.apSerialNumbers)
             apSerialNumbers = apSerialNumbers.concat(Array.from(activation.apSerialNumbers))
+
+            if (activation.softGreProfileId) {
+              venueSoftGreMap[venueId] = activation.softGreProfileId
+              softGreIds.push(activation.softGreProfileId)
+            }
           }
         })
 
@@ -161,6 +171,23 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
 
         // Collect softgre names by ids
         let softGreProfileMap:{ [key:string]: string } = {}
+        const softGreIdsSet = Array.from(new Set(softGreIds))
+        if(softGreIdsSet.length > 0){
+          const softGreQueryPayload = {
+            fields: ['name', 'id'],
+            filters: { id: softGreIdsSet },
+            pageSize: 10000
+          }
+          const softGreReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+          const softGreRes = await fetchWithBQ({ ...softGreReq,
+            body: JSON.stringify(softGreQueryPayload) })
+          const { data: softGreData } = softGreRes.data as TableResult<SoftGreViewData>
+          softGreData?.forEach((softGre: SoftGreViewData) => {
+            if (softGre.name) {
+              softGreProfileMap[softGre.id] = softGre.name
+            }
+          })
+        }
 
         const venueIds = Object.keys(venueNetworksMap)
         const venueQueryPayload = {
@@ -177,7 +204,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           const wifiNetworkNames = wifiNetworkIDs.map(id => (networkMapping[id]))
           const apSerialNumbers = apNameMap[venue.id]
           const apNames = apSerialNumbers.map(id => (apMapping[id]))
-          const softGreProfileId = ''
+          const softGreProfileId = venueSoftGreMap[venue.id]
           const softGreProfileName = softGreProfileMap[softGreProfileId]
           return {
             ...venue,
@@ -209,13 +236,10 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           ...ipsecListReq,
           body: JSON.stringify(payload)
         })
-        // eslint-disable-next-line max-len
         if (ipsecListRes.error) return {
           data: {
             options: [],
             isLockedOptions: true,
-            // gatewayIps: Array.from(gatewayIps),
-            // gatewayIpMaps,
             activationProfiles
           } as IpSecOptionsData }
 
@@ -279,6 +303,51 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
       },
       providesTags: [{ type: 'IpSec', id: 'Options' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    activateIpsec: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(IpsecUrls.activateIpsec, params)
+      },
+      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
+    }),
+    dectivateIpsec: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(IpsecUrls.dectivateIpsec, params)
+      },
+      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
+    }),
+    activateIpsecOnVenueLanPort: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IpsecUrls.activateIpsecOnVenueLanPort, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }]
+    }),
+    deactivateIpsecOnVenueLanPort: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(IpsecUrls.deactivateIpsecOnVenueLanPort, params)
+      },
+      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }]
+    }),
+    activateIpsecOnAPLanPort: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IpsecUrls.activateIpsecOnApLanPort, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateIpsecOnAPLanPort: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IpsecUrls.deactivateIpsecOnApLanPort, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -292,7 +361,13 @@ export const {
   useUpdateIpsecMutation,
   useGetVenuesIpsecPolicyQuery,
   useGetIpsecOptionsQuery,
-  useLazyGetIpsecOptionsQuery
+  useLazyGetIpsecOptionsQuery,
+  useActivateIpsecMutation,
+  useDectivateIpsecMutation,
+  useActivateIpsecOnVenueLanPortMutation,
+  useDeactivateIpsecOnVenueLanPortMutation,
+  useActivateIpsecOnAPLanPortMutation,
+  useDeactivateIpsecOnAPLanPortMutation
 } = ipSecApi
 
 

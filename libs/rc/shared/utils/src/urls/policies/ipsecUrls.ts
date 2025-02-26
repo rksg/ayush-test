@@ -45,5 +45,65 @@ export const IpsecUrls: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activateIpsec: {
+    method: 'put',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:softGreProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateIpsec: {
+    method: 'delete',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:softGreProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateIpsecOnVenueLanPort: {
+    method: 'put',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/softGreProfiles/:softGreProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateIpsecOnVenueLanPort: {
+    method: 'delete',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/softGreProfiles/:softGreProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateIpsecOnApLanPort: {
+    method: 'put',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/softGreProfiles/:softGreProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateIpsecOnApLanPort: {
+    method: 'delete',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/softGreProfiles/:softGreProfileId/ipsecProfiles/:ipsecProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

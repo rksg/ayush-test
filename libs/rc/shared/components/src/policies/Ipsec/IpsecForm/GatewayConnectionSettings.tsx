@@ -6,11 +6,10 @@ import { useIntl }                          from 'react-intl'
 
 import { GridCol, GridRow, Subtitle, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }          from '@acx-ui/icons'
+import { Ipsec, IpSecAdvancedOptionEnum }      from '@acx-ui/rc/utils'
 
 import { messageMapping } from './messageMapping'
 
-// eslint-disable-next-line import/order
-import { Ipsec, IpSecAdvancedOptionEnum } from '@acx-ui/rc/utils'
 
 interface GatewayConnectionSettingsFormProps {
   initIpSecData?: Ipsec,
@@ -32,8 +31,22 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
   useEffect(() => {
     const ipCompEnabled = form.getFieldValue(['advancedOption', 'ipcompEnable'])
     setIpCompressionEnabled(ipCompEnabled)
+
     const enforceNatt = form.getFieldValue(['advancedOption', 'enforceNatt'])
     setForceNATTEnabled(enforceNatt)
+
+    const retryLimitEnabledChk = form.getFieldValue('retryLimitEnabledCheckbox')
+    setRetryLimitEnabled(retryLimitEnabledChk)
+
+    const espReplayWindowEnabledChk = form.getFieldValue('espReplayWindowEnabledCheckbox')
+    setEspReplayWindowEnabled(espReplayWindowEnabledChk)
+
+    const deadPeerDetectionDelayEnabledChk =
+      form.getFieldValue('deadPeerDetectionDelayEnabledCheckbox')
+    setDeadPeerDetectionDelayEnabled(deadPeerDetectionDelayEnabledChk)
+
+    const keepAliveIntvalEnabledChk = form.getFieldValue('nattKeepAliveIntervalEnabledCheckbox')
+    setNattKeepAliveIntervalEnabled(keepAliveIntvalEnabledChk)
     if (loadGwSettings && initIpSecData) {
       if (initIpSecData.advancedOption?.ipcompEnable) {
         setIpCompressionEnabled(initIpSecData.advancedOption?.ipcompEnable)
@@ -41,6 +54,27 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
       if (initIpSecData.advancedOption?.enforceNatt) {
         setForceNATTEnabled(initIpSecData.advancedOption?.enforceNatt)
       }
+      if (initIpSecData.advancedOption?.retryLimit
+          && initIpSecData.advancedOption?.retryLimit !== 5) {
+        setRetryLimitEnabled(true)
+        form.setFieldValue('retryLimitEnabledCheckbox', true)
+      }
+      if (initIpSecData.advancedOption?.replayWindow
+        && initIpSecData.advancedOption?.replayWindow !== 32) {
+        setEspReplayWindowEnabled(true)
+        form.setFieldValue('espReplayWindowEnabledCheckbox', true)
+      }
+      if (initIpSecData.advancedOption?.dpdDelay
+        && initIpSecData.advancedOption?.dpdDelay !== 0) {
+        setDeadPeerDetectionDelayEnabled(true)
+        form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
+      }
+      if (initIpSecData.advancedOption?.keepAliveInterval
+        && initIpSecData.advancedOption?.keepAliveInterval !== 20) {
+        setNattKeepAliveIntervalEnabled(true)
+        form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', true)
+      }
+
     }
     setLoadGwSettings(false)
   }, [initIpSecData])
@@ -96,13 +130,15 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
       <GridRow>
         <GridCol col={{ span: 12 }}>
           <Form.Item
-            initialValue={false}
             style={{ lineHeight: '50px' }}
             children={
               <>
-                <Checkbox data-testid='retryLimitEnabled'
+                <Checkbox
+                  checked={retryLimitEnabled}
+                  data-testid='retryLimitEnabled'
                   onChange={async (e: CheckboxChangeEvent) => {
                     setRetryLimitEnabled(e.target.checked)
+                    form.setFieldValue('retryLimitEnabledCheckbox', e.target.checked)
                   }}
                   children={$t({ defaultMessage: 'Retry Limit' })} />
                 <Tooltip.Question
@@ -145,8 +181,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             children={
               <>
                 <Checkbox data-testid='espReplayWindowEnabled'
+                  checked={espReplayWindowEnabled}
                   onChange={async (e: CheckboxChangeEvent) => {
                     setEspReplayWindowEnabled(e.target.checked)
+                    form.setFieldValue('espReplayWindowEnabledCheckbox', e.target.checked)
                   }}
                   children={$t({ defaultMessage: 'ESP Replay Window' })} />
                 <Tooltip.Question
@@ -215,11 +253,14 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           <Form.Item
             valuePropName='checked'
             style={{ lineHeight: '50px' }}
+            initialValue={false}
             children={
               <>
                 <Checkbox data-testid='deadPeerDetectionDelayEnabled'
+                  checked={deadPeerDetectionDelayEnabled}
                   onChange={async (e: CheckboxChangeEvent) => {
                     setDeadPeerDetectionDelayEnabled(e.target.checked)
+                    form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', e.target.checked)
                   }}
                   children={$t({ defaultMessage: 'Dead Peer Detection Delay' })} />
                 <Tooltip.Question
@@ -240,7 +281,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
                     initialValue={1}
-                    children={<InputNumber min={1} max={65536} />} />
+                    children={<InputNumber min={0} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
               }
@@ -289,8 +330,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             children={
               <>
                 <Checkbox data-testid='nattKeepAliveIntervalEnabled'
+                  checked={nattKeepAliveIntervalEnabled}
                   onChange={async (e: CheckboxChangeEvent) => {
                     setNattKeepAliveIntervalEnabled(e.target.checked)
+                    form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', e.target.checked)
                   }}
                   children={$t({ defaultMessage: 'NAT-T Keep Alive Interval' })} />
                 <Tooltip.Question

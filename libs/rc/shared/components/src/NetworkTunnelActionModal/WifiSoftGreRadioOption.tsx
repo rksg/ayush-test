@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import {  Form, Radio, Row, Space, Select, Switch } from 'antd'
+import {  Form, Radio, Row, Space, Select } from 'antd'
 import { DefaultOptionType }                from 'antd/lib/select'
 import { useIntl }                          from 'react-intl'
 
 import { Tooltip }                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
-import { useGetSoftGreOptionsQuery, useLazyGetSoftGreOptionsQuery, useGetIpsecOptionsQuery, useLazyGetIpsecOptionsQuery } from '@acx-ui/rc/services'
+import { useGetSoftGreOptionsQuery, useLazyGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
 import { hasPolicyPermission, PolicyOperation, PolicyType }         from '@acx-ui/rc/utils'
 
 import {
@@ -16,7 +16,6 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
-import IpsecDrawer   from '../policies/Ipsec/IpsecForm/IpsecDrawer'
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
 import * as UI                   from './styledComponents'
@@ -34,7 +33,7 @@ const defaultPayload = {
   filters: {}
 }
 
-interface WiFISoftGreRadioOptionProps {
+export interface WiFISoftGreRadioOptionProps {
   currentTunnelType: NetworkTunnelTypeEnum
   venueId: string
   networkId?: string
@@ -52,33 +51,18 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   const { $t } = useIntl()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
-  const [ detailIpsecDrawerVisible, setDetailIpsecDrawerVisible ] = useState<boolean>(false)
-  const [ addIpsecDrawerVisible, setAddIpsecDrawerVisible ] = useState<boolean>(false)
   const [ isLocked, setIsLocked ] = useState<boolean>(false)
   const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
-  const [ ipsecOption, setIpsecOption ] = useState<DefaultOptionType[]>([])
   const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
   const [ getSoftGreOptions ] = useLazyGetSoftGreOptionsQuery()
-  const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
-  const [ enableIpsec, setEnableIpsec ] = useState<boolean>(false)
 
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
-  const ipsecProfileId = Form.useWatch(['ipsec', 'newIpsecProfileId'], form)
-
   const optionsDataQuery = useGetSoftGreOptionsQuery(
-    { params: { venueId, networkId },
-      payload: { ...defaultPayload }
-    },
-    { skip: !venueId || !networkId }
-  )
-
-  const ipsecOptionsDataQuery = useGetIpsecOptionsQuery(
     { params: { venueId, networkId },
       payload: { ...defaultPayload }
     },
@@ -107,11 +91,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
           options.find(item => item.value === profileId)?.label)
       }
     }
-    if (ipsecOptionsDataQuery.data && !form.getFieldValue(['ipsec', 'newIpsecProfileId'])) {
-      const { options } = ipsecOptionsDataQuery.data
-      setIpsecOption(options)
-    }
-  }, [form, optionsDataQuery, ipsecOptionsDataQuery])
+  }, [form, optionsDataQuery])
 
   useEffect(() => {
     if (currentTunnelType !== NetworkTunnelTypeEnum.SoftGre) {
@@ -133,15 +113,6 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     }
   }
 
-  const addIpsecOption = (option: DefaultOptionType) => {
-    setIpsecOption((preState) => {
-      return [{ ...option, disabled: isLocked }, ...preState]
-    })
-    if (!isLocked) {
-      form.setFieldValue(['ipsec', 'newProfileId'], option.value)
-      form.setFieldValue(['ipsec', 'newProfileName'], option.label)
-    }
-  }
   const onChange = (value:string) => {
     form.setFieldValue(['softGre', 'newProfileName'],
       softGreOption?.find(item => item.value === value)?.label ?? '')
@@ -177,19 +148,9 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     setAddDrawerVisible(true)
   }
 
-  const handleClickAddIpsec = () => {
-    setDetailIpsecDrawerVisible(false)
-    setAddIpsecDrawerVisible(true)
-  }
-
   const handleClickProfileDetail = () => {
     setAddDrawerVisible(false)
     setDetailDrawerVisible(true)
-  }
-
-  const handleClickIpsecProfileDetail = () => {
-    setAddIpsecDrawerVisible(false)
-    setDetailIpsecDrawerVisible(true)
   }
 
   return <Row>
@@ -261,49 +222,6 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
             </Space>}
       </UI.RadioWrapper>
     </Form.Item>
-    {currentTunnelType === NetworkTunnelTypeEnum.SoftGre &&
-    <Space><div>
-      <label>{$t({ defaultMessage: 'Enable IPsec' })}</label>
-      <Switch onChange={setEnableIpsec} />
-    </div></Space>}
-    {enableIpsec &&
-      <Space wrap>
-        <Form.Item noStyle
-          name={['ipsec', 'newIpsecProfileId']}
-          rules={[
-            { required: currentTunnelType === NetworkTunnelTypeEnum.SoftGre,
-              message: $t({ defaultMessage: 'Please select a IPsec Profile' })
-            },
-            { validator: (_, value) => gatewayIpValidator(value) }
-          ]}
-          initialValue=''
-          children={<Select
-            style={{ width: '150px' }}
-            onChange={onChange}
-            options={[
-              {
-                label: $t({ defaultMessage: 'Select...' }), value: ''
-              },
-              ...ipsecOption
-            ]}
-            placeholder={$t({ defaultMessage: 'Select...' })} />}
-        />
-        <UI.TextButton
-          type='link'
-          disabled={!ipsecProfileId}
-          onClick={handleClickIpsecProfileDetail}
-        >
-          {$t({ defaultMessage: 'Profile details' })}
-        </UI.TextButton>
-        <UI.TextButton
-          type='link'
-          disabled={!hasPolicyPermission({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
-          onClick={handleClickAddIpsec}
-          style={{ marginLeft: 5 }}
-        >
-          {$t({ defaultMessage: 'Add' })}
-        </UI.TextButton>
-      </Space>}
     <SoftGreDrawer
       visible={detailDrawerVisible}
       setVisible={setDetailDrawerVisible}
@@ -315,18 +233,6 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       visible={addDrawerVisible}
       setVisible={setAddDrawerVisible}
       callbackFn={addOption}
-    />
-    <IpsecDrawer
-      visible={detailIpsecDrawerVisible}
-      setVisible={setDetailIpsecDrawerVisible}
-      policyId={ipsecProfileId}
-      policyName={ipsecOption.find(item => item.value === ipsecProfileId)?.label as string}
-      readMode
-    />
-    <IpsecDrawer
-      visible={addIpsecDrawerVisible}
-      setVisible={setAddIpsecDrawerVisible}
-      callbackFn={addIpsecOption}
     />
   </Row>
 }

@@ -57,6 +57,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const [preSharedKey] = useState('')
   const [loadGwSettings, setLoadGwSettings] = useState(true)
   const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
+  const [authType, setAuthType] = useState('')
 
   const { ipsecData, isLoading } = useGetIpsecViewDataListQuery(
     { params, payload: {
@@ -117,7 +118,6 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
       content: <EspAssociationSettings initIpSecData={initIpSecData} />
     }
   ]
-  const [authType, setAuthType] = useState('')
 
   const [activeSecurityTabKey, setActiveSecurityTabKey] = useState(secAssociationTabsInfo[0]?.key)
 
@@ -210,19 +210,22 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
                 />
             }
           />
-          {authType === IpSecAuthEnum.PSK &&
+          {authType === IpSecAuthEnum.PSK && readMode &&
+            <Form.Item label={$t({ defaultMessage: 'Pre-shared Key' })}
+              children={
+                <PasswordInput readOnly
+                  value={ipsecData?.preSharedKey}
+                  style={{ width: '100%', border: 'none' }} />
+              } />
+          }
+          {authType === IpSecAuthEnum.PSK && !readMode &&
             <Form.Item
               data-testid='pre-shared-key'
               name='preSharedKey'
               label={$t({ defaultMessage: 'Pre-shared Key' })}
               rules={[{ required: true }]}
               children={
-                readMode ?
-                  <PasswordInput
-                    value={ipsecData?.preSharedKey}
-                    style={{ width: '50%', border: 'none' }}
-                    readOnly /> :
-                  <PasswordInput value={preSharedKey} />
+                <PasswordInput value={preSharedKey} />
               }
             />
           }

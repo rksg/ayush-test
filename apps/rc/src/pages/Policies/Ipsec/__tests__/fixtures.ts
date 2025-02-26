@@ -226,7 +226,17 @@ export const mockIpSecDetail = {
   ikeRekeyTime: 4,
   ikeRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
   espRekeyTime: 1,
-  espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR
+  espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
+  activations: [
+    {
+      venueId: mockedVenueId1,
+      wifiNetworkIds: [
+        '9b33509cc0a1464cad9447778a72006f',
+        '797a1f499c254260b7a1aedafba524a3',
+        'b946294426b8413d819751cb3d320a20'
+      ]
+    }
+  ]
 }
 
 export const mockedNetworkQueryData = {
@@ -234,7 +244,7 @@ export const mockedNetworkQueryData = {
     'name',
     'id'
   ],
-  totalCount: 2,
+  totalCount: 3,
   page: 1,
   data: [
     {
