@@ -37,7 +37,7 @@ const { useWatch } = Form
 export function NetworkControlTab () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data } = useContext(NetworkFormContext)
+  const { data, cloneMode, editMode } = useContext(NetworkFormContext)
 
   const labelWidth = '250px'
 
@@ -45,7 +45,7 @@ export function NetworkControlTab () {
   const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
-  const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !isMspAppMonitoringEnabled })
+  const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !(isMspAppMonitoringEnabled && !(cloneMode || editMode)) })
 
   const applicationRecognitionControlTooltipContent = $t({ defaultMessage:
     `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities.

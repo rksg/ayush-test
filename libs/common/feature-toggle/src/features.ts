@@ -24,6 +24,7 @@ export enum Features {
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
+  CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
@@ -290,7 +291,12 @@ export enum Features {
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
-  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
+  SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
+  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
+  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
+  LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

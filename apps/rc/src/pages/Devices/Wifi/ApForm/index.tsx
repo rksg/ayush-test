@@ -873,18 +873,34 @@ function CoordinatesModal (props: {
     }
   }
 
-  const onDragEndMaker = (event: google.maps.MapMouseEvent) => {
-    const hasError = formRef?.current
-      ? formRef?.current?.getFieldError(fieldName).length > 0 : false
+  const onDragEndMaker = async (event: google.maps.MapMouseEvent) => {
+    if (!event.latLng) return
+
     const latLng = [
-      event.latLng?.lat().toFixed(6),
-      event.latLng?.lng().toFixed(6)
+      event.latLng.lat().toFixed(6),
+      event.latLng.lng().toFixed(6)
     ]
-    if (hasError) {
-      updateMarkerPosition(event?.latLng as google.maps.LatLng)
-      formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
-    }
+
+    updateMarkerPosition(event.latLng)
+    formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
     formRef?.current?.setFieldValue(fieldName, `${latLng.join(', ')}`)
+
+    if (default6gEnablementToggle && !isApAfcEnabled) {
+      try {
+        const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
+        if (country !== selectedVenue.country) {
+          setCoordinatesValid(false)
+          formRef.current?.setFields([{
+            name: fieldName,
+            errors: [$t(validationMessages.diffApGpsWithVenueCountry)]
+          }])
+          return
+        }
+      } catch (error) {
+        console.warn('Failed to validate country:', error) // eslint-disable-line no-console
+      }
+    }
+
     setCoordinatesValid(true)
   }
 
@@ -923,7 +939,10 @@ function CoordinatesModal (props: {
       disabled: !coordinatesValid
     }}
     onOk={onApplyCoordinates}
-    onCancel={() => setGpsModalVisible(false)}
+    onCancel={() => {
+      formRef?.current?.setFields([{ name: fieldName, errors: [] }])
+      setGpsModalVisible(false)
+    }}
   >
     <GoogleMap.FormItem>
       <Form.Item

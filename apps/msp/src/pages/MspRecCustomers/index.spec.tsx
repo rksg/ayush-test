@@ -8,6 +8,7 @@ import { PrivilegeGroup }                                         from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { RolesEnum }                                              from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                         from '@acx-ui/user'
 import { AccountType }                                            from '@acx-ui/utils'
 
 import { MspRecCustomers } from '.'
@@ -809,6 +810,29 @@ describe('MspRecCustomers', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Assign' }))
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+  it('should render correctly when rbacOpsApiEnabled nabled', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('Brand Properties')).toBeVisible()
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
 })

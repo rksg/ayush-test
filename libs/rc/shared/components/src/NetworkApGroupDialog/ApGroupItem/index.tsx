@@ -8,7 +8,6 @@ import { useIntl }                    from 'react-intl'
 import { Tooltip } from '@acx-ui/components'
 import {
   getVlanPool,
-  IsNetworkSupport6g,
   NetworkApGroup,
   validateRadioBandForDsaeNetwork,
   VlanType
@@ -27,10 +26,9 @@ interface ApGroupItemProps {
 
 export const ApGroupItem = memo((props: ApGroupItemProps) => {
   const intl = useIntl()
-  const { network, vlanPoolSelectOptions } = useContext(NetworkApGroupDialogContext)
+  const { network, vlanPoolSelectOptions, isSupport6G } = useContext(NetworkApGroupDialogContext)
   const { apgroup, name } = props
   const { wlan } = network || {}
-  const isSupport6G = IsNetworkSupport6g(network)
 
   const apGroupName = apgroup?.isDefault ? intl.$t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
 

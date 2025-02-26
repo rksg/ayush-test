@@ -44,9 +44,10 @@ describe('EdgeNokiaOltDetails', () => {
     expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(2)
+    expect(tabs.length).toBe(3)
     expect(tabs[0].textContent).toBe('Performance')
     expect(tabs[1].textContent).toBe('Cages')
+    expect(tabs[2].textContent).toBe('Uplink')
 
     screen.getByRole('tab', { name: 'Performance' })
     expect(await screen.findAllByText('No data to display')).toHaveLength(2)

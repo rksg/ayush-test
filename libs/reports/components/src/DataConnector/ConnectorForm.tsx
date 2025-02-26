@@ -6,24 +6,24 @@ import { useIntl }     from 'react-intl'
 import { GridRow, GridCol, PageHeader, Select, Button, ActionsContainer, showToast, Loader } from '@acx-ui/components'
 import { useNavigate, useParams }                                                            from '@acx-ui/react-router-dom'
 
-import { useGetSubscriptionQuery, useSaveSubscriptionMutation } from './services'
-import { Frequency, frequencyMap, getUserName }                 from './utils'
-import { generateBreadcrumb }                                   from './utils'
+import { useGetConnectorQuery, useSaveConnectorMutation } from './services'
+import { Frequency }                                      from './types'
+import { frequencyMap, getUserName, generateBreadcrumb }  from './utils'
 
-type DataSubscriptionsFormProps = {
+type DataConnectorFormProps = {
   editMode?: boolean
 }
 
 
-const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=false }) => {
+const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const subId = params.settingId
-  const selectedSubscription = useGetSubscriptionQuery({ id: subId }, { skip: !editMode })
+  const connectorId = params.settingId
+  const selectedConnector = useGetConnectorQuery({ id: connectorId }, { skip: !editMode })
   const [form] = Form.useForm()
 
-  const selectedDataSet = Form.useWatch('dataSource', form) || selectedSubscription.data?.dataSource
+  const selectedDataSet = Form.useWatch('dataSource', form) || selectedConnector.data?.dataSource
   // todo prepare map from api response
   const dataSetColumns = {
     apInventory: [
@@ -35,37 +35,37 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
       { value: 'switchName', label: $t({ defaultMessage: 'Switch Name' }) }
     ]
   }
-  const [updateSubscription, { isLoading }] = useSaveSubscriptionMutation()
-  const saveSubscription = useCallback(() => {
+  const [updateConnector, { isLoading }] = useSaveConnectorMutation()
+  const saveConnector = useCallback(() => {
     const data = form.getFieldsValue()
     if (editMode) {
-      data.id = selectedSubscription.data?.id
+      data.id = selectedConnector.data?.id
       data.isEdit = true
     }
-    updateSubscription({ ...data, userName: getUserName() })
+    updateConnector({ ...data, userName: getUserName() })
       .unwrap()
       .then(() => {
         showToast({
           type: 'success',
-          content: $t({ defaultMessage: 'Subscription saved successfully!' })
+          content: $t({ defaultMessage: 'Connector saved successfully!' })
         })
         navigate(-1)
       })
       .catch(({ data: { error } }) => {
         showToast({ type: 'error', content: error })
       })
-  }, [form, editMode, selectedSubscription.data?.id, navigate, updateSubscription, $t])
+  }, [form, editMode, selectedConnector.data?.id, navigate, updateConnector, $t])
   const initialValues =
-    editMode ? selectedSubscription.data : { frequency: Frequency.Daily }
+    editMode ? selectedConnector.data : { frequency: Frequency.Daily }
 
   return <>
     <PageHeader
       title={editMode
-        ? $t({ defaultMessage: 'Edit Subscription' })
-        : $t({ defaultMessage: 'New Subscription' })}
+        ? $t({ defaultMessage: 'Edit Connector' })
+        : $t({ defaultMessage: 'New Connector' })}
       breadcrumb={generateBreadcrumb()}
     />
-    <Loader states={[{ isLoading: isLoading || selectedSubscription.isLoading }]}>
+    <Loader states={[{ isLoading: isLoading || selectedConnector.isLoading }]}>
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
           <Form
@@ -75,10 +75,10 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
           >
             <Form.Item
               name='name'
-              label={$t({ defaultMessage: 'Subscription name' })}
+              label={$t({ defaultMessage: 'Connector name' })}
               rules={[{
                 required: true,
-                message: $t({ defaultMessage: 'Subscription name is required!' })
+                message: $t({ defaultMessage: 'Connector name is required!' })
               }]}
             >
               <Input data-testid='name' />
@@ -117,7 +117,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
             </Form.Item>
             <Form.Item
               name='frequency'
-              label={$t({ defaultMessage: 'Frequency of subscription' })}
+              label={$t({ defaultMessage: 'Frequency of connector' })}
               rules={[{
                 required: true,
                 message: $t({ defaultMessage: 'Frequency is required!' })
@@ -125,9 +125,12 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
             >
               <Select
                 disabled
-                options={[
-                  { value: Frequency.Daily, label: $t(frequencyMap[Frequency.Daily]) }
-                ]}
+                options={Object.values(Frequency).map(
+                  (value) => ({
+                    value,
+                    label: $t(frequencyMap[value])
+                  })
+                )}
               />
             </Form.Item>
           </Form>
@@ -143,7 +146,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
                 form
                   .validateFields()
                   .then(() => {
-                    saveSubscription()
+                    saveConnector()
                   })
                   .catch(() => {})
               }}
@@ -163,4 +166,4 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ editMode=
   </>
 }
 
-export default DataSubscriptionsForm
+export default DataConnectorForm

@@ -5,13 +5,13 @@ import { get }                                                                fr
 import { getUserName as getUserNameR1, getUserProfile as getUserProfileR1 }   from '@acx-ui/user'
 import { getIntl }                                                            from '@acx-ui/utils'
 
-import { DataSubscription } from './services'
+import { DataConnector, Frequency } from './types'
 
 export function generateBreadcrumb () {
   const { $t } = getIntl()
   return [
     { text: $t({ defaultMessage: 'Business Insights' }) },
-    { text: $t({ defaultMessage: 'DataSubscriptions' }), link: '/dataSubscriptions' }
+    { text: $t({ defaultMessage: 'DataConnector' }), link: '/dataConnector' }
   ]
 }
 
@@ -29,7 +29,7 @@ export enum Actions {
   Delete = 'delete'
 }
 
-export const isVisibleByAction = (rows: DataSubscription[], action: Actions) => {
+export const isVisibleByAction = (rows: DataConnector[], action: Actions) => {
   switch (action) {
     case Actions.Resume:
       return rows.every(row => !row.status)
@@ -42,10 +42,6 @@ export const isVisibleByAction = (rows: DataSubscription[], action: Actions) => 
     default:
       return false
   }
-}
-
-export enum Frequency {
-  Daily = 'daily'
 }
 
 export const frequencyMap = {

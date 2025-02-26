@@ -48,7 +48,7 @@ describe('OltDetailsDrawer', () => {
     expect(screen.getByText('Firmware Version')).toBeInTheDocument()
     expect(screen.getByText('Venue')).toBeInTheDocument()
     expect(screen.getByText('RUCKUS Edge')).toBeInTheDocument()
-    expect(screen.getAllByText('--')).toHaveLength(6)
+    expect(screen.getAllByText('--')).toHaveLength(7)
   })
 
   it('calls onClose function when closed', async () => {
@@ -74,7 +74,7 @@ describe('OltDetailsDrawer', () => {
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('IP Address')).toBeInTheDocument()
     expect(screen.getByText('192.168.1.1')).toBeInTheDocument()
-    expect(screen.getAllByText('--')).toHaveLength(5)
+    expect(screen.getAllByText('--')).toHaveLength(6)
   })
 
   it('renders -- when not online', () => {
@@ -90,6 +90,6 @@ describe('OltDetailsDrawer', () => {
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('Venue')).toBeInTheDocument()
     expect(screen.getByText('Mock Venue 1')).toBeInTheDocument()
-    expect(screen.getAllByText('--')).toHaveLength(5)
+    expect(screen.getAllByText('--')).toHaveLength(6)
   })
 })
