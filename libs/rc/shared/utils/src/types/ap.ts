@@ -547,6 +547,7 @@ export interface CapabilitiesApModel {
   supportSmartMonitor?: boolean,
   supportMesh5GOnly6GOnly?: boolean,
   supportSoftGre?: boolean,
+  supportIoT?: boolean,
   usbPowerEnable?: boolean
 }
 
