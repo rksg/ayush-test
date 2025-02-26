@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 import _                              from 'lodash'
@@ -26,6 +25,7 @@ interface CardProps {
   updateGroupList: Dispatch<SetStateAction<Group[]>>
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
+  // sectionRef?: React.MutableRefObject<null>
 }
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
@@ -65,6 +65,7 @@ function Card (props: CardProps) {
     deleteCard,
     drag,
     card
+    // ,sectionRef
   } = props
   const {
     id,
@@ -132,75 +133,54 @@ function Card (props: CardProps) {
   }
 
   const widgetRef = useRef(null)
-  const handler = (mouseDownEvent, card) => {
-    // console.log(card)
-    mouseDownEvent.preventDefault()
-    const startSize = { x: x + wPx, y: y + hPx }
-    const startPosition = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY }
-    const ranges = card.sizes.map((s)=>{
-      const { wPx, hPx } = utils.calWHtoPx(
-        s.width,
-        s.height,
-        margin,
-        rowHeight,
-        calWidth
-      )
-      return ({ x: x + wPx, y: y + hPx })
-    })
+  // const [resizing, setResizing] = useState(false)
+  // const handler = (mouseDownEvent, card) => {
+  //   mouseDownEvent.preventDefault() // prevent drag event
+  //   const startSize = { x: x + wPx, y: y + hPx }
+  //   const startPosition = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY }
+  //   const ranges = card.sizes.map(s => {
+  //     const { wPx, hPx } = utils.calWHtoPx(
+  //       s.width,
+  //       s.height,
+  //       margin,
+  //       rowHeight,
+  //       calWidth
+  //     )
+  //     return ({ x: x + wPx, y: y + hPx })
+  //   })
 
-    function onMouseMove (mouseMoveEvent) {
-      const x = startSize.x - startPosition.x + mouseMoveEvent.pageX
-      const y = startSize.y - startPosition.y + mouseMoveEvent.pageY
-      ranges.some((r, index) => {
-        if(index === ranges.length-1) {
-          // console.log('move: ', x , ' ', y, ' index: ', index)
-          changeCardsLayout(index)
-          return true
-        }
-        if (x <= r.x || y <= r.y) {
-          // console.log('move: ', x , ' ', y, ' index: ', index)
-          changeCardsLayout(index)
-          return true
-        }
+  //   function onMouseMove (mouseMoveEvent) {
+  //     const x = startSize.x - startPosition.x + mouseMoveEvent.pageX
+  //     const y = startSize.y - startPosition.y + mouseMoveEvent.pageY
+  //     ranges.some((r, index) => {
+  //       if(index === ranges.length-1) {
+  //         changeCardsLayout(index)
+  //         return true
+  //       }
+  //       if (x <= r.x && y <= r.y) {
+  //         changeCardsLayout(index)
+  //         return true
+  //       }
 
-        if((x > r.x || y > r.y) && (x < ranges[index + 1].x || y < ranges[index + 1].y)) {
-          changeCardsLayout(index+1)
-          return true
-        }
-        return false
-      })
-      // if(x < ranges[0].x || y < ranges[0].y) {
-      //   if(card.currentSizeIndex != 0) {
-      //     changeCardsLayout(0)
-      //   }
-      //   // setSize(range[0])
-      // }
-      // else if((x >= ranges[0].x + 1 || y >= ranges[0].y + 1) &&
-      // (x < ranges[1].x + 1 || y < ranges[1].y + 1)) {
-      //   if(card.currentSizeIndex != 1) {
-      //     changeCardsLayout(1)
-      //   }
-      //   // setSize(ranges[1])
-      // }
-      // else if(x >= ranges[1].x + 1 || y >= ranges[1].y + 1) {
-      //   if(card.currentSizeIndex != 1) {
-      //     changeCardsLayout(1)
-      //   }
-      // 	// setSize(range[2])
-      // }
-    }
-    function onMouseUp () {
-      // console.log('end')
-      widgetRef.current.removeEventListener('mousemove', onMouseMove)
-      // uncomment the following line if not using `{ once: true }`
-      // widgetRef.current.removeEventListener("mouseup", onMouseUp);
-    }
-    if (widgetRef && widgetRef.current) {
-      // console.log('init')
-      widgetRef.current.addEventListener('mousemove', onMouseMove)
-      widgetRef.current.addEventListener('mouseup', onMouseUp, { once: true })
-    }
-  }
+  //       if((x > r.x || y > r.y) && (x < ranges[index + 1].x || y < ranges[index + 1].y)) {
+  //         changeCardsLayout(index+1)
+  //         return true
+  //       }
+  //       return false
+  //     })
+  //   }
+  //   function onMouseUp () {
+  //     setResizing(false)
+  //     widgetRef.current.removeEventListener('mousemove', onMouseMove)
+  //     // uncomment the following line if not using `{ once: true }`
+  //     // widgetRef.current.removeEventListener("mouseup", onMouseUp);
+  //   }
+  //   if (widgetRef && widgetRef.current && sectionRef) {
+  //     setResizing(true)
+  //     widgetRef.current.addEventListener('mousemove', onMouseMove)
+  //     sectionRef.current.addEventListener('mouseup', onMouseUp, { once: true })
+  //   }
+  // }
 
   return (
     <div ref={widgetRef}>
@@ -221,7 +201,7 @@ function Card (props: CardProps) {
             style={{
               width: wPx,
               height: hPx,
-              opacity: 1,
+              opacity: 1, //resizing ? 0.6 : 1,
               transform: `translate(${x}px, ${y}px)`
             }}
           >
@@ -272,7 +252,7 @@ function Card (props: CardProps) {
                 setVisible={setVisible}
               />
             }
-            <div className='resizeHandle' onMouseDown={(e) => {handler(e, card)}}/>
+            {/* <div className='resizeHandle' onMouseDown={(e) => {handler(e, card)}}/> */}
           </div>
       }
     </div>
