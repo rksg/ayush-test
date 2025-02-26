@@ -1983,7 +1983,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
-    }),
+    })
   })
 })
 
