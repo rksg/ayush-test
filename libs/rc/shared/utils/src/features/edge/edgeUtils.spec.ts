@@ -2,6 +2,7 @@ import _ from 'lodash'
 
 import { EdgeLag }                                                                 from '../..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
+import { EdgeSubInterface, EdgePortWithStatus }                                    from '../../types'
 
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
 import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
@@ -20,7 +21,9 @@ import {
   validateClusterInterface,
   validateEdgeGateway,
   validateSubnetIsConsistent,
-  validateUniqueIp
+  validateUniqueIp,
+  convertEdgePortsConfigToApiPayload,
+  convertEdgeSubinterfaceToApiPayload
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -604,5 +607,151 @@ describe('isAllPortsLagMember', () => {
 
       expect(isAllPortsLagMember(mockUnconfgiuredPorts, [mockLags])).toBe(false)
     })
+  })
+})
+
+describe('convertEdgePortsConfigToApiPayload', () => {
+  it('should set gateway to empty string if port type is CLUSTER', () => {
+    const edgePort: EdgePortWithStatus = {
+      id: '',
+      sortIdx: 0,
+      name: '',
+      status: EdgeStatusEnum.UP,
+      mac: '',
+      ip: '',
+      subnet: '',
+      gateway: '192.168.1.1',
+      natEnabled: false,
+      corePortEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      portType: EdgePortTypeEnum.CLUSTER
+    }
+    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    expect(result.gateway).toBe('')
+  })
+
+  it('should set ip and subnet to empty string if ip mode is DHCP', () => {
+    const edgePort: EdgePortWithStatus = {
+      id: '',
+      sortIdx: 0,
+      name: '',
+      status: EdgeStatusEnum.UP,
+      mac: '',
+      ip: '192.168.1.1',
+      subnet: '255.255.255.0',
+      gateway: '',
+      natEnabled: false,
+      corePortEnabled: false,
+      ipMode: EdgeIpModeEnum.DHCP,
+      portType: EdgePortTypeEnum.WAN
+    }
+    const result = convertEdgePortsConfigToApiPayload(edgePort)
+    expect(result.ip).toBe('')
+    expect(result.subnet).toBe('')
+  })
+
+  it('should clear gateway and IP/subnet for DHCP mode', () => {
+    const formData: EdgePortWithStatus = {
+      ipMode: EdgeIpModeEnum.DHCP,
+      gateway: '1.1.1.1',
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0'
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.gateway).toBe('')
+    expect(result.ip).toBe('')
+    expect(result.subnet).toBe('')
+  })
+
+  it('should clear gateway for CLUSTER port type', () => {
+    const formData: EdgePortWithStatus = {
+      portType: EdgePortTypeEnum.CLUSTER,
+      gateway: '1.1.1.1'
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.gateway).toBe('')
+  })
+
+  it('should disable NAT for LAN port type', () => {
+    const formData: EdgePortWithStatus = {
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: true
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.natEnabled).toBe(false)
+  })
+
+  it('should clear gateway for LAN port type with corePortEnabled false', () => {
+    const formData: EdgePortWithStatus = {
+      portType: EdgePortTypeEnum.LAN,
+      corePortEnabled: false,
+      gateway: '1.1.1.1'
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.gateway).toBe('')
+  })
+
+  // eslint-disable-next-line max-len
+  it('should change IP mode to STATIC for LAN port type with corePortEnabled false and DHCP mode', () => {
+    const formData: EdgePortWithStatus = {
+      portType: EdgePortTypeEnum.LAN,
+      corePortEnabled: false,
+      ipMode: EdgeIpModeEnum.DHCP
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.ipMode).toBe(EdgeIpModeEnum.STATIC)
+  })
+
+  it('should not modify NAT for non-LAN port type', () => {
+    const formData: EdgePortWithStatus = {
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: true
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.natEnabled).toBe(true)
+  })
+
+  it('should not modify corePortEnabled for non-LAN port type', () => {
+    const formData: EdgePortWithStatus = {
+      portType: EdgePortTypeEnum.WAN,
+      corePortEnabled: true
+    }
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result.corePortEnabled).toBe(true)
+  })
+
+  it('should return empty formData', () => {
+    const formData: EdgePortWithStatus = {}
+    const result = convertEdgePortsConfigToApiPayload(formData)
+    expect(result).toEqual({})
+  })
+})
+
+describe('convertEdgeSubinterfaceToApiPayload', () => {
+  it('returns original formData when ipMode is not DHCP', () => {
+    const formData = {
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '192.168.1.1',
+      subnet: '255.255.255.0'
+    } as EdgeSubInterface
+    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    expect(result).toEqual(formData)
+  })
+
+  it('sets ip and subnet to empty strings when ipMode is DHCP', () => {
+    const formData = {
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '192.168.1.1',
+      subnet: '255.255.255.0'
+    } as EdgeSubInterface
+    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    expect(result.ip).toBe('')
+    expect(result.subnet).toBe('')
+  })
+
+  it('handles undefined formData', () => {
+    const formData: EdgeSubInterface | null | undefined = undefined
+    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    expect(result).toEqual({})
   })
 })
