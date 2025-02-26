@@ -34,7 +34,7 @@ import {
   hasAllowedOperations,
   hasPermission
 } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -118,6 +118,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const disconnectRevokeClientOpsApi = getOpsApi(ClientUrlsInfo.disconnectClient)
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -720,6 +721,12 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const showRowSelection = (wifiEDAClientRevokeToggle && (rbacOpsApiEnabled
     ? hasAllowedOperations([disconnectRevokeClientOpsApi])
     : hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] })))
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.WIRELESS_CLIENTS_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <UI.ClientTableDiv>

@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom'
+import { useState } from 'react'
+
 import userEvent from '@testing-library/user-event'
 
 import * as CommonComponent from '@acx-ui/components'
 import { Provider }         from '@acx-ui/store'
 import {
   render,
+  renderHook,
   screen
 } from '@acx-ui/test-utils'
 
@@ -60,15 +63,64 @@ jest.mock('./components/Layout', () => (props: LayoutProps) =>
   <div>Layout {props.groups[0]?.cards.length && 'cards'}</div>
 )
 
+const groupsData = [
+  {
+    id: 'default_group',
+    sectionId: 'default_section',
+    type: 'group',
+    cards: [
+      {
+        unit: {
+          'Traffic (Total)': 'BYTES'
+        },
+        axisType: 'time',
+        multiSeries: false,
+        chartType: 'line',
+        chartOption: [
+        ],
+        sessionId: 'c8643f44-87a0-4c3c-a969-a81a6a0ee041',
+        id: '9d7505c502db463883fa11870bc25d7c9430086a-e19c-4d4a-8d41-6918c667a696',
+        chatId: '9d7505c502db463883fa11870bc25d7c',
+        type: 'card',
+        isShadow: false,
+        width: 2,
+        height: 6,
+        currentSizeIndex: 0,
+        sizes: [
+          {
+            width: 2,
+            height: 6
+          },
+          {
+            width: 4,
+            height: 8
+          }
+        ],
+        gridx: 0,
+        gridy: 0,
+        widgetId: 'a15d9b80ff07470e8d7c51c03b22d078',
+        canvasId: 'c75cb313973047e6895e0f79f6c58c43'
+      }
+    ]
+  }
+]
+
 describe('Canvas', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
 
   it('should render layout correctly', async () => {
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState(groupsData)
+      return { groups, setGroups }
+    })
     render(
       <Provider>
-        <Canvas/>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+        />
       </Provider>
     )
     expect(await screen.findByText('Dashboard Canvas')).toBeVisible()
@@ -88,9 +140,16 @@ describe('Canvas', () => {
         }
       ])
     }))
+    const { result } = renderHook(() => {
+      const [groups, setGroups] = useState([])
+      return { groups, setGroups }
+    })
     render(
       <Provider>
-        <Canvas/>
+        <Canvas
+          groups={result.current.groups}
+          setGroups={result.current.setGroups}
+        />
       </Provider>
     )
     expect(await screen.findByText('Dashboard Canvas')).toBeVisible()

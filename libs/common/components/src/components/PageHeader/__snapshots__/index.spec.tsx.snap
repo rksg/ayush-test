@@ -494,7 +494,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top c1"
+          class="ant-tabs ant-tabs-top c1 sticky-top"
         >
           <div
             class="ant-tabs-nav"
@@ -1333,7 +1333,7 @@ exports[`PageHeader should render tabs correctly (no content) 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top c1"
+          class="ant-tabs ant-tabs-top c1 sticky-top"
         >
           <div
             class="ant-tabs-nav"
@@ -1626,7 +1626,7 @@ exports[`PageHeader should render tabs with Beta indicator (only one tab) 1`] = 
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top c1"
+          class="ant-tabs ant-tabs-top c1 sticky-top"
         >
           <div
             class="ant-tabs-nav"
@@ -1966,7 +1966,7 @@ exports[`PageHeader should render tabs with Beta indicator (special case) 1`] = 
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top c1"
+          class="ant-tabs ant-tabs-top c1 sticky-top"
         >
           <div
             class="ant-tabs-nav"
@@ -2375,7 +2375,7 @@ exports[`PageHeader should render tabs with Beta indicator 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top c1"
+          class="ant-tabs ant-tabs-top c1 sticky-top"
         >
           <div
             class="ant-tabs-nav"

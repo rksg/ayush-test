@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
 import { filterByAccess, hasCrossVenuesPermission }                                 from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }                                          from '@acx-ui/utils'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -201,6 +201,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     disableAddDevices
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
@@ -394,6 +396,13 @@ export function BasePersonaTable (props: PersonaTableProps) {
   }
 
   setIdentitiesCount?.(personaListQuery.data?.totalCount || 0)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.IDENTITY_TABLE,
+    states: [personaListQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader
       states={[

@@ -9,7 +9,8 @@ import {
   RadioChangeEvent,
   Space,
   Select,
-  Typography
+  Typography,
+  Switch
 } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
@@ -48,8 +49,8 @@ import {
   MspEcDelegatedAdmins,
   AssignActionEnum
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetPrivilegeGroupsQuery }                     from '@acx-ui/rc/services'
+import { GoogleMapWithPreference, usePlacesAutocomplete }         from '@acx-ui/rc/components'
+import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -59,7 +60,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   whitespaceOnlyRegExp,
-  PrivilegeGroup
+  PrivilegeGroup,
+  PrivacyFeatureName
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -168,6 +170,7 @@ export function ManageIntegrator () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -192,6 +195,7 @@ export function ManageIntegrator () {
   const [autoAssignEcAdmin, setAssignAdmin] = useState(false)
 
   const [unlimitSelected, setUnlimitSelected] = useState(true)
+  const [arcEnabled, setArcEnabled] = useState(false)
 
   const [addIntegrator] = useAddCustomerMutation()
   const [updateIntegrator] = useUpdateCustomerMutation()
@@ -233,6 +237,18 @@ export function ManageIntegrator () {
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params: useParams() },
     { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
+  const { data: privacySettingsData } =
+   useGetPrivacySettingsQuery({ params: useParams() },
+     { skip: isEditMode || !isAppMonitoringEnabled })
+
+  useEffect(() => {
+    if (privacySettingsData) {
+      const privacyMonitoringSetting =
+         privacySettingsData.filter(item => item.featureName === PrivacyFeatureName.ARC)[0]
+      setArcEnabled(privacyMonitoringSetting.isEnabled)
+    }
+  }, [privacySettingsData])
+
   useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
@@ -267,6 +283,10 @@ export function ManageIntegrator () {
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
 
       setSubscriptionStartDate(moment(data?.service_effective_date))
+      if (isAppMonitoringEnabled) {
+        setArcEnabled(data.privacyFeatures?.find(f =>
+          f.featureName === 'ARC')?.isEnabled ? true : false)
+      }
     }
 
     if (!isEditMode) { // Add mode
@@ -394,7 +414,10 @@ export function ManageIntegrator () {
         admin_firstname: ecFormData.admin_firstname,
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
-        admin_delegations: delegations
+        admin_delegations: delegations,
+        privacyFeatures: isAppMonitoringEnabled
+          ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
+          : undefined
       }
       if (autoAssignEcAdmin) {
         customer.isManageAllEcs = autoAssignEcAdmin
@@ -476,7 +499,10 @@ export function ManageIntegrator () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate
+        service_expiration_date: expirationDate,
+        privacyFeatures: isAppMonitoringEnabled
+          ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
+          : undefined
       }
       // handle license assignments
       const licAssignment = []
@@ -780,6 +806,20 @@ export function ManageIntegrator () {
       />
       </>
     }
+  }
+
+  const EnableArcForm = () => {
+    return <>
+      <div>
+        <h4 style={{ display: 'inline-block', marginTop: '10px', marginRight: '25px' }}>
+          {intl.$t({ defaultMessage: 'Enable application-recognition and control' })}</h4>
+        <Switch defaultChecked={arcEnabled} onChange={setArcEnabled}/></div>
+      <UI.SwitchDescription style={{ width: '500px' }}><label>
+        {intl.$t({ defaultMessage: 'This setting determines the default behavior for new MSP ' +
+          'customers. It specifies whether Application Recognition and Control (ARC) is enabled ' +
+          'or disabled by default for the WLAN networks of newly added MSP customers.' })}</label>
+      </UI.SwitchDescription>
+    </>
   }
 
   const onSelectChange = (value: string) => {
@@ -1087,7 +1127,14 @@ export function ManageIntegrator () {
           <Paragraph>
             {formatter(DateFormatEnum.DateFormat)(formData.service_expiration_date)}
           </Paragraph>
-        </Form.Item></>
+        </Form.Item>
+        {isAppMonitoringEnabled && <Form.Item
+          label={intl.$t({ defaultMessage:
+            'Application-recognition and control, application-monitoring' })}
+        >
+          <Paragraph>{arcEnabled ? 'Enabled' : 'Disabled'}</Paragraph>
+        </Form.Item>}
+      </>
     )
   }
 
@@ -1161,6 +1208,7 @@ export function ManageIntegrator () {
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
           <CustomerSubscriptionForm />
+          {isAppMonitoringEnabled && <div style={{ marginTop: '38px' }}><EnableArcForm /></div>}
         </StepsFormLegacy.StepForm>}
 
         {!isEditMode && <>
@@ -1250,6 +1298,12 @@ export function ManageIntegrator () {
             <Divider/>
             <CustomerSubscriptionForm />
           </StepsFormLegacy.StepForm>
+
+          {isAppMonitoringEnabled && <StepsFormLegacy.StepForm name='privacy'
+            title={intl.$t({ defaultMessage: 'Privacy' })}>
+            <Subtitle level={3}>{intl.$t({ defaultMessage: 'Privacy' })}</Subtitle>
+            <EnableArcForm />
+          </StepsFormLegacy.StepForm>}
 
           <StepsFormLegacy.StepForm
             name='summary'

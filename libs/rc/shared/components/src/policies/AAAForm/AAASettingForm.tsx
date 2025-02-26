@@ -374,7 +374,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
         <UI.RacSecDiv>
           <Form.Item
             name={['radSecOptions', 'cnSanIdentity']}
-            label={<>{$t({ defaultMessage: 'CN/SAN Identity' })}
+            label={<>{$t({ defaultMessage: 'SAN Identity' })}
               <Tooltip.Question
                 placement='right'
                 title={$t(MessageMapping.cn_san_identity_tooltip)}

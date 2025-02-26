@@ -101,6 +101,7 @@ export function RadioSettingsForm (props:{
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
+
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venue?.id}/edit/wifi/radio/Normal6GHz`)
@@ -125,13 +126,10 @@ export function RadioSettingsForm (props:{
   ]
 
   useEffect(() => {
-    form.setFieldValue(enableMulticastRateLimitingFieldName,
-      form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
-
     if (props?.isAFCEnabled === false) {
       form.setFieldValue(enableAfcFieldName, false)
     }
-  }, [] )
+  }, [])
 
   useEffect(()=> {
     if(LPIButtonText?.LPIModeState !== enableAfc) {
@@ -189,19 +187,20 @@ export function RadioSettingsForm (props:{
               placement='bottom'>
               <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
             </Tooltip>}
-            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
-              title={afcTooltip}
-              showDetailButton
-              placement='bottom'
-              onClick={() => setAfcDrawerVisible(true)}
-            />}
-            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
-              visible={afcDrawerVisible}
-              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
-              venueId={venueId}
-              featureName={InCompatibilityFeatures.AFC}
-              onClose={() => setAfcDrawerVisible(false)}
-            />}
+            {isR370UnsupportedFeatures && <>
+              <ApCompatibilityToolTip
+                title={afcTooltip}
+                showDetailButton
+                placement='bottom'
+                onClick={() => setAfcDrawerVisible(true)}
+              /> <ApCompatibilityDrawer
+                visible={afcDrawerVisible}
+                type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                venueId={venueId}
+                featureName={InCompatibilityFeatures.AFC}
+                onClose={() => setAfcDrawerVisible(false)}
+              />
+            </>}
           </Space>
         )
       } else {
@@ -523,129 +522,130 @@ export function RadioSettingsForm (props:{
           />
         </Form.Item>
 
-        <>
-          <FieldLabel width='175px'>
-            <Space style={{ marginBottom: '10px' }}>
-              {$t({ defaultMessage: 'Multicast Rate Limiting' })}
-              {!isR370UnsupportedFeatures && <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
-                placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />}
-              {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+        <FieldLabel width='175px'>
+          <Space style={{ marginBottom: '10px' }}>
+            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            {!isR370UnsupportedFeatures && <Tooltip.Question
+              title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />}
+            {isR370UnsupportedFeatures && <>
+              <ApCompatibilityToolTip
                 title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 showDetailButton
                 placement='right'
                 onClick={() => setMrlDrawerVisible(true)}
-              />}
-              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              />
+              <ApCompatibilityDrawer
                 visible={mrlDrawerVisible}
                 type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                 venueId={venueId}
                 featureName={InCompatibilityFeatures.VENUE_MULTICAST_RATE_LIMIT}
                 onClose={() => setMrlDrawerVisible(false)}
-              />}
-            </Space>
-            <Form.Item
-              name={enableMulticastRateLimitingFieldName}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-              initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
-            >
-              { isUseVenueSettings && !(form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)) ?
-                <span>OFF</span>
-                : <Switch
-                  disabled={disabled || isUseVenueSettings}
-                  defaultChecked={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
-                  onChange={function (checked: boolean) {
-                    if (!checked) {
-                      form.setFieldValue(
-                        enableDownloadLimitFieldName, false)
-                      form.setFieldValue(
-                        enableUploadLimitFieldName, false)
-                    }
-                  }} />
-              }
-            </Form.Item>
-          </FieldLabel>
-
-          {enableMulticastRateLimiting && <>
-            <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
-              <FormItemNoLabel
-                name={enableUploadLimitFieldName}
-                valuePropName='checked'
-                initialValue={enableUploadLimit || enableDownloadLimit}
-                style={{ lineHeight: '50px' }}
-              >
-                <Checkbox data-testid='enableUploadLimit'
-                  children={$t({ defaultMessage: 'Upload Limit' })}
-                  disabled={disabled || isUseVenueSettings}
-                  onChange={function (e: CheckboxChangeEvent) {
-                    const value = e.target.checked ? 20 : 0
-                    form.setFieldValue(uploadLimitFieldName, value)
-                  }}
-                />
-              </FormItemNoLabel>
-              {enableUploadLimit ?
-                <FormItemNoLabel
-                  name={uploadLimitFieldName}
-                  children={
-                    <Slider
-                      disabled={disabled || isUseVenueSettings}
-                      tooltipVisible={false}
-                      style={{ width: '245px' }}
-                      defaultValue={20}
-                      min={1}
-                      max={100}
-                      marks={{
-                        1: { label: '1 Mbps' },
-                        100: { label: '100 Mbps' }
-                      }}
-                    />
-                  }
-                /> :
-                <Unlimited />
-              }
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
-              <FormItemNoLabel
-                name={enableDownloadLimitFieldName}
-                valuePropName='checked'
-                initialValue={false}
-                style={{ lineHeight: '50px' }}
-                children={
-                  <Checkbox data-testid='enableDownloadLimit'
-                    children={$t({ defaultMessage: 'Download Limit' })}
-                    disabled={disabled || isUseVenueSettings}
-                    onChange={(e: CheckboxChangeEvent) => {
-                      const value = e.target.checked ? getDLMax(form.getFieldValue(bssMinRate6gFieldName)) : 0
-                      form.setFieldValue(downloadLimitFieldName, value)
-                    }}
-                  />}
               />
-              {enableDownloadLimit ?
-                <FormItemNoLabel
-                  name={downloadLimitFieldName}
-                  children={
-                    <Slider
-                      disabled={disabled || isUseVenueSettings}
-                      tooltipVisible={false}
-                      style={{ width: '245px' }}
-                      defaultValue={getDownloadMaxValue()}
-                      min={1}
-                      max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
-                      marks={{
-                        1: { label: '1 Mbps' },
-                        [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
-                      }}
-                    />
+            </>}
+          </Space>
+          <Form.Item
+            name={enableMulticastRateLimitingFieldName}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
+          >
+            { isUseVenueSettings && !(form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)) ?
+              <span>OFF</span>
+              : <Switch
+                disabled={disabled || isUseVenueSettings}
+                defaultChecked={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
+                onChange={function (checked: boolean) {
+                  if (!checked) {
+                    form.setFieldValue(
+                      enableDownloadLimitFieldName, false)
+                    form.setFieldValue(
+                      enableUploadLimitFieldName, false)
                   }
-                /> : <Unlimited />
-              }
-            </div>
-          </>}
-        </>
+                }} />
+            }
+          </Form.Item>
+        </FieldLabel>
+
+        {enableMulticastRateLimiting && <>
+          <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+            <FormItemNoLabel
+              name={enableUploadLimitFieldName}
+              valuePropName='checked'
+              initialValue={enableUploadLimit || enableDownloadLimit}
+              style={{ lineHeight: '50px' }}
+            >
+              <Checkbox data-testid='enableUploadLimit'
+                children={$t({ defaultMessage: 'Upload Limit' })}
+                disabled={disabled || isUseVenueSettings}
+                onChange={function (e: CheckboxChangeEvent) {
+                  const value = e.target.checked ? 20 : 0
+                  form.setFieldValue(uploadLimitFieldName, value)
+                }}
+              />
+            </FormItemNoLabel>
+            {enableUploadLimit ?
+              <FormItemNoLabel
+                name={uploadLimitFieldName}
+                children={
+                  <Slider
+                    disabled={disabled || isUseVenueSettings}
+                    tooltipVisible={false}
+                    style={{ width: '245px' }}
+                    defaultValue={20}
+                    min={1}
+                    max={100}
+                    marks={{
+                      1: { label: '1 Mbps' },
+                      100: { label: '100 Mbps' }
+                    }}
+                  />
+                }
+              /> :
+              <Unlimited />
+            }
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+            <FormItemNoLabel
+              name={enableDownloadLimitFieldName}
+              valuePropName='checked'
+              initialValue={false}
+              style={{ lineHeight: '50px' }}
+              children={
+                <Checkbox data-testid='enableDownloadLimit'
+                  children={$t({ defaultMessage: 'Download Limit' })}
+                  disabled={disabled || isUseVenueSettings}
+                  onChange={(e: CheckboxChangeEvent) => {
+                    const value = e.target.checked ? getDLMax(form.getFieldValue(bssMinRate6gFieldName)) : 0
+                    form.setFieldValue(downloadLimitFieldName, value)
+                  }}
+                />}
+            />
+            {enableDownloadLimit ?
+              <FormItemNoLabel
+                name={downloadLimitFieldName}
+                children={
+                  <Slider
+                    disabled={disabled || isUseVenueSettings}
+                    tooltipVisible={false}
+                    style={{ width: '245px' }}
+                    defaultValue={getDownloadMaxValue()}
+                    min={1}
+                    max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
+                    marks={{
+                      1: { label: '1 Mbps' },
+                      [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
+                    }}
+                  />
+                }
+              /> : <Unlimited />
+            }
+          </div>
+        </>}
+
       </>
       }
     </>

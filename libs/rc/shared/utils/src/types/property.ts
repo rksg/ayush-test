@@ -114,6 +114,13 @@ export interface PropertyUnit {
   }
 }
 
+export interface UnitLinkedPersona {
+  unitId: string,
+  personaType: string,
+  personaId: string,
+  requestId: string
+}
+
 export interface UnitPersonaConfig {
   vlan?: number,
   dpskPassphrase?: string,

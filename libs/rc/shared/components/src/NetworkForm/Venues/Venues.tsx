@@ -36,6 +36,7 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { useEnforcedStatus }                                                                                              from '../../configTemplates'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                                           from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                                                           from '../../NetworkApGroupDialog'
 import { NetworkTunnelActionDrawer, NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
@@ -98,7 +99,9 @@ const defaultRbacPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId',
-    'venueApGroups'
+    'venueApGroups',
+    'isEnforced',
+    'isManagedByTemplate'
   ],
   searchTargetFields: ['name']
 }
@@ -169,6 +172,7 @@ export function Venues (props: VenuesProps) {
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
 
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
@@ -210,6 +214,8 @@ export function Venues (props: VenuesProps) {
     setTunnelModalState
   })
   // hooks for tunnel column - end
+
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   useEffect(() => {
     // need to make sure table data is ready.
@@ -275,6 +281,8 @@ export function Venues (props: VenuesProps) {
         })
         return !enabled
       },
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows) => {
         handleActivateVenue(true, rows)
       }
@@ -287,6 +295,8 @@ export function Venues (props: VenuesProps) {
         })
         return !enabled
       },
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows) => {
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
           rows.map(item => item.id),
@@ -378,6 +388,28 @@ export function Venues (props: VenuesProps) {
           handleVenueSaveData(newActivatedNetworkVenues)
           setTableDataActivate(tableData, newActivatedNetworkVenues.map(i=>i.venueId))
         }
+      // eslint-disable-next-line max-len
+      } else if (default6gEnablementToggle && prevIsWPA3securityRef.current === false && isSupport6G) {
+        if (activatedNetworkVenues?.length > 0) {
+          // add 6G when switching to WPA3
+          const newActivatedNetworkVenues = activatedNetworkVenues.map(venue => {
+            const { allApGroupsRadioTypes, apGroups } = venue
+            if (allApGroupsRadioTypes && !allApGroupsRadioTypes.includes(RadioTypeEnum._6_GHz)) {
+              allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
+            }
+            if (apGroups && apGroups.length > 0) {
+              apGroups.forEach(apGroup => {
+                if (apGroup.radioTypes && !apGroup.radioTypes.includes(RadioTypeEnum._6_GHz)) {
+                  apGroup.radioTypes.push(RadioTypeEnum._6_GHz)
+                }
+              })
+            }
+            return venue
+          })
+
+          handleVenueSaveData(newActivatedNetworkVenues)
+          setTableDataActivate(tableData, newActivatedNetworkVenues.map(i => i.venueId))
+        }
       }
       prevIsWPA3securityRef.current = isSupport6G
     }
@@ -427,20 +459,20 @@ export function Venues (props: VenuesProps) {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (_, row) {
-        let disabled = false
-        // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
-        if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
-          disabled = true
-        }else{
-          title = ''
-        }
+        const isDhcpDisabled = data && data.enableDhcp && row.mesh && row.mesh.enabled
+        const dhcpDisabledMsg = isDhcpDisabled
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          : ''
+
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
 
         return <Tooltip
-          title={title}
+          title={dhcpDisabledMsg || enforcedActionMsg}
           placement='bottom'>
           <Switch
-            disabled={disabled}
+            disabled={isDhcpDisabled || isEnforcedByTemplate}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()

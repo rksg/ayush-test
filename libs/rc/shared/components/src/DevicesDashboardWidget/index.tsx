@@ -4,7 +4,7 @@ import { useDashboardV2OverviewQuery, useDeviceSummariesQuery, useRwgListQuery }
 import { useParams }                                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                       from '@acx-ui/user'
-import { useDashboardFilter }                                                    from '@acx-ui/utils'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping }                  from '@acx-ui/utils'
 
 import {
   getApStackedBarChartData,
@@ -17,6 +17,7 @@ export function DevicesDashboardWidgetV2 () {
   const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const query = isNewDashboardQueryEnabled ? useDeviceSummariesQuery : useDashboardV2OverviewQuery
 
   const queryResults = query({
@@ -47,8 +48,14 @@ export function DevicesDashboardWidgetV2 () {
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
 
-  const { data: rwgs, isLoading: rwgLoading } =
+  const { data: rwgs, isLoading: rwgLoading, isSuccess: rwgSuccess } =
     useRwgListQuery({ params: useParams() }, { skip: !(showRwgUI && rwgHasPermission) })
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.DEVICES_DASHBOARD_WIDGET,
+    states: [queryResults, { isLoading: rwgLoading, isSuccess: rwgSuccess }],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[queryResults, { isLoading: rwgLoading }]}>

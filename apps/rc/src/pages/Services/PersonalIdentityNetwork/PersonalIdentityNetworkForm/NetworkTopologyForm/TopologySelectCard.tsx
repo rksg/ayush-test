@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { Col, Row, Typography } from 'antd'
+import { Col, Row } from 'antd'
 
 import { EdgeClusterTypeCard } from '@acx-ui/rc/components'
 
@@ -10,14 +10,18 @@ interface TopologySelectCardProps {
   id: string
   diagram: ReactElement
   title: ReactElement | string
+  isActive: boolean
   disabled?: boolean
 }
 
 export const TopologySelectCard = (props: TopologySelectCardProps) => {
-  const { id, diagram, title, disabled } = props
+  const { id, diagram, title, isActive, disabled } = props
 
   return <Row gutter={[0, 20]} justify='center'>
     <Col span={24}>
+      <TopologySelectCardTitle strong={isActive}>
+        {title}
+      </TopologySelectCardTitle>
       <EdgeClusterTypeCard
         id={id}
         title=''
@@ -26,11 +30,6 @@ export const TopologySelectCard = (props: TopologySelectCardProps) => {
         height='500px'
         disabled={disabled}
       />
-    </Col>
-    <Col>
-      <Typography.Text strong>
-        <TopologySelectCardTitle>{title}</TopologySelectCardTitle>
-      </Typography.Text>
     </Col>
   </Row>
 }

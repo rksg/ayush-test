@@ -28,6 +28,59 @@ export const NetworkTopologyForm = () => {
   const hasCompatibleSwitch = requiredSwitchModels?.some(model =>
     existedSwitchModelList?.some(existedSwitchModel => existedSwitchModel?.startsWith(model)))
 
+
+  // eslint-disable-next-line max-len
+  const RadioGroupComponent = (props: { value?: NetworkTopologyType, onChange?: (value: unknown) => void }) => {
+    return <Radio.Group
+      style={{ width: '100%', marginTop: '20px' }}
+      {...props}
+    >
+      <Row gutter={20}>
+        <Col span={8}>
+          <TopologySelectCard
+            id={NetworkTopologyType.Wireless}
+            title={$t({ defaultMessage: 'Wireless topology' })}
+            isActive={props.value === NetworkTopologyType.Wireless}
+            diagram={<img
+              style={{ margin: 'auto', marginTop: '180px', scale: '1.2' }}
+              src={WirelessTopology}
+              width={'100%'}
+              alt={$t({ defaultMessage: 'Personal Identity Topology' })}
+            />}
+          />
+        </Col>
+        <Col span={8}>
+          <TopologySelectCard
+            id={NetworkTopologyType.TwoTier}
+            title={$t({ defaultMessage: '2-tier topology' })}
+            isActive={props.value === NetworkTopologyType.TwoTier}
+            diagram={<img
+              style={{ margin: 'auto', marginTop: '130px', scale: '1.2' }}
+              src={TierTopology2}
+              width={'100%'}
+              alt={$t({ defaultMessage: 'Personal Identity Topology' })}
+            />}
+            disabled={!hasCompatibleSwitch}
+          />
+        </Col>
+        <Col span={8}>
+          <TopologySelectCard
+            id={NetworkTopologyType.ThreeTier}
+            title={$t({ defaultMessage: '3-tier topology' })}
+            isActive={props.value === NetworkTopologyType.ThreeTier}
+            diagram={<img
+              style={{ margin: 'auto', marginTop: '90px', scale: '1.2' }}
+              src={TierTopology3}
+              width={'100%'}
+              alt={$t({ defaultMessage: 'Personal Identity Topology' })}
+            />}
+            disabled={!hasCompatibleSwitch}
+          />
+        </Col>
+      </Row>
+    </Radio.Group>
+  }
+
   return (
     <>
       <Row>
@@ -52,50 +105,7 @@ export const NetworkTopologyForm = () => {
             </Col>
           </Row>
           <Form.Item name='networkTopologyType'>
-            <Radio.Group
-              style={{ width: '100%', marginTop: '20px' }}
-            >
-              <Row gutter={20}>
-                <Col span={8}>
-                  <TopologySelectCard
-                    id={NetworkTopologyType.Wireless}
-                    title={$t({ defaultMessage: 'Wireless topology' })}
-                    diagram={<img
-                      style={{ margin: 'auto', marginTop: '180px', scale: '1.2' }}
-                      src={WirelessTopology}
-                      width={'100%'}
-                      alt={$t({ defaultMessage: 'Personal Identity Topology' })}
-                    />}
-                  />
-                </Col>
-                <Col span={8}>
-                  <TopologySelectCard
-                    id={NetworkTopologyType.TwoTier}
-                    title={$t({ defaultMessage: '2-tier topology' })}
-                    diagram={<img
-                      style={{ margin: 'auto', marginTop: '130px', scale: '1.2' }}
-                      src={TierTopology2}
-                      width={'100%'}
-                      alt={$t({ defaultMessage: 'Personal Identity Topology' })}
-                    />}
-                    disabled={!hasCompatibleSwitch}
-                  />
-                </Col>
-                <Col span={8}>
-                  <TopologySelectCard
-                    id={NetworkTopologyType.ThreeTier}
-                    title={$t({ defaultMessage: '3-tier topology' })}
-                    diagram={<img
-                      style={{ margin: 'auto', marginTop: '90px', scale: '1.2' }}
-                      src={TierTopology3}
-                      width={'100%'}
-                      alt={$t({ defaultMessage: 'Personal Identity Topology' })}
-                    />}
-                    disabled={!hasCompatibleSwitch}
-                  />
-                </Col>
-              </Row>
-            </Radio.Group>
+            <RadioGroupComponent />
           </Form.Item>
         </Col>
       </Row>

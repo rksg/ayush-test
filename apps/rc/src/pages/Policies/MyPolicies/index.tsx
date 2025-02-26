@@ -4,7 +4,7 @@ import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                    from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
@@ -121,6 +121,7 @@ export default function MyPolicies () {
                       ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
                       : ''
                   }
+                  isBetaFeature={policy.isBetaFeature}
                 />
               </GridCol>
             )
@@ -145,6 +146,7 @@ interface PolicyCardData {
   listViewPath?: Path
   disabled?: boolean
   helpIcon?: React.ReactNode
+  isBetaFeature?: boolean
 }
 
 function useCardData (): PolicyCardData[] {
@@ -341,7 +343,8 @@ function useCardData (): PolicyCardData[] {
       totalCount: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeHqosEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeHqosEnabled
+      disabled: !isEdgeHqosEnabled,
+      isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_HQOS)
     },
     {
       type: PolicyType.SOFTGRE,

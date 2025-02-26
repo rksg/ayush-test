@@ -2,9 +2,9 @@ import { Menu, MenuProps, Space } from 'antd'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { isEqualCaptivePortal }                                          from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker, getDefaultEarliestStart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { isEqualCaptivePortal }                                                                   from '@acx-ui/rc/components'
 import {
   useDisconnectClientMutation,
   useGetClientOrHistoryDetailQuery,
@@ -20,8 +20,11 @@ import { DateFilter, DateRange, encodeParameter, useDateFilter }  from '@acx-ui/
 
 import ClientDetailTabs from './ClientDetailTabs'
 function DatePicker () {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

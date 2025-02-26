@@ -37,7 +37,8 @@ import {
   MspEc,
   MSPUtils,
   MspEcTierEnum,
-  MspEcAccountType
+  MspEcAccountType,
+  MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -48,10 +49,10 @@ import {
   SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { AccountType, getOpsApi, isDelegationMode, noDataDisplay }                                          from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 import * as UI    from '../Subscriptions/styledComponent'
@@ -118,11 +119,18 @@ export function MspCustomers () {
      tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
   const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
+  const hasAssignTechPartnerPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)]) : isAdmin
 
   const allowManageAdmin =
-      ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
+      (hasAssignAdminPermission && !userProfile?.support) || isSupportToMspDashboardAllowed
   const allowSelectTechPartner =
-      ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
+      (hasAssignTechPartnerPermission && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
   const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
 
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
@@ -429,7 +437,7 @@ export function MspCustomers () {
             : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
               : noDataDisplay
           return (
-            allowSelectTechPartner
+            (allowSelectTechPartner)
               ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
@@ -562,6 +570,7 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.updateMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -577,6 +586,8 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations),
+          getOpsApi(MspRbacUrlsInfo.updateMspMultipleEcDelegations)]],
         visible: (selectedRows) => {
           const len = selectedRows.length
           return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
@@ -589,6 +600,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.mspEcFirmwareUpgradeSchedules)],
         visible: (selectedRows) => {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
@@ -603,6 +615,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.resendEcInvitation)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -673,6 +686,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -882,7 +896,8 @@ export function MspCustomers () {
             </TenantLink> : null,
             <MspTenantLink to='/dashboard/mspcustomers/create'>
               <Button
-                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
+                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed)
+                  || !onBoard || !hasAddPermission}
                 type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]

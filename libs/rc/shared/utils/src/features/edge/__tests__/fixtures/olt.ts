@@ -15,6 +15,13 @@ export const mockOlt = {
   edgeClusterName: 'Edge Cluster 1'
 }
 
+export const mockOfflineOlt = {
+  ...mockOlt,
+  name: 'TestOfflineOlt',
+  serialNumber: 'offlineOltSerialNumber',
+  status: EdgeNokiaOltStatusEnum.OFFLINE
+}
+
 export const mockEmptySnOlt = {
   ...mockOlt,
   name: '',

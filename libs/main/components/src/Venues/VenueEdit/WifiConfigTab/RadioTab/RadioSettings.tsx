@@ -401,6 +401,13 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
       if (!isAFCEnabled) {
         set(data, 'radioParams6G.enableAfc', false)
       }
+      const { radioParams6G } = data
+      if (radioParams6G) {
+        const { enableMulticastUplinkRateLimiting, enableMulticastDownlinkRateLimiting } = radioParams6G
+        if (enableMulticastUplinkRateLimiting || enableMulticastDownlinkRateLimiting) {
+          set(data, 'radioParams6G.enableMulticastRateLimiting', true)
+        }
+      }
 
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
@@ -633,7 +640,13 @@ export function RadioSettings (props: VenueWifiConfigItemProps) {
     const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
     const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
       ''
-    if (outdoorChannel6 && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
+    if (isVenueChannelSelectionManualEnabled) {
+      const supportCh6G = supportRadioChannels[ApRadioTypeEnum.Radio6G]
+      const isSupportOutdoor6G = !isEmpty(supportCh6G.outdoor)
+      if (outdoorChannel6 && isSupportOutdoor6G && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
+    } else {
+      if (outdoorChannel6 && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
+    }
     if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
       if (!validate320MHzIsolatedGroup(indoorChannel6, indoorTitle6)) return false
       if (outdoorChannel6 && !validate320MHzIsolatedGroup(outdoorChannel6, outdoorTitle6)) return false
