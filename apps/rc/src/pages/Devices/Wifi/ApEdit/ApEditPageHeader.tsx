@@ -1,9 +1,13 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Divider, Space }    from 'antd'
+import { useIntl }           from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
+import { Button, cssStr, PageHeader }                                                      from '@acx-ui/components'
+import { useApGroupsListQuery, useGetApGroupsTemplateListQuery, useGetApOperationalQuery } from '@acx-ui/rc/services'
+import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher }                 from '@acx-ui/rc/utils'
 import {
+  TenantLink,
   useNavigate,
   useParams,
   useTenantLink
@@ -14,17 +18,62 @@ import ApEditTabs from './ApEditTabs'
 
 import { ApDataContext } from '.'
 
+
+
 function ApEditPageHeader () {
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
-  const { apData } = useContext(ApDataContext)
+  const { serialNumber, tenantId } = useParams()
+  const { apData, venueData } = useContext(ApDataContext)
+  const [apGroup, setApGroup] = useState('')
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
 
+  const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
+    useQueryFn: useApGroupsListQuery,
+    useTemplateQueryFn: useGetApGroupsTemplateListQuery,
+    payload: {
+      searchString: '',
+      fields: [ 'id', 'venueId', 'name'],
+      filters: { venueId: [venueData?.id] },
+      pageSize: 10000
+    },
+    skip: !venueData?.id
+  })
+
+  const {
+    data: apDetails
+  } = useGetApOperationalQuery({
+    params: {
+      tenantId,
+      serialNumber: serialNumber ? serialNumber : '',
+      venueId: venueData ? venueData.id : ''
+    }
+  })
+
+  useEffect(() => {
+    if (apGroupInfo?.data && apDetails) {
+      setApGroup(apGroupInfo.data.filter((group) => group.id === apDetails.apGroupId)[0].name)
+    }
+  }, [apGroupInfo, apDetails])
+
+  const titleWithVenueApGroup = <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
+    <div>{apData?.name || ''}</div>
+    <Space direction='horizontal' size={0} style={{height: '15px'}}>
+      <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Venue: <TenantLink
+        to={`venues/${venueData?.id}/venue-details/overview`}>{venueData?.name}
+      </TenantLink></div>
+      <Divider type='vertical'/>
+      {/* eslint-disable-next-line max-len */}
+      <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Ap Group: {apGroup ? <TenantLink
+        to={`/devices/apgroups/${apDetails?.apGroupId}/details/members`}>{apGroup}
+      </TenantLink> : 'None'}</div>
+    </Space>
+  </div>
+
   return (
     <PageHeader
-      title={apData?.name || ''}
+      title={titleWithVenueApGroup}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },

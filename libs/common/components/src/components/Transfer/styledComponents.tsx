@@ -141,6 +141,7 @@ export const TransferLayout = styled(Space)`
             max-height: 100%;
             height: 100%;
             overflow: auto;
+            font-size: var(--acx-body-4-font-size);
 
             th {
               font-weight: bold;
@@ -150,13 +151,14 @@ export const TransferLayout = styled(Space)`
             }
             td { border: none; }
 
-            .ant-table-cell {
-              cursor: pointer;
-            }
-
             .ant-table-selection-column {
               display: none;
             }
+          }
+
+          .ant-table-tbody > tr > td {
+            height: 25px;
+            padding: 2px 8px;
           }
         }
 

@@ -327,7 +327,7 @@ export function ApGroupGeneralTab () {
       return (
         <Button
           size='small'
-          style={{ display: 'flex', margin: 8, marginInlineEnd: 'auto' }}
+          style={{ display: 'flex', margin: 8, marginInlineEnd: 'auto', fontSize: '13px' }}
           type={'link'}
           onClick={() => {
             if (isHide) {

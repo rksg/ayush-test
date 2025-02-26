@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { cssStr, PageHeader }                                                                from '@acx-ui/components'
@@ -34,7 +35,7 @@ export function ApGroupEditPageHeader () {
     if (venuesList?.data && venueId) {
       setVenueName(venuesList?.data.data.filter((venue) => venue.id === venueId)[0].name)
     }
-  }, [venuesList])
+  }, [venuesList, venueId])
 
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: 'Wi-Fi' }) },
@@ -42,11 +43,13 @@ export function ApGroupEditPageHeader () {
     { text: $t({ defaultMessage: 'AP Group List' }), link: '/devices/wifi/apgroups' }
   ])
 
-  const titleWithVenue = <div>
+  const titleWithVenue = <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
     <div>{$t({ defaultMessage: 'Edit AP Group' })}</div>
-    <div style={{ fontSize: '15px', color: cssStr('--acx-neutrals-60') }}>Venue: <TenantLink
-      to={`venues/${venueId}/venue-details/overview`}>{venueName}
-    </TenantLink></div>
+    <Space direction='horizontal' size={0} style={{ height: '15px' }}>
+      <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Venue: <TenantLink
+        to={`venues/${venueId}/venue-details/overview`}>{venueName}
+      </TenantLink></div>
+    </Space>
   </div>
 
   return (
