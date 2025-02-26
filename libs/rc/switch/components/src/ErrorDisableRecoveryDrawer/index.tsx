@@ -143,7 +143,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
       value: 'loamRemoteCriticalEvent' },
     { label: $t({ defaultMessage: 'PVST Plus Protect' }), value: 'pvstplusProtect' },
     { label: $t({ defaultMessage: 'BPDU Tunnel Threshold' }), value: 'bpduTunnelThreshold' },
-    { label: $t({ defaultMessage: 'LAG Operational Speed Mismatch	' }),
+    { label: $t({ defaultMessage: 'LAG Operational Speed Mismatch' }),
       value: 'lagOperationalSpeedMismatch' }
   ]
 
