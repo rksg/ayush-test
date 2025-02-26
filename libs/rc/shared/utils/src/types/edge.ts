@@ -534,6 +534,5 @@ export interface SubInterface {
 
 export interface ClusterArpTerminationSettings {
   enabled: boolean
-  agingTimerEnabled: boolean
   agingTimeSec: number
 }
