@@ -66,7 +66,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
   NetworkTunnelSoftGreAction,
-  VlanPool
+  VlanPool,
+  NetworkTunnelIpsecAction
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -99,7 +100,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance               from './PortalInstance'
+import PortalInstance         from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -111,7 +112,8 @@ import {
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
   useUpdateSoftGreActivations,
-  deriveWISPrFieldsFromServerData
+  deriveWISPrFieldsFromServerData,
+  useUpdateIpsecActivations
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -179,6 +181,7 @@ export function NetworkForm (props:{
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
 
@@ -238,6 +241,7 @@ export function NetworkForm (props:{
   const { updateAccessControl } = useAccessControlActivation()
   const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
   const updateSoftGreActivations = useUpdateSoftGreActivations()
+  const updateIpsecActivations = useUpdateIpsecActivations()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -916,6 +920,11 @@ export function NetworkForm (props:{
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
+
+          if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
+            // eslint-disable-next-line max-len
+            afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
+          }
         }
       }
 
@@ -1103,6 +1112,13 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
+
+        if (isIpsecEnabled && formData['ipsecAssociationUpdate'] && payload.id && payload.venues) {
+          afterVenueActivationRequest.push(
+            // eslint-disable-next-line max-len
+            updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
+          )
+        }
       }
 
       if (payload.id) {

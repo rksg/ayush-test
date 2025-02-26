@@ -179,6 +179,7 @@ export interface NetworkSaveData {
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
+  ipsecAssociationUpdate?: NetworkTunnelIpsecAction
 }
 
 export interface NetworkSummaryExtracData {
@@ -276,5 +277,15 @@ export interface NetworkTunnelSoftGreAction {
     newProfileId: string,
     newProfileName: string,
     oldProfileId: string
+  }
+}
+
+export interface NetworkTunnelIpsecAction {
+  [name:string]: {
+    softGreProfileId: string,
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
   }
 }

@@ -46,8 +46,8 @@ import { transformAps, transformRadios, transformScheduling }                   
 import { useIsEdgeFeatureReady }                                                                                          from '../../useEdgeActions'
 import NetworkFormContext                                                                                                 from '../NetworkFormContext'
 
-import { useTunnelColumn }                                    from './TunnelColumn/useTunnelColumn'
-import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
+import { useTunnelColumn }                                                       from './TunnelColumn/useTunnelColumn'
+import { handleIpsecAction, handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -649,8 +649,12 @@ export function Venues (props: VenuesProps) {
         networkInfo: otherData.network,
         otherData
       }
-      if (isSoftGreEnabled)
+      if (isSoftGreEnabled) {
         handleSoftGreTunnelAction(args)
+        if (isIpSecEnabled) {
+          handleIpsecAction(args)
+        }
+      }
 
       const networkVenueId = otherData.network?.venueId ?? ''
       // eslint-disable-next-line max-len
@@ -723,6 +727,8 @@ export function Venues (props: VenuesProps) {
       </Form.Item>
       {isEdgePinEnabled && <Form.Item hidden name={['sdLanAssociationUpdate']}></Form.Item>}
       {isSoftGreEnabled && <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>}
+      {isSoftGreEnabled && isIpSecEnabled &&
+        <Form.Item hidden name={['ipsecAssociationUpdate']}></Form.Item>}
     </>
   )
 }
