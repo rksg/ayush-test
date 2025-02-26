@@ -3,14 +3,26 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getDefaultEarliestStart, PageHeader, RangePicker }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                               from '@acx-ui/feature-toggle'
-import { ConfigTemplateType, generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
-import { TenantType }                                                                                           from '@acx-ui/react-router-dom'
-import { useLocation, useNavigate, useTenantLink, useParams }                                                   from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                                           from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission }                                                             from '@acx-ui/user'
-import { useDateFilter }                                                                                        from '@acx-ui/utils'
+import { getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import {
+  ConfigTemplateType,
+  ConfigTemplateUrlsInfo,
+  generateConfigTemplateBreadcrumb,
+  useConfigTemplate,
+  useConfigTemplateTenantLink,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { TenantType }                                         from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                         from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi, useDateFilter } from '@acx-ui/utils'
 
 import { EnforcedButton } from '../configTemplates/EnforcedButton'
 
@@ -33,6 +45,7 @@ function NetworkPageHeader ({
   const navigate = useNavigate()
   const location = useLocation()
   const { isTemplate } = useConfigTemplate()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const basePath = useTenantLink('/networks/wireless')
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
@@ -62,29 +75,36 @@ function NetworkPageHeader ({
     }
   }, [networkData, isLoading])
 
+  const updateNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkDeep)
+
+  const hasUpdateNetworkPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([ updateNetworkOpsApi ])
+    : (hasCrossVenuesPermission()
+    && hasPermission({ scopes: [WifiScopes.UPDATE] }) )
+
   return (
     <PageHeader
       title={networkData?.name || ''}
       breadcrumb={breadcrumb}
       extra={[
-        ...(setSelectedVenues && selectedVenues)
-          ? [
-            <ActiveVenueFilter
-              selectedVenues={selectedVenues}
-              setSelectedVenues={setSelectedVenues}
-            />
-          ]
-          : [],
-        enableTimeFilter()
-          ? <RangePicker
+        ...((setSelectedVenues && selectedVenues) ? [
+          <ActiveVenueFilter
+            selectedVenues={selectedVenues}
+            setSelectedVenues={setSelectedVenues}
+          />
+        ] : []),
+        ...(enableTimeFilter() ? [
+          <RangePicker
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
-          : <></>,
-        ...(hasCrossVenuesPermission()? filterByAccess([
+        ]: []),
+        ...(hasUpdateNetworkPermission ? [
           <EnforcedButton
             configTemplateType={ConfigTemplateType.NETWORK}
             instanceId={networkId}
@@ -103,7 +123,7 @@ function NetworkPageHeader ({
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>
-        ]) : [])
+        ] : [])
       ]}
       footer={<NetworkTabs />}
     />

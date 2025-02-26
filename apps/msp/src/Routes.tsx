@@ -22,7 +22,10 @@ import {
   SyslogForm,
   SyslogDetailView,
   ConfigurationProfileForm,
-  CliProfileForm, ApGroupDetails, ApGroupEdit
+  CliProfileForm, ApGroupDetails, ApGroupEdit,
+  AddEthernetPortProfile,
+  EditEthernetPortProfile,
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -342,6 +345,29 @@ export function ConfigTemplatesRoutes () {
               oper: PolicyOperation.DETAIL
             })}
             element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ETHERNET_PORT_PROFILE] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<AddEthernetPortProfile />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<EditEthernetPortProfile />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<EthernetPortProfileDetail />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>
