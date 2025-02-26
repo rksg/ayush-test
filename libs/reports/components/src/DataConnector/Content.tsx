@@ -10,16 +10,16 @@ import { useNavigate, useTenantLink }                                           
 import { RolesEnum }                                                            from '@acx-ui/types'
 import { hasRaiPermission, hasRoles }                                           from '@acx-ui/user'
 
-import { StorageOptions }         from './CloudStorageForm'
-import { QuotaUsageBar }          from './QuotaUsageBar'
-import { useGetStorageQuery }     from './services'
-import { DataSubscriptionsTable } from './Table'
+import { StorageOptions }     from './CloudStorageForm'
+import { QuotaUsageBar }      from './QuotaUsageBar'
+import { useGetStorageQuery } from './services'
+import { DataConnectorTable } from './Table'
 
-const DataSubscriptionsContent: React.FC<{}> = () => {
+const DataConnectorContent: React.FC<{}> = () => {
   const { $t } = useIntl()
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/dataSubscriptions')
+  const basePath = useTenantLink('/dataConnector')
   const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
   const StorageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType
@@ -27,32 +27,32 @@ const DataSubscriptionsContent: React.FC<{}> = () => {
   const hasDCStoragePermission = get('IS_MLISA_SA')
     ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE')
     : hasRoles(RolesEnum.PRIME_ADMIN)
-  const hasDCSubscriptionsPermission = get('IS_MLISA_SA')
+  const hasDCPermission = get('IS_MLISA_SA')
     ? hasRaiPermission('WRITE_DATA_CONNECTOR')
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const headerButtons = []
-  if (hasDCSubscriptionsPermission) {
+  if (hasDCPermission) {
     headerButtons.push(
       storage?.id
         ? <Button
-          key='new-subscription-button'
+          key='new-connector-button'
           type='primary'
           onClick={() => navigate({
             ...basePath,
             pathname: `${basePath.pathname}/create`
           })}
         >
-          {$t({ defaultMessage: 'New Subscription' })}
+          {$t({ defaultMessage: 'New Connector' })}
         </Button>
         : <DisabledButton
-          key='disabled-new-subscription-button'
+          key='disabled-new-connector-button'
           title={$t(
             { defaultMessage: 'Cloud storage needs to be configured first, by prime admin.' }
           )}
           size='middle'
         >
-          {$t({ defaultMessage: 'New Subscription' })}
+          {$t({ defaultMessage: 'New Connector' })}
         </DisabledButton>
     )
   }
@@ -82,7 +82,7 @@ const DataSubscriptionsContent: React.FC<{}> = () => {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Data Subscriptions' })}
+      title={$t({ defaultMessage: 'Data Connector' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       extra={headerButtons.length > 0
         ? <Loader
@@ -104,8 +104,8 @@ const DataSubscriptionsContent: React.FC<{}> = () => {
         <QuotaUsageBar />
       </GridCol>
     </GridRow>
-    <DataSubscriptionsTable />
+    <DataConnectorTable />
   </>)
 }
 
-export default DataSubscriptionsContent
+export default DataConnectorContent

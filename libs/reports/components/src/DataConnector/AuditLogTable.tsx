@@ -23,7 +23,7 @@ export const retryableStatus = [
   AuditStatusEnum.Failure,
   AuditStatusEnum.Success
 ]
-const settingsId = 'data-subscription-audit-table'
+const settingsId = 'data-connector-audit-table'
 
 const statusColorMapping = (status: AuditDto['status']) => {
   switch (status) {
@@ -58,7 +58,7 @@ export const renderStatusWithBadge = (
 )
 
 interface AuditLogTableProps {
-  dataSubscriptionId: string;
+  dataConnectorId: string;
 }
 
 export const getRetryError = (audit?: AuditDto): string | undefined => {
@@ -67,7 +67,7 @@ export const getRetryError = (audit?: AuditDto): string | undefined => {
   const { status, start } = audit
 
   if (!retryableStatus.includes(status)) {
-    return $t({ defaultMessage: 'Subscription is {status}' }, { status })
+    return $t({ defaultMessage: 'Connector is {status}' }, { status })
   }
 
   const inputDate = moment(start)
@@ -76,20 +76,20 @@ export const getRetryError = (audit?: AuditDto): string | undefined => {
 
   if (diffDays >= 3) {
     return $t({ defaultMessage:
-      'Subscription can only be retried within 3 days from start date'
+      'Connector can only be retried within 3 days from start date'
     })
   }
 
   return undefined
 }
 
-const AuditLogTable: FC<AuditLogTableProps> = ({ dataSubscriptionId }) => {
+const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
   const { $t } = useIntl()
   const [retryAudit] = useRetryAuditMutation()
   const tableQuery = useTableQuery<AuditDto>({
     useQuery: useGetAuditsQuery,
     pagination: { settingsId },
-    defaultPayload: { filters: { dataSubscriptionId } }
+    defaultPayload: { filters: { dataConnectorId } }
   })
 
   const rowActions: TableProps<AuditDto>['rowActions'] = useMemo(

@@ -295,7 +295,8 @@ export enum Features {
   PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
   SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
-  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition'
+  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
+  LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

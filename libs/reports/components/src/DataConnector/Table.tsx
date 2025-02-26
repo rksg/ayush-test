@@ -15,19 +15,19 @@ import {
 } from '@acx-ui/user'
 
 import {
-  useDataSubscriptionsQuery,
-  useDeleteDataSubscriptionsMutation,
-  usePatchDataSubscriptionsMutation
+  useDataConnectorQuery,
+  useDeleteDataConnectorMutation,
+  usePatchDataConnectorMutation
 } from './services'
-import { DataSubscription, Frequency }                         from './types'
+import { DataConnector, Frequency }                            from './types'
 import { Actions, frequencyMap, getUserId, isVisibleByAction } from './utils'
 
-export function DataSubscriptionsTable () {
+export function DataConnectorTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/dataSubscriptions')
-  const [deleteDataSubscriptions] = useDeleteDataSubscriptionsMutation()
-  const [patchDataSubscriptions] = usePatchDataSubscriptionsMutation()
+  const basePath = useTenantLink('/dataConnector')
+  const [deleteDataConnector] = useDeleteDataConnectorMutation()
+  const [patchDataConnector] = usePatchDataConnectorMutation()
   const userId = getUserId()
 
   type ActionsWithoutEdit = Exclude<Actions, Actions.Edit>
@@ -49,8 +49,8 @@ export function DataSubscriptionsTable () {
           <FormattedMessage
             defaultMessage={`The selected
               {totalCount, plural,
-              one {data subscription has}
-              other {data subscriptions have}} been {verb} successfully.`}
+              one {data connector has}
+              other {data connectors have}} been {verb} successfully.`}
             values={{
               totalCount: count,
               verb: actionToSuccessVerbMap[action]
@@ -63,8 +63,8 @@ export function DataSubscriptionsTable () {
           <FormattedMessage
             defaultMessage={`Failed to {verb} the selected
               {totalCount, plural,
-              one {data subscription}
-              other {data subscriptions}}.`}
+              one {data connector}
+              other {data connectors}}.`}
             values={{
               totalCount: count,
               verb: actionToErrorVerbMap[action]
@@ -77,10 +77,10 @@ export function DataSubscriptionsTable () {
     fields: [],  // select all
     filters: {}
   }
-  const settingsId = 'data-subscription-table'
-  const tableQuery = useTableQuery<DataSubscription>({
+  const settingsId = 'data-connector-table'
+  const tableQuery = useTableQuery<DataConnector>({
     // Use the default sortField by the component
-    useQuery: useDataSubscriptionsQuery,
+    useQuery: useDataConnectorQuery,
     pagination: { settingsId },
     defaultPayload,
     sorter: {
@@ -89,7 +89,7 @@ export function DataSubscriptionsTable () {
     }
   })
 
-  const columnHeaders: TableProps<DataSubscription>['columns'] = [
+  const columnHeaders: TableProps<DataConnector>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -98,11 +98,11 @@ export function DataSubscriptionsTable () {
       fixed: 'left',
       render: (
         name,
-        { id, name: dataSubscriptionName, userId: dataSubscriptionUserId }
+        { id, name: dataConnectorName, userId: dataConnectorUserId }
       ) =>
-        userId === dataSubscriptionUserId ? (
-          <TenantLink to={`dataSubscriptions/auditLog/${id}`}>
-            {dataSubscriptionName}
+        userId === dataConnectorUserId ? (
+          <TenantLink to={`dataConnector/auditLog/${id}`}>
+            {dataConnectorName}
           </TenantLink>
         ) : (
           name
@@ -135,19 +135,19 @@ export function DataSubscriptionsTable () {
     }
   ]
 
-  const rowActions: TableProps<DataSubscription>['rowActions'] = [
+  const rowActions: TableProps<DataConnector>['rowActions'] = [
     {
       key: getShowWithoutRbacCheckKey(Actions.Resume),
       label: $t({ defaultMessage: 'Resume' }),
       visible: rows => isVisibleByAction(rows, Actions.Resume),
-      onClick: async (selectedRows: DataSubscription[], clearSelection) => {
+      onClick: async (selectedRows: DataConnector[], clearSelection) => {
         const payload = {
-          dataSubscriptionIds: selectedRows.map(row => row.id),
+          ids: selectedRows.map(row => row.id),
           data: {
             status: true
           }
         }
-        patchDataSubscriptions({ payload }).unwrap()
+        patchDataConnector({ payload }).unwrap()
           .then(() => {
             showToastByAction(true, Actions.Resume, selectedRows.length)
             clearSelection()
@@ -161,14 +161,14 @@ export function DataSubscriptionsTable () {
       key: getShowWithoutRbacCheckKey(Actions.Pause),
       label: $t({ defaultMessage: 'Pause' }),
       visible: rows => isVisibleByAction(rows, Actions.Pause),
-      onClick: async (selectedRows: DataSubscription[], clearSelection) => {
+      onClick: async (selectedRows: DataConnector[], clearSelection) => {
         const payload = {
-          dataSubscriptionIds: selectedRows.map(row => row.id),
+          ids: selectedRows.map(row => row.id),
           data: {
             status: false
           }
         }
-        patchDataSubscriptions({ payload }).unwrap()
+        patchDataConnector({ payload }).unwrap()
           .then(() => {
             showToastByAction(true, Actions.Pause, selectedRows.length)
             clearSelection()
@@ -182,7 +182,7 @@ export function DataSubscriptionsTable () {
       key: getShowWithoutRbacCheckKey(Actions.Edit),
       label: $t({ defaultMessage: 'Edit' }),
       visible: rows => isVisibleByAction(rows, Actions.Edit),
-      onClick: (selectedRows: DataSubscription[]) => {
+      onClick: (selectedRows: DataConnector[]) => {
         const row = selectedRows[0]
         const editPath = `edit/${row.id}`
         navigate({
@@ -195,15 +195,15 @@ export function DataSubscriptionsTable () {
       key: getShowWithoutRbacCheckKey(Actions.Delete),
       label: $t({ defaultMessage: 'Delete' }),
       visible: rows => isVisibleByAction(rows, Actions.Delete),
-      onClick: (selectedRows: DataSubscription[], clearSelection) => {
+      onClick: (selectedRows: DataConnector[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     }
   ]
 
-  const deleteSubscriptionsWithToast =
-    async (selectedRows: DataSubscription[], callback: () => void) => {
-      deleteDataSubscriptions({ payload: selectedRows.map(row => row.id) }).unwrap()
+  const deleteConnectorWithToast =
+    async (selectedRows: DataConnector[], callback: () => void) => {
+      deleteDataConnector({ payload: selectedRows.map(row => row.id) }).unwrap()
         .then(() => {
           showToastByAction(true, Actions.Delete, selectedRows.length)
           callback()
@@ -211,17 +211,17 @@ export function DataSubscriptionsTable () {
         .catch(() => showToastByAction(false, Actions.Delete, selectedRows.length))
     }
 
-  const doDelete = (selectedRows: DataSubscription[], callback: () => void) => {
+  const doDelete = (selectedRows: DataConnector[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
       $t(
         { defaultMessage: `{deleteCount, plural, 
-        one {Data Subscription} other {Data Subscriptions}}` },
+        one {Data Connector} other {Data Connectors}}` },
         { deleteCount: selectedRows.length }),
       selectedRows[0].name,
       // no need to check the relation fields
       [],
-      async () => deleteSubscriptionsWithToast(selectedRows, callback)
+      async () => deleteConnectorWithToast(selectedRows, callback)
     )
   }
 
@@ -232,7 +232,7 @@ export function DataSubscriptionsTable () {
   const allowedRowActions = filterByAccess(rowActions)
 
   return <Loader states={[tableQuery]}>
-    <Table<DataSubscription>
+    <Table<DataConnector>
       rowKey='id'
       settingsId={settingsId}
       columns={columnHeaders}
@@ -244,7 +244,7 @@ export function DataSubscriptionsTable () {
       rowSelection={
         hasDataPermission && allowedRowActions.length > 0 && {
           type: 'checkbox',
-          getCheckboxProps: (record: DataSubscription) => ({
+          getCheckboxProps: (record: DataConnector) => ({
             disabled: record.userId !== userId
           })
         }

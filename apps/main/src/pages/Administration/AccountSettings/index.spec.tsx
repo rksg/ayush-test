@@ -20,7 +20,8 @@ import {
   fakeRecoveryPassphrase,
   fakeMFATenantDetail,
   fakeMspEcProfile,
-  fakeUserProfile
+  fakeUserProfile,
+  fakeTenantDetails
 } from './__tests__/fixtures'
 
 import AccountSettings from './'
@@ -84,6 +85,10 @@ describe('Account Settings', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantAuthentications.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
   })

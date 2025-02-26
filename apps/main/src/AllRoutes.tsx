@@ -75,7 +75,7 @@ function AllRoutes () {
           <Route path='dataStudio/*' element={<ReportsBase />}>
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
-          <Route path='dataSubscriptions/*' element={<ReportsBase />}>
+          <Route path='dataConnector/*' element={<ReportsBase />}>
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
           <Route path='devices/*' element={<DevicesBase />}>
