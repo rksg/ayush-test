@@ -55,8 +55,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
     }
-  }
-  ,
+  },
   deleteEthernetPortProfileRadiusId: {
     method: 'delete',
     url: '/ethernetPortProfiles/:id/radiusServerProfiles/:radiusId',

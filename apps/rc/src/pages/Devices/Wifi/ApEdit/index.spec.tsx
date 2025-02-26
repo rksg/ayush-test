@@ -31,7 +31,6 @@ import {
   venueSetting,
   venueVersionList,
   deviceAps,
-  iotCompatibilites,
   r650Cap
 } from '../../__tests__/fixtures'
 
@@ -145,10 +144,6 @@ describe('ApEdit', () => {
       rest.post(
         WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({ data: dhcpAp[0].response }))
-      ),
-      rest.post(
-        WifiRbacUrlsInfo.getApCompatibilities.url,
-        (req, res, ctx) => res(ctx.json(iotCompatibilites))
       ),
       rest.get(
         WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
