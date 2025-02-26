@@ -69,7 +69,7 @@ export function NetworkControlTab () {
   const apIotTitle = $t({ defaultMessage: 'IoT Controller' })
 
   const { apCapabilities } = useContext(ApDataContext)
-  const isIotInCompatible = apCapabilities?.supportIoT ?? false
+  const isSupportIoT = apCapabilities?.supportIoT ?? false
 
   const anchorItems = [
     {
@@ -94,7 +94,7 @@ export function NetworkControlTab () {
         </>
       )
     },
-    ...((isIotFeatureEnabled && !isIotInCompatible) ? [{
+    ...((isIotFeatureEnabled && isSupportIoT) ? [{
       title: apIotTitle,
       content: (
         <>
