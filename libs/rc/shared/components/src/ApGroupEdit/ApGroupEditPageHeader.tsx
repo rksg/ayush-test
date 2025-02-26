@@ -31,7 +31,7 @@ export function ApGroupEditPageHeader () {
   })
 
   useEffect(() => {
-    if (venuesList?.data) {
+    if (venuesList?.data && venueId) {
       setVenueName(venuesList?.data.data.filter((venue) => venue.id === venueId)[0].name)
     }
   }, [venuesList])

@@ -638,6 +638,7 @@ export const GroupRow = styled.div`
   margin-right: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `
 export const GroupCell = styled.div`
   display: flex;

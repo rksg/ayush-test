@@ -10,7 +10,6 @@ import * as UI from './styledComponents'
 import { TableProps } from '.'
 
 import type { TableColumnState } from './types'
-import {NewAPModelExtended} from "@acx-ui/rc/utils";
 
 export function GroupSelect<RecordType> ({
   $t, value, setValue, groupable, style
@@ -75,7 +74,7 @@ export function useGroupBy<RecordType> (
         <UI.GroupCell>
           {attributes.map(({ key, renderer }, index) => {
             // ungrouped aps no need to show the venue information
-            if (key === 'venue' && !(record as unknown as NewAPModelExtended).deviceGroupName) {
+            if (key === 'venue' && !(record as unknown as { deviceGroupName: string }).deviceGroupName) {
               return null
             }
               return <div key={key} style={{ display: 'flex' }}>

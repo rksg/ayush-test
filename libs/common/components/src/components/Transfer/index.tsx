@@ -8,16 +8,18 @@ import { useIntl }                                                              
 
 import * as UI from './styledComponents'
 
-export type TransferProps = AntTransferProps<TransferItem> & {
-  type?: 'default' | 'table'
-  tableData?: TransferItem[]
-  leftColumns?: TableColumnsType<TransferItem>
-  rightColumns?: TableColumnsType<TransferItem>
-}
+export type TransferProps =
+  | AntTransferProps<TransferItem> & { type?: 'default' }
+  | AntTransferProps<TransferItem> & {
+      type: 'table'
+      tableData: TransferItem[]
+      leftColumns: TableColumnsType<TransferItem>
+      rightColumns: TableColumnsType<TransferItem>
+    }
 
 export function Transfer (props: TransferProps) {
   const { $t } = useIntl()
-  const { type = 'default', leftColumns, rightColumns, tableData = [] } = props
+  const { type = 'default' } = props
 
   let selectAllLabels = [
     ({ totalCount }) => (
@@ -39,6 +41,12 @@ export function Transfer (props: TransferProps) {
   ] as SelectAllLabel[]
 
   if (type === 'table') {
+    const {
+      leftColumns,
+      rightColumns,
+      tableData = []
+    } = props as Extract<TransferProps, { type: 'table' }>
+
     return <UI.TransferLayout>
       <AntTransfer
         {...props}
@@ -60,7 +68,6 @@ export function Transfer (props: TransferProps) {
           const rowSelection: TableRowSelection<TransferItem> = {
             getCheckboxProps: () => ({ disabled: listDisabled }),
             onChange (selectedRowKeys) {
-              console.log(selectedRowKeys)
               // @ts-ignore
               onItemSelectAll(selectedRowKeys, 'replace')
             },
@@ -101,7 +108,6 @@ export function Transfer (props: TransferProps) {
       </AntTransfer>
     </UI.TransferLayout>
   }
-
 
   // default transfer
   return <UI.TransferLayout>
