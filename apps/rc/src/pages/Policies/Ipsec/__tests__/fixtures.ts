@@ -279,18 +279,6 @@ export const mockedVenueQueryData = {
       id: mockedVenueId1,
       name: mockedVenueName1,
       addressLine: '198 Main St,New York,United States'
-    }, {
-      id: mockedVenueId2,
-      name: mockedVenueName2,
-      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
-    }, {
-      id: mockedVenueId3,
-      name: mockedVenueName3,
-      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
-    }, {
-      id: mockedVenueId4,
-      name: mockedVenueName4,
-      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
     }
   ]
 }

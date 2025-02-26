@@ -74,7 +74,7 @@ describe('IpsecVenueDetail', () => {
     )
     const venueId = mockedVenueId1
     const row = await screen.findByRole('row', { name: new RegExp(mockedVenueName1, 'i') })
-    expect(await within(row).findByText('1')).toBeVisible()
+    expect(await within(row).findByText('3')).toBeVisible()
 
     const smartEdgeLink = await screen.findByRole('link',
       { name: mockedVenueName1 })

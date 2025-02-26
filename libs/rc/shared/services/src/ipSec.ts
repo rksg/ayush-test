@@ -227,8 +227,6 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
     getIpsecOptions: build.query<IpSecOptionsData, RequestPayload>({
       queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
         const { venueId, networkId } = params as { venueId: string, networkId?: string }
-        // const gatewayIps = new Set<string>()
-        // const gatewayIpMaps:Record<string, string[]> = {}
         const activationProfiles:string[] = []
 
         const ipsecListReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)

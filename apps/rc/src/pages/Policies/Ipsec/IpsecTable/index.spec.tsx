@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
-import { ipSecApi }                                                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Path }                                                                                             from '@acx-ui/react-router-dom'
-import { Provider, store }                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                      from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { ipSecApi }                                                                         from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, IpsecUrls, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Path }                                                                             from '@acx-ui/react-router-dom'
+import { Provider, store }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                      from '@acx-ui/test-utils'
 
-import { mockIpSecTable, mockedVenueQueryData } from '../__tests__/fixtures'
+import { mockIpSecTable } from '../__tests__/fixtures'
 
 import IpsecTable from '.'
 
@@ -55,10 +55,6 @@ describe('IpsecTable', () => {
           mockedSingleDeleteApi()
           return res(ctx.status(202))
         }
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(mockedVenueQueryData))
       )
     )
   })

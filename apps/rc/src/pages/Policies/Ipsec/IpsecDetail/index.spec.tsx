@@ -9,7 +9,7 @@ import { Path }                       from '@acx-ui/react-router-dom'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedNetworkQueryData, mockedVenueQueryData, mockIpSecDetailFromListQueryById } from '../__tests__/fixtures'
+import { mockedNetworkQueryData, mockIpSecDetailFromListQueryById } from '../__tests__/fixtures'
 
 import IpsecDetail from '.'
 
@@ -50,10 +50,6 @@ describe('IpSec Detail Page', () => {
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockedNetworkQueryData))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(mockedVenueQueryData))
       )
     )
   })
