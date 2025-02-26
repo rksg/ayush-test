@@ -29,7 +29,7 @@ export default function PortalViewSelfSignConnect (props:{
             <UI.WhatsAppOutlined/>
           </UI.ViewSectionSocialIcon>
           <UI.ViewSectionSocialText>
-            {portalLang.connectWithSMS}</UI.ViewSectionSocialText>
+            {portalLang.connectWithWhatsApp}</UI.ViewSectionSocialText>
         </UI.ViewSectionSocial>}
       {(!networkSocial || networkSocial.facebookEnabled) &&
       <UI.ViewSectionSocial $type='facebook'>
