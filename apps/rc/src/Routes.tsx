@@ -44,7 +44,10 @@ import {
   WifiCallingDetailView,
   WifiCallingForm,
   WifiOperatorForm,
-  DirectoryServerForm
+  DirectoryServerForm,
+  AddSsoSaml,
+  EditSsoSaml,
+  SsoSamlDetail
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -134,6 +137,7 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
+import SsoSaml                                                          from './pages/Policies/SsoSaml'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -1553,6 +1557,45 @@ function PolicyRoutes () {
               <DirectoryServerForm editMode={true} />
             </PolicyAuthRoute>
           } />
+      </>
+      }
+      {<>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.LIST
+          })}
+          element={<SsoSaml/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.CREATE}>
+              <AddSsoSaml/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.EDIT}>
+              <EditSsoSaml/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.DETAIL
+          })}
+          element={<SsoSamlDetail/>}
+        />
       </>
       }
     </Route>
