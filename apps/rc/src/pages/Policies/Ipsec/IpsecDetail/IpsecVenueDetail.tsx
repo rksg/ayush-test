@@ -178,7 +178,5 @@ function getAggregatedActivations (
     })
   }
 
-  // // eslint-disable-next-line no-console
-  // console.log(aggregated)
   return aggregated
 }
