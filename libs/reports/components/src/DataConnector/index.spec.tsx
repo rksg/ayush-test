@@ -3,9 +3,9 @@ import React from 'react'
 import { render } from '@testing-library/react'
 
 import {
-  DataSubscriptionsAuditLog,
-  DataSubscriptionsContent,
-  SubscriptionForm,
+  DataConnectorAuditLog,
+  DataConnectorContent,
+  ConnectorForm,
   CloudStorageForm
 } from '.'
 
@@ -37,34 +37,34 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useRaiR1HelpPageLink: () => ''
 }))
 
-describe('Lazy-Loaded DataSubscriptions Components', () => {
-  it('should render DataSubscriptionsAuditLog correctly', () => {
+describe('Lazy-Loaded DataConnector Components', () => {
+  it('should render DataConnectorAuditLog correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
-        <DataSubscriptionsAuditLog />
+        <DataConnectorAuditLog />
       </React.Suspense>
     )
     expect(container).toBeInTheDocument()
   })
 
-  it('should render DataSubscriptionsContent correctly', () => {
+  it('should render DataConnectorContent correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
-        <DataSubscriptionsContent />
+        <DataConnectorContent />
       </React.Suspense>
     )
     expect(container).toBeInTheDocument()
   })
 
-  it('should render DataSubscriptionsForm correctly', () => {
+  it('should render DataConnectorForm correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
-        <SubscriptionForm />
+        <ConnectorForm />
       </React.Suspense>
     )
     expect(container).toBeInTheDocument()
   })
-  it('should render DataSubscriptionsCloudStorage correctly', () => {
+  it('should render DataConnectorCloudStorage correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
         <CloudStorageForm />

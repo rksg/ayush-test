@@ -25,7 +25,7 @@ import { mockAuditLogs }                                 from './__fixtures__'
 import AuditLogTable, { getRetryError, retryableStatus } from './AuditLogTable'
 import { AuditDto, AuditStatusEnum }                     from './types'
 
-const mockDataSubscriptionId = 'mock-data-subscription-id'
+const mockDataConnectorId = 'mock-data-connector-id'
 const mockMoreThan3DaysBeforeNow = '2025-01-10T02:48:40.069Z'
 const mockLessThan3DaysBeforeNow = '2025-01-18T02:48:40.069Z'
 const { click } = userEvent
@@ -49,9 +49,9 @@ jest.mock('moment', () => {
 describe('AuditLogTable', () => {
   beforeEach(() => {
     mockGet.mockReturnValue('true')
-    setRaiPermissions({ WRITE_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
+    setRaiPermissions({ WRITE_DATA_CONNECTOR: true } as RaiPermissions)
     mockRestApiQuery(
-      `${notificationApiURL}/dataSubscriptions/audit/query`,
+      `${notificationApiURL}/dataConnector/audit/query`,
       'post',
       {
         data: mockAuditLogs,
@@ -69,7 +69,7 @@ describe('AuditLogTable', () => {
   })
 
   it('renders table with data and columns correctly', async () => {
-    render(<AuditLogTable dataSubscriptionId={mockDataSubscriptionId} />, {
+    render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
       wrapper: Provider
     })
 
@@ -111,7 +111,7 @@ describe('AuditLogTable', () => {
   it.each([0, 1])(
     'should render enabled radio button when audit is retryable',
     async (rowIndex) => {
-      render(<AuditLogTable dataSubscriptionId={mockDataSubscriptionId} />, {
+      render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
         wrapper: Provider
       })
 
@@ -126,7 +126,7 @@ describe('AuditLogTable', () => {
   it.each([2, 3, 4, 5])(
     'should render disabled radio button when audit is not retryable',
     async (rowIndex) => {
-      render(<AuditLogTable dataSubscriptionId={mockDataSubscriptionId} />, {
+      render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
         wrapper: Provider
       })
 
@@ -144,7 +144,7 @@ describe('AuditLogTable', () => {
 
     mockServer.use(
       rest.post(
-        `${notificationApiURL}/dataSubscriptions/retry/:id`,
+        `${notificationApiURL}/dataConnector/retry/:id`,
         (req, res, ctx) => {
           postFn(req.body)
           return res(ctx.json('new-audit-id'))
@@ -152,7 +152,7 @@ describe('AuditLogTable', () => {
       )
     )
 
-    render(<AuditLogTable dataSubscriptionId={mockDataSubscriptionId} />, {
+    render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
       wrapper: Provider,
       route: {}
     })
@@ -180,7 +180,7 @@ describe('AuditLogTable', () => {
     const postFn = jest.fn()
     mockServer.use(
       rest.post(
-        `${notificationApiURL}/dataSubscriptions/retry/:id`,
+        `${notificationApiURL}/dataConnector/retry/:id`,
         (req, res, ctx) => {
           postFn(req.body)
           return res(ctx.status(500))
@@ -188,7 +188,7 @@ describe('AuditLogTable', () => {
       )
     )
 
-    render(<AuditLogTable dataSubscriptionId={mockDataSubscriptionId} />, {
+    render(<AuditLogTable dataConnectorId={mockDataConnectorId} />, {
       wrapper: Provider,
       route: {}
     })
@@ -223,7 +223,7 @@ describe('getRetryError', () => {
     'should return error message when audit status is not in retryableStatus',
     (status: AuditStatusEnum) =>
       expect(getRetryError({ status } as AuditDto)).toEqual(
-        `Subscription is ${status}`
+        `Connector is ${status}`
       )
   )
 
@@ -234,7 +234,7 @@ describe('getRetryError', () => {
     'should return error message when status is retryable and start is more than 3 days ago',
     (status, start) =>
       expect(getRetryError({ status, start } as AuditDto)).toEqual(
-        'Subscription can only be retried within 3 days from start date'
+        'Connector can only be retried within 3 days from start date'
       )
   )
 

@@ -1,6 +1,6 @@
 import { get } from '@acx-ui/config'
 
-import { DataSubscription }                                            from './types'
+import { DataConnector }                                               from './types'
 import { Actions, generateBreadcrumb, getUserName, isVisibleByAction } from './utils'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
@@ -15,11 +15,11 @@ jest.mock('@acx-ui/config', () => ({
   ...jest.requireActual('@acx-ui/config'),
   get: jest.fn()
 }))
-describe('DataSubscriptions utils', () => {
+describe('DataConnector utils', () => {
   it('generateBreadcrumb', () => {
     expect(generateBreadcrumb()).toMatchObject([
       { text: 'Business Insights' },
-      { link: '/dataSubscriptions', text: 'DataSubscriptions' }
+      { link: '/dataConnector', text: 'DataConnector' }
     ])
   })
 })
@@ -38,13 +38,13 @@ describe('getUserName', () => {
 })
 describe('isVisibleByAction', () => {
   const baseItem = {
-    id: 'subscription-id',
-    name: 'subscription-name',
+    id: 'connector-id',
+    name: 'connector-name',
     userId: 'user-id',
     userName: 'user-name',
     columns: ['col1', 'col2'],
     status: true
-  } as DataSubscription
+  } as DataConnector
   const activeRow = baseItem
   const pausedRow = { ...baseItem, status: false }
 

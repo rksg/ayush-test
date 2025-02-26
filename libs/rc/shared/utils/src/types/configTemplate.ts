@@ -40,7 +40,7 @@ export interface ConfigTemplate {
   appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
-  lastApplied: number,
+  lastApplied?: number,
   driftStatus?: ConfigTemplateDriftType
   isEnforced?: boolean
 }
@@ -112,3 +112,12 @@ export interface EnforceableFields {
   isEnforced?: boolean // It indicates whether the network template/instance is enforced
   isManagedByTemplate?: boolean // It indicates whether the venue is derived from a template
 }
+
+export type AllowedCloneTemplateTypes =
+  ConfigTemplateType.NETWORK |
+  ConfigTemplateType.VENUE
+
+export const allowedCloneTemplateTypesSet = new Set<ConfigTemplateType>([
+  ConfigTemplateType.NETWORK,
+  ConfigTemplateType.VENUE
+])

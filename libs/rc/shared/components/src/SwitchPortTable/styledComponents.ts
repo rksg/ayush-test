@@ -212,3 +212,10 @@ export const Descriptions = styled(AcxDescriptions)`
     }
   }
 `
+export const FieldTemplateTooltip = styled.div`
+  svg {
+    margin-left: 5px;
+    margin-top: -5px;
+    width: 16px;
+  }
+`

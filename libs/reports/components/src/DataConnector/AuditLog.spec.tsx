@@ -5,20 +5,20 @@ import { mockRestApiQuery, render, screen } from '@acx-ui/test-utils'
 import AuditLog from './AuditLog'
 
 const mockAuditLogId = 'audit-log-id'
-const mockDataSubscriptionName = 'data-subscription-name'
+const mockDataConnectorName = 'data-connector-name'
 
 describe('AuditLog', () => {
   it('should render audit log page correctly', async () => {
     mockRestApiQuery(
-      `${notificationApiURL}/dataSubscriptions/audit-log-id`,
+      `${notificationApiURL}/dataConnector/audit-log-id`,
       'get',
       {
-        data: { name: mockDataSubscriptionName }
+        data: { name: mockDataConnectorName }
       }
     )
     // AuditLogTable
     mockRestApiQuery(
-      `${notificationApiURL}/dataSubscriptions/audit/query`,
+      `${notificationApiURL}/dataConnector/audit/query`,
       'post',
       {
         data: [],
@@ -31,7 +31,7 @@ describe('AuditLog', () => {
       route: { params: { settingId: mockAuditLogId } },
       wrapper: Provider
     })
-    expect(await screen.findByText(`Audit Log (${mockDataSubscriptionName})`)).toBeVisible()
+    expect(await screen.findByText(`Audit Log (${mockDataConnectorName})`)).toBeVisible()
     // AuditLogTable
     expect(await screen.findByRole('table')).toBeInTheDocument()
   })
