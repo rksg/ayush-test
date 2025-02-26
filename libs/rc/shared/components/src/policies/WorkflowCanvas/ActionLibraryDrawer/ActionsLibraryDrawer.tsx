@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import React from 'react'
 
-import { Tabs }    from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { NodeProps } from 'reactflow'
 
 import { Drawer }     from '@acx-ui/components'
 import { ActionType } from '@acx-ui/rc/utils'
 
 import { RequiredDependency } from '../WorkflowPanel'
 
-import ActionsLibrary   from './ActionsLibrary'
-import WorkflowsLibrary from './WorkflowsLibrary'
+import ActionLibraryTabs from './ActionLibraryTabs'
+
 
 interface ActionsLibraryDrawerProps {
   visible: boolean,
@@ -17,30 +17,17 @@ interface ActionsLibraryDrawerProps {
   onClickAction: (type: ActionType) => void,
   relationshipMap: Partial<Record<ActionType, RequiredDependency>>
   existingActionTypes?: Set<ActionType>,
-  onConfigureClose: () => void
-}
-
-export enum LibraryType {
-  ACTIONS = 'ACTIONS',
-  WORKFLOWS = 'WORKFLOWS',
+  onConfigureClose: () => void,
+  workflowId: string,
+  priorNode?: NodeProps
 }
 
 export default function ActionsLibraryDrawer (props: ActionsLibraryDrawerProps) {
   const { $t } = useIntl()
   const {
     visible,
-    relationshipMap,
-    existingActionTypes = new Set(),
-    onClose,
-    onClickAction,
-    onConfigureClose
+    onClose
   } = props
-
-  const [activeKey, setActiveKey] = useState(LibraryType.ACTIONS)
-
-  const onTabChange = (tab: string) => {
-    setActiveKey(LibraryType[tab as keyof typeof LibraryType])
-  }
 
   return (
     <Drawer
@@ -48,22 +35,7 @@ export default function ActionsLibraryDrawer (props: ActionsLibraryDrawerProps) 
       visible={visible}
       onClose={onClose}
       children={
-        <Tabs onChange={onTabChange} activeKey={activeKey}>
-          <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Actions Library' })}
-            key={LibraryType.ACTIONS}
-            children={<ActionsLibrary
-              onClickAction={onClickAction}
-              existingActionTypes={existingActionTypes}
-              relationshipMap={relationshipMap}/>}
-          />
-          <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Workflows Library' })}
-            key={LibraryType.WORKFLOWS}
-            // eslint-disable-next-line max-len
-            children={<WorkflowsLibrary onClose={onClose} onConfigureClose={onConfigureClose}/>}
-          />
-        </Tabs>
+        <ActionLibraryTabs {...props}/>
       }
       footer={
         <Drawer.FormFooter

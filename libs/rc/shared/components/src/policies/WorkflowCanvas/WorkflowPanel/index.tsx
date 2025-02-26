@@ -9,6 +9,7 @@ import {
 
 
 import { Loader }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
   useGetWorkflowActionDefinitionListQuery,
   useGetWorkflowStepsByIdQuery,
@@ -16,6 +17,7 @@ import {
 } from '@acx-ui/rc/services'
 import { ActionType, toReactFlowData, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
+import ActionLibraryDrawer  from '../ActionLibraryDrawer'
 import ActionsLibraryDrawer from '../ActionLibraryDrawer/ActionsLibraryDrawer'
 import StepDrawer           from '../StepDrawer/StepDrawer'
 
@@ -34,8 +36,6 @@ interface WorkflowPanelProps {
   type?: PanelType,
   onConfigureClose: () => void
 }
-
-
 
 export interface RequiredDependency {
   type: 'NONE' | 'ONE_OF' | 'ALL',
@@ -98,6 +98,8 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const [nodes, setNodes] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
 
+  const isWorkflowTemplateEnabled = useIsSplitOn(Features.WORKFLOW_TEMPLATE_TOGGLE)
+
   const { requiredDependency } = useRequiredDependency()
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
@@ -131,15 +133,26 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
       />
 
       {
-        actionDrawerState.visible &&
-        <ActionsLibraryDrawer
-          visible={actionDrawerState.visible}
-          onClickAction={onClickAction}
-          onClose={actionDrawerState.onClose}
-          existingActionTypes={nodeState.existingDependencies}
-          relationshipMap={requiredDependency}
-          onConfigureClose={onConfigureClose}
-        />
+        actionDrawerState.visible && (
+          !isWorkflowTemplateEnabled ?
+            <ActionLibraryDrawer
+              visible={actionDrawerState.visible}
+              onClose={actionDrawerState.onClose}
+              onClickAction={onClickAction}
+              existingActionTypes={nodeState.existingDependencies}
+              relationshipMap={requiredDependency}
+            /> :
+            <ActionsLibraryDrawer
+              visible={actionDrawerState.visible}
+              onClickAction={onClickAction}
+              onClose={actionDrawerState.onClose}
+              existingActionTypes={nodeState.existingDependencies}
+              relationshipMap={requiredDependency}
+              onConfigureClose={onConfigureClose}
+              workflowId={policyId}
+              priorNode={nodeState.interactedNode}
+            />
+        )
       }
       {
         (stepDrawerState.visible && stepDrawerState?.selectedActionType) &&

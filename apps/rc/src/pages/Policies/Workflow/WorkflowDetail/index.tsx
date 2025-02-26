@@ -279,7 +279,7 @@ export default function WorkflowDetails () {
             <WorkflowPanel
               workflowId={data?.id!!}
               mode={WorkflowPanelMode.Default}
-              onConfigureClose={closeWorkflowDesigner}
+              onConfigureClose={() => closeWorkflowDesigner()}
             />
           }
         </Loader>
