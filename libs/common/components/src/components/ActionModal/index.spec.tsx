@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 
 import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@acx-ui/test-utils'
+import { getEnabledDialogImproved }                                      from '@acx-ui/utils'
 
 import { showActionModal, convertToJSON, isErrorWithMessage } from '.'
 
@@ -12,6 +13,11 @@ Object.assign(navigator, {
     writeText: () => { }
   }
 })
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getEnabledDialogImproved: jest.fn().mockReturnValue(false)
+}))
 
 describe('ActionModal', () => {
   let [onOk, onOk2, onCancel]: jest.Mock[] = []
@@ -71,7 +77,7 @@ describe('ActionModal', () => {
       })
     })
 
-    describe('modal with details', () => {
+    describe('legacy modal with details', () => {
       const mockErrorDetails = {
         message: 'Some error details'
       }
@@ -137,6 +143,68 @@ describe('ActionModal', () => {
       })
     })
   })
+
+  describe('show_errors modal with details', () => {
+    const mockErrorDetails = {
+      message: 'Some error details'
+    }
+    const detailsContent = convertToJSON(mockErrorDetails)
+    beforeEach(async () => {
+      jest.mocked(getEnabledDialogImproved).mockReturnValue(true)
+      showActionModal({
+        type: 'error',
+        title: 'Something went wrong',
+        content: 'Some descriptions',
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: mockErrorDetails
+        }
+      })
+
+      await assertModalVisible({
+        className: 'ant-modal-confirm-error',
+        contents: [
+          'Something went wrong',
+          'Some descriptions'
+        ]
+      })
+    })
+
+    it('handle ok to close', async () => {
+      await assertButtonClicked({
+        label: 'OK',
+        shouldClose: true
+      })
+    })
+
+    it('should collapse/expand details panel', async () => {
+      const collapseBtn = await screen.findByTestId('deactiveButton')
+
+      fireEvent.click(collapseBtn)
+      await screen.findByTestId('activeButton')
+      await screen.findByTestId('copyButton')
+
+      await assertButtonClicked({
+        label: 'OK',
+        shouldClose: true
+      })
+    })
+
+    it('should copy details content', async () => {
+      const collapseBtn = await screen.findByTestId('deactiveButton')
+      fireEvent.click(collapseBtn)
+
+      const copyBtn = await screen.findByTestId('copyButton')
+      fireEvent.click(copyBtn)
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(detailsContent)
+
+      await assertButtonClicked({
+        label: 'OK',
+        shouldClose: true
+      })
+    })
+  })
+
 
 
   describe('type = confirm', () => {
