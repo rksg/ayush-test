@@ -6,11 +6,13 @@ import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Drawer }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Drawer }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetAAAPolicyViewModelListQuery,
-  useGetEthernetPortProfileByIdQuery } from '@acx-ui/rc/services'
+  useGetEthernetPortProfileByIdQuery,
+  useGetEthernetPortProfileTemplateQuery
+} from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
   EthernetPortAuthType,
@@ -20,7 +22,8 @@ import {
   getEthernetPortAuthTypeString,
   getEthernetPortCredentialTypeString,
   getEthernetPortTypeString,
-  getPolicyDetailsLink } from '@acx-ui/rc/utils'
+  getPolicyDetailsLink,
+  useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface EthernetPortProfileDetailsDrawerProps {
@@ -59,9 +62,11 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
     })
   })
 
-  const { data: ethernetData } = useGetEthernetPortProfileByIdQuery({
-    params: { id: ethernetPortProfileData?.id }
-  }, {
+  const { data: ethernetData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEthernetPortProfileByIdQuery,
+    useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
+    enableRbac: true,
+    extraParams: { id: ethernetPortProfileData?.id },
     skip: !ethernetPortProfileData?.id
   })
 

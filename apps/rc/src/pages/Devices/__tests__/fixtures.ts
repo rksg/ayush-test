@@ -601,65 +601,6 @@ export const r650ap = {
   updatedDate: '2022-11-22T08:53:27.329+0000'
 }
 
-export const iotCompatibilites = {
-  compatibilities: [
-    {
-      id: '132322011893',
-      incompatibleFeatures: [
-        {
-          featureName: '6G outdoor channels',
-          requirements: [
-            {
-              firmware: '7.0.0.200.0',
-              models: [
-                'H670',
-                'R770',
-                'R760',
-                'R560',
-                'R670',
-                'T670',
-                'T670SN'
-              ]
-            }
-          ],
-          wifiNetworkIds: [
-            'ce0ae757a7594e56a9a1cf08759c40c6'
-          ],
-          featureType: 'WIFI',
-          featureLevel: 'VENUE'
-        },
-        {
-          featureName: 'AFC',
-          requirements: [
-            {
-              firmware: '7.0.0.104.1304',
-              models: [
-                'R770',
-                'R760',
-                'R560'
-              ]
-            },
-            {
-              firmware: '7.0.0.200.0',
-              models: [
-                'T670',
-                'R670'
-              ]
-            }
-          ],
-          wifiNetworkIds: [
-            'ce0ae757a7594e56a9a1cf08759c40c6'
-          ],
-          featureType: 'WIFI',
-          featureLevel: 'VENUE'
-        }
-      ]
-    }
-  ],
-  page: 1,
-  totalCount: 1
-}
-
 export const r650Cap = {
   model: 'R650',
   lanPorts: [
