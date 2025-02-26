@@ -797,5 +797,20 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
     newApi: true
+  },
+  getSwitchMacAcls: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchMacAcls/query',
+    newApi: true
+  },
+  addSwitchMacAcl: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchMacAcls',
+    newApi: true
+  },
+  updateSwitchMacAcl: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/switchMacAcls/:macAclId',
+    newApi: true
   }
 }

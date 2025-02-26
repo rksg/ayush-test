@@ -67,7 +67,8 @@ import {
   MacOuis,
   SwitchPortProfilesAppliedTargets,
   PortProfilesForMultiSwitches,
-  PortDisableRecoverySetting
+  PortDisableRecoverySetting,
+  MacAcl
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1952,7 +1953,37 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
-    })
+    }),
+    getSwitchMacAcls: build.query<TableResult<MacAcl>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchMacAcls, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    addSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchMacAcl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    updateSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateSwitchMacAcl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
   })
 })
 
@@ -2240,5 +2271,8 @@ export const {
   useLazyPortProfileOptionsForMultiSwitchesQuery,
   usePortProfilesListBySwitchIdQuery,
   usePortDisableRecoverySettingQuery,
-  useUpdatePortDisableRecoverySettingMutation
+  useUpdatePortDisableRecoverySettingMutation,
+  useGetSwitchMacAclsQuery,
+  useAddSwitchMacAclMutation,
+  useUpdateSwitchMacAclMutation
 } = switchApi

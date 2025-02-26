@@ -1091,3 +1091,19 @@ export interface PortDisableRecoverySettingForm {
   recoveryInterval: number,
   recoverySetting: PortDisableRecoverySetting,
 }
+
+export interface MacAclRule {
+	id: string,
+	action: 'permit' | 'deny',
+	sourceAddress?: string,
+	sourceMask?: string,
+	destinationAddress?: string,
+	destinationMask?: string
+}
+
+export interface MacAcl {
+	id: string,
+	name: string,
+	aclRules: MacAclRule[]
+	switchId?: string
+}

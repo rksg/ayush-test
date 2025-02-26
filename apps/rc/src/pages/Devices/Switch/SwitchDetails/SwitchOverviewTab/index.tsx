@@ -28,6 +28,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { MacACLs }                           from '@acx-ui/switch/components'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
@@ -48,7 +49,8 @@ export function SwitchOverviewTab () {
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const [syncedStackMember, setSyncedStackMember] = useState([] as StackMember[])
-  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const switchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const switchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader, switchData } = switchDetailsContextData
@@ -154,7 +156,12 @@ export function SwitchOverviewTab () {
           <SwitchOverviewACLs switchDetail={switchDetail} />
         </Tabs.TabPane>
       }
-      {switchDetail && isSwitchPortProfileEnabled &&
+      {switchDetail && switchMacAclEnabled &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'MAC ACLs' })} key='macacls'>
+          <MacACLs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
+      {switchDetail && switchPortProfileEnabled &&
         isFirmwareVersionAbove10020b(switchDetail?.firmware) &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Port Profiles' })} key='portProfiles'>
           <SwitchOverviewPortProfiles switchDetail={switchDetail} />
