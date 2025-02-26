@@ -173,7 +173,7 @@ export function LanPortSettings (props: {
     />}
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
       defaultMessage={`<section>
-        <p>* The following LAN Port settings can't work because DHCP is enabled.</p>
+        <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
           to the <venueSingular></venueSingular> which already has enabled DHCP service.</p>
       </section>`}
@@ -241,7 +241,7 @@ export function LanPortSettings (props: {
           selectedModelCaps={selectedModelCaps}
           onEthernetPortProfileChanged={onEthernetPortProfileChange}
         />
-        {isEthernetSoftgreEnabled && isModelSupportSoftGRE && <>
+        {!isTemplate && isEthernetSoftgreEnabled && isModelSupportSoftGRE && <>
           <SoftGRETunnelSettings
             readonly={
               !isEthernetPortEnable ||
@@ -279,7 +279,7 @@ export function LanPortSettings (props: {
           }
         </>
         }
-        {isEthernetClientIsolationEnabled &&
+        {!isTemplate && isEthernetClientIsolationEnabled &&
           <ClientIsolationSettingsFields
             index={index}
             onGUIChanged={onGUIChanged}

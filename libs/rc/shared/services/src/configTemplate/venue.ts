@@ -227,6 +227,14 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]
     }),
+    getDefaultVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        return {
+          ...createHttpRequest(VenueConfigTemplateUrlsInfo.getDefaultVenueLanPortsRbac, params, customHeaders)
+        }
+      }
+    }),
     getVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getVenueLanPorts,
@@ -714,6 +722,7 @@ export const {
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateMeshQuery,
   useUpdateVenueTemplateMeshMutation,
+  useGetDefaultVenueTemplateLanPortsQuery,
   useGetVenueTemplateLanPortsQuery,
   useGetVenueTemplateLanPortWithEthernetSettingsQuery,
   useLazyGetVenueTemplateLanportSettingsByModelQuery,

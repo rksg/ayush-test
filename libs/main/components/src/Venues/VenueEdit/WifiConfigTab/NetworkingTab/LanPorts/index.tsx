@@ -43,7 +43,8 @@ import {
   useActivateTemplateEthernetPortProfileOnVenueApModelPortIdMutation,
   useUpdateVenueTemplateLanPortSpecificSettingsMutation,
   useUpdateVenueTemplateLanPortSettingsMutation,
-  useLazyGetVenueTemplateLanportSettingsByModelQuery
+  useLazyGetVenueTemplateLanportSettingsByModelQuery,
+  useGetDefaultVenueTemplateLanPortsQuery
 } from '@acx-ui/rc/services'
 import {
   CapabilitiesApModel,
@@ -104,6 +105,34 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
     : venueSettings?.dhcpServiceSetting?.enabled ?? false
 }
 
+const useGetDefaultVenueLanPort = (venueId: string | undefined) => {
+  const { isTemplate } = useConfigTemplate()
+  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
+
+  const { lanPortsMap, isLoading } =
+    useGetDefaultVenueLanPortsQuery({ params: { venueId } },
+      { selectFromResult: ({ data, isLoading }) => {
+        return {
+          lanPortsMap: new Map(data?.map(l => [l.model, l])),
+          isLoading: isLoading
+        }
+      }, skip: isTemplate || !isLanPortResetEnabled })
+
+  const { templateLanPortsMap, isTemplateLoading } =
+  useGetDefaultVenueTemplateLanPortsQuery({ params: { venueId } },
+    { selectFromResult: ({ data, isLoading }) => {
+      return {
+        templateLanPortsMap: new Map(data?.map(l => [l.model, l])),
+        isTemplateLoading: isLoading
+      }
+    }, skip: !isTemplate || !isLanPortResetEnabled })
+
+  return {
+    defaultLanPortsByModelMap: isTemplate? templateLanPortsMap : lanPortsMap,
+    isDefaultPortsLoading: isTemplate? isTemplateLoading : isLoading
+  }
+}
+
 export function LanPorts (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
@@ -133,15 +162,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
   const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
 
-  const { defaultLanPortsByModelMap, isDefaultPortsLoading } =
-    useGetDefaultVenueLanPortsQuery({ params: { venueId } },
-      { selectFromResult: ({ data, isLoading }) => {
-        return {
-          defaultLanPortsByModelMap: new Map(data?.map(l => [l.model, l])),
-          isDefaultPortsLoading: isLoading
-        }
-
-      }, skip: !isLanPortResetEnabled })
+  const { defaultLanPortsByModelMap, isDefaultPortsLoading } = useGetDefaultVenueLanPort(venueId)
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: ((isEthernetPortProfileEnabled)
