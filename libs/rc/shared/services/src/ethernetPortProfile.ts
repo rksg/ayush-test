@@ -23,7 +23,11 @@ import { RequestPayload }             from '@acx-ui/types'
 import { createHttpRequest }          from '@acx-ui/utils'
 
 
-const createDefaultEthPort = (tenantId: string, type: EthernetPortType) => {
+export const createDefaultEthPort = (
+  tenantId: string,
+  type: EthernetPortType,
+  isTemplate: boolean = false
+) => {
   const name = (type === EthernetPortType.ACCESS)
     ? 'Default Access Port'
     : 'Default Trunk Port (WAN)'
@@ -31,7 +35,7 @@ const createDefaultEthPort = (tenantId: string, type: EthernetPortType) => {
   return {
     apSerialNumbers: [] as string[],
     authType: EthernetPortAuthType.DISABLED,
-    id: `${tenantId}_${type}`,
+    id: `${tenantId}_${type}${isTemplate? '_template': ''}`,
     isDefault: true,
     name,
     type,
@@ -82,7 +86,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       },
       extraOptions: { maxRetries: 5 }
     }),
-    queryEthernetPortProfilesWithOverwrites:
+    getEthernetPortProfilesWithOverwrites:
     build.query<TableResult<EthernetPortProfileViewData>, RequestPayload>({
       async queryFn (
         { payload, params, selectedModelCaps }, _queryApi, _extraOptions, fetchWithBQ) {
@@ -337,7 +341,7 @@ export const {
   useCreateEthernetPortProfileMutation,
   useGetEthernetPortProfileViewDataListQuery,
   useLazyGetEthernetPortProfileViewDataListQuery,
-  useQueryEthernetPortProfilesWithOverwritesQuery,
+  useGetEthernetPortProfilesWithOverwritesQuery,
   useDeleteEthernetPortProfileMutation,
   useGetEthernetPortProfileByIdQuery,
   useGetEthernetPortProfileWithRelationsByIdQuery,
