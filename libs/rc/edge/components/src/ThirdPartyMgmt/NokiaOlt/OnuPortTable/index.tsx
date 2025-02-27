@@ -1,13 +1,16 @@
 import { Row }     from 'antd'
+import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
   Table,
-  TableProps
+  TableProps,
+  defaultRichTextFormatValues
 } from '@acx-ui/components'
-import { formatter }                                                                               from '@acx-ui/formatter'
-import { useSetEdgeOnuPortVlanMutation }                                                           from '@acx-ui/rc/services'
-import {  EdgeNokiaOltData, EdgeNokiaOnuPortData, getOnuPortStatusConfig, OLT_PSE_SUPPLIED_POWER } from '@acx-ui/rc/utils'
+import { formatter }                                                                                                       from '@acx-ui/formatter'
+import { useSetEdgeOnuPortVlanMutation }                                                                                   from '@acx-ui/rc/services'
+import {  EdgeNokiaCageStateEnum, EdgeNokiaOltData, EdgeNokiaOnuPortData, getOnuPortStatusConfig, OLT_PSE_SUPPLIED_POWER } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                                   from '@acx-ui/utils'
 
 import { EdgeNokiaOltStatus } from '../OltStatus'
 
@@ -57,13 +60,13 @@ function useColumns (onuName: string | undefined, handleVlanIdChange: (portIdx: 
       title: $t({ defaultMessage: 'Port' }),
       dataIndex: 'portIdx',
       fixed: 'left',
-      width: 50
+      width: 40
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'stauts',
-      width: 80,
+      width: 60,
       render: (_, row) => {
         return <Row>
           <EdgeNokiaOltStatus config={getOnuPortStatusConfig()} status={row.status} showText />
@@ -84,12 +87,25 @@ function useColumns (onuName: string | undefined, handleVlanIdChange: (portIdx: 
       key: 'vlan',
       title: $t({ defaultMessage: 'VLAN ID' }),
       dataIndex: 'vlan',
+      width: 120,
+      align: 'center' as const,
       render: (_, row) => {
         return <TextInlineEditor
           key={`${onuName}-${row.portIdx}`}
           value={stringToNumber(row.vlan[0])}
           onChange={async (vlan) => handleVlanIdChange(row.portIdx, vlan)}
         />
+      }
+    },
+    {
+      key: 'clientCount',
+      title: $t({ defaultMessage: 'Client<br></br>Count' }, defaultRichTextFormatValues),
+      dataIndex: 'clientCount',
+      width: 50,
+      align: 'center' as const,
+      render: (_, row) => {
+        // eslint-disable-next-line max-len
+        return row.status === EdgeNokiaCageStateEnum.UP ? get(row, 'clientCount') : noDataDisplay
       }
     }
   ]

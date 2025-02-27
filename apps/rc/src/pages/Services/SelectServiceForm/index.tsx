@@ -39,6 +39,7 @@ export default function SelectServiceForm () {
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -75,6 +76,11 @@ export default function SelectServiceForm () {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        },
+        {
+          type: ServiceType.EDGE_OLT,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeOltEnabled
         }
       ]
     },
@@ -156,15 +162,25 @@ export default function SelectServiceForm () {
                       {
                         // eslint-disable-next-line max-len
                         set.items.filter(item => isServiceCardEnabled(item, ServiceOperation.CREATE)).map(item => {
-                          return <GridCol key={item.type} col={{ span: 6 }}>
-                            <ServiceCard
-                              key={item.type}
-                              serviceType={item.type}
-                              categories={item.categories}
-                              type={'radio'}
-                              isBetaFeature={item.isBetaFeature}
-                            />
-                          </GridCol>
+                          return item.type === ServiceType.EDGE_OLT
+                            ? <UI.OltCardWrapper key={item.type} col={{ span: 6 }}>
+                              <ServiceCard
+                                key={item.type}
+                                serviceType={item.type}
+                                categories={item.categories}
+                                type={'radio'}
+                                isBetaFeature={false}
+                              />
+                            </UI.OltCardWrapper>
+                            :<GridCol key={item.type} col={{ span: 6 }}>
+                              <ServiceCard
+                                key={item.type}
+                                serviceType={item.type}
+                                categories={item.categories}
+                                type={'radio'}
+                                isBetaFeature={item.isBetaFeature}
+                              />
+                            </GridCol>
                         })
                       }
                     </GridRow>

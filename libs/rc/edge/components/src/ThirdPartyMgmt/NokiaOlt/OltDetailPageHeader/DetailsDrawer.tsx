@@ -45,6 +45,12 @@ export const OltDetailsDrawer = (props: OltDetailsDrawerProps) => {
           }
         />
         <Form.Item
+          label={$t({ defaultMessage: 'Serial Number' })}
+          children={
+            isOnline ? transformDisplayText(currentOlt?.serialNumber) : noDataDisplay
+          }
+        />
+        <Form.Item
           label={$t({ defaultMessage: 'Model' })}
           children={
             isOnline ? transformDisplayText(currentOlt?.model) : noDataDisplay

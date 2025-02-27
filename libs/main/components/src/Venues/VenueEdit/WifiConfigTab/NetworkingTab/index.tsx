@@ -56,7 +56,8 @@ export function NetworkingTab () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
-  const isLegacyTemplateLanPortEnabled = !isTemplate || isLegacyLanPortEnabled
+  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+  const isShowLanPortSettings = !isTemplate || isEthernetPortTemplate || isLegacyLanPortEnabled
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
@@ -94,6 +95,10 @@ export function NetworkingTab () {
     }
   }, [venueApCaps])
 
+  const lanPortOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueLanPorts,
+    VenueConfigTemplateUrlsInfo.updateVenueLanPortsRbac
+  )
   const meshOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueMesh,
     VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
@@ -106,7 +111,6 @@ export function NetworkingTab () {
     WifiRbacUrlsInfo.updateVenueSmartMonitor,
     VenueConfigTemplateUrlsInfo.updateVenueApSmartMonitorSettings
   )
-
   const radiusOptionsOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueRadiusOptions,
     VenueConfigTemplateUrlsInfo.updateVenueRadiusOptionsRbac
@@ -120,7 +124,7 @@ export function NetworkingTab () {
     isAllowEditSmartMonitor,
     isAllowEditRADIUSOptions
   ] = [
-    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueLanPorts)]),
+    hasAllowedOperations([lanPortOpsApi]),
     hasAllowedOperations([meshOpsApi]),
     hasAllowedOperations([dMulticastOpsApi]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueCellularSettings)]),
@@ -136,7 +140,7 @@ export function NetworkingTab () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
-  const items = [...(isLegacyTemplateLanPortEnabled ? [{
+  const items = [...(isShowLanPortSettings ? [{
     title: $t({ defaultMessage: 'LAN Ports' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='lan-ports'>

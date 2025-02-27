@@ -12,7 +12,8 @@ type PersonaUrlType =
   'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
-  'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet'
+  'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet' |
+  'getPersonaIdentities' | 'deletePersonaAssociation'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -128,6 +129,14 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
     newApi: true
   },
+  getPersonaIdentities: {
+    method: 'post',
+    url: '/venues/:venueId/units/:unitId/identities/query',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
   searchPersonaList: {
     method: 'post',
     url: `/identities/query${paginationParams}`,
@@ -176,6 +185,14 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  deletePersonaAssociation: {
+    method: 'delete',
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
     }
   },
   addPersonaDevices: {

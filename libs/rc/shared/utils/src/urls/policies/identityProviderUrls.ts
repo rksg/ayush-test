@@ -37,6 +37,11 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
     opsApi: 'POST:/hotspot20IdentityProviders/query',
     newApi: true
   },
+  getPreconfiguredIdentityProvider: {
+    method: 'get',
+    url: '/hotspot20IdentityProviders/preconfiguredProviders',
+    newApi: true
+  },
   activateIdentityProviderRadius: {
     method: 'put',
     url: '/hotspot20IdentityProviders/:providerId/radiusServerProfiles/:radiusId',

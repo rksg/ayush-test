@@ -19,7 +19,8 @@ import {
   getPolicyDetailsLink,
   getServiceDetailsLink,
   edgePinDefaultPayloadFields,
-  transformDisplayNumber
+  transformDisplayNumber,
+  MAX_DEVICE_PER_SEGMENT
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { noDataDisplay }         from '@acx-ui/utils'
@@ -161,7 +162,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
-      content: pinData?.edgeClusterInfo?.devices
+      content: MAX_DEVICE_PER_SEGMENT
     },
     {
       title: $t({ defaultMessage: 'DHCP Service (Pool)' }),
