@@ -140,6 +140,14 @@ module.exports = async function setupProxy (app) {
     }
   ))
   app.use(createProxyMiddleware(
+    '/allowedOperations',
+    { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
+  app.use(createProxyMiddleware(
     '/**',
     {
       target: CLOUD_URL.replace('//', '//api.'),

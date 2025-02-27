@@ -17,7 +17,8 @@ export enum ConfigTemplateType {
   ROGUE_AP_DETECTION = 'ROGUE_AP',
   SWITCH_REGULAR = 'SWITCH_REGULAR',
   SWITCH_CLI = 'SWITCH_CLI',
-  AP_GROUP = 'AP_GROUP'
+  AP_GROUP = 'AP_GROUP',
+  ETHERNET_PORT_PROFILE = 'ETHERNET_PORT'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {

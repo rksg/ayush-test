@@ -7,7 +7,7 @@ import {
   Form,
   Select,
   Space,
-  Input, Button
+  Input
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -17,13 +17,13 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useGetNotificationSmsQuery }                                         from '@acx-ui/rc/services'
+import { useGetNotificationSmsQuery }                      from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType, useConfigTemplate
+  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { validationMessages }    from '@acx-ui/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -38,10 +38,11 @@ import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { SMSTokenCheckbox, isSMSTokenAvailable } from './SharedComponent/SMSToken/SMSTokenCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WhatsAppTokenCheckbox }                 from './SharedComponent/WhatsAppToken/WhatsAppTokenCheckbox'
 import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 import TwitterSetting                            from './TwitterSetting'
 
-const SelfSignInAppStyle = { marginBottom: '0' }
+export const SelfSignInAppStyle = { marginBottom: '0' }
 
 
 export function SelfSignInForm () {
@@ -98,11 +99,9 @@ export function SelfSignInForm () {
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
-  const isEnabledWhatsApp = useIsSplitOn(Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
   const provider = smsUsage?.data?.provider ?? SmsProviderType.RUCKUS_ONE
   const usedSMS = smsUsage?.data?.ruckusOneUsed ?? 0
@@ -204,6 +203,7 @@ export function SelfSignInForm () {
       setRedirectURL(globalValues)
     }
   }, [globalValues])
+
   return (<>
     <GridRow>
       <GridCol col={{ span: 12 }}>
@@ -239,38 +239,7 @@ export function SelfSignInForm () {
               </>
             </Form.Item>
             }
-            {isEnabledWhatsApp && <Form.Item name={['guestPortal', 'enableWhatsappLogin']}
-              initialValue={false}
-              style={SelfSignInAppStyle}>
-              <>
-                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
-                  ['guestPortal', 'enableWhatsappLogin'])}
-                disabled={isTemplate || provider !== SmsProviderType.TWILIO}
-                checked={enableWhatsappLogin}>
-                  <UI.WhatsApp style={{ opacity: (isTemplate || provider !== SmsProviderType.TWILIO) ? 0.5 : 1 }}/>
-                  {$t({ defaultMessage: 'WhatsApp' })}
-                </UI.Checkbox>
-                <Tooltip title={isTemplate
-                  ? $t({
-                    defaultMessage: 'Captive Portal Self-sign-in via WhatsApp One-time Passcode. To enable this functionality, please configure a Twilio SMS provider for End Customers.'
-                  })
-                  : $t({
-                    defaultMessage: 'Captive Portal self-sign-in via WhatsApp One-Time Passcode is supported through the Twilio SMS provider. To enable this functionality, navigate to <Settings></Settings> and add the Twilio SMS provider.'
-                  }, {
-                    Settings: () => <TenantLink to='/administration/accountSettings'>
-                      <Button
-                        data-testid='button-has-pool'
-                        type='link'
-                        style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
-                        { $t({ defaultMessage: 'Administration > Settings' }) }
-                      </Button>
-                    </TenantLink>
-                  })}
-                placement='bottom'>
-                  <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-                </Tooltip>
-              </>
-            </Form.Item>}
+            <WhatsAppTokenCheckbox SMSUsage={smsUsage.data} onChange={updateAllowSign} />
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
               initialValue={false}
               style={SelfSignInAppStyle}>
