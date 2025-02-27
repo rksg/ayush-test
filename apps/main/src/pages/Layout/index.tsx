@@ -50,6 +50,7 @@ function Layout () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isOnboardingAssistantEnabled = useIsSplitOn(Features.RUCKUS_ONBOARDING_ASSISTANT_TOGGLE)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
 
   const logo = useLogo(tenantId)
 
@@ -93,7 +94,8 @@ function Layout () {
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
-  const hasOnboardingAssistantAccess = isOnboardingAssistantEnabled &&
+
+  const hasOnboardingAssistantAccess = (isOnboardingAssistantEnabled || isCanvasEnabled) &&
   isSystemAdmin && hasCrossVenuesPermission()
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')

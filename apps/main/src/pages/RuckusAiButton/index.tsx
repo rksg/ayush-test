@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-
 import { Button, Form, Steps } from 'antd'
 import { useIntl }             from 'react-intl'
 
-
 import { cssStr, showActionModal }                                       from '@acx-ui/components'
-import { OnboardingAssistantDog }                                        from '@acx-ui/icons'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { DogAndPerson, OnboardingAssistantDog }                          from '@acx-ui/icons'
+import { RuckusAiDog }                                                   from '@acx-ui/icons-new'
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
@@ -28,6 +28,8 @@ export enum RuckusAiStepsEnum {
 
 export default function RuckusAiButton () {
   const { $t } = useIntl()
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
+
   const [basicFormRef] = Form.useForm()
 
   const [visible, setVisible] = useState(false)
@@ -115,7 +117,7 @@ export default function RuckusAiButton () {
   const renderFooter = function () {
     switch (step) {
       case RuckusAiStepsEnum.WELCOME:
-        return <Button key='next'
+        return isCanvasEnabled ? null : <Button key='next'
           type='primary'
           loading={isLoading}
           onClick={async () => {
@@ -254,12 +256,19 @@ export default function RuckusAiButton () {
     setSelectedType('')
   }
   return <>
-    <UI.ButtonSolid
-      icon={<OnboardingAssistantDog />}
+    { isCanvasEnabled ? <UI.AiButton
       onClick={() => {
         setVisible(!visible)
       }}
-    />
+    ><RuckusAiDog /></UI.AiButton>
+      : <UI.ButtonSolid
+        icon={<OnboardingAssistantDog />}
+        onClick={() => {
+          setVisible(!visible)
+        }}
+      />
+    }
+
     <UI.GptModal
       needBackground={step === RuckusAiStepsEnum.WELCOME || step === RuckusAiStepsEnum.FINISHED}
       titleType={step === RuckusAiStepsEnum.CONFIGURATION ? 'wizard' : 'default'}
@@ -273,6 +282,12 @@ export default function RuckusAiButton () {
       destroyOnClose={true}
       children={
         <>
+          { <DogAndPerson style={{
+            position: 'absolute',
+            bottom: '0px',
+            left: '13px',
+            zIndex: '2'
+          }} />}
           <Form form={basicFormRef}
             layout={'vertical'}
             labelAlign='left'>

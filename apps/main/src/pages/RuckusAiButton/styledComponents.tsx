@@ -38,6 +38,20 @@ export const ButtonSolid = styled(Button)`
     }
   }
 `
+export const AiButton = styled.div`
+height: 36px;
+margin: -4px;
+cursor: pointer;
+svg {
+  opacity: 0.95;
+  width: 38px;
+  height: 38px;
+}
+&:hover {
+  > svg {
+    opacity: 1;
+}
+`
 
 export const GptModal = styled(Modal)<{ titleType: string, needBackground: boolean }>`
   .ant-modal-content {
