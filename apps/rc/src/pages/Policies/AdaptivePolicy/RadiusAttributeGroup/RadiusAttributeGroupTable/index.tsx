@@ -62,7 +62,7 @@ export default function RadiusAttributeGroupTable () {
         })
       },
       scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT),
-      rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.createPolicy)]
+      rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
