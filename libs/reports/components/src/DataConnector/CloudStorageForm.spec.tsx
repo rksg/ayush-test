@@ -19,8 +19,8 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
 }))
-describe('CloudStorageForm', () => {
 
+describe('CloudStorageForm', () => {
   const store = configureStore({
     reducer: {
       [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
@@ -59,7 +59,7 @@ describe('CloudStorageForm', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
+    expect(await screen.findByText('Cloud Storage')).toBeVisible()
   })
   it('should save on apply click for edit', async () => {
     mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
@@ -83,7 +83,7 @@ describe('CloudStorageForm', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
+    expect(await screen.findByText('Cloud Storage')).toBeVisible()
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
     fireEvent.click(applyBtn)
@@ -157,7 +157,7 @@ describe('CloudStorageForm', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
+    expect(await screen.findByText('Cloud Storage')).toBeVisible()
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
     fireEvent.click(applyBtn)

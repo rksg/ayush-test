@@ -166,10 +166,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   return <>
     <PageHeader
       title={editMode
-        ? $t(
-          { defaultMessage: 'Cloud Storage: {type}' },
-          { type: selectedCloudStorage?.connectionType }
-        )
+        ? $t({ defaultMessage: 'Cloud Storage' })
         : $t({ defaultMessage: 'New Cloud Storage' })
       }
       breadcrumb={generateBreadcrumb()}
