@@ -8,7 +8,7 @@ import { ActionType } from '@acx-ui/rc/utils'
 
 import { RequiredDependency } from '../WorkflowPanel'
 
-import ActionLibraryTabs from './ActionLibraryTabs'
+import ActionsLibraryTabs from './ActionsLibraryTabs'
 
 
 interface ActionsLibraryDrawerProps {
@@ -35,7 +35,7 @@ export default function ActionsLibraryDrawer (props: ActionsLibraryDrawerProps) 
       visible={visible}
       onClose={onClose}
       children={
-        <ActionLibraryTabs {...props}/>
+        <ActionsLibraryTabs {...props}/>
       }
       footer={
         <Drawer.FormFooter

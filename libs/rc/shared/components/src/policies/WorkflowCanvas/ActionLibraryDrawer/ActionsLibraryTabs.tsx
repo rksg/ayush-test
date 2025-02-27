@@ -27,7 +27,7 @@ interface ActionsLibraryDrawerProps {
   priorNode?: NodeProps
 }
 
-function ActionLibraryTabs (props: ActionsLibraryDrawerProps) {
+function ActionsLibraryTabs (props: ActionsLibraryDrawerProps) {
   const { $t } = useIntl()
 
   const {
@@ -71,4 +71,4 @@ function ActionLibraryTabs (props: ActionsLibraryDrawerProps) {
   )
 }
 
-export default ActionLibraryTabs
+export default ActionsLibraryTabs
