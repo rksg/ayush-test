@@ -88,7 +88,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       dataIndex: 'deviceCount',
       align: 'center'
     }]
-  
+
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...personaListTableQuery.payload,
