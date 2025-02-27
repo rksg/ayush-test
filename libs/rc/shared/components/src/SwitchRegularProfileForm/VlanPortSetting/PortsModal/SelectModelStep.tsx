@@ -225,14 +225,8 @@ export function SelectModelStep (props: {
             <Card>
               <Form.Item
                 name='family'
-                // required={true}
-                // initialValue={data?.family || families?.[0].value}
-                // rules={[{ required: true }]}
                 children={
-                  <Radio.Group
-                  // defaultValue={data?.family || families?.[0]?.value}
-                    onChange={onFamilyChange}
-                  >
+                  <Radio.Group onChange={onFamilyChange}>
                     {families.map(({ label, value }) => (
                       <Radio key={value} value={value} disabled={editMode}>
                         <Tooltip
@@ -256,10 +250,7 @@ export function SelectModelStep (props: {
                 required={true}
                 initialValue={data?.model || models?.[0]?.value}
                 children={
-                  <Radio.Group
-                  // defaultValue={data?.model || models?.[0]?.value}
-                    onChange={onModelChange}
-                  >
+                  <Radio.Group onChange={onModelChange}>
                     {models.map(({ label, value }) => (
                       <Radio key={value} value={value} disabled={editMode}>
                         <Tooltip

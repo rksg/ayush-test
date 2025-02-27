@@ -627,7 +627,6 @@ describe('Wired', () => {
   })
 
   it('Edit Switch Configuration Profile form with configuring voice vlan', async () => {
-    // jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.BULK_VLAN_PROVISIONING)
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
