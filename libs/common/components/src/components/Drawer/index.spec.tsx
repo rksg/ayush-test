@@ -63,7 +63,7 @@ describe('Drawer', () => {
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
 
-  it('should match snapshot for adjustStepsFormFooterStyle drawer', () => {
+  it('should match snapshot for StepsForm style drawer', () => {
     render(<Drawer
       title={'Test Drawer'}
       icon={<BulbOutlined/>}

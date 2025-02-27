@@ -84,7 +84,7 @@ exports[`Drawer FormFooter should render form footer 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Drawer should match snapshot for adjustStepsFormFooterStyle drawer 1`] = `
+exports[`Drawer should match snapshot for StepsForm style drawer 1`] = `
 Array [
   .c0 {
   border: none;

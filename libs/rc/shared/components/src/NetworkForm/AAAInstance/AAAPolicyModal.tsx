@@ -51,6 +51,7 @@ export default function AAAPolicyModal (props:{
         mask={true}
         children={getContent}
         destroyOnClose={true}
+        onClose={onClose}
         width={500}
       />
     </>
