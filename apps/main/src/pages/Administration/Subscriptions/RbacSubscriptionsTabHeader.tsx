@@ -66,6 +66,9 @@ export const RbacSubscriptionsTabHeader = () => {
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))
 
+  entitlementSummaryPayload.filters.licenseType =
+    solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW']
+
   const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
         { params: useParams(), payload: entitlementSummaryPayload })

@@ -421,6 +421,8 @@ export function Subscriptions () {
         ...rest
       })
     })
+    entitlementSummaryPayload.filters.licenseType =
+    solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW']
     const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
         { params: useParams(), payload: entitlementSummaryPayload },
