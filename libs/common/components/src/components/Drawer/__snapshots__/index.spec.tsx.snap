@@ -86,29 +86,230 @@ exports[`Drawer FormFooter should render form footer 1`] = `
 
 exports[`Drawer should match snapshot for StepsForm style drawer 1`] = `
 Array [
-  .c0 {
-  border: none;
-  background: transparent;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  gap: 4px;
+  .c6 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  font-size: var(--acx-headline-5-font-size);
-  line-height: var(--acx-headline-5-line-height);
-  padding: 0;
-  padding-bottom: 8px;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.c0:hover {
-  cursor: pointer;
+.c6 svg {
+  width: 16px;
+  height: 16px;
 }
 
-.c1 {
+.c6 svg:before {
+  content: 'a';
+}
+
+.c6 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c6.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c6.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c6.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c6.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c6[disabled] svg path,
+.c6.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c6[disabled].ant-btn-link svg path,
+.c6.ant-btn-disabled.ant-btn-link svg path,
+.c6[disabled].ant-btn-default svg path,
+.c6.ant-btn-disabled.ant-btn-default svg path,
+.c6[disabled].ant-btn-primary svg path,
+.c6.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c5 {
+  position: fixed;
+  width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  bottom: 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
+  background-color: var(--acx-neutrals-10);
+  z-index: 5;
+}
+
+.c5::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c5 .ant-space-item .ant-space {
+  position: absolute;
+  left: 50%;
+  bottom: var(--acx-steps-form-actions-vertical-space);
+  -webkit-transform: translate(-50%,0);
+  -ms-transform: translate(-50%,0);
+  transform: translate(-50%,0);
+}
+
+.c4 {
+  position: fixed;
+  width: calc(( (100% + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  min-width: calc(( (1280px + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  padding-top: calc( var(--acx-steps-form-form-title-line-height) + var(--acx-steps-form-form-title-margin-bottom) + 3px );
+  z-index: 1;
+}
+
+.c2 {
+  --acx-steps-form-steps-title-color: var(--acx-primary-black);
+  --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
+  --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
+  --acx-steps-form-steps-step-size: 12px;
+  --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
+  --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
+  --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
+  --acx-steps-form-form-title-margin-bottom: 16px;
+  --acx-steps-form-actions-vertical-space: 12px;
+}
+
+.c2 .ant-pro-table .ant-pagination {
+  position: relative;
+  bottom: unset;
+  background-color: var(--acx-primary-white);
+}
+
+.c2 .ant-pro-steps-form {
+  position: relative;
+}
+
+.c2 .ant-pro-steps-form-step {
+  position: initial;
+  display: none;
+  margin-top: unset;
+}
+
+.c2 .ant-pro-steps-form-step.ant-pro-steps-form-step-active {
+  display: block;
+}
+
+.c2 .ant-descriptions-view table {
+  table-layout: initial;
+}
+
+.c2 .c3 {
+  display: none;
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-title {
+  padding: 0 0 var(--acx-steps-form-steps-title-line-height) 12px;
+  line-height: var(--acx-steps-form-steps-title-line-height);
+  font-size: var(--acx-steps-form-steps-title-font-size);
+}
+
+.c2 .ant-steps-dot .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
+  font-weight: var(--acx-steps-form-steps-active-title-font-weight);
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-title,
+.c2 .ant-steps-dot .ant-steps-item.ant-steps-item-wait .ant-steps-item-title {
+  color: var(--acx-steps-form-steps-title-color);
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-container .ant-steps-item-tail {
+  top: 3px;
+  left: unset;
+  width: var(--acx-steps-form-steps-step-size);
+  padding: 11px 0 0;
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-container .ant-steps-item-tail::after {
+  margin: 0 auto;
+  display: block;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-container .ant-steps-item-content {
+  min-height: calc(var(--acx-body-4-line-height) * 2);
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-icon {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  top: unset;
+  margin-top: 3px;
+  margin-right: 0px;
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  border: 1px solid var(--acx-steps-form-steps-step-color);
+  background-color: transparent;
+  top: unset;
+  left: unset;
+}
+
+.c2 .ant-steps-dot .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  -webkit-transition-property: top,left,background-color;
+  transition-property: top,left,background-color;
+}
+
+.c2 .ant-steps-dot .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot {
+  top: unset;
+  left: unset;
+}
+
+.c2 .ant-steps-dot .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot::after {
+  width: 10px;
+  height: 10px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2 .ant-steps-dot .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 1px;
+  left: 1px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2 .ant-pro-steps-form-container {
+  margin: unset;
+  margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+  width: unset;
+  min-width: unset;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.c0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -120,7 +321,7 @@ Array [
   gap: 12px;
 }
 
-.c2 {
+.c1 {
   font-size: var(--acx-headline-5-font-size);
   line-height: var(--acx-headline-5-line-height);
   padding-top: 8px;
@@ -154,16 +355,8 @@ Array [
           <div
             class="ant-drawer-title"
           >
-            <button
-              class="c0"
-            >
-              <svg
-                data-testid="ArrowBack"
-              />
-              Back
-            </button>
             <div
-              class="c1"
+              class="c0"
             >
               <svg
                 data-testid="BulbOutlined"
@@ -171,7 +364,7 @@ Array [
               Test Drawer
             </div>
             <div
-              class="c2"
+              class="c1"
             >
               Test Drawer Subtitle
             </div>
@@ -181,9 +374,159 @@ Array [
       <div
         class="ant-drawer-body"
       >
-        <p>
-          some content
-        </p>
+        <section
+          class="c2"
+        >
+          <div
+            class="ant-pro-steps-form"
+          >
+            <div
+              class="ant-row"
+              style="margin-left: -12px; margin-right: -12px;"
+            >
+              <div
+                class="ant-col ant-col-24"
+                style="padding-left: 12px; padding-right: 12px;"
+              >
+                <div
+                  class="c3 c4"
+                >
+                  <div
+                    class="ant-steps ant-steps-vertical ant-steps-dot"
+                  >
+                    <div
+                      class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                    >
+                      <div
+                        class="ant-steps-item-container"
+                      >
+                        <div
+                          class="ant-steps-item-tail"
+                        />
+                        <div
+                          class="ant-steps-item-icon"
+                        >
+                          <span
+                            class="ant-steps-icon"
+                          >
+                            <span
+                              class="ant-steps-icon-dot"
+                            />
+                          </span>
+                        </div>
+                        <div
+                          class="ant-steps-item-content"
+                        >
+                          <div
+                            class="ant-steps-item-title"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-row"
+              style="margin-left: -12px; margin-right: -12px;"
+            >
+              <div
+                class="ant-col ant-col-24"
+                style="padding-left: 12px; padding-right: 12px;"
+              >
+                <div
+                  class="ant-pro-steps-form-container"
+                >
+                  <div
+                    class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+                  >
+                    <form
+                      autocomplete="off"
+                      class="ant-form ant-form-vertical"
+                      id="0"
+                    >
+                      <input
+                        style="display: none;"
+                        type="text"
+                      />
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="0_field2"
+                              title="Field 2"
+                            >
+                              Field 2
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <input
+                                  class="ant-input"
+                                  id="0_field2"
+                                  type="text"
+                                  value=""
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c5"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              >
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 12px;"
+                >
+                  <button
+                    class="ant-btn ant-btn-primary c6"
+                    type="button"
+                  >
+                    <span>
+                      Add
+                    </span>
+                  </button>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default c6"
+                    type="button"
+                  >
+                    <span>
+                      Cancel
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>,

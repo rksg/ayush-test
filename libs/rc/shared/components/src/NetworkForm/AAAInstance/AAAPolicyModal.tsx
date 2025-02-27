@@ -46,7 +46,6 @@ export default function AAAPolicyModal (props:{
       </Button>
       <Drawer
         title={$t({ defaultMessage: 'Add AAA Server' })}
-        adjustStepsFormFooterStyle={true}
         visible={visible}
         mask={true}
         children={getContent}
