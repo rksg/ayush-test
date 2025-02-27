@@ -25,6 +25,18 @@ const SpaceWrapper = styled(Space)`
   margin: 12px 0px;
   justify-content: flex-end;
 `
+const baseFields = [
+  'name',
+  'deviceStatus',
+  'type',
+  'model',
+  'serialNumber',
+  'ip',
+  'ports',
+  'tags',
+  'firmwareVersion',
+  'venueId'
+]
 
 export const VenueEdge = () => {
   const { $t } = useIntl()
@@ -34,8 +46,6 @@ export const VenueEdge = () => {
   const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
   const settingsId = 'venue-edges-table'
-  const baseFields = ['name', 'deviceStatus', 'type', 'model',
-    'serialNumber', 'ip', 'ports', 'tags', 'firmwareVersion', 'venueId']
   const finalFields = isEdgeCompatibilityEnhancementEnabled
     ? [...baseFields, 'incompatibleV1_1'] : [...baseFields, 'incompatible']
   const tableQuery: EdgesTableQueryProps = {
