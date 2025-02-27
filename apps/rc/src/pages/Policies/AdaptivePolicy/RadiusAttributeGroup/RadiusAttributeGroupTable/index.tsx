@@ -12,10 +12,11 @@ import {
   FILTER, filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink, getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroup, SEARCH,
+  PolicyType, RadiusAttributeGroup, RadiusAttributeGroupUrlsInfo, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -60,7 +61,8 @@ export default function RadiusAttributeGroupTable () {
           })
         })
       },
-      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.createPolicy)]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -89,7 +91,8 @@ export default function RadiusAttributeGroupTable () {
           }
         )
       },
-      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE)
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE),
+      rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup)]
     }]
 
     function useColumns () {
@@ -165,6 +168,7 @@ export default function RadiusAttributeGroupTable () {
           actions={filterByAccessForServicePolicyMutation([{
             // eslint-disable-next-line max-len
             scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
+            rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({

@@ -15,9 +15,10 @@ import {
   getAdaptivePolicyDetailLink,
   getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
+  PolicyType, RadiusAttributeGroupUrlsInfo, useAdaptivePolicyBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }  from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
@@ -110,6 +111,7 @@ export default function RadiusAttributeGroupDetail () {
               policyId: policyId!
             })}
             scopeKey={getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
+            rbacOpsIds={[getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

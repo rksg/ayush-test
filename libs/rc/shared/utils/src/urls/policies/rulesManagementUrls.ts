@@ -45,32 +45,38 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   addConditions: {
     method: 'post',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions',
+    opsApi: 'POST:/policyTemplates/{id}/policies/{id}/conditions'
   },
   updateConditions: {
     method: 'PATCH',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId',
+    opsApi: 'PATCH:/policyTemplates/{id}/policies/{id}/conditions/{id}'
   },
   deleteConditions: {
     method: 'delete',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId',
+    opsApi: 'DELETE:/policyTemplates/{id}/policies/{id}/conditions/{id}'
   },
   createPolicy: {
     method: 'post',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies',
+    opsApi: 'POST:/policyTemplates/{id}/policies'
   },
   updatePolicy: {
     method: 'PATCH',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId',
+    opsApi: 'PATCH:/policyTemplates/{id}/policies/{id}'
   },
   deletePolicy: {
     method: 'delete',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId',
+    opsApi: 'DELETE:/policyTemplates/{id}/policies/{id}'
   },
   getPolicySets: {
     method: 'get',
@@ -85,17 +91,20 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   createPolicySet: {
     method: 'post',
     newApi: true,
-    url: policySetApiBaseUrl
+    url: policySetApiBaseUrl,
+    opsApi: 'POST:/policySets'
   },
   deletePolicySet: {
     method: 'delete',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId'
+    url: policySetApiBaseUrl + '/:policySetId',
+    opsApi: 'DELETE:/policySets/{id}'
   },
   updatePolicySet: {
     method: 'PATCH',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId'
+    url: policySetApiBaseUrl + '/:policySetId',
+    opsApi: 'PATCH:/policySets/{id}'
   },
   getPrioritizedPolicies: {
     method: 'get',
@@ -110,7 +119,8 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   assignPolicyPriority: {
     method: 'put',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId'
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId',
+    opsApi: 'PUT:/policySets/{id}/prioritizedPolicies/{id}'
   },
   getPrioritizedPolicy: {
     method: 'get',
@@ -120,6 +130,7 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   removePrioritizedAssignment: {
     method: 'delete',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId'
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId',
+    opsApi: 'DELETE:/policySets/{id}/prioritizedPolicies/{id}'
   }
 }

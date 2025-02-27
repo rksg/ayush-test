@@ -17,12 +17,13 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink, getScopeKeyByPolicy, IdentityGroupLink, MacRegistrationPoolLink,
   PolicyOperation,
-  PolicyType,
+  PolicyType, RadiusAttributeGroupUrlsInfo,
   useAdaptivePolicyBreadcrumb
-} from '@acx-ui/rc/utils'
+} from '@acx-ui/rc/utils';
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { NetworkTable } from './NetworkTable'
+import { getOpsApi } from '@acx-ui/utils';
 
 interface AssociatedService {
   id: string | undefined
@@ -215,6 +216,7 @@ export default function AdaptivePolicySetDetail () {
                 policyId: policyId as string
               })}
             scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
+            rbacOpsIds={[getOpsApi(RadiusAttributeGroupUrlsInfo.updatePolicySet)]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

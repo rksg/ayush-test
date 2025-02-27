@@ -14,9 +14,10 @@ import {
   getPolicyDetailsLink,
   getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, SEARCH, useTableQuery
+  PolicyType, RulesManagementUrlsInfo, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
@@ -161,6 +162,7 @@ export default function AdaptivePolicySetTable () {
 
   const rowActions: TableProps<AdaptivePolicySet>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.updatePolicySet)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -175,6 +177,7 @@ export default function AdaptivePolicySetTable () {
   },
   {
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.DELETE),
+    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
@@ -206,6 +209,7 @@ export default function AdaptivePolicySetTable () {
   const actions = [{
     label: $t({ defaultMessage: 'Add Set' }),
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE),
+    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.createPolicySet)],
     onClick: () => {
       navigate({
         ...tenantBasePath,

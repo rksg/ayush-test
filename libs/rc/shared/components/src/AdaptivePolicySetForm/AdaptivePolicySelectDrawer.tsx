@@ -11,10 +11,11 @@ import {
 import {
   AdaptivePolicy, FILTER, filterByAccessForServicePolicyMutation,
   getAdaptivePolicyDetailLink, getScopeKeyByPolicy,
-  PolicyOperation, PolicyType, SEARCH,
+  PolicyOperation, PolicyType, RulesManagementUrlsInfo, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }  from '@acx-ui/utils'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 
@@ -176,6 +177,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
             onFilterChange={handleFilterChange}
             actions={filterByAccessForServicePolicyMutation([{
               scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
+              rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.createPolicy)],
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {
                 setAdaptivePolicyDrawerVisible(true)

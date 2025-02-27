@@ -24,7 +24,8 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   createAttributeGroup: {
     method: 'post',
     newApi: true,
-    url: attributeGroupsBaseUrl
+    url: attributeGroupsBaseUrl,
+    opsApi: 'POST:/radiusAttributeGroups'
   },
   getAttributeGroup: {
     method: 'get',
@@ -34,12 +35,14 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAttributeGroup: {
     method: 'delete',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId'
+    url: attributeGroupsBaseUrl + '/:policyId',
+    opsApi: 'DELETE:/radiusAttributeGroups/{id}'
   },
   updateAttributeGroup: {
     method: 'PATCH',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId'
+    url: attributeGroupsBaseUrl + '/:policyId',
+    opsApi: 'PATCH:/radiusAttributeGroups/{id}'
   },
   getAttributeVendors: {
     method: 'get',
@@ -49,7 +52,8 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   createAssignment: {
     method: 'post',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId/assignments'
+    url: attributeGroupsBaseUrl + '/:policyId/assignments',
+    opsApi: 'POST:/radiusAttributeGroups/{id}/assignments'
   },
   getAssignment: {
     method: 'get',
@@ -59,7 +63,8 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAssignment: {
     method: 'delete',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId/assignments/:assignmentId'
+    url: attributeGroupsBaseUrl + '/:policyId/assignments/:assignmentId',
+    opsApi: 'DELETE:/radiusAttributeGroups/{id}/assignments/{id}'
   },
   getAssignments: {
     method: 'get',

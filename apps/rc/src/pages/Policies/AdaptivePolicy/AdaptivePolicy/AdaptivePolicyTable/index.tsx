@@ -14,9 +14,10 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType, SEARCH, useTableQuery, getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 
 export default function AdaptivePolicyTable () {
@@ -104,6 +105,9 @@ export default function AdaptivePolicyTable () {
 
   const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.updatePolicy),
+      getOpsApi(RulesManagementUrlsInfo.deleteConditions),
+      getOpsApi(RulesManagementUrlsInfo.addConditions)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -119,6 +123,7 @@ export default function AdaptivePolicyTable () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.DELETE),
+    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
       doProfileDelete(
@@ -173,6 +178,8 @@ export default function AdaptivePolicyTable () {
         rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
         actions={filterByAccessForServicePolicyMutation([{
           scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
+          // eslint-disable-next-line max-len
+          rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.createPolicy), getOpsApi(RulesManagementUrlsInfo.addConditions)],
           label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {
             navigate({
