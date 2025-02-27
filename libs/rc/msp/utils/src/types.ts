@@ -724,7 +724,7 @@ export const AssignedEntitlementListPayload = {
     'usageType'
   ],
   page: 1,
-  pageSize: 1,
+  pageSize: 1000,
   sortField: 'expirationDate',
   sortOrder: 'DESC',
   filters: {

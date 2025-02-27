@@ -104,11 +104,7 @@ const entitlementListPayload = {
   page: 1,
   pageSize: 1000,
   sortField: 'expirationDate',
-  sortOrder: 'DESC',
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'SELF'
-  }
+  sortOrder: 'DESC'
 }
 
 export const RbacSubscriptionTable = () => {
@@ -129,10 +125,14 @@ export const RbacSubscriptionTable = () => {
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
 
-  entitlementListPayload.filters.licenseType =
-  solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW']
+  const filters = {
+    licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+    usageType: 'SELF'
+  }
+
+  const _entitlementListPayload = { ...entitlementListPayload, filters }
   const { data: rbacQueryResults } = useRbacEntitlementListQuery(
-    { params: useParams(), payload: entitlementListPayload },
+    { params: useParams(), payload: _entitlementListPayload },
     { skip: !isEntitlementRbacApiEnabled })
 
 

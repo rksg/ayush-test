@@ -81,13 +81,6 @@ const defaultSelectedFilters: Filter = {
   status: ['VALID', 'FUTURE']
 }
 
-const entitlementSummaryPayload = {
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'ASSIGNED'
-  }
-}
-
 const entitlementRefreshPayload = {
   status: 'synchronize',
   usageType: 'ASSIGNED'
@@ -421,8 +414,14 @@ export function Subscriptions () {
         ...rest
       })
     })
-    entitlementSummaryPayload.filters.licenseType =
-    solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW']
+
+    const entitlementSummaryPayload = {
+      filters: {
+        licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+        usageType: 'ASSIGNED'
+      }
+    }
+
     const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
         { params: useParams(), payload: entitlementSummaryPayload },
