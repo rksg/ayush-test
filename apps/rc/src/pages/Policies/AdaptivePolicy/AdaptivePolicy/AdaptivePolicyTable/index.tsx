@@ -106,8 +106,9 @@ export default function AdaptivePolicyTable () {
   const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT),
     rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.updatePolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions),
       getOpsApi(RulesManagementUrlsInfo.deleteConditions),
-      getOpsApi(RulesManagementUrlsInfo.addConditions)],
+      getOpsApi(RulesManagementUrlsInfo.updateConditions)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({

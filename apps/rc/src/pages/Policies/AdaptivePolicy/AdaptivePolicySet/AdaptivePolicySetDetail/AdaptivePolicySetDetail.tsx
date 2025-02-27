@@ -19,11 +19,11 @@ import {
   PolicyOperation,
   PolicyType, RadiusAttributeGroupUrlsInfo,
   useAdaptivePolicyBreadcrumb
-} from '@acx-ui/rc/utils';
+} from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }  from '@acx-ui/utils'
 
 import { NetworkTable } from './NetworkTable'
-import { getOpsApi } from '@acx-ui/utils';
 
 interface AssociatedService {
   id: string | undefined
