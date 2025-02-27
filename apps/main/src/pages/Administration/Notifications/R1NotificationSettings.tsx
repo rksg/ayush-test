@@ -17,14 +17,14 @@ const labels = {
 }
 
 const apiChanges = {
-  DEVICE_API_CHANGES: defineMessage({ defaultMessage: 'API Changes' })
+  API_CHANGES: defineMessage({ defaultMessage: 'API Changes' })
 }
 
 const defaultNotification: NotificationPreference = {
   DEVICE_AP_FIRMWARE: true,
   DEVICE_SWITCH_FIRMWARE: true,
   DEVICE_EDGE_FIRMWARE: true,
-  DEVICE_API_CHANGES: true
+  API_CHANGES: true
 }
 const getApplyErrorMsg = () => {
   return defineMessage({ defaultMessage: 'Update failed, please try again later.' })
