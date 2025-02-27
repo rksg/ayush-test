@@ -10,8 +10,8 @@ import ReportsRoutes from './Routes'
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   Report: () => <div data-testid={'some-report-id'} id='acx-report' />,
-  DataSubscriptionsContent: () =>
-    <div data-testid={'data-subscriptions-id'} id='acx-data-subscriptions' />,
+  DataConnectorContent: () =>
+    <div data-testid={'data-connector-id'} id='acx-data-connector' />,
   CloudStorageForm: () => <div data-testid={'some-ds-cloud-form'} />
 }))
 
@@ -45,21 +45,21 @@ describe('should navigate correct for R1', () => {
     logRoles(container)
     expect(screen.getByTestId('some-report-id')).toBeDefined()
   })
-  it('should navigate to dataSubscriptions', async () => {
+  it('should navigate to dataConnector', async () => {
     const { container }=render(<Provider><ReportsRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/dataSubscriptions',
+        path: '/tenantId/t/dataConnector',
         wrapRoutes: false
       }
     })
     logRoles(container)
-    expect(screen.getByTestId('data-subscriptions-id')).toBeDefined()
+    expect(screen.getByTestId('data-connector-id')).toBeDefined()
   })
   it('should not navigate to data connector cloudStorage', () => {
     setRole({ role: RolesEnum.ADMINISTRATOR })
     render(<Provider><ReportsRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/dataSubscriptions/cloudStorage/edit/testId',
+        path: '/tenantId/t/dataConnector/cloudStorage/edit/testId',
         wrapRoutes: false
       }
     })
@@ -69,7 +69,7 @@ describe('should navigate correct for R1', () => {
     setRole({ role: RolesEnum.PRIME_ADMIN })
     render(<Provider><ReportsRoutes /></Provider>, {
       route: {
-        path: '/tenantId/t/dataSubscriptions/cloudStorage/edit/testId',
+        path: '/tenantId/t/dataConnector/cloudStorage/edit/testId',
         wrapRoutes: false
       }
     })
@@ -90,19 +90,19 @@ describe('should navigate correct for RAI', () => {
     })
     expect(screen.getByTestId('some-report-id')).toBeDefined()
   })
-  it('should navigate to dataSubscriptions', async () => {
+  it('should navigate to dataConnector', async () => {
     render(<Provider><ReportsRoutes /></Provider>, {
       route: {
-        path: MLISA_BASE_PATH+'/dataSubscriptions',
+        path: MLISA_BASE_PATH+'/dataConnector',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('data-subscriptions-id')).toBeDefined()
+    expect(screen.getByTestId('data-connector-id')).toBeDefined()
   })
   it('should not navigate to data connector cloudStorage', () => {
     render(<Provider><ReportsRoutes /></Provider>, {
       route: {
-        path: MLISA_BASE_PATH+'/dataSubscriptions/cloudStorage/edit/testId',
+        path: MLISA_BASE_PATH+'/dataConnector/cloudStorage/edit/testId',
         wrapRoutes: false
       }
     })
@@ -112,7 +112,7 @@ describe('should navigate correct for RAI', () => {
     setRaiPermissions({ WRITE_DATA_CONNECTOR_STORAGE: true } as RaiPermissions)
     render(<Provider><ReportsRoutes /></Provider>, {
       route: {
-        path: MLISA_BASE_PATH+'/dataSubscriptions/cloudStorage/edit/testId',
+        path: MLISA_BASE_PATH+'/dataConnector/cloudStorage/edit/testId',
         wrapRoutes: false
       }
     })
