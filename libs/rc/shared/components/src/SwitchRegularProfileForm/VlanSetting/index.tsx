@@ -162,18 +162,20 @@ export function VlanSetting () {
     })
 
     const transformData = vlans.map((item) => {
+      const isCloneSfm = !isBulkVlanProvisioningEnabled
+      || drawerFormRule?.vlanId?.toString() === item
+      || vlans?.length === 1
+
       return {
         ..._.omit(data, ['switchFamilyModels']),
         vlanId: Number(item),
-        ...(!isBulkVlanProvisioningEnabled //TODO
-          || drawerFormRule?.vlanId?.toString() === item
-          || vlans?.length === 1
-          ? { switchFamilyModels: sfm } : {}
+        ...(isCloneSfm ? { switchFamilyModels: sfm } : {}
         )
       }
     })
 
     setVlanTable([...filterData, ...transformData])
+
     if (_.isEmpty(defaultVlan)) {
       form.setFieldValue('vlans', [...filterData, ...transformData])
     } else {

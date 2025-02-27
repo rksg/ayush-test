@@ -221,7 +221,8 @@ describe('checkVlanRange', () => {
       isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false, vlans: expect.any(Array)
     })
     expect(checkVlanRange('25-30', '20')).toStrictEqual({
-      isIncludeOriginal: false, isValidRange: true, isVlanDuplicate: false, vlans: expect.any(Array)
+      isIncludeOriginal: false, isValidRange: true, isVlanDuplicate: false,
+      vlans: ['25', '26', '27', '28', '29', '30']
     })
   })
 })

@@ -222,9 +222,6 @@ export function ConfigurationProfileForm () {
     data: Partial<SwitchConfigurationProfile>,
     timing?: string
   ) => {
-    // eslint-disable-next-line no-console
-    console.log('updateVlanCurrentData: ', data)
-
     const nextCurrentData = {
       ...currentData,
       ...data
@@ -380,10 +377,6 @@ export function ConfigurationProfileForm () {
       const appliedVenues = formData?.venues as string[]
       const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
       const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
-
-      // eslint-disable-next-line no-console
-      // console.log('handleEditProfile: ', proceedData(formData) )
-      // return
 
       await disassociateWithCliProfile(disassociateSwitch)
       await updateSwitchConfigProfile({

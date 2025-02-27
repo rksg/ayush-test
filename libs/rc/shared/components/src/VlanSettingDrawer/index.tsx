@@ -26,12 +26,12 @@ import {
   validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
-  validateVlanRange,
+  validateVlanRangeFormat,
   Vlan,
   versionAbove10020a
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess }              from '@acx-ui/user'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 
 import * as UI            from './styledComponents'
@@ -352,22 +352,21 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             ...(enableVlanRangeConfigure ? [{
-              validator: (_: RuleObject, value: string) => validateVlanRange(value)
+              validator: (_: RuleObject, value: string) => validateVlanRangeFormat(value)
             }, {
               validator: (_: RuleObject, value: string) => {
                 const originalVlanId = vlan?.vlanId?.toString()
                 const {
                   isValidRange, isVlanDuplicate, isIncludeOriginal, vlans
                 } = checkVlanRange(value, originalVlanId)
-                const isOriginalVlanExcludedInEditMode //TODO
+                const isIncludeOriginalInEditMode
                   = editMode && !isIncludeOriginal && vlans.length > 1
 
-                if (isOriginalVlanExcludedInEditMode) {
-                  // eslint-disable-next-line max-len
-                  return Promise.reject($t({ defaultMessage: 'The VLAN range above does not include the VLAN selected from the table. Select at least one VLAN from the range defined above and try editing again. ' }))
+                if (isIncludeOriginalInEditMode) {
+                  return Promise.reject($t(validationMessages.originalVlanNotIncluded))
                 }
                 if (!isValidRange || isVlanDuplicate) {
-                  return Promise.reject($t({ defaultMessage: 'Please enter a valid range.' }))
+                  return Promise.reject($t(validationMessages.invalidVlanRange))
                 }
                 return Promise.all(
                   vlans.map(async (v: string) => {
@@ -398,7 +397,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
             <Input
               style={{ width: '400px' }}
               disabled={isRuckusAiMode}
-              placeholder={enableVlanRangeConfigure && !editMode
+              placeholder={enableVlanRangeConfigure
                 ? $t({ defaultMessage: 'ex: 11, 21, 31-40, 100' }) : ''
               }
             />}
@@ -594,7 +593,7 @@ export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) 
 
 export const checkVlanRange = (value: string, originalVlanId?: string) => {
   let isValidRange = true
-  const vlans = value.toString().split(',').map(v => {
+  const vlans = value.toString().split(',').flatMap(v => {
     if (v.includes('-')) {
       const vlanRanges = v.split('-')
       const startNum = Number(vlanRanges[0])
@@ -605,14 +604,13 @@ export const checkVlanRange = (value: string, originalVlanId?: string) => {
       }
       if (endNum > startNum) {
         return new Array(endNum - startNum + 1).fill(0).map((_, i) => (startNum + i).toString())
-        // return Array.from({ length: endNum - startNum + 1 }, (_, i) => (startNum + i).toString())
       }
     } else if (Number(v)) {
       return v.trim()
     }
     isValidRange = false
     return ''
-  }).flat()
+  })
 
   const vlansSet = new Set(vlans)
   const isVlanDuplicate = vlansSet.size !== vlans.length

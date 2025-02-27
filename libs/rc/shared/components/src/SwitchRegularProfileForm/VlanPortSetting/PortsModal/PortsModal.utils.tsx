@@ -1,5 +1,6 @@
 import { FormInstance }      from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
 
 import {
   SwitchSlot2 as SwitchSlot,
@@ -8,10 +9,9 @@ import {
 
 import { PortsType } from '../index.utils'
 
-// export interface PortsType {
-//   label: string,
-//   value: string
-// }
+export type PortSettings = Record<
+  string, { untaggedVlan: string[], taggedVlans: string[] }
+>
 
 const createSlotOptions = (modelModules: string[][], slotIndex: number) => {
   const slotOptions = []
@@ -25,7 +25,7 @@ const createSlotOptions = (modelModules: string[][], slotIndex: number) => {
 }
 
 export const getPortsModule = (slots: SwitchSlot[], isSwitchLevel?: boolean) => {
-  const normalizedSlots = isSwitchLevel ? slots : [slots] //as unknown as SwitchSlot[][]
+  const normalizedSlots = isSwitchLevel ? slots : [slots]
   return normalizedSlots.map(slotData => {
     return (slotData as SwitchSlot[])
       .filter(slot => slot.portStatus)
@@ -36,32 +36,6 @@ export const getPortsModule = (slots: SwitchSlot[], isSwitchLevel?: boolean) => 
             value: item.portIdentifier || `1/${slot.slotNumber}/${item.portNumber.toString()}`
           }
         })
-      })
-  })
-}
-
-export const getPortsModule2 = (slots: SwitchSlot[], isSwitchLevel?: boolean) => {
-  const normalizedSlots = isSwitchLevel ? slots : [slots] //as unknown as SwitchSlot[][]
-  return normalizedSlots.map(slotData => {
-    return (slotData as SwitchSlot[])
-      .filter(slot => slot.portStatus)
-      .map(slot => {
-        // const [slotNumber, _] = slot.slotPortInfo?.split('X') || ''
-        // return Array.from({ length: Number(slotNumber) }, (_, i) => {
-        //   const index = i+1
-        //   return {
-        //     label: index.toString(),
-        //     value: `1/${slot.slotNumber}/${index.toString()}`
-        //   }
-        // })
-
-        return slot.portStatus?.map(item => {
-          return {
-            label: item.portNumber.toString(),
-            value: item.portIdentifier || `1/${slot.slotNumber}/${item.portNumber.toString()}`
-          }
-        })
-
       })
   })
 }
@@ -122,7 +96,7 @@ export const generateSlotData = (
   slotNumber: number, family: string, model: string, form: FormInstance
 ) => {
   const slotOptionLists = getSlots(family, model)
-  const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
+  const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2]
 
   const isEnable = slotNumber === 1 ? true : form.getFieldValue(`enableSlot${slotNumber}`)
   const selectedOption = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
@@ -165,4 +139,12 @@ export const generatePortData = (totalNumber: string) => {
     ports.push(port)
   }
   return ports
+}
+
+export const getAllVlansFromPortList = (portList: PortSettings) => {
+  const vlans = Object.values(portList ?? {}).reduce((result: string[], port) => {
+    return [...result, ...port.untaggedVlan, ...port.taggedVlans]
+  }, [])
+
+  return _.uniq(vlans)
 }

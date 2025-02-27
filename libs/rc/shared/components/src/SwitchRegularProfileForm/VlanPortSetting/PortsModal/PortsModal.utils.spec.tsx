@@ -38,8 +38,7 @@ describe('Test getPortsModule', () => {
     const model = 'C08P'
     const slots = getSlots(family, model)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest] = getPortsModule(slots, false)
+    const [result] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(8)
     expect(result[1]).toHaveLength(2)
   })
@@ -52,8 +51,7 @@ describe('Test getPortsModule', () => {
       selectedOptionOfSlot2: '2X40G'
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest] = getPortsModule(slots, false)
+    const [result] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(48)
     expect(result[1]).toHaveLength(2)
     expect(result).toStrictEqual([
@@ -69,8 +67,7 @@ describe('Test getPortsModule', () => {
     const model = '32Q'
     const slots = getSlots(family, model)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest] = getPortsModule(slots, false)
+    const [result] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(12)
     expect(result[1]).toHaveLength(12)
     expect(result[2]).toHaveLength(8)
@@ -90,8 +87,7 @@ describe('Test getPortsModule', () => {
     const model = 'C08PF'
     const slots = getSlots(family, model)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest] = getPortsModule(slots, false)
+    const [result] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(8)
     expect(result[1]).toHaveLength(2)
   })
@@ -101,8 +97,7 @@ describe('Test getPortsModule', () => {
     const model = '24'
     const slots = getSlots(family, model)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [result, ...rest] = getPortsModule(slots, false)
+    const [result] = getPortsModule(slots, false)
     expect(result[0]).toHaveLength(24)
     expect(result[1]).toHaveLength(4)
     expect(result).toStrictEqual([

@@ -275,18 +275,18 @@ describe('Wired - VlanSetting', () => {
       expect(within(rows[1]).getByRole('cell', { name: /vlan-01/i })).toBeVisible()
       await userEvent.click(await within(rows[1]).findByRole('radio'))
       await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+
       let dialog = await screen.findByRole('dialog')
-      expect(
-        await within(dialog).findByText(/Are you sure you want to delete this VLAN/)
-      ).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(await within(dialog).findByText(/Are you sure you want to delete this VLAN/)).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
       await userEvent.click(await within(rows[2]).findByRole('radio'))
       await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+
       dialog = await screen.findByRole('dialog')
-      expect(
-        await within(dialog).findByText(/This VLAN has already been configured on some ports/)
-      ).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(await within(dialog).findByText(/This VLAN has already been configured on some ports/)).toBeVisible()
       await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete VLAN' }))
       await waitFor(()=>{
         expect(dialog).not.toBeVisible()

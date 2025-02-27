@@ -35,15 +35,12 @@ export const TableWrapper = styled(Space)`
     }
   }
 
-
   .groupby-module-table {
     margin: -12px -16px !important;
     .ant-table-row-expand-icon-cell {
       text-align: right !important;
       padding-right: 0 !important;
     }
-    // border-bottom: 0;
-
     &.default-module {
       .ant-table-row-level-0 {
         display: none;

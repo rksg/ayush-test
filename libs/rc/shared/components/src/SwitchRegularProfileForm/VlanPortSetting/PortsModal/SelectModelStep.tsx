@@ -1,14 +1,13 @@
-
 import { useState, useEffect } from 'react'
 
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 import { DefaultOptionType }                                                            from 'antd/lib/select'
 
-import { Card, Tooltip, useStepFormContext }             from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES, SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
-import { getIntl }                                       from '@acx-ui/utils'
+import { Card, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES }                from '@acx-ui/rc/utils'
+import { getIntl }                           from '@acx-ui/utils'
 
 import { checkIfModuleFixed, PortSetting, ModulePorts } from '../index.utils'
 
@@ -34,17 +33,19 @@ export function SelectModelStep (props: {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const data = form?.getFieldsValue(true)
-  const [ slots ] = [ // enableSlot2, enableSlot3,
-    // Form.useWatch('family', form),
-    // Form.useWatch('model', form),
-    // Form.useWatch<boolean>('enableSlot2', form),
-    // Form.useWatch<boolean>('enableSlot3', form),
-    Form.useWatch<SwitchSlot[]>('slots', form)
-  ]
+
+  const getFilteredModels = (
+    family: string,
+    modelsData: { label: string; value: string }[]
+  ) => {
+    if (!isSupport8200AV && family === 'ICX8200') {
+      // eslint-disable-next-line max-len
+      return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+    }
+    return modelsData
+  }
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('***************************** data: ', data)
     const { family, model } = data
     if (family && model) {
       const modelModules = getModelModules(family, model)
@@ -62,15 +63,13 @@ export function SelectModelStep (props: {
       'model',
       'enableSlot2',
       'enableSlot3',
-      // 'enableSlot4',
       'selectedOptionOfSlot2',
       'selectedOptionOfSlot3'
-      // 'selectedOptionOfSlot4'
     ])
-    // setFamily(e.target.value)
+
     familyChangeAction(e.target.value)
-    form.setFieldValue('model', '')
     setModuleSelectionEnable(false)
+    form.setFieldValue('model', '')
   }
 
   const familyChangeAction = (family: string) => {
@@ -79,17 +78,9 @@ export function SelectModelStep (props: {
     }
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
+    const modelsData = Object.keys(modelsList ?? {})?.map(key => ({ label: key, value: key }))
 
-    const modelsData = Object.keys(modelsList ?? {})?.map(key => {
-      return { label: key, value: key }
-    })
-    const filterModels = (modelsData: { label: string; value: string }[]) => {
-      if (!isSupport8200AV && index === 'ICX8200') {
-        return modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
-      }
-      return modelsData
-    }
-    const filteredModels = filterModels(modelsData)
+    const filteredModels = getFilteredModels(family, modelsData)
     setModels(filteredModels)
   }
 
@@ -166,16 +157,6 @@ export function SelectModelStep (props: {
     const modelModules = getModelModules(family, model)
     const moduleCount = modelModules?.length ?? 0
 
-    // Array.from({ length: moduleCount }, (_, i) => {
-    //   const slotNumber = i+1
-    //   const enable = form.getFieldValue(`enableSlot${slotNumber}`)
-    //   const index = slots?.findIndex(s => s.slotNumber === slotNumber) || -1
-    //   if (!enable && index !== -1) {
-    //     slots?.splice(index, 1)
-    //   }
-    //   generateSlotData(slotNumber, family, model)
-    // })
-
     const updatedSlots = Array.from({ length: moduleCount }, (_, i) => {
       const slotNumber = i+1
       return generateSlotData(slotNumber, family, model, form)
@@ -188,83 +169,19 @@ export function SelectModelStep (props: {
       return slotInfo && (Number(slotNumber) <= Number(maxSlotNumber))
     })
 
-    // eslint-disable-next-line no-console
-    console.log('updatedSlots: ', updatedSlots)
-    // eslint-disable-next-line no-console
-    console.log('updatedPortSettings: ', updatedPortSettings)
     form.setFieldValue('slots', updatedSlots)
     form.setFieldValue('portSettings', updatedPortSettings)
   }
 
-  // eslint-disable-next-line no-console
-  console.log('slots: ', slots)
-  // eslint-disable-next-line no-console
-  console.log('modelModules: ', modelModules)
-
-  // const generateSlotData =(
-  //   slotNumber: number,
-  //   // slotEnable: boolean,
-  //   //slotOptions: DefaultOptionType[],
-  //   // slotOption: string,
-  //   selectedFamily: string, selectedModel: string
-  // ) => {
-  //   const slots: SwitchSlot[] = form.getFieldValue('slots')
-  //   const slotOptionLists = getSlots(selectedFamily, selectedModel)
-  //   const optionList = slotNumber === 1 ? [] : slotOptionLists?.[slotNumber - 2] //TODO
-
-  //   const isEnable = slotNumber === 1 ? true : form.getFieldValue(`enableSlot${slotNumber}`)
-  //   const selectedOption = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
-  //   if (isEnable) {
-  //     let totalPortNumber: string = '0'
-  //     let slotPortInfo: string = ''
-  //     const defaultOption = optionList[0]?.value
-  //     const slotOption = optionList?.length > 1 && !selectedOption
-  //       ? defaultOption : selectedOption
-
-  //     if (optionList?.length > 1) {
-  //       slotPortInfo = slotOption
-  //       totalPortNumber = slotPortInfo.split('X', 1)[0]
-  //     }
-  //     if ((optionList?.length === 1 || totalPortNumber === '0') &&
-  //     selectedFamily !== '' && selectedModel !== '') {
-  //       const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
-  //       const familyList = ICX_MODELS_MODULES[familyIndex]
-  //       const modelIndex = selectedModel as keyof typeof familyList
-  //       slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
-  //       totalPortNumber = slotPortInfo.split('X')[0]
-  //     }
-
-  //     const slotData = {
-  //       slotNumber: slotNumber,
-  //       enable: isEnable,
-  //       option: slotOption,
-  //       slotPortInfo: slotPortInfo,
-  //       portStatus: generatePortData(totalPortNumber)
-  //     }
-
-  //     console.log('generateSlotData: ', slots, slotNumber, slotData)
-
-  //     const index = slots.findIndex(slot => slot.slotNumber === slotNumber)
-  //     if (index === -1) {
-  //       slots.push(slotData)
-  //     } else {
-  //       if(slots){
-  //         slots[index] = slotData
-  //       }
-  //     }
-
-  //     form.setFieldValue('slots', slots?.sort((a, b) => {
-  //       return a.slotNumber > b.slotNumber ? 1 : -1
-  //     }))
-
-  //   }
-  // }
-
   const ModuleSelectionRow = ({ index }: { index: number }) => {
+    // for module2, module3
     const { $t } = getIntl()
     const optionListForSlot = optionList?.[index] ?? []
     const isSingleOption = optionListForSlot.length === 1
+
+    // TODO: set as an array format for more flexibility
+    // Example: ['moduleSelection', index, 'enabled']
+    //          ['moduleSelection', index, 'selectedOption']
     const enableSlotKey = `enableSlot${index + 2}`
     const selectedOptionKey = `selectedOptionOfSlot${index + 2}`
     const moduleSelectionEnable = index === 0 ? module2SelectionEnable : true
@@ -359,79 +276,12 @@ export function SelectModelStep (props: {
         </Col>
         <Col span={9} flex='400px' hidden={!moduleSelectionEnable}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Select Modules' })}</Typography.Title>
-          {/* <Row style={{ paddingTop: '5px' }}
-            hidden={!(modelModules && modelModules?.length > 1 && module2SelectionEnable)}>
-            <Col span={optionList?.[0]?.length === 1 ? 24 : 7} >
-              <Form.Item
-                name='enableSlot2'
-                initialValue={false}
-                valuePropName='checked'
-                children={
-                  <Checkbox
-                    data-testid='module2Checkbox'
-                    onChange={(e)=>{ onCheckChange(e, '2') }}
-                  >
-                    {$t({ defaultMessage: 'Module 2:' })}
-                    {optionList?.[0]?.length===1 &&
-                      ' ' + (optionList?.[0][0]?.value as string)?.split('X').join(' X ')}
-                  </Checkbox>
-                }
-              />
-            </Col>
-            <Col span={10}>
-              {optionList?.length && <Form.Item
-                name='selectedOptionOfSlot2'
-                // initialValue={'1'}
-                // initialValue={optionList?.[0]?.[0]?.value}
-                hidden={optionList?.[0]?.length===1}
-              >
-                <Select
-                  defaultActiveFirstOption
-                  options={optionList?.[0]}
-                  disabled={!enableSlot2}
-                  onChange={onModuleChange}
-                />
-              </Form.Item>}
-            </Col>
-          </Row>
-          <Row hidden={!(modelModules && modelModules?.length > 2)}>
-            <Col span={optionList?.[1]?.length === 1 ? 24 : 7} >
-              <Form.Item
-                name='enableSlot3'
-                initialValue={false}
-                valuePropName='checked'
-                children={
-                  <Checkbox
-                    data-testid='module3Checkbox'
-                    onChange={(e)=>{ onCheckChange(e, '3') }}
-                  >
-                    {$t({ defaultMessage: 'Module 3:' })}
-                    {optionList?.[1]?.length===1 &&
-                      ' ' + (optionList?.[1][0]?.value as string)?.split('X').join(' X ')}
-                  </Checkbox>
-                }
-              />
-            </Col>
-            <Col span={10} >
-              { optionList?.length && <Form.Item
-                name='selectedOptionOfSlot3'
-                hidden={optionList?.[1]?.length===1}
-              >
-                <Select
-                  options={optionList?.[1]}
-                  disabled={!enableSlot3}
-                  onChange={onModuleChange}
-                />
-              </Form.Item>}
-            </Col>
-          </Row> */}
-
-          { Array.from({ length: 2 }, (_, index) =>
-            <ModuleSelectionRow key={index} index={index} />
-          ) }
-
+          {
+            Array.from({ length: 2 }, (_, index) =>
+              <ModuleSelectionRow key={index} index={index} />
+            )
+          }
         </Col>
-
       </Row>
 
       <Form.Item

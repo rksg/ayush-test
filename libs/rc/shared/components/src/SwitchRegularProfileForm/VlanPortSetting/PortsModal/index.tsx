@@ -36,8 +36,8 @@ export interface PortsModalSetting {
 
 export function PortsModal (props: {
   open: boolean,
-  onSave:(values: PortsModalSetting)=>void,
-  onCancel?: ()=>void,
+  onSave: (values: PortsModalSetting) => void,
+  onCancel?: () => void,
   editRecord?: ModulePorts,
   vlanList: Vlan[],
   vlanPortList: ModuleGroupByModel[],
@@ -67,7 +67,7 @@ export function PortsModal (props: {
       const [family, model] = editRecord.familymodel?.split('-') ?? []
       const slots = editRecord?.slots
       const enableSlot = Array.from({ length: 2 }, (_, index) => {
-        //slot2, slot3
+        //for slot2, slot3
         const slotNumber = index + 2
         const slot = slots?.filter(item => item.slotNumber === slotNumber)[0]
         return slot || { slotNumber, enable: false, option: undefined }
@@ -79,11 +79,6 @@ export function PortsModal (props: {
         portSettings: editRecord?.ports,
         editRecord: editRecord,
         enableSlot: enableSlot,
-        // enableSlot2: selectedEnable2.enable,
-        // enableSlot3: selectedEnable3.enable,
-        // enableSlot4: selectedEnable4.enable,
-        // ...( selectedEnable2.option ? { selectedOptionOfSlot2: selectedEnable2.option } : {}),
-        // ...( selectedEnable3.option ? { selectedOptionOfSlot3: selectedEnable3.option } : {}),
         enableSlot2: enableSlot[0].enable,
         enableSlot3: enableSlot[1].enable,
         ...( enableSlot[0].option ? { selectedOptionOfSlot2: enableSlot[0].option } : {}),

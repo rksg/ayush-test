@@ -107,7 +107,9 @@ describe('Wired - VlanPortSetting', () => {
     }
     render(
       <Provider>
-        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+        <ConfigurationProfileFormContext.Provider value={{
+          editMode: false, currentData: {} as SwitchConfigurationProfile
+        }}>
           <Form>
             <VlanPortSetting />
           </Form>
@@ -117,7 +119,7 @@ describe('Wired - VlanPortSetting', () => {
       })
 
     await screen.findByRole('heading', { level: 3, name: /Ports/ })
-    // expect(await screen.findByRole('button', { name: 'Set Ports' })).toBeDisabled() //TODO
+    expect(await screen.findByRole('button', { name: 'Set Ports' })).toBeDisabled()
   })
 
   it('should handle set port when no selected model correctly', async () => {
@@ -246,7 +248,7 @@ describe('Wired - VlanPortSetting', () => {
 
     const comboboxes = await within(dialog).findAllByRole('combobox')
     await userEvent.click(comboboxes[0]) //untagged
-    const text3 = await screen.findAllByText('3') //TODO
+    const text3 = await screen.findAllByText('3')
     expect(text3).toHaveLength(3)
     await userEvent.click(text3[2])
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
@@ -408,7 +410,7 @@ describe('Wired - VlanPortSetting', () => {
     await userEvent.click(await within(dialog).findByTestId('module1_1_4'))
     const comboboxes = await within(dialog).findAllByRole('combobox')
     await userEvent.click(comboboxes[0]) //untagged
-    let text3 = await screen.findAllByText('3') //TODO
+    let text3 = await screen.findAllByText('3')
     expect(text3).toHaveLength(3)
     await userEvent.click(text3[2])
 
@@ -548,7 +550,7 @@ describe('Wired - VlanPortSetting', () => {
     await userEvent.click(await within(dialog).findByTestId('taggedVlans-override-checkbox'))
     const comboboxes = await within(dialog).findAllByRole('combobox')
     await userEvent.click(comboboxes[1]) //untagged
-    const text3 = await screen.findAllByText('3') //TODO
+    const text3 = await screen.findAllByText('3')
     await userEvent.click(text3[2])
 
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }) )

@@ -94,7 +94,7 @@ export const VlanPortMessages = {
 }
 /* eslint-enable */
 
-export const checkIfModuleFixed = (family: string, model: string): { //TODO
+export const checkIfModuleFixed = (family: string, model: string): {
   moduleSelectionEnable?: boolean,
   module2SelectionEnable?: boolean,
   enableSlot2?: boolean,
@@ -223,13 +223,13 @@ export const getUpdatedVlans = (
   selectedRows: ModulePorts[],
   vlans: SwitchVlans[],
   updatedValues?: PortsModalSetting
-) => { //: SwitchVlans[]
-  return selectedRows.reduce((accVlans, selectedRow) => {
+) => {
+  return selectedRows.reduce((result, selectedRow) => {
     if (!selectedRow) return vlans
 
     // remove existing vlans
     const vlanMap = getVlanMap(selectedRow?.ports, selectedRow.familymodel, selectedRow.slots)
-    return accVlans.map((vlan: SwitchVlans) => {
+    return result.map((vlan: SwitchVlans) => {
       const selectedVlan = vlanMap[vlan.vlanId]
       if (!selectedVlan) return vlan
 
@@ -268,8 +268,10 @@ export const getUpdatedVlans = (
             const updatedTaggedPorts = getPortArray(updatedVlan.taggedPorts)
             const updatedUntaggedPorts = getPortArray(updatedVlan.untaggedPorts)
 
-            const updatedTagged = orinTaggedPorts.concat(updatedTaggedPorts).toString()
-            const updatedUntagged = orinUntaggedPorts.concat(updatedUntaggedPorts).toString()
+            const updatedTagged = _.uniq([...orinTaggedPorts, ...updatedTaggedPorts]).toString()
+            // eslint-disable-next-line max-len
+            const updatedUntagged = _.uniq([...orinUntaggedPorts, ...updatedUntaggedPorts]).toString()
+
             if (!updatedTagged && !updatedUntagged) {
               return null
             }
@@ -340,12 +342,15 @@ export const getUpdatedVlanPortList = (
     const modulekey = getModuleKey(updatedValues.family, updatedValues.model, updatedValues.slots)
     const moduleFixed = checkIfModuleFixed(updatedValues.family, updatedValues.model)
     const isDefaultModule = moduleFixed?.moduleSelectionEnable === false
+    const updatedPortSettings = updatedValues.portSettings.filter(port => {
+      return port.taggedVlans.length || port.untaggedVlan.length
+    })
 
     if (existingModel) {
       let existingModule = existingModel.groupbyModules.find(module => module.key === modulekey)
 
       if (existingModule) {
-        existingModule.ports = updatedValues.portSettings.reduce((result, port) => {
+        existingModule.ports = updatedPortSettings.reduce((result, port) => {
           const existingPort = existingModule?.ports.find(p => p.port === port.port)
           if (existingPort) {
             return [
@@ -373,7 +378,7 @@ export const getUpdatedVlanPortList = (
           familymodel,
           isDefaultModule,
           slots: updatedValues.slots,
-          ports: updatedValues.portSettings.map(port => ({
+          ports: updatedPortSettings.map(port => ({
             id: `${familymodel}-${port.port}`,
             port: port.port,
             untaggedVlan: port.untaggedVlan,
@@ -391,7 +396,7 @@ export const getUpdatedVlanPortList = (
             familymodel,
             isDefaultModule,
             slots: updatedValues.slots,
-            ports: updatedValues.portSettings.map(port => ({
+            ports: updatedPortSettings.map(port => ({
               id: `${familymodel}-${port.port}`,
               port: port.port,
               untaggedVlan: port.untaggedVlan,

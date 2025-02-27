@@ -1053,11 +1053,11 @@ export function validateVlanExcludingReserved (vlanName: string){
   return Promise.resolve()
 }
 
-export const validateVlanRange = (value: string) => {
+export const validateVlanRangeFormat = (value: string) => {
   const { $t } = getIntl()
   const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
   if (!re.test(value)) {
-    return Promise.reject($t(validationMessages.invalidVlanRange))
+    return Promise.reject($t(validationMessages.invalidVlanRangeRegExp))
   }
   return Promise.resolve()
 }

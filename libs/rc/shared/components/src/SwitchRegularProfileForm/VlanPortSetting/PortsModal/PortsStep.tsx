@@ -22,7 +22,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { shouldRenderMultipleText, MultipleText } from '../../../SwitchPortTable/editPortDrawer.utils'
+import {
+  shouldRenderMultipleText,
+  MultipleText
+} from '../../../SwitchPortTable/editPortDrawer.utils'
 import {
   getModuleKey,
   ModuleGroupByModel,
@@ -33,16 +36,16 @@ import {
 } from '../index.utils'
 
 import {
-  // getPortsModule,
   getUnit,
   getModule,
-  selectedGroupByPrefix
+  getAllVlansFromPortList,
+  selectedGroupByPrefix,
+  PortSettings
 } from './PortsModal.utils'
 import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-type PortSettings = Record<string, { untaggedVlan: string[], taggedVlans: string[] }>
 type VlanType = 'untaggedVlan' | 'taggedVlans'
 
 enum VlanTypes {
@@ -60,18 +63,20 @@ export function PortsStep (props:{
   const form = Form.useFormInstance()
   const { editRecord, vlanList, modelPorts, moduleData } = props
 
-  // const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [vlanOptions, setVlanOptions] = useState([] as DefaultOptionType[])
 
   const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
   const [previousHasMultipleValue, setPreviousHasMultipleValue] = useState([] as string[])
-  const [initialModelPortList, setInitialModelPortList] = useState({} as PortSettings) // cross module data
 
+  // cross module data
+  const [initialModelPortList, setInitialModelPortList] = useState({} as PortSettings)
+  // current module data
   const [initialModulePortList, setInitialModulePortList] = useState({} as PortSettings)
-  // The module port list before VLAN editing begins, used for reverting changes if needed
+
+  // module port list before VLAN editing begins, used for reverting changes if needed
   const [previousModulePortList, setPreviousModulePortList] = useState({} as PortSettings)
-  // The module port list reflecting the latest user modifications, updated after VLAN changes
+  // module port list reflecting the latest user modifications, updated after VLAN changes
   const [editedModulePortList, setEditedModulePortList] = useState({} as PortSettings)
 
   const { family, model, slots } = form.getFieldsValue(true)
@@ -85,11 +90,9 @@ export function PortsStep (props:{
 
   const isMultipleEdit = selectedItems.length > 1
   const configuredFields = ['taggedVlans', 'untaggedVlan']
-  const [
-    untaggedVlan, taggedVlans, portSettings,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    untaggedVlanCheckbox, taggedVlansCheckbox
-  ] = [
+
+  // eslint-disable-next-line max-len
+  const [ untaggedVlan, taggedVlans, portSettings, untaggedVlanCheckbox, taggedVlansCheckbox ] = [
     Form.useWatch('untaggedVlan', form),
     Form.useWatch('taggedVlans', form),
     Form.useWatch<PortSetting[]>('portSettings', form),
@@ -99,7 +102,8 @@ export function PortsStep (props:{
 
   const getModelPortList = (
     modulekey: string,
-    data?: ModuleGroupByModel, isFiltered: boolean = false
+    data?: ModuleGroupByModel,
+    isFiltered: boolean = false
   ) => {
     return data?.groupbyModules
       ? data.groupbyModules
@@ -156,45 +160,15 @@ export function PortsStep (props:{
     const portSettings: PortSetting[] = form.getFieldValue('portSettings')
     const checkField = type === VlanTypes.UNTAGGED ? VlanTypes.TAGGED : VlanTypes.UNTAGGED
 
-    const currentModelVlans = _.uniq(
-      Object.values(initialModelPortList ?? {}).reduce((result: string[], port) => {
-        return result.concat(port.untaggedVlan, port.taggedVlans)
-      }, []))
-    const oringinalModuleVlans = _.uniq(
-      Object.values(initialModulePortList ?? {}).reduce((result: string[], port) => {
-        return result.concat(port.untaggedVlan, port.taggedVlans)
-      }, []))
-
+    const currentModelVlans = getAllVlansFromPortList(initialModelPortList)
+    const oringinalModuleVlans = getAllVlansFromPortList(initialModulePortList)
     const unavailableVlans = _.difference(currentModelVlans, oringinalModuleVlans)
 
-    const assignedVlan = portSettings.filter(port => { //TODO
-      return selectedItems.includes(port.port)
-    }).map(port => {
-      // if (type === VlanTypes.TAGGED) {
-      //   console.log(port[checkField]) //TODO
-      // }
-      return port[checkField] //!isMultipleEdit || isOveerrided ? port[checkField] : []
-    }).flat()
+    const assignedVlans = portSettings.filter(port =>
+      selectedItems.includes(port.port)
+    ).map(port => port[checkField]).flat()
 
-    //type === VlanTypes.UNTAGGED ? form.getFieldValue('taggedVlans') : form.getFieldValue('untaggedVlan')
-    // const assignedVlanArray = Array.isArray(assignedVlan) ? assignedVlan : [assignedVlan]
-    // portSettings.filter(port => { //TODO
-    //   return selectedItems.includes(port.port)
-    // }).map(port => port[checkField]).flat()
-
-
-    // if (type === VlanTypes.TAGGED) {
-    //   console.log(
-    //     '*** update: ',
-    //     form.getFieldValue('taggedVlans'),
-    //     form.getFieldValue('untaggedVlan')
-
-    //   )
-
-    //   console.log(value, ' /assignedVlan: ', assignedVlan )
-    // }
-
-    const hasAssigned = assignedVlan?.includes(value)
+    const hasAssigned = assignedVlans?.includes(value)
     const isUnavailableVlans = unavailableVlans.includes(value)
 
     return {
@@ -224,7 +198,6 @@ export function PortsStep (props:{
         disabled={disabled}
         children={disabled
           ? <Tooltip placement='topLeft' title={tooltipTitle}>
-            {/* <div>{ opt.label }{ hasAssigned ? tooltipTitle : '' }</div> */}
             <div>{ opt.label }</div>
           </Tooltip>
           : <>{opt.label}</>
@@ -233,13 +206,7 @@ export function PortsStep (props:{
     })
   }
 
-  // console.log('*** slots: ', slots)
-  // console.log(form.getFieldValue('portSettings'))
-
   useEffect(() => {
-    // const { family, model, slots } = form.getFieldsValue(true)
-    /* eslint-disable no-console */
-
     const portSettings: PortSetting[] = form.getFieldValue('portSettings')
     const vlanOptions = vlanList.map((item) => ({
       label: item.vlanId,
@@ -254,13 +221,21 @@ export function PortsStep (props:{
     const currentSettings: PortSettings = {
       ..._.omitBy(editedModulePortList, (_, key) => portSettingKeys.includes(key)),
       ...Object.fromEntries(
-        // eslint-disable-next-line max-len
-        portSettings.map(({ port, untaggedVlan, taggedVlans }) => [port, { untaggedVlan, taggedVlans }])
+        portSettings.map(({ port, untaggedVlan, taggedVlans }) =>
+          [port, { untaggedVlan, taggedVlans }]
+        )
       )
     }
 
-    console.log(initialModelPortList)
-    console.log(editedModulePortList)
+    if (Object.keys(currentSettings).length && !portSettings?.length) {
+      const updatedPortSettings = Object.entries(currentSettings)
+        .map(([port, { untaggedVlan, taggedVlans }]) => ({
+          id: `${family}-${model}-${port}`,
+          port, untaggedVlan, taggedVlans
+        }))
+
+      form.setFieldValue('portSettings', updatedPortSettings)
+    }
 
     setVlanOptions(vlanOptions as DefaultOptionType[])
     setInitialModelPortList(initialModelPortList as PortSettings)
@@ -268,15 +243,7 @@ export function PortsStep (props:{
     setPreviousModulePortList(currentSettings)
     setEditedModulePortList(currentSettings)
     resetOverrideCheckbox()
-
-    // console.log('selectedModuleInfo: ', selectedModuleInfo)
-    // console.log('portSettings: ', portSettings)
-    // console.log('editedModulePortList: ', editedModulePortList)
-    // console.log('initialModelPortList: ', initialModelPortList)
-    // console.log('editedModulePortList: ', editedModulePortList)
-
   }, [])
-
 
   useEffect(() => {
     const portSettings = form.getFieldValue('portSettings')
@@ -285,18 +252,12 @@ export function PortsStep (props:{
     const hasDefaultValue = (field: string) => {
       return selectedItems?.length === 1 || !hasMultipleValue.includes(field)
     }
+
     form.setFieldsValue({
       untaggedVlan: hasDefaultValue('untaggedVlan') ? selectPort?.untaggedVlan : [],
       taggedVlans: hasDefaultValue('taggedVlans') ? selectPort?.taggedVlans : []
     })
   }, [selectedItems])
-
-  // useEffect(() => {
-  //   if (slots) {
-  //     const module = getPortsModule(slots, false)
-  //     setPortsModule(module as unknown as PortsType[][][])
-  //   }
-  // }, [slots])
 
   let tmpSelectedItem: string[] = []
   const { DragSelection: DragSelectionPorts } = useSelectionContainer({
@@ -410,10 +371,7 @@ export function PortsStep (props:{
         untaggedVlan: updatedUntaggedVlan,
         taggedVlans: updatedTaggedVlan
       }
-
     })
-
-    console.log('updatePortSettings: ', updatePortSettings)
 
     if (!checkboxChecked) {
       // should remove invlaid vlans from current vlans
@@ -424,7 +382,7 @@ export function PortsStep (props:{
         untaggedCheckboxChanged ? taggedVlans : untaggedVlanArray, originalVlans
       )
 
-      form.setFieldValue(  //TODO: check
+      form.setFieldValue(
         untaggedCheckboxChanged ? 'taggedVlans' : 'untaggedVlan',
         untaggedCheckboxChanged ? diffVlans : (diffVlans?.length ? diffVlans.toString() : null)
       )
@@ -441,7 +399,6 @@ export function PortsStep (props:{
         previousHasMultipleValue.includes(field)
           ? ( untaggedCheckboxChanged ? null : [] )
           : _.uniq(originalVlans)
-        // untaggedCheckboxChanged ? null : [])
       )
     }
 
@@ -451,39 +408,6 @@ export function PortsStep (props:{
 
   const getPortInfoTooltip = (port: string) => {
     const { $t } = getIntl()
-    // const isCurrentPortSelected = selectedItems?.length === 1 && selectedItems[0] === port //TODO: multiple ports
-
-    //TODO: wait for Ravi feedback
-    // const modelUntaggedVlans = initialModelPortList[port]?.untaggedVlan ?? []
-    // const modelTaggedVlans = initialModelPortList[port]?.taggedVlans ?? []
-
-    // const selectedPortVlans = {
-    //   untaggedVlan: _.uniq([
-    //     ...modelUntaggedVlans, ...(untaggedVlan?.length ? untaggedVlan.toString().split(',') : [])
-    //   ]),
-    //   taggedVlans: _.uniq([...modelTaggedVlans, ...taggedVlans])
-    // }
-    // const modulePortVlans = {
-    //   untaggedVlan: _.uniq([
-    //     ...modelUntaggedVlans, ...(editedModulePortList?.[port]?.untaggedVlan ?? [])
-    //   ]),
-    //   taggedVlans: _.uniq([
-    //     ...modelTaggedVlans, ...(editedModulePortList?.[port]?.taggedVlans ?? [])
-    //   ])
-    // }
-
-    // const selectedPortVlans = {
-    //   untaggedVlan: untaggedVlan?.length ? untaggedVlan.toString().split(',') : [],
-    //   taggedVlans: taggedVlans ?? []
-    // }
-
-    // const modulePortVlans = {
-    //   untaggedVlan: editedModulePortList[port]?.untaggedVlan ?? [],
-    //   taggedVlans: editedModulePortList[port]?.taggedVlans ?? []
-    // }
-
-    // const portVlanInfo = modulePortVlans //isCurrentPortSelected ? selectedPortVlans : modulePortVlans
-
     const { untaggedVlan = [], taggedVlans = [] } = editedModulePortList[port] ?? {}
 
     return <div>
@@ -594,22 +518,18 @@ export function PortsStep (props:{
   }
 
   const handleSelectedItemsChange = (selected: string[]) => {
-    console.log('selected: ', selected)
     const hasMultipleValueFields = getMultipleValueStates(selected, portSettings)
-
     setSelectedItems(selected)
     setHasMultipleValue(hasMultipleValueFields)
     setPreviousHasMultipleValue(hasMultipleValueFields)
     setPreviousModulePortList(editedModulePortList as PortSettings)
-
     resetOverrideCheckbox()
   }
 
   const handleVlansChange = () => {
-    const { untaggedVlan = [], taggedVlans = [], portSettings = [] } = form.getFieldsValue()
+    const { untaggedVlan = [], taggedVlans = [] } = form.getFieldsValue()
     const overrideUntaggedVlan = selectedItems.length === 1 || untaggedVlanCheckbox
     const overrideTaggedVlans = selectedItems.length === 1 || taggedVlansCheckbox
-    console.log('**** handleVlansChange: ', untaggedVlan, taggedVlans, portSettings)
 
     const updatePortSettings = selectedItems?.map((port) => {
       return {
@@ -623,47 +543,16 @@ export function PortsStep (props:{
       }
     })
 
-    // setEditedModulePortList({
-    //   ..._.omitBy(editedModulePortList, (_, key) => selectedItems.includes(key)),
-    //   ...updatePortSettings.reduce((result, port) => {
-    //     return {
-    //       ...result,
-    //       [port.port]: {
-    //         untaggedVlan: port.untaggedVlan,
-    //         taggedVlans: port.taggedVlans
-    //       }
-    //     }
-    //   }, {})
-    // })
-
-    // form.setFieldValue('portSettings', [
-    //   ...portSettings.filter((p: { port: string }) => !selectedItems.includes(p.port)),
-    //   ...updatePortSettings
-    // ])
-
-    console.log('updatePortSettings: ', updatePortSettings)
-
     updateValues(updatePortSettings)
   }
 
   const updateValues = (updatePortSettings: PortSetting[]) => {
     // update data to editedModulePortList and portSettings
-    // console.log(updatePortSettings.map(({ port, untaggedVlan, taggedVlans }) =>
-    //   [ port, { untaggedVlan, taggedVlans } ]
-    // ))
-
-    // console.log(
-    //   Object.fromEntries(updatePortSettings.map(({ port, untaggedVlan, taggedVlans }) =>
-    //     [ port, { untaggedVlan, taggedVlans } ]
-    //   ))
-    // )
     const updatedPortSettings = [
       ...portSettings.filter((p: { port: string }) => !selectedItems.includes(p.port)),
       ...updatePortSettings
     ]
     const hasMultipleValueFields = getMultipleValueStates(selectedItems, updatedPortSettings)
-
-    console.log('updatedPortSettings: ', updatedPortSettings)
 
     setHasMultipleValue(hasMultipleValueFields)
     setEditedModulePortList({
@@ -693,9 +582,9 @@ export function PortsStep (props:{
 
     return configuredFields?.filter(field => {
       const itemField = field as keyof PortSetting
+      const baseSetting = (selectedPortSetting[0]?.[itemField] as string[])?.sort()
       const isEqual = selectedPortSetting.every(
-        // eslint-disable-next-line max-len
-        p => _.isEqual((p[itemField] as string[])?.sort(), (selectedPortSetting[0][itemField] as string[])?.sort()) //TODO
+        port => _.isEqual((port[itemField] as string[])?.sort(), baseSetting)
       )
       return !isEqual
     })
@@ -771,9 +660,7 @@ export function PortsStep (props:{
 
   const getFormItemLayout = (isMultipleEdit: boolean) => {
     return isMultipleEdit && {
-      labelCol: { span: 8 },
-      wrapperCol: { span: 16 }
-      // style: { width: '75%' }
+      labelCol: { span: 8 }, wrapperCol: { span: 16 }
     }
   }
 
@@ -788,8 +675,6 @@ export function PortsStep (props:{
       ? <div style={{ width: '455px' }}><MultipleText /></div>
       : <Tooltip title={tooltip}>{ content }</Tooltip>
   }
-
-  console.log('selectedItems: ', selectedItems)
 
   return (
     <div style={{ height: '80%', minHeight: '200px', marginBottom: '100px' }}>
@@ -844,7 +729,6 @@ export function PortsStep (props:{
               content: <Form.Item
                 {...getFormItemLayout(isMultipleEdit)}
                 label={$t({ defaultMessage: 'Untagged VLAN' })}
-                // style={{ marginBottom: '16px' }}
                 children={renderFormItemChildren({
                   field: 'untaggedVlan',
                   tooltip: getFieldDisabledTooltip('untaggedVlan'),
@@ -890,37 +774,6 @@ export function PortsStep (props:{
                 })}
               />
             })}
-
-            {/* <Form.Item
-              name='untaggedVlan'
-              label={$t({ defaultMessage: 'Untagged VLAN' })}
-              style={{ width: '300px' }}
-              children={<Select
-                placeholder={$t({ defaultMessage: 'Select VLAN...' })}
-                onChange={handleVlansChange}
-                allowClear
-                disabled={!selectedItems?.length
-                  || getUntaggedSelectorDisabled(selectedItems)
-                }
-              >{ getVlanOptions(VlanTypes.UNTAGGED)
-                }</Select>}
-            /> */}
-
-            {/* <Form.Item
-              name='taggedVlans'
-              label={$t({ defaultMessage: 'Tagged VLANs' })}
-              style={{ width: '300px' }}
-              children={
-                <Select
-                  mode='multiple'
-                  placeholder={$t({ defaultMessage: 'Select VLANs...' })}
-                  disabled={!selectedItems?.length}
-                  onChange={handleVlansChange}
-                >{
-                    getVlanOptions(VlanTypes.TAGGED)
-                  }</Select>
-              }
-            /> */}
 
           </UI.Form>
         </Col>
