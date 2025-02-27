@@ -87,7 +87,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   useEffect(() => {
     console.log('visible', visible, 'tunnelTypeInitVal', tunnelTypeInitVal)
     if (visible) {
-      form.setFieldValue('tunnelType', tunnelTypeInitVal)
+      form.setFieldValue('tunnelType',
+        tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal)
     }
   }, [visible, tunnelTypeInitVal])
 
@@ -128,7 +129,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
         <Form.Item
           name='tunnelType'
           label={$t({ defaultMessage: 'Network Topology' })}
-          initialValue={tunnelTypeInitVal}
+          initialValue={tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal}
           rules={[
             {
               required: true,

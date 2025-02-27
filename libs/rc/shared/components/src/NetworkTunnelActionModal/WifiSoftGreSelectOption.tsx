@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import {  Form, Space, Select, Switch, Row, Alert } from 'antd'
 import { DefaultOptionType }                        from 'antd/lib/select'
-import { useIntl }                                  from 'react-intl'
+import { FormattedMessage, useIntl }                from 'react-intl'
 
 import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                        from '@acx-ui/icons'
@@ -28,6 +28,15 @@ import { WiFISoftGreRadioOptionProps } from './WifiSoftGreRadioOption'
 const defaultPayload = {
   fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress', 'activations',
     'venueActivations', 'apActivations'],
+  page: 1,
+  pageSize: 10_000,
+  searchString: '',
+  filters: {}
+}
+
+const defaultIpsecPayload = {
+  fields: ['id', 'name', 'serverAddress',
+    'activations', 'venueActivations', 'apActivations'],
   page: 1,
   pageSize: 10_000,
   searchString: '',
@@ -67,7 +76,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
 
   const ipsecOptionsDataQuery = useGetIpsecOptionsQuery(
     { params: { venueId, networkId },
-      payload: { ...defaultPayload }
+      payload: { ...defaultIpsecPayload }
     },
     { skip: !venueId || !networkId }
   )
@@ -140,13 +149,11 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const onChange = (value:string) => {
     form.setFieldValue(['softGre', 'newProfileName'],
       softGreOption?.find(item => item.value === value)?.label ?? '')
-
   }
 
   const onChangeIpsec = (value:string) => {
     form.setFieldValue(['ipsec', 'newProfileName'],
       ipsecOption?.find(item => item.value === value)?.label ?? '')
-
   }
 
   const gatewayIpValidator = async (value: string) => {
@@ -200,9 +207,12 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         {<div className={'ant-form-item-label'}>
           <label>{$t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway' })}</label>
         </div>}
-        {<Alert style={{ marginTop: '20px', marginBottom: '20px' }}
+        {<Alert style={{ marginTop: '20px', marginBottom: '20px', width: '380px' }}
           message={
-            $t(messageMappings.softgre_ipsec_setting_info)
+            <FormattedMessage
+              // eslint-disable max-len
+              defaultMessage='A <venueSingular></venueSingular> supports <b>up to 3 SoftGRE activated profiles without IPsec</b> or <b>1 SoftGRE with IPsec.</b>'
+              values={{ b: (chr) => (<b>{chr}</b>) }} />
           }
           type='info'
           showIcon />
