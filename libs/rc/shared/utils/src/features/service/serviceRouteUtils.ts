@@ -42,7 +42,8 @@ const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.DPSK]: 'dpsk',
   [ServiceType.PIN]: 'personalIdentityNetwork',
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
-  [ServiceType.RESIDENT_PORTAL]: 'residentPortal'
+  [ServiceType.RESIDENT_PORTAL]: 'residentPortal',
+  [ServiceType.EDGE_OLT]: 'optical' // temporary type before PoC done.
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {

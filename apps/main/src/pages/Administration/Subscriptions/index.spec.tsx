@@ -1,14 +1,15 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { showToast }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { mspApi }                                                                  from '@acx-ui/msp/services'
-import { MspRbacUrlsInfo, MspUrlsInfo }                                            from '@acx-ui/msp/utils'
-import { administrationApi }                                                       from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                                                  from '@acx-ui/rc/utils'
-import { Provider, store }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within  } from '@acx-ui/test-utils'
+import { showToast }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { mspApi }                                       from '@acx-ui/msp/services'
+import { MspRbacUrlsInfo, MspUrlsInfo }                 from '@acx-ui/msp/utils'
+import { administrationApi }                            from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                       from '@acx-ui/rc/utils'
+import { Provider, store }                              from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within  } from '@acx-ui/test-utils'
+import { AccountType }                                  from '@acx-ui/utils'
 
 import { mockedEtitlementsList, mockedSummary, fakeMspEcProfile } from './__tests__/fixtures'
 
@@ -91,7 +92,7 @@ describe('Subscriptions', () => {
       ),
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
+        (req, res, ctx) => res(ctx.json({ ...fakeMspEcProfile, tenantType: AccountType.REC }))
       )
     )
   })
@@ -104,7 +105,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
@@ -123,7 +123,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
 
     const licenseManagementButton =
@@ -164,7 +163,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
@@ -181,7 +179,6 @@ describe('Subscriptions', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Part Number' })
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
@@ -197,7 +194,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await userEvent.click(screen.getByRole('button', { name: 'Clear Filters' }))
     const wifiRow = await screen.findByRole('row', { name: /Wi-Fi/i })
@@ -217,7 +213,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /RUCKUS Edge/i })
   })
@@ -232,7 +227,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await userEvent.click(screen.getByRole('button', { name: 'Clear Filters' }))
     await screen.findByRole('row', { name: /Wi-Fi/i })
@@ -265,7 +259,6 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     // eslint-disable-next-line max-len
     expect(await screen.findByText('At least one active subscription must be available! Please activate subscription and click on'))
       .toBeVisible()

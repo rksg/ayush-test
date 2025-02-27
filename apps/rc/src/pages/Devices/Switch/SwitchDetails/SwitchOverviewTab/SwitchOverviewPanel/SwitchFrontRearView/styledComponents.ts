@@ -154,7 +154,8 @@ const getPortColor = (portColor: string) => {
   const colorMap:{ [key:string]: string } = {
     lightgray: 'var(--acx-neutrals-25)',
     gray: 'var(--acx-neutrals-50)',
-    green: 'var(--acx-semantics-green-50)'
+    green: 'var(--acx-semantics-green-50)',
+    red: 'var(--acx-semantics-red-50)'
   }
   return colorMap[portColor]
 }

@@ -459,7 +459,14 @@ export function VenuePropertyTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        return (
+          isMultipleIdentityUnits ? <TenantLink
+            to={`/venues/${venueId}/${row.id}/property-units`}>
+            {highlightFn(row.name)}</TenantLink> : row.name
+        )
+      }
     },
     {
       key: 'status',

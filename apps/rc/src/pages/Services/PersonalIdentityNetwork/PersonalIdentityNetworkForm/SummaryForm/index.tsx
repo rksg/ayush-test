@@ -36,7 +36,6 @@ export const SummaryForm = () => {
   const venueId = form.getFieldValue('venueId')
   const edgeClusterId = form.getFieldValue('edgeClusterId')
   const segments = form.getFieldValue('segments')
-  const devices = form.getFieldValue('devices')
   const dhcpId = form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const tunnelProfileId = form.getFieldValue('vxlanTunnelProfileId')
@@ -65,12 +64,11 @@ export const SummaryForm = () => {
       {
         edgeName: getClusterName(edgeClusterId),
         segments: segments.toString(),
-        devices: devices.toString(),
         dhcpServiceName: getDhcpName(dhcpId),
         dhcpPoolName: poolName.toString()
       }
     ])
-  }, [edgeClusterId, segments, devices, dhcpId, poolId, poolName])
+  }, [edgeClusterId, segments, dhcpId, poolId, poolName])
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({

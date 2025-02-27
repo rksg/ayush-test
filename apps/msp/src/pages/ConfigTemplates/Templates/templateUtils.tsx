@@ -1,21 +1,28 @@
 import { useMemo } from 'react'
 
+import moment                               from 'moment'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { Button }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Button }                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
+import {
+  ACCESS_CONTROL_SUB_POLICY_INIT_STATE, AccessControlSubPolicyVisibility,
+  isAccessControlSubPolicy, renderConfigTemplateDetailsComponent, subPolicyMappingType
+} from '@acx-ui/rc/components'
 import {
   ConfigTemplate,
   ConfigTemplateDriftType,
-  ConfigTemplateType, configTemplatePolicyTypeMap,
+  ConfigTemplateType, PolicyType, configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap, policyTypeLabelMapping,
   serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                              from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }        from '@acx-ui/user'
-import { AccountType, getIntl, isDelegationMode } from '@acx-ui/utils'
+import { RolesEnum }                                             from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
+import { AccountType, getIntl, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
 
 import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
+
 
 
 export const useEcFilters = () => {
@@ -66,7 +73,7 @@ export function getConfigTemplateDriftStatusLabel (driftStatus: ConfigTemplateDr
 export function getConfigTemplateEnforcementLabel (enforced: boolean | undefined): string {
   const { $t } = getIntl()
 
-  if (enforced === undefined) return ''
+  if (enforced === undefined) return noDataDisplay
 
   return enforced ? $t({ defaultMessage: 'Enforced' }) : $t({ defaultMessage: 'Not enforced' })
 }
@@ -77,7 +84,7 @@ type DriftStatusCallback = Partial<Record<ConfigTemplateDriftType, () => void>>
 export function ConfigTemplateDriftStatus (props: { row: ConfigTemplate, callbackMap?: DriftStatusCallback }) {
   const { row, callbackMap = {} } = props
 
-  if (!row.driftStatus) return <span></span>
+  if (!row.driftStatus) return <span>{noDataDisplay}</span>
 
   const callback = callbackMap[row.driftStatus]
   const label = getConfigTemplateDriftStatusLabel(row.driftStatus)
@@ -92,4 +99,39 @@ export function ConfigTemplateDriftStatus (props: { row: ConfigTemplate, callbac
     style={{ fontSize: 'var(--acx-body-4-font-size)' }}
     children={label}
   />
+}
+
+interface ViewDetailsLinkProps {
+  template: ConfigTemplate
+  setAclSubPolicyVisible: (visibility: AccessControlSubPolicyVisibility) => void
+  label?: string
+}
+export function ViewConfigTemplateDetailsLink (props: ViewDetailsLinkProps) {
+  const { template, setAclSubPolicyVisible, label = props.template.name } = props
+
+  if (isAccessControlSubPolicy(template.type)) {
+    return <Button
+      type='link'
+      size={'small'}
+      onClick={() => {
+        setAclSubPolicyVisible({
+          ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
+          [subPolicyMappingType[template.type] as PolicyType]: {
+            id: template.id,
+            visible: true,
+            drawerViewMode: true
+          }
+        })
+      }}>
+      {label}
+    </Button>
+  }
+  return renderConfigTemplateDetailsComponent(template.type, template.id!, label)
+}
+
+export function useFormatTemplateDate () {
+  const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+  return (date?: number) => {
+    return date ? moment(date).format(dateFormat) : noDataDisplay
+  }
 }
