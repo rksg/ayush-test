@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -43,7 +44,10 @@ import {
   WifiCallingDetailView,
   WifiCallingForm,
   WifiOperatorForm,
-  DirectoryServerForm
+  DirectoryServerForm,
+  AddSsoSaml,
+  EditSsoSaml,
+  SsoSamlDetail
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -133,6 +137,7 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
+import SsoSaml                                                          from './pages/Policies/SsoSaml'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -547,7 +552,6 @@ const useEdgePinRoutes = () => {
       path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.CREATE })}
       element={
-        // eslint-disable-next-line max-len
         <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
           {isEdgePinEnhancementReady
             ? <AddPersonalIdentityNetworkEnhanced />
@@ -556,22 +560,16 @@ const useEdgePinRoutes = () => {
       }
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.PIN,
-        oper: ServiceOperation.LIST })}
-      // eslint-disable-next-line max-len
+      path={getServiceRoutePath({ type: ServiceType.PIN, oper: ServiceOperation.LIST })}
       element={isEdgePinEnhancementReady ? <PersonalIdentityNetworkTableEnhanced /> : <PersonalIdentityNetworkTable />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.PIN,
-        oper: ServiceOperation.DETAIL })}
-      // eslint-disable-next-line max-len
+      path={getServiceRoutePath({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL })}
       element={isEdgePinEnhancementReady ? <PersonalIdentityNetworkDetailEnhanced /> : <PersonalIdentityNetworkDetail />}
     />
     <Route
-      path={getServiceRoutePath({ type: ServiceType.PIN,
-        oper: ServiceOperation.EDIT })}
+      path={getServiceRoutePath({ type: ServiceType.PIN, oper: ServiceOperation.EDIT })}
       element={
-        // eslint-disable-next-line max-len
         <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.EDIT}>
           <EditPersonalIdentityNetwork />
         </ServiceAuthRoute>
@@ -646,9 +644,7 @@ function ServiceRoutes () {
       <Route
         path={getSelectServiceRoutePath()}
         element={getUserProfile().rbacOpsApiEnabled
-          // eslint-disable-next-line max-len
           ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
-          // eslint-disable-next-line max-len
           : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
             <SelectServiceForm />
           </AuthRoute>
@@ -679,7 +675,6 @@ function ServiceRoutes () {
         element={<MdnsProxyTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
         element={
           <ServiceAuthRoute serviceType={ServiceType.WIFI_CALLING} oper={ServiceOperation.CREATE}>
@@ -696,7 +691,6 @@ function ServiceRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
         element={<WifiCallingDetailView />}
       />
@@ -824,7 +818,6 @@ function ServiceRoutes () {
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.CREATE })}
         element={
-          // eslint-disable-next-line max-len
           <ServiceAuthRoute serviceType={ServiceType.RESIDENT_PORTAL} oper={ServiceOperation.CREATE}>
             <ResidentPortalForm />
           </ServiceAuthRoute>
@@ -835,7 +828,6 @@ function ServiceRoutes () {
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
         element={
-          // eslint-disable-next-line max-len
           <ServiceAuthRoute serviceType={ServiceType.RESIDENT_PORTAL} oper={ServiceOperation.EDIT}>
             <ResidentPortalForm editMode={true} />
           </ServiceAuthRoute>
@@ -892,7 +884,6 @@ function PolicyRoutes () {
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
-  // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
@@ -902,13 +893,11 @@ function PolicyRoutes () {
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()}
         element={getUserProfile().rbacOpsApiEnabled
-          // eslint-disable-next-line max-len
           ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
           : <SelectPolicyForm />
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
         element={
           <PolicyAuthRoute policyType={PolicyType.ROGUE_AP_DETECTION} oper={PolicyOperation.CREATE}>
@@ -917,7 +906,6 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })}
         element={
           <PolicyAuthRoute policyType={PolicyType.ROGUE_AP_DETECTION} oper={PolicyOperation.EDIT}>
@@ -926,12 +914,10 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<RogueAPDetectionDetailView />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
         element={<RogueAPDetectionTable />}
       />
@@ -985,30 +971,24 @@ function PolicyRoutes () {
       />
       {isCloudpathBetaEnabled ? <>
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
           element={<MacRegistrationListDetails />}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
           element={<MacRegistrationListsTable />}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.MAC_REGISTRATION_LIST} oper={PolicyOperation.CREATE}>
               <MacRegistrationListForm />
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.MAC_REGISTRATION_LIST} oper={PolicyOperation.EDIT}>
               <MacRegistrationListForm editMode={true}/>
             </PolicyAuthRoute>
@@ -1064,7 +1044,6 @@ function PolicyRoutes () {
         element={<AccessControlTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={
           <PolicyAuthRoute policyType={PolicyType.CLIENT_ISOLATION} oper={PolicyOperation.CREATE}>
@@ -1073,7 +1052,6 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
         element={
           <PolicyAuthRoute policyType={PolicyType.CLIENT_ISOLATION} oper={PolicyOperation.EDIT}>
@@ -1086,7 +1064,6 @@ function PolicyRoutes () {
         element={<ClientIsolationTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
         element={<ClientIsolationDetail />}
       />
@@ -1115,7 +1092,6 @@ function PolicyRoutes () {
         element={<WifiOperatorDetailView />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}
         element={
           <AuthRoute scopes={[WifiScopes.CREATE]}>
@@ -1124,7 +1100,6 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.EDIT })}
         element={
           <AuthRoute scopes={[WifiScopes.UPDATE]}>
@@ -1133,17 +1108,14 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })}
         element={<IdentityProviderTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.DETAIL })}
         element={<IdentityProviderDetail />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
         element={
           <AuthRoute scopes={[WifiScopes.CREATE]}>
@@ -1152,7 +1124,6 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
         element={
           <AuthRoute scopes={[WifiScopes.UPDATE]}>
@@ -1161,12 +1132,10 @@ function PolicyRoutes () {
         }
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })}
         element={<LbsServerProfileTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.DETAIL })}
         element={<LbsServerProfileDetail />}
       />
@@ -1236,17 +1205,14 @@ function PolicyRoutes () {
       />
       {isConnectionMeteringEnabled && <>
         <Route
-        // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
           element={<ConnectionMeteringTable />}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
           element={<ConnectionMeteringDetail/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
           element={
             <PolicyAuthRoute
@@ -1257,7 +1223,6 @@ function PolicyRoutes () {
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
           element={
             <PolicyAuthRoute
@@ -1270,42 +1235,34 @@ function PolicyRoutes () {
       </>}
       {isCloudpathBetaEnabled && <>
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.RADIUS_ATTRIBUTE_GROUP} oper={PolicyOperation.CREATE}>
               <RadiusAttributeGroupForm />
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.RADIUS_ATTRIBUTE_GROUP} oper={PolicyOperation.EDIT}>
               <RadiusAttributeGroupForm editMode={true}/>
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
           element={<RadiusAttributeGroupDetail />}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
           element={
             <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY} oper={PolicyOperation.CREATE}>
@@ -1326,32 +1283,26 @@ function PolicyRoutes () {
           element={<AdaptivePolicyDetail/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY_SET} oper={PolicyOperation.CREATE}>
               <AdaptivePolicySetForm/>
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY_SET} oper={PolicyOperation.EDIT}>
               <AdaptivePolicySetForm editMode={true}/>
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
           element={<AdaptivePolicySetDetail/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
@@ -1363,11 +1314,9 @@ function PolicyRoutes () {
           element={<WorkflowTable/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
           element={<WorkflowDetails />} />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
           element={
             <PolicyAuthRoute policyType={PolicyType.WORKFLOW} oper={PolicyOperation.CREATE}>
@@ -1378,14 +1327,11 @@ function PolicyRoutes () {
       }
       {isCertificateTemplateEnabled && <>
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })}
           element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.LIST })}
-          // eslint-disable-next-line max-len
           element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_AUTHORITY}/>}
         />
         <Route
@@ -1398,30 +1344,24 @@ function PolicyRoutes () {
           element={<CertificateTemplateList tabKey={CertificateCategoryType.SERVER_CERTIFICATES}/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_TEMPLATE} oper={PolicyOperation.CREATE}>
               <CertificateTemplateForm editMode={false}/>
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.EDIT })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_TEMPLATE} oper={PolicyOperation.EDIT}>
               <CertificateTemplateForm editMode={true}/>
             </PolicyAuthRoute>
           }
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_AUTHORITY} oper={PolicyOperation.CREATE}>
               <CertificateAuthorityForm/>
             </PolicyAuthRoute>
@@ -1430,22 +1370,18 @@ function PolicyRoutes () {
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.CERTIFICATE} oper={PolicyOperation.CREATE}>
               <CertificateForm/>
             </PolicyAuthRoute>
           }
         />
         <Route
-        // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
           element={<CertificateTemplateDetail/>}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })}
           element={
-            // eslint-disable-next-line max-len
             <PolicyAuthRoute policyType={PolicyType.SERVER_CERTIFICATES} oper={PolicyOperation.CREATE}>
               <ServerClientCertificateForm/>
             </PolicyAuthRoute>
@@ -1455,10 +1391,8 @@ function PolicyRoutes () {
       }
       {isSwitchFlexAuthEnabled && <>
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.LIST)}>
               <FlexibleAuthenticationTable />
             </AuthRoute>
@@ -1470,7 +1404,6 @@ function PolicyRoutes () {
             oper: PolicyOperation.CREATE
           })}
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}>
               <AddFlexibleAuthentication />
             </AuthRoute>
@@ -1482,7 +1415,6 @@ function PolicyRoutes () {
             oper: PolicyOperation.EDIT
           })}
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}>
               <EditFlexibleAuthentication />
             </AuthRoute>
@@ -1493,7 +1425,6 @@ function PolicyRoutes () {
             type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
           })}
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.FLEX_AUTH, PolicyOperation.DETAIL)}>
               <FlexibleAuthenticationDetail />
             </AuthRoute>
@@ -1527,32 +1458,28 @@ function PolicyRoutes () {
       {/* </>} */}
       {<>
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.ETHERNET_PORT_PROFILE ,
-            oper: PolicyOperation.LIST
-          })}
-          element={<EthernetPortProfile/>}
+          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })}
+          element={<EthernetPortProfile />}
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.ETHERNET_PORT_PROFILE ,
-            oper: PolicyOperation.CREATE
-          })}
-          element={<AddEthernetPortProfile/>}
+          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ETHERNET_PORT_PROFILE} oper={PolicyOperation.CREATE}>
+              <AddEthernetPortProfile />
+            </PolicyAuthRoute>
+          }
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.ETHERNET_PORT_PROFILE ,
-            oper: PolicyOperation.EDIT
-          })}
-          element={<EditEthernetPortProfile/>}
+          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ETHERNET_PORT_PROFILE} oper={PolicyOperation.EDIT}>
+              <EditEthernetPortProfile />
+            </PolicyAuthRoute>
+          }
         />
         <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.ETHERNET_PORT_PROFILE ,
-            oper: PolicyOperation.DETAIL
-          })}
-          element={<EthernetPortProfileDetail/>}
+          path={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.DETAIL })}
+          element={<EthernetPortProfileDetail />}
         />
       </>
       }
@@ -1560,7 +1487,6 @@ function PolicyRoutes () {
         <Route
           path='policies/portProfile/create'
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <CreatePortProfile />
             </AuthRoute>
@@ -1577,7 +1503,6 @@ function PolicyRoutes () {
         <Route
           path='policies/portProfile/switch/profiles/add'
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
               <SwitchPortProfileForm />
             </AuthRoute>
@@ -1586,7 +1511,6 @@ function PolicyRoutes () {
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/edit'
           element={
-            // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
               <SwitchPortProfileForm />
             </AuthRoute>
@@ -1595,7 +1519,6 @@ function PolicyRoutes () {
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/detail'
           element={
-          // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
               <SwitchPortProfileDetail />
             </AuthRoute>
@@ -1611,7 +1534,6 @@ function PolicyRoutes () {
           element={<DirectoryServerTable />}
         />
         <Route
-          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({
             type: PolicyType.DIRECTORY_SERVER,
             oper: PolicyOperation.DETAIL })}
@@ -1635,6 +1557,45 @@ function PolicyRoutes () {
               <DirectoryServerForm editMode={true} />
             </PolicyAuthRoute>
           } />
+      </>
+      }
+      {<>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.LIST
+          })}
+          element={<SsoSaml/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.CREATE}>
+              <AddSsoSaml/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.EDIT}>
+              <EditSsoSaml/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.SSO_SAML ,
+            oper: PolicyOperation.DETAIL
+          })}
+          element={<SsoSamlDetail/>}
+        />
       </>
       }
     </Route>

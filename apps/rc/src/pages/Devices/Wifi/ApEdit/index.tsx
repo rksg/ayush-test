@@ -1,14 +1,12 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { CustomButtonProps, Loader, showActionModal }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
-import { useApViewModelQuery, useGetApQuery, useGetVenueQuery, useGetApCompatibilitiesQuery } from '@acx-ui/rc/services'
+import { CustomButtonProps, Loader, showActionModal }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
 import { ApDeep,
   ApViewModel,
   CapabilitiesApModel,
-  VenueExtended,
-  IncompatibleFeatureLevelEnum,
-  CompatibilityResponse
+  VenueExtended
 } from '@acx-ui/rc/utils'
 import { useParams }    from '@acx-ui/react-router-dom'
 import { goToNotFound } from '@acx-ui/user'
@@ -38,8 +36,7 @@ export type ApEditItemProps = {
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
   apCapabilities?: CapabilitiesApModel,
-  venueData?: VenueExtended,
-  apCompatibilitiesResponse?: CompatibilityResponse
+  venueData?: VenueExtended
 })
 
 export interface ApEditContextType {
@@ -109,8 +106,6 @@ export function ApEdit () {
 
   const [apData, setApData] = useState<ApDeep>()
   const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
-  // eslint-disable-next-line max-len
-  const [apCompatibilitiesResponse, setApCompatibilitiesResponse] = useState<CompatibilityResponse>()
   const [isLoaded, setIsLoaded] = useState(false)
 
   const apViewModelPayload = {
@@ -150,37 +145,18 @@ export function ApEdit () {
       venueId: targetVenueId
     } }, { skip: !targetVenueId } )
 
-  // this is a workaround
-  // TODO: wait for AP team add this to rpmkey
-  const {
-    data: compatibilitiesResponse
-  } = useGetApCompatibilitiesQuery({
-    params: {},
-    payload: {
-      filters: {
-        apIds: [serialNumber],
-        venueIds: [targetVenueId],
-        featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
-      },
-      page: 1,
-      pageSize: 10
-    } }, { skip: !targetVenueId || !serialNumber } )
-
   useEffect(() => {
     if (!isGetApLoading && !isGetApCapsLoading) {
       const modelName = getedApData?.model
       if (modelName && capabilities) {
         setApData(getedApData)
         setApCapabilities(capabilities)
-        // this is a workaround
-        // TODO: wait for AP team add this to rpmkey
-        setApCompatibilitiesResponse(compatibilitiesResponse)
 
         setIsLoaded(true)
       }
     }
   // eslint-disable-next-line max-len
-  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities, compatibilitiesResponse])
+  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
   useEffect(() => {
     if (apViewmodel) {
@@ -193,8 +169,7 @@ export function ApEdit () {
   // need to wait venueData ready, venueData.id is using inside all tabs.
   const isLoading = !venueData
 
-  // eslint-disable-next-line max-len
-  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData, apCompatibilitiesResponse }}>
+  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
     <ApEditContext.Provider value={{
       editContextData,
       setEditContextData,
