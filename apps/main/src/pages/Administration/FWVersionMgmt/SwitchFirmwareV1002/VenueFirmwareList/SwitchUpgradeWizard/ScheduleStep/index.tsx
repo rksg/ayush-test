@@ -216,8 +216,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
       )
 
       if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
-        return firmwareAvailableVersions[0].versions.sort((a, b) =>
-          compareSwitchVersion(a.id, b.id))
+        return firmwareAvailableVersions[0].versions
+          .filter(v => v.id !== '10010f_rc537') //ACX-79104: Firmware 10.0.10f has security issues. UI workaround to hide the option.
+          .sort((a, b) =>
+            compareSwitchVersion(a.id, b.id))
       }
 
       return []

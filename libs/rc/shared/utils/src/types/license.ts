@@ -22,10 +22,10 @@ export interface EntitlementBannersData {
 }
 
 export interface EntitlementBanner {
-  deviceCount: number;
-  deviceType: EntitlementDeviceType;
+  licenseCount: number;
+  licenseType: EntitlementDeviceType;
   effectDate: string;
-  effectDays: number;
+  effectiveDays: number;
   multipleLicense: boolean;
   type: LicenseBannerTypeEnum;
 }
