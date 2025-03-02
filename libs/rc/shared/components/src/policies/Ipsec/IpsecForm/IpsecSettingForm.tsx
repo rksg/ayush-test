@@ -76,7 +76,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   )
 
   useEffect(() => {
-    if(readMode) {
+    if(readMode && ipsecData?.authenticationType) {
       setAuthType(ipsecData?.authenticationType)
       return
     }
