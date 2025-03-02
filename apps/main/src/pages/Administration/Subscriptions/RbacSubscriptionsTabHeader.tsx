@@ -18,13 +18,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-const entitlementSummaryPayload = {
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'SELF'
-  }
-}
-
 const rbacSubscriptionUtilizationTransformer = (
   deviceTypeList: EntitlementDeviceTypes,
   data: EntitlementSummaries[]) => {
@@ -65,6 +58,13 @@ export const RbacSubscriptionsTabHeader = () => {
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))
+
+  const entitlementSummaryPayload = {
+    filters: {
+      licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+      usageType: 'SELF'
+    }
+  }
 
   const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
