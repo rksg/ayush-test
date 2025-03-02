@@ -27,6 +27,7 @@ export interface Persona {
   description?: string,
   tenantId?: string,
   email?: string,
+  phoneNumber?: string,
   vlan?: number,
   vni?: number,
   dpskGuid?: string,
@@ -40,7 +41,8 @@ export interface Persona {
   switches?: PersonaSwitch[],
   meteringProfileId?: string | null,
   expirationEpoch?: number | null,
-  expirationDate?: string | null
+  expirationDate?: string | null,
+  unit?: string | null
 }
 
 export interface PersonaErrorResponse {
