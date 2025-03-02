@@ -108,9 +108,10 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       render: (_, row) => row.revoked ? $t({ defaultMessage: 'Blocked' })
         : $t({ defaultMessage: 'Active' })
     },{
-      key: 'phone',
-      title: $t({ defaultMessage: 'phone' }),
-      dataIndex: 'phoneNumber'
+      key: 'deviceCount',
+      title: $t({ defaultMessage: 'Devices' }),
+      dataIndex: 'deviceCount',
+      align: 'center'
     },{
       key: 'unit',
       title: $t({ defaultMessage: 'unit' }),
