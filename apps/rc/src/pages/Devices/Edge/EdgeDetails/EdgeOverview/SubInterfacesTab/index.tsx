@@ -88,7 +88,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
     }
 
     <Col span={24}>
-      <Loader states={[{ isLoading }]}>
+      <Loader states={[{ isLoading }]} style={{ minHeight: '80px' }}>
         {serialNumber && ports.length > 0
           ? <Tabs type='third'>
             {tabs?.map((item) => {
