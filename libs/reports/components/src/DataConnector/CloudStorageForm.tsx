@@ -17,78 +17,120 @@ export const StorageOptions = [
   { value: 'ftp', label: 'FTP' },
   { value: 'sftp', label: 'SFTP' }
 ]
+
 type CloudStorageFormProps = {
   editMode?: boolean
 }
 const getStorageMap = () => {
   const { $t } = getIntl()
   return {
-    azure: [{
-      id: 'azureConnectionType',
-      name: $t({ defaultMessage: 'Azure connection type' }),
-      component: <Select
-        options={[
-          { value: 'azureFiles', label: $t({ defaultMessage: 'Azure Files' }) },
-          { value: 'azureBlob', label: $t({ defaultMessage: 'Azure Blob' }) }
-        ]}
-      />
-    }, {
-      id: 'azureAccountName',
-      name: $t({ defaultMessage: 'Azure account name' }),
-      component: <Input data-testid='azureAccountName' />
-    }, {
-      id: 'azureAccountKey',
-      name: $t({ defaultMessage: 'Azure account key' }),
-      component: <Input data-testid='azureAccountKey' />
-    }, {
-      id: 'azureShareName',
-      name: $t({ defaultMessage: 'Azure share name' }),
-      component: <Input data-testid='azureShareName' />
-    }, {
-      id: 'azureCustomerName',
-      name: $t({ defaultMessage: 'Azure customer name' }),
-      component: <Input data-testid='azureCustomerName' />
-    }],
-    ftp: [{
-      id: 'ftpHost',
-      name: $t({ defaultMessage: 'FTP server IP/hostname' }),
-      component: <Input />
-    }, {
-      id: 'ftpPort',
-      name: $t({ defaultMessage: 'FTP port' }),
-      component: <Input />
-    }, {
-      id: 'ftpUserName',
-      name: $t({ defaultMessage: 'FTP username' }),
-      component: <Input />
-    }, {
-      id: 'ftpPassword',
-      name: $t({ defaultMessage: 'FTP password' }),
-      component: <Input type='password' />
-    }],
-    sftp: [{
-      id: 'sftpHost',
-      name: $t({ defaultMessage: 'SFTP server IP/hostname' }),
-      component: <Input />
-    }, {
-      id: 'sftpPort',
-      name: $t({ defaultMessage: 'SFTP port' }),
-      component: <Input />
-    }, {
-      id: 'sftpUserName',
-      name: $t({ defaultMessage: 'SFTP username' }),
-      component: <Input />
-    }, {
-      id: 'sftpPassword',
-      name: $t({ defaultMessage: 'SFTP password' }),
-      component: <Input type='password' />
-    }, {
-      id: 'sftpPrivateKey',
-      name: $t({ defaultMessage: 'SFTP private key' }),
-      component: <Input />
-    }]
+    azure: [
+      {
+        id: 'azureConnectionType',
+        name: $t({ defaultMessage: 'Azure connection type' }),
+        component: (
+          <Select
+            options={[
+              {
+                value: 'azureFiles',
+                label: $t({ defaultMessage: 'Azure Files' })
+              },
+              {
+                value: 'azureBlob',
+                label: $t({ defaultMessage: 'Azure Blob' })
+              }
+            ]}
+          />
+        )
+      },
+      {
+        id: 'azureAccountName',
+        name: $t({ defaultMessage: 'Azure account name' }),
+        component: <Input data-testid='azureAccountName' />
+      },
+      {
+        id: 'azureAccountKey',
+        name: $t({ defaultMessage: 'Azure account key' }),
+        component: <Input data-testid='azureAccountKey' />
+      },
+      {
+        id: 'azureShareName',
+        name: $t({ defaultMessage: 'Azure share name' }),
+        component: <Input data-testid='azureShareName' />
+      },
+      {
+        id: 'azureCustomerName',
+        name: $t({ defaultMessage: 'Azure customer name' }),
+        component: <Input data-testid='azureCustomerName' />
+      },
+      {
+        id: 'azureStoragePath',
+        name: $t({ defaultMessage: 'Azure storage path' }),
+        component: <Input data-testid='azureStoragePath' />
+      }
+    ],
+    ftp: [
+      {
+        id: 'ftpHost',
+        name: $t({ defaultMessage: 'FTP server IP/hostname' }),
+        component: <Input />
+      },
+      {
+        id: 'ftpPort',
+        name: $t({ defaultMessage: 'FTP port' }),
+        component: <Input />
+      },
+      {
+        id: 'ftpUserName',
+        name: $t({ defaultMessage: 'FTP username' }),
+        component: <Input />
+      },
+      {
+        id: 'ftpPassword',
+        name: $t({ defaultMessage: 'FTP password' }),
+        component: <Input type='password' />
+      },
+      {
+        id: 'ftpStoragePath',
+        name: $t({ defaultMessage: 'FTP storage path' }),
+        component: <Input />
+      }
+    ],
+    sftp: [
+      {
+        id: 'sftpHost',
+        name: $t({ defaultMessage: 'SFTP server IP/hostname' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpPort',
+        name: $t({ defaultMessage: 'SFTP port' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpUserName',
+        name: $t({ defaultMessage: 'SFTP username' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpPassword',
+        name: $t({ defaultMessage: 'SFTP password' }),
+        component: <Input type='password' />
+      },
+      {
+        id: 'sftpPrivateKey',
+        name: $t({ defaultMessage: 'SFTP private key' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpStoragePath',
+        name: $t({ defaultMessage: 'SFTP storage path' }),
+        component: <Input />
+      }
+    ]
   }
 }
+
 const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -124,10 +166,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   return <>
     <PageHeader
       title={editMode
-        ? $t(
-          { defaultMessage: 'Cloud Storage: {type}' },
-          { type: selectedCloudStorage?.connectionType }
-        )
+        ? $t({ defaultMessage: 'Cloud Storage' })
         : $t({ defaultMessage: 'New Cloud Storage' })
       }
       breadcrumb={generateBreadcrumb()}
