@@ -40,7 +40,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   getUserProfile: jest.fn(),
   updateSelectedTenant: jest.fn()
 }))
-const userProfile = getUserProfile as jest.Mock
+const userProfile = jest.mocked(getUserProfile)
 
 const defaultReportsPermissions = {
   READ_DASHBOARD: false,
@@ -54,7 +54,7 @@ const defaultReportsPermissions = {
 describe('AllRoutes', () => {
   const defaultUserProfile = {
     accountId: 'aid',
-    tenants: [],
+    tenants: [{ id: 'aid', permissions: { READ_ONBOARDED_SYSTEMS: true } }],
     invitations: [],
     selectedTenant: {
       id: 'aid',

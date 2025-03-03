@@ -1,6 +1,7 @@
 import { useGetResourceGroupsQuery } from '@acx-ui/analytics/services'
 import { get }                       from '@acx-ui/config'
 import { notificationApi }           from '@acx-ui/store'
+import { hasPermission }             from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
 
 type Response <Data> = {
@@ -105,7 +106,7 @@ export const {
 })
 
 export const useResourceGroups = () => useGetResourceGroupsQuery(undefined, {
-  skip: !Boolean(get('IS_MLISA_SA')),
+  skip: !Boolean(get('IS_MLISA_SA')) || !hasPermission({ permission: 'READ_WEBHOOKS' }),
   selectFromResult: (response) => {
     return ({
       ...response,
