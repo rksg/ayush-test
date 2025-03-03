@@ -96,11 +96,12 @@ export function RbacClientProperties ({ clientStatus, clientInfo } : {
         )?.data || []
 
         if (list.length > 0) {
+          const networkId = clientInfo?.networkInformation?.id
           const name = clientInfo?.username
-          setGuestDetail(list.filter(item => (
-            item.wifiNetworkId === clientInfo?.networkInformation?.id
-            && item.name === name
-          ))[0])
+          const mac = clientInfo?.macAddress
+          let result = list.find(item => item.wifiNetworkId === networkId && item.name === name)
+            || list.find(item => item.wifiNetworkId === networkId && item.devicesMac?.includes(mac))
+          setGuestDetail(result ?? ({} as Guest))
         }
       }
 
