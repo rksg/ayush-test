@@ -25,8 +25,8 @@ describe('Layout', () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0015000000GlI7SAAV',
       tenants: [
-        { id: '0012h00000NrljgAAB', name: 'Company 1' },
-        { id: '0015000000GlI7SAAV', name: 'Company 2' }
+        { id: '0012h00000NrljgAAB', name: 'Company 1', permissions: {} },
+        { id: '0015000000GlI7SAAV', name: 'Company 2', permissions: {} }
       ],
       firstName: 'firstName',
       lastName: 'lastName',
@@ -43,7 +43,7 @@ describe('Layout', () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0012h00000NrljgAAB',
       tenants: [
-        { id: '0012h00000NrljgAAB', name: 'Company 1' }
+        { id: '0012h00000NrljgAAB', name: 'Company 1', permissions: {} }
       ],
       firstName: 'firstName',
       lastName: 'lastName',
@@ -60,7 +60,7 @@ describe('Layout', () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0012h00000NrljgAAB',
       tenants: [
-        { id: '0012h00000NrljgAAB', name: 'Company 1' }
+        { id: '0012h00000NrljgAAB', name: 'Company 1', permissions: {} }
       ],
       firstName: 'firstName',
       lastName: 'lastName',
