@@ -62,7 +62,7 @@ import {
   useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { validationMessages, CatchErrorResponse } from '@acx-ui/utils'
+import { validationMessages, CatchErrorResponse, getEnabledDialogImproved } from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '../ApEdit/index'
 
@@ -265,7 +265,9 @@ export function ApForm () {
       }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as CatchErrorResponse)
+      if(!getEnabledDialogImproved()) {
+        handleError(err as CatchErrorResponse)
+      }
     }
   }
 
@@ -361,7 +363,9 @@ export function ApForm () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
     } catch (err) {
-      handleError(err as CatchErrorResponse)
+      if(!getEnabledDialogImproved()) {
+        handleError(err as CatchErrorResponse)
+      }
     }
   }
 

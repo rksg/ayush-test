@@ -182,18 +182,16 @@ export function WISPrAuthAccServer (props : {
                         ]}
                       />}
                   />
-                  <Tooltip>
-                    <AAAPolicyModal
-                      updateInstance={(data) => {
-                        setAaaList([...aaaList, { label: data.name, value: data.id }])
-                        form.setFieldValue('authRadiusId', data.id)
-                        form.setFieldValue('authRadius', data)
-                      }}
-                      aaaCount={aaaList.length}
-                      type={'AUTHENTICATION'}
-                      disabled={context.state.isDisabled.Auth}
-                    />
-                  </Tooltip>
+                  <AAAPolicyModal
+                    updateInstance={(data) => {
+                      setAaaList([...aaaList, { label: data.name, value: data.id }])
+                      form.setFieldValue('authRadiusId', data.id)
+                      form.setFieldValue('authRadius', data)
+                    }}
+                    aaaCount={aaaList.length}
+                    type={'AUTHENTICATION'}
+                    disabled={context.state.isDisabled.Auth}
+                  />
                 </Space>
               </Form.Item>
               <Radio
