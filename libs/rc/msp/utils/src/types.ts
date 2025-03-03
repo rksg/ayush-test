@@ -728,7 +728,6 @@ export const AssignedEntitlementListPayload = {
   sortField: 'expirationDate',
   sortOrder: 'DESC',
   filters: {
-    licenseType: ['APSW'],
     usageType: 'ASSIGNED'
   }
 }

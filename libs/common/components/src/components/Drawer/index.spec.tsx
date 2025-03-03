@@ -1,9 +1,12 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
+import userEvent       from '@testing-library/user-event'
+import { Form, Input } from 'antd'
 
 import { BulbOutlined }                       from '@acx-ui/icons'
 import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+
+import { StepsFormLegacy } from '../StepsFormLegacy'
 
 import { DrawerTypes } from './styledComponents'
 
@@ -14,7 +17,7 @@ const resetFields = jest.fn()
 const content = <p>some content</p>
 
 describe('Drawer', () => {
-  afterEach(() => jest.resetAllMocks())
+  afterEach(() => jest.clearAllMocks())
 
   it('should match snapshot for basic drawer', () => {
     render(<Drawer
@@ -59,6 +62,24 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
+    />)
+    expect(screen.getAllByRole('dialog')).toMatchSnapshot()
+  })
+
+  it('should match snapshot for StepsForm style drawer', async () => {
+    render(<Drawer
+      title={'Test Drawer'}
+      icon={<BulbOutlined/>}
+      subTitle={'Test Drawer Subtitle'}
+      visible={true}
+      onClose={onClose}
+      children={<StepsFormLegacy onFinish={jest.fn()}>
+        <StepsFormLegacy.StepForm>
+          <Form.Item name='field2' label='Field 2'>
+            <Input />
+          </Form.Item>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>}
     />)
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })

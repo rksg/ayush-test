@@ -161,17 +161,16 @@ export const AAAInstance = (props: AAAInstanceProps) => {
               ]}
             />}
           />
-          <Tooltip>
-            <AAAPolicyModal updateInstance={(data) => {
-              setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-              form.setFieldValue(radiusIdName, data.id)
-              form.setFieldValue(type, data)
-            }}
-            aaaCount={aaaDropdownItems.length}
-            type={radiusType}
-            forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
-            />
-          </Tooltip></Space>
+          <AAAPolicyModal updateInstance={(data) => {
+            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+            form.setFieldValue(radiusIdName, data.id)
+            form.setFieldValue(type, data)
+          }}
+          aaaCount={aaaDropdownItems.length}
+          type={radiusType}
+          forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
+          />
+        </Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
