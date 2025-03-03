@@ -38,9 +38,11 @@ export function PropertyUnitDetails () {
   const [identitiesCount, setIdentitiesCount] = useState(0)
   const identities = useGetPersonaIdentitiesQuery({ params: { venueId, unitId },
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
+
+  const settingsId = 'property-units-identity-table'
   const identitiesList = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    pagination: { pageSize: 10 },
+    pagination: { pageSize: 10, settingsId },
     defaultPayload: { keyword: '' }
   })
   useEffect(() => {
@@ -394,6 +396,7 @@ export function PropertyUnitDetails () {
     <Loader states={[ identitiesList ]}>
       <Table
         rowKey='name'
+        settingsId={settingsId}
         columns={columns}
         enableApiFilter
         dataSource={identitiesList.data?.data}

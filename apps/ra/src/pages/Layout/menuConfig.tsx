@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { getUserProfile }        from '@acx-ui/analytics/utils'
 import { LayoutProps, ItemType } from '@acx-ui/components'
 import {
   Features,
@@ -34,14 +35,24 @@ const legacyLink = (uri: string, search: URLSearchParams) => {
 }
 
 type Item = ItemType & {
-  permission?: RaiPermission,
+  /** @default true */
+  canAccess?: boolean,
   hidden?: boolean
   children?: Item[]
 }
 
+export const canAccessOnboardedSystems = () => {
+  const { tenants } = getUserProfile()
+  return tenants.some(tenant => tenant.permissions['READ_ONBOARDED_SYSTEMS'])
+}
+
+const canAccess = (permission: RaiPermission) => hasPermission({ permission })
+
 const buildMenu = (config: Item[]): LayoutProps['menuConfig'] =>
-  config.reduce((items, { permission, hidden, ...item }) => {
-    if (!hidden && (!permission || hasPermission({ permission }))) {
+  config.reduce((items, { canAccess, hidden, ...item }) => {
+    if (typeof canAccess === 'undefined') canAccess = true
+
+    if (!hidden && canAccess) {
       if ('children' in item) {
         const children = buildMenu(item.children!)
         if (children.length > 0) {
@@ -56,6 +67,7 @@ const buildMenu = (config: Item[]): LayoutProps['menuConfig'] =>
 
 export function useMenuConfig () {
   const { $t } = useIntl()
+
   const [search] = useSearchParams()
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
@@ -65,31 +77,31 @@ export function useMenuConfig () {
   const isJwtEnabled = useIsSplitOn(Features.RUCKUS_AI_JWT_TOGGLE)
   const isDataConnectorEnabled = useIsSplitOn(Features.RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE)
   const aiAnalyticsMenu = [{
-    permission: 'READ_INCIDENTS',
+    canAccess: canAccess('READ_INCIDENTS'),
     uri: '/incidents',
     label: $t({ defaultMessage: 'Incidents' })
   }] as Item[]
   if (isIntentAIEnabled) {
     aiAnalyticsMenu.push({
-      permission: 'READ_INTENT_AI',
+      canAccess: canAccess('READ_INTENT_AI'),
       uri: '/intentAI',
       label: $t({ defaultMessage: 'IntentAI' })
     })
   } else {
     aiAnalyticsMenu
       .push({
-        permission: 'READ_AI_DRIVEN_RRM',
+        canAccess: canAccess('READ_AI_DRIVEN_RRM'),
         uri: '/recommendations/crrm',
         label: $t({ defaultMessage: 'AI-Driven RRM' })
       }, {
-        permission: 'READ_AI_OPERATIONS',
+        canAccess: canAccess('READ_AI_OPERATIONS'),
         uri: '/recommendations/aiOps',
         label: $t({ defaultMessage: 'AI Operations' })
       })
   }
   return buildMenu([{
     uri: '/dashboard',
-    permission: 'READ_DASHBOARD',
+    canAccess: canAccess('READ_DASHBOARD'),
     label: $t({ defaultMessage: 'Dashboard' }),
     inactiveIcon: SpeedIndicatorOutlined,
     activeIcon: SpeedIndicatorSolid
@@ -105,16 +117,16 @@ export function useMenuConfig () {
       type: 'group' as const,
       label: $t({ defaultMessage: 'Network Assurance' }),
       children: [{
-        permission: 'READ_HEALTH',
+        canAccess: canAccess('READ_HEALTH'),
         uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
         label: $t({ defaultMessage: 'Health' }),
         isActiveCheck: new RegExp('^/health')
       }, {
-        permission: 'READ_SERVICE_VALIDATION',
+        canAccess: canAccess('READ_SERVICE_VALIDATION'),
         uri: '/serviceValidation',
         label: $t({ defaultMessage: 'Service Validation' })
       }, {
-        permission: 'READ_CONFIG_CHANGE',
+        canAccess: canAccess('READ_CONFIG_CHANGE'),
         uri: '/configChange',
         label: $t({ defaultMessage: 'Config Change' })
       }]
@@ -124,21 +136,21 @@ export function useMenuConfig () {
     inactiveIcon: RocketOutlined,
     activeIcon: RocketSolid,
     children: [{
-      permission: 'READ_APP_INSIGHTS',
+      canAccess: canAccess('READ_APP_INSIGHTS'),
       label: $t({ defaultMessage: 'AppInsights (coming soon)' })
     }, {
-      permission: 'READ_VIDEO_CALL_QOE',
+      canAccess: canAccess('READ_VIDEO_CALL_QOE'),
       uri: '/videoCallQoe',
       label: $t({ defaultMessage: 'Video Call QoE' })
     }]
   }, {
-    permission: 'READ_ZONES',
+    canAccess: canAccess('READ_ZONES'),
     uri: '/zones',
     label: $t({ defaultMessage: 'Zones' }),
     inactiveIcon: LocationOutlined,
     activeIcon: LocationSolid
   }, {
-    permission: 'READ_WIRELESS_CLIENTS_LIST',
+    canAccess: canAccess('READ_WIRELESS_CLIENTS_LIST'),
     label: $t({ defaultMessage: 'Clients' }),
     inactiveIcon: AccountCircleOutlined,
     activeIcon: AccountCircleSolid,
@@ -154,7 +166,7 @@ export function useMenuConfig () {
       }]
     }]
   }, {
-    permission: 'READ_ACCESS_POINTS_LIST',
+    canAccess: canAccess('READ_ACCESS_POINTS_LIST'),
     label: $t({ defaultMessage: 'Wi-Fi' }),
     inactiveIcon: WiFi,
     children: [{
@@ -190,7 +202,7 @@ export function useMenuConfig () {
       }]
     }]
   }, {
-    permission: 'READ_SWITCH_LIST',
+    canAccess: canAccess('READ_SWITCH_LIST'),
     label: $t({ defaultMessage: 'Wired' }),
     inactiveIcon: SwitchOutlined,
     activeIcon: SwitchSolid,
@@ -211,7 +223,7 @@ export function useMenuConfig () {
     inactiveIcon: BulbOutlined,
     activeIcon: BulbSolid,
     children: [{
-      permission: 'READ_DATA_STUDIO',
+      canAccess: canAccess('READ_DATA_STUDIO'),
       uri: '/dataStudio',
       label: $t({ defaultMessage: 'Data Studio' })
     },
@@ -221,11 +233,11 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'Data Connector' })
     }] : []),
     {
-      permission: 'READ_REPORTS',
+      canAccess: canAccess('READ_REPORTS'),
       uri: '/reports',
       label: $t({ defaultMessage: 'Reports' })
     }, {
-      permission: 'READ_OCCUPANCY',
+      canAccess: canAccess('READ_OCCUPANCY'),
       uri: legacyLink('/analytics/occupancy', search),
       label: $t({ defaultMessage: 'Occupancy' }),
       openNewTab: true
@@ -239,34 +251,34 @@ export function useMenuConfig () {
       type: 'group' as const,
       label: $t({ defaultMessage: 'Account Management' }),
       children: [{
-        permission: 'READ_ONBOARDED_SYSTEMS',
+        canAccess: canAccessOnboardedSystems(),
         uri: '/admin/onboarded',
         label: $t({ defaultMessage: 'Onboarded Systems' })
       }, {
-        permission: 'READ_USERS',
+        canAccess: canAccess('READ_USERS'),
         uri: '/admin/users',
         label: $t({ defaultMessage: 'Users' })
       }, {
-        permission: 'READ_LABELS',
+        canAccess: canAccess('READ_LABELS'),
         uri: legacyLink('/analytics/admin/labels', search),
         label: $t({ defaultMessage: 'Labels' }),
         openNewTab: true
       }, {
-        permission: 'READ_RESOURCE_GROUPS',
+        canAccess: canAccess('READ_RESOURCE_GROUPS'),
         uri: legacyLink('/analytics/admin/resourceGroups', search),
         label: $t({ defaultMessage: 'Resource Groups' }),
         openNewTab: true
       }, {
-        permission: 'READ_SUPPORT',
+        canAccess: canAccess('READ_SUPPORT'),
         uri: '/admin/support',
         label: $t({ defaultMessage: 'Support' })
       }, {
-        permission: 'READ_LICENSES',
+        canAccess: canAccess('READ_LICENSES'),
         uri: legacyLink('/analytics/admin/license', search),
         label: $t({ defaultMessage: 'Licenses' }),
         openNewTab: true
       }, {
-        permission: 'READ_REPORT_SCHEDULES',
+        canAccess: canAccess('READ_REPORT_SCHEDULES'),
         uri: legacyLink('/analytics/admin/schedules', search),
         label: $t({ defaultMessage: 'Schedules' }),
         openNewTab: true
@@ -275,7 +287,7 @@ export function useMenuConfig () {
         label: $t({ defaultMessage: 'Developers' }),
         isActiveCheck: new RegExp('^/admin/developers')
       } : {
-        permission: 'READ_WEBHOOKS',
+        canAccess: canAccess('READ_WEBHOOKS'),
         uri: '/admin/webhooks',
         label: $t({ defaultMessage: 'Webhooks' })
       }]
