@@ -284,8 +284,8 @@ export default function RuckusAiButton () {
         <>
           { <DogAndPerson style={{
             position: 'absolute',
-            bottom: '0px',
-            left: '13px',
+            bottom: '-1px',
+            left: '18px',
             zIndex: '2'
           }} />}
           <Form form={basicFormRef}

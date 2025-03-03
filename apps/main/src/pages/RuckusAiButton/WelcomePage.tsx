@@ -1,10 +1,10 @@
 import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { DogAndPerson, WelcomeLogo } from '@acx-ui/icons'
-import { RuckusAiDog }               from '@acx-ui/icons-new'
-import { useUserProfileContext }     from '@acx-ui/user'
+import { useIsSplitOn, Features }                   from '@acx-ui/feature-toggle'
+import { DogAndPerson, OnboardingDog, WelcomeLogo } from '@acx-ui/icons'
+import { RuckusAiDog }                              from '@acx-ui/icons-new'
+import { useUserProfileContext }                    from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -95,27 +95,28 @@ function WelcomePage () {
       </span>
     }
     {
-      isCanvasEnabled ? <Card
-        style={{
-          width: '360px',
-          margin: '15px 24px 93px 95px',
-          height: '200px',
-          background: '#FFFFFFCC',
-          padding: '20px 40px'
-        }}
-      >
-        <UI.WelcomeMeta
-          title={<span
-            style={{
-              fontSize: '18px',
-              fontWeight: 700
-            }}
-          > {$t({ defaultMessage: 'Onboarding Assistant' })}</span>}
-          style={{ fontFamily: 'Montserrat' }}
-          // eslint-disable-next-line max-len
-          description={$t({ defaultMessage: 'Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
-        />
-      </Card> :
+      isCanvasEnabled ? <UI.WelcomeCards>
+        <Card>
+          <UI.WelcomeMeta
+            title={<span
+              className='card-title'
+            > <OnboardingDog />{$t({ defaultMessage: 'Onboarding Assistant' })}</span>}
+            style={{ fontFamily: 'Montserrat' }}
+            // eslint-disable-next-line max-len
+            description={$t({ defaultMessage: 'Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
+          />
+        </Card>
+        <Card>
+          <UI.WelcomeMeta
+            title={<span
+              className='card-title'
+            > <OnboardingDog />{$t({ defaultMessage: 'Onboarding Assistant' })}</span>}
+            style={{ fontFamily: 'Montserrat' }}
+            // eslint-disable-next-line max-len
+            description={$t({ defaultMessage: 'Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
+          />
+        </Card>
+      </UI.WelcomeCards> :
         <Card
           style={{
             width: '780px',
