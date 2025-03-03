@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { getUserProfile, type Tenant }                           from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { Provider }                                              from '@acx-ui/store'
+import { render, screen }                                        from '@acx-ui/test-utils'
+import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
 
 import { AccountManagement, AccountManagementTabEnum } from '.'
 
@@ -49,7 +51,30 @@ jest.mock('../Developers', () => ({
   })
 }))
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+
 describe('AccountManagement', () => {
+  const permissions = Object.keys(raiPermissionsList)
+    .filter(v => isNaN(Number(v)))
+    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
+
+  beforeEach(() => {
+    setRaiPermissions(permissions)
+    jest.mocked(getUserProfile).mockReturnValue({
+      accountId: 'accountId',
+      firstName: 'firstName',
+      lastName: 'lastName',
+      email: '',
+      userId: '',
+      isSupport: false,
+      invitations: [],
+      selectedTenant: { id: 'accountId', permissions } as Tenant,
+      tenants: [{ id: 'accountId', permissions }] as Tenant[]
+    })
+  })
   it('should render Developers if RUCKUS_AI_JWT_TOGGLE is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,

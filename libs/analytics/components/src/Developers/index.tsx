@@ -1,5 +1,6 @@
 import { Tabs }                                               from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission }                                      from '@acx-ui/user'
 
 import { useApplicationTokens } from './ApplicationTokens'
 import { useWebhooks }          from './Webhooks'
@@ -17,10 +18,15 @@ export function DevelopersTab () {
     })
   }
 
-  const { title: webhookTitle, component: webhookComponent } = useWebhooks()
-  const {
-    title: applicationTokenTitle,
-    component: applicationTokenComponent } = useApplicationTokens()
+  const tabs = [{
+    key: 'applicationTokens',
+    canAccess: true,
+    ...useApplicationTokens()
+  }, {
+    key: 'webhooks',
+    canAccess: hasPermission({ permission: 'READ_WEBHOOKS' }),
+    ...useWebhooks()
+  }].filter(tab => tab.canAccess)
 
   return <Tabs
     onChange={onTabChange}
@@ -29,11 +35,10 @@ export function DevelopersTab () {
     defaultActiveKey='applicationTokens'
     type='card'
   >
-    <Tabs.TabPane tab={applicationTokenTitle} key='applicationTokens'>
-      {applicationTokenComponent}
-    </Tabs.TabPane>
-    <Tabs.TabPane tab={webhookTitle} key='webhooks'>
-      {webhookComponent}
-    </Tabs.TabPane>
+    {tabs.map(tab => <Tabs.TabPane
+      key={tab.key}
+      tab={tab.title}
+      children={tab.component}
+    />)}
   </Tabs>
 }
