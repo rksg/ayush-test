@@ -34,6 +34,11 @@ export function SelectModelStep (props: {
 
   const data = form?.getFieldsValue(true)
 
+  const [ enableSlot2, enableSlot3 ] = [
+    Form.useWatch('enableSlot2', form),
+    Form.useWatch('enableSlot3', form)
+  ]
+
   const getFilteredModels = (
     family: string,
     modelsData: { label: string; value: string }[]
@@ -206,7 +211,7 @@ export function SelectModelStep (props: {
             <Form.Item name={selectedOptionKey} hidden={isSingleOption}>
               <Select
                 options={optionListForSlot}
-                disabled={!form.getFieldValue(enableSlotKey)}
+                disabled={index === 0 ? !enableSlot2 : !enableSlot3}
                 onChange={onModuleChange}
               />
             </Form.Item>
