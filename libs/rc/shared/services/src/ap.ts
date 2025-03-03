@@ -102,6 +102,7 @@ import {
   ApiInfo,
   batchApi,
   createHttpRequest,
+  getEnabledDialogImproved,
   ignoreErrorModal
 } from '@acx-ui/utils'
 
@@ -366,7 +367,7 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.addAp, params, {
-          ...ignoreErrorModal,
+          ...(getEnabledDialogImproved() ? {} : ignoreErrorModal),
           ...apiCustomHeader
         })
         return {
@@ -522,8 +523,8 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.updateAp, params, {
-          ...ignoreErrorModal,
-          ...apiCustomHeader
+          ...apiCustomHeader,
+          ...(getEnabledDialogImproved() ? {} : ignoreErrorModal)
         })
         return {
           ...req,
@@ -1879,7 +1880,6 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetEnhanceApFeatureSetsQuery,
-  useGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,
