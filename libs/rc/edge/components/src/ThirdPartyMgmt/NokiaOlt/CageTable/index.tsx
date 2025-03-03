@@ -139,14 +139,18 @@ export const EdgeNokiaCageTable = (props: EdgeNokiaCageTableProps) => {
           setSelectedLineCard(val)
         }}>
         {oltLineCardOptions.map((item) => {
-          return <Tabs.TabPane tab={item.label} key={item.value} />
+          return <Tabs.TabPane tab={item.label} key={item.value} >
+            <Table
+              rowKey='cage'
+              columns={columns}
+              // for resolving flashing issue while doing tab switch
+              style={{ minHeight: '300px' }}
+              dataSource={get(groupedLineCardCages, item.value)}
+            />
+          </Tabs.TabPane>
         })}
       </Tabs>
-      <Table
-        rowKey='cage'
-        columns={columns}
-        dataSource={get(groupedLineCardCages, selectedLineCard)}
-      />
+
     </Loader>
     <CageDetailsDrawer
       visible={visible}

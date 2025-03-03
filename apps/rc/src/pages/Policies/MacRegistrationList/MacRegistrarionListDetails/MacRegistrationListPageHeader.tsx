@@ -1,16 +1,17 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }    from '@acx-ui/components'
-import { useGetMacRegListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader }               from '@acx-ui/components'
+import { useGetMacRegListQuery }            from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByPolicy
+  getScopeKeyByPolicy, MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { getOpsApi }             from '@acx-ui/utils'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
@@ -43,6 +44,7 @@ function MacRegistrationListPageHeader () {
             policyId: policyId!
           })}
           scopeKey={getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)}
+          rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)]}
         >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
