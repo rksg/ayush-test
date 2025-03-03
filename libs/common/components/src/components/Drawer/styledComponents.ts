@@ -39,10 +39,39 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
   ${props => styles[props.$type]}
 `
 
-export const Drawer = styled(AntDrawer)`
+const getStepsFormStyle = (width: number | string) => {
+  const parsedWidth = typeof width === 'number'
+    ? width - 50
+    : isNaN(parseInt(width, 10))
+      ? 0
+      : parseInt(width, 10) -50
+
+  return `
+    .ant-pro-steps-form {
+      width: ${parsedWidth}px;
+    }
+    [class*="styledComponents__ActionsContainer"] {
+      display: flex;
+      justify-content: flex-end;
+      width: ${parsedWidth}px;
+      min-width: unset;
+      background-color: transparent;
+      &:before {
+        position: unset;
+      }
+      .ant-space-horizontal {
+        flex-direction: row-reverse;
+      }
+    }
+  `
+}
+
+export const Drawer = styled(AntDrawer)<{ width: number | string }>`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
+
+    ${({ width }) => getStepsFormStyle(width)}
   }
 `
 
@@ -88,7 +117,7 @@ export const History = styled.div`
     .title {
       font-size: 10px;
       font-weight: 700;
-      line-height: 16px;   
+      line-height: 16px;
       color: var(--acx-neutrals-60);
       margin-bottom: 6px;
       padding: 20px 16px 0px;
@@ -97,7 +126,7 @@ export const History = styled.div`
     .chat {
       padding: 12px 16px;
       cursor: pointer;
-      &:hover { 
+      &:hover {
         background: var(--acx-neutrals-80);
         color: var(--acx-primary-white);
       }

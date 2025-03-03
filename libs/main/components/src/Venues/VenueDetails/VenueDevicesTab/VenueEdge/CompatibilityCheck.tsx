@@ -5,12 +5,13 @@ import { useIntl } from 'react-intl'
 import { CompatibleAlertBanner, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY,
-  EntityCompatibility
+  EntityCompatibility,
+  EntityCompatibilityV1_1
 } from '@acx-ui/rc/utils'
 
 
 export const CompatibilityCheck = ({ data, venueId }:
-  { data: EntityCompatibility[], venueId?: string }
+  { data: EntityCompatibility[] | EntityCompatibilityV1_1[], venueId?: string }
 ) => {
   const { $t } = useIntl()
   const [drawerFeature, setDrawerFeature] = useState<boolean>(false)
