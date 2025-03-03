@@ -88,7 +88,9 @@ export const useUsers = () => {
   })
 
   const [visible, setVisible] = useState(false)
-  const settingsQuery = useGetTenantSettingsQuery()
+  const settingsQuery = useGetTenantSettingsQuery(undefined, {
+    skip: !hasPermission({ permission: 'READ_USERS' })
+  })
   const ssoConfig = getSSOsettings(settingsQuery.data)
   const isEditMode = typeof ssoConfig?.metadata === 'string'
 
