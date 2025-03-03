@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Select, Typography } from 'antd'
 
@@ -31,8 +30,6 @@ import { NetworkTunnelActionModalProps }                  from './NetworkTunnelA
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 import { useTunnelInfos }                                 from './utils'
 import WifiSoftGreSelectOption                            from './WifiSoftGreSelectOption'
-import { error } from 'console'
-import { values } from 'lodash'
 
 export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
@@ -48,14 +45,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   const hasChangePermission = usePermissionResult()
   const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [isValidData, setIsValidData] = useState<boolean>(true)
-
   const [form] = Form.useForm()
   const tunnelType = Form.useWatch(['tunnelType'], form)
-  const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
-  const ipsecProfileId = Form.useWatch(['ipsec', 'newProfileId'], form)
-  const isEnableIpsec = Form.useWatch(['ipsec', 'enableIpsec'], form)
 
   const networkId = network?.id
   const networkType = network?.type
@@ -83,10 +74,9 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
       if (!networkVenueId)  return
       const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
 
-      setIsSubmitting(true)
       await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
-      setIsSubmitting(false)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error)
     }
   }
@@ -97,27 +87,6 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
         tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal)
     }
   }, [visible, tunnelTypeInitVal])
-
-  useEffect(() => {
-    if (visible) {
-      switch(tunnelType) {
-        case NetworkTunnelTypeEnum.SdLan:
-          setIsValidData(isEdgeSdLanMvEnabled && !!venueSdLanInfo)
-          return
-        case NetworkTunnelTypeEnum.SoftGre:
-          setIsValidData(!!softGreProfileId && (!isEnableIpsec || !!ipsecProfileId))
-          return
-        case NetworkTunnelTypeEnum.Pin:
-          setIsValidData(false)
-          return
-        default:
-          // change into local breakout
-          setIsValidData(!isEdgePinHaEnabled)
-      }
-    }
-
-  // eslint-disable-next-line max-len
-  }, [visible, tunnelType, isSoftGreEnabled, isEdgeSdLanMvEnabled, isEdgePinHaEnabled, venueSdLanInfo, softGreProfileId, ipsecProfileId])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const noChangePermission = !hasChangePermission
@@ -221,7 +190,8 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
           save: $t({ defaultMessage: 'Add' })
         }}
         onCancel={onClose}
-        showSaveButton={!noChangePermission}
+        showSaveButton={!noChangePermission &&
+          (tunnelType !== NetworkTunnelTypeEnum.SdLan && !!!venueSdLanInfo)}
         onSave={() => {
           return handleApply()
         }}
