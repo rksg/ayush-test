@@ -97,7 +97,7 @@ export function MacACLs (props: {
         }
         clearSelection()
       },
-      visible: (selectedRows) => selectedRows.length === 1
+      disabled: (selectedRows) => selectedRows.length > 1
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
