@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Input, Radio, Space } from 'antd'
 import {
@@ -54,6 +54,8 @@ import { MLOContext }                                          from '../NetworkF
 import NetworkFormContext                                      from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                                                 from '../styledComponents'
+
+import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
 
 
 const { Option } = Select
@@ -139,6 +141,8 @@ function SettingsForm () {
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
@@ -181,6 +185,9 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
+        <Form.Item>
+          { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
+        </Form.Item>
         <Form.Item
           label='Security Protocol'
           name={['wlan', 'wlanSecurity']}
