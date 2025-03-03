@@ -130,6 +130,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
+      searchable: true,
       dataIndex: 'fullName',
       defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('fullName', defaultSort) }
@@ -137,6 +138,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
+      searchable: true,
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) }
     },
