@@ -1,20 +1,22 @@
+/* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Typography } from 'antd'
-import { sumBy }      from 'lodash'
-import moment         from 'moment'
-import { useIntl }    from 'react-intl'
+import { Space, Typography } from 'antd'
+import { sumBy }             from 'lodash'
+import moment                from 'moment'
+import { useIntl }           from 'react-intl'
 
 import { Table, TableProps }                                                                                                                                                                                                                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                                                                                                                                                                   from '@acx-ui/feature-toggle'
 import { useGetAvailableEdgeFirmwareVersionsQuery, useGetLatestEdgeFirmwareQuery, useGetVenueEdgeFirmwareListQuery, useStartEdgeFirmwareVenueUpdateNowMutation, useUpdateEdgeFirmwareNowMutation, useUpdateEdgeFirmwareVenueScheduleMutation, useUpdateEdgeVenueSchedulesMutation } from '@acx-ui/rc/services'
-import { EdgeFirmwareVersion, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility, IncompatibilityFeatures, getCompatibilityFeatureDisplayName }                                                                                                                      from '@acx-ui/rc/utils'
+import { EdgeFirmwareVersion, EdgeIncompatibleFeature, EdgeIncompatibleFeatureV1_1, EdgeUpdateScheduleRequest, EdgeVenueFirmware, EntityCompatibility, EntityCompatibilityV1_1, IncompatibilityFeatureGroups, IncompatibilityFeatures, getCompatibilityFeatureDisplayName }         from '@acx-ui/rc/utils'
 import { EdgeScopes }                                                                                                                                                                                                                                                               from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                                                                                                                                                                                                            from '@acx-ui/user'
 import { compareVersions }                                                                                                                                                                                                                                                          from '@acx-ui/utils'
 
 import { EdgeChangeScheduleDialog } from '../../../EdgeFirmware/ChangeScheduleDialog'
 import { EdgeUpdateNowDialog }      from '../../../EdgeFirmware/UpdateNowDialog'
+import { useIsEdgeFeatureReady }    from '../../../useEdgeActions'
 
 interface EdgeCompatibilityDetailTableData {
   featureName: string,
@@ -23,40 +25,66 @@ interface EdgeCompatibilityDetailTableData {
 }
 
 interface EdgeCompatibilityDetailTableProps {
-  data: EntityCompatibility['incompatibleFeatures'],
+  data: EntityCompatibility['incompatibleFeatures'] | EntityCompatibilityV1_1['incompatibleFeatures'],
   requirementOnly?: boolean,
   venueId?: string,  // is required when `requirementOnly === false`
 }
 
-const useColumns = () => {
+const useColumns = (isGroupedData: boolean) => {
   const { $t } = useIntl()
 
-  const defaultColumns: TableProps<EdgeCompatibilityDetailTableData>['columns'] = [{
-    title: $t({ defaultMessage: 'Incompatible Feature' }),
-    key: 'featureName',
-    dataIndex: 'featureName',
-    defaultSortOrder: 'ascend',
-    // eslint-disable-next-line max-len
-    render: (_, row) => getCompatibilityFeatureDisplayName(row.featureName as IncompatibilityFeatures)
-  }, {
-    title: $t({ defaultMessage: 'Incompatible RUCKUS Edges' }),
-    key: 'incompatible',
-    dataIndex: 'incompatible',
-    align: 'center'
-  }, {
-    title: $t({ defaultMessage: 'Min. Required Version' }),
-    key: 'requiredFw',
-    dataIndex: 'requiredFw'
-  }]
+  const defaultColumns: TableProps<EdgeCompatibilityDetailTableData | EdgeIncompatibleFeatureV1_1>['columns'] =
+    [{
+      title: $t({ defaultMessage: 'Incompatible Feature' }),
+      key: 'featureName',
+      dataIndex: 'featureName',
+      defaultSortOrder: 'ascend',
+      render: function (_, row) {
+        const { featureName } = isGroupedData ? row as EdgeIncompatibleFeatureV1_1 : row as EdgeCompatibilityDetailTableData
+        const featureDisplayName = getCompatibilityFeatureDisplayName(featureName as IncompatibilityFeatures & IncompatibilityFeatureGroups)
+        return featureDisplayName
+      }
+    }, {
+      title: $t({ defaultMessage: 'Incompatible RUCKUS Edges' }),
+      key: isGroupedData ? 'incompatibleDevices' : 'incompatible',
+      dataIndex: isGroupedData ? 'incompatibleDevices' : 'incompatible',
+      align: 'center',
+      render: function (_, row) {
+        if (isGroupedData) {
+          const { incompatibleDevices } = row as EdgeIncompatibleFeatureV1_1
+          const totalCount = sumBy(incompatibleDevices, (d) => d.count)
+          return incompatibleDevices ? totalCount : ''
+        } else {
+          const { incompatible } = row as EdgeCompatibilityDetailTableData
+          return incompatible
+        }
+      }
+    }, {
+      title: $t({ defaultMessage: 'Min. Required Versions' }),
+      key: isGroupedData ? 'requirements' : 'requiredFw',
+      dataIndex: isGroupedData ? 'requirements' : 'requiredFw',
+      render: function (_, row) {
+        if (isGroupedData) {
+          const { requirements } = row as EdgeIncompatibleFeatureV1_1
+          return <Space>{requirements?.map((r) => r.firmware).join(', ')}</Space>
+        } else {
+          const { requiredFw } = row as EdgeCompatibilityDetailTableData
+          return requiredFw
+        }
+      }
+    }]
 
   return defaultColumns
 }
+
 export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTableProps) => {
   const { $t } = useIntl()
 
-  // eslint-disable-next-line max-len
   const isBatchOperationEnable = useIsSplitOn(Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
   const { data, requirementOnly = false, venueId } = props
+
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
+  const isGroupedData = isEdgeCompatibilityEnhancementEnabled && (data[0].hasOwnProperty('featureType'))
 
   const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
   const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
@@ -86,7 +114,7 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     }
   })
 
-  const columns = useColumns()
+  const columns = useColumns(isGroupedData)
 
   const handleUpdateNowSubmit = async (data: string) => {
     const payload = { version: data }
@@ -142,7 +170,7 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     }
   }
 
-  const rowActions: TableProps<EdgeCompatibilityDetailTableData>['rowActions'] = [{
+  const rowActions: TableProps<EdgeCompatibilityDetailTableData | EdgeIncompatibleFeatureV1_1>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Version Now' }),
     scopeKey: [EdgeScopes.UPDATE],
     visible: (selectedRows) => {
@@ -153,8 +181,10 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
             && compareVersions(venueFirmware?.versions?.[0].id, latestReleaseVersion?.id) <= 0)
           || !venueFirmware?.versions?.[0].id))
     },
-    onClick: (selectedRows: EdgeCompatibilityDetailTableData[]) => {
-      setUpdateNowFwVer(selectedRows[0].requiredFw)
+    onClick: (selectedRows: EdgeCompatibilityDetailTableData[] | EdgeIncompatibleFeatureV1_1[]) => {
+      setUpdateNowFwVer(isGroupedData
+        ? (selectedRows[0] as EdgeIncompatibleFeatureV1_1).requirements?.[0].firmware
+        : (selectedRows[0] as EdgeCompatibilityDetailTableData).requiredFw)
     }
   }, {
     label: $t({ defaultMessage: 'Schedule Version Update' }),
@@ -164,29 +194,32 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
 
       return !!venueFirmware?.nextSchedule
     },
-    onClick: (selectedRows: EdgeCompatibilityDetailTableData[]) => {
-      setScheduleUpdateFwVer(selectedRows[0].requiredFw)
+    onClick: (selectedRows: EdgeCompatibilityDetailTableData[] | EdgeIncompatibleFeatureV1_1[]) => {
+      setScheduleUpdateFwVer(isGroupedData
+        ? (selectedRows[0] as EdgeIncompatibleFeatureV1_1).requirements?.[0].firmware
+        : (selectedRows[0] as EdgeCompatibilityDetailTableData).requiredFw)
     }
   }]
 
-  const transformed = data.map(feature => ({
-    ...feature.featureRequirement,
-    incompatible: sumBy(feature.incompatibleDevices, (d) => d.count)
-  })) as EdgeCompatibilityDetailTableData[]
+  const tableData = isGroupedData
+    ? data as EdgeIncompatibleFeatureV1_1[] : data.map(feature => ({
+      ...(feature as EdgeIncompatibleFeature).featureRequirement,
+      incompatible: sumBy(feature.incompatibleDevices, (d) => d.count)
+    })) as EdgeCompatibilityDetailTableData[]
 
   const showCheckbox = hasPermission({ scopes: [EdgeScopes.UPDATE] }) && !requirementOnly
 
   return <>
     <Typography.Text>
       {
-        // eslint-disable-next-line max-len
         $t({ defaultMessage: '* Please note that all RUCKUS Edges in this <venueSingular></venueSingular> would be upgraded together.' })
       }
     </Typography.Text>
     <Table
       rowKey='featureName'
-      columns={columns.filter(i => requirementOnly ? i.dataIndex !== 'incompatible' : true)}
-      dataSource={transformed}
+      // eslint-disable-next-line max-len
+      columns={columns.filter(i => requirementOnly ? ( isGroupedData ? i.dataIndex !== 'incompatibleDevices' : i.dataIndex !== 'incompatible') : true)}
+      dataSource={tableData}
       rowActions={filterByAccess(rowActions)}
       rowSelection={showCheckbox && {
         type: 'checkbox',
@@ -209,7 +242,6 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
   </>
 }
 
-// eslint-disable-next-line max-len
 const getFilteredScheduleVersions = (availableVersions?: EdgeFirmwareVersion[], venueFirmware?: EdgeVenueFirmware) => {
   if (!availableVersions || !venueFirmware) return availableVersions
 

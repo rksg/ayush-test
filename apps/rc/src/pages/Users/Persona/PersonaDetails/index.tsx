@@ -201,11 +201,14 @@ function PersonaDetails () {
               />
               : noDataDisplay
           }
-          <Button
-            ghost
-            icon={<EditOutlined size='sm' />}
-            onClick={() => setEditPassphraseDrawerVisible(true)}
-          />
+          {
+            hasAllowedOperations([getOpsApi(PersonaUrls.updatePersona)]) &&
+              <Button
+                ghost
+                icon={<EditOutlined size='sm' />}
+                onClick={() => setEditPassphraseDrawerVisible(true)}
+              />
+          }
         </>
     },
     { label: $t({ defaultMessage: 'MAC Registration List' }),

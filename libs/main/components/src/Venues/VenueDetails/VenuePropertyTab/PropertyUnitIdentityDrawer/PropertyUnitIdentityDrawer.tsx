@@ -8,7 +8,9 @@ import {
   useAddUnitLinkedIdentityMutation
 } from '@acx-ui/rc/services'
 import {
+  FILTER,
   Persona,
+  SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 
@@ -66,7 +68,8 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       key: 'name',
       title: $t({ defaultMessage: 'Identity Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      disable: true
     },{
       key: 'email',
       title: $t({ defaultMessage: 'Email' }),
@@ -82,8 +85,17 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
     },{
       key: 'deviceCount',
       title: $t({ defaultMessage: 'Devices' }),
-      dataIndex: 'deviceCount'
+      dataIndex: 'deviceCount',
+      align: 'center'
     }]
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...personaListTableQuery.payload,
+      keyword: customSearch?.searchString ?? ''
+    }
+    personaListTableQuery.setPayload(payload)
+  }
 
   return (
     <Drawer
@@ -105,6 +117,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
             dataSource={personaListTableQuery.data?.data}
             pagination={personaListTableQuery.pagination}
             onChange={personaListTableQuery.handleTableChange}
+            onFilterChange={handleFilterChange}
             rowSelection={{
               type: 'checkbox',
               onChange: (_, selRows) => setSelectedRows(selRows)

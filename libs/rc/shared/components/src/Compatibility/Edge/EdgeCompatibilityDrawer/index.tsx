@@ -1,8 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import {
+  CompatibilityDeviceEnum,
+  CompatibilityType,
   EntityCompatibility,
-  IncompatibilityFeatures, CompatibilityType, CompatibilityDeviceEnum
+  EntityCompatibilityV1_1,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
 import {
@@ -28,7 +31,7 @@ export type EdgeCompatibilityDrawerProps = {
   featureName?: IncompatibilityFeatures,
   edgeId?: string,
   serviceId?: string,
-  data?: EntityCompatibility[],
+  data?: EntityCompatibility[] | EntityCompatibilityV1_1[],
   width?: number
 }
 

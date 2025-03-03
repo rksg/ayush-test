@@ -5,11 +5,11 @@ import _, { find } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
+  ColumnState,
+  ColumnType,
   Loader,
   Table,
-  TableProps,
-  ColumnState,
-  ColumnType
+  TableProps
 } from '@acx-ui/components'
 import { EdgePermissions } from '@acx-ui/edge/components'
 import {
@@ -27,6 +27,8 @@ import {
   EdgeStatus,
   EdgeStatusEnum,
   EdgeUrlsInfo,
+  FILTER,
+  SEARCH,
   TABLE_QUERY,
   TableQuery,
   allowRebootShutdownForStatus,
@@ -101,6 +103,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  // eslint-disable-next-line max-len
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   // eslint-disable-next-line max-len
@@ -111,7 +115,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
     defaultPayload: incompatibleCheck
       ? {
         ...defaultEdgeTablePayload,
-        fields: (defaultEdgeTablePayload.fields as string[]).concat(['incompatible'])
+        fields: (defaultEdgeTablePayload.fields as string[]).concat(
+          isEdgeCompatibilityEnhancementEnabled ? ['incompatibleV1_1'] : ['incompatible'])
       }
       : defaultEdgeTablePayload,
     sorter: {
@@ -147,6 +152,17 @@ export const EdgesTable = (props: EdgesTableProps) => {
         setShowFeatureCompatibilitiy(state['incompatible'])
       }
     }
+  }
+
+  const handleFilterChange = (
+    filters: FILTER,
+    customSearch: SEARCH
+  ) => {
+    const customFilters = { ...filters }
+    if (filters?.firmwareVersion) {
+      customFilters.firmwareVersion = filters.firmwareVersion.slice(1)
+    }
+    tableQuery.handleFilterChange?.(customFilters, customSearch)
   }
 
   const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => [
@@ -352,7 +368,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         columnState={isEdgeCompatibilityEnabled?{ onChange: handleColumnStateChange } : {}}
         enableApiFilter
         iconButton={(exportDevice && false) ? {
