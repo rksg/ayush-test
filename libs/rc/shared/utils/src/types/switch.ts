@@ -1093,8 +1093,9 @@ export interface PortDisableRecoverySettingForm {
 }
 
 export interface MacAclRule {
-	id: string,
-	action: 'permit' | 'deny',
+	id?: string,
+  key?: string,
+	action: string,
 	sourceAddress?: string,
 	sourceMask?: string,
 	destinationAddress?: string,
@@ -1104,6 +1105,6 @@ export interface MacAclRule {
 export interface MacAcl {
 	id: string,
 	name: string,
-	aclRules: MacAclRule[]
+	switchMacAclRules: MacAclRule[]
 	switchId?: string
 }

@@ -1962,7 +1962,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
     }),
     addSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1972,7 +1973,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
     }),
     updateSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1982,7 +1984,19 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
+    }),
+    deleteSwitchMacAcl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchMacAcl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
     })
   })
 })
@@ -2274,5 +2288,6 @@ export const {
   useUpdatePortDisableRecoverySettingMutation,
   useGetSwitchMacAclsQuery,
   useAddSwitchMacAclMutation,
-  useUpdateSwitchMacAclMutation
+  useUpdateSwitchMacAclMutation,
+  useDeleteSwitchMacAclMutation
 } = switchApi

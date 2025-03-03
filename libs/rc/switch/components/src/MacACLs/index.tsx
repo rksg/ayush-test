@@ -7,12 +7,11 @@ import {
   Table,
   TableProps,
   Loader,
-  Drawer
+  showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useGetSwitchMacAclsQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useGetSwitchMacAclsQuery, useDeleteSwitchMacAclMutation } from '@acx-ui/rc/services'
 import {
-  Acl,
   MacAcl,
   SwitchRbacUrlsInfo,
   SwitchViewModel,
@@ -22,7 +21,7 @@ import { SwitchScopes }   from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getOpsApi }      from '@acx-ui/utils'
 
-import { AclDetail }    from './macACLDetail'
+import { MacACLDetail } from './macACLDetail'
 import { MacACLDrawer } from './macACLDrawer'
 
 export function MacACLs (props: {
@@ -31,11 +30,13 @@ export function MacACLs (props: {
   const { $t } = useIntl()
   const { switchDetail } = props
   const [currentRow, setCurrentRow] = useState({} as MacAcl)
-  const [drawerVisible, setDrawerVisible] = useState(false)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [macACLData, setMacACLData] = useState({} as unknown as MacAcl)
   const [editMode, setEditMode] = useState(false)
   const [macAClsDrawerVisible, setMacAClsDrawerVisible] = useState(false)
+  const [macAClsDetailVisible, setMacAClsDetailVisible] = useState(false)
+
+  const [deleteSwitchMacAcl] = useDeleteSwitchMacAclMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchMacAclsQuery,
@@ -48,10 +49,6 @@ export function MacACLs (props: {
     }
   })
 
-  const onClose = () => {
-    setDrawerVisible(false)
-  }
-
   const columns: TableProps<MacAcl>['columns'] = [
     {
       key: 'name',
@@ -60,13 +57,15 @@ export function MacACLs (props: {
       defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
+      width: 500,
       render: (_, row) =>
         <Button
           type='link'
           size='small'
-          onClick={() => {
+          onClick={(e: React.MouseEvent) => {
+            e.stopPropagation()
             setCurrentRow(row)
-            setDrawerVisible(true)
+            setMacAClsDetailVisible(true)
           }}
         >
           {row.name}
@@ -74,17 +73,57 @@ export function MacACLs (props: {
     }
   ]
 
-
   const tableActions = [{
     label: $t({ defaultMessage: 'Add MAC ACL' }),
     scopeKey: [SwitchScopes.CREATE],
     rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitchVlans)],
     onClick: () => {
       setEditMode(false)
-      setMacACLData({} as Acl)
+      setMacACLData({} as MacAcl)
       setMacAClsDrawerVisible(true)
     }
   }]
+
+  const rowActions: TableProps<MacAcl>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
+      onClick: (selectedRows, clearSelection) => {
+        if (selectedRows.length === 1) {
+          setEditMode(true)
+          setMacACLData(selectedRows[0])
+          setMacAClsDrawerVisible(true)
+        }
+        clearSelection()
+      },
+      visible: (selectedRows) => selectedRows.length === 1
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Delete {macAclTitle}?' },
+            { macAclTitle: selectedRows.length === 1 ?
+              selectedRows[0].name : $t({ defaultMessage: '{totalCount} Mac ACLs' },
+                { totalCount: selectedRows.length }) }),
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'Are you sure you want to delete {count, plural, one {} other {these}}?' }, { count: selectedRows.length }),
+          okText: $t({ defaultMessage: 'Delete' }),
+          cancelText: $t({ defaultMessage: 'Cancel' }),
+          onOk: () => {
+            deleteSwitchMacAcl({
+              params: { venueId: switchDetail?.venueId, switchId: switchDetail?.id },
+              payload: selectedRows.map(selectedRows => { return selectedRows.id }) })
+              .then(clearSelection)
+          }
+        })
+      }
+    }
+  ]
 
   return (
     <Loader
@@ -99,24 +138,25 @@ export function MacACLs (props: {
         pagination={tableQuery.pagination}
         dataSource={tableQuery.data?.data}
         actions={filterByAccess(tableActions)}
+        rowActions={rowActions}
+        rowSelection={{
+          type: 'checkbox'
+        }}
       />
 
-      <Drawer
-        title={$t({ defaultMessage: 'View ACL' })}
-        visible={drawerVisible}
-        onClose={onClose}
-        children={
-          <AclDetail
-            row={currentRow}
-          />
-        }
+      {macAClsDetailVisible && <MacACLDetail
+        visible={macAClsDetailVisible}
+        setVisible={setMacAClsDetailVisible}
+        macACLData={currentRow}
       />
+      }
 
       {macAClsDrawerVisible && <MacACLDrawer
         visible={macAClsDrawerVisible}
         setVisible={setMacAClsDrawerVisible}
-        isEditMode={editMode}
+        editMode={editMode}
         macACLData={macACLData}
+        venueId={switchDetail?.venueId || ''}
       />}
 
     </Loader>

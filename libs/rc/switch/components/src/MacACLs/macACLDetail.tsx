@@ -1,102 +1,111 @@
-import { Form } from 'antd'
-// import _           from 'lodash'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState, useMemo } from 'react'
+
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-// import { TableProps }  from '@acx-ui/components'
-// import { Table }       from '@acx-ui/components'
 import {
-  // AclRule,
-  // AclTypeEnum,
-  // defaultSort,
-  MacAcl
-  // sortProp,
-  // transformIPv6,
-  // transformTitleCase
-} from '@acx-ui/rc/utils'
+  Drawer,
+  Table
+} from '@acx-ui/components'
+import { MacAcl, MacAclRule } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
-export const AclDetail = (props: { row : MacAcl }) => {
-  const { $t } = useIntl()
-  const { row } = props
-  // eslint-disable-next-line max-len
-  const subtitle = $t({ defaultMessage: 'ACL settings as defined in the switch configuration profile or via CLI directly to the switch' })
-
-  // const standardColumns: TableProps<AclRule>['columns'] = [
-  //   {
-  //     key: 'sequence',
-  //     title: $t({ defaultMessage: 'Sequence#' }),
-  //     dataIndex: 'sequence',
-  //     sorter: { compare: sortProp('sequence', defaultSort) },
-  //     defaultSortOrder: 'ascend'
-  //   },
-
-  //   {
-  //     key: 'action',
-  //     title: $t({ defaultMessage: 'Action' }),
-  //     dataIndex: 'action'
-  //   },
-  //   {
-  //     key: 'source',
-  //     title: $t({ defaultMessage: 'Source' }),
-  //     dataIndex: 'source'
-  //   }]
-
-  // const extendedColumns: TableProps<AclRule>['columns'] = [
-  //   {
-  //     key: 'sequence',
-  //     title: $t({ defaultMessage: 'Sequence#' }),
-  //     sorter: { compare: sortProp('sequence', defaultSort) },
-  //     dataIndex: 'sequence',
-  //     defaultSortOrder: 'ascend'
-  //   },
-  //   {
-  //     key: 'action',
-  //     title: $t({ defaultMessage: 'Action' }),
-  //     dataIndex: 'action',
-  //     render: (_, { action }) => transformTitleCase(action as string)
-  //   },
-  //   {
-  //     key: 'protocol',
-  //     title: $t({ defaultMessage: 'Protocol' }),
-  //     dataIndex: 'protocol',
-  //     render: (__, { protocol }) => {
-  //       return _.isString(protocol)
-  //         ? (protocol === 'ipv6' ? transformIPv6(protocol) : _.toUpper(protocol))
-  //         : protocol
-  //     }
-  //   },
-  //   {
-  //     key: 'source',
-  //     title: $t({ defaultMessage: 'Source Network' }),
-  //     dataIndex: 'source'
-  //   },
-  //   {
-  //     key: 'destination',
-  //     title: $t({ defaultMessage: 'Dest. Network' }),
-  //     dataIndex: 'destination'
-  //   },
-  //   {
-  //     key: 'sourcePort',
-  //     title: $t({ defaultMessage: 'Source Port' }),
-  //     dataIndex: 'sourcePort'
-  //   },
-  //   {
-  //     key: 'destinationPort',
-  //     title: $t({ defaultMessage: 'Dest. Port' }),
-  //     dataIndex: 'destinationPort'
-  //   }]
-  return (
-
-    <Form
-      labelCol={{ span: 10 }}
-      labelAlign='left'
-    >
-      <UI.SubTitle>{subtitle}</UI.SubTitle>
-      <Form.Item
-        label={$t({ defaultMessage: 'ACL Name:' })}
-        children={row.name}
-      />
-    </Form>
-  )
+interface MacACLDrawerProps {
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  macACLData: MacAcl
 }
 
+export const MacACLDetail: React.FC<MacACLDrawerProps> = ({
+  visible,
+  setVisible,
+  macACLData
+}) => {
+  const { $t } = useIntl()
+  const [form] = Form.useForm()
+  const [dataSource, setDataSource] = useState<MacAclRule[]>()
+
+  const columns = useMemo(() => [
+    {
+      title: $t({ defaultMessage: 'Action' }),
+      dataIndex: 'action',
+      width: '15%'
+    },
+    {
+      title: $t({ defaultMessage: 'Source MAC Address' }),
+      dataIndex: 'sourceAddress',
+      width: '25%'
+    },
+    {
+      title: $t({ defaultMessage: 'Mask' }),
+      dataIndex: 'sourceMask',
+      width: '15%'
+    },
+    {
+      title: $t({ defaultMessage: 'Dest. MAC Address' }),
+      dataIndex: 'destinationAddress',
+      width: '25%'
+    },
+    {
+      title: $t({ defaultMessage: 'Dest. Mask' }),
+      dataIndex: 'destinationMask',
+      width: '15%'
+    }
+  ], [])
+
+  useEffect(() => {
+    if (macACLData) {
+      form.setFieldValue('name', macACLData.name)
+
+      if (macACLData.switchMacAclRules && macACLData.switchMacAclRules.length > 0) {
+        const formattedRules = macACLData.switchMacAclRules.map((rule, index) => ({
+          key: `${index}`,
+          action: rule.action || 'permit',
+          sourceAddress: rule.sourceAddress || '',
+          sourceMask: rule.sourceMask || '',
+          destinationAddress: rule.destinationAddress || '',
+          destinationMask: rule.destinationMask || ''
+        }))
+        setDataSource(formattedRules)
+      }
+    }
+  }, [macACLData, form])
+
+  const onClose = () => {
+    form.resetFields()
+    setVisible(false)
+  }
+
+  return (
+    <Drawer
+      title={$t({ defaultMessage: 'View MAC ACL' })}
+      visible={visible}
+      onClose={onClose}
+      width={1000}
+    >
+      <Form
+        layout='vertical'
+        form={form}
+      >
+        <Form.Item
+          name='name'
+          label={$t({ defaultMessage: 'MAC ACL Name' })}
+        >
+          <div>
+            {macACLData?.name || ''}
+          </div>
+        </Form.Item>
+        <Form.Item
+          name='switchMacAclRules'
+          label={$t({ defaultMessage: 'Rules' })}
+        >
+          <Table
+            dataSource={dataSource}
+            columns={columns as any}
+            rowKey='key'
+          />
+        </Form.Item>
+      </Form>
+    </Drawer>
+  )
+}

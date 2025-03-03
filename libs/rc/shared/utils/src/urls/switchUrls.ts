@@ -800,17 +800,22 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchMacAcls: {
     method: 'post',
-    url: '/venues/:venueId/switches/:switchId/switchMacAcls/query',
+    url: '/venues/:venueId/switches/:switchId/macAcls/query',
     newApi: true
   },
   addSwitchMacAcl: {
     method: 'post',
-    url: '/venues/:venueId/switches/:switchId/switchMacAcls',
+    url: '/venues/:venueId/switches/:switchId/macAcls',
     newApi: true
   },
   updateSwitchMacAcl: {
     method: 'put',
-    url: '/venues/:venueId/switches/:switchId/switchMacAcls/:macAclId',
+    url: '/venues/:venueId/switches/:switchId/macAcls/:macAclId',
+    newApi: true
+  },
+  deleteSwitchMacAcl: {
+    method: 'delete',
+    url: '/venues/:venueId/switches/:switchId/macAcls',
     newApi: true
   }
 }

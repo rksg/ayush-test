@@ -21,7 +21,8 @@ import {
   isRouter,
   SWITCH_TYPE,
   StackMember,
-  isFirmwareVersionAbove10020b
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -157,6 +158,7 @@ export function SwitchOverviewTab () {
         </Tabs.TabPane>
       }
       {switchDetail && switchMacAclEnabled &&
+      isFirmwareVersionAbove10010g2Or10020b(switchDetail.firmware) &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'MAC ACLs' })} key='macacls'>
           <MacACLs switchDetail={switchDetail} />
         </Tabs.TabPane>
