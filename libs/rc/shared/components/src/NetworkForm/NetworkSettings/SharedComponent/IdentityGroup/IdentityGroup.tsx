@@ -35,10 +35,7 @@ export function IdentityGroup () {
     if (identity) {
       setSelectedIdentity(identity)
       form.setFieldsValue({
-        identityId: identity.id,
-        identityName: identity.name,
-        username: identity.name,
-        email: identity.email
+        identityId: identity.id
       })
     }
   }
