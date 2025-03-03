@@ -330,15 +330,15 @@ export function PortsStep (props:{
   ) => {
     const checkboxChecked = e.target.checked
     const untaggedCheckboxChanged = field === 'untaggedVlan'
-    const getOriginalVlans = (vlanType: 'untaggedVlan' | 'taggedVlans', currentPort?: string) =>
+    const getPreviousVlans = (vlanType: 'untaggedVlan' | 'taggedVlans', currentPort?: string) =>
       selectedItems?.flatMap((port) => {
-        const originalVlans = previousModulePortList[port]?.[vlanType] ?? []
-        return port === currentPort ? [] : originalVlans
+        const previousVlans = previousModulePortList[port]?.[vlanType] ?? []
+        return port === currentPort ? [] : previousVlans
       })
 
     const updatePortSettings = selectedItems.map((port) => {
-      const originalUntagged = previousModulePortList[port]?.untaggedVlan ?? []
-      const originalTagged = previousModulePortList[port]?.taggedVlans ?? []
+      const previousUntagged = previousModulePortList[port]?.untaggedVlan ?? []
+      const previousTagged = previousModulePortList[port]?.taggedVlans ?? []
       const currentUntagged = editedModulePortList[port]?.untaggedVlan ?? []
       const currentTagged = editedModulePortList[port]?.taggedVlans ?? []
 
@@ -346,22 +346,23 @@ export function PortsStep (props:{
       let updatedTaggedVlan = currentTagged
 
       if (checkboxChecked) {
+        const hasMultipleValue = previousHasMultipleValue.includes(field)
         if (untaggedCheckboxChanged) {
-          updatedUntaggedVlan = []
+          updatedUntaggedVlan = !hasMultipleValue ? currentUntagged : []
         } else if (!untaggedCheckboxChanged) {
-          updatedTaggedVlan = []
+          updatedTaggedVlan = !hasMultipleValue ? currentTagged : []
         }
       } else {
-        // eslint-disable-next-line max-len
-        const shouldRemoveVlans = getOriginalVlans(field, previousHasMultipleValue.includes(field) ? '' : port)
+        const hasMultipleValue = previousHasMultipleValue.includes(field)
+        const shouldRemoveVlans = getPreviousVlans(field, hasMultipleValue ? '' : port)
         if (untaggedCheckboxChanged) {
-          updatedUntaggedVlan = originalUntagged
+          updatedUntaggedVlan = previousUntagged
           // eslint-disable-next-line max-len
-          updatedTaggedVlan = taggedVlansCheckbox ? _.difference(currentTagged, shouldRemoveVlans) : originalTagged
+          updatedTaggedVlan = taggedVlansCheckbox ? _.difference(currentTagged, shouldRemoveVlans) : previousTagged
         } else if (!untaggedCheckboxChanged) {
           // eslint-disable-next-line max-len
-          updatedUntaggedVlan = untaggedVlanCheckbox ? _.difference(currentUntagged, shouldRemoveVlans) : originalUntagged
-          updatedTaggedVlan = originalTagged
+          updatedUntaggedVlan = untaggedVlanCheckbox ? _.difference(currentUntagged, shouldRemoveVlans) : previousUntagged
+          updatedTaggedVlan = previousTagged
         }
       }
 
@@ -377,9 +378,9 @@ export function PortsStep (props:{
       // should remove invlaid vlans from current vlans
       const untaggedVlanArray
         = untaggedVlan ? (isArray(untaggedVlan) ? untaggedVlan : [untaggedVlan]) : []
-      const originalVlans = getOriginalVlans(field)
+      const previousVlans = getPreviousVlans(field)
       const diffVlans = _.difference(
-        untaggedCheckboxChanged ? taggedVlans : untaggedVlanArray, originalVlans
+        untaggedCheckboxChanged ? taggedVlans : untaggedVlanArray, previousVlans
       )
 
       form.setFieldValue(
@@ -389,16 +390,16 @@ export function PortsStep (props:{
 
       form.setFieldValue(
         field,
-        previousHasMultipleValue.includes(field) ? [] : _.uniq(originalVlans)
+        previousHasMultipleValue.includes(field) ? [] : _.uniq(previousVlans)
       )
 
     } else {
-      const originalVlans = getOriginalVlans(field)
+      const previousVlans = getPreviousVlans(field)
       form.setFieldValue(
         field,
         previousHasMultipleValue.includes(field)
           ? ( untaggedCheckboxChanged ? null : [] )
-          : _.uniq(originalVlans)
+          : _.uniq(previousVlans)
       )
     }
 
