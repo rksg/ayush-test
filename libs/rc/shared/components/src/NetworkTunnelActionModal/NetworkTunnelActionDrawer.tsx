@@ -31,6 +31,8 @@ import { NetworkTunnelActionModalProps }                  from './NetworkTunnelA
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 import { useTunnelInfos }                                 from './utils'
 import WifiSoftGreSelectOption                            from './WifiSoftGreSelectOption'
+import { error } from 'console'
+import { values } from 'lodash'
 
 export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
@@ -75,17 +77,21 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
   } = useTunnelInfos({ network, cachedActs, cachedSoftGre })
 
   const handleApply = async () => {
-    if (!networkVenueId)  return
-    const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
+    try {
+      await form.validateFields()
 
-    console.log('formValues', formValues)
-    setIsSubmitting(true)
-    await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
-    setIsSubmitting(false)
+      if (!networkVenueId)  return
+      const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
+
+      setIsSubmitting(true)
+      await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
+      setIsSubmitting(false)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
-    console.log('visible', visible, 'tunnelTypeInitVal', tunnelTypeInitVal)
     if (visible) {
       form.setFieldValue('tunnelType',
         tunnelTypeInitVal === NetworkTunnelTypeEnum.None ? '' : tunnelTypeInitVal)
@@ -215,7 +221,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
           save: $t({ defaultMessage: 'Add' })
         }}
         onCancel={onClose}
-        showSaveButton={!noChangePermission && !isSubmitting && isValidData}
+        showSaveButton={!noChangePermission}
         onSave={() => {
           return handleApply()
         }}
@@ -238,6 +244,7 @@ export const usePermissionResult = () => {
   const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const hasSdLanPermission = () => {
     return isAllowOpsEnabled ?
@@ -256,6 +263,8 @@ export const usePermissionResult = () => {
   const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasSdLanPermission() : true
   // eslint-disable-next-line max-len
   const hasSoftGrePermission = isSoftGreEnabled ? hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT }) : true
+  // eslint-disable-next-line max-len
+  const hasIpSecPermission = isIpSecEnabled ? hasPolicyPermission({ type: PolicyType.IPSEC, oper: PolicyOperation.EDIT }) : true
 
-  return hasEdgeSdLanPermission && hasSoftGrePermission
+  return hasEdgeSdLanPermission && hasSoftGrePermission && hasIpSecPermission
 }
