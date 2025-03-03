@@ -13,7 +13,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -45,7 +45,9 @@ import {
   useGetMacRegistrationPoolNetworkBindingQuery,
   useAddRbacNetworkVenueMutation,
   useDeleteRbacNetworkVenueMutation,
-  useActivateDirectoryServerMutation
+  useActivateDirectoryServerMutation,
+  useBindingPersonaGroupWithNetworkMutation,
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -189,6 +191,8 @@ export function NetworkForm (props:{
   const location = useLocation()
   const initVlanPoolRef = useRef<VlanPool>()
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
   const gptEditId = props.gptEditId || ''
@@ -231,6 +235,8 @@ export function NetworkForm (props:{
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
   const [ activateDirectoryServer ] = useActivateDirectoryServerMutation()
+  const [ bindingPersonaGroupWithNetwork ] = useBindingPersonaGroupWithNetworkMutation()
+  const [ bindingSpecificIdentityPersonaGroupWithNetwork ] = useBindingSpecificIdentityPersonaGroupWithNetworkMutation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
@@ -575,6 +581,16 @@ export function NetworkForm (props:{
     return data
   }
 
+  const handleWlanIdentityGroup = (data: NetworkSaveData, identityGroupFlag: boolean) => {
+    if (
+      (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
+      && identityGroupFlag
+    ) {
+      return omit(data, ['identityGroupId', 'identityId'])
+    }
+    return data
+  }
+
   const handlePortalWebPage = async (data: NetworkSaveData) => {
     if(!data.guestPortal?.socialIdentities?.facebook){
       delete data.guestPortal?.socialIdentities?.facebook
@@ -844,11 +860,13 @@ export function NetworkForm (props:{
       ])
     // eslint-disable-next-line max-len
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
+    const processBindingIdentityGroup = (data: NetworkSaveData) => handleWlanIdentityGroup(data, isWifiIdentityManagementEnable)
     const processFns = [
       processWlanAdvanced3MLO,
       processGuestMoreSetting,
       processCloneMode,
-      processClientIsolationAllowlist
+      processClientIsolationAllowlist,
+      processBindingIdentityGroup
     ]
     return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
@@ -893,6 +911,31 @@ export function NetworkForm (props:{
           activateDirectoryServer({ params: { networkId: networkId, policyId: directoryServerDataRef.current.id } })
         )
       }
+
+      if (
+        (formData.type === NetworkTypeEnum.HOTSPOT20 || formData.type === NetworkTypeEnum.PSK || formData.type === NetworkTypeEnum.AAA)
+        && isWifiIdentityManagementEnable
+        && (!!formData?.identityGroupId)
+        && !isTemplate
+      ) {
+        if (!!formData?.identityId){
+          beforeVenueActivationRequest.push(bindingSpecificIdentityPersonaGroupWithNetwork({
+            params: {
+              networkId: networkId,
+              identityGroupId: formData.identityGroupId,
+              identityId: formData.identityId
+            } })
+          )
+        } else {
+          beforeVenueActivationRequest.push(bindingPersonaGroupWithNetwork({
+            params: {
+              networkId: networkId,
+              identityGroupId: formData.identityGroupId
+            } })
+          )
+        }
+      }
+
       await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
@@ -939,7 +982,8 @@ export function NetworkForm (props:{
     }
 
     const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
-    const dataMore = handleGuestMoreSetting(dataWlan)
+    const dataRemoveIdentity = handleWlanIdentityGroup(dataWlan, isWifiIdentityManagementEnable)
+    const dataMore = handleGuestMoreSetting(dataRemoveIdentity)
 
     if(isPortalWebRender(dataMore)){
       handlePortalWebPage(dataMore)
@@ -1067,6 +1111,29 @@ export function NetworkForm (props:{
         // The Radius service is binding on the Identity provider profile
         // So it doesn't need to do the network and radius service binding
         beforeVenueActivationRequest.push(updateRadiusServer(formData, payload.id))
+      }
+      if (
+        (formData.type === NetworkTypeEnum.HOTSPOT20 || formData.type === NetworkTypeEnum.PSK || formData.type === NetworkTypeEnum.AAA)
+        && isWifiIdentityManagementEnable
+        && (!!formData?.identityGroupId)
+        && !isTemplate
+      ) {
+        if (!!formData?.identityId){
+          beforeVenueActivationRequest.push(bindingSpecificIdentityPersonaGroupWithNetwork({
+            params: {
+              networkId: payload.id,
+              identityGroupId: formData.identityGroupId,
+              identityId: formData.identityId
+            } })
+          )
+        } else {
+          beforeVenueActivationRequest.push(bindingPersonaGroupWithNetwork({
+            params: {
+              networkId: payload.id,
+              identityGroupId: formData.identityGroupId
+            } })
+          )
+        }
       }
 
       beforeVenueActivationRequest.push(updateWifiCallingActivation(payload.id, formData))
