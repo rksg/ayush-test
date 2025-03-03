@@ -44,8 +44,12 @@ export function IdentityGroup () {
   }
 
   const setData = async () => {
-    console.log('render!')
     let groupOptions = []
+    /*
+     * TODO: When under edit mode, the 'Select...' option should be remove
+     * if user had selected one identity group. It will be implemented once
+     * API is done.
+     */
     if (!editMode) {
       groupOptions.push({ label: 'Select...', value: '' })
     }
@@ -82,7 +86,6 @@ export function IdentityGroup () {
           label={$t({ defaultMessage: 'Identity Group' })}
           name={['identityGroupId']}
           initialValue={''}
-          rules={[{ required: !editMode }]}
           children={
             <Select
               style={{ width: '400px' }}
