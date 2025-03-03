@@ -57,6 +57,7 @@ import {
 import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
 const incompatibleIconStyle = {
+  position: 'absolute' as const,
   height: '16px',
   width: '16px',
   marginBottom: '-3px',
