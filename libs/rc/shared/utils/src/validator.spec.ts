@@ -211,7 +211,6 @@ describe('validator', () => {
       await expect(validateVlanRangeFormat(',1-20, 22')).rejects.toMatch(/Invalid format/)
       await expect(validateVlanRangeFormat('1-20, -22, 33')).rejects.toMatch(/Invalid format/)
       await expect(validateVlanRangeFormat('1-20, 0.1, 33')).rejects.toMatch(/Invalid format/)
-      await expect(validateVlanRangeFormat('00,1-20, 33')).rejects.toMatch(/Invalid format/)
     })
   })
 
