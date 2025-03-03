@@ -211,6 +211,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                 maxTagPlaceholder={() => <span>{value.filter(item => item !== 'all').length} {$t({ defaultMessage: 'selected' })}</span>}
                 showSearch={false}
                 showArrow
+                listHeight={500}
               >
                 <Select.Option
                   key={'all'}
