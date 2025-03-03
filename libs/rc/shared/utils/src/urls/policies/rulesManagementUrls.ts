@@ -9,38 +9,45 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   getPolicyTemplateListByQuery: {
     method: 'post',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/query'
+    url: policyTemplateApiBaseUrl + '/query',
+    opsApi: 'POST:/policyTemplates/query'
   },
   getPolicies: {
     method: 'get',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/policies' + paginationParams
+    url: policyTemplateApiBaseUrl + '/policies' + paginationParams,
+    opsApi: 'GET:/policyTemplates/policies'
   },
   getPoliciesByQuery: {
     method: 'post',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/policies/query?excludeContent=:excludeContent'
+    url: policyTemplateApiBaseUrl + '/policies/query?excludeContent=:excludeContent',
+    opsApi: 'POST:/policyTemplates/policies/query'
   },
   getPolicyTemplateAttributes: {
     method: 'get',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/attributes' + paginationParams
+    url: policyTemplateApiBaseUrl + '/:templateId/attributes' + paginationParams,
+    opsApi: 'GET:/policyTemplates/{id}/attributes'
   },
   getPoliciesByTemplate: {
     method: 'get',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId' + paginationParams
+    url: policyTemplateApiBaseUrl + '/:templateId' + paginationParams,
+    opsApi: 'GET:/policyTemplates/{id}'
   },
   getPolicyByTemplate: {
     method: 'get',
     newApi: true,
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId',
+    opsApi: 'GET:/policyTemplates/{id}/policies/{id}'
   },
   getConditionsInPolicy: {
     method: 'get',
     newApi: true,
     // eslint-disable-next-line max-len
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions?size=:pageSize&page=:page'
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions?size=:pageSize&page=:page',
+    opsApi: 'GET:/policyTemplates/{id}/policies/{id}/conditions'
   },
   addConditions: {
     method: 'post',
@@ -81,12 +88,14 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   getPolicySets: {
     method: 'get',
     newApi: true,
-    url: policySetApiBaseUrl + paginationParams
+    url: policySetApiBaseUrl + paginationParams,
+    opsApi: 'GET:/policySets'
   },
   getPolicySet: {
     method: 'get',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId'
+    url: policySetApiBaseUrl + '/:policySetId',
+    opsApi: 'GET:/policySets/{id}'
   },
   createPolicySet: {
     method: 'post',
@@ -109,12 +118,14 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   getPrioritizedPolicies: {
     method: 'get',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies'
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies',
+    opsApi: 'GET:/policySets/{id}/prioritizedPolicies'
   },
   getPolicySetsByQuery: {
     method: 'post',
     newApi: true,
-    url: policySetApiBaseUrl + '/query?excludeContent=:excludeContent'
+    url: policySetApiBaseUrl + '/query?excludeContent=:excludeContent',
+    opsApi: 'POST:/policySets/query'
   },
   assignPolicyPriority: {
     method: 'put',
@@ -125,7 +136,8 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   getPrioritizedPolicy: {
     method: 'get',
     newApi: true,
-    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId'
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId',
+    opsApi: 'GET:/policySets/{id}/prioritizedPolicies/{id}'
   },
   removePrioritizedAssignment: {
     method: 'delete',

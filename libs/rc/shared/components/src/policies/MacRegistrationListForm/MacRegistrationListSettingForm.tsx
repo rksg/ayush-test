@@ -9,10 +9,11 @@ import {
   useAdaptivePolicySetListByQueryQuery, useGetPersonaGroupByIdQuery,
   useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
-import { RolesEnum }                                               from '@acx-ui/types'
-import {  hasRoles }                                               from '@acx-ui/user'
+import { checkObjectNotExists, Persona, RulesManagementUrlsInfo, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { useParams }                                                                        from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                        from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles }                                                   from '@acx-ui/user'
+import { getOpsApi }                                                                        from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }                                         from '../../AdaptivePolicySetForm'
 import { ExpirationDateSelector }                                        from '../../ExpirationDateSelector'
@@ -239,7 +240,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           />
         </GridCol>
         {
-          hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+          (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+          hasAllowedOperations([getOpsApi(RulesManagementUrlsInfo.createPolicySet)])) &&
           <>
             <Space align='center'>
               <Button

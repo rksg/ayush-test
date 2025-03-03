@@ -70,6 +70,7 @@ export default function AdaptivePolicyTable () {
                   policyId: row.id!,
                   templateId: templateIdMap.get(row.policyType) ?? ''
                 })}
+              rbacOpsIds={[getOpsApi(RulesManagementUrlsInfo.getPolicyByTemplate)]}
             >{row.name}</TenantLink>
           )
         }

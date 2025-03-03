@@ -113,6 +113,7 @@ export default function RadiusAttributeGroupTable () {
                   oper: PolicyOperation.DETAIL,
                   policyId: row.id!
                 })}
+                rbacOpsIds={[getOpsApi(RadiusAttributeGroupUrlsInfo.getAttributeGroup)]}
               >{row.name}</TenantLink>
             )
           }

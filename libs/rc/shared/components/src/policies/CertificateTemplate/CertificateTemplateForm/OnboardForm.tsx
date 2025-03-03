@@ -7,12 +7,12 @@ import { GridCol, GridRow, Modal, ModalType, Select, SelectionControl }         
 import { useAdaptivePolicySetListQuery, useLazyGetCertificateTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  PersonaGroup,
+  PersonaGroup, RulesManagementUrlsInfo,
   trailingNorLeadingSpaces
-} from '@acx-ui/rc/utils'
+} from '@acx-ui/rc/utils';
 import { useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum } from '@acx-ui/types'
-import { hasRoles }  from '@acx-ui/user'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user';
 
 import { AdaptivePolicySetForm }            from '../../../AdaptivePolicySetForm'
 import { hasCreateIdentityGroupPermission } from '../../../useIdentityGroupUtils'
@@ -20,6 +20,7 @@ import { PersonaGroupDrawer }               from '../../../users'
 import { MAX_CERTIFICATE_PER_TENANT }       from '../constants'
 import { onboardSettingsDescription }       from '../contentsMap'
 import { Section, Title }                   from '../styledComponents'
+import { getOpsApi } from '@acx-ui/utils';
 
 export default function OnboardForm ({ editMode = false }) {
   const { $t } = useIntl()
@@ -179,7 +180,8 @@ export default function OnboardForm ({ editMode = false }) {
             />
           </GridCol>
           {
-            hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+            (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+              hasAllowedOperations([getOpsApi(RulesManagementUrlsInfo.createPolicySet)])) &&
             <>
               <Space align='center'>
                 <Button

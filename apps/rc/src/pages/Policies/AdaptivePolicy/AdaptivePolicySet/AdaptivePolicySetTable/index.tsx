@@ -109,6 +109,7 @@ export default function AdaptivePolicySetTable () {
                   oper: PolicyOperation.DETAIL,
                   policyId: row.id!
                 })}
+              rbacOpsIds={[getOpsApi(RulesManagementUrlsInfo.getPolicySet)]}
             >{row.name}</TenantLink>
           )
         }

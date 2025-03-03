@@ -9,17 +9,20 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttribute: {
     method: 'get',
     newApi: true,
-    url: attributeBaseUrl + '/:attributeId'
+    url: attributeBaseUrl + '/:attributeId',
+    opsApi: 'GET:/radiusAttributes/{id}'
   },
   getAttributesWithQuery: {
     method: 'post',
     newApi: true,
-    url: attributeBaseUrl + '/query'
+    url: attributeBaseUrl + '/query',
+    opsApi: 'POST:/radiusAttributes/query'
   },
   getAttributeGroupsWithQuery: {
     method: 'post',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/query?excludeContent=:excludeContent'
+    url: attributeGroupsBaseUrl + '/query?excludeContent=:excludeContent',
+    opsApi: 'POST:/radiusAttributeGroups/query'
   },
   createAttributeGroup: {
     method: 'post',
@@ -30,7 +33,8 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttributeGroup: {
     method: 'get',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId'
+    url: attributeGroupsBaseUrl + '/:policyId',
+    opsApi: 'GET:/radiusAttributeGroups/{id}'
   },
   deleteAttributeGroup: {
     method: 'delete',
@@ -47,7 +51,8 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttributeVendors: {
     method: 'get',
     newApi: true,
-    url: attributeBaseUrl + '/vendors'
+    url: attributeBaseUrl + '/vendors',
+    opsApi: 'GET:/radiusAttributes/vendors'
   },
   createAssignment: {
     method: 'post',
@@ -58,7 +63,8 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAssignment: {
     method: 'get',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId/assignments/:assignmentId'
+    url: attributeGroupsBaseUrl + '/:policyId/assignments/:assignmentId',
+    opsApi: 'GET:/radiusAttributeGroups/{id}/assignments/{id}'
   },
   deleteAssignment: {
     method: 'delete',
@@ -69,6 +75,7 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAssignments: {
     method: 'get',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/:policyId/assignments' + paginationParams
+    url: attributeGroupsBaseUrl + '/:policyId/assignments' + paginationParams,
+    opsApi: 'GET:/radiusAttributeGroups/{id}/assignments/'
   }
 }
