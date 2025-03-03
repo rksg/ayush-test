@@ -207,20 +207,24 @@ export function VlanPortSetting () {
   }
 
   const handleChangeModel = (selectedKeys: Key[]) => {
-    const updateModuleKeys = _.difference(selectedKeys, selectedModelKeys)
+    const hasSelectAllModel = selectedKeys.length === vlanPortList.length
+    const updateModuleKeys
+      = hasSelectAllModel ? selectedKeys : _.difference(selectedKeys, selectedModelKeys)
+
     const filteredselectedModuleKeys = selectedModuleKeys.filter(key => {
       return selectedKeys.filter(k => key.includes(k as string))?.length
     })
-    const updateselectedModuleKeys = vlanPortList
+
+    const updateSelectedModuleKeys = vlanPortList
       .filter(model => updateModuleKeys.includes(model.id))
       .map(model => model.groupbyModules.map(module => module.key))
       .flat()
 
     if (updateModuleKeys?.length) {
-      setSelectedModuleKeys([
+      setSelectedModuleKeys(_.uniq([
         ...selectedModuleKeys,
-        ...updateselectedModuleKeys as string[]
-      ])
+        ...updateSelectedModuleKeys as string[]
+      ]))
     } else {
       setSelectedModuleKeys(filteredselectedModuleKeys)
     }
@@ -242,6 +246,8 @@ export function VlanPortSetting () {
 
   const handleClickSetPorts = () => {
     setSelectedRow(null as unknown as ModulePorts)
+    setSelectedModuleKeys([])
+    setSelectedModelKeys([])
     setModalVisible(true)
   }
 
