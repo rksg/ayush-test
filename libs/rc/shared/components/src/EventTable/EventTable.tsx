@@ -136,7 +136,7 @@ export const EventTable = ({
 
     showToast({
       type: 'info',
-      duration: 10,
+      duration: 5,
       closable: false,
       extraContent: <div style={{ width: '60px' }}>
         <Loading3QuartersOutlined spin
