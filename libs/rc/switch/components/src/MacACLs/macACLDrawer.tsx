@@ -386,7 +386,7 @@ export const MacACLDrawer: React.FC<MacACLDrawerProps> = ({
               label: $t({ defaultMessage: 'Add Rule' }),
               onClick: () => handleAdd()
             }]}
-            pagination={{ pageSize: 100 }}
+            pagination={{ pageSize: 10000 }}
             rowKey='key'
           />
         </Form.Item>
