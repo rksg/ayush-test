@@ -57,9 +57,13 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }                         from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseEdgeApi }    from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  createHttpRequest,
+  getEnabledDialogImproved,
+  ignoreErrorModal
+} from '@acx-ui/utils'
 
 import { isPayloadHasField } from './utils'
 
@@ -77,7 +81,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
     addEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addEdge, params, {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge, params, getEnabledDialogImproved() ? {} : {
           ...ignoreErrorModal
         })
         return {
