@@ -16,6 +16,7 @@ import {
   within,
   findTBody
 } from '@acx-ui/test-utils'
+import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
 
 import { mockManagedUsers } from './__tests__/fixtures'
 
@@ -88,7 +89,12 @@ const mockDeleteInvitationResponse = () => {
 }
 
 describe('Users Page', () => {
+  const permissions = Object.keys(raiPermissionsList)
+    .filter(v => isNaN(Number(v)))
+    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
+
   beforeEach(() => {
+    setRaiPermissions(permissions)
     store.dispatch(rbacApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
