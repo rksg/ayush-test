@@ -387,6 +387,15 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/edgeCompatibilities/query',
     newApi: true
   },
+  getVenueEdgeCompatibilitiesV1_1: {
+    method: 'post',
+    url: '/venues/edgeCompatibilities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getHqosEdgeCompatibilities: {
     method: 'post',
     url: '/edgeHqosProfiles/edgeCompatibilities/query',

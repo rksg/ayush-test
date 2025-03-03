@@ -59,14 +59,14 @@ const getExpireInfo = (bannerList:EntitlementBanner[])=>{
   const expireList:ExpireInfo[] = []
   if(!_.isEmpty(bannerList)){
     bannerList
-      .filter(item => item.deviceType !== 'ANALYTICS')
+      .filter(item => item.licenseType !== 'ANALYTICS')
       .forEach(item => {
         expireList.push(
           {
-            deviceCount: item!.deviceCount,
+            deviceCount: item!.licenseCount,
             effectDate: item!.effectDate,
-            effectDays: item!.effectDays,
-            deviceType: item!.deviceType,
+            effectDays: item!.effectiveDays,
+            deviceType: item!.licenseType,
             isMultipleLicense: item!.multipleLicense,
             expireType: item!.type
           }
