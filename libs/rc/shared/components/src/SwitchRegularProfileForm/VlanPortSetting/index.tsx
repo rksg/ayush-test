@@ -111,7 +111,16 @@ export function VlanPortSetting () {
     dataIndex: 'port',
     key: 'port',
     defaultSortOrder: 'ascend',
-    sorter: { compare: sortProp('port', defaultSort) }
+    sorter: { compare: ({ port: a }, { port: b }) => {
+      if (a.split('/')[2] && b.split('/')[2]) {
+        const slotDiff = Number(a.split('/')[1]) - Number(b.split('/')[1])
+        if (slotDiff !== 0) {
+          return slotDiff
+        }
+        return Number(a.split('/')[2]) - Number(b.split('/')[2])
+      }
+      return 1
+    } }
   }, {
     title: $t({ defaultMessage: 'Untagged VLAN' }),
     dataIndex: 'untaggedVlan',
