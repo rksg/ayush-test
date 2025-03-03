@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { Drawer as AntDrawer }            from 'antd'
 import styled, { createGlobalStyle, css } from 'styled-components'
 
@@ -40,29 +39,39 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
   ${props => styles[props.$type]}
 `
 
-export const Drawer = styled(AntDrawer)<{ width: number | string, adjustStepsFormFooterStyle?: boolean }>`
+const getStepsFormStyle = (width: number | string) => {
+  const parsedWidth = typeof width === 'number'
+    ? width - 50
+    : isNaN(parseInt(width, 10))
+      ? 0
+      : parseInt(width, 10) -50
+
+  return `
+    .ant-pro-steps-form {
+      width: ${parsedWidth}px;
+    }
+    [class*="styledComponents__ActionsContainer"] {
+      display: flex;
+      justify-content: flex-end;
+      width: ${parsedWidth}px;
+      min-width: unset;
+      background-color: transparent;
+      &:before {
+        position: unset;
+      }
+      .ant-space-horizontal {
+        flex-direction: row-reverse;
+      }
+    }
+  `
+}
+
+export const Drawer = styled(AntDrawer)<{ width: number | string }>`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
 
-    ${(props) => props.adjustStepsFormFooterStyle && `
-      .ant-pro-steps-form {
-        width: ${(typeof props.width === 'number' ? props.width : parseInt(props.width, 10)) - 50}px;
-      }
-      [class*="styledComponents__ActionsContainer"] {
-        display: flex;
-        justify-content: flex-end;
-        width: ${(typeof props.width === 'number' ? props.width : parseInt(props.width, 10)) - 40}px;
-        min-width: unset;
-        background-color: transparent;
-        &:before {
-          position: unset;
-        }
-        .ant-space-horizontal {
-          flex-direction: row-reverse;
-        }
-      }
-    `}
+    ${({ width }) => getStepsFormStyle(width)}
   }
 `
 

@@ -17,8 +17,7 @@ interface DrawerHeaderProps {
   title?: string | React.ReactNode,
   icon?: React.ReactNode,
   subTitle?: string,
-  onBackClick?: () => void,
-  adjustStepsFormFooterStyle?: boolean
+  onBackClick?: () => void
 }
 
 export interface DrawerProps extends
