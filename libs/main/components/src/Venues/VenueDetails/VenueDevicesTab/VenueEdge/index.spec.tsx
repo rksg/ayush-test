@@ -7,7 +7,7 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { VenueEdge } from '.'
 
-const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
+const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeCompatibilityFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -33,6 +33,10 @@ describe('VenueEdge', () => {
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilitiesV1_1.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenueV1_1))
       )
     )
   })
@@ -51,6 +55,27 @@ describe('VenueEdge', () => {
   it('should render edge compatibility warning correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
+
+    render(<Provider><VenueEdge /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+    })
+
+    const edgeTable = await screen.findByTestId('EdgesTable')
+    expect(edgeTable).toBeVisible()
+
+    const target = screen.getByRole('link', { name: 'Add RUCKUS Edge' })
+    expect(target.getAttribute('href')).toBe(`/${params.tenantId}/t/devices/edge/add`)
+    await waitFor(() => expect(within(edgeTable).queryByText('incompatibleCheck:true')).toBeValid())
+
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(edgeTable).toHaveTextContent('SD-LAN'))
+    expect(edgeTable).toHaveTextContent('Tunnel Profile')
+  })
+
+  it('should render edge compatibility warning correctly - V1_1', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE,
+        Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE].includes(ff as Features))
 
     render(<Provider><VenueEdge /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
