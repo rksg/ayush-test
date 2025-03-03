@@ -125,7 +125,8 @@ export function PortProfileModal (props: {
       destroyOnClose={true}
       closable={true}
       type={ModalType.ModalStepsForm}
-      title={$t({ defaultMessage: 'Select Ports By Model' })}
+      title={editMode ?
+        $t({ defaultMessage: 'Edit Port Profile' }) : $t({ defaultMessage: 'Add Port Profile' })}
       data-testid='PortProfileModal'
     >
       <StepsForm

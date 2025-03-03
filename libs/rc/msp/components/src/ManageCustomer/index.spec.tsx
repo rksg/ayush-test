@@ -243,6 +243,19 @@ const fakedPrivilegeGroupList =
     }
   ]
 
+const settings = {
+  privacyFeatures: [
+    {
+      featureName: 'APP_VISIBILITY',
+      isEnabled: false
+    },
+    {
+      featureName: 'ARC',
+      isEnabled: true
+    }
+  ]
+}
+
 const services = require('@acx-ui/msp/services')
 const rcServices = require('@acx-ui/rc/services')
 const utils = require('@acx-ui/rc/utils')
@@ -293,7 +306,9 @@ describe('ManageCustomer', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeTenantDetails))
-      )
+      ),
+      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
+        (req, res, ctx) => res(ctx.json(settings)))
     )
 
     jest.spyOn(services, 'useAddCustomerMutation')

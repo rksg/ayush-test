@@ -2,10 +2,12 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
+
 import {
   PageHeader, showActionModal,
   StepsForm
 } from '@acx-ui/components'
+import { EdgePermissions } from '@acx-ui/edge/components'
 import {
   EdgeSettingForm
 } from '@acx-ui/rc/components'
@@ -15,7 +17,9 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { CatchErrorResponse } from '@acx-ui/utils'
+import { hasPermission }            from '@acx-ui/user'
+import { getEnabledDialogImproved } from '@acx-ui/utils'
+import { CatchErrorResponse }       from '@acx-ui/utils'
 
 import { getErrorModalInfo } from './errorMessageMapping'
 
@@ -56,7 +60,7 @@ const AddEdge = () => {
 
       navigate(clusterListPage)
     } catch (error) {
-      if (hasClusterId) {
+      if (hasClusterId && !getEnabledDialogImproved()) {
         showActionModal({
           type: 'error',
           ...getErrorModalInfo(error as CatchErrorResponse)
@@ -66,6 +70,8 @@ const AddEdge = () => {
       console.error(error) // eslint-disable-line no-console
     }
   }
+
+  const hasAddPermission = hasPermission({ rbacOpsIds: EdgePermissions.addEdgeNode })
 
   return (
     <>
@@ -78,7 +84,7 @@ const AddEdge = () => {
       <StepsForm
         onFinish={handleAddEdge}
         onCancel={() => navigate(clusterListPage)}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
+        buttonLabel={{ submit: hasAddPermission ? $t({ defaultMessage: 'Add' }) : '' }}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>

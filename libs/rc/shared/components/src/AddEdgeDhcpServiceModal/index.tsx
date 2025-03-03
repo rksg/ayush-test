@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
-import { EdgeDhcpSetting }                                        from '@acx-ui/rc/utils'
+import { EdgeDhcpSetting, EdgeDhcpUrls }                          from '@acx-ui/rc/utils'
+import { getOpsApi }                                              from '@acx-ui/utils'
 
 import { EdgeDhcpSettingForm } from '../EdgeDhcpSetting/EdgeDhcpSettingForm'
 import { useEdgeDhcpActions }  from '../EdgeDhcpSetting/useEdgeDhcpActions'
@@ -39,7 +40,11 @@ export const AddEdgeDhcpServiceModal = () => {
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)} data-testid='addDhcpServiceButton'>
+      <Button type='link'
+        rbacOpsIds={[getOpsApi(EdgeDhcpUrls.addDhcpService)]}
+        onClick={()=>setVisible(true)}
+        data-testid='addDhcpServiceButton'
+      >
         {$t({ defaultMessage: 'Add' })}
       </Button>
       <Modal

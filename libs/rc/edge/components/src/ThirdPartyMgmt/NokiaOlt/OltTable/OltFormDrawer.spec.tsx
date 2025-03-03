@@ -129,11 +129,11 @@ describe('NokiaOltFormDrawer', () => {
     const ipInput = screen.getByLabelText('IP Address')
 
     // await userEvent.type(nameInput, 'Test Device')
-    await screen.findByText('Mock Venue 3')
-    await userEvent.selectOptions(venueIdInput, 'Mock Venue 3')
+    await screen.findByText('Mock Venue 1')
+    await userEvent.selectOptions(venueIdInput, 'Mock Venue 1')
 
-    await screen.findByText('Edge Cluster 2')
-    await userEvent.selectOptions(edgeClusterIdInput, 'Edge Cluster 2')
+    await screen.findByText('Edge Cluster 1')
+    await userEvent.selectOptions(edgeClusterIdInput, 'Edge Cluster 1')
     await userEvent.type(ipInput, '192.168.1.1')
 
     const submitButton = screen.getByText('Add')

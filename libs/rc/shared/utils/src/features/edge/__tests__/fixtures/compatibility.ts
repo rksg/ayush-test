@@ -1,9 +1,9 @@
 import { cloneDeep } from 'lodash'
 
-import { IncompatibilityFeatures }                                                                                                                                          from '../../../../models/CompatibilityEnum'
-import { CompatibilityEntityTypeEnum }                                                                                                                                      from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeSdLanApCompatibilitiesResponse, EdgeServiceCompatibilitiesResponse, EdgeServicesApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
-import { IncompatibleFeatureLevelEnum, IncompatibleFeatureTypeEnum }                                                                                                        from '../../../../types/venue'
+import { IncompatibilityFeatures }                                                                                                                                                                                from '../../../../models/CompatibilityEnum'
+import { CompatibilityEntityTypeEnum }                                                                                                                                                                            from '../../../../models/EdgeEnum'
+import { EdgeFeatureSets, EdgeSdLanApCompatibilitiesResponse, EdgeServiceCompatibilitiesResponse, EdgeServicesApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse, VenueEdgeCompatibilitiesResponseV1_1 } from '../../../../types/edge'
+import { IncompatibleFeatureLevelEnum, IncompatibleFeatureTypeEnum }                                                                                                                                              from '../../../../types/venue'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -520,6 +520,109 @@ export const mockEdgeCompatibilitiesVenue: VenueEdgeCompatibilitiesResponse ={
             featureName: 'Tunnel Profile',
             requiredFw: '2.1.0.400'
           },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.150',
+              count: 3
+            },
+            {
+              firmware: '2.1.0.200',
+              count: 1
+            }
+          ]
+        }
+      ],
+      total: 8,
+      incompatible: 5
+    }
+  ]
+}
+
+export const mockEdgeCompatibilitiesVenueV1_1: VenueEdgeCompatibilitiesResponseV1_1 ={
+  compatibilities: [
+    {
+      identityType: CompatibilityEntityTypeEnum.VENUE,
+      id: 'venue-1',
+      incompatibleFeatures: [
+        {
+          featureName: 'SD-LAN',
+          featureType: IncompatibleFeatureTypeEnum.EDGE,
+          featureLevel: 'CLUSTER',
+          requirements: [
+            {
+              firmware: '2.1.0.200'
+            }
+          ],
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            }
+          ]
+        },
+        {
+          featureName: 'Tunnel Profile',
+          featureGroup: 'Tunnel Profile',
+          featureType: IncompatibleFeatureTypeEnum.EDGE,
+          featureLevel: 'CLUSTER',
+          requirements: [
+            {
+              firmware: '2.1.0.400'
+            }
+          ],
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.300',
+              count: 1
+            }
+          ]
+        }
+      ],
+      total: 6,
+      incompatible: 2
+    },
+    {
+      identityType: CompatibilityEntityTypeEnum.VENUE,
+      id: 'venue-3',
+      incompatibleFeatures: [
+        {
+          featureName: 'SD-LAN',
+          featureType: IncompatibleFeatureTypeEnum.EDGE,
+          featureLevel: 'CLUSTER',
+          requirements: [
+            {
+              firmware: '2.1.0.200'
+            }
+          ],
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.150',
+              count: 3
+            }
+          ]
+        },
+        {
+          featureName: 'Tunnel Profile',
+          featureGroup: 'Tunnel Profile',
+          featureType: IncompatibleFeatureTypeEnum.EDGE,
+          featureLevel: 'CLUSTER',
+          requirements: [
+            {
+              firmware: '2.1.0.400'
+            }
+          ],
           incompatibleDevices: [
             {
               firmware: '2.1.0.100',

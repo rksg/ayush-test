@@ -20,7 +20,7 @@ exports[`Floor Plan Upload should pass file validation 1`] = `
             tabindex="0"
           >
             <input
-              accept="image/*"
+              accept="image/*, application/pdf"
               style="display: none;"
               type="file"
             />
@@ -62,7 +62,49 @@ exports[`Floor Plan Upload should render correctly 1`] = `
             tabindex="0"
           >
             <input
-              accept="image/*"
+              accept="image/*, application/pdf"
+              style="display: none;"
+              type="file"
+            />
+            <div>
+              <svg
+                data-testid="PlusCircleOutlined"
+              />
+              <div
+                class="ant-upload-text"
+              >
+                Upload
+              </div>
+            </div>
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Floor Plan Upload should render with pdf file 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-vertical"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <span
+        class="ant-upload-picture-card-wrapper avatar-uploader"
+      >
+        <div
+          class="ant-upload ant-upload-select ant-upload-select-picture-card"
+        >
+          <span
+            class="ant-upload"
+            role="button"
+            tabindex="0"
+          >
+            <input
+              accept="image/*, application/pdf"
               style="display: none;"
               type="file"
             />
@@ -104,7 +146,7 @@ exports[`Floor Plan Upload should show error correctly 1`] = `
             tabindex="0"
           >
             <input
-              accept="image/*"
+              accept="image/*, application/pdf"
               style="display: none;"
               type="file"
             />

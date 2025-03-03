@@ -62,7 +62,8 @@ const get = jest.mocked(config.get)
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  showActionModal: jest.fn()
+  showActionModal: jest.fn(),
+  getDefaultEarliestStart: jest.fn()
 }))
 const actionModal = jest.mocked(showActionModal)
 

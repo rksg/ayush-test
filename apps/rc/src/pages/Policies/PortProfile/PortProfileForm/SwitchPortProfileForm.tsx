@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  checkVlanMember,
+  checkTaggedVlan,
   getDefaultPortSpeedOption,
   getPolicyListRoutePath,
   LldpTlvMatchingType,
@@ -296,7 +296,7 @@ export default function SwitchPortProfileForm () {
     return new Promise<void>((resolve, reject) => {
       if (value !== undefined) {
         if (value) {
-          checkVlanMember(value)
+          checkTaggedVlan(value)
             .then(() => resolve())
             .catch((error) => reject(error))
         } else {

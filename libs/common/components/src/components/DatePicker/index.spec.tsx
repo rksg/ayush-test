@@ -5,6 +5,7 @@ import userEvent          from '@testing-library/user-event'
 import moment, { Moment } from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }      from '@acx-ui/formatter'
 import { render, screen }                 from '@acx-ui/test-utils'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
@@ -49,6 +50,11 @@ describe('RangePicker', () => {
       profile: getUserProfile().profile,
       accountTier: AccountTier.PLATINUM
     })
+  })
+
+
+  afterEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(false)
   })
 
   it('should open when click on date select', async () => {
@@ -247,6 +253,33 @@ describe('RangePicker', () => {
           rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           selectionType={DateRange.custom}
           onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment('03/01/2022').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[0])
+    const hourSelect = await screen.findAllByText('20')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+  })
+  it('should reset when select startTime greater than allowedMonthRange', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ACX_UI_DATE_RANGE_LIMIT)
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          maxMonthRange={1}
+          allowedMonthRange={1}
           selectedRange={{
             startDate: moment('03/01/2022').seconds(0),
             endDate: moment('03/01/2022').seconds(0)

@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { ProtectedEnforceTemplateToggle }            from '../../configTemplates'
 import { networkTypesDescription }                   from '../contentsMap'
 import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext                            from '../NetworkFormContext'
@@ -235,6 +236,7 @@ export function NetworkDetailForm () {
             </Form.Item>
           }
         </Form.Item>
+        <ProtectedEnforceTemplateToggle templateId={data?.id} />
       </Col>
 
       <Col span={14}>

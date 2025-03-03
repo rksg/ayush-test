@@ -51,14 +51,19 @@ import {
   TableResult,
   TraceRouteEdge,
   VenueEdgeCompatibilitiesResponse,
+  VenueEdgeCompatibilitiesResponseV1_1,
   downloadFile,
   getEdgePortIpModeEnumValue,
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }                         from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseEdgeApi }    from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  createHttpRequest,
+  getEnabledDialogImproved,
+  ignoreErrorModal
+} from '@acx-ui/utils'
 
 import { isPayloadHasField } from './utils'
 
@@ -76,7 +81,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
     addEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addEdge, params, {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge, params, getEnabledDialogImproved() ? {} : {
           ...ignoreErrorModal
         })
         return {
@@ -126,15 +131,20 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
 
         // base on current usecase, no need to support cross venue-edges incompatible check
         const venueFilter = ((arg.payload as Record<string, unknown>).filters as Record<string, unknown>)?.['venueId']
-        if (edgeIds.length && venueFilter && isPayloadHasField(arg.payload, 'incompatible')) {
+        if (edgeIds.length && venueFilter && (isPayloadHasField(arg.payload, 'incompatible') || isPayloadHasField(arg.payload, 'incompatibleV1_1'))) {
+          const apiVer1_1 = isPayloadHasField(arg.payload, 'incompatibleV1_1')
           try {
+            const edgeCompatibilitiesUrl = apiVer1_1 ? EdgeUrlsInfo.getVenueEdgeCompatibilitiesV1_1 : EdgeUrlsInfo.getVenueEdgeCompatibilities
+            const edgeCompatibilitiesPayload = { filters: { venueIds: venueFilter, edgeIds: edgeIds } }
             const compatibilityReq = {
-              ...createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilities, arg.params),
-              body: { filters: { venueIds: venueFilter, edgeIds: edgeIds } }
+              ...createHttpRequest(edgeCompatibilitiesUrl, arg.params),
+              body: JSON.stringify(edgeCompatibilitiesPayload)
             }
 
             const compatibilityQuery = await fetchWithBQ(compatibilityReq)
-            const compatibilities = compatibilityQuery.data as VenueEdgeCompatibilitiesResponse
+            const compatibilities = apiVer1_1
+              ? compatibilityQuery.data as VenueEdgeCompatibilitiesResponseV1_1
+              : compatibilityQuery.data as VenueEdgeCompatibilitiesResponse
 
             compatibilities.compatibilities?.forEach((item) => {
               const idx = findIndex(edgesData, { serialNumber: item.id })
@@ -423,7 +433,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     downloadEdgesCSV: build.mutation<Blob, EdgesExportPayload>({
       query: (payload) => {
-        const req = createHttpRequest(EdgeUrlsInfo.downloadSwitchsCSV,
+        const req = createHttpRequest(EdgeUrlsInfo.downloadEdgesCSV,
           { tenantId: payload.tenantId }
         )
         return {
@@ -932,6 +942,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
     }),
+    getVenueEdgeCompatibilitiesV1_1: build.query<VenueEdgeCompatibilitiesResponseV1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilitiesV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
+    }),
     getSdLanEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilities, params)
@@ -1291,6 +1311,8 @@ export const {
   useLazyGetEdgeFeatureSetsQuery,
   useGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
+  useGetVenueEdgeCompatibilitiesV1_1Query,
+  useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,

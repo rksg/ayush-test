@@ -12,6 +12,7 @@ type PropertyUrlType =
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
+  'addUnitLinkedIdentity' |
   'deletePropertyUnit' |
   'notifyPropertyUnits' |
   'getResidentPortalList' |
@@ -83,6 +84,15 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/:unitId',
     opsApi: 'PATCH:/venues/{id}/units/{id}'
+  },
+  addUnitLinkedIdentity: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deletePropertyUnit: {
     method: 'delete',

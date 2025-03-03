@@ -37,7 +37,17 @@ export interface ChatHistory {
 
 export interface RuckusAiChat {
   sessionId: string,
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  page: number,
+  totalCount: number,
+  totalPages: number
+}
+
+export interface RuckusAiChats {
+  page: number,
+  totalCount: number,
+  totalPages: number,
+  data: ChatMessage[]
 }
 
 export interface ChatMessage {
@@ -71,6 +81,9 @@ export interface WidgetListData {
   unit?: { [key:string]: string },
   axisType?: 'time' & 'category', // for line/bar chart
   multiseries?: boolean // for bar chart
+  canvasId?: string
+  widgetId?: string
+  name?: string
 }
 
 export interface Canvas {

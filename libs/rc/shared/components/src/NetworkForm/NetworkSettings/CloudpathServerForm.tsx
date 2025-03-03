@@ -161,7 +161,8 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
               dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
             }
           />
-          {(data?.type && accountingProxyNetworkTypes.includes(data.type))&&
+          {(data?.type && accountingProxyNetworkTypes.includes(data.type)) &&
+            dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed &&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               { $t({ defaultMessage: 'Proxy Service' }) }
@@ -176,7 +177,6 @@ export function CloudpathServerForm (props: CloudpathServerFormProps) {
                 data-testid='enable-accounting-proxy'
                 onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
                 disabled={
-                  dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed ||
                   (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled)
                 }
               />}

@@ -9,19 +9,24 @@ import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }                            from 'uuid'
 
-import { BarChartData }                                                                             from '@acx-ui/analytics/utils'
-import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
-import { useChatChartQuery }                                                                        from '@acx-ui/rc/services'
-import { WidgetListData }                                                                           from '@acx-ui/rc/utils'
+import { BarChartData }                                                                                        from '@acx-ui/analytics/utils'
+import { BarChart, cssNumber, cssStr, DonutChart, Loader, showToast, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                           from '@acx-ui/formatter'
+import { useGetWidgetQuery }                                                                                   from '@acx-ui/rc/services'
+import { WidgetListData }                                                                                      from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import { Group } from '../Canvas'
+import * as UI   from '../styledComponents'
 
-import { ItemTypes } from './GroupItem'
+import CustomizeWidgetDrawer from './CustomizeWidgetDrawer'
+import { ItemTypes }         from './GroupItem'
 
 
 interface WidgetListProps {
-  data: WidgetListData;
+  data: WidgetListData
+  visible?: boolean
+  setVisible?: (v: boolean) => void
+  groups?: Group[]
 }
 
 interface WidgetCategory {
@@ -105,12 +110,34 @@ export const getChartConfig = (data: WidgetListData) => {
   return ChartConfig[data.chartType]
 }
 
-export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
+export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups }) => {
+  const { $t } = useIntl()
+  const canDragtoCanvas = () => {
+    if(groups) {
+      let cardsCount = 0
+      groups.forEach(g => {
+        g.cards.forEach(() => cardsCount++)
+      })
+      if(cardsCount < 20) {
+        return true
+      } else {
+        showToast({
+          type: 'error',
+          content: $t(
+            { defaultMessage: 'The maximum number of widgets is 20' }
+          )
+        })
+        return false
+      }
+    }
+    return true
+  }
   const [{ isDragging }, drag, preview] = useDrag({
     type: ItemTypes.CARD,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     }),
+    canDrag: () => canDragtoCanvas(),
     item: () => {
       const dragCard = {
         ...data,
@@ -153,16 +180,15 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
   )
 }
 
-export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
-  const { $t } = useIntl()
-  const queryResults = useChatChartQuery({
+export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisible }) => {
+  const queryResults = useGetWidgetQuery({
     params: {
-      sessionId: data.sessionId,
-      chatId: data.chatId
+      canvasId: data.canvasId,
+      widgetId: data.widgetId
     }
   }, { skip: data.type !== 'card' })
 
-  function labelFormatter (params: CallbackDataParams): string {
+  const labelFormatter = (params: CallbackDataParams) => {
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
     const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
     return '{data|' + formatter(unit)(usage) + '}'
@@ -214,7 +240,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   const getChart = (type: string, width:number, height:number, chartData:WidgetListData) => {
     if(type === 'pie') {
       return <DonutChart
-        style={{ width, height }}
+        style={{ width: width-5, height: height-5 }}
         size={'medium'}
         data={chartData?.chartOption || []}
         animation={true}
@@ -222,13 +248,13 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       />
     } else if(type === 'line') {
       return <StackedAreaChart
-        style={{ width, height }}
+        style={{ width: width-5, height: height-5 }}
         data={chartData?.chartOption || []}
         xAxisType={chartData?.axisType}
       />
     } else if(type === 'bar') {
       return <BarChart
-        style={{ width: width-30, height }}
+        style={{ width: width-30, height: height-5 }}
         grid={{ right: '10px', top: chartData?.multiseries ? '15%': '0' }}
         data={(chartData?.chartOption || []) as BarChartData}
         barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
@@ -240,7 +266,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       />
     } else if(type === 'table') {
       return <Table
-        style={{ width: width-30 }}
+        style={{ width: width-30, height: height-5 }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
           .map(i => ({ ...i, searchable: true })) || []}
         dataSource={chartData?.chartOption?.dataSource}
@@ -289,14 +315,22 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
         key={data.id}
-        title={data.type === 'card' ? (data.title || $t({ defaultMessage: 'Title' })) : ''}
+        title={data.type === 'card' ? chartData?.name : ''}
         className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
-          {({ height, width }) => getChart(
-            data.chartType, width, height, chartData as WidgetListData)}
+          {({ height, width }) => <div className='chart'>{getChart(
+            data.chartType, width, height, chartData as WidgetListData)}</div>}
         </AutoSizer>
       </UI.Widget>
+      {
+        (visible && setVisible) && <CustomizeWidgetDrawer
+          visible={visible as boolean}
+          setVisible={setVisible}
+          widget={chartData as WidgetListData}
+          canvasId={data.canvasId as string}
+        />
+      }
     </Loader>
   )
 }

@@ -4,6 +4,8 @@ import _ from 'lodash'
 
 // import { Tabs } from '@acx-ui/components'
 
+import { useCreateWidgetMutation } from '@acx-ui/rc/services'
+
 import { Section, Group, LayoutConfig, CardInfo } from '../Canvas'
 import utils                                      from '../utils'
 import { layoutCheck }                            from '../utils/collision'
@@ -17,14 +19,16 @@ export interface LayoutProps {
   groups: Group[]
   setGroups: React.Dispatch<React.SetStateAction<Group[]>>
   compactType: string
+  canvasId: string
 }
 
 export default function Layout (props: LayoutProps) {
   const defaultLayout = props.layout
-  const { groups, setGroups, sections } = props
+  const { groups, setGroups, sections, canvasId } = props
   const [layout, setLayout] = useState(props.layout)
   const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [resizeWaiter, setResizeWaiter] = useState(false)
+  const [createWidget] = useCreateWidgetMutation()
 
   const handleLoad = () => {
     if (!resizeWaiter) {
@@ -138,9 +142,29 @@ export default function Layout (props: LayoutProps) {
   /**
    * Release the card into the group.
    **/
-  const onCardDropInGroupItem = () => {
+  const onCardDropInGroupItem = async () => {
     const groupsTmp = _.cloneDeep(groups)
     const { compactType } = props
+    if(!shadowCard.widgetId) {
+      const response = await createWidget({
+        params: {
+          canvasId
+        },
+        payload: {
+          messageId: shadowCard.chatId
+        }
+      }).unwrap()
+
+
+      groupsTmp.forEach(g => {
+        g.cards.forEach(c => {
+          if(c.id == shadowCard.id) {
+            c.widgetId = response.id
+            c.canvasId = canvasId
+          }
+        })
+      })
+    }
     // Remove shadows from all cards within all groups.
     utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
     // Recompress the layout horizontally within the target group, and due to cross-group dependencies,

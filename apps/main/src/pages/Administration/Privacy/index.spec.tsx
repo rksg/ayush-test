@@ -64,5 +64,6 @@ describe('Privacy settings', () => {
     expect(switchBtn).toBeVisible()
     await userEvent.click(switchBtn)
     expect(switchBtn.getAttribute('aria-checked')).toBe('true')
+    expect(await screen.findByText('Application-recognition and control is enabled')).toBeVisible()
   })
 })

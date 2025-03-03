@@ -127,7 +127,7 @@ export const getClientHealthClass = (healthStatus: string) => {
     case 'Poor':
       return 'poor'
     default:
-      return 'default'
+      return 'good'
   }
 }
 

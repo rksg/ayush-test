@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Row, Col, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Drawer }          from '@acx-ui/components'
+import { Drawer, Loader }         from '@acx-ui/components'
+import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
 import {
   EdgeNokiaCageData,
   EdgeNokiaOltData,
@@ -27,31 +28,58 @@ interface CageDetailsDrawerProps {
 export const CageDetailsDrawer = (props: CageDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, oltData, currentCage } = props
+  const cageName = currentCage?.cage
 
   const [currentOnu, setCurrentOnu] = useState<EdgeNokiaOnuData | undefined>(undefined)
+
+  const { data: onuList, isLoading, isFetching } = useGetEdgeOnuListQuery({
+    params: {
+      venueId: oltData?.venueId,
+      edgeClusterId: oltData?.edgeClusterId,
+      oltId: oltData?.serialNumber
+    },
+    payload: { cageId: cageName }
+  }, { skip: !oltData || !cageName })
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const handleOnOnuClick = (onu: EdgeNokiaOnuData | undefined) => {
+  const onClickRow = (onu: EdgeNokiaOnuData | undefined): void => {
     setCurrentOnu(onu)
   }
+
+  const onClearSelection = (): void => {
+    setCurrentOnu(undefined)
+  }
+
+  // update currentOnu when data changes
+  useEffect(() => {
+    if (currentOnu) {
+      setCurrentOnu(onuList?.find(item => item.name === currentOnu?.name))
+    }
+  }, [onuList])
 
   return (
     <Drawer
       title={currentCage?.cage}
       visible={visible}
       onClose={onClose}
-      width={550}
+      width={600}
     >
       <Row>
         <Col span={24}>
-          <EdgeNokiaOnuTable
-            onClick={handleOnOnuClick}
-            oltData={oltData}
-            cageName={currentCage?.cage}
-          />
+          <Loader
+            states={[{ isLoading, isFetching }]}
+            style={{ minHeight: '100px', backgroundColor: 'transparent' }}
+          >
+            <EdgeNokiaOnuTable
+              data={onuList}
+              cageName={cageName}
+              onClickRow={onClickRow}
+              onClearSelection={onClearSelection}
+            />
+          </Loader>
         </Col>
       </Row>
 

@@ -86,7 +86,7 @@ export function GeneralSettingForm () {
     useQueryFn: useConfigProfilesQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplatesQuery,
     skip: isProfileDisabled,
-    payload: {},
+    payload: { pageSize: 10000 },
     enableRbac: isSwitchRbacEnabled
   })
 

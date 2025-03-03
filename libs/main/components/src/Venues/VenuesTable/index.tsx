@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
@@ -8,54 +8,57 @@ import { useIntl }                       from 'react-intl'
 import {
   Button,
   ColumnType,
+  cssStr,
+  Loader,
   PageHeader,
+  showActionModal,
   Table,
   TableProps,
-  Loader,
-  showActionModal,
-  cssStr,
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getAPStatusDisplayName,
+  useEnforcedStatus,
   useIsEdgeFeatureReady,
   useIsEdgeReady
 } from '@acx-ui/rc/components'
 import {
-  useVenuesTableQuery,
   useDeleteVenueMutation,
+  useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
-  useEnhanceVenueTableQuery
+  useLazyGetVenueEdgeCompatibilitiesV1_1Query,
+  useVenuesTableQuery
 } from '@acx-ui/rc/services'
 import {
-  Venue,
   ApVenueStatusEnum,
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
   TableQuery,
   usePollingTableQuery,
-  CommonUrlsInfo,
-  SwitchRbacUrlsInfo
+  Venue
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
   EdgeScopes,
   RequestPayload,
+  RolesEnum,
   SwitchScopes,
-  WifiScopes, RolesEnum
-
-}   from '@acx-ui/types'
+  WifiScopes
+} from '@acx-ui/types'
 import {
-  hasCrossVenuesPermission,
   filterByAccess,
-  hasPermission,
-  hasRoles,
   getUserProfile,
-  hasAllowedOperations
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission,
+  hasRoles
 } from '@acx-ui/user'
 import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
 const incompatibleIconStyle = {
+  position: 'absolute' as const,
   height: '16px',
   width: '16px',
   marginBottom: '-3px',
@@ -106,13 +109,15 @@ function useColumns (
     {
       title: $t({ defaultMessage: 'Address' }),
       width: Infinity,
-      key: 'country',
+      key: 'addressLine',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
+      searchable: searchable,
       filterable: filterables ? filterables['city'] : false,
-      render: function (_, row) {
-        return `${row.country}, ${row.city}`
+      render: function (_, row, __, highlightFn) {
+        return searchable ? highlightFn(row.addressLine as string)
+          : row.addressLine
       }
     },
     ...(isStatusColumnEnabled ? [{
@@ -255,9 +260,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'latitude',
       'longitude',
       'status',
-      'id'
+      'id',
+      'isEnforced',
+      'isManagedByTemplate',
+      'addressLine'
     ],
-    searchTargetFields: ['name'],
+    searchTargetFields: ['name', 'addressLine'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
@@ -280,10 +288,8 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { tenantId } = useParams()
   const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
-  const [
-    deleteVenue,
-    { isLoading: isDeleteVenueUpdating }
-  ] = useDeleteVenueMutation()
+  const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const hasDeletePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])
@@ -299,11 +305,15 @@ export const VenueTable = ({ settingsId = 'venues-table',
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    }
+    },
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: hasDeletePermission,
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -428,17 +438,25 @@ function useGetVenueCityList () {
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
+  const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
 
   const [tableData, setTableData] = useState<Venue[]>()
 
   useEffect(() => {
     const fetchVenueEdgeCompatibilities = async (tableData: Venue[]) => {
-      const res = await getVenueEdgeCompatibilities({
-        payload: {
-          filters: { venueIds: tableData.map(i => i.id) }
-        }
-      }).unwrap()
+      const res = isEdgeCompatibilityEnhancementEnabled
+        ? await getVenueEdgeCompatibilitiesV1_1({
+          payload: {
+            filters: { venueIds: tableData.map(i => i.id) }
+          }
+        }).unwrap()
+        : await getVenueEdgeCompatibilities({
+          payload: {
+            filters: { venueIds: tableData.map(i => i.id) }
+          }
+        }).unwrap()
 
       const result = cloneDeep(tableData) ?? []
       res?.compatibilities?.forEach((item) => {

@@ -2,7 +2,8 @@ import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery }                 from '@acx-ui/analytics/components'
-import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
+import { Card, Descriptions, getDefaultEarliestStart, Loader, Subtitle }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
@@ -23,8 +24,8 @@ export function APDetailsCard (props: {
   const { apDetail, isLoading, onClose } = props
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
-
-  const { dateFilter } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/wifi')
 

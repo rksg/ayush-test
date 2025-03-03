@@ -4,7 +4,7 @@ import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                    from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
@@ -120,6 +120,7 @@ export default function MyPolicies () {
                       ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
                       : ''
                   }
+                  isBetaFeature={policy.isBetaFeature}
                 />
               </GridCol>
             )
@@ -144,6 +145,7 @@ interface PolicyCardData {
   listViewPath?: Path
   disabled?: boolean
   helpIcon?: React.ReactNode
+  isBetaFeature?: boolean
 }
 
 function useCardData (): PolicyCardData[] {
@@ -169,6 +171,7 @@ function useCardData (): PolicyCardData[] {
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
 
   return [
     {
@@ -339,7 +342,8 @@ function useCardData (): PolicyCardData[] {
       totalCount: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeHqosEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeHqosEnabled
+      disabled: !isEdgeHqosEnabled,
+      isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_HQOS)
     },
     {
       type: PolicyType.SOFTGRE,
@@ -376,6 +380,16 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/portProfile/wifi'),
       disabled: !isSwitchPortProfileEnabled
+    },
+    {
+      type: PolicyType.SSO_SAML,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      // totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SSO_SAML, oper: PolicyOperation.LIST })),
+      disabled: !isCaptivePortalSsoSamlEnabled
     }
+
   ]
 }
