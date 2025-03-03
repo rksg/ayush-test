@@ -9,10 +9,11 @@ import {
   checkObjectNotExists,
   PersonaGroup, RulesManagementUrlsInfo,
   trailingNorLeadingSpaces
-} from '@acx-ui/rc/utils';
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
-import { hasAllowedOperations, hasRoles } from '@acx-ui/user';
+} from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                      from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../../AdaptivePolicySetForm'
 import { hasCreateIdentityGroupPermission } from '../../../useIdentityGroupUtils'
@@ -20,7 +21,6 @@ import { PersonaGroupDrawer }               from '../../../users'
 import { MAX_CERTIFICATE_PER_TENANT }       from '../constants'
 import { onboardSettingsDescription }       from '../contentsMap'
 import { Section, Title }                   from '../styledComponents'
-import { getOpsApi } from '@acx-ui/utils';
 
 export default function OnboardForm ({ editMode = false }) {
   const { $t } = useIntl()
