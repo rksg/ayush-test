@@ -107,6 +107,7 @@ const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
 
 describe('IntentAIForm', () => {
   beforeEach(() => {
+    jest.mocked(get).mockReturnValue('')
     store.dispatch(intentAIApi.util.resetApiState())
     moment.tz.setDefault('Asia/Singapore')
     const now = +new Date('2024-08-08T12:00:00.000Z')
@@ -117,18 +118,6 @@ describe('IntentAIForm', () => {
     mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
       data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
     })
-  })
-
-  afterEach((done) => {
-    jest.clearAllMocks()
-    jest.restoreAllMocks()
-    const toast = screen.queryByRole('img', { name: 'close' })
-    if (toast) {
-      waitForElementToBeRemoved(toast).then(done)
-      message.destroy()
-    } else {
-      done()
-    }
   })
 
   it('handle schedule intent', async () => {
