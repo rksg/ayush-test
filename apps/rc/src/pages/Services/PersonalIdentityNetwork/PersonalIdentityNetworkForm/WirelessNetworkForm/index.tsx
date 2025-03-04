@@ -85,9 +85,6 @@ export const WirelessNetworkForm = () => {
             <Loader states={[{ isLoading: isNetworkOptionsLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
-                rules={isEdgePinEnhanceReady ? [{
-                  required: true, message: $t({ defaultMessage: 'Please select network' })
-                }] : undefined}
               >
                 <Checkbox.Group onChange={onNetworkChange}>
                   <Space direction='vertical'>
