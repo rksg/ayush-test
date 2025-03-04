@@ -17,7 +17,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink, getScopeKeyByPolicy, IdentityGroupLink, MacRegistrationPoolLink,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroupUrlsInfo,
+  PolicyType, RulesManagementUrlsInfo,
   useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -216,7 +216,7 @@ export default function AdaptivePolicySetDetail () {
                 policyId: policyId as string
               })}
             scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
-            rbacOpsIds={[getOpsApi(RadiusAttributeGroupUrlsInfo.updatePolicySet)]}
+            rbacOpsIds={[getOpsApi(RulesManagementUrlsInfo.updatePolicySet)]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
