@@ -90,13 +90,15 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
         <Typography.Title level={2}>
           {$t({ defaultMessage: 'Instances' })}
         </Typography.Title>
-        <PersonalIdentityNetworkDetailTableGroup
-          ref={tableDetailsGroupRef}
-          pinData={pinData}
-          apListTableQuery={apListTableQuery}
-          personaListTableQuery={personaListTableQuery}
-          isLoading={isPinDataLoading}
-        />
+        <div style={{ minHeight: '300px' }}>
+          <PersonalIdentityNetworkDetailTableGroup
+            ref={tableDetailsGroupRef}
+            pinData={pinData}
+            apListTableQuery={apListTableQuery}
+            personaListTableQuery={personaListTableQuery}
+            isLoading={isPinDataLoading}
+          />
+        </div>
       </UI.InstancesMargin>
     </Card>
   </Space>
