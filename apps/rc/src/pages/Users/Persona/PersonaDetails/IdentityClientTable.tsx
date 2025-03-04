@@ -38,7 +38,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const settingsId = 'identity-client-table'
   const [ datasource, setDatasource ] = useState<IdentityClient[]>([])
   const [ clientMacs, setClientMacs ] = useState<Set<string>>(new Set())
-  const addClientMac = (mac: string) => setClientMacs(prev => new Set(prev.add(mac)))
+  // const addClientMac = (mac: string) => setClientMacs(prev => new Set(prev.add(mac)))
 
   const [
     getClientList,
