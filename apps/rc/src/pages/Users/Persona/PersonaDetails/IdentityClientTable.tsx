@@ -56,31 +56,6 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     return macAddress.replaceAll('-', ':').toUpperCase()
   }
 
-  // FIXME: need to remove 'true'
-  useEffect(() => {
-    setDatasource([{
-      id: '1',
-      tenantId: 'tenantId',
-      groupId: personaGroupId,
-      identityId: personaId,
-      networkId: '2f35a5f920774c0ea2bdc91f447e0eec',
-      clientMac: '80:a9:97:23:ff:47',
-      deviceName: 'test',
-      onboardType: 'DPSK'
-    } as IdentityClient,
-      {
-        id: '2',
-        tenantId: 'tenantId',
-        groupId: personaGroupId,
-        identityId: personaId,
-        networkId: '2f35a5f920774c0ea2bdc91f447e0eec',
-        clientMac: '80:a9:97:23:ff:11',
-        deviceName: 'test',
-        onboardType: 'DPSK'
-      } as IdentityClient])
-    addClientMac(toClientMacFormat('80:a9:97:23:ff:47'))
-  }, [])
-
   useEffect(() => {
     if (tableQuery.data) {
       const macs = tableQuery.data.data.map((client) => toClientMacFormat(client.clientMac))
