@@ -20,7 +20,7 @@ export function IdentityGroup () {
   const form = Form.useFormInstance()
   const selectedIdentityId = Form.useWatch('identityId', form)
   const [identityGroupId, setIdentityGroupId] = useState<string>('')
-  const [display, setDisplay] = useState('none')
+  const [display, setDisplay] = useState({ display: 'none' })
   const [personaGroupVisible, setPersonaGroupVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
@@ -43,7 +43,7 @@ export function IdentityGroup () {
   const setData = async () => {
     let groupOptions = []
     /*
-     * TODO: When under edit mode, the 'Select...' option should be remove
+     * TODO: When under edit mode, the 'Select...' option should be removed
      * if user had selected one identity group. It will be implemented once
      * API is done.
      */
@@ -70,9 +70,9 @@ export function IdentityGroup () {
 
   const onAssociationChange = (value: boolean) => {
     if(value) {
-      setDisplay('block')
+      setDisplay({ display: 'block' })
     } else {
-      setDisplay('none')
+      setDisplay({ display: 'none' })
     }
   }
 
@@ -119,7 +119,7 @@ export function IdentityGroup () {
               children={<Switch onChange={onAssociationChange} />}
             />
           </UI.FieldLabel>
-          <div style={{ marginBottom: '20px', display: display }}>
+          <div style={{ marginBottom: '20px', ...display }}>
             <UI.FieldLabel width={'400px'}>
               <p style={{ marginBottom: '0px' }}>
                 {$t({ defaultMessage: 'Identity' })}
@@ -188,5 +188,4 @@ export function IdentityGroup () {
         />
       )}
     </>
-  )
-}
+  )}
