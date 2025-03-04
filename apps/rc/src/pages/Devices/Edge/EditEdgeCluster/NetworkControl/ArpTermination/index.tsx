@@ -118,7 +118,7 @@ export const ArpTerminationFormItem = (props: {
               <Space style={{ alignItems: 'flex-start' }}>
                 {$t({ defaultMessage: 'ARP Termination Aging Timer' })}
                 <Tooltip.Question
-                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries. Disabling the aging timer will make cached entries permanent.' })}
+                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries.' })}
                   placement='right'
                   iconStyle={tooltipIconStyle}
                 />
