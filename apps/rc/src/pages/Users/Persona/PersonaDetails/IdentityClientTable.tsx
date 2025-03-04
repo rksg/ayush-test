@@ -61,7 +61,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       const macs = tableQuery.data.data.map((client) => toClientMacFormat(client.clientMac))
       setClientMacs(new Set(macs))
       setDatasource(tableQuery.data.data)
-      setDeviceCount(clientMacs.size)
+      setDeviceCount(new Set(macs).size)
     }
   }, [tableQuery.data])
 

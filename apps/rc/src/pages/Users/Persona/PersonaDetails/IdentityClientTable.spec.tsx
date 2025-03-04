@@ -77,8 +77,8 @@ describe('IdentityClientTable', () => {
     render(
       <IdentityDetailsContext.Provider
         value={{
-          setDeviceCount: jest.fn(),
-          setCertCount: setCountFn,
+          setDeviceCount: setCountFn,
+          setCertCount: jest.fn(),
           setDpskCount: jest.fn(),
           setMacAddressCount: jest.fn()
         }}>
@@ -95,6 +95,7 @@ describe('IdentityClientTable', () => {
     await waitFor(() => expect(getClientsFn).toHaveBeenCalledTimes(1))
 
     expect(screen.getByText('11-11-11-11-11-11')).toBeInTheDocument()
-    expect(screen.getByText('Persona_Host_name')).toBeInTheDocument()
+    expect(await screen.findByText('Persona_Host_name')).toBeInTheDocument()
+    expect(setCountFn).toHaveBeenCalledTimes(1)
   })
 })
