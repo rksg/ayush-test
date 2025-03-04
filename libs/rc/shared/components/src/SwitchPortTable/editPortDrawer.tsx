@@ -757,6 +757,9 @@ export function EditPortDrawer ({
       case 'portSecurity':
         return flexAuthEnabled
           ? $t(EditPortMessages.CANNOT_ENABLE_PORT_MAC_SECURITY_WHEN_FLEX_AUTH_ENABLED) : ''
+      case 'switchMacAcl':
+        return flexAuthEnabled
+          ? $t(EditPortMessages.CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED) : ''
       default: return ''
     }
   }
@@ -2554,35 +2557,38 @@ export function EditPortDrawer ({
         />
         { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b && getFieldTemplate({
           field: 'switchMacAcl',
-          content: <>
-            <Form.Item
-              {...getFormItemLayout(isMultipleEdit)}
-              name='switchMacAcl'
-              label={$t(FIELD_LABEL.switchMacAcl)}
-              initialValue=''
-              children={shouldRenderMultipleText({
-                field: 'switchMacAcl', ...commonRequiredProps
-              }) ? <MultipleText />
-                : <Select
-                  options={macAclsOptions}
-                  disabled={getFieldDisabled('switchMacAcl')}
-                />
-              }
-            />
+          content: <Form.Item
+            noStyle
+            children={<><Tooltip title={getFieldTooltip('switchMacAcl')}>
+              <Form.Item
+                {...getFormItemLayout(isMultipleEdit)}
+                name='switchMacAcl'
+                label={$t(FIELD_LABEL.switchMacAcl)}
+                initialValue=''
+                children={shouldRenderMultipleText({
+                  field: 'switchMacAcl', ...commonRequiredProps
+                }) ? <MultipleText />
+                  : <Select
+                    options={macAclsOptions}
+                    disabled={getFieldDisabled('switchMacAcl')}
+                  />
+                }
+              />
+            </Tooltip>
             {((isMultipleEdit && switchMacAclCheckbox) ||
             !isMultipleEdit) && hasCreatePermission &&
-            <Tooltip title={getFieldTooltip('switchMacAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
                   key='add-mac-acl'
                   size='small'
-                  disabled={(isMultipleEdit && !switchMacAclCheckbox) || !hasSwitchProfile}
+                  disabled={(isMultipleEdit && !switchMacAclCheckbox) || !hasSwitchProfile ||
+                    getFieldDisabled('switchMacAcl')}
                   onClick={() => { setDrawerMACAclVisible(true) }}
                 >{$t({ defaultMessage: 'Add MAC ACL' })}
                 </Button>
-              </Space>
-            </Tooltip>}
-          </>
+              </Space>}</>
+            }
+          />
         })}
 
         {getFieldTemplate({

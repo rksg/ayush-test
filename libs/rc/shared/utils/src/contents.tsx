@@ -335,7 +335,10 @@ export const EditPortMessages = {
     defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level : Applicable to firmware versions FI 10.0.10g and later (or) FI 10.0.20b and later'
   }),
   CANNOT_ENABLE_PORT_MAC_SECURITY_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'Port MAC Security cannot be enable if Authentication is turned ON.'
+    defaultMessage: 'Port MAC Security cannot be enabled if Authentication is turned ON.'
+  }),
+  CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'MAC ACL cannot be enabled if Authentication is turned ON.'
   })
 }
 
