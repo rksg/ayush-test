@@ -72,15 +72,14 @@ export const useOnboardedSystems = () => {
   const tenantId = tenant.selectedTenant.id
   const { deleteSmartZone } = useDeleteSmartZone()
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
+  const tenantIds = tenant.tenants
+    .filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
+    .map(t => t.id)
 
   const defaultPayload = {
     fields: [],  // select all
-    filters: {
-      tenantIds: tenant.tenants
-        .filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
-        .map(t => t.id)
-    },
-    currentTenantId: tenantId
+    filters: { tenantIds },
+    currentTenantId: tenantIds.find(v => v === tenantId)
   }
   const settingsId = 'onboarded-system-table'
   const tableQuery = useTableQuery<FormattedOnboardedSystem>({
@@ -90,7 +89,8 @@ export const useOnboardedSystems = () => {
     defaultPayload,
     search: {
       searchTargetFields: ['account_name', 'device_name']
-    }
+    },
+    option: { skip: tenantIds.length === 0 }
   })
 
   const emptyValues: { key: string, value: string }[] = []
@@ -106,6 +106,7 @@ export const useOnboardedSystems = () => {
       filters: defaultPayload.filters
     }
   }, {
+    skip: tenantIds.length === 0,
     selectFromResult: ({ data }) => {
       return {
         statusDisplayMap: data?.data?.map(status =>

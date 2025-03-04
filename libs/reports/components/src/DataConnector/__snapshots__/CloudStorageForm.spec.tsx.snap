@@ -7,6 +7,7 @@ Object {
   "azureConnectionType": "azureFiles",
   "azureCustomerName": "name",
   "azureShareName": "share name",
+  "azureStoragePath": "name",
   "connectionType": "azure",
 }
 `;
@@ -18,6 +19,7 @@ Object {
   "azureConnectionType": "Azure Files",
   "azureCustomerName": "name",
   "azureShareName": "share name",
+  "azureStoragePath": "some/path",
   "connectionType": "azure",
   "id": "id",
 }
@@ -30,6 +32,7 @@ Object {
   "azureConnectionType": "Azure Files",
   "azureCustomerName": "name",
   "azureShareName": "share name",
+  "azureStoragePath": "some/path",
   "connectionType": "azure",
   "id": "id",
 }

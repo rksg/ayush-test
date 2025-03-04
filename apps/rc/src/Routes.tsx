@@ -175,7 +175,6 @@ import NetworkSegAuthDetail                                             from './
 import NetworkSegAuthForm                                               from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                                              from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
 import AddPersonalIdentityNetwork                                       from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
-import AddPersonalIdentityNetworkEnhanced                               from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetworkEnhanced'
 import EditPersonalIdentityNetwork                                      from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
 import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
 import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
@@ -553,9 +552,7 @@ const useEdgePinRoutes = () => {
         oper: ServiceOperation.CREATE })}
       element={
         <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
-          {isEdgePinEnhancementReady
-            ? <AddPersonalIdentityNetworkEnhanced />
-            : <AddPersonalIdentityNetwork /> }
+          <AddPersonalIdentityNetwork />
         </ServiceAuthRoute>
       }
     />
