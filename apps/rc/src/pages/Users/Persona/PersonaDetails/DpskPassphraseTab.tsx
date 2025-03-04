@@ -58,7 +58,7 @@ function DpskPassphraseTab (props : { personaData?: Persona, personaGroupData?: 
         searchString: personaData?.dpskGuid
       })
     }
-  }, [personaData?.dpskGuid])
+  }, [personaData])
 
   const regeneratePassphrase = async () => {
     return await updatePersona({
@@ -94,11 +94,9 @@ function DpskPassphraseTab (props : { personaData?: Persona, personaGroupData?: 
         <DpskPassphraseManagement
           serviceId={personaGroupData.dpskPoolId}
           tableQuery={dpskTableQuery}
-          disableAddNetwork
-          disableCreate
-          disableImport
-          disableExport
-          disableSearchable
+          disabledFeatures={
+            { searchable: true, import: true, export: true, create: true, addNetwork: true }
+          }
         />
       </>
     }

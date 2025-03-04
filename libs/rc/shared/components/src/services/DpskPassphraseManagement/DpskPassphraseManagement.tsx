@@ -61,20 +61,18 @@ interface UploadPassphrasesFormFields {
 interface DpskPassphraseManagementProps {
   serviceId: string,
   tableQuery: TableQuery<NewDpskPassphrase, RequestPayload<unknown>, unknown>,
-  disableSearchable?: boolean,
-  disableImport?: boolean,
-  disableExport?: boolean,
-  disableCreate?: boolean,
-  disableAddNetwork?: boolean
+  disabledFeatures?: {
+    searchable?: boolean
+    import?: boolean
+    export?: boolean
+    create?: boolean
+    addNetwork?: boolean
+  }
 }
 
 // FIXME: Support disable some components by props value
 export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) {
-  const {
-    serviceId, tableQuery,
-    disableSearchable = false, disableImport = false, disableExport = false,
-    disableCreate = false, disableAddNetwork = false
-  } = props
+  const { serviceId, tableQuery, disabledFeatures } = props
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
@@ -131,7 +129,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
         : $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      searchable: !disableSearchable,
+      searchable: !disabledFeatures?.searchable,
       render: function (_, row) {
         if (isIdentityGroupRequired) {
           const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
@@ -170,7 +168,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
       key: 'devices',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'devices',
-      searchable: !disableSearchable,
+      searchable: !disabledFeatures?.searchable,
       render: function (_, { devices }) {
         return devices?.map(device => device.mac).join(', ')
       }
@@ -270,7 +268,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
   }
 
   const hasAddNetworkPermission = () => {
-    if (disableAddNetwork) {
+    if (disabledFeatures?.addNetwork) {
       return false
     }
     if (getUserProfile().rbacOpsApiEnabled) {
@@ -362,7 +360,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
 
   const actions = [
     ...(filterDpskOperationsByPermission([
-      ...(disableCreate
+      ...(disabledFeatures?.create
         ? []
         : [{
           rbacOpsIds: [getOpsApi(DpskUrls.addPassphrase)],
@@ -372,7 +370,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
             setAddPassphrasesDrawerVisible(true)
           }
         }]),
-      ...(disableImport
+      ...(disabledFeatures?.import
         ? []
         : [{
           rbacOpsIds: [getOpsApi(DpskUrls.uploadPassphrases)],
@@ -380,7 +378,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
           onClick: () => setUploadCsvDrawerVisible(true)
         }])
     ])),
-    ...(disableExport
+    ...(disabledFeatures?.export
       ? []
       : [{
         label: $t({ defaultMessage: 'Export To File' }),
