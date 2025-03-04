@@ -32,31 +32,6 @@ const mockedDefinitionList = {
   ]
 }
 
-const publishedWorkflows: Workflow[] = [{
-  id: 'id1',
-  name: 'workflow-1',
-  publishedDetails: {
-    status: 'PUBLISHED',
-    version: 1,
-    publishedDate: '2024-02-01'
-  },
-  links: [
-    {
-      rel: 'enrollmentPortal',
-      href: '/url'
-    }
-  ]
-}]
-
-const publishedList: NewAPITableResult<Workflow> = {
-  content: publishedWorkflows,
-  paging: {
-    page: 0,
-    pageSize: 10,
-    totalCount: 1
-  }
-}
-
 const workflows:Workflow[] = [{
   id: 'id1',
   name: 'workflow-1'
@@ -145,12 +120,6 @@ describe('WorkflowsLibrary', () =>{
         (req, res, ctx) => {
           spyNestedClone()
           return res(ctx.json(list))
-        }
-      ),
-      rest.post(
-        WorkflowUrls.searchWorkflows.url.split('?')[0],
-        (req, res, ctx) => {
-          return res(ctx.json(publishedList))
         }
       )
     )

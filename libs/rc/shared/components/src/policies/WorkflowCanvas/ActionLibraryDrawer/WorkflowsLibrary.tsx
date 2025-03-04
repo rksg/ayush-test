@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import {  Menu, MenuProps, Space } from 'antd'
 import { useIntl }                 from 'react-intl'
@@ -8,7 +8,6 @@ import { Dropdown, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowStepsByIdQuery,
-  useLazySearchWorkflowsVersionListQuery,
   useNestedCloneWorkflowMutation,
   useSearchInProgressWorkflowListQuery
 } from '@acx-ui/rc/services'
@@ -39,8 +38,6 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
   const { onClose, onConfigureClose, workflowId, stepId } = props
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewId, setPreviewId] = useState<string>()
-  const [workflowMap, setWorkflowMap] = useState(new Map<string, Workflow>())
-  const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const [nestedCloneWorkflow] = useNestedCloneWorkflowMutation()
   const [getWorkflowStepsById]= useLazyGetWorkflowStepsByIdQuery()
   const [hoverRow, setHoverRow] = useState<string>('')
@@ -59,7 +56,7 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
   })
 
   const handlePreview = (workflowId: string) => {
-    setPreviewId(workflowMap.get(workflowId)?.id ?? workflowId)
+    setPreviewId(workflowId)
     setPreviewVisible(true)
   }
 
@@ -114,27 +111,6 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
     }
     tableQuery.setPayload(payload)
   }
-
-  const fetchVersionHistory = async (workflows: Workflow[]) => {
-    try {
-      const result = await searchVersionedWorkflows(
-        { params: { excludeContent: 'false' }, payload: workflows.map(workflow => workflow.id) }
-      ).unwrap()
-      if (result) {
-        result.forEach(v => {
-          if (v.publishedDetails?.status === 'PUBLISHED') {
-            setWorkflowMap(map => new Map(map.set(v.publishedDetails?.parentWorkflowId!!, v)))
-          }
-        })
-      }
-    } catch (e) {}
-  }
-
-  useEffect(() => {
-    if (tableQuery.isLoading || tableQuery.isFetching) return
-    setWorkflowMap(new Map())
-    fetchVersionHistory(tableQuery.data?.data ?? [])
-  }, [tableQuery.data, tableQuery.isFetching])
 
   function useColumns () {
     const [ referenceId, setReferenceId ] = useState('')
