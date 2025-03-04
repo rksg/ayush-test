@@ -24,7 +24,7 @@ export function IdentityGroup () {
   const [personaGroupVisible, setPersonaGroupVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
-  const [lazyPersonaGroupListTigger] = useLazySearchPersonaGroupListQuery()
+  const [lazyPersonaGroupListTrigger] = useLazySearchPersonaGroupListQuery()
   const [identityGroupOptions, setIdentityGroupOptions] = useState(
     [
       { label: 'Select...', value: '' }
@@ -50,7 +50,7 @@ export function IdentityGroup () {
     if (!editMode) {
       groupOptions.push({ label: 'Select...', value: '' })
     }
-    const result = await lazyPersonaGroupListTigger({
+    const result = await lazyPersonaGroupListTrigger({
       payload: {
         page: 1,
         pageSize: 10000,
@@ -85,6 +85,7 @@ export function IdentityGroup () {
           initialValue={''}
           children={
             <Select
+              data-testid={'identity-group-select'}
               style={{ width: '400px' }}
               onChange={(value) => {
                 setIdentityGroupId(value)
@@ -114,6 +115,7 @@ export function IdentityGroup () {
                 'Use single identity association to all onboarded devices'
             })}
             <Form.Item
+              data-testid={'identity-associate-switch'}
               valuePropName='checked'
               initialValue={false}
               children={<Switch onChange={onAssociationChange} />}
@@ -152,6 +154,7 @@ export function IdentityGroup () {
                 onClick={() => {
                   setIdentitySelectorDrawerVisible(true)
                 }}
+                data-testid={'add-identity-button'}
               >
                 {$t({ defaultMessage: 'Add Identity' })}
               </Button>
