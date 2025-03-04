@@ -62,8 +62,6 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
-  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
-  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataSubscriptionsEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
@@ -356,13 +354,6 @@ export function useMenuConfig () {
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     },
-    ...(isCanvasEnabled ? [ {
-      label: $t({ defaultMessage: 'AI Canvas' }),
-      uri: '/canvas',
-      inactiveIcon: BulbOutlined,
-      activeIcon: BulbSolid
-    }] : [])
-    ,
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
