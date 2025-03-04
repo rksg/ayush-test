@@ -6,6 +6,7 @@ import { useIntl }                    from 'react-intl'
 import { GridCol, GridRow, Modal, ModalType, Select, SelectionControl }                                       from '@acx-ui/components'
 import { useAdaptivePolicySetListQuery, useLazyGetCertificateTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 import {
+  CertificateUrls,
   checkObjectNotExists,
   PersonaGroup, RulesManagementUrlsInfo,
   trailingNorLeadingSpaces
@@ -39,6 +40,10 @@ export default function OnboardForm ({ editMode = false }) {
     data: {} as PersonaGroup | undefined
   })
 
+  /* eslint-disable max-len */
+  const allowUpdatePolicySetting = (!editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet)])) ||
+  /* eslint-disable max-len */
+  (editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet), getOpsApi(CertificateUrls.unbindCertificateTemplateWithPolicySet)]))
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
 
   useEffect(() => {
@@ -171,6 +176,7 @@ export default function OnboardForm ({ editMode = false }) {
               ]}
               children={
                 <Select
+                  disabled={!allowUpdatePolicySetting}
                   allowClear
                   placeholder={$t({ defaultMessage: 'Select ...' })}
                   options={

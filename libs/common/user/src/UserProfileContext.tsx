@@ -82,7 +82,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const { data: rcgAllowedOperations } = useGetAllowedOperationsQuery(
     undefined,
     { skip: !rbacOpsApiEnabled })
-  const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op=>op.uri) || []
+  const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op=>op?.uri) || []
   const allowedOperations = [...new Set(rcgOpsUri)]
 
   const getHasAllVenues = () => {

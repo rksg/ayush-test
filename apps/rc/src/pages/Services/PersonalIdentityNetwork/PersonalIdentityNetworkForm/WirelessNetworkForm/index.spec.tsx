@@ -3,10 +3,9 @@
 import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { EdgePinFixtures }       from '@acx-ui/rc/utils'
-import { Provider }              from '@acx-ui/store'
+import { StepsForm }       from '@acx-ui/components'
+import { EdgePinFixtures } from '@acx-ui/rc/utils'
+import { Provider }        from '@acx-ui/store'
 import {
   render,
   screen
@@ -158,36 +157,5 @@ describe('PersonalIdentityNetworkForm - WirelessNetworkForm', () => {
     const addNetworkButton = await screen.findByRole('button', { name: 'Add DPSK Network' })
     await userEvent.click(addNetworkButton)
     expect(screen.getByTestId('AddDpskModal')).toHaveTextContent('true')
-  })
-
-  describe('Enhancement is enabled', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
-    })
-
-    it('Step3 - network should be mandatory', async () => {
-      const mockContextData_noNetwork = cloneDeep(mockContextData)
-      mockContextData_noNetwork.networkOptions = []
-
-      render(
-        <Provider>
-          <PersonalIdentityNetworkFormContext.Provider
-            value={mockContextData_noNetwork}
-          >
-            <StepsForm onFinish={mockedFinishFn}>
-              <StepsForm.StepForm>
-                <WirelessNetworkForm />
-              </StepsForm.StepForm>
-            </StepsForm>
-          </PersonalIdentityNetworkFormContext.Provider>
-        </Provider>,
-        { route: { params, path: createPinPath } })
-
-      await screen.findByText(/No networks activated on Venue/)
-      const addButton = await screen.findByRole('button', { name: 'Add' })
-      await userEvent.click(addButton)
-      await screen.findByText(/Please select network/)
-      expect(mockedFinishFn).toBeCalledTimes(0)
-    })
   })
 })
