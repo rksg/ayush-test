@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 
 import { Tag }       from 'antd'
 import { useIntl }   from 'react-intl'
@@ -12,7 +12,7 @@ import {
   useUpdatePersonaMutation,
   useGetPersonaGroupByIdQuery,
   useGetCertificatesByIdentityIdQuery,
-  useGetEnhancedDpskPassphraseListQuery,
+  useLazyGetEnhancedDpskPassphraseListQuery,
   useSearchMacRegistrationsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -65,7 +65,7 @@ function PersonaDetails () {
   const { personaId, personaGroupId, activeTab } = useParams()
   const navigate = useNavigate()
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
-  const isIdentityRefactorEnabled = true
+  const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
@@ -90,21 +90,6 @@ function PersonaDetails () {
       { skip: !isCertTemplateEnabled || !personaGroupData?.certificateTemplateId || !personaId }
   })
 
-  const dpskTableQuery = useTableQuery({
-    useQuery: useGetEnhancedDpskPassphraseListQuery,
-    defaultPayload: {},
-    search: {
-      searchTargetFields: ['id'],
-      searchString: personaData?.dpskGuid ?? '--'
-    },
-    sorter: dpskDefaultSorter,
-    enableSelectAllPagesData: ['id'],
-    pagination: { settingsId: 'identity-dpskpasshphrase-table' },
-    apiParams: { serviceId: personaGroupData?.dpskPoolId ?? '' },
-    option: {
-      skip: !personaGroupData?.dpskPoolId || !personaData?.dpskGuid
-    }
-  })
   const macRegistrationTableQuery = useTableQuery({
     useQuery: useSearchMacRegistrationsQuery,
     sorter: macRegDefaultSorter,
@@ -125,6 +110,31 @@ function PersonaDetails () {
     }
   }) as unknown as TableQuery<MacRegistration, RequestPayload, unknown>
 
+  const [ getDpskPassphraseList ] = useLazyGetEnhancedDpskPassphraseListQuery()
+
+  const fetchDpskCount = useCallback(async () => {
+    if (!personaGroupData?.dpskPoolId || !personaData?.dpskGuid) return
+
+    try {
+      const result = await getDpskPassphraseList({
+        params: { serviceId: personaGroupData.dpskPoolId },
+        payload: {
+          ...dpskDefaultSorter,
+          searchTargetFields: ['id'],
+          searchString: personaData.dpskGuid
+        }
+      }).unwrap()
+
+      setDpskCount(result.totalCount ?? 0)
+    } catch (error) {
+      setDpskCount(0)
+    }
+  }, [personaGroupData?.dpskPoolId, personaData?.dpskGuid, getDpskPassphraseList])
+
+  useEffect(() => {
+    fetchDpskCount()
+  }, [fetchDpskCount])
+
   const [ updatePersona ] = useUpdatePersonaMutation()
 
   const [ deviceCount, setDeviceCount ] = useState(0)
@@ -137,12 +147,6 @@ function PersonaDetails () {
       setCertCount(certTableQuery.data?.totalCount ?? 0)
     }
   }, [certTableQuery?.data])
-
-  useEffect(() => {
-    if (dpskTableQuery?.data) {
-      setDpskCount(dpskTableQuery.data?.totalCount ?? 0)
-    }
-  }, [dpskTableQuery?.data])
 
   useEffect(() => {
     if (macRegistrationTableQuery?.data) {
