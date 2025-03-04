@@ -24,7 +24,7 @@ import {
   MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
-import { getOpsApi } from '@acx-ui/utils'
+import { getOpsApi }      from '@acx-ui/utils'
 
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 import { MacAddressDrawer }                                from '../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
