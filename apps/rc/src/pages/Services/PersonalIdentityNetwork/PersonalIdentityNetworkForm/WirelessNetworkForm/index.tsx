@@ -73,7 +73,7 @@ export const WirelessNetworkForm = () => {
         <Col>
           <Space direction='vertical'>
             {isEdgePinEnhanceReady
-              ? $t({ defaultMessage: 'Select DPSK networks that you want to enable PIN service:*' })
+              ? $t({ defaultMessage: 'Select DPSK networks that you want to enable PIN service:' })
               : $t({ defaultMessage: 'Apply the tunnel profile to the following networks that you want to enable personal identity network:' })
             }
             {!isEdgePinEnhanceReady && <Space size={1}>
@@ -85,9 +85,6 @@ export const WirelessNetworkForm = () => {
             <Loader states={[{ isLoading: isNetworkOptionsLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
-                rules={isEdgePinEnhanceReady ? [{
-                  required: true, message: $t({ defaultMessage: 'Please select network' })
-                }] : undefined}
               >
                 <Checkbox.Group onChange={onNetworkChange}>
                   <Space direction='vertical'>
