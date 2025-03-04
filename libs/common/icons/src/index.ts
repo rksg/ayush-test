@@ -11,6 +11,7 @@ export { ReactComponent as AccountCircleOutlined } from './icons/AccountCircleOu
 export { ReactComponent as AccountCircleSolid } from './icons/AccountCircleSolid.svg'
 export { ReactComponent as AdminOutlined } from './icons/AdminOutlined.svg'
 export { ReactComponent as AdminSolid } from './icons/AdminSolid.svg'
+export { ReactComponent as AIChat } from './icons/AIChat.svg'
 export { ReactComponent as AIDrivenRRM } from './icons/AIDrivenRRM.svg'
 export { ReactComponent as AIOperation } from './icons/AIOperation.svg'
 export { ReactComponent as AIOutlined } from './icons/AIOutlined.svg'

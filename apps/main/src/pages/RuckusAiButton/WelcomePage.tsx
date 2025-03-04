@@ -1,15 +1,19 @@
 import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DogAndPerson, OnboardingDog, WelcomeLogo } from '@acx-ui/icons'
-import { RuckusAiDog }                              from '@acx-ui/icons-new'
-import { useUserProfileContext }                    from '@acx-ui/user'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { AIChat, DogAndPerson, OnboardingDog, WelcomeLogo } from '@acx-ui/icons'
+import { RuckusAiDog }                                      from '@acx-ui/icons-new'
+import { useUserProfileContext }                            from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
-function WelcomePage () {
+function WelcomePage (props: {
+  startOnboardingAssistant: ()=>void
+  goChatCanvas: ()=>void
+}) {
   const { $t } = useIntl()
+  const { startOnboardingAssistant, goChatCanvas } = props
   const {
     data: userProfileData
   } = useUserProfileContext()
@@ -97,7 +101,7 @@ function WelcomePage () {
     }
     {
       isCanvasEnabled ? <UI.WelcomeCards>
-        <Card>
+        <Card onClick={startOnboardingAssistant}>
           <UI.WelcomeMeta
             title={<span
               className='card-title'
@@ -107,14 +111,14 @@ function WelcomePage () {
             description={$t({ defaultMessage: 'Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
           />
         </Card>
-        <Card>
+        <Card onClick={goChatCanvas}>
           <UI.WelcomeMeta
             title={<span
               className='card-title'
-            > <OnboardingDog />{$t({ defaultMessage: 'Onboarding Assistant' })}</span>}
+            > <AIChat />{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>}
             style={{ fontFamily: 'Montserrat' }}
             // eslint-disable-next-line max-len
-            description={$t({ defaultMessage: 'Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
+            description={$t({ defaultMessage: 'Ask me anything about your deployment! I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.' })}
           />
         </Card>
       </UI.WelcomeCards> :

@@ -9,6 +9,7 @@ import { DogAndPerson, OnboardingAssistantDog }                          from '@
 import { RuckusAiDog }                                                   from '@acx-ui/icons-new'
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                    from '@acx-ui/react-router-dom'
 
 import BasicInformationPage    from './BasicInformationPage'
 import Congratulations         from './Congratulations'
@@ -118,12 +119,10 @@ export default function RuckusAiButton () {
   const renderFooter = function () {
     switch (step) {
       case RuckusAiStepsEnum.WELCOME:
-        return isCanvasEnabled ? null : <Button key='next'
+        return isCanvasEnabled ? <div style={{ height: '26px' }}/> : <Button key='next'
           type='primary'
           loading={isLoading}
-          onClick={async () => {
-            setStep(RuckusAiStepsEnum.VERTICAL)
-          }}>
+          onClick={startOnboardingAssistant}>
           {$t({ defaultMessage: 'Start' })}
         </Button>
       case RuckusAiStepsEnum.VERTICAL:
@@ -256,6 +255,19 @@ export default function RuckusAiButton () {
     setConfigResponse({})
     setSelectedType('')
   }
+
+  const canvasLink = useTenantLink('/canvas')
+  const navigate = useNavigate()
+
+  const startOnboardingAssistant = () => {
+    setStep(RuckusAiStepsEnum.VERTICAL)
+  }
+
+  const goChatCanvas = () => {
+    navigate(canvasLink)
+    setVisible(false)
+  }
+
   return <>
     { isCanvasEnabled ? <UI.AiButton
       onClick={() => {
@@ -283,16 +295,34 @@ export default function RuckusAiButton () {
       destroyOnClose={true}
       children={
         <>
-          {isCanvasEnabled && <DogAndPerson style={{
-            position: 'absolute',
-            bottom: '-1px',
-            left: '18px',
-            zIndex: '2'
-          }} />}
+          {isCanvasEnabled && step === RuckusAiStepsEnum.WELCOME && <>
+            <DogAndPerson style={{
+              position: 'absolute',
+              bottom: '-1px',
+              left: '18px',
+              zIndex: '2'
+            }} />
+            <div style={{
+              position: 'absolute',
+              fontSize: '12px',
+              bottom: '20px',
+              right: '40px',
+              zIndex: '2'
+            }}>
+              {$t({ defaultMessage: 'AI-Powered by' })}
+              <span style={{ fontWeight: 600, paddingLeft: '4px' }}>
+                {$t({ defaultMessage: 'Mlisa' })}
+              </span>
+            </div>
+          </>}
           <Form form={basicFormRef}
             layout={'vertical'}
             labelAlign='left'>
-            {step === RuckusAiStepsEnum.WELCOME && <WelcomePage />}
+            {step === RuckusAiStepsEnum.WELCOME && <WelcomePage
+              startOnboardingAssistant={startOnboardingAssistant}
+              goChatCanvas={goChatCanvas}
+            />
+            }
             {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage
               selectedType={selectedType}
               setSelectedType={setSelectedType} />}

@@ -287,9 +287,14 @@ display: flex;
 align-items: center;
 .ant-card{
   width: 360px;
-  margin: 15px 15px 90px 15px;
+  margin: 20px 15px 50px 15px;
   height: 200px;
   background: #FFFFFFCC;
+  cursor: pointer;
+  &:hover{
+    background: var(--acx-accents-orange-10);
+    border: 1px solid var(--acx-accents-orange-50);
+  }
 }
   .ant-card-body {
     padding: 30px 40px;
