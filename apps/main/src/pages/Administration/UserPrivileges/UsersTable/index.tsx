@@ -127,12 +127,14 @@ const UsersTable = (props: UsersTableProps) => {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
+      searchable: true,
       dataIndex: 'fullName',
       sorter: { compare: sortProp('fullName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
+      searchable: true,
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) }
     },

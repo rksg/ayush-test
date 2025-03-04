@@ -24,6 +24,7 @@ export enum Features {
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
+  CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
@@ -61,6 +62,7 @@ export enum Features {
   EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
+  EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -241,6 +243,7 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_PSK = 'wifi-captive-portal-psk',
   WIFI_CAPTIVE_PORTAL_OWE = 'wifi-captive-portal-owe',
   WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE = 'wifi-captive-portal-directory-server-toggle',
+  WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE = 'wifi-captive-portal-sso-saml-toggle',
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
@@ -289,8 +292,14 @@ export enum Features {
   ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle',
   SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE = 'switch-rstp-pt-to-pt-mac-toggle',
   LEGACY_ETHERNET_PORT_TOGGLE = 'wifi-ethernet-ports-template-legacy',
+  ETHERNET_PORT_TEMPLATE_TOGGLE = 'wifi-ethernet-port-profile-template',
   MULTIPLE_IDENTITY_UNITS = 'multiple-identity-units',
-  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled'
+  WORKFLOW_TEMPLATE_TOGGLE = 'workflow-templating-enabled',
+  PRECONFIGURED_HS20_IDP_TOGGLE = 'wifi-preconfigured-hotspot20-idps-toggle',
+  SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
+  SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
+  WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
+  LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

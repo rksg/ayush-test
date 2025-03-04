@@ -2,16 +2,17 @@ import { createContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader }                 from '@acx-ui/components'
+import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import {
   PolicyOperation,
   PolicyType,
   WifiOperatorConstant,
   WifiOperatorDetailContextType,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  getScopeKeyByPolicy, filterByAccessForServicePolicyMutation
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -25,25 +26,15 @@ export const WifiOperatorDetailView = () => {
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })
+
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.WIFI_OPERATOR)
 
   return (
     <WifiOperatorDetailContext.Provider
       value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Wi-Fi Operator' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={policyName !== WifiOperatorConstant.DefaultProfile
           ? filterByAccessForServicePolicyMutation([
             <TenantLink
@@ -53,6 +44,7 @@ export const WifiOperatorDetailView = () => {
                 policyId: params.policyId as string
               })}
               scopeKey={getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.EDIT)}
+              rbacOpsIds={getPolicyAllowedOperation(PolicyType.WIFI_OPERATOR, PolicyOperation.EDIT)}
             >
               <Button key={'configure'} type={'primary'}>
                 {$t({ defaultMessage: 'Configure' })}

@@ -4,19 +4,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 import { get, isNil }        from 'lodash'
 
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
+  useLazyGetEnhanceApFeatureSetsQuery,
   useLazyGetMdnsEdgeCompatibilitiesQuery,
   useLazyGetPinApCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
-  useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesDeprecatedQuery,
+  useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
+  useLazyGetSwitchFeatureSetsQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
-  useLazyGetEnhanceApFeatureSetsQuery,
-  useLazyGetSwitchFeatureSetsQuery
+  useLazyGetVenueEdgeCompatibilitiesV1_1Query
 } from '@acx-ui/rc/services'
 import {
   ApCompatibility,
@@ -31,6 +32,7 @@ import {
   EdgeServiceCompatibility,
   EdgeServicesApCompatibilitiesResponse,
   EntityCompatibility,
+  EntityCompatibilityV1_1,
   getFeaturesIncompatibleDetailData,
   IncompatibilityFeatures,
   isApRelatedEdgeFeature,
@@ -38,6 +40,8 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
+
+import { useIsEdgeFeatureReady } from '.'
 
 export const useEdgeSdLansCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
@@ -318,37 +322,48 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
 // eslint-disable-next-line max-len
 export const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, skip: boolean = false) => {
   const { data, type = EdgeCompatibilityType.VENUE, featureName, venueId, edgeId } = props
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
+
   const [ isInitializing, setIsInitializing ] = useState<boolean>(false)
   // eslint-disable-next-line max-len
-  const [ edgeCompatibilities, setEdgeCompatibilities ] = useState<ApCompatibility[] | undefined>(undefined)
+  const [ edgeCompatibilities, setEdgeCompatibilities ] = useState<ApCompatibility[] | Compatibility[] | undefined>(undefined)
 
   const [getEdgeFeatureSets] = useLazyGetEdgeFeatureSetsQuery()
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
+  const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
 
   const getEdgeCompatibilities = useCallback(async () => {
     try {
       setIsInitializing(true)
 
       const featureNames = featureName ? [featureName] : []
-      let edgeCompatibilitiesResponse: ApCompatibility[] = []
+      let edgeCompatibilitiesResponse: ApCompatibility[] | Compatibility[] = []
 
       // eslint-disable-next-line max-len
       if ((type === EdgeCompatibilityType.VENUE || type === EdgeCompatibilityType.DEVICE) && data?.length) {
-        edgeCompatibilitiesResponse = edgeDataToApCompatibilityData(data)
+        edgeCompatibilitiesResponse = isEdgeCompatibilityEnhancementEnabled
+          ? edgeDataToCompatibilityData(data as EntityCompatibilityV1_1[])
+          : edgeDataToApCompatibilityData(data as EntityCompatibility[])
         setEdgeCompatibilities(edgeCompatibilitiesResponse)
         setIsInitializing(false)
         return
       }
 
       if (type === EdgeCompatibilityType.VENUE || type === EdgeCompatibilityType.DEVICE) {
-        const venueEdgeCompatibilities = await getVenueEdgeCompatibilities({ payload: {
+        const payload = {
           filters: {
             ...(venueId ? { venueIds: [venueId] } : undefined),
             ...(edgeId ? { edgeIds: [edgeId] } : undefined)
-          } }
-        }).unwrap()
+          }
+        }
+        const venueEdgeCompatibilities = isEdgeCompatibilityEnhancementEnabled
+          ? await getVenueEdgeCompatibilitiesV1_1({ payload: payload }).unwrap()
+          : await getVenueEdgeCompatibilities({ payload: payload }).unwrap()
+
         // eslint-disable-next-line max-len
-        edgeCompatibilitiesResponse = edgeDataToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
+        edgeCompatibilitiesResponse = isEdgeCompatibilityEnhancementEnabled
+          ? edgeDataToCompatibilityData(venueEdgeCompatibilities.compatibilities as EntityCompatibilityV1_1[] ?? [])
+          : edgeDataToApCompatibilityData(venueEdgeCompatibilities.compatibilities as EntityCompatibility[] ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }
@@ -412,4 +427,13 @@ const edgeDataToApCompatibilityData = (data: EntityCompatibility[]): ApCompatibi
       incompatibleDevices: incompatibleFeature.incompatibleDevices as ApIncompatibleDevice[]
     } as ApIncompatibleFeature))
   } as ApCompatibility))
+}
+
+const edgeDataToCompatibilityData = (data: EntityCompatibilityV1_1[]): Compatibility[] => {
+  return data.map(item => ({
+    id: item.id,
+    total: item.total,
+    incompatible: item.incompatible,
+    incompatibleFeatures: item.incompatibleFeatures
+  } as Compatibility))
 }

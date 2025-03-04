@@ -16,12 +16,13 @@ import {
   useGetEntitlementActivationsQuery
 } from '@acx-ui/rc/services'
 import {
+  AdministrationUrlsInfo,
   EntitlementActivations
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { RolesEnum }     from '@acx-ui/types'
-import { hasRoles }      from '@acx-ui/user'
-import { noDataDisplay } from '@acx-ui/utils'
+import { useParams }                                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                       from '@acx-ui/utils'
 
 import { ActivatePurchaseDrawer } from '../ActivatePurchaseDrawer'
 
@@ -31,8 +32,12 @@ const PendingActivationsTable = () => {
   const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
   const isActivatePendingActivationEnabled =
     useIsSplitOn(Features.ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE)
-  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
-  const showActivateLink = isPrimeAdmin && isActivatePendingActivationEnabled
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.patchEntitlementsActivations)])
+    : hasRoles([RolesEnum.PRIME_ADMIN])
+
+  const showActivateLink = hasPermission && isActivatePendingActivationEnabled
 
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }
