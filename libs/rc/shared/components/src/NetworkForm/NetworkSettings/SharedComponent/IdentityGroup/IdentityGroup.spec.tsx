@@ -1,0 +1,2 @@
+describe('IdentityGroup.spec', () => {
+})

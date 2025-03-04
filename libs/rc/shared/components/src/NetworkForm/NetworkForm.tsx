@@ -1465,6 +1465,19 @@ function useRbacProfileServiceActivation () {
   }
 }
 
+function useIdentityGroupOnNetworkActivation () {
+  const [ bindingPersonaGroupWithNetwork ] = useBindingPersonaGroupWithNetworkMutation()
+  const [ bindingSpecificIdentityPersonaGroupWithNetwork ] = useBindingSpecificIdentityPersonaGroupWithNetworkMutation()
+  const { isTemplate } = useConfigTemplate()
+
+  if (!isTemplate) {
+    return null
+  }
+  return async () => {
+
+  }
+}
+
 function useWifiOperatorActivation () {
   const [activate] = useActivateWifiOperatorOnWifiNetworkMutation()
   const activateWifiOperator =
