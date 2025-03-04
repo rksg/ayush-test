@@ -7,7 +7,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { HomeSolid }              from '@acx-ui/icons'
 import {
   ActivityButton,
@@ -50,7 +50,7 @@ function Layout () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isOnboardingAssistantEnabled = useIsSplitOn(Features.RUCKUS_ONBOARDING_ASSISTANT_TOGGLE)
-  const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
+  const isCanvasEnabled = useIsTierAllowed(Features.CANVAS)
 
   const logo = useLogo(tenantId)
 

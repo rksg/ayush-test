@@ -4,7 +4,7 @@ import { Button, Form, Steps } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { cssStr, showActionModal }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
 import { DogAndPerson, OnboardingAssistantDog }                          from '@acx-ui/icons'
 import { RuckusAiDog }                                                   from '@acx-ui/icons-new'
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
@@ -28,7 +28,7 @@ export enum RuckusAiStepsEnum {
 
 export default function RuckusAiButton () {
   const { $t } = useIntl()
-  const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
+  const isCanvasEnabled = useIsTierAllowed(Features.CANVAS)
 
   const [basicFormRef] = Form.useForm()
 
