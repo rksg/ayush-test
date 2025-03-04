@@ -346,9 +346,6 @@ jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable
 jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced', () => () => {
   return <div data-testid='PersonalIdentityNetworkDetailEnhanced' />
 })
-jest.mock('./pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetworkEnhanced', () => () => {
-  return <div data-testid='AddPersonalIdentityNetworkEnhanced' />
-})
 
 // Edge mDNS Proxy service
 jest.mock('./pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy', () => () => {
@@ -850,12 +847,6 @@ describe('RcRoutes: Devices', () => {
           render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
           expect(screen.getByTestId('PersonalIdentityNetworkDetailEnhanced')).toBeVisible()
           expect(screen.queryByTestId('PersonalIdentityNetworkDetail')).toBeNull()
-        })
-
-        test('should navigate to Edge enhanced PIN create service page', async () => {
-          render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
-          expect(screen.getByTestId('AddPersonalIdentityNetworkEnhanced')).toBeVisible()
-          expect(screen.queryByTestId('AddPersonalIdentityNetwork')).toBeNull()
         })
       })
     })
