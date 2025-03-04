@@ -61,13 +61,13 @@ export function VenueServicesTab () {
         fields: [
           'id'
         ],
-        filters: { edgeClusterIds: [...edgeClusterIds] }
+        filters: { edgeClusterIds }
       }
     },
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: !Boolean(edgeData?.clusterId) || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: edgeClusterIds.length === 0 || !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: Boolean(data?.data?.[0]?.id),
         isEdgeDhcpLoading: isLoading
