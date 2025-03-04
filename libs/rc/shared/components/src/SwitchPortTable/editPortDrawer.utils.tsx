@@ -3,8 +3,8 @@ import { DefaultOptionType }                from 'antd/lib/select'
 import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { cssStr }          from '@acx-ui/components'
-import { switchApi }       from '@acx-ui/rc/services'
+import { cssStr }    from '@acx-ui/components'
+import { switchApi } from '@acx-ui/rc/services'
 import {
   AclUnion,
   getPortSpeedOptions,
@@ -16,7 +16,8 @@ import {
   SwitchVlanUnion,
   PortSettingModel,
   Vlan,
-  PortProfilesBySwitchId
+  PortProfilesBySwitchId,
+  MacAcl
 } from '@acx-ui/rc/utils'
 import { store }   from '@acx-ui/store'
 import { getIntl } from '@acx-ui/utils'
@@ -60,7 +61,10 @@ export const FIELD_LABEL: Record<string, MessageDescriptor> = {
   ingressAcl: defineMessage({ defaultMessage: 'Ingress ACL (IPv4)' }),
   egressAcl: defineMessage({ defaultMessage: 'Egress ACL (IPv4)' }),
   tags: defineMessage({ defaultMessage: 'Tags' }),
-  portProfile: defineMessage({ defaultMessage: 'Port Profile' })
+  portProfile: defineMessage({ defaultMessage: 'Port Profile' }),
+  switchMacAcl: defineMessage({ defaultMessage: 'MAC ACL' }),
+  portSecurity: defineMessage({ defaultMessage: 'Port MAC Security' }),
+  portSecurityMaxEntries: defineMessage({ defaultMessage: 'Sticky MAC List Size Limit' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -148,6 +152,17 @@ export const getAclOptions = (acls?: AclUnion) => {
   return [
     { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
     ...sortOptions(options)
+  ] as DefaultOptionType[]
+}
+
+export const getMacAclOptions = (macAclList?: MacAcl[]) => {
+  const { $t } = getIntl()
+  const options = macAclList?.map((macAcl: { name: string }) =>
+    ({ value: macAcl.name, label: macAcl.name })) || []
+
+  return [
+    { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
+    ...options
   ] as DefaultOptionType[]
 }
 

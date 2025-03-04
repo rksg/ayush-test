@@ -2287,6 +2287,7 @@ export const {
   usePortDisableRecoverySettingQuery,
   useUpdatePortDisableRecoverySettingMutation,
   useGetSwitchMacAclsQuery,
+  useLazyGetSwitchMacAclsQuery,
   useAddSwitchMacAclMutation,
   useUpdateSwitchMacAclMutation,
   useDeleteSwitchMacAclMutation

@@ -65,7 +65,10 @@ export const SwitchPortViewModelQueryFields = [
   'vsixEgressAclName',
   'vsixIngressAclName',
   'authDefaultVlan',
-  'errorDisableStatus'
+  'errorDisableStatus',
+  'stickyMacAclAllowList',
+  'stickyMacAclAllowCount',
+  'switchMacAcl'
 ]
 
 export enum IP_ADDRESS_TYPE {

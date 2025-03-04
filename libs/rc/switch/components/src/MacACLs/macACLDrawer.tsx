@@ -24,7 +24,7 @@ interface MacACLDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   editMode: boolean
-  macACLData: MacAcl
+  macACLData?: MacAcl
   venueId: string
 }
 
@@ -261,7 +261,7 @@ export const MacACLDrawer: React.FC<MacACLDrawerProps> = ({
           params: {
             switchId,
             venueId: venueId,
-            macAclId: macACLData.id
+            macAclId: macACLData?.id
           }
         }).unwrap()
       } else {
