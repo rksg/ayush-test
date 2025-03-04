@@ -43,7 +43,8 @@ import {
   WifiCallingDetailView,
   WifiCallingForm,
   WifiOperatorForm,
-  DirectoryServerForm
+  DirectoryServerForm,
+  IdentityGroupForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -63,12 +64,14 @@ import {
   PolicyType,
   ServiceAuthRoute,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
+import { getOpsApi }                                   from '@acx-ui/utils'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -1680,8 +1683,22 @@ function UserRoutes () {
             element={<PersonaPortal/>}
           />
           <Route
+            path='users/identity-management/identity-group/create'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.addPersonaGroup)]}>
+                <IdentityGroupForm />
+              </AuthRoute>}
+          />
+          <Route
             path='users/identity-management/identity-group/:personaGroupId'
             element={<PersonaGroupDetails/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/edit'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.updatePersonaGroup)]}>
+                <IdentityGroupForm editMode={true}/>
+              </AuthRoute>}
           />
           <Route
             path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
