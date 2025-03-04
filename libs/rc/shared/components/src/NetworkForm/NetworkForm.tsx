@@ -235,10 +235,9 @@ export function NetworkForm (props:{
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
   const [ activateDirectoryServer ] = useActivateDirectoryServerMutation()
-  const [ bindingPersonaGroupWithNetwork ] = useBindingPersonaGroupWithNetworkMutation()
-  const [ bindingSpecificIdentityPersonaGroupWithNetwork ] = useBindingSpecificIdentityPersonaGroupWithNetworkMutation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
+  const activateIdentityGroupOnNetwork = useIdentityGroupOnNetworkActivation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const { updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
@@ -912,28 +911,8 @@ export function NetworkForm (props:{
         )
       }
 
-      if (
-        (formData.type === NetworkTypeEnum.HOTSPOT20 || formData.type === NetworkTypeEnum.PSK || formData.type === NetworkTypeEnum.AAA)
-        && isWifiIdentityManagementEnable
-        && (!!formData?.identityGroupId)
-        && !isTemplate
-      ) {
-        if (!!formData?.identityId){
-          beforeVenueActivationRequest.push(bindingSpecificIdentityPersonaGroupWithNetwork({
-            params: {
-              networkId: networkId,
-              identityGroupId: formData.identityGroupId,
-              identityId: formData.identityId
-            } })
-          )
-        } else {
-          beforeVenueActivationRequest.push(bindingPersonaGroupWithNetwork({
-            params: {
-              networkId: networkId,
-              identityGroupId: formData.identityGroupId
-            } })
-          )
-        }
+      if (!isTemplate && isWifiIdentityManagementEnable) {
+        beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, networkId))
       }
 
       await Promise.all(beforeVenueActivationRequest)
@@ -1104,6 +1083,11 @@ export function NetworkForm (props:{
         beforeVenueActivationRequest.push(activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id))
       }
       beforeVenueActivationRequest.push(updateHotspot20NetworkActivations(formData))
+
+      if (!isTemplate && isWifiIdentityManagementEnable) {
+        beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, payload.id))
+      }
+
       if (formData.type !== NetworkTypeEnum.HOTSPOT20 &&
         !(formData.wlanSecurity === WlanSecurityEnum.WPA23Mixed && formData.isCloudpathEnabled)
       ) {
@@ -1112,30 +1096,6 @@ export function NetworkForm (props:{
         // So it doesn't need to do the network and radius service binding
         beforeVenueActivationRequest.push(updateRadiusServer(formData, payload.id))
       }
-      if (
-        (formData.type === NetworkTypeEnum.HOTSPOT20 || formData.type === NetworkTypeEnum.PSK || formData.type === NetworkTypeEnum.AAA)
-        && isWifiIdentityManagementEnable
-        && (!!formData?.identityGroupId)
-        && !isTemplate
-      ) {
-        if (!!formData?.identityId){
-          beforeVenueActivationRequest.push(bindingSpecificIdentityPersonaGroupWithNetwork({
-            params: {
-              networkId: payload.id,
-              identityGroupId: formData.identityGroupId,
-              identityId: formData.identityId
-            } })
-          )
-        } else {
-          beforeVenueActivationRequest.push(bindingPersonaGroupWithNetwork({
-            params: {
-              networkId: payload.id,
-              identityGroupId: formData.identityGroupId
-            } })
-          )
-        }
-      }
-
       beforeVenueActivationRequest.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
       beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, initVlanPoolRef.current?.id))
@@ -1468,13 +1428,28 @@ function useRbacProfileServiceActivation () {
 function useIdentityGroupOnNetworkActivation () {
   const [ bindingPersonaGroupWithNetwork ] = useBindingPersonaGroupWithNetworkMutation()
   const [ bindingSpecificIdentityPersonaGroupWithNetwork ] = useBindingSpecificIdentityPersonaGroupWithNetworkMutation()
-  const { isTemplate } = useConfigTemplate()
-
-  if (!isTemplate) {
+  return async (network?: NetworkSaveData, networkId?: string) => {
+    if(
+      network &&
+      networkId &&
+      (network.type === NetworkTypeEnum.HOTSPOT20 || network.type === NetworkTypeEnum.PSK || network.type === NetworkTypeEnum.AAA)
+    ) {
+      const identityGroupId = network?.identityGroupId
+      const identityId = network?.identityId
+      if (identityGroupId) {
+        if (identityId) {
+          return await bindingSpecificIdentityPersonaGroupWithNetwork({
+            params: { networkId: networkId, identityGroupId: identityGroupId, identityId: identityId }
+          }).unwrap()
+        }
+        else {
+          return await bindingPersonaGroupWithNetwork({
+            params: { networkId: networkId, identityGroupId: identityGroupId }
+          }).unwrap()
+        }
+      }
+    }
     return null
-  }
-  return async () => {
-
   }
 }
 
