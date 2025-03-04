@@ -98,7 +98,10 @@ export const mockedDpskPassphraseList = {
   ],
   page: 1,
   totalCount: 4,
-  totalPages: 1
+  totalPages: 1,
+  pagination: {
+    settingsId: 'DPSK_PASSPHRASES'
+  }
 }
 
 export const mockedDpskPassphrase: NewDpskPassphrase = {

@@ -48,8 +48,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
     defaultPayload: { identityIds: [personaId] },
-    // FIXME: need to remove 'true'
-    option: { skip: !personaId || !personaGroupId || true }
+    option: { skip: !personaId || !personaGroupId }
   })
 
   // ClientMac format should be: 11:22:33:44:55:66

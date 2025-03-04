@@ -146,7 +146,7 @@ function PersonaOverview (props: { personaData?: Persona, personaGroupData?: Per
       <Col span={12}>
         <Loader >
           {details.map(item =>
-            <Descriptions labelWidthPercent={25}>
+            <Descriptions key={item.label} labelWidthPercent={25}>
               <Descriptions.Item
                 label={item.label}
                 children={item.value ?? noDataDisplay}
