@@ -8,7 +8,7 @@ import {
   LayoutUI
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { HomeSolid }              from '@acx-ui/icons'
+import { HomeSolid }                                from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
