@@ -164,4 +164,27 @@ describe('Select Service Form', () => {
 
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
   })
+
+  describe('Edge OLT', () => {
+    it('should render Edge OLT when FF is ON', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      await screen.findByText('NOKIA GPON Services')
+    })
+
+    it('should not render Edge OLT when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
+  })
 })

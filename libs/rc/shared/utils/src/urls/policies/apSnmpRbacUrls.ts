@@ -50,16 +50,19 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
   resetApSnmpSettings: {
     method: 'put',
     url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfileSettings',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/snmpAgentProfileSettings',
     newApi: true
   },
   updateApSnmpSettings: {
     method: 'put',
     url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfiles/:profileId',
+    opsApi: 'PUT:/venues/{id}/aps/{id}/snmpAgentProfiles/{id}',
     newApi: true
   },
   disableApSnmp: {
     method: 'delete',
     url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfiles/:profileId',
+    opsApi: 'DELETE:/venues/{id}/aps/{id}/snmpAgentProfiles/{id}',
     newApi: true
   },
   getApSnmpFromViewModel: {

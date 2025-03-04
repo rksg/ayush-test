@@ -63,7 +63,7 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
-  const isDataSubscriptionsEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   type Item = ItemType & {
@@ -346,10 +346,9 @@ export function useMenuConfig () {
       activeIcon: BulbSolid,
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
-        // TODO: rename this later
-        ...(isDataSubscriptionsEnabled && isAdmin ? [{
-          uri: '/dataSubscriptions',
-          label: $t({ defaultMessage: 'Data Subscriptions' })
+        ...(isDataConnectorEnabled && isAdmin ? [{
+          uri: '/dataConnector',
+          label: $t({ defaultMessage: 'Data Connector' })
         }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
@@ -399,7 +398,7 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Administrators' })
               }
             ] : []),
-            ...(isMspAppMonitoringEnabled ? [
+            ...(isMspAppMonitoringEnabled && !isCustomRole ? [
               {
                 uri: '/administration/privacy',
                 label: $t({ defaultMessage: 'Privacy' })

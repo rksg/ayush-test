@@ -7,7 +7,6 @@ import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
 import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import {
   ApSnmpRbacUrls,
-  CompatibilityResponse,
   MdnsProxyUrls,
   redirectPreviousPage,
   WifiRbacUrlsInfo
@@ -69,25 +68,8 @@ export function NetworkControlTab () {
   const apSnmpTitle = $t({ defaultMessage: 'AP SNMP' })
   const apIotTitle = $t({ defaultMessage: 'IoT Controller' })
 
-  const { apCompatibilitiesResponse } = useContext(ApDataContext)
-
-  const containsFeature = (
-    data: CompatibilityResponse,
-    featureName: string
-  ) => {
-    for (const compatibility of data?.compatibilities ?? []) {
-      for (const feature of compatibility?.incompatibleFeatures ?? []) {
-        if (feature.featureName === featureName) {
-          return true
-        }
-      }
-    }
-    return false
-  }
-
-  const featureToCheck = 'AP IoT'
-  // eslint-disable-next-line max-len
-  const isIotInCompatible = containsFeature(apCompatibilitiesResponse as CompatibilityResponse, featureToCheck)
+  const { apCapabilities } = useContext(ApDataContext)
+  const isSupportIoT = apCapabilities?.supportIoT ?? false
 
   const anchorItems = [
     {
@@ -112,7 +94,7 @@ export function NetworkControlTab () {
         </>
       )
     },
-    ...((isIotFeatureEnabled && !isIotInCompatible) ? [{
+    ...((isIotFeatureEnabled && isSupportIoT) ? [{
       title: apIotTitle,
       content: (
         <>

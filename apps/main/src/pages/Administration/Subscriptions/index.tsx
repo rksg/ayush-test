@@ -36,7 +36,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { AccountType, getOpsApi, noDataDisplay }    from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -325,18 +325,20 @@ export const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const params = useParams()
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const tenantType = tenantDetailsData.data?.tenantType
 
   return (
-    (isPendingActivationEnabled &&
-      (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC))
-      ? <SubscriptionTabs />
-      : <SpaceWrapper fullWidth size='large' direction='vertical'>
-        <SubscriptionHeader />
-        <SubscriptionTable />
-      </SpaceWrapper>
+    tenantType ?
+      (isPendingActivationEnabled && isEntitlementRbacApiEnabled
+        ? <SubscriptionTabs tenantType={tenantType} />
+        : <SpaceWrapper fullWidth size='large' direction='vertical'>
+          <SubscriptionHeader />
+          <SubscriptionTable />
+        </SpaceWrapper>
+      ) : <></>
   )
 }
 

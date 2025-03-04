@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { get }                                                                      from '@acx-ui/config'
-import { notificationApi, Provider, rbacApi, store }                                from '@acx-ui/store'
-import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile }        from '@acx-ui/user'
+import { get }                                                                                   from '@acx-ui/config'
+import { notificationApi, Provider, rbacApi, store }                                             from '@acx-ui/store'
+import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within }              from '@acx-ui/test-utils'
+import { RolesEnum }                                                                             from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, raiPermissionsList, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
 import { Webhook }                                   from './services'
@@ -33,10 +33,14 @@ const mockWebhooks = (data = webhooks, success = true) => rest.get(
 
 describe('WebhooksTable', () => {
   describe('RAI', () => {
+    const permissions = Object.keys(raiPermissionsList)
+      .filter(v => isNaN(Number(v)))
+      .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
+
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
-      setRaiPermissions({ WRITE_WEBHOOKS: true } as RaiPermissions)
+      setRaiPermissions(permissions)
 
       mockServer.use(
         mockResourceGroups(),
