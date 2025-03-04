@@ -456,7 +456,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
-        settingsId={tableQuery.pagination.settingsId}
+        settingsId={tableQuery.pagination.settingsId ?? 'Default-DPSK-Passphrase-Table'}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

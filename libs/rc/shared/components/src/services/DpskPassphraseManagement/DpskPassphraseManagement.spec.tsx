@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { clientApi, networkApi, serviceApi }        from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed }                                 from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, serviceApi, useGetEnhancedDpskPassphraseListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
@@ -10,12 +10,14 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  ClientUrlsInfo, PersonaUrls
+  ClientUrlsInfo, PersonaUrls,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
+  renderHook,
   screen,
   waitFor,
   within
@@ -47,7 +49,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 
 const mockFormData = new FormData()
 
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('../../ImportFileDrawer', () => ({
   NetworkForm: () => <div data-testid='network-form' />,
   PassphraseViewer: () => <div data-testid='PassphraseViewer' />,
   ImportFileDrawer: ({ importRequest, onClose, visible }: {
@@ -134,11 +136,30 @@ describe('DpskPassphraseManagement', () => {
       )
     )
   })
+  const utils = require('@acx-ui/rc/utils')
+  jest.mock('@acx-ui/rc/utils', () => ({
+    ...jest.requireActual('@acx-ui/rc/utils')
+  }))
+
+  utils.useTableQuery = jest.fn().mockImplementation(() => {
+    return {
+      ...mockedDpskPassphraseList,
+      data: {
+        data: mockedDpskPassphraseList.data
+      }
+    }
+  })
 
   it('should render the Passphrase Management view', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -153,6 +174,12 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should delete selected passphrase', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockServer.use(
       rest.delete(
         DpskUrls.deletePassphrase.url,
@@ -162,7 +189,7 @@ describe('DpskPassphraseManagement', () => {
 
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -183,9 +210,15 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should not delete selected passphrase when it is mapped to Identity', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -199,6 +232,12 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should show error message when import CSV file failed', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockServer.use(
       rest.post(
         DpskUrls.uploadPassphrases.url,
@@ -217,7 +256,7 @@ describe('DpskPassphraseManagement', () => {
 
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -232,6 +271,12 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should export the passphrases', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockedDownloadCsv.mockImplementation(() => ({
       unwrap: () => Promise.resolve()
     }))
@@ -241,7 +286,7 @@ describe('DpskPassphraseManagement', () => {
 
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -254,10 +299,16 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should render the edit passphrase view', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -273,6 +324,12 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it.skip('should revoke/unrevoke the passphrases', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     const [ revokeFn, unrevokeFn ] = [ jest.fn(), jest.fn() ]
 
     mockServer.use(
@@ -295,7 +352,7 @@ describe('DpskPassphraseManagement', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -342,10 +399,16 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should not revoke/unrevoke the passphrases when it is mapped to Identity', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -369,6 +432,12 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it.skip('should be able to add device in DpskPassphrase', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockServer.use(
       rest.patch(
         DpskUrls.updatePassphraseDevices.url.split('?')[0],
@@ -379,7 +448,7 @@ describe('DpskPassphraseManagement', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -412,6 +481,12 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it.skip('should be able to delete device in DpskPassphrase', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockServer.use(
       rest.delete(
         DpskUrls.deletePassphraseDevices.url.split('?')[0],
@@ -422,7 +497,7 @@ describe('DpskPassphraseManagement', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -450,11 +525,17 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should display Status of passphrase', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -482,11 +563,17 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should not be edited when it is mapped to Identity', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -502,11 +589,17 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should be editable when when identity group is mandatory', async () => {
+    const { result: dpskQuery } = renderHook(() =>
+      useTableQuery({
+        useQuery: useGetEnhancedDpskPassphraseListQuery,
+        defaultPayload: {}
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_REQUIRE_IDENTITY_GROUP)
     render(
       <Provider>
-        <DpskPassphraseManagement />
+        <DpskPassphraseManagement serviceId={mockedServiceId} tableQuery={dpskQuery.current}/>
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }

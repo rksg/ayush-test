@@ -58,6 +58,7 @@ const list = {
 }
 
 describe('MacAddressDrawer', () => {
+  const mockPolicyId = 'mocked-mac-reg-id'
   const mockSaveMacFn = jest.fn()
   const mockUpdateMacFn = jest.fn()
 
@@ -94,6 +95,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}
@@ -123,6 +125,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}
@@ -148,6 +151,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={true}
@@ -187,6 +191,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}
