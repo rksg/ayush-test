@@ -6,9 +6,11 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, Tooltip }                                                from '@acx-ui/components'
-import { useTraceRouteEdgeMutation }                                              from '@acx-ui/rc/services'
-import { EdgeTroubleshootingMessages, EdgeTroubleshootingType, targetHostRegExp } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip }                                                              from '@acx-ui/components'
+import { useTraceRouteEdgeMutation }                                                            from '@acx-ui/rc/services'
+import { EdgeTroubleshootingMessages, EdgeTroubleshootingType, EdgeUrlsInfo, targetHostRegExp } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                        from '@acx-ui/user'
+import { getOpsApi }                                                                            from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
@@ -77,7 +79,9 @@ export function EdgeTraceRouteForm () {
           <Button
             type='primary'
             htmlType='submit'
-            disabled={!isValid || isTraceRouteEdge}
+            disabled={!isValid || isTraceRouteEdge ||
+              !hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.traceRouteEdge)] })
+            }
             onClick={handleTraceRouteEdge}>
             {$t({ defaultMessage: 'Run' })}
           </Button>

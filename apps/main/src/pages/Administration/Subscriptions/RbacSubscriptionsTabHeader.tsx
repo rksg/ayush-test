@@ -5,8 +5,8 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SpaceWrapper, SubscriptionUtilizationWidget }            from '@acx-ui/rc/components'
 import {
   useRbacEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
@@ -17,13 +17,6 @@ import {
   EntitlementSummaries
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-const entitlementSummaryPayload = {
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'SELF'
-  }
-}
 
 const rbacSubscriptionUtilizationTransformer = (
   deviceTypeList: EntitlementDeviceTypes,
@@ -60,10 +53,18 @@ const rbacSubscriptionUtilizationTransformer = (
 export const RbacSubscriptionsTabHeader = () => {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
 
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))
+
+  const entitlementSummaryPayload = {
+    filters: {
+      licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+      usageType: 'SELF'
+    }
+  }
 
   const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
@@ -82,12 +83,14 @@ export const RbacSubscriptionsTabHeader = () => {
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Subscription Utilization' })}
             </Subtitle>
-            <h4 style={{ marginTop: '-8px' }}>
+            { !solutionTokenFFToggled && <h4 style={{ marginTop: '-8px' }}>
               {$t({ defaultMessage: 'Paid, Assigned & Trial' })}
-            </h4>
+            </h4>}
           </Col>
         </Row>
-        <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
+        <SpaceWrapper
+          justifycontent='flex-start'
+          style={{ marginBottom: '20px' }}>
           {
             subscriptionDeviceTypeList.filter(data =>
               (data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled) &&
@@ -95,6 +98,15 @@ export const RbacSubscriptionsTabHeader = () => {
             )
               .map((item) => {
                 const summary = summaryData[item.value]
+
+                if (solutionTokenFFToggled && item.value === EntitlementDeviceType.APSW) {
+                  item.label = $t({ defaultMessage: 'Device Networking Paid & Trial Licenses' })
+                }
+
+                if (solutionTokenFFToggled && item.value === EntitlementDeviceType.SLTN_TOKEN) {
+                  item.label = $t({ defaultMessage: 'Solution Tokens Paid & Trial Licenses' })
+                }
+
                 return summary ? <SubscriptionUtilizationWidget
                   key={item.value}
                   deviceType={item.value}

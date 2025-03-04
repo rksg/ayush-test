@@ -55,6 +55,10 @@ export class EntitlementUtil {
       case EntitlementDeviceType.MSP_APSW:
       case EntitlementDeviceType.MSP_APSW_TEMP:
         return $t({ defaultMessage: 'Devices' })
+      case EntitlementDeviceType.SLTN_TOKEN:
+      case EntitlementDeviceType.MSP_SLTN_TOKEN:
+      case EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP:
+        return $t({ defaultMessage: 'Solution Tokens' })
       default:
         return ''
     }

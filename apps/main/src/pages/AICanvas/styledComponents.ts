@@ -30,7 +30,7 @@ export const History = styled.div`
     .time {
       font-size: 10px;
       font-weight: 700;
-      line-height: 16px;   
+      line-height: 16px;
       color: var(--acx-neutrals-60);
       padding: 12px 16px 6px 16px;
       cursor: default;
@@ -40,7 +40,7 @@ export const History = styled.div`
       display: flex;
       justify-content: space-between;
       color: var(--acx-primary-black);
-      &:hover { 
+      &:hover {
         background: var(--acx-neutrals-30);
         .action {
           display: flex;
@@ -53,12 +53,37 @@ export const History = styled.div`
           display: flex;
         }
       }
+      &.edit {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-gap: 10px;
+        align-items: center;
+        &.edit-input {
+          width: 100%;
+        }
+        .ant-form-item {
+          margin-bottom: 0;
+        }
+        .action {
+          display: flex;
+        }
+        .button {
+          &.confirm {
+            color: #23AB36;
+          }
+
+          &.cancel {
+            color: #ED1C24;
+          }
+        }
+      }
       .title {
         overflow:hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         padding: 6px 5px 6px 0;
         cursor: pointer;
+        font-size: var(--acx-body-4-font-size);
       }
       .action {
         display: none;
@@ -82,7 +107,6 @@ left: 0;
 top: 0;
 width: 100%; /* Full width */
 height: 100%; /* Full height */
-overflow: auto; /* Enable scroll if needed */
 background-color: transparent;
 border-top: 75px solid rgba(255,255,255, 0.4);
 
@@ -218,7 +242,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         font-weight: 400;
       }
       .chat-bubble {
-        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, 
+        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%,
           #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
         color: var(--acx-primary-white);
         width: fit-content;
@@ -244,7 +268,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         background-color: var(--acx-primary-white);
         height: 130px;
         position: fixed;
-        bottom: 0;    
+        bottom: 0;
         width: 400px;
         padding: 10px 20px 20px 20px;
         button {
@@ -256,7 +280,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           &.ant-btn[disabled] {
             background: var(--acx-neutrals-30);
           }
-          svg { 
+          svg {
             path { stroke: var(--acx-primary-white); } }
           }
         }
@@ -428,7 +452,7 @@ export const Grid = styled.div`
 `
 
 export const Widget = styled(Card)`
-  &.table .ant-card-body {
+  &.table .ant-card-body, &.table .ant-table-content {
     overflow: auto;
     /* width */
     &::-webkit-scrollbar {
@@ -446,7 +470,11 @@ export const Widget = styled(Card)`
     &::-webkit-scrollbar-thumb {
       background: var(--acx-neutrals-30);
       border-radius: 4px;
+      border-top: 1px solid var(--acx-primary-white);
     }
+  }
+  .chart {
+    margin: 5px;
   }
 `
 

@@ -37,6 +37,7 @@ import {
   TwiliosWhatsappServices,
   Webhook,
   TableResult,
+  ScopeFeature,
   NotificationRecipientType,
   PrivacyFeatures,
   PrivacySettings
@@ -768,6 +769,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getCustomRoleFeatures: build.query<ScopeFeature[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getCustomRoleFeatures, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getMspEcPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
       query: ({ params }) => {
         const CUSTOM_HEADER = {
@@ -1099,6 +1109,7 @@ export const {
   useAddCustomRoleMutation,
   useUpdateCustomRoleMutation,
   useDeleteCustomRoleMutation,
+  useGetCustomRoleFeaturesQuery,
   useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,

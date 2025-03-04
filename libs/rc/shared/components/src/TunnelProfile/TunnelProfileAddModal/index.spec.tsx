@@ -14,6 +14,13 @@ jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
+
 describe('PersonalIdentityNetwork - WirelessNetworkForm > TunnelProfileAddModal', () => {
 
   beforeEach(() => {

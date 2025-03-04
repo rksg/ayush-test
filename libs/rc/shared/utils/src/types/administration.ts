@@ -101,7 +101,7 @@ export interface NotificationPreference {
   DEVICE_AP_FIRMWARE?: boolean;
   DEVICE_SWITCH_FIRMWARE?: boolean;
   DEVICE_EDGE_FIRMWARE?: boolean;
-  DEVICE_API_CHANGES?: boolean;
+  API_CHANGES?: boolean;
 }
 
 export interface TenantDetails {
@@ -556,4 +556,12 @@ export interface PrivacySettings {
 
 export interface PrivacyFeatures {
   privacyFeatures: PrivacySettings[]
+}
+
+export interface ScopeFeature {
+  id: string,
+  name: string,
+  description: string,
+  category: string,
+  subFeatures?: ScopeFeature[]
 }

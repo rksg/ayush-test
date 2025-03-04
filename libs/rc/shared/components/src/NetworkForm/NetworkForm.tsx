@@ -65,7 +65,8 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -173,7 +174,7 @@ export function NetworkForm (props:{
 
   const isUseWifiRbacApi = isRuckusAiMode ? false : wifiRbacApiEnabled
   const isConfigTemplateRbacEnabled = isRuckusAiMode ? false : configTemplateRbacEnabled
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -186,6 +187,7 @@ export function NetworkForm (props:{
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
+  const initVlanPoolRef = useRef<VlanPool>()
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
@@ -232,7 +234,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
-  const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
+  const { updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
   const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
   const updateSoftGreActivations = useUpdateSoftGreActivations()
@@ -364,16 +366,9 @@ export function NetworkForm (props:{
       form?.setFieldsValue(resolvedData)
     }
 
-    if (vlanPoolId) {
-      resolvedData = merge({}, resolvedData,
-        {
-          wlan: {
-            advancedCustomization: {
-              vlanPool: { id: vlanPoolId, name: '', vlanMembers: [] }
-            }
-          }
-        }
-      )
+    const vlanPool = resolvedData.wlan?.advancedCustomization?.vlanPool
+    if (vlanPool) {
+      initVlanPoolRef.current = vlanPool
     }
 
     updateSaveData({
@@ -382,7 +377,8 @@ export function NetworkForm (props:{
       ...(dpskService && { dpskServiceProfileId: dpskService.id }),
       ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
     })
-  }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
+  }, [data, certificateTemplateId, dpskService, portalService])
+  //}, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0 || saveState?.wlan?.advancedCustomization?.wifiCallingEnabled) return
@@ -495,6 +491,12 @@ export function NetworkForm (props:{
     delete data.walledGardensString
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
+    } else {
+      // Force set the VLAN ID to 3000 when the RUCKUS DHCP Service checkbox is enabled
+      const isPortalDefaultVLANId = data?.enableDhcp
+      if (isPortalDefaultVLANId) {
+        data.wlan.vlanId = 3000
+      }
     }
     let dataMore = handleGuestMoreSetting(data)
 
@@ -917,6 +919,10 @@ export function NetworkForm (props:{
         }
       }
 
+      if (networkId) {
+        afterVenueActivationRequest.push(saveEnforcementConfig(networkId))
+      }
+
       await Promise.all(afterVenueActivationRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -1007,6 +1013,16 @@ export function NetworkForm (props:{
       saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
         toRemoveFromWlan
       )
+      if ( saveState.wlan?.wlanSecurity === WlanSecurityEnum.OWETransition
+        && saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+        saveContextRef.current = { ...saveContextRef.current,
+          ...{
+            wlan: {
+              ...saveContextRef.current?.wlan,
+              ...{ wlanSecurity: WlanSecurityEnum.OWETransition }
+            }
+          } }
+      }
     }
   }
 
@@ -1055,7 +1071,7 @@ export function NetworkForm (props:{
 
       beforeVenueActivationRequest.push(updateWifiCallingActivation(payload.id, formData))
       // eslint-disable-next-line max-len
-      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId))
+      beforeVenueActivationRequest.push(updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, initVlanPoolRef.current?.id))
       beforeVenueActivationRequest.push(updateAccessControl(formData, data, payload.id))
       if(directoryServerDataRef.current.id) {
         beforeVenueActivationRequest.push(activateDirectoryServer(
@@ -1087,6 +1103,10 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
+      }
+
+      if (payload.id) {
+        afterVenueActivationRequest.push(saveEnforcementConfig(payload.id))
       }
 
       await Promise.all(afterVenueActivationRequest)

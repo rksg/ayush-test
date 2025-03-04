@@ -6,16 +6,21 @@ import {
   Report,
   ReportList,
   DataStudio,
-  DataSubscriptionsContent,
-  SubscriptionForm,
-  DataSubscriptionsAuditLog,
+  DataConnectorContent,
+  ConnectorForm,
+  DataConnectorAuditLog,
   CloudStorageForm
 } from '@acx-ui/reports/components'
-import { Provider } from '@acx-ui/store'
+import { Provider }                   from '@acx-ui/store'
+import { RolesEnum }                  from '@acx-ui/types'
+import { hasRaiPermission, hasRoles } from '@acx-ui/user'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
+  const hasDCStoragePermission = isRa
+    ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE')
+    : hasRoles(RolesEnum.PRIME_ADMIN)
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
     wireless: <Report type={ReportType.WIRELESS}/>,
@@ -44,18 +49,18 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      {isRa ? (<>
-        <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI />} />
-        <Route path='dataSubscriptions/create' element={<SubscriptionForm isRAI />} />
-        <Route path='dataSubscriptions/edit/:settingId'
-          element={<SubscriptionForm isRAI editMode />} />
-        <Route path='dataSubscriptions/auditLog/:settingId'
-          element={<DataSubscriptionsAuditLog isRAI/>} />
-        <Route path='dataSubscriptions/cloudStorage/create'
-          element={<CloudStorageForm isRAI/>} />
-        <Route path='dataSubscriptions/cloudStorage/edit/:csId'
-          element={<CloudStorageForm isRAI editMode />} />
-      </>) : []}
+      <Route path='dataConnector' element={<DataConnectorContent />} />
+      <Route path='dataConnector/create' element={<ConnectorForm />} />
+      <Route path='dataConnector/edit/:settingId'
+        element={<ConnectorForm editMode />} />
+      <Route path='dataConnector/auditLog/:settingId'
+        element={<DataConnectorAuditLog />} />
+      {hasDCStoragePermission ? (<>
+        <Route path='dataConnector/cloudStorage/create'
+          element={<CloudStorageForm />} />
+        <Route path='dataConnector/cloudStorage/edit/:csId'
+          element={<CloudStorageForm editMode />} />
+      </>): []}
     </Route>
   )
   return (

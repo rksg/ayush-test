@@ -12,13 +12,14 @@ import { getWebhookPayloadEnumString } from './webhookConfig'
 
 interface SettingsTabProps {
   form: FormInstance<Webhook>
-  isEditMode?: boolean
   webhookData?: Webhook[]
+  selected?: Webhook
 }
 
 const SettingsTab = (props: SettingsTabProps) => {
   const { $t } = useIntl()
-  const { form, isEditMode = false, webhookData } = props
+  const { form, webhookData, selected } = props
+  const isEditMode = selected ? true : false
   const [testURLEnabled, setTestURLEnabled] = useState(isEditMode)
   const [sendSampleEvent] = useWebhookSendSampleEventMutation()
 
@@ -80,7 +81,8 @@ const SettingsTab = (props: SettingsTabProps) => {
       { max: 255 },
       { whitespace: true },
       { validator: (_, value) => {
-        if(webhookData?.map((item) => { return item.name}).includes(value)) {
+        if(webhookData?.map((item) => { return item.name}).includes(value)
+          && value !== selected?.name) {
           return Promise.reject(
             `${$t({ defaultMessage: 'Name already exists' })} `
           )
@@ -98,7 +100,8 @@ const SettingsTab = (props: SettingsTabProps) => {
       rules={[
         { required: true },
         { validator: (_, value) => {
-          if(webhookData?.map((item) => { return item.url}).includes(value)) {
+          if(webhookData?.map((item) => { return item.url}).includes(value)
+            && value !== selected?.url) {
             return Promise.reject(
               `${$t({ defaultMessage: 'Webhook URL already exists' })} `
             )

@@ -1,12 +1,12 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { NetworkFilter, SANetworkFilter } from '@acx-ui/analytics/components'
-import { RangePicker }                    from '@acx-ui/components'
-import { get }                            from '@acx-ui/config'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { getShowWithoutRbacCheckKey }     from '@acx-ui/user'
-import { useDateFilter }                  from '@acx-ui/utils'
+import { NetworkFilter, SANetworkFilter }       from '@acx-ui/analytics/components'
+import { getDefaultEarliestStart, RangePicker } from '@acx-ui/components'
+import { get }                                  from '@acx-ui/config'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { getShowWithoutRbacCheckKey }           from '@acx-ui/user'
+import { useDateFilter }                        from '@acx-ui/utils'
 
 import {
   ReportType,
@@ -24,8 +24,13 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const isSwitchReport = ['switch','both'].includes(reportType)
   const isAPReport = ['ap','both'].includes(reportType)
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
+  const isRA = get('IS_MLISA_SA')
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter(moment().subtract(12, 'month'))
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg,
+    earliestStart: isRA ? moment().subtract(12, 'month'):
+      getDefaultEarliestStart({ isReport: true }) })
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const component = [

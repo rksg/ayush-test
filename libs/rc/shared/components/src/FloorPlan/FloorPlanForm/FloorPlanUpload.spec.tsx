@@ -79,7 +79,7 @@ describe('Floor Plan Upload', () => {
       target: { files: [{ file: 'foo.png' }] }
     })
 
-    const typeError = await screen.findAllByText('Invalid Image type!')
+    const typeError = await screen.findAllByText('Invalid file type!')
 
     await expect(typeError[0]).toBeVisible()
 
@@ -89,7 +89,7 @@ describe('Floor Plan Upload', () => {
       target: { files: [{ file: 'foo.png', type: 'image/png' }] }
     })
 
-    const sizeError = await screen.findAllByText('Image must smaller than 20MB!')
+    const sizeError = await screen.findAllByText('File must smaller than 20MB!')
 
     await expect(sizeError[0]).toBeVisible()
 
@@ -119,6 +119,36 @@ describe('Floor Plan Upload', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await fireEvent.change(document.querySelector('input')!, {
       target: { files: [{ file: 'foo.png', type: 'image/png', size: 10000 }] }
+    })
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = jest.fn()
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render with pdf file', async () => {
+    const validateFile = jest.fn()
+    const file = new File(['(⌐□_□)'], 'floorplan.pdf', { type: 'application/pdf' })
+
+    const { asFragment } = render(<FloorplanUpload
+      validateFile={validateFile}
+      imageFile=''
+    />)
+
+    render(<Upload
+      name='floorplan'
+      listType='picture-card'
+      className='avatar-uploader'
+      showUploadList={false}
+      action={URL.createObjectURL(file)}
+      beforeUpload={jest.fn()}
+      onChange={jest.fn()}
+      accept='image/*, application/pdf'
+    />)
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await fireEvent.change(document.querySelector('input')!, {
+      target: { files: [{ file: 'floorplan.pdf', type: 'application/pdf', size: 10000 }] }
     })
     const reader = new FileReader()
     reader.readAsDataURL(file)

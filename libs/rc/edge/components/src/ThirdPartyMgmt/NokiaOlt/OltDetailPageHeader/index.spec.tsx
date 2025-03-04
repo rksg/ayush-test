@@ -1,12 +1,11 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { EdgeNokiaOltData, EdgeOltFixtures, EdgeTnmServiceUrls } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { screen, render, mockServer }                            from '@acx-ui/test-utils'
+import { EdgeNokiaCageData, EdgeNokiaOltData, EdgeOltFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                             from '@acx-ui/store'
+import { screen, render }                                       from '@acx-ui/test-utils'
 
 import { EdgeNokiaOltDetailsPageHeader } from '.'
-const { mockOlt, mockOltCageList } = EdgeOltFixtures
+const { mockOlt, mockOltCageList, mockOfflineOlt } = EdgeOltFixtures
 
 jest.mock( './DetailsDrawer', () => ({
   // eslint-disable-next-line max-len
@@ -19,18 +18,11 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
   const mockPath = '/:tenantId/devices/optical/:oltId/details'
 
   const props = {
-    currentOlt: mockOlt as EdgeNokiaOltData
+    currentOlt: mockOlt as EdgeNokiaOltData,
+    cagesList: mockOltCageList as EdgeNokiaCageData[],
+    isLoading: false,
+    isFetching: false
   }
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.get(
-        EdgeTnmServiceUrls.getEdgeCageList.url,
-        (_, res, ctx) => {
-          return res(ctx.json(mockOltCageList))
-        })
-    )
-  })
 
   it('test component renders with expected elements', () => {
     render(<Provider>
@@ -54,6 +46,24 @@ describe('EdgeNokiaOltDetailsPageHeader', () => {
       <EdgeNokiaOltDetailsPageHeader {...props} />
     </Provider>, { route: { params, path: mockPath } })
     expect(screen.getByText('Status')).toBeVisible()
-    expect(screen.getByText('Cages')).toBeVisible()
+    expect(screen.getAllByText('Cages').length).toBe(3)
+  })
+
+  it('should display loading icon on cage chart', async () => {
+    render(<Provider>
+      <EdgeNokiaOltDetailsPageHeader
+        currentOlt={mockOfflineOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={true}
+        isFetching={true}
+      />
+    </Provider>, { route: { params, path: mockPath } })
+
+    screen.getByRole('img', { name: 'loader' })
+    expect(screen.queryAllByText('Cages').length).toBe(2)
+
+    const button = screen.getByText('Device Details')
+    await userEvent.click(button)
+    expect(await screen.findByTestId('OltDetailsDrawer')).toBeVisible()
   })
 })

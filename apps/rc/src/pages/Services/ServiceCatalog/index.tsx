@@ -1,18 +1,20 @@
 import { useState } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                                  from '@acx-ui/components'
-import { RadioCardCategory }                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { Typography }             from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                    from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
+  IncompatibilityFeatures,
+  ServiceOperation,
   ServiceType,
   isServiceCardEnabled,
-  ServiceOperation,
   isServiceCardSetEnabled,
-  IncompatibilityFeatures
+  serviceTypeLabelMapping,
+  serviceTypeDescMapping
 } from '@acx-ui/rc/utils'
 
 import { ServiceCard } from '../ServiceCard'
@@ -27,6 +29,7 @@ interface ServiceCardItem {
     categories: RadioCardCategory[]
     disabled?: boolean
     helpIcon?: React.ReactNode
+    isBetaFeature?: boolean
   }[]
 }
 
@@ -43,6 +46,7 @@ export default function ServiceCatalog () {
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -84,6 +88,11 @@ export default function ServiceCatalog () {
             />
             : undefined,
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        },
+        {
+          type: ServiceType.EDGE_OLT,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeOltEnabled
         }
       ]
     },
@@ -108,7 +117,8 @@ export default function ServiceCatalog () {
             title=''
             showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
-          />
+          />,
+          isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
         },
         {
           type: ServiceType.EDGE_TNM_SERVICE,
@@ -149,16 +159,30 @@ export default function ServiceCatalog () {
           </Typography.Title>
           <GridRow>
             {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
-              return <GridCol key={item.type} col={{ span: 6 }}>
-                <ServiceCard
-                  key={item.type}
-                  serviceType={item.type}
-                  categories={item.categories}
-                  type={'button'}
-                  helpIcon={item.helpIcon}
-                />
-              </GridCol>
+              return item.type === ServiceType.EDGE_OLT
+                ? <UI.OltCardWrapper key={item.type} col={{ span: 6 }}>
+                  <RadioCard
+                    type={'button'}
+                    buttonText={defineMessage({ defaultMessage: 'Add' })}
+                    key={item.type}
+                    value={item.type}
+                    title={$t(serviceTypeLabelMapping[item.type])}
+                    description={$t(serviceTypeDescMapping[item.type])}
+                    categories={item.categories}
+                  />
+                </UI.OltCardWrapper>
+                : <GridCol key={item.type} col={{ span: 6 }}>
+                  <ServiceCard
+                    key={item.type}
+                    serviceType={item.type}
+                    categories={item.categories}
+                    type={'button'}
+                    helpIcon={item.helpIcon}
+                    isBetaFeature={item.isBetaFeature}
+                  />
+                </GridCol>
             })}
+
           </GridRow>
         </UI.CategoryContainer>
       })}

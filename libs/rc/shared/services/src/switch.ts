@@ -66,7 +66,8 @@ import {
   LldpTlvs,
   MacOuis,
   SwitchPortProfilesAppliedTargets,
-  PortProfilesForMultiSwitches
+  PortProfilesForMultiSwitches,
+  PortDisableRecoverySetting
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1932,6 +1933,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+    portDisableRecoverySetting: build.query<PortDisableRecoverySetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getPortDisableRecovery, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    updatePortDisableRecoverySetting: build.mutation<PortDisableRecoverySetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updatePortDisableRecovery, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     })
   })
 })
@@ -2218,5 +2238,7 @@ export const {
   useEditSwitchPortProfileLldpTlvMutation,
   useDeleteSwitchPortProfileLldpTlvMutation,
   useLazyPortProfileOptionsForMultiSwitchesQuery,
-  usePortProfilesListBySwitchIdQuery
+  usePortProfilesListBySwitchIdQuery,
+  usePortDisableRecoverySettingQuery,
+  useUpdatePortDisableRecoverySettingMutation
 } = switchApi

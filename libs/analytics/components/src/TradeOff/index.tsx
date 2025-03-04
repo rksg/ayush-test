@@ -30,7 +30,8 @@ export function TradeOff <Value extends string | number = string> (props: TradeO
     const { key: radioKey, value: selectValue, columns } = radio
     return (
       <RowWrapper key={`tradeR_${radioKey}_${rowIndex}`}
-        className={selectValue === value ? 'highlight' : ''}>
+        className={selectValue === value ? 'highlight' : ''}
+        onClick={() => onChange?.(selectValue as Value)}>
         {columns.map((column, colIndex) => (
           <Col span={12} key={`tradeC_${radioKey}_${colIndex}`}>
             {column}

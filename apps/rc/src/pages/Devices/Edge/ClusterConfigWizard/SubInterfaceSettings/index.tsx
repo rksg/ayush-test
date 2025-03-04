@@ -11,7 +11,10 @@ import {
   NodesTabs, TypeForm
 } from '@acx-ui/rc/components'
 import { usePatchEdgeClusterSubInterfaceSettingsMutation } from '@acx-ui/rc/services'
+import { EdgeUrlsInfo }                                    from '@acx-ui/rc/utils'
 import { useTenantLink }                                   from '@acx-ui/react-router-dom'
+import { hasPermission }                                   from '@acx-ui/user'
+import { getOpsApi }                                       from '@acx-ui/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -167,6 +170,10 @@ export const SubInterfaceSettings = () => {
     })
   }
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings)] }
+  )
+
   return (
     <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
       <StepsForm<SubInterfaceSettingsFormType>
@@ -176,12 +183,12 @@ export const SubInterfaceSettings = () => {
         onCancel={handleCancel}
         initialValues={subInterfaceSettingsFormData}
         buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply & Finish' })
+          submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
         }}
-        customSubmit={{
+        customSubmit={hasUpdatePermission ? {
           label: $t({ defaultMessage: 'Apply & Continue' }),
           onCustomFinish: applyAndContinue
-        }}
+        }: undefined}
       >
         <StepsForm.StepForm
           onValuesChange={doCompatibleCheck}

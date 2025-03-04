@@ -49,8 +49,8 @@ export const mockGraphqlMutation = (
 
 export const mockRestApiQuery = (
   url: string,
-  type: 'get' | 'post' | 'delete',
-  result: { status?: number, data?: any, error?: any, totalCount?: number }, // eslint-disable-line @typescript-eslint/no-explicit-any
+  type: 'get' | 'post' | 'delete' | 'put' | 'patch',
+  result: { status?: number, data?: any, error?: any, totalCount?: number, page?: number }, // eslint-disable-line @typescript-eslint/no-explicit-any
   omitData?: boolean,
   matchQuery?: boolean
 ) => {

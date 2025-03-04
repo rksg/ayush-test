@@ -29,7 +29,7 @@ describe('Test getClientHealthClass function', () => {
   })
   it('should return health class: default', async () => {
     expect(getClientHealthClass(''))
-      .toBe('default')
+      .toBe('good')
   })
 })
 

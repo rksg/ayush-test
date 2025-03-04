@@ -57,8 +57,8 @@ import {
   MspEcTierEnum,
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery }           from '@acx-ui/rc/services'
+import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete }                   from '@acx-ui/rc/components'
+import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -68,7 +68,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   whitespaceOnlyRegExp,
-  PrivilegeGroup
+  PrivilegeGroup,
+  PrivacyFeatureName
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -301,6 +302,17 @@ export function ManageCustomer () {
   const [
     disableMspEcSupport
   ] = useDisableMspEcSupportMutation()
+
+  const { data: privacySettingsData } =
+   useGetPrivacySettingsQuery({ params }, { skip: isEditMode || !isAppMonitoringEnabled })
+
+  useEffect(() => {
+    if (privacySettingsData) {
+      const privacyMonitoringSetting =
+         privacySettingsData.filter(item => item.featureName === PrivacyFeatureName.ARC)[0]
+      setArcEnabled(privacyMonitoringSetting.isEnabled)
+    }
+  }, [privacySettingsData])
 
   useEffect(() => {
     if (ecSupport && ecSupport.length > 0 ) {

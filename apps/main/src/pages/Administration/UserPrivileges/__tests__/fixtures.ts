@@ -471,3 +471,2186 @@ export const fakedExplicitCustomRoleList = [
     ]
   }
 ]
+
+export const fakedScopeTree =[
+  {
+    id: '7d411830a62347f38c956e8affcea8bj',
+    name: 'edge-c',
+    description: 'Gateways',
+    category: 'Gateways',
+    subFeatures: [
+      {
+        id: '7d411830a62347f38c956e8affcea8bn1',
+        name: 'gateways.network_control_services-c',
+        description: 'Network Control (Services)',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bj',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023e7',
+            name: 'gateways.network_control_services.pin-c',
+            description: 'PIN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bn1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023c7',
+            name: 'gateways.network_control_services.dhcp-c',
+            description: 'DHCP',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bn1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023f7',
+            name: 'gateways.network_control_services.sdlan-c',
+            description: 'SDLAN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bn1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023d7',
+            name: 'gateways.network_control_services.qos-c',
+            description: 'QoS',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bn1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023g7',
+            name: 'gateways.network_control_services.mdns_proxy-c',
+            description: 'MDNS Proxy',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bn1'
+          }
+        ]
+      },
+      {
+        id: '7d411830a62347f38c956e8affcea8bj1',
+        name: 'gateways.ruckus_edge-c',
+        description: 'RUCKUS Edge',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bj',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023b7',
+            name: 'gateways.ruckus_edge.rwg-c',
+            description: 'RWG',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bj1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023a7',
+            name: 'gateways.ruckus_edge.edge_management-c',
+            description: 'Edge Management',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bj1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bf',
+    name: 'switch-c',
+    description: 'Wired',
+    category: 'Wired',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02343',
+        name: 'wired.clients-c',
+        description: 'Clients',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bf',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02344',
+            name: 'wired.clients.wired-c',
+            description: 'Wired',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02343'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02340',
+        name: 'wired.wired-c',
+        description: 'Wired',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bf',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02341',
+            name: 'wired.wired.switches-c',
+            description: 'Switches',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02340'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02342',
+            name: 'wired.wired.wired_network_profile-c',
+            description: 'Wired Network Profile',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02340'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02338',
+        name: 'wired.venue-c',
+        description: 'Venue',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bf',
+        subFeatures: [
+          {
+            id: '7d411830a62347f38c956e8affcea8bf1',
+            name: 'wired.venue.switch-c',
+            description: 'Switch',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02338'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac023x3',
+        name: 'wired.network_control_services-c',
+        description: 'Network Control (Services)',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bf',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023y4',
+            name: 'wired.network_control_services.web_authority-c',
+            description: 'Web Authority',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac023x3'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac04353',
+    name: 'admin-d',
+    description: 'Admin',
+    category: 'Admin',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04354',
+        name: 'admin.administration-d',
+        description: 'Administration',
+        category: 'Admin',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04353',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04355',
+            name: 'admin.administration.timeline-d',
+            description: 'Timeline',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04357',
+            name: 'admin.administration.account_setup-d',
+            description: 'Account Setup',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04356',
+            name: 'admin.administration.account_management-d',
+            description: 'Account Management',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04354'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac01353',
+    name: 'admin-r',
+    description: 'Admin',
+    category: 'Admin',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01354',
+        name: 'admin.administration-r',
+        description: 'Administration',
+        category: 'Admin',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01353',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01356',
+            name: 'admin.administration.account_management-r',
+            description: 'Account Management',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01357',
+            name: 'admin.administration.account_setup-r',
+            description: 'Account Setup',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01355',
+            name: 'admin.administration.timeline-r',
+            description: 'Timeline',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01354'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bh',
+    name: 'switch-d',
+    description: 'Wired',
+    category: 'Wired',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04338',
+        name: 'wired.venue-d',
+        description: 'Venue',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bh',
+        subFeatures: [
+          {
+            id: '7d411830a62347f38c956e8affcea8bh1',
+            name: 'wired.venue.switch-d',
+            description: 'Switch',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04338'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04340',
+        name: 'wired.wired-d',
+        description: 'Wired',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bh',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04341',
+            name: 'wired.wired.switches-d',
+            description: 'Switches',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04340'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04342',
+            name: 'wired.wired.wired_network_profile-d',
+            description: 'Wired Network Profile',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04340'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04343',
+        name: 'wired.clients-d',
+        description: 'Clients',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bh',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04344',
+            name: 'wired.clients.wired-d',
+            description: 'Wired',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04343'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac043x3',
+        name: 'wired.network_control_services-d',
+        description: 'Network Control (Services)',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bh',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043y4',
+            name: 'wired.network_control_services.web_authority-d',
+            description: 'Web Authority',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac043x3'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bb',
+    name: 'wifi-c',
+    description: 'Wi-Fi',
+    category: 'wifi',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02308',
+        name: 'wifi.venue-c',
+        description: 'Venue',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bb',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023a0',
+            name: 'wifi.venue.venue_management-c',
+            description: 'Venue Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02309',
+            name: 'wifi.venue.wifi-c',
+            description: 'Wi-Fi',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023b0',
+            name: 'wifi.venue.property_management_units-c',
+            description: 'Property Management - Units',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02310',
+            name: 'wifi.venue.property_management-c',
+            description: 'Property Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02308'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02317',
+        name: 'wifi.network_control_services-c',
+        description: 'Network Control (Services)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bb',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02319',
+            name: 'wifi.network_control_services.dpsk_passphrases-c',
+            description: 'DPSK Passphrases',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023b2',
+            name: 'wifi.network_control_policies.certificate_templates-c',
+            description: 'Certificate Templates',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02320',
+            name: 'wifi.network_control_services.wifi_calling-c',
+            description: 'wifi Calling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02318',
+            name: 'wifi.network_control_services.dpsk-c',
+            description: 'DPSK',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02321',
+            name: 'wifi.network_control_services.guest_portal-c',
+            description: 'Guest Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02322',
+            name: 'wifi.network_control_services.resident_portal-c',
+            description: 'Resident Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023c2',
+            name: 'wifi.network_control_services.mdns_proxy-c',
+            description: 'MDNS Proxy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023d2',
+            name: 'wifi.network_control_services.dhcp-c',
+            description: 'DHCP',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023a2',
+            name: 'wifi.network_control_policies.certificate_authority-c',
+            description: 'Certificate Authority',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02317'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02323',
+        name: 'wifi.network_control_policies-c',
+        description: 'Network Control (Policies)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bb',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02331',
+            name: 'wifi.network_control_policies.rogue_ap_detection-c',
+            description: 'Rogue AP Detection',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02332',
+            name: 'wifi.network_control_policies.snmp_agent-c',
+            description: 'SNMP Agent',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02333',
+            name: 'wifi.network_control_policies.syslog_server-c',
+            description: 'Syslog Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02324',
+            name: 'wifi.network_control_policies.access_control-c',
+            description: 'Access Control',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02327',
+            name: 'wifi.network_control_policies.identity_provider-c',
+            description: 'Identity Provider',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02328',
+            name: 'wifi.network_control_policies.mac_registration_list-c',
+            description: 'MAC Registration List',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02326',
+            name: 'wifi.network_control_policies.client_isolation-c',
+            description: 'Client Isolation',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02336',
+            name: 'wifi.network_control_policies.workflow-c',
+            description: 'Workflow',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02329',
+            name: 'wifi.network_control_policies.location_based_service-c',
+            description: 'Location Based Service',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02334',
+            name: 'wifi.network_control_policies.vlan_pool-c',
+            description: 'VLAN Pool',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02325',
+            name: 'wifi.network_control_policies.adaptive_policy-c',
+            description: 'Adaptive Policy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac023a3',
+            name: 'wifi.network_control_policies.tunnelling-c',
+            description: 'Tunnelling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02335',
+            name: 'wifi.network_control_policies.wifi_operator-c',
+            description: 'wifi Operator',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02330',
+            name: 'wifi.network_control_policies.radius_server-c',
+            description: 'RADIUS Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02323'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02311',
+        name: 'wifi.wifi-c',
+        description: 'Wi-Fi',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bb',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02312',
+            name: 'wifi.wifi.access_points-c',
+            description: 'Access Points',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02311'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02313',
+            name: 'wifi.wifi.wifi_networks-c',
+            description: 'wifi Networks',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02311'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02314',
+        name: 'wifi.clients-c',
+        description: 'Clients',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bb',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02315',
+            name: 'wifi.clients.wireless-c',
+            description: 'Wireless',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02314'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02316',
+            name: 'wifi.clients.identity_management-c',
+            description: 'Identity Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02314'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac04349',
+    name: 'analytics-d',
+    description: 'Analytics',
+    category: 'Analytics',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04350',
+        name: 'analytics.ai_assurance-d',
+        description: 'AI Assurance',
+        category: 'Analytics',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04349',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04351',
+            name: 'analytics.ai_assurance.ai_analytics-d',
+            description: 'AI Analytics',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04350'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04352',
+            name: 'analytics.ai_assurance.network_assurance-d',
+            description: 'Network Assurance',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04350'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bk',
+    name: 'edge-u',
+    description: 'Gateways',
+    category: 'Gateways',
+    subFeatures: [
+      {
+        id: '7d411830a62347f38c956e8affcea8bo1',
+        name: 'gateways.network_control_services-u',
+        description: 'Network Control (Services)',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bk',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033d7',
+            name: 'gateways.network_control_services.qos-u',
+            description: 'QoS',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bo1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033f7',
+            name: 'gateways.network_control_services.sdlan-u',
+            description: 'SDLAN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bo1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033g7',
+            name: 'gateways.network_control_services.mdns_proxy-u',
+            description: 'MDNS Proxy',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bo1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033e7',
+            name: 'gateways.network_control_services.pin-u',
+            description: 'PIN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bo1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033c7',
+            name: 'gateways.network_control_services.dhcp-u',
+            description: 'DHCP',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bo1'
+          }
+        ]
+      },
+      {
+        id: '7d411830a62347f38c956e8affcea8bk1',
+        name: 'gateways.ruckus_edge-u',
+        description: 'RUCKUS Edge',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bk',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033a7',
+            name: 'gateways.ruckus_edge.edge_management-u',
+            description: 'Edge Management',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bk1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033b7',
+            name: 'gateways.ruckus_edge.rwg-u',
+            description: 'RWG',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bk1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bl',
+    name: 'edge-d',
+    description: 'Gateways',
+    category: 'Gateways',
+    subFeatures: [
+      {
+        id: '7d411830a62347f38c956e8affcea8bp1',
+        name: 'gateways.network_control_services-d',
+        description: 'Network Control (Services)',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bl',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043e7',
+            name: 'gateways.network_control_services.pin-d',
+            description: 'PIN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bp1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043d7',
+            name: 'gateways.network_control_services.qos-d',
+            description: 'QoS',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bp1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043g7',
+            name: 'gateways.network_control_services.mdns_proxy-d',
+            description: 'MDNS Proxy',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bp1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043f7',
+            name: 'gateways.network_control_services.sdlan-d',
+            description: 'SDLAN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bp1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043c7',
+            name: 'gateways.network_control_services.dhcp-d',
+            description: 'DHCP',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bp1'
+          }
+        ]
+      },
+      {
+        id: '7d411830a62347f38c956e8affcea8bl1',
+        name: 'gateways.ruckus_edge-d',
+        description: 'RUCKUS Edge',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bl',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043a7',
+            name: 'gateways.ruckus_edge.edge_management-d',
+            description: 'Edge Management',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bl1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043b7',
+            name: 'gateways.ruckus_edge.rwg-d',
+            description: 'RWG',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bl1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac01358',
+    name: 'msp-r',
+    description: 'MSP',
+    category: 'MSP',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01359',
+        name: 'msp.msp-r',
+        description: 'MSP',
+        category: 'MSP',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01358',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01362',
+            name: 'msp.msp.subscriptions-r',
+            description: 'Subscriptions',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01360',
+            name: 'msp.msp.msp_tenant_management-r',
+            description: 'MSP Tenant Management',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01361',
+            name: 'msp.msp.device_inventory-r',
+            description: 'Device Inventory',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01363',
+            name: 'msp.msp.templates-r',
+            description: 'Tempates',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01364',
+            name: 'msp.msp.msp_portal-r',
+            description: 'MSP Portal',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01359'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac02349',
+    name: 'analytics-c',
+    description: 'Analytics',
+    category: 'Analytics',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02350',
+        name: 'analytics.ai_assurance-c',
+        description: 'AI Assurance',
+        category: 'Analytics',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02349',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02352',
+            name: 'analytics.ai_assurance.network_assurance-c',
+            description: 'Network Assurance',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02350'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02351',
+            name: 'analytics.ai_assurance.ai_analytics-c',
+            description: 'AI Analytics',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02350'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac02353',
+    name: 'admin-c',
+    description: 'Admin',
+    category: 'Admin',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02354',
+        name: 'admin.administration-c',
+        description: 'Administration',
+        category: 'Admin',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02353',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02355',
+            name: 'admin.administration.timeline-c',
+            description: 'Timeline',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02357',
+            name: 'admin.administration.account_setup-c',
+            description: 'Account Setup',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02356',
+            name: 'admin.administration.account_management-c',
+            description: 'Account Management',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02354'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac03353',
+    name: 'admin-u',
+    description: 'Admin',
+    category: 'Admin',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03354',
+        name: 'admin.administration-u',
+        description: 'Administration',
+        category: 'Admin',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03353',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03357',
+            name: 'admin.administration.account_setup-u',
+            description: 'Account Setup',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03356',
+            name: 'admin.administration.account_management-u',
+            description: 'Account Management',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03354'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03355',
+            name: 'admin.administration.timeline-u',
+            description: 'Timeline',
+            category: 'Admin',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03354'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac03358',
+    name: 'msp-u',
+    description: 'MSP',
+    category: 'MSP',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03359',
+        name: 'msp.msp-u',
+        description: 'MSP',
+        category: 'MSP',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03358',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03363',
+            name: 'msp.msp.templates-u',
+            description: 'Tempates',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03362',
+            name: 'msp.msp.subscriptions-u',
+            description: 'Subscriptions',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03361',
+            name: 'msp.msp.device_inventory-u',
+            description: 'Device Inventory',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03364',
+            name: 'msp.msp.msp_portal-u',
+            description: 'MSP Portal',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03360',
+            name: 'msp.msp.msp_tenant_management-u',
+            description: 'MSP Tenant Management',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03359'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8ba',
+    name: 'wifi-r',
+    description: 'Wi-Fi',
+    category: 'wifi',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01314',
+        name: 'wifi.clients-r',
+        description: 'Clients',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8ba',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01316',
+            name: 'wifi.clients.identity_management-r',
+            description: 'Identity Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01314'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01315',
+            name: 'wifi.clients.wireless-r',
+            description: 'Wireless',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01314'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01311',
+        name: 'wifi.wifi-r',
+        description: 'Wi-Fi',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8ba',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01312',
+            name: 'wifi.wifi.access_points-r',
+            description: 'Access Points',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01311'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01313',
+            name: 'wifi.wifi.wifi_networks-r',
+            description: 'wifi Networks',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01311'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01317',
+        name: 'wifi.network_control_services-r',
+        description: 'Network Control (Services)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8ba',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01321',
+            name: 'wifi.network_control_services.guest_portal-r',
+            description: 'Guest Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013a2',
+            name: 'wifi.network_control_policies.certificate_authority-r',
+            description: 'Certificate Authority',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013c2',
+            name: 'wifi.network_control_services.mdns_proxy-r',
+            description: 'MDNS Proxy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013d2',
+            name: 'wifi.network_control_services.dhcp-r',
+            description: 'DHCP',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01319',
+            name: 'wifi.network_control_services.dpsk_passphrases-r',
+            description: 'DPSK Passphrases',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01318',
+            name: 'wifi.network_control_services.dpsk-r',
+            description: 'DPSK',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01320',
+            name: 'wifi.network_control_services.wifi_calling-r',
+            description: 'wifi Calling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013b2',
+            name: 'wifi.network_control_policies.certificate_templates-r',
+            description: 'Certificate Templates',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01322',
+            name: 'wifi.network_control_services.resident_portal-r',
+            description: 'Resident Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01317'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01323',
+        name: 'wifi.network_control_policies-r',
+        description: 'Network Control (Policies)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8ba',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01334',
+            name: 'wifi.network_control_policies.vlan_pool-r',
+            description: 'VLAN Pool',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01325',
+            name: 'wifi.network_control_policies.adaptive_policy-r',
+            description: 'Adaptive Policy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013a3',
+            name: 'wifi.network_control_policies.tunnelling-r',
+            description: 'Tunnelling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01333',
+            name: 'wifi.network_control_policies.syslog_server-r',
+            description: 'Syslog Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01332',
+            name: 'wifi.network_control_policies.snmp_agent-r',
+            description: 'SNMP Agent',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01330',
+            name: 'wifi.network_control_policies.radius_server-r',
+            description: 'RADIUS Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01335',
+            name: 'wifi.network_control_policies.wifi_operator-r',
+            description: 'wifi Operator',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01326',
+            name: 'wifi.network_control_policies.client_isolation-r',
+            description: 'Client Isolation',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01336',
+            name: 'wifi.network_control_policies.workflow-r',
+            description: 'Workflow',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01329',
+            name: 'wifi.network_control_policies.location_based_service-r',
+            description: 'Location Based Service',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01331',
+            name: 'wifi.network_control_policies.rogue_ap_detection-r',
+            description: 'Rogue AP Detection',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01328',
+            name: 'wifi.network_control_policies.mac_registration_list-r',
+            description: 'MAC Registration List',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01327',
+            name: 'wifi.network_control_policies.identity_provider-r',
+            description: 'Identity Provider',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01324',
+            name: 'wifi.network_control_policies.access_control-r',
+            description: 'Access Control',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01323'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01308',
+        name: 'wifi.venue-r',
+        description: 'Venue',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8ba',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01309',
+            name: 'wifi.venue.wifi-r',
+            description: 'Wi-Fi',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01310',
+            name: 'wifi.venue.property_management-r',
+            description: 'Property Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013a0',
+            name: 'wifi.venue.venue_management-r',
+            description: 'Venue Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013b0',
+            name: 'wifi.venue.property_management_units-r',
+            description: 'Property Management - Units',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01308'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bg',
+    name: 'switch-u',
+    description: 'Wired',
+    category: 'Wired',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03338',
+        name: 'wired.venue-u',
+        description: 'Venue',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bg',
+        subFeatures: [
+          {
+            id: '7d411830a62347f38c956e8affcea8bg1',
+            name: 'wired.venue.switch-u',
+            description: 'Switch',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03338'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03343',
+        name: 'wired.clients-u',
+        description: 'Clients',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bg',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03344',
+            name: 'wired.clients.wired-u',
+            description: 'Wired',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03343'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac033x3',
+        name: 'wired.network_control_services-u',
+        description: 'Network Control (Services)',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bg',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033y4',
+            name: 'wired.network_control_services.web_authority-u',
+            description: 'Web Authority',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac033x3'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03340',
+        name: 'wired.wired-u',
+        description: 'Wired',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bg',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03341',
+            name: 'wired.wired.switches-u',
+            description: 'Switches',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03340'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03342',
+            name: 'wired.wired.wired_network_profile-u',
+            description: 'Wired Network Profile',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03340'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bd',
+    name: 'wifi-d',
+    description: 'Wi-Fi',
+    category: 'wifi',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04317',
+        name: 'wifi.network_control_services-d',
+        description: 'Network Control (Services)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bd',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043b2',
+            name: 'wifi.network_control_policies.certificate_templates-d',
+            description: 'Certificate Templates',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043c2',
+            name: 'wifi.network_control_services.mdns_proxy-d',
+            description: 'MDNS Proxy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043d2',
+            name: 'wifi.network_control_services.dhcp-d',
+            description: 'DHCP',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04320',
+            name: 'wifi.network_control_services.wifi_calling-d',
+            description: 'wifi Calling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04322',
+            name: 'wifi.network_control_services.resident_portal-d',
+            description: 'Resident Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04318',
+            name: 'wifi.network_control_services.dpsk-d',
+            description: 'DPSK',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043a2',
+            name: 'wifi.network_control_policies.certificate_authority-d',
+            description: 'Certificate Authority',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04319',
+            name: 'wifi.network_control_services.dpsk_passphrases-d',
+            description: 'DPSK Passphrases',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04321',
+            name: 'wifi.network_control_services.guest_portal-d',
+            description: 'Guest Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04317'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04308',
+        name: 'wifi.venue-d',
+        description: 'Venue',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bd',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04309',
+            name: 'wifi.venue.wifi-d',
+            description: 'Wi-Fi',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043b0',
+            name: 'wifi.venue.property_management_units-d',
+            description: 'Property Management - Units',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04310',
+            name: 'wifi.venue.property_management-d',
+            description: 'Property Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043a0',
+            name: 'wifi.venue.venue_management-d',
+            description: 'Venue Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04308'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04311',
+        name: 'wifi.wifi-d',
+        description: 'Wi-Fi',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bd',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04312',
+            name: 'wifi.wifi.access_points-d',
+            description: 'Access Points',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04311'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04313',
+            name: 'wifi.wifi.wifi_networks-d',
+            description: 'wifi Networks',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04311'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04314',
+        name: 'wifi.clients-d',
+        description: 'Clients',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bd',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04315',
+            name: 'wifi.clients.wireless-d',
+            description: 'Wireless',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04314'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04316',
+            name: 'wifi.clients.identity_management-d',
+            description: 'Identity Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04314'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04323',
+        name: 'wifi.network_control_policies-d',
+        description: 'Network Control (Policies)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bd',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04328',
+            name: 'wifi.network_control_policies.mac_registration_list-d',
+            description: 'MAC Registration List',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04334',
+            name: 'wifi.network_control_policies.vlan_pool-d',
+            description: 'VLAN Pool',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04327',
+            name: 'wifi.network_control_policies.identity_provider-d',
+            description: 'Identity Provider',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04335',
+            name: 'wifi.network_control_policies.wifi_operator-d',
+            description: 'wifi Operator',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04324',
+            name: 'wifi.network_control_policies.access_control-d',
+            description: 'Access Control',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04330',
+            name: 'wifi.network_control_policies.radius_server-d',
+            description: 'RADIUS Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac043a3',
+            name: 'wifi.network_control_policies.tunnelling-d',
+            description: 'Tunnelling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04332',
+            name: 'wifi.network_control_policies.snmp_agent-d',
+            description: 'SNMP Agent',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04325',
+            name: 'wifi.network_control_policies.adaptive_policy-d',
+            description: 'Adaptive Policy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04331',
+            name: 'wifi.network_control_policies.rogue_ap_detection-d',
+            description: 'Rogue AP Detection',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04329',
+            name: 'wifi.network_control_policies.location_based_service-d',
+            description: 'Location Based Service',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04336',
+            name: 'wifi.network_control_policies.workflow-d',
+            description: 'Workflow',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04326',
+            name: 'wifi.network_control_policies.client_isolation-d',
+            description: 'Client Isolation',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04333',
+            name: 'wifi.network_control_policies.syslog_server-d',
+            description: 'Syslog Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04323'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac01349',
+    name: 'analytics-r',
+    description: 'Analytics',
+    category: 'Analytics',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01350',
+        name: 'analytics.ai_assurance-r',
+        description: 'AI Assurance',
+        category: 'Analytics',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01349',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01351',
+            name: 'analytics.ai_assurance.ai_analytics-r',
+            description: 'AI Analytics',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01350'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01352',
+            name: 'analytics.ai_assurance.network_assurance-r',
+            description: 'Network Assurance',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01350'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac03349',
+    name: 'analytics-u',
+    description: 'Analytics',
+    category: 'Analytics',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03350',
+        name: 'analytics.ai_assurance-u',
+        description: 'AI Assurance',
+        category: 'Analytics',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03349',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03351',
+            name: 'analytics.ai_assurance.ai_analytics-u',
+            description: 'AI Analytics',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03350'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03352',
+            name: 'analytics.ai_assurance.network_assurance-u',
+            description: 'Network Assurance',
+            category: 'Analytics',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03350'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac04358',
+    name: 'msp-d',
+    description: 'MSP',
+    category: 'MSP',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac04359',
+        name: 'msp.msp-d',
+        description: 'MSP',
+        category: 'MSP',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04358',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04360',
+            name: 'msp.msp.msp_tenant_management-d',
+            description: 'MSP Tenant Management',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04364',
+            name: 'msp.msp.msp_portal-d',
+            description: 'MSP Portal',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04361',
+            name: 'msp.msp.device_inventory-d',
+            description: 'Device Inventory',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04363',
+            name: 'msp.msp.templates-d',
+            description: 'Tempates',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac04362',
+            name: 'msp.msp.subscriptions-d',
+            description: 'Subscriptions',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac04359'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bi',
+    name: 'edge-r',
+    description: 'Gateways',
+    category: 'Gateways',
+    subFeatures: [
+      {
+        id: '7d411830a62347f38c956e8affcea8bm1',
+        name: 'gateways.network_control_services-r',
+        description: 'Network Control (Services)',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bi',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013c7',
+            name: 'gateways.network_control_services.dhcp-r',
+            description: 'DHCP',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bm1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013g7',
+            name: 'gateways.network_control_services.mdns_proxy-r',
+            description: 'MDNS Proxy',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bm1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013f7',
+            name: 'gateways.network_control_services.sdlan-r',
+            description: 'SDLAN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bm1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013e7',
+            name: 'gateways.network_control_services.pin-r',
+            description: 'PIN',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bm1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013d7',
+            name: 'gateways.network_control_services.qos-r',
+            description: 'QoS',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bm1'
+          }
+        ]
+      },
+      {
+        id: '7d411830a62347f38c956e8affcea8bi1',
+        name: 'gateways.ruckus_edge-r',
+        description: 'RUCKUS Edge',
+        category: 'Gateways',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bi',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013b7',
+            name: 'gateways.ruckus_edge.rwg-r',
+            description: 'RWG',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bi1'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013a7',
+            name: 'gateways.ruckus_edge.edge_management-r',
+            description: 'Edge Management',
+            category: 'Gateways',
+            parentFeatureId: '7d411830a62347f38c956e8affcea8bi1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8be',
+    name: 'switch-r',
+    description: 'Wired',
+    category: 'Wired',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01343',
+        name: 'wired.clients-r',
+        description: 'Clients',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8be',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01344',
+            name: 'wired.clients.wired-r',
+            description: 'Wired',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01343'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01338',
+        name: 'wired.venue-r',
+        description: 'Venue',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8be',
+        subFeatures: [
+          {
+            id: '7d411830a62347f38c956e8affcea8be1',
+            name: 'wired.venue.switch-r',
+            description: 'Switch',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01338'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac01340',
+        name: 'wired.wired-r',
+        description: 'Wired',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8be',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01341',
+            name: 'wired.wired.switches-r',
+            description: 'Switches',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01340'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac01342',
+            name: 'wired.wired.wired_network_profile-r',
+            description: 'Wired Network Profile',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac01340'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac013x3',
+        name: 'wired.network_control_services-r',
+        description: 'Network Control (Services)',
+        category: 'Wired',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8be',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac013y4',
+            name: 'wired.network_control_services.web_authority-r',
+            description: 'Web Authority',
+            category: 'Wired',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac013x3'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '7d411830a62347f38c956e8affcea8bc',
+    name: 'wifi-u',
+    description: 'Wi-Fi',
+    category: 'wifi',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03317',
+        name: 'wifi.network_control_services-u',
+        description: 'Network Control (Services)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bc',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033a2',
+            name: 'wifi.network_control_policies.certificate_authority-u',
+            description: 'Certificate Authority',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033d2',
+            name: 'wifi.network_control_services.dhcp-u',
+            description: 'DHCP',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03318',
+            name: 'wifi.network_control_services.dpsk-u',
+            description: 'DPSK',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03322',
+            name: 'wifi.network_control_services.resident_portal-u',
+            description: 'Resident Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033c2',
+            name: 'wifi.network_control_services.mdns_proxy-u',
+            description: 'MDNS Proxy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03320',
+            name: 'wifi.network_control_services.wifi_calling-u',
+            description: 'wifi Calling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033b2',
+            name: 'wifi.network_control_policies.certificate_templates-u',
+            description: 'Certificate Templates',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03319',
+            name: 'wifi.network_control_services.dpsk_passphrases-u',
+            description: 'DPSK Passphrases',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03321',
+            name: 'wifi.network_control_services.guest_portal-u',
+            description: 'Guest Portal',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03317'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03311',
+        name: 'wifi.wifi-u',
+        description: 'Wi-Fi',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bc',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03312',
+            name: 'wifi.wifi.access_points-u',
+            description: 'Access Points',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03311'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03313',
+            name: 'wifi.wifi.wifi_networks-u',
+            description: 'wifi Networks',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03311'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03308',
+        name: 'wifi.venue-u',
+        description: 'Venue',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bc',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03310',
+            name: 'wifi.venue.property_management-u',
+            description: 'Property Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033b0',
+            name: 'wifi.venue.property_management_units-u',
+            description: 'Property Management - Units',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03309',
+            name: 'wifi.venue.wifi-u',
+            description: 'Wi-Fi',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03308'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033a0',
+            name: 'wifi.venue.venue_management-u',
+            description: 'Venue Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03308'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03314',
+        name: 'wifi.clients-u',
+        description: 'Clients',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bc',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03315',
+            name: 'wifi.clients.wireless-u',
+            description: 'Wireless',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03314'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03316',
+            name: 'wifi.clients.identity_management-u',
+            description: 'Identity Management',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03314'
+          }
+        ]
+      },
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac03323',
+        name: 'wifi.network_control_policies-u',
+        description: 'Network Control (Policies)',
+        category: 'wifi',
+        parentFeatureId: '7d411830a62347f38c956e8affcea8bc',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03330',
+            name: 'wifi.network_control_policies.radius_server-u',
+            description: 'RADIUS Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03332',
+            name: 'wifi.network_control_policies.snmp_agent-u',
+            description: 'SNMP Agent',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03336',
+            name: 'wifi.network_control_policies.workflow-u',
+            description: 'Workflow',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03328',
+            name: 'wifi.network_control_policies.mac_registration_list-u',
+            description: 'MAC Registration List',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03335',
+            name: 'wifi.network_control_policies.wifi_operator-u',
+            description: 'wifi Operator',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03324',
+            name: 'wifi.network_control_policies.access_control-u',
+            description: 'Access Control',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03331',
+            name: 'wifi.network_control_policies.rogue_ap_detection-u',
+            description: 'Rogue AP Detection',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03334',
+            name: 'wifi.network_control_policies.vlan_pool-u',
+            description: 'VLAN Pool',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03325',
+            name: 'wifi.network_control_policies.adaptive_policy-u',
+            description: 'Adaptive Policy',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03329',
+            name: 'wifi.network_control_policies.location_based_service-u',
+            description: 'Location Based Service',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac033a3',
+            name: 'wifi.network_control_policies.tunnelling-u',
+            description: 'Tunnelling',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03326',
+            name: 'wifi.network_control_policies.client_isolation-u',
+            description: 'Client Isolation',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03327',
+            name: 'wifi.network_control_policies.identity_provider-u',
+            description: 'Identity Provider',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac03333',
+            name: 'wifi.network_control_policies.syslog_server-u',
+            description: 'Syslog Server',
+            category: 'wifi',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac03323'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cdf2fa2bf09840f993ff0f3eaac02358',
+    name: 'msp-c',
+    description: 'MSP',
+    category: 'MSP',
+    subFeatures: [
+      {
+        id: 'cdf2fa2bf09840f993ff0f3eaac02359',
+        name: 'msp.msp-c',
+        description: 'MSP',
+        category: 'MSP',
+        parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02358',
+        subFeatures: [
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02361',
+            name: 'msp.msp.device_inventory-c',
+            description: 'Device Inventory',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02364',
+            name: 'msp.msp.msp_portal-c',
+            description: 'MSP Portal',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02360',
+            name: 'msp.msp.msp_tenant_management-c',
+            description: 'MSP Tenant Management',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02363',
+            name: 'msp.msp.templates-c',
+            description: 'Tempates',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02359'
+          },
+          {
+            id: 'cdf2fa2bf09840f993ff0f3eaac02362',
+            name: 'msp.msp.subscriptions-c',
+            description: 'Subscriptions',
+            category: 'MSP',
+            parentFeatureId: 'cdf2fa2bf09840f993ff0f3eaac02359'
+          }
+        ]
+      }
+    ]
+  }
+]

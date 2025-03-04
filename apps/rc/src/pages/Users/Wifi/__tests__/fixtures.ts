@@ -239,7 +239,7 @@ export const VenueList = {
 }
 
 export const AllowedNetworkList = {
-  fields: ['name', 'id', 'defaultGuestCountry', 'captiveType'],
+  fields: ['name', 'id', 'defaultGuestCountry', 'captiveType', 'isOweMaster', 'securityProtocol'],
   totalCount: 2,
   page: 1,
   data: [
@@ -247,13 +247,17 @@ export const AllowedNetworkList = {
       name: 'guest pass wlan1',
       id: 'tenant-id',
       defaultGuestCountry: 'United States',
-      captiveType: 'GuestPass'
+      captiveType: 'GuestPass',
+      isOweMaster: true,
+      securityProtocol: 'OWETransition'
     },
     {
       name: 'guest pass wlan2',
       id: 'dasjk12359552a9d041813131d007aca',
       defaultGuestCountry: 'United States',
-      captiveType: 'GuestPass'
+      captiveType: 'GuestPass',
+      isOweMaster: true,
+      securityProtocol: 'OWETransition'
     }
   ]
 }

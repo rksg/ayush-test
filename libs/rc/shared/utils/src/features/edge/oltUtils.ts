@@ -4,8 +4,21 @@ import { defineMessage } from 'react-intl'
 import { getIntl } from '@acx-ui/utils'
 
 import { EdgeNokiaCageStateEnum, EdgeNokiaOltStatusEnum } from '../../models/EdgeNokiaOltEnum'
+import { EdgeNokiaOltData }                               from '../../types/edgeOlt'
 
-export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment (
+export const OLT_PSE_SUPPLIED_POWER = 50 // PSE: Power Sourcing Equipment
+export const oltLineCardOptions = [
+  { label: 'PON LC 1', value: 'S1' },
+  { label: 'PON LC 2', value: 'S2' }
+]
+
+// OLT SN: line card SN
+export const oltLineCardSerailNumberMap = {
+  FH2302A073A: 'YP2306F4B2D',
+  FH2302A077C: 'YP2306F4B76'
+}
+
+export const oltCageCannedSpeeds = [1, 10, 25] // GB
 
 export const getOltStatusConfig = () => {
   const { $t } = getIntl()
@@ -81,3 +94,5 @@ export const getOltPoeClassText = (poeClass: string): string => {
 }
 
 export const isOltValidSerialNumber = (serialNumber: string): boolean => !!serialNumber
+export const isOltOnline = (oltData: EdgeNokiaOltData) =>
+  oltData.status === EdgeNokiaOltStatusEnum.ONLINE

@@ -48,9 +48,7 @@ describe('WorkflowForm', () => {
         layout={'vertical'}
         name={'workflowForm'}
       >
-        <WorkflowForm
-          isEdit={false}
-        />
+        <WorkflowForm isEdit={false}/>
       </Form>
     </Provider>)
     // eslint-disable-next-line max-len
@@ -71,7 +69,6 @@ describe('WorkflowForm', () => {
       >
         <WorkflowForm
           isEdit
-          defaultValue={workflows[0]}
           policyId={workflows[0].id}
         />
       </Form>

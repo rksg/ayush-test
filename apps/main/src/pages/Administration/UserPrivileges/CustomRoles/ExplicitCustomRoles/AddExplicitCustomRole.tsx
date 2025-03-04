@@ -5,7 +5,7 @@ import {
   Input,
   TreeDataNode
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   PageHeader,
@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/components'
 import {
   useAddCustomRoleMutation,
+  useGetCustomRoleFeaturesQuery,
   useGetCustomRolesQuery,
   useUpdateCustomRoleMutation
 } from '@acx-ui/rc/services'
@@ -24,7 +25,8 @@ import {
   specialCharactersRegExp,
   systemDefinedNameValidator,
   ScopePermission,
-  PermissionType
+  PermissionType,
+  ScopeFeature
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -36,7 +38,6 @@ import { RolesEnum } from '@acx-ui/types'
 
 import { AdvancedPermissionsTab } from './AdvancedPermissionsTab'
 import { PermissionsTab }         from './PermissionsTab'
-import { useScopeHierarchy }      from './useScopeHierarchy'
 
 export function Flat (parent: TreeDataNode | undefined) {
   if (parent) {
@@ -47,6 +48,23 @@ export function Flat (parent: TreeDataNode | undefined) {
       result.push(...flatChildren)
     }
     return result
+  }
+  return []
+}
+
+function getHierarchy ($t: IntlShape['$t'], scopeList: ScopeFeature[] | undefined) {
+  if (scopeList) {
+    return scopeList.map(s => {
+      const result = {
+        title: $t({ defaultMessage: '{title}' }, { title: s.description }),
+        key: s.name.split('-')[0]
+      } as TreeDataNode
+      const childrenList = getHierarchy($t, s.subFeatures)
+      if (childrenList.length > 0) {
+        result.children = childrenList
+      }
+      return result
+    })
   }
   return []
 }
@@ -65,7 +83,10 @@ export function AddExplicitCustomRole () {
   const location = useLocation().state as CustomRole
   const [roleNames, setRoleNames] = useState([] as RolesEnum[])
 
-  const scopeHierarchy = useScopeHierarchy(intl.$t)
+  const { data: scopeTree } = useGetCustomRoleFeaturesQuery({})
+
+  const scopeHierarchy =
+    getHierarchy(intl.$t, scopeTree?.filter(s => s.name.split('-')[1] === PermissionType.read))
 
   const initialPermissionList: ScopePermission[] = scopeHierarchy.flatMap(s => Flat(s)).map(s => {
     return {
@@ -210,7 +231,7 @@ export function AddExplicitCustomRole () {
       })
       form.setFieldValue('permissions', permissions)
     }
-  }, [form, location])
+  }, [form, location, initialPermissionList])
 
   const CustomRoleForm = () => {
     return <StepsForm

@@ -1,5 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { EnforceableFields }  from '..'
 import { ApDeviceStatusEnum } from '../../constants'
 import { FacilityEnum }       from '../../models/FacilityEnum'
 import { FlowLevelEnum }      from '../../models/FlowLevelEnum'
@@ -103,7 +104,7 @@ export interface VenueSyslogSettingType {
   serviceProfileId: string
 }
 
-export interface VenueSyslogPolicyType {
+export interface VenueSyslogPolicyType extends EnforceableFields {
   id?: string,
   name?: string,
   city?: string,

@@ -5,6 +5,7 @@ import { Col, Row, Switch, Typography } from 'antd'
 import { useIntl }                      from 'react-intl'
 import { useParams }                    from 'react-router-dom'
 
+import { showToast }                                                    from '@acx-ui/components'
 import { useGetPrivacySettingsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
 import { PrivacyFeatureName }                                           from '@acx-ui/rc/utils'
 import { useUserProfileContext }                                        from '@acx-ui/user'
@@ -29,7 +30,7 @@ export default function Privacy () {
   const [isPrivacyMonitoringSettingsEnabled, setIsPrivacyMonitoringSettingsEnabled]
     = useState<boolean>(false)
 
-  const { data } = useGetPrivacySettingsQuery({ params }, { skip: !isPrimeAdminUser })
+  const { data } = useGetPrivacySettingsQuery({ params })
 
   const payload: RequestPayload = {
     privacyFeatures: [
@@ -80,7 +81,23 @@ export default function Privacy () {
     await updatePrivacySettings({
       params,
       payload
-    })
+    }).unwrap()
+      .then(() => {
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: '{privacyFeature} is {enabled}' }, {
+            enabled: isChecked ? 'enabled' : 'disabled',
+            privacyFeature: privacyFeatureName === PrivacyFeatureName.ARC
+              ? 'Application-recognition and control'
+              : 'Application visibility'
+          })
+        })
+      }).catch((error) => {
+        showToast({
+          type: 'error',
+          content: error?.data?.message || error?.data?.error?.message
+        })
+      })
   }
 
   return (
