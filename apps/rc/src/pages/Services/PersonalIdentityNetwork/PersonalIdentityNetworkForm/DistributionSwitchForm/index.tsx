@@ -101,11 +101,6 @@ export function DistributionSwitchForm () {
     setOpenDrawer(false)
 
     saveToContext(newList)
-
-    if (isEdgePinEnhanceReady) {
-    // trigger validation
-      form.validateFields(['distributionSwitchInfos'])
-    }
   }
 
   return (<>
@@ -132,10 +127,6 @@ export function DistributionSwitchForm () {
       }} />
     <Form.Item
       name='distributionSwitchInfos'
-      rules={isEdgePinEnhanceReady
-        ? [{
-          required: true, message: $t({ defaultMessage: 'Please setup distribution switches' })
-        }] : undefined}
       children={<Input type='hidden'/>}
     />
     <DistributionSwitchDrawer

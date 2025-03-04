@@ -7,7 +7,7 @@ import {
   useImportSubInterfacesCSVMutation,
   useUpdateSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { EdgeSubInterface, useTableQuery } from '@acx-ui/rc/utils'
+import { convertEdgeSubinterfaceToApiPayload, EdgeSubInterface, useTableQuery } from '@acx-ui/rc/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -42,6 +42,8 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
   const [uploadCSV, uploadCSVResult] = useImportSubInterfacesCSVMutation()
 
   const handleAdd = async (data: EdgeSubInterface) => {
+    const payloadData = convertEdgeSubinterfaceToApiPayload(data)
+
     const requestPayload = {
       params: {
         venueId,
@@ -49,12 +51,15 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
         serialNumber,
         portId
       },
-      payload: data
+      payload: payloadData
     }
+
     await addSubInterface(requestPayload).unwrap()
   }
 
   const handleUpdate = async (data: EdgeSubInterface) => {
+    const payloadData = convertEdgeSubinterfaceToApiPayload(data)
+
     const requestPayload = {
       params: {
         venueId,
@@ -63,7 +68,7 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
         portId,
         subInterfaceId: data?.id
       },
-      payload: data
+      payload: payloadData
     }
     await updateSubInterface(requestPayload).unwrap()
   }
