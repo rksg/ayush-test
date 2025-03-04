@@ -187,6 +187,19 @@ export const getModuleKey = (family: string, model: string, slots: SwitchModelSl
     `${familymodel}_${moduleCategory.join(', ')}` : `${familymodel}_--`
 }
 
+export const getSelectedRows = (
+  selectedModuleKeys: string[],
+  vlanPortList: ModuleGroupByModel[]
+) => {
+  return selectedModuleKeys.map(key => {
+    const selectedModel = vlanPortList.find(vlanPort => vlanPort.id === key.split('_')[0])
+    const selectedRow = selectedModel?.groupbyModules.find(
+      module => module.key === key
+    )
+    return selectedRow ? selectedRow : {}
+  }).filter(row => row) as ModulePorts[]
+}
+
 const getPortArray = (ports?: string) => {
   return ports ? ports.split(',') : []
 }
@@ -268,9 +281,8 @@ export const getUpdatedVlans = (
             const updatedTaggedPorts = getPortArray(updatedVlan.taggedPorts)
             const updatedUntaggedPorts = getPortArray(updatedVlan.untaggedPorts)
 
-            const updatedTagged = _.uniq([...orinTaggedPorts, ...updatedTaggedPorts]).toString()
-            // eslint-disable-next-line max-len
-            const updatedUntagged = _.uniq([...orinUntaggedPorts, ...updatedUntaggedPorts]).toString()
+            const updatedTagged = [...orinTaggedPorts, ...updatedTaggedPorts].toString()
+            const updatedUntagged = [...orinUntaggedPorts, ...updatedUntaggedPorts].toString()
 
             if (!updatedTagged && !updatedUntagged) {
               return null

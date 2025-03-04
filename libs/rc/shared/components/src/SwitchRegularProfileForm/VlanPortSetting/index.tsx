@@ -19,6 +19,7 @@ import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormCont
 import {
   checkIfModuleFixed,
   getModuleKey,
+  getSelectedRows,
   getUpdatedVlans,
   getUpdatedVlanPortList,
   ModuleGroupByModel,
@@ -167,14 +168,7 @@ export function VlanPortSetting () {
         },
         onOk: () => {
           const vlans = form.getFieldValue('vlans') || []
-          const selectedRows = selectedModuleKeys.map(key => {
-            const selectedModel = vlanPortList.find(vlanPort => vlanPort.id === key.split('_')[0])
-            const selectedRow = selectedModel?.groupbyModules.find(
-              module => module.key === key
-            )
-            if (selectedRow) return selectedRow
-            return {}
-          }).filter(row => row) as ModulePorts[]
+          const selectedRows = getSelectedRows(selectedModuleKeys, vlanPortList)
 
           const filteredVlanPortList = getUpdatedVlanPortList(vlanPortList, selectedModuleKeys)
           const updatedVlans = getUpdatedVlans(selectedRows, vlans)
@@ -262,8 +256,12 @@ export function VlanPortSetting () {
 
   const handleSavePorts = (values: PortsModalSetting) => {
     const vlans = form.getFieldValue('vlans') || []
-    const filteredVlanPortList = getUpdatedVlanPortList(vlanPortList, selectedModuleKeys, values)
-    const updatedVlans = getUpdatedVlans([selectedRow], vlans, values)
+    const moduleKeys = selectedModuleKeys?.length
+      ? selectedModuleKeys : [getModuleKey(values.family, values.model, values.slots)]
+
+    const selectedRows = selectedRow ? [selectedRow] : getSelectedRows(moduleKeys, vlanPortList)
+    const filteredVlanPortList = getUpdatedVlanPortList(vlanPortList, moduleKeys, values)
+    const updatedVlans = getUpdatedVlans(selectedRows, vlans, values)
 
     form.setFieldValue('vlans', updatedVlans)
     setVlanPortList(filteredVlanPortList)

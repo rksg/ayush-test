@@ -11,7 +11,10 @@ export const GroupListLayout = styled('div')`
   min-height: 450px;
 
   div.ant-radio-group{
-    width: 100%
+    width: 100%;
+    .ant-radio-input {
+      display: none;
+    }
   }
 
   label.ant-radio-wrapper-in-form-item {

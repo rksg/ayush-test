@@ -449,7 +449,7 @@ describe('Wired - VlanPortSetting', () => {
             taggedPorts: '1/1/2',
             untaggedPorts: '1/1/3'
           }, {
-            id: '9874453239bc479fac68bc050d0cf727',
+            id: '',
             model: 'ICX7650-48ZP',
             slots: [
               { slotNumber: 1, enable: true }
