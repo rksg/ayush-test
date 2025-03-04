@@ -827,6 +827,10 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !checkboxEnabled) ||
         getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
           flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+      case 'switchMacAcl':
+        return (isMultipleEdit && !checkboxEnabled) ||
+            getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+              flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       default:
         return isMultipleEdit && !checkboxEnabled
     }
@@ -2419,27 +2423,24 @@ export function EditPortDrawer ({
           extraLabel: true,
           content: <Form.Item
             noStyle
-            children={shouldRenderMultipleText({
-              field: 'portSecurity', ...commonRequiredProps
-            }) ? <MultipleText />
-              : <Tooltip title={getFieldTooltip('portSecurity')}>
-                <Space>
-                  <Form.Item
-                    noStyle
-                    name='portSecurity'
-                    valuePropName='checked'
-                    initialValue={false}
-                    validateFirst
-                  >
-                    <Switch
-                      data-testid='port-security-checkbox'
-                      disabled={getFieldDisabled('portSecurity')}
-                      className={getToggleClassName('portSecurity',
-                        isMultipleEdit, hasMultipleValue)}
-                    />
-                  </Form.Item>
-                </Space>
-              </Tooltip>
+            children={<Tooltip title={getFieldTooltip('portSecurity')}>
+              <Space>
+                <Form.Item
+                  noStyle
+                  name='portSecurity'
+                  valuePropName='checked'
+                  initialValue={false}
+                  validateFirst
+                >
+                  <Switch
+                    data-testid='port-security-checkbox'
+                    disabled={getFieldDisabled('portSecurity')}
+                    className={getToggleClassName('portSecurity',
+                      isMultipleEdit, hasMultipleValue)}
+                  />
+                </Form.Item>
+              </Space>
+            </Tooltip>
             }
           />
         })}
@@ -2456,7 +2457,7 @@ export function EditPortDrawer ({
               {
                 type: 'number',
                 min: 1,
-                max: 8256
+                max: 64
               }
             ]}
             validateFirst
@@ -2466,9 +2467,8 @@ export function EditPortDrawer ({
               }) ? <MultipleText />
                 : <InputNumber
                   min={1}
-                  max={8256}
+                  max={64}
                   data-testid='port-security-max-entries-input'
-                  disabled={getFieldDisabled('portSecurityMaxEntries')}
                   style={{ width: '100%' }}
                 />}
           />
