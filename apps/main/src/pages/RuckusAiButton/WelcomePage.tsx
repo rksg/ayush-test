@@ -1,7 +1,7 @@
 import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { DogAndPerson, OnboardingDog, WelcomeLogo } from '@acx-ui/icons'
 import { RuckusAiDog }                              from '@acx-ui/icons-new'
 import { useUserProfileContext }                    from '@acx-ui/user'
@@ -13,7 +13,8 @@ function WelcomePage () {
   const {
     data: userProfileData
   } = useUserProfileContext()
-  const isCanvasEnabled = useIsTierAllowed(Features.CANVAS)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
   const name = userProfileData?.firstName || userProfileData?.lastName || ''
   return <div
     style={{

@@ -50,7 +50,8 @@ function Layout () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isOnboardingAssistantEnabled = useIsSplitOn(Features.RUCKUS_ONBOARDING_ASSISTANT_TOGGLE)
-  const isCanvasEnabled = useIsTierAllowed(Features.CANVAS)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
 
   const logo = useLogo(tenantId)
 
