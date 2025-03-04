@@ -13,6 +13,7 @@ export type Metadata = {
   changedByName?: string
   dataEndTime: string
   failures?: (keyof typeof failureCodes)[]
+  error?: { details?: Record<string, unknown>[] }
   oneClickOptimize?: boolean
   preferences?: IntentPreferences
   retries?: number
