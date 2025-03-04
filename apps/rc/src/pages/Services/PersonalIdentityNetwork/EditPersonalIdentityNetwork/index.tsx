@@ -4,31 +4,27 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, PageHeader }                                                                                    from '@acx-ui/components'
-import { Features }                                                                                              from '@acx-ui/feature-toggle'
-import { useEdgePinActions, useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
-import { useGetEdgePinByIdQuery }                                                                                from '@acx-ui/rc/services'
-import { getServiceListRoutePath, getServiceRoutePath, PersonalIdentityNetworks, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Loader, PageHeader }                                                          from '@acx-ui/components'
+import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
+import { useGetEdgePinByIdQuery }                                                      from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
 import {
   AccessSwitchStep,
   DistributionSwitchStep,
   GeneralSettingsStep,
-  getStepsByTopologyType,
-  NetworkTopologyStep,
   PersonalIdentityNetworkForm,
-  PrerequisiteStep,
   SmartEdgeStep,
-  SummaryStep,
   WirelessNetworkStep
 } from '../PersonalIdentityNetworkForm'
-import { NetworkTopologyType }                     from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
+
+// eslint-disable-next-line max-len
+const pinWizardSteps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep]
 
 const EditPersonalIdentityNetwork = () => {
 
   const { $t } = useIntl()
-  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const params = useParams()
   const [form] = Form.useForm()
   const { editPin } = useEdgePinActions()
@@ -61,13 +57,6 @@ const EditPersonalIdentityNetwork = () => {
     }
   }, [pinData])
 
-  const steps = useMemo(() => {
-    return isEdgePinEnhanceReady ?
-      getStepsByEditData(pinData):
-      // eslint-disable-next-line max-len
-      [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep]
-  }, [pinData])
-
   return (
     <>
       <PageHeader
@@ -84,7 +73,7 @@ const EditPersonalIdentityNetwork = () => {
         <Loader states={[{ isLoading: isPinDataLoading || isPinDataFetching }]}>
           <PersonalIdentityNetworkForm
             form={form}
-            steps={steps}
+            steps={pinWizardSteps}
             onFinish={editPin}
             editMode
             initialValues={initFormValues}
@@ -93,20 +82,6 @@ const EditPersonalIdentityNetwork = () => {
       </PersonalIdentityNetworkFormDataProvider>
     </>
   )
-}
-
-const getStepsByEditData = (data?: PersonalIdentityNetworks) => {
-  let steps = getStepsByTopologyType(NetworkTopologyType.Wireless)
-  if(data?.distributionSwitchInfos?.length || data?.accessSwitchInfos?.length) {
-    if(data?.tunneledWlans?.length) {
-      steps = getStepsByTopologyType(NetworkTopologyType.ThreeTier)
-    } else {
-      steps = getStepsByTopologyType(NetworkTopologyType.TwoTier)
-    }
-  }
-  return steps.filter(step => step.title !== PrerequisiteStep.title &&
-    step.title !== NetworkTopologyStep.title &&
-    step.title !== SummaryStep.title)
 }
 
 export default EditPersonalIdentityNetwork
