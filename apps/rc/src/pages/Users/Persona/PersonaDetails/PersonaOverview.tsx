@@ -4,8 +4,8 @@ import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 import { useParams }                   from 'react-router-dom'
 
-import { Button, cssStr, Loader, Subtitle }         from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Button, cssStr, Descriptions, Loader, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
 import {
   IdentityGroupLink,
   NetworkSegmentationLink,
@@ -146,16 +146,12 @@ function PersonaOverview (props: { personaData?: Persona, personaGroupData?: Per
       <Col span={12}>
         <Loader >
           {details.map(item =>
-            <Row key={item.label} align={'middle'}>
-              <Col span={7}>
-                <Typography.Paragraph
-                  style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
-                >
-                  {item.label}:
-                </Typography.Paragraph>
-              </Col>
-              <Col span={12}>{item.value ?? noDataDisplay}</Col>
-            </Row>
+            <Descriptions labelWidthPercent={25}>
+              <Descriptions.Item
+                label={item.label}
+                children={item.value ?? noDataDisplay}
+              />
+            </Descriptions>
           )}
         </Loader>
       </Col>
