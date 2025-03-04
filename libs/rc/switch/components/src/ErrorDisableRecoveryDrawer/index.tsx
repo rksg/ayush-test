@@ -143,7 +143,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
       value: 'loamRemoteCriticalEvent' },
     { label: $t({ defaultMessage: 'PVST Plus Protect' }), value: 'pvstplusProtect' },
     { label: $t({ defaultMessage: 'BPDU Tunnel Threshold' }), value: 'bpduTunnelThreshold' },
-    { label: $t({ defaultMessage: 'Lag Operational Speed Mismatch	' }),
+    { label: $t({ defaultMessage: 'LAG Operational Speed Mismatch' }),
       value: 'lagOperationalSpeedMismatch' }
   ]
 
@@ -211,6 +211,7 @@ export const ErrorDisableRecoveryDrawer = (props: ErrorDisableRecoveryProps) => 
                 maxTagPlaceholder={() => <span>{value.filter(item => item !== 'all').length} {$t({ defaultMessage: 'selected' })}</span>}
                 showSearch={false}
                 showArrow
+                listHeight={500}
               >
                 <Select.Option
                   key={'all'}

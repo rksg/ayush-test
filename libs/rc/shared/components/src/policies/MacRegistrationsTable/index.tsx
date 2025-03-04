@@ -20,9 +20,11 @@ import {
   SEARCH,
   toDateTimeString,
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
-  PolicyType, PolicyOperation, IdentityDetailsLink, TableQuery
+  PolicyType, PolicyOperation, IdentityDetailsLink, TableQuery,
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 import { MacAddressDrawer }                                from '../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
@@ -78,7 +80,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
       setIsEditMode(true)
       clearSelection()
     },
-    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.updateMacRegistration)]
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -103,7 +106,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
           })
       )
     },
-    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE)
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrations)]
   },
   {
     label: $t({ defaultMessage: 'Revoke' }),
@@ -124,7 +128,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
           payload: { revoked: true }
         }).then(clearSelection)
     },
-    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.updateMacRegistration)]
   },
   {
     label: $t({ defaultMessage: 'Unrevoke' }),
@@ -137,7 +142,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
           payload: { revoked: false }
         }).then(clearSelection)
     },
-    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.updateMacRegistration)]
   }]
 
   const columns: TableProps<MacRegistration>['columns'] = [
@@ -287,6 +293,7 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
         rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
         actions={filterByAccessForServicePolicyMutation([{
           scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE),
+          rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.createMacRegistration)],
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)
@@ -296,6 +303,7 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
         },
         {
           scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE),
+          rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.uploadMacRegistration)],
           label: $t({ defaultMessage: 'Import From File' }),
           onClick: () => setUploadCsvDrawerVisible(true)
         }])}

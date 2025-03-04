@@ -42,6 +42,8 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const [uploadCSV, uploadCSVResult] = useImportLagSubInterfacesCSVMutation()
 
   const handleAdd = async (data: EdgeSubInterface) => {
+    const payloadData = convertEdgeSubinterfaceToApiPayload(data)
+
     const requestPayload = {
       params: {
         venueId,
@@ -49,7 +51,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
         serialNumber,
         lagId: lagId.toString()
       },
-      payload: data
+      payload: payloadData
     }
     await addSubInterface(requestPayload).unwrap()
   }

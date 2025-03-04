@@ -5,11 +5,11 @@ import { Modal as AntModal }    from 'antd'
 import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
-import { Loader, TableProps, Table, Button, showActionModal }                                                                                                                             from '@acx-ui/components'
-import { DetailDrawer, MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, deleteDescription }                                                                                                 from '@acx-ui/rc/components'
-import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery }                                          from '@acx-ui/rc/services'
-import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-
+import { Loader, TableProps, Table, Button, showActionModal }                                                                                                                                              from '@acx-ui/components'
+import { DetailDrawer, MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, deleteDescription }                                                                                                                  from '@acx-ui/rc/components'
+import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery }                                                           from '@acx-ui/rc/services'
+import { CertificateAuthority, CertificateCategoryType, CertificateUrls, EXPIRATION_DATE_FORMAT, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { getOpsApi }                                                                                                                                                                                       from '@acx-ui/utils'
 
 import EditCertificateAuthorityForm from './EditCertificateAuthorityForm'
 
@@ -176,6 +176,7 @@ export default function CertificateAuthorityTable () {
   const rowActions: TableProps<CertificateAuthority>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCA)],
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([selectedRow]) => {
         showEditModal(selectedRow)
@@ -183,6 +184,7 @@ export default function CertificateAuthorityTable () {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DELETE),
+      rbacOpsIds: [getOpsApi(CertificateUrls.deleteCA)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showDeleteModal(selectedRow, clearSelection)

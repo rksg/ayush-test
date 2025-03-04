@@ -184,7 +184,7 @@ describe('OnboardedSystems', () => {
             tenantIds: ['id1', 'id2']
           })
         })
-      }), undefined
+      }), { skip: false }
     )
 
     setUserProfile({ accountId: tenants[0].id, tenants: tenantsWithPermission } as UserProfile)
@@ -196,7 +196,7 @@ describe('OnboardedSystems', () => {
             tenantIds: ['id1', 'id2', 'id3']
           })
         })
-      }), undefined
+      }), { skip: false }
     )
   })
 })
