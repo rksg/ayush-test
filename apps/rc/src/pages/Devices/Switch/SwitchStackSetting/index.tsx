@@ -20,6 +20,7 @@ import {
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
   validateVlanExcludingReserved,
+  Switch as SwitchType,
   SwitchViewModel,
   SWITCH_DEFAULT_VLAN_NAME,
   isFirmwareVersionAbove10010g2Or10020b
@@ -48,6 +49,7 @@ const spanningTreePriorityItem = [
 ]
 
 export function SwitchStackSetting (props: {
+  switchData: SwitchType,
   switchDetail?: SwitchViewModel,
   apGroupOption: DefaultOptionType[],
   readOnly: boolean,
@@ -56,7 +58,8 @@ export function SwitchStackSetting (props: {
   deviceOnline?: boolean
 }) {
   const { $t } = useIntl()
-  const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
+  const { apGroupOption, readOnly, isIcx7650, disableIpSetting,
+    deviceOnline, switchData, switchDetail }= props
   const form = Form.useFormInstance()
 
   const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
@@ -139,8 +142,8 @@ export function SwitchStackSetting (props: {
   }
 
   const onPortSecurityMaxEntriesChange = (value: number | null) => {
-    if (value && switchDetail?.portSecurityMaxEntries &&
-      value < switchDetail.portSecurityMaxEntries) {
+    if (value && switchData?.portSecurityMaxEntries &&
+      value < switchData.portSecurityMaxEntries) {
       showActionModal({
         type: 'confirm',
         title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
@@ -151,7 +154,7 @@ export function SwitchStackSetting (props: {
         okText: $t({ defaultMessage: 'Delete' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onCancel: () => {
-          form.setFieldsValue({ portSecurityMaxEntries: switchDetail?.portSecurityMaxEntries })
+          form.setFieldsValue({ portSecurityMaxEntries: switchData.portSecurityMaxEntries })
         }
       })
     }

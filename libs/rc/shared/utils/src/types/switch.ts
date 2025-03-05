@@ -163,6 +163,8 @@ export class Switch {
   authEnable?: boolean
   authDefaultVlan?: number
   guestVlan?: number
+  portSecurity?: boolean
+  portSecurityMaxEntries?: number
 
   constructor () {
     this.name = ''
@@ -319,8 +321,6 @@ export class SwitchViewModel extends Switch {
   extIp?: string
   vlanMapping?: string
   veCount?: number
-  portSecurity?: boolean
-  portSecurityMaxEntries?: number
 }
 
 export interface SwitchRow {
