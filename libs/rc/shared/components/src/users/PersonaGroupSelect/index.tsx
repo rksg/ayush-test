@@ -5,26 +5,15 @@ import { useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 
 export function PersonaGroupSelect (props: {
   filterProperty?: boolean,
-  whiteList?: string[]
+  whiteList?: string[],
 } & SelectProps) {
   const { filterProperty, whiteList, ...customSelectProps } = props
 
-  const { data } = useSearchPersonaGroupListQuery({
+  const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
-      page: 1,
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC'
+      page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
-
-  const personaGroupList = data?.data
-    .filter(group =>
-      filterProperty
-        ? whiteList?.find(id => id === group.id) || !group.propertyId
-        : true)
-    .filter(group => filterProperty ? !!group.dpskPoolId : true)  // Avoid the user select group without DPSK pool associated
-    .map(group => ({ value: group.id, label: group.name })) ?? []
 
   return (
     <Select
@@ -33,7 +22,14 @@ export function PersonaGroupSelect (props: {
       filterOption={(input, option) =>
         ((option?.label ?? '') as string).toLowerCase().includes(input.toLowerCase())
       }
-      options={personaGroupList}
-    />
+      options={
+        personaGroupList.data?.data
+          .filter(group =>
+            filterProperty
+              ? whiteList?.find(id => id === group.id) || !group.propertyId
+              : true)
+          .filter(group => filterProperty ? !!group.dpskPoolId : true)  // Avoid the user select group without DPSK pool associated
+          .map(group => ({ value: group.id, label: group.name }))
+      } />
   )
 }
