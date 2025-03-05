@@ -54,6 +54,7 @@ export function SwitchPortTable (props: {
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
   const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -250,6 +251,38 @@ export function SwitchPortTable (props: {
       }
     }
   },
+  ...( isSwitchMacAclEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
+    ? [{
+      key: 'switchMacAcl',
+      title: $t({ defaultMessage: 'MAC ACL' }),
+      dataIndex: 'switchMacAcl',
+      sorter: true,
+      show: true,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.switchMacAcl ? row.switchMacAcl : ''
+      }
+    }, {
+      key: 'stickyMacAclAllowCount',
+      title: $t({ defaultMessage: 'Sticky MAC' }),
+      dataIndex: 'stickyMacAclAllowCount',
+      sorter: true,
+      show: true,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        if (row.stickyMacAclAllowCount && row.stickyMacAclAllowCount > 0 &&
+          row.stickyMacAclAllowList) {
+          const tooltipContent = row.stickyMacAclAllowList.join('\n')
+
+          return (
+            <Tooltip title={tooltipContent}>
+              <span>{row.stickyMacAclAllowCount}</span>
+            </Tooltip>
+          )
+        }
+        return '--'
+      }
+    }] : [])
+  ,
   ...( isSwitchPortProfileEnabled
     && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
     ? [{

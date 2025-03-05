@@ -537,10 +537,13 @@ export interface SwitchPortViewModel extends GridDataRow {
 	restrictedVlan?: number
 	criticalVlan?: number
 	authFailAction?: string
-	authTimeoutAction?: string,
-  switchPortProfileName?: string,
+	authTimeoutAction?: string
+  switchPortProfileName?: string
   switchPortProfileType?: string
   errorDisableStatus?: string
+  stickyMacAclAllowList?: string[]
+  stickyMacAclAllowCount?: number
+  switchMacAcl?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {

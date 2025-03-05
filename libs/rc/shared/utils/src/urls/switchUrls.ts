@@ -817,5 +817,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/macAcls',
     newApi: true
+  },
+  getSwitchStickyMacAcls: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/stickyMacAcls',
+    newApi: true
   }
 }

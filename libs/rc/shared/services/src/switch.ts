@@ -1997,6 +1997,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
+    }),
+    getSwitchStickyMacAcls: build.query<TableResult<string[]>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchStickyMacAcls, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchMacAcl', id: 'STICKYLIST' }]
     })
   })
 })
@@ -2290,5 +2301,6 @@ export const {
   useLazyGetSwitchMacAclsQuery,
   useAddSwitchMacAclMutation,
   useUpdateSwitchMacAclMutation,
-  useDeleteSwitchMacAclMutation
+  useDeleteSwitchMacAclMutation,
+  useGetSwitchStickyMacAclsQuery
 } = switchApi

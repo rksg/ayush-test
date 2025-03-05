@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Checkbox, Divider, Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                                                  from 'antd/lib/select'
@@ -11,10 +11,12 @@ import {
   showActionModal,
   Subtitle,
   Tooltip,
-  Loader
+  Loader,
+  Table,
+  TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { PoeUsage }               from '@acx-ui/icons'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { PoeUsage }                from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -32,7 +34,8 @@ import {
   useSavePortsSettingMutation,
   useCyclePoeMutation,
   useLazyPortProfileOptionsForMultiSwitchesQuery,
-  useLazyGetSwitchMacAclsQuery
+  useLazyGetSwitchMacAclsQuery,
+  useGetSwitchStickyMacAclsQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -57,7 +60,8 @@ import {
   isFirmwareVersionAbove10020b,
   PortProfilesBySwitchId,
   SwitchUrlsInfo,
-  isFirmwareVersionAbove10010g2Or10020b
+  isFirmwareVersionAbove10010g2Or10020b,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { store }              from '@acx-ui/store'
@@ -353,6 +357,28 @@ export function EditPortDrawer ({
     enableRbac: isSwitchRbacEnabled
   }, {
     skip: !switchDetail?.venueId
+  })
+
+  const stickyMacAclsColumns: TableProps<string[]>['columns'] = [
+    {
+      key: 'macAddress',
+      title: $t({ defaultMessage: 'Sticky MAC Allow List (Learned MAC Address)' }),
+      dataIndex: '0',
+      sorter: true,
+      render: (macAddress: ReactNode) => macAddress?.toString()
+    }
+  ]
+
+  const stickyMacAclsQuery = useTableQuery({
+    useQuery: useGetSwitchStickyMacAclsQuery,
+    defaultPayload: {},
+    enableRbac: isSwitchRbacEnabled,
+    apiParams: { venueId: (switchDetail?.venueId || '') as string },
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    option: { skip: !isSwitchMacAclEnabled || !portSecurity || !switchDetail?.venueId }
   })
 
   const getVlans = async () => {
@@ -2476,6 +2502,16 @@ export function EditPortDrawer ({
                 />}
           />
         })}
+
+        { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b &&
+          portSecurity && <Table
+          rowKey='id'
+          columns={stickyMacAclsColumns}
+          onChange={stickyMacAclsQuery.handleTableChange}
+          pagination={stickyMacAclsQuery.pagination}
+          dataSource={stickyMacAclsQuery.data?.data}
+        />
+        }
 
         <ACLSettingDrawer
           visible={drawerAclVisible}

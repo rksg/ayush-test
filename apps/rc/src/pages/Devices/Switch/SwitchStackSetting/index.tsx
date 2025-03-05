@@ -21,7 +21,8 @@ import {
   validateSwitchGatewayIpAddress,
   validateVlanExcludingReserved,
   SwitchViewModel,
-  SWITCH_DEFAULT_VLAN_NAME
+  SWITCH_DEFAULT_VLAN_NAME,
+  isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
 
 import StaticRoutes      from './StaticRoutes'
@@ -64,6 +65,10 @@ export function SwitchStackSetting (props: {
 
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
+
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchFirmwareAbove10010gOr10020b =
+    isFirmwareVersionAbove10010g2Or10020b(switchDetail?.firmware)
 
   const { useWatch } = Form
   const [authEnable, authDefaultVlan] = [
@@ -295,6 +300,15 @@ export function SwitchStackSetting (props: {
           disabled={readOnly}
         />}
       />
+      {
+        isSwitchMacAclEnabled && isSwitchFirmwareAbove10010gOr10020b &&
+      <Form.Item>
+        <JumboModeSpan>{$t({ defaultMessage: 'Port MAC Security' })}</JumboModeSpan>
+        <Form.Item noStyle name='portSecurity' valuePropName='checked'>
+          <Switch disabled={readOnly} />
+        </Form.Item>
+      </Form.Item>
+      }
       { isIcx7650 &&
       <Form.Item>
         <JumboModeSpan>{$t({ defaultMessage: 'Stack with 40G ports on module 3:' })}</JumboModeSpan>
