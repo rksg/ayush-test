@@ -74,10 +74,10 @@ export const VlanPortMessages = {
     defaultMessage: 'Cannot be same as Untagged VLAN'
   }),
   PORT_HAS_BEEN_CONFIGURED_UNTAGGED: defineMessage({
-    defaultMessage: 'In this model, the port has already been configured with an Untagged VLAN in a different module.'
+    defaultMessage: 'The selected port(s) is already assigned with a different untagged VLAN. This can happen due to the same switch model selected previously with a different set of modules.'
   }),
   VLAN_HAS_BEEN_CONFIGURED_IN_MODEL: defineMessage({
-    defaultMessage: 'The VLAN has already been configured in other module of this model.'
+    defaultMessage: 'This VLAN is already assigned to the selected port. This can happen due to the same switch model selected previously with a different set of modules.'
   }),
   CANNOT_BE_EDITED: defineMessage({
     defaultMessage: 'Editing is only possible if it\'s the same module within the same series.'

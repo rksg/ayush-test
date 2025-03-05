@@ -149,7 +149,9 @@ export function VlanPortSetting () {
     title: $t({ defaultMessage: 'Tagged VLANs' }),
     dataIndex: 'taggedVlans',
     key: 'taggedVlans',
-    render: (_, data: PortSetting) => data.taggedVlans.join(', ')
+    render: (_, data: PortSetting) => {
+      return data.taggedVlans.sort((a, b) => Number(a) - Number(b)).join(', ')
+    }
   }]
 
   const rowActions: TableProps<ModuleGroupByModel>['rowActions'] = [{
@@ -373,9 +375,9 @@ export function VlanPortSetting () {
                   const hasSelectedAllModules = currentSelectedModules.length === moduleKeys.length
 
                   if (currentSelectedModules?.length === 0) {
-                    return { checked: false }
+                    return { disabled: false }
                   }
-                  return { indeterminate: !hasSelectedAllModules, checked: hasSelectedAllModules }
+                  return { indeterminate: !hasSelectedAllModules, disabled: false }
                 }
               }}
               rowActions={rowActions}
