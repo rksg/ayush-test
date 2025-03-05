@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }            from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
@@ -61,6 +61,7 @@ const services = require('@acx-ui/rc/services')
 
 describe('Add user drawer component', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   beforeEach(() => {
     mockReqAdminsData.mockReset()
