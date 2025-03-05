@@ -49,7 +49,6 @@ export function IdentityGroup () {
         <Form.Item
           label={$t({ defaultMessage: 'Identity Group' })}
           name={['identityGroupId']}
-          initialValue={''}
           children={
             <PersonaGroupSelect
               data-testid={'identity-group-select'}
