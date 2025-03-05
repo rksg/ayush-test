@@ -6,6 +6,7 @@ import { IntlProvider }              from 'react-intl'
 import { Provider } from '@acx-ui/store'
 
 import RuckusAiButton from '.'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 jest.mock('./BasicInformationPage', () => () => <div>BasicInformationPage Component</div>)
@@ -40,6 +41,11 @@ jest.mock('@acx-ui/rc/services', () => {
     ]
   }
 })
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  useNavigate: jest.fn(),
+  useTenantLink: jest.fn()
+}))
 
 
 describe('RuckusAiButton', () => {
@@ -142,5 +148,20 @@ describe('RuckusAiButton', () => {
 
     await screen.findByText('Congratulations Component')
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+  })
+
+  it('renders the new welcome page', () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CANVAS)
+    renderWithIntl(
+      <Provider>
+        <RuckusAiButton />
+      </Provider>
+    )
+ 
+    const button = screen.getByTestId('RuckusAiDog')
+    fireEvent.click(button)
+
+    expect(screen.getByText('AI-Powered by')).toBeInTheDocument()
+    expect(screen.getByText('WelcomePage Component')).toBeInTheDocument()
   })
 })

@@ -287,9 +287,10 @@ display: flex;
 align-items: center;
 .ant-card{
   width: 360px;
-  margin: 20px 15px 50px 15px;
+  margin: 20px 15px 30px 15px;
   height: 200px;
   background: #FFFFFFCC;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px;
   cursor: pointer;
   &:hover{
     background: var(--acx-accents-orange-10);

@@ -17,6 +17,7 @@ import BasicInformationPage from './BasicInformationPage'
 import Congratulations      from './Congratulations'
 import VerticalPage         from './VerticalPage'
 import WelcomePage          from './WelcomePage'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const mockedUsedNavigate = jest.fn()
@@ -98,12 +99,30 @@ describe('WelcomePage', () => {
     render(
       <Provider>
         <Form>
-          <WelcomePage />
+          <WelcomePage startOnboardingAssistant={()=>{}} goChatCanvas={()=>{}} />
         </Form>
       </Provider>)
     expect(screen.getByText('About')).toBeInTheDocument()
     // eslint-disable-next-line max-len
     expect(screen.getByText('Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.')).toBeInTheDocument()
+  })
+  it('should display new Welcome page correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CANVAS)
+    const mockedStart = jest.fn()
+    const mockedUsedNavigate = jest.fn()
+    render(
+      <Provider>
+        <Form>
+          <WelcomePage startOnboardingAssistant={mockedStart} goChatCanvas={mockedUsedNavigate} />
+        </Form>
+      </Provider>)
+    const chatCanvasCard = screen.getByTestId('AIChat')
+    await userEvent.click(chatCanvasCard)
+    expect(mockedUsedNavigate).toBeCalled()
+
+    const onboardingCard = screen.getByTestId('OnboardingDog')
+    await userEvent.click(onboardingCard)
+    expect(mockedStart).toBeCalled()
   })
 })
 

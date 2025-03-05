@@ -47,9 +47,9 @@ export default function AICanvas () {
 
   const questions = [
     'What can you do?',
-    'Design custom metrics widget',
-    'Generate alerts widget',
-    'Generate device health widget'
+    'Show me the top-consuming clients.',
+    'Generate a graph of my APs usage over the past 24 hours.',
+    'Can you give me the trending network traffic from last week?'
   ] // Only support english default questions in phase 1
 
   const getAllChatsQuery = useGetAllChatsQuery({})
@@ -247,9 +247,7 @@ export default function AICanvas () {
     const { chat } = props
     return <div className='message'>
       <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        <div className='chat-bubble'>
-          {chat.text}
-        </div>
+        <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
       </div>
       { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
         ...chat.widgets[0],

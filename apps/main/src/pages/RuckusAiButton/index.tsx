@@ -299,7 +299,7 @@ export default function RuckusAiButton () {
             <DogAndPerson style={{
               position: 'absolute',
               bottom: '-1px',
-              left: '18px',
+              left: '25px',
               zIndex: '2'
             }} />
             <div style={{

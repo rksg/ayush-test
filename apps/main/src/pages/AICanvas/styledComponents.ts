@@ -246,7 +246,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
         color: var(--acx-primary-white);
         width: fit-content;
-        max-width: 80%;
+        max-width: 90%;
         padding: 16px;
         border-radius: 16px 16px 16px 0px;
         margin: 7px;
