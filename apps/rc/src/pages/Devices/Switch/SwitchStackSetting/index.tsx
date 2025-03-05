@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch } from 'antd'
-import { DefaultOptionType }                                                       from 'antd/lib/select'
-import { FormattedMessage, useIntl }                                               from 'react-intl'
+import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch, InputNumber } from 'antd'
+import { DefaultOptionType }                                                                    from 'antd/lib/select'
+import { FormattedMessage, useIntl }                                                            from 'react-intl'
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -71,9 +71,10 @@ export function SwitchStackSetting (props: {
     isFirmwareVersionAbove10010g2Or10020b(switchDetail?.firmware)
 
   const { useWatch } = Form
-  const [authEnable, authDefaultVlan] = [
+  const [authEnable, authDefaultVlan, portSecurity] = [
     useWatch<string>('authEnable', form),
-    useWatch<string>('authDefaultVlan', form)
+    useWatch<string>('authDefaultVlan', form),
+    useWatch<boolean>('portSecurity', form)
   ]
 
   const [enableDhcp, setEnableDhcp] = useState(false)
@@ -135,6 +136,25 @@ export function SwitchStackSetting (props: {
         }}
       />)
     })
+  }
+
+  const onPortSecurityMaxEntriesChange = (value: number | null) => {
+    if (value && switchDetail?.portSecurityMaxEntries &&
+      value < switchDetail.portSecurityMaxEntries) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
+        content: $t({
+          // eslint-disable-next-line max-len
+          defaultMessage: 'The value you have set is lower than some of the values configured in the port\'s Sticky MAC List Size Limit. To proceed, the system will need to delete all the current Sticky MAC Allow List entries on the ports. Are you sure you want to delete them?'
+        }),
+        okText: $t({ defaultMessage: 'Delete' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        onCancel: () => {
+          form.setFieldsValue({ portSecurityMaxEntries: switchDetail?.portSecurityMaxEntries })
+        }
+      })
+    }
   }
 
   return (
@@ -301,13 +321,34 @@ export function SwitchStackSetting (props: {
         />}
       />
       {
-        isSwitchMacAclEnabled && isSwitchFirmwareAbove10010gOr10020b &&
-      <Form.Item>
-        <JumboModeSpan>{$t({ defaultMessage: 'Port MAC Security' })}</JumboModeSpan>
-        <Form.Item noStyle name='portSecurity' valuePropName='checked'>
-          <Switch disabled={readOnly} />
+        isSwitchMacAclEnabled && isSwitchFirmwareAbove10010gOr10020b && <Form.Item>
+          <JumboModeSpan>{$t({ defaultMessage: 'Port MAC Security' })}</JumboModeSpan>
+          <Form.Item noStyle name='portSecurity' valuePropName='checked'>
+            <Switch disabled={readOnly} />
+          </Form.Item>
         </Form.Item>
-      </Form.Item>
+      }
+      { portSecurity &&
+      <Form.Item
+        name='portSecurityMaxEntries'
+        label={$t({ defaultMessage: 'Sticky MAC List Size Limit' })}
+        initialValue='1'
+        rules={[
+          {
+            type: 'number',
+            min: 1,
+            max: 64
+          }
+        ]}
+        validateFirst
+        children={<InputNumber
+          min={1}
+          max={64}
+          data-testid='port-security-max-entries-input'
+          onChange={onPortSecurityMaxEntriesChange}
+          style={{ width: '100%' }}
+        />}
+      />
       }
       { isIcx7650 &&
       <Form.Item>
