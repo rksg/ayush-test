@@ -61,6 +61,7 @@ function PersonaOverview (props: { personaData?: Persona, personaGroupData?: Per
   const details = [
     { label: $t({ defaultMessage: 'Email' }), value: personaData?.email },
     { label: $t({ defaultMessage: 'Description' }), value: personaData?.description },
+    { label: $t({ defaultMessage: 'Phone' }), value: personaData?.phoneNumber },
     { label: $t({ defaultMessage: 'Identity Group' }),
       value:
         <IdentityGroupLink
