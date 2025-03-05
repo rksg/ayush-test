@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Form, Switch, Button, Space, Input } from 'antd'
 import { useIntl }                            from 'react-intl'
@@ -11,7 +11,6 @@ import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
 
 export function IdentityGroup () {
-  const refetchPersonaGroups = useRef<() => void>()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const selectedIdentityId = Form.useWatch('identityId', form)
@@ -56,9 +55,6 @@ export function IdentityGroup () {
               data-testid={'identity-group-select'}
               style={{ width: '400px' }}
               defaultOptions={[{ label: 'Select...', value: '' }]}
-              onRefetch={(refetch) => {
-                refetchPersonaGroups.current = refetch // Store the refetch function in a ref
-              }}
             />
           }
         />
@@ -141,9 +137,6 @@ export function IdentityGroup () {
         isEdit={false}
         visible={personaGroupVisible}
         onClose={(result) => {
-          if (refetchPersonaGroups.current) {
-            refetchPersonaGroups.current()
-          }
           if (result) {
             form.setFieldValue('identityGroupId', result?.id)
           }
