@@ -1339,6 +1339,25 @@ export function EditPortDrawer ({
     })
   }
 
+  const onPortSecurityMaxEntriesChange = (value: number | null) => {
+    if (value && switchDetail?.portSecurityMaxEntries &&
+      value < switchDetail.portSecurityMaxEntries) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
+        content: $t({
+          // eslint-disable-next-line max-len
+          defaultMessage: 'This value is lower than the previously set limit. The existing list of MACs will be deleted and re-learnt if you proceed. Are you sure you want to delete?'
+        }),
+        okText: $t({ defaultMessage: 'Delete' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        onCancel: () => {
+          form.setFieldsValue({ portSecurityMaxEntries: switchDetail?.portSecurityMaxEntries })
+        }
+      })
+    }
+  }
+
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
       {
@@ -2499,6 +2518,7 @@ export function EditPortDrawer ({
                   max={64}
                   data-testid='port-security-max-entries-input'
                   style={{ width: '100%' }}
+                  onChange={onPortSecurityMaxEntriesChange}
                 />}
           />
         })}
