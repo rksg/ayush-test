@@ -13,6 +13,12 @@ export type PathNode = {
 }
 export type NetworkPath = PathNode[]
 
+// RAI
+type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
+export interface NetworkNode extends NetworkHierarchy<PathNode & {
+  mac?: string, model?: string, firmware?: string, deviceId?: string
+}>{}
+
 // filter sent to data api (xNodes + SSIDs), uses resource group format
 export type FilterNameNode = {
   type: 'zone' | 'switchGroup' | 'system' | 'domain' | 'apGroup'
