@@ -88,7 +88,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   }, [])
 
   useEffect(() => {
-    if (optionsDataQuery.data && !form.getFieldValue(['softGre', 'newProfileId'])) {
+    if (optionsDataQuery.data) {
       const { options, isLockedOptions, gatewayIpMaps } = optionsDataQuery.data
       setSoftGreOption(options)
       setIsLocked(isLockedOptions)
@@ -109,9 +109,12 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
           options.find(item => item.value === profileId)?.label)
       }
     }
-    if (ipsecOptionsDataQuery.data && !form.getFieldValue(['ipsec', 'newProfileId'])) {
+    if (ipsecOptionsDataQuery.data) {
       const { options } = ipsecOptionsDataQuery.data
       setIpsecOption(options)
+      if(form.getFieldValue(['ipsec', 'enableIpsec'])) {
+        setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
+      }
     }
   }, [form, optionsDataQuery, ipsecOptionsDataQuery])
 
@@ -278,6 +281,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         <label style={{ marginRight: '100px' }}>{$t({ defaultMessage: 'Enable IPsec' })}</label>
         <Form.Item noStyle
           name={['ipsec', 'enableIpsec']}
+          valuePropName='checked'
           children={<Switch onChange={setEnableIpsec} />}
         />
       </span>

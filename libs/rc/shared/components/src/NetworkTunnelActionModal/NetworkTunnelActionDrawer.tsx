@@ -114,10 +114,16 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
           children={
             <Select
               style={{ width: '220px' }}
-              placeholder={$t({ defaultMessage: 'Select...' })}>
+              placeholder={$t({ defaultMessage: 'Select...' })}
+            >
               <Select.Option value={''}>{$t({ defaultMessage: 'Select...' })}</Select.Option>
-              <Select.Option value={NetworkTunnelTypeEnum.SoftGre}>SoftGRE</Select.Option>
-              <Select.Option value={NetworkTunnelTypeEnum.SdLan}>SD-LAN</Select.Option>
+              <Select.Option
+                value={NetworkTunnelTypeEnum.SoftGre}
+                disabled={isDisabledAll || noChangePermission}>SoftGRE</Select.Option>
+              <Select.Option
+                value={NetworkTunnelTypeEnum.SdLan}
+                disabled={isDisabledAll || noChangePermission
+                  || isPinNetwork || !!!venueSdLanInfo}>SD-LAN</Select.Option>
             </Select>
           }
         />
