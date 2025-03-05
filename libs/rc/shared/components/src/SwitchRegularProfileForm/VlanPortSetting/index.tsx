@@ -41,6 +41,7 @@ export function VlanPortSetting () {
   const [ modalVisible, setModalVisible ] = useState(false)
   const [ selectedRow, setSelectedRow ] = useState<ModulePorts>(null as unknown as ModulePorts)
 
+  const [ selectedRowKeys, setSelectedRowKeys ] = useState([] as string[]) // display the count of selected items
   const [ selectedModelKeys, setSelectedModelKeys ] = useState([] as string[])
   const [ selectedModuleKeys, setSelectedModuleKeys ] = useState([] as string[])
 
@@ -56,6 +57,24 @@ export function VlanPortSetting () {
       setVlanPortList(vlanPortList)
     }
   }, [currentData, editMode])
+
+  useEffect(() => {
+    const filteredModuleKeys = selectedModuleKeys.filter(key => {
+      const model = key.split('_')[0]
+      return !selectedModelKeys.includes(model)
+    })
+    const truncatedModuleKeys = selectedModelKeys.map(key => {
+      const current = vlanPortList.find(record => record.id === key)
+      return current ? current.groupbyModules.map(module => module.key).slice(0, -1) : []
+    }).flat() ?? []
+
+    setSelectedRowKeys(_.uniq([
+      ...selectedModelKeys,
+      ...filteredModuleKeys,
+      ...truncatedModuleKeys // remove last one
+    ]))
+
+  }, [selectedModelKeys])
 
   const modelColumns: TableProps<ModuleGroupByModel>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
@@ -138,11 +157,13 @@ export function VlanPortSetting () {
     disabled: () => selectedModuleKeys.length > 1,
     tooltip: selectedModuleKeys.length > 1 ? $t(VlanPortMessages.CANNOT_BE_EDITED) : '',
     onClick: () => {
+      const model = selectedModuleKeys[0].split('_')[0]
       const selectedModel
-        = vlanPortList.find(vlanPort => vlanPort.id === selectedModelKeys?.[0])
+        = vlanPortList.find(vlanPort => vlanPort.id === model)
       const selectedRow = selectedModel?.groupbyModules.find(
         module => module.key === selectedModuleKeys?.[0]
       )
+
       setSelectedRow(selectedRow as ModulePorts)
       setModalVisible(true)
     }
@@ -210,20 +231,23 @@ export function VlanPortSetting () {
   }
 
   const handleChangeModel = (selectedKeys: Key[]) => {
-    const hasSelectAllModel = selectedKeys.length === vlanPortList.length
-    const updateModuleKeys
-      = hasSelectAllModel ? selectedKeys : _.difference(selectedKeys, selectedModelKeys)
+    const modelKeys = selectedKeys.filter(key => !key.toString().includes('_'))
+    const hasSelectAllModel = modelKeys.length === vlanPortList.length
+    const updateModelKeys
+      = hasSelectAllModel ? modelKeys : _.difference(modelKeys, selectedModelKeys)
 
     const filteredselectedModuleKeys = selectedModuleKeys.filter(key => {
-      return selectedKeys.filter(k => key.includes(k as string))?.length
+      const model = key.split('_')[0]
+      return selectedKeys.filter(
+        k => key.includes(k as string))?.length && modelKeys.includes(model)
     })
 
     const updateSelectedModuleKeys = vlanPortList
-      .filter(model => updateModuleKeys.includes(model.id))
+      .filter(model => updateModelKeys.includes(model.id))
       .map(model => model.groupbyModules.map(module => module.key))
       .flat()
 
-    if (updateModuleKeys?.length) {
+    if (updateModelKeys?.length) {
       setSelectedModuleKeys(_.uniq([
         ...selectedModuleKeys,
         ...updateSelectedModuleKeys as string[]
@@ -231,19 +255,23 @@ export function VlanPortSetting () {
     } else {
       setSelectedModuleKeys(filteredselectedModuleKeys)
     }
-    setSelectedModelKeys(selectedKeys as string[])
+    setSelectedModelKeys(modelKeys as string[])
   }
 
   const handleChangeModule = (record: ModuleGroupByModel, selectedKeys: Key[]) => {
+    const currentModuleKeys = record.groupbyModules.map(m => m.key)
+    const currentSelectedModules = _.intersection(currentModuleKeys, selectedKeys)
+    const hasSelectedAllModules = currentSelectedModules.length === currentModuleKeys.length
     const orinSelectedModelKeys = selectedModelKeys.filter(key => key !== record?.id)
-    setSelectedModelKeys([
-      ...orinSelectedModelKeys,
-      ...(selectedKeys?.find(key =>
-        (key as string).includes(record?.id)) ? [record?.id] : []
-      )
-    ])
+
     setSelectedModuleKeys([
       ...(selectedKeys as string[])
+    ])
+    setSelectedModelKeys([
+      ...orinSelectedModelKeys,
+      ...(hasSelectedAllModules && selectedKeys?.find(key =>
+        (key as string).includes(record?.id)) ? [record?.id] : []
+      )
     ])
   }
 
@@ -337,8 +365,18 @@ export function VlanPortSetting () {
               rowSelection={{
                 type: 'checkbox',
                 columnWidth: '24px',
-                selectedRowKeys: selectedModelKeys,
-                onChange: handleChangeModel
+                selectedRowKeys: selectedRowKeys,
+                onChange: handleChangeModel,
+                getCheckboxProps: (record) => {
+                  const moduleKeys = record.groupbyModules.map(m => m.key)
+                  const currentSelectedModules = _.intersection(moduleKeys, selectedModuleKeys)
+                  const hasSelectedAllModules = currentSelectedModules.length === moduleKeys.length
+
+                  if (currentSelectedModules?.length === 0) {
+                    return { checked: false }
+                  }
+                  return { indeterminate: !hasSelectedAllModules, checked: hasSelectedAllModules }
+                }
               }}
               rowActions={rowActions}
               actions={filterByAccess([{
