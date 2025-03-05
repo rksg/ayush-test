@@ -1,7 +1,9 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { CertificateAuthorityFormData, GenerationCaType } from '@acx-ui/rc/utils'
+import { CertificateAuthorityFormData, CertificateUrls, GenerationCaType } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                            from '@acx-ui/user'
+import { getOpsApi }                                                       from '@acx-ui/utils'
 
 import { addCADescription, addCATitle } from '../../contentsMap'
 import { RadioItemDescription }         from '../../styledComponents'
@@ -15,9 +17,12 @@ export default function CertificateAuthoritySettings () {
   const createCaForm = Form.useFormInstance<CertificateAuthorityFormData>()
   const generation = Form.useWatch('generation', createCaForm)
   const generationFormMapping = {
-    [GenerationCaType.NEW]: <CreateCaSettings />,
-    [GenerationCaType.NEW_SUB_CA]: <CreateCaSettings rootCaMode={false} />,
-    [GenerationCaType.UPLOAD]: <UploadCaSettings />
+    [GenerationCaType.NEW]: hasAllowedOperations([getOpsApi(CertificateUrls.addCA)]) ?
+      <CreateCaSettings /> : undefined,
+    [GenerationCaType.NEW_SUB_CA]: hasAllowedOperations([getOpsApi(CertificateUrls.addSubCA)]) ?
+      <CreateCaSettings rootCaMode={false} /> : undefined,
+    [GenerationCaType.UPLOAD]: hasAllowedOperations([getOpsApi(CertificateUrls.addCA)]) ?
+      <UploadCaSettings /> : undefined
   }
 
   return (

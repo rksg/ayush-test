@@ -465,5 +465,23 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  bindingPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindingSpecificIdentityPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId/identities/:identityId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

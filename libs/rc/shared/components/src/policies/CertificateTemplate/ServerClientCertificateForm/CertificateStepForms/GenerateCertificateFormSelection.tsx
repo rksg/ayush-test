@@ -1,7 +1,9 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { CertificateGenerationType, ExtendedKeyUsages, GenerateCertificateFormData } from '@acx-ui/rc/utils'
+import { CertificateGenerationType, CertificateUrls, ExtendedKeyUsages, GenerateCertificateFormData } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                                                       from '@acx-ui/user'
+import { getOpsApi }                                                                                  from '@acx-ui/utils'
 
 import { generateCertificateDescription, generateCertificateTitle } from '../../contentsMap'
 import { RadioItemDescription }                                     from '../../styledComponents'
@@ -27,21 +29,30 @@ export const GenerateCertificateFormSelection =
     [CertificateGenerationType.UPLOAD]: <UploadCertificate />
   }
 
+  const rbacOpsIdsMapping = {
+    [CertificateGenerationType.NEW]: [getOpsApi(CertificateUrls.generateClientServerCertificate)],
+    /* eslint-disable max-len */
+    [CertificateGenerationType.WITH_CSR]: [getOpsApi(CertificateUrls.generateClientServerCertificate)],
+    [CertificateGenerationType.UPLOAD]: [getOpsApi(CertificateUrls.uploadCertificate)]
+  }
+
   return (
     <>
       <Form.Item name='generation' style={{ marginBottom: '40px' }}>
         <Radio.Group>
           <Space direction='vertical'>
-            {Object.values(CertificateGenerationType).map((type) => {
-              return (
-                <Radio key={type} value={type}>
-                  {$t(generateCertificateTitle[type])}
-                  <RadioItemDescription>
-                    {$t(generateCertificateDescription[type])}
-                  </RadioItemDescription>
-                </Radio>
-              )
-            })}
+            {Object.values(CertificateGenerationType)
+              .filter((type)=> hasAllowedOperations(rbacOpsIdsMapping[type]))
+              .map((type) => {
+                return (
+                  <Radio key={type} value={type}>
+                    {$t(generateCertificateTitle[type])}
+                    <RadioItemDescription>
+                      {$t(generateCertificateDescription[type])}
+                    </RadioItemDescription>
+                  </Radio>
+                )
+              })}
           </Space>
         </Radio.Group>
       </Form.Item>
