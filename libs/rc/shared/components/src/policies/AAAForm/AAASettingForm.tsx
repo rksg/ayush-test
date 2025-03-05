@@ -366,7 +366,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             children={
               <Switch
                 disabled={
-                  showCertificateAuthorityDrawer || showCertificateDrawer || !!forceDisableRadsec
+                  showCertificateAuthorityDrawer || showCertificateDrawer ||
+                  !!forceDisableRadsec || edit
                 }
                 onChange={handleTlsEnabledOnChange}
               />

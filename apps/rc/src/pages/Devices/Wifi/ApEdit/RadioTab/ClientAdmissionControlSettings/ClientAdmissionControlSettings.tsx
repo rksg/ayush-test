@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState, useRef } from 'react'
 
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
-import styled        from 'styled-components/macro'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
+import styled             from 'styled-components/macro'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -193,33 +193,37 @@ export function ClientAdmissionControlSettings (props: ApEditItemProps) {
       disabled={!isAllowEdit}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
-    <ClientAdmissionControlForm
-      key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
-      level={ClientAdmissionControlLevelEnum.AP_LEVEL}
-      type={ClientAdmissionControlTypeEnum.CAC_24G}
-      readOnly={!isAllowEdit || isUseVenueSettings}
-      isEnabled={enable24G}
-      isMutuallyExclusive={false}
-      enabledFieldName={enable24GFieldName}
-      minClientCountFieldName={minClientCount24GFieldName}
-      maxRadioLoadFieldName={maxRadioLoad24GFieldName}
-      minClientThroughputFieldName={minClientThroughput24GFieldName}
-      onFormDataChanged={onFormDataChanged}
-    />
-    <br/>
-    <ClientAdmissionControlForm
-      key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
-      level={ClientAdmissionControlLevelEnum.AP_LEVEL}
-      type={ClientAdmissionControlTypeEnum.CAC_5G}
-      readOnly={!isAllowEdit || isUseVenueSettings}
-      isEnabled={enable50G}
-      isMutuallyExclusive={false}
-      enabledFieldName={enable50GFieldName}
-      minClientCountFieldName={minClientCount50GFieldName}
-      maxRadioLoadFieldName={maxRadioLoad50GFieldName}
-      minClientThroughputFieldName={minClientThroughput50GFieldName}
-      onFormDataChanged={onFormDataChanged}
-    />
+    <Row gutter={0}>
+      <Col style={{ width: '340px' }}>
+        <ClientAdmissionControlForm
+          key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+          level={ClientAdmissionControlLevelEnum.AP_LEVEL}
+          type={ClientAdmissionControlTypeEnum.CAC_24G}
+          readOnly={!isAllowEdit || isUseVenueSettings}
+          isEnabled={enable24G}
+          isMutuallyExclusive={false}
+          enabledFieldName={enable24GFieldName}
+          minClientCountFieldName={minClientCount24GFieldName}
+          maxRadioLoadFieldName={maxRadioLoad24GFieldName}
+          minClientThroughputFieldName={minClientThroughput24GFieldName}
+          onFormDataChanged={onFormDataChanged}
+        />
+        <br/>
+        <ClientAdmissionControlForm
+          key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+          level={ClientAdmissionControlLevelEnum.AP_LEVEL}
+          type={ClientAdmissionControlTypeEnum.CAC_5G}
+          readOnly={!isAllowEdit || isUseVenueSettings}
+          isEnabled={enable50G}
+          isMutuallyExclusive={false}
+          enabledFieldName={enable50GFieldName}
+          minClientCountFieldName={minClientCount50GFieldName}
+          maxRadioLoadFieldName={maxRadioLoad50GFieldName}
+          minClientThroughputFieldName={minClientThroughput50GFieldName}
+          onFormDataChanged={onFormDataChanged}
+        />
+      </Col>
+    </Row>
   </Loader>
   )
 }

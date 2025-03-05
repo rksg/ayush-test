@@ -564,6 +564,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    opsApi: 'PUT:/wifiNetworks/{id}/dpskServices/{id}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
