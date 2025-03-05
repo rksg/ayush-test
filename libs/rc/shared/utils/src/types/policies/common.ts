@@ -36,7 +36,7 @@ export enum PolicyType {
   DIRECTORY_SERVER = 'Directory Server',
   PORT_PROFILE = 'Port Profile',
   SWITCH_PORT_PROFILE = 'Switch Port Profile',
-  SSO_SAML = 'SSO SAML'
+  SAML_IDP = 'SAML IDP'
 }
 
 export enum PolicyOperation {
@@ -65,7 +65,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
-  [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Provides network services and operates the AAA infrastructure required to authenticate subscribers' }),
+  [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Provides Identity Provider (IdP) identification and authentication profiles for Hotspot 2.0 and Captive Portal SAML Network Services' }),
   [PolicyType.WIFI_OPERATOR]: defineMessage({ defaultMessage: 'Deploys and operates an access network consisting of publicly accessible or guest access Passpoint APs' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
@@ -94,7 +94,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' }),
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
-  [PolicyType.SSO_SAML]: defineMessage({ defaultMessage: 'SSO/SAML' })
+  [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Provides Identity Provider (IdP) identification and authentication profiles for Hotspot 2.0 and Captive Portal SAML Network Services' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

@@ -219,9 +219,13 @@ function useCardData (): PolicyCardData[] {
       totalCount: useGetIdentityProviderListQuery({
         params, payload: { tenantId: params.tenantId }
       }, { skip: !supportHotspot20R1 }).data?.totalCount,
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
-      disabled: !supportHotspot20R1
+      listViewPath: useTenantLink(getPolicyRoutePath(
+        ((isCaptivePortalSsoSamlEnabled) ?
+          { type: PolicyType.SAML_IDP, oper: PolicyOperation.LIST } :
+          { type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST }
+        )
+      )),
+      disabled: !supportHotspot20R1 && !isCaptivePortalSsoSamlEnabled
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
@@ -380,16 +384,6 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/portProfile/wifi'),
       disabled: !isSwitchPortProfileEnabled
-    },
-    {
-      type: PolicyType.SSO_SAML,
-      categories: [RadioCardCategory.WIFI],
-      // eslint-disable-next-line max-len
-      // totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SSO_SAML, oper: PolicyOperation.LIST })),
-      disabled: !isCaptivePortalSsoSamlEnabled
     }
-
   ]
 }

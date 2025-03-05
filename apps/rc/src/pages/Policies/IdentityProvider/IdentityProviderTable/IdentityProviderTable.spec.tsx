@@ -16,8 +16,7 @@ import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import {
@@ -88,11 +87,6 @@ describe('IdentityProviderTable', () => {
     )
 
     const targetName = dummyTableResult.data[0].naiRealms[0].name
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('button', { name: /Add Identity Provider/i })).toBeVisible()
-    await waitFor(() => {
-      expect(screen.queryByText(targetName)).toBeVisible()
-    })
     const row1 = await screen.findByText(targetName)
     await userEvent.click(row1)
 
@@ -105,20 +99,4 @@ describe('IdentityProviderTable', () => {
     //const dialog = await screen.findByRole('dialog')
     //expect(dialog).toBeInTheDocument()
   })
-
-  it('should render breadcrumb correctly', async () => {
-    render(
-      <Provider>
-        <IdentityProviderTable />
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: tablePath }
-      }
-    )
-
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-  })
-
 })

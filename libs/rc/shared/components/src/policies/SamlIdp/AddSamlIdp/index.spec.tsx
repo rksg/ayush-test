@@ -12,7 +12,7 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { certList, mockCertId2, mockCertName2, mockSamlIdpProfileId, mockSamlIdpProfileName } from '../__tests__/fixtures'
 
-import { AddSsoSaml } from '.'
+import { AddSamlIdp } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -22,14 +22,14 @@ jest.mock('react-router-dom', () => ({
 
 let params: { tenantId: string }
 const createViewPath = '/:tenantId/' + getPolicyRoutePath({
-  type: PolicyType.SSO_SAML,
+  type: PolicyType.SAML_IDP,
   oper: PolicyOperation.CREATE
 })
 
 const mockedMainSamlIdpProfile = jest.fn()
 const mockedActivateCertificate = jest.fn()
 
-describe('Add SSO/SAML', () => {
+describe('Add SAML IDP Profile', () => {
   beforeEach(() => {
 
     params = {
@@ -68,11 +68,11 @@ describe('Add SSO/SAML', () => {
     )
   })
 
-  it('should create SSO/SAML profile successful', async () => {
+  it('should create SAML IdP profile successful', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddSsoSaml />
+        <AddSamlIdp />
       </Provider>
       , { route: { path: createViewPath, params } }
     )
@@ -95,7 +95,7 @@ describe('Add SSO/SAML', () => {
 
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/policies/identityProvider/list`,
+      pathname: `/${params.tenantId}/t/policies/samlIdp/list`,
       hash: '',
       search: ''
     }))
@@ -104,7 +104,7 @@ describe('Add SSO/SAML', () => {
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <AddSsoSaml />
+        <AddSamlIdp />
       </Provider>
       , { route: { path: createViewPath, params } }
     )
@@ -121,13 +121,13 @@ describe('Add SSO/SAML', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddSsoSaml />
+        <AddSamlIdp />
       </Provider>
       , { route: { path: createViewPath, params } }
     )
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/policies/identityProvider/list`,
+      pathname: `/${params.tenantId}/t/policies/samlIdp/list`,
       hash: '',
       search: ''
     })
@@ -137,7 +137,7 @@ describe('Add SSO/SAML', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddSsoSaml />
+        <AddSamlIdp />
       </Provider>
       , { route: { path: createViewPath, params } }
     )
