@@ -1,11 +1,12 @@
 import { Col, Form, Row, Select } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Tooltip }                                            from '@acx-ui/components'
-import { TunnelProfileAddModal }                              from '@acx-ui/rc/components'
-import { MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }                             from '@acx-ui/types'
-import { hasPermission }                                      from '@acx-ui/user'
+import { Tooltip }                                                               from '@acx-ui/components'
+import { TunnelProfileAddModal }                                                 from '@acx-ui/rc/components'
+import { MtuTypeEnum, TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                                                from '@acx-ui/types'
+import { hasPermission }                                                         from '@acx-ui/user'
+import { getOpsApi }                                                             from '@acx-ui/utils'
 
 import { messageMappings } from '../messageMappings'
 
@@ -54,7 +55,10 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
         : dropdownFormItem
       }
     </Col>
-    {hasPermission({ scopes: [WifiScopes.CREATE, EdgeScopes.CREATE] }) &&
+    {hasPermission({
+      scopes: [WifiScopes.CREATE, EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(TunnelProfileUrls.createTunnelProfile)]
+    }) &&
       <Col span={3}>
         <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
       </Col>
