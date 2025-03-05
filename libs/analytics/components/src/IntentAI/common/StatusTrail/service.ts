@@ -42,6 +42,7 @@ export const api = intentAIApi.injectEndpoints({
                     metadata {
                       scheduledAt: field(prop: "scheduledAt")
                       failures: field(prop: "failures")
+                      error: field(prop: "error")
                       changedByName: field(prop: "changedByName")
                       retries: field(prop: "retries")
                     }

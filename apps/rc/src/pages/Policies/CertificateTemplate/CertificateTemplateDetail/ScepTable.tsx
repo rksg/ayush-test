@@ -5,9 +5,10 @@ import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, PasswordInput, Table, TableProps, showActionModal }                                                                                   from '@acx-ui/components'
-import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                               from '@acx-ui/rc/services'
-import { ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, PasswordInput, Table, TableProps, showActionModal }                                                                                                    from '@acx-ui/components'
+import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                                                from '@acx-ui/rc/services'
+import { CertificateUrls, ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { getOpsApi }                                                                                                                                                    from '@acx-ui/utils'
 
 import ScepDrawer from './ScepDrawer'
 
@@ -91,6 +92,7 @@ export default function ScepTable ({ templateId = '' }) {
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCertificateTemplateScepKeys)],
       onClick: ([selectedRow]) => {
         setVisible(true)
         setSelectedScep(selectedRow)
@@ -98,6 +100,7 @@ export default function ScepTable ({ templateId = '' }) {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DELETE),
+      rbacOpsIds: [getOpsApi(CertificateUrls.deleteCertificateTemplateScepKeys)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showActionModal({
@@ -125,6 +128,7 @@ export default function ScepTable ({ templateId = '' }) {
   const actionButtons = filterByAccessForServicePolicyMutation([
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
+      rbacOpsIds: [getOpsApi(CertificateUrls.createCertificateTemplateScepKeys)],
       label: $t({ defaultMessage: 'Add SCEP Key' }),
       onClick: () => setVisible(true)
     }
