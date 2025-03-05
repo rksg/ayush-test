@@ -53,7 +53,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
     ? hasAllowedOperations([
       [getOpsApi(MspRbacUrlsInfo.addMspLabel), getOpsApi(MspRbacUrlsInfo.updateMspLabel)]
     ])
-    : true
+    : isPrimeAdmin
 
   const {
     state
@@ -139,7 +139,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
         inactiveIcon: CopyOutlined,
         activeIcon: CopySolid
       }] : []),
-    ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense || !hasPortalSettingPermission)
+    ...((!hasPortalSettingPermission || isTechPartner || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Portal Settings' }),
