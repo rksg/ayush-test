@@ -4,8 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }      from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -17,7 +18,6 @@ import BasicInformationPage from './BasicInformationPage'
 import Congratulations      from './Congratulations'
 import VerticalPage         from './VerticalPage'
 import WelcomePage          from './WelcomePage'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const mockedUsedNavigate = jest.fn()

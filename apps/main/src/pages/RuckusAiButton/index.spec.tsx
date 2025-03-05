@@ -3,10 +3,10 @@ import '@testing-library/jest-dom'
 import userEvent                     from '@testing-library/user-event'
 import { IntlProvider }              from 'react-intl'
 
-import { Provider } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
 
 import RuckusAiButton from '.'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 jest.mock('./BasicInformationPage', () => () => <div>BasicInformationPage Component</div>)
@@ -157,7 +157,7 @@ describe('RuckusAiButton', () => {
         <RuckusAiButton />
       </Provider>
     )
- 
+
     const button = screen.getByTestId('RuckusAiDog')
     fireEvent.click(button)
 
