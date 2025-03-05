@@ -1,10 +1,11 @@
 import { Col, Form, Row, Select, Tooltip } from 'antd'
 import { useIntl }                         from 'react-intl'
 
-import { TunnelProfileAddModal }                 from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }                from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
+import { TunnelProfileAddModal }                                    from '@acx-ui/rc/components'
+import { TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                                   from '@acx-ui/types'
+import { hasPermission }                                            from '@acx-ui/user'
+import { getOpsApi }                                                from '@acx-ui/utils'
 
 export interface TunnelProfileFormItemProps {
   options: { label: string, value: string }[]
@@ -46,7 +47,10 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
         : dropdownFormItem
       }
     </Col>
-    {hasPermission({ scopes: [WifiScopes.CREATE, EdgeScopes.CREATE] }) &&
+    {hasPermission({
+      scopes: [WifiScopes.CREATE, EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(TunnelProfileUrls.createTunnelProfile)]
+    }) &&
       <Col span={3}>
         <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
       </Col>
