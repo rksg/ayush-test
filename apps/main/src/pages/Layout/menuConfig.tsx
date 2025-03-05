@@ -41,7 +41,7 @@ import { useTenantId }                                    from '@acx-ui/utils'
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData, isCustomRole } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole, rbacOpsApiEnabled } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
@@ -66,6 +66,7 @@ export function useMenuConfig () {
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -390,14 +391,14 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
             ...(
-              !isCustomRole ? [
+              !isCustomRoleCheck ? [
                 {
                   uri: '/administration/accountSettings',
                   label: $t({ defaultMessage: 'Settings' })
                 }
               ] : []
             ),
-            ...(isAdministratorAccessible && !isCustomRole ? [
+            ...(isAdministratorAccessible && !isCustomRoleCheck ? [
               isAbacToggleEnabled ? {
                 uri: '/administration/userPrivileges',
                 label: $t({ defaultMessage: 'Users & Privileges' })
@@ -406,14 +407,14 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Administrators' })
               }
             ] : []),
-            ...(isMspAppMonitoringEnabled && !isCustomRole ? [
+            ...(isMspAppMonitoringEnabled && !isCustomRoleCheck ? [
               {
                 uri: '/administration/privacy',
                 label: $t({ defaultMessage: 'Privacy' })
               }
             ] : []),
             ...(
-              !isCustomRole ? [
+              !isCustomRoleCheck ? [
                 {
                   uri: '/administration/notifications',
                   label: $t({ defaultMessage: 'Notifications' })
@@ -429,7 +430,7 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Version Management' })
             },
             ...(
-              !isCustomRole ? [
+              !isCustomRoleCheck ? [
                 {
                   uri: '/administration/webhooks',
                   label: $t({ defaultMessage: 'Webhooks' })
@@ -440,7 +441,7 @@ export function useMenuConfig () {
                 }
               ] : []
             ),
-            ...(isRadiusClientEnabled && !isCustomRole ? [{
+            ...(isRadiusClientEnabled && !isCustomRoleCheck ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])
