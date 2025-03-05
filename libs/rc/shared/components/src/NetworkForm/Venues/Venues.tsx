@@ -100,8 +100,7 @@ const defaultRbacPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'venueApGroups',
-    'isEnforced',
-    'isManagedByTemplate'
+    'isEnforced'
   ],
   searchTargetFields: ['name']
 }

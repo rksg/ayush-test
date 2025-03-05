@@ -23,7 +23,8 @@ import {
   transformWifiNetwork,
   ConfigTemplateCloneUrlsInfo,
   AllowedCloneTemplateTypes,
-  VlanPool
+  VlanPool,
+  EnforceableFields
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -506,10 +507,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
       }
     }),
-    getConfigTemplateInstanceEnforced: build.query<
-    { isEnforced: boolean },
-      RequestPayload<{ instanceId: string, type: AllowedEnforcedConfigTemplateTypes }>
-    >({
+    getConfigTemplateInstanceEnforced: build.query<EnforceableFields, RequestPayload<{ instanceId: string, type: AllowedEnforcedConfigTemplateTypes }>>({
       query: ({ params, payload }) => {
         const { instanceId, type } = payload!
         const apiInfo = configTemplateInstanceEnforcedApiMap[type]
@@ -521,7 +519,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           })
         }
       },
-      transformResponse (result: TableResult<{ isEnforced: boolean }>) {
+      transformResponse (result: TableResult<EnforceableFields>) {
         return {
           isEnforced: result.data[0]?.isEnforced ?? false
         }

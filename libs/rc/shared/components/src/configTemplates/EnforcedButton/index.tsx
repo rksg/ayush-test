@@ -14,22 +14,22 @@ interface EnforcedAwareButtonProps extends ButtonProps {
 }
 
 export function EnforcedButton (props: EnforcedAwareButtonProps) {
-  const { $t } = useIntl()
   const isFFEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
   const { isTemplate } = useConfigTemplate()
   const { instanceId, configTemplateType, ...rest } = props
   const isEnforcementEnabled = isFFEnabled && !isTemplate && instanceId
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const { data, isLoading } = useGetConfigTemplateInstanceEnforcedQuery({
     params: {}, payload: { instanceId: instanceId!, type: configTemplateType }
   }, { skip: !isEnforcementEnabled })
 
   return <Loader states={[ { isLoading } ]} style={{ height: '32px' }}>
-    {isEnforcementEnabled && data?.isEnforced
+    {data && hasEnforcedItem([data])
       ? <Tooltip
-        title={$t(enforcedActionMsg)}
+        title={getEnforcedActionMsg([data])}
         placement='left'
-        children={<span><Button {...rest} disabled={data?.isEnforced} /></span>}
+        children={<span><Button {...rest} disabled={true} /></span>}
       />
       : <Button {...rest} />
     }
@@ -44,7 +44,7 @@ export function useEnforcedStatus () {
   const hasEnforcedItem = (target: Array<EnforceableFields> | undefined): boolean => {
     if (!target || !isConfigTemplateEnforcedEnabled || isTemplate) return false
 
-    return target.some(item => item.isEnforced && item.isManagedByTemplate)
+    return target.some(item => item.isEnforced)
   }
 
   const getEnforcedActionMsg = (target: Array<EnforceableFields> | undefined): string => {

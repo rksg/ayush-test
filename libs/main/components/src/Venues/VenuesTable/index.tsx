@@ -260,7 +260,6 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'isManagedByTemplate',
       'addressLine'
     ],
     searchTargetFields: ['name', 'addressLine'],

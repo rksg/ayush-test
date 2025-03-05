@@ -301,8 +301,7 @@ export const defaultRbacNetworkPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'tunnelWlanEnable',
-    'isEnforced',
-    'isManagedByTemplate'
+    'isEnforced'
   ],
   page: 1,
   pageSize: 2048
