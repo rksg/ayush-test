@@ -301,7 +301,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
 
     const selectedModelWithDefault =
-      getModelWithDefaultEthernetPortProfile(selectedModel, lanPortsCap, tenantId)
+      getModelWithDefaultEthernetPortProfile(selectedModel, lanPortsCap, tenantId, isTemplate)
 
     setSelectedModel(selectedModelWithDefault)
     setSelectedModelCaps(modelCaps as CapabilitiesApModel)
@@ -798,7 +798,7 @@ function getModelWithDefaultEthernetPortProfile (
 
       const defaultType = lanPortsCaps.find(cap => cap.id === lanPort.portId)?.defaultType
       if (defaultType) {
-        lanPort.ethernetPortProfileId = `${tenantId}_${defaultType}${isTemplate? '_template' : ''}`
+        lanPort.ethernetPortProfileId = `${tenantId}_${defaultType}${isTemplate? '_Template' : ''}`
       }
 
     }
