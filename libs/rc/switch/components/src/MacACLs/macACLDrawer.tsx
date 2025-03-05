@@ -76,7 +76,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   const save = async () => {
     try {
       const values = form?.getFieldsValue()
-      if (dataIndex === 'sourceAddress' || dataIndex === 'destinationAddress') {
+      if ((dataIndex === 'sourceAddress' || dataIndex === 'destinationAddress')) {
         const macAddress = values[dataIndex]
 
         try {
@@ -84,20 +84,22 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
           let mask = ''
           if (macAddress.includes(':')) {
-            mask = 'FF:FF:FF:FF:FF:FF'
+            mask = 'ff:ff:ff:ff:ff:ff'
           } else if (macAddress.includes('-')) {
-            mask = 'FF-FF-FF-FF-FF-FF'
+            mask = 'ff-ff-ff-ff-ff-ff'
           } else if (macAddress.includes('.')) {
-            mask = 'FFFF.FFFF.FFFF'
+            mask = 'ffff.ffff.ffff'
           } else {
-            mask = 'FFFFFFFFFFFF'
+            mask = 'ffffffffffff'
           }
 
           // Update the corresponding mask field
           const maskField = dataIndex === 'sourceAddress' ? 'sourceMask' : 'destinationMask'
-          const updatedValues = { ...values, [maskField]: mask }
-
-          handleSave({ ...record, ...updatedValues })
+          const shouldUpdateMask = values[dataIndex] !== 'any' && values[dataIndex] !== ''
+          if (shouldUpdateMask) {
+            const updatedValues = { ...values, [maskField]: mask }
+            handleSave({ ...record, ...updatedValues })
+          }
           return
         } catch {
         }
@@ -107,6 +109,17 @@ const EditableCell: React.FC<EditableCellProps> = ({
       // eslint-disable-next-line no-console
       console.log('Save failed:', errInfo)
     }
+  }
+
+  const isFieldDisabled = () => {
+    const values = form?.getFieldsValue()
+    if ((dataIndex === 'sourceMask')) {
+      return values['sourceAddress'] === 'any'
+    }
+    if(dataIndex === 'destinationMask') {
+      return values['destinationAddress'] === 'any'
+    }
+    return false
   }
 
   const stopPropagation = (e: React.MouseEvent) => {
@@ -146,6 +159,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
           ref={inputRef}
           onBlur={save}
           onClick={stopPropagation}
+          disabled={isFieldDisabled()}
         />
       ) : children }
     </Form.Item>
