@@ -188,9 +188,13 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
-        <Form.Item>
-          { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
-        </Form.Item>
+
+        {
+          (isWifiIdentityManagementEnable && !isTemplate) &&
+          <Form.Item>
+            <IdentityGroup />
+          </Form.Item>
+        }
         <Form.Item
           label='Security Protocol'
           name={['wlan', 'wlanSecurity']}
