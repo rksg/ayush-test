@@ -63,7 +63,6 @@ export const useDateFilter = ({
         )
       })
     }
-    console.log(period, read())
 
     return {
       dateFilter,
