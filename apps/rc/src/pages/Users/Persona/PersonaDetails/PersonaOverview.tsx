@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 import { useParams }                   from 'react-router-dom'
 
-import { Button, cssStr, Descriptions, Loader, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
+import { Button, Descriptions, Loader, Subtitle }   from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   IdentityGroupLink,
   NetworkSegmentationLink,
@@ -158,34 +158,25 @@ function PersonaOverview (props: { personaData?: Persona, personaGroupData?: Per
       {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
         <Col span={12}>
           {netSeg.map(item =>
-            <Row key={item.label} align={'middle'}>
-              <Col span={7}>
-                <Typography.Paragraph
-                  style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
-                >
-                  {item.label}:
-                </Typography.Paragraph>
-              </Col>
-              <Col span={12}>{item.value ?? noDataDisplay}</Col>
-            </Row>
+            <Descriptions key={item.label} labelWidthPercent={25}>
+              <Descriptions.Item
+                label={item.label}
+                children={item.value ?? noDataDisplay}
+              />
+            </Descriptions>
           )}
           {
             isConnectionMeteringEnabled &&
-            <Row key={'Data Usage Metering'} align={'middle'}>
-              <Col span={7}>
-                <Typography.Paragraph
-                  style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
-                >
-                  {$t({ defaultMessage: 'Data Usage Metering' })}:
-                </Typography.Paragraph>
-              </Col>
-              <Col span={12}>{connectionMetering ?
-                <ConnectionMeteringLink
-                  id={connectionMetering.id}
-                  name={connectionMetering.name}/> :
-                noDataDisplay}
-              </Col>
-            </Row>
+            <Descriptions key={'Data Usage Metering'} labelWidthPercent={25}>
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Data Usage Metering:' })}
+                children={connectionMetering ?
+                  <ConnectionMeteringLink
+                    id={connectionMetering.id}
+                    name={connectionMetering.name}/> :
+                  noDataDisplay}
+              />
+            </Descriptions>
           }
         </Col>
       }
