@@ -1,35 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
-import { Form, Select, Switch, Button, Space, Input } from 'antd'
-import { useIntl }                                    from 'react-intl'
+import { Form, Switch, Button, Space, Input } from 'antd'
+import { useIntl }                            from 'react-intl'
 
-import {
-  useLazySearchPersonaGroupListQuery
-} from '@acx-ui/rc/services'
 import { Persona } from '@acx-ui/rc/utils'
 
 import { SelectPersonaDrawer } from '../../../../users/IdentitySelector/SelectPersonaDrawer'
 import { PersonaGroupDrawer }  from '../../../../users/PersonaGroupDrawer'
-import NetworkFormContext      from '../../../NetworkFormContext'
+import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
 
 export function IdentityGroup () {
-  const { editMode } = useContext(NetworkFormContext)
-
+  const refetchPersonaGroups = useRef<() => void>()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const selectedIdentityId = Form.useWatch('identityId', form)
-  const [identityGroupId, setIdentityGroupId] = useState<string>('')
+  const selectedIdentityGroupId = Form.useWatch('identityGroupId', form)
   const [display, setDisplay] = useState({ display: 'none' })
   const [personaGroupVisible, setPersonaGroupVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
-  const [lazyPersonaGroupListTrigger] = useLazySearchPersonaGroupListQuery()
-  const [identityGroupOptions, setIdentityGroupOptions] = useState(
-    [
-      { label: 'Select...', value: '' }
-    ]
-  )
   const handleClose = (identity?: Persona) => {
     setIdentitySelectorDrawerVisible(false)
     if (identity) {
@@ -39,34 +29,12 @@ export function IdentityGroup () {
       })
     }
   }
-
-  const setData = async () => {
-    let groupOptions = []
-    /*
-     * TODO: When under edit mode, the 'Select...' option should be removed
-     * if user had selected one identity group. It will be implemented once
-     * API is done.
-     */
-    if (!editMode) {
-      groupOptions.push({ label: 'Select...', value: '' })
-    }
-    const result = await lazyPersonaGroupListTrigger({
-      payload: {
-        page: 1,
-        pageSize: 10000,
-        sortField: 'name',
-        sortOrder: 'ASC'
-      }
-    }).unwrap()
-    result.data.forEach((group) => {
-      groupOptions.push({ label: group.name, value: group.id })
-    })
-    setIdentityGroupOptions(groupOptions)
-  }
-
   useEffect(() => {
-    setData()
-  }, [])
+    setSelectedIdentity(undefined)
+    if (selectedIdentityId) {
+      form.setFieldValue('identityId', '')
+    }
+  }, [selectedIdentityGroupId])
 
   const onAssociationChange = (value: boolean) => {
     if(value) {
@@ -84,13 +52,13 @@ export function IdentityGroup () {
           name={['identityGroupId']}
           initialValue={''}
           children={
-            <Select
+            <PersonaGroupSelect
               data-testid={'identity-group-select'}
               style={{ width: '400px' }}
-              onChange={(value) => {
-                setIdentityGroupId(value)
+              defaultOptions={[{ label: 'Select...', value: '' }]}
+              onRefetch={(refetch) => {
+                refetchPersonaGroups.current = refetch // Store the refetch function in a ref
               }}
-              options={identityGroupOptions}
             />
           }
         />
@@ -107,7 +75,7 @@ export function IdentityGroup () {
           </Button>
         </Space>
       </Space>
-      {identityGroupId && (
+      {selectedIdentityGroupId && (
         <>
           <UI.FieldLabel width={'400px'}>
             {$t({
@@ -173,7 +141,9 @@ export function IdentityGroup () {
         isEdit={false}
         visible={personaGroupVisible}
         onClose={(result) => {
-          setData()
+          if (refetchPersonaGroups.current) {
+            refetchPersonaGroups.current()
+          }
           if (result) {
             form.setFieldValue('identityGroupId', result?.id)
           }
@@ -186,7 +156,7 @@ export function IdentityGroup () {
           onSubmit={handleClose}
           onCancel={() => setIdentitySelectorDrawerVisible(false)}
           identityId={selectedIdentityId}
-          identityGroupId={identityGroupId}
+          identityGroupId={selectedIdentityGroupId}
           disableAddDevices={true}
         />
       )}
