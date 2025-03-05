@@ -275,11 +275,13 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/deviceRequests',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/reboot',
+    opsApi: 'POST:/venues/{id}/switches/{id}/deviceRequests',
     newApi: true
   },
   syncData: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/deviceRequests',
+    opsApi: 'POST:/venues/{id}/switches/{id}/deviceRequests',
     newApi: true
   },
   syncSwitchesData: {

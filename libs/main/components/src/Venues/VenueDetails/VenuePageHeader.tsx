@@ -75,7 +75,7 @@ function VenuePageHeader () {
           type='primary'
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
-            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
           ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
