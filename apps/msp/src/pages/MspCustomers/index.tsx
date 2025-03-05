@@ -153,6 +153,9 @@ export function MspCustomers () {
       ],
       sortField: 'name',
       sortOrder: 'ASC'
+    },
+    option: {
+      skip: techPartnerAssignEcsEanbled
     }
   })
 
