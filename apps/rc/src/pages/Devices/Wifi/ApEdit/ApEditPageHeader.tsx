@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Divider, Space }    from 'antd'
-import { useIntl }           from 'react-intl'
+import { Divider, Space } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import { Button, cssStr, PageHeader }                                                      from '@acx-ui/components'
 import { useApGroupsListQuery, useGetApGroupsTemplateListQuery, useGetApOperationalQuery } from '@acx-ui/rc/services'
@@ -57,9 +57,9 @@ function ApEditPageHeader () {
     }
   }, [apGroupInfo, apDetails])
 
-  const titleWithVenueApGroup = <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
+  const titleWithVenueApGroup = <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
     <div>{apData?.name || ''}</div>
-    <Space direction='horizontal' size={0} style={{height: '15px'}}>
+    <Space direction='horizontal' size={0} style={{ height: '15px' }}>
       <div style={{ fontSize: '13px', color: cssStr('--acx-neutrals-60') }}>Venue: <TenantLink
         to={`venues/${venueData?.id}/venue-details/overview`}>{venueData?.name}
       </TenantLink></div>

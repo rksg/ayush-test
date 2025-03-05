@@ -26,6 +26,8 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
+  useApGroupsListQuery,
+  useGetApGroupsTemplateListQuery,
   useImportApMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesQuery,
@@ -58,7 +60,10 @@ import {
   CompatibilityResponse,
   Compatibility,
   CompatibilitySelectedApInfo,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  useConfigTemplateQueryFnSwitcher,
+  ApGroupViewModel,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes, RolesEnum }                             from '@acx-ui/types'
@@ -148,6 +153,16 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     //   'status', 'firmwareVersion'],
     pagination: { settingsId }
   })
+
+  const { data: apGroupInfo } = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
+    useQueryFn: useApGroupsListQuery,
+    useTemplateQueryFn: useGetApGroupsTemplateListQuery,
+    payload: {
+      searchString: '',
+      pageSize: 10000
+    }
+  })
+
   const tableQuery = props.tableQuery || apListTableQuery
 
   useEffect(() => {
@@ -265,19 +280,34 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }
           setTableData(result)
         } else {
-          setTableData(tableQuery.data?.data)
+          setTableData(
+            addNetworksInfoByApGroup(tableQuery.data.data, apGroupInfo)
+          )
         }
       }
+    }
+
+    const addNetworksInfoByApGroup = (data: NewAPExtendedGrouped[] | NewAPModelExtended[], apGroupInfo: TableResult<ApGroupViewModel> | undefined) => {
+      return data.map(ap => {
+        return {
+          ...ap,
+          networksInfo: apGroupInfo?.data.filter((group) => {
+            return group.id === ap.apGroupId && group.venueId === (ap as { children?: NewAPModel[] }).children?.[0]?.venueId
+          })?.[0]?.networks
+        }
+      })
     }
 
     if (tableQuery.data) {
       if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
         fetchApCompatibilitiesAndSetData()
       } else {
-        setTableData(tableQuery.data.data)
+        setTableData(
+          addNetworksInfoByApGroup(tableQuery.data.data, apGroupInfo)
+        )
       }
     }
-  }, [tableQuery.data, showFeatureCompatibilitiy])
+  }, [tableQuery.data, showFeatureCompatibilitiy, apGroupInfo])
 
   const apAction = useApActions()
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({

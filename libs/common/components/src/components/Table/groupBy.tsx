@@ -71,7 +71,7 @@ export function useGroupBy<RecordType> (
     }
     const renderGroupRow = (record: RecordType) => {
       return <UI.GroupRow>
-        <UI.GroupCell>
+        <UI.GroupCell style={{ position: 'relative', left: '-25px' }}>
           {attributes.map(({ key, renderer }, index) => {
             // ungrouped aps no need to show the venue information
             if (key === 'venue' && !(record as unknown as { deviceGroupName: string }).deviceGroupName) {
@@ -79,7 +79,7 @@ export function useGroupBy<RecordType> (
             }
               return <div key={key} style={{ display: 'flex' }}>
                 <div style={{ fontWeight: index === 0 ? 'bold' : 'none' }}>{renderer(record)}</div>
-                {index > 0 && index < attributes.length - 1 && <Divider type='vertical' style={{ right: '-10px', borderColor: 'grey' }}/>}
+                {index > 0 && index < attributes.length - 1 && <Divider type='vertical' style={{ right: '-10px', borderColor: 'grey', top: '2px' }}/>}
               </div>
             }
           )}

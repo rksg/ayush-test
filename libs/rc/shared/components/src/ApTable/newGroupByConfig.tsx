@@ -7,6 +7,8 @@ import { ApDeviceStatusEnum, APExtended, NewAPModel, NewAPModelExtended, PowerSa
 import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
 import { getIntl }                                                                               from '@acx-ui/utils'
 
+import { SimpleListTooltip } from '../SimpleListTooltip'
+
 import { APStatus } from '.'
 
 const commonAttributes = ($t: IntlShape['$t']) => [
@@ -50,7 +52,9 @@ const commonAttributes = ($t: IntlShape['$t']) => [
     renderer: (record: NewAPModelExtended) => (
       <div>
         {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-        {record.networks ? record.networks.count : 0}
+        {record?.networksInfo ? <SimpleListTooltip
+          items={record?.networksInfo.names!}
+          displayText={record?.networksInfo.count!} /> : 0}
       </div>
     )
   }

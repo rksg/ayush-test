@@ -108,6 +108,7 @@ export interface NewAPModel {
   serialNumber: string
   name?: string
   apGroupId?: string
+  apGroupName?: string
   venueId?: string
   venueName? : string
   tags?: string[]
@@ -193,6 +194,10 @@ export interface NewAPModelExtended extends NewAPModel {
   clients?: number
   networks?: {
     count?: number
+  }
+  networksInfo?: {
+    count?: number
+    names?: string[]
   }
   switchSerialNumber?: string
   switchId?: string
@@ -753,6 +758,7 @@ export interface NewAPExtendedGrouped extends NewAPModelExtended {
   id?: number | string
   deviceGroupName?: string // For the legacy usage of editing/deleting apGroup
   deviceGroupId?: string // For the legacy usage of editing/deleting apGroup
+  networksInfo?: { count: number, names: string[] } | undefined
 }
 export type ImportErrorRes = {
   errors: {

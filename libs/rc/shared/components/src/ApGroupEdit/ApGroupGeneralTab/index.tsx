@@ -14,7 +14,7 @@ import {
   useGetVenuesTemplateListQuery,
   useLazyApGroupsListQuery, useLazyGetApGroupsTemplateListQuery,
   useLazyGetVenueTemplateDefaultApGroupQuery,
-  useLazyVenueDefaultApGroupQuery,
+  useLazyVenueDefaultApGroupQuery, useNewApListQuery,
   useUpdateApGroupMutation, useUpdateApGroupTemplateMutation,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -22,12 +22,12 @@ import {
   AddApGroup,
   ApDeep,
   checkObjectNotExists,
-  hasGraveAccentAndDollarSign,
+  hasGraveAccentAndDollarSign, NewAPModel,
   TableResult,
   trailingNorLeadingSpaces, useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, useTableQuery,
   validateByteLength,
   Venue
 } from '@acx-ui/rc/utils'
@@ -53,6 +53,13 @@ const apGroupsListPayload = {
   pageSize: 10000
 }
 
+interface ApGroupOptionType {
+  name: string,
+  key: string,
+  tags?: string[]
+  apGroupName?: string
+}
+
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, apGroupId } = useParams()
@@ -65,6 +72,7 @@ export function ApGroupGeneralTab () {
     venueId
   } = useContext(ApGroupEditContext)
   const [apsOption, setApsOption] = useState([] as TransferItem[])
+  const [apInfos, setApInfos] = useState({} as Record<string, NewAPModel>)
   const [tableDataOption, setTableDataOption] = useState([] as TransferItem[])
   const [isHide, setIsHide] = useState(false)
 
@@ -115,6 +123,36 @@ export function ApGroupGeneralTab () {
     enableRbac: isRbacEnabled
   })
 
+  const newApTableListQuery = useTableQuery({
+    useQuery: useNewApListQuery,
+    defaultPayload: {
+      groupBy: 'apGroupId',
+      fields: [
+        'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
+        'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
+        'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
+        'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
+        'powerSavingStatus'
+      ]
+    },
+    pagination: { pageSize: 10000 }
+  })
+
+  useEffect(() => {
+    if (newApTableListQuery.data?.data && Object.keys(apInfos).length === 0) {
+      const apInfos = newApTableListQuery.data.data.reduce((acc, data) => {
+        if ((data as { children?: NewAPModel[] }).children?.length) {
+          (data as { children?: NewAPModel[] }).children?.forEach((ap) => {
+            acc[(ap as NewAPModel).serialNumber] = ap
+          })
+        }
+        return acc
+      }, {} as Record<string, NewAPModel>)
+      setApInfos(apInfos)
+    }
+
+  }, [newApTableListQuery])
+
   const locationState = location.state as { venueId?: string, history?: string }
 
   const venueIdFromNavigate = locationState?.venueId
@@ -153,11 +191,11 @@ export function ApGroupGeneralTab () {
       formRef?.current?.setFieldValue('venueId', venueIdFromNavigate)
       handleVenueChange(venueIdFromNavigate)
     }
-  }, [isEditMode, apGroupData, isApGroupDataLoading, venueId])
+  }, [isEditMode, apGroupData, isApGroupDataLoading, venueId, apInfos])
 
   const handleVenueChange = async (value: string,
-    extraMemberList?: { name: string; key: string; }[]) => {
-    const defaultApGroupOption: { name: string, key: string }[] = []
+    extraMemberList?: ApGroupOptionType[]) => {
+    const defaultApGroupOption: ApGroupOptionType[] = []
 
     if (value) {
       // get venue default ap group and its members options
@@ -175,12 +213,19 @@ export function ApGroupGeneralTab () {
         defaultApGroupOption.push(...(list?.flatMap(item =>
           (item.aps ?? ([] as ApDeep[])).map((ap) => ({
             name: ap.name,
-            key: ap.serialNumber
+            key: ap.serialNumber,
+            apGroupName: apInfos[ap.serialNumber]?.apGroupName || '',
+            tags: apInfos[ap.serialNumber]?.tags || []
           })))))
       } else {
         (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
           .data?.map(x => x.aps?.map((item: ApDeep) => {
-            defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber })
+            defaultApGroupOption.push({
+              name: item.name.toString(),
+              key: item.serialNumber,
+              apGroupName: apInfos[item.serialNumber]?.apGroupName || '',
+              tags: apInfos[item.serialNumber]?.tags || []
+            })
           })
           )
       }
@@ -301,17 +346,21 @@ export function ApGroupGeneralTab () {
       title: 'Name'
     },
     {
-      dataIndex: 'key',
-      title: 'key'
+      dataIndex: 'apGroupName',
+      title: 'Ap Group'
     },
     {
-      dataIndex: 'key',
+      dataIndex: 'tags',
       title: 'Tag',
-      render: (tag: string) => (
-        <Tag style={{ marginInlineEnd: 0 }} color='cyan'>
-          {tag.toUpperCase()}
-        </Tag>
-      )
+      render: (tags: string[]) => {
+        if (tags.filter(tag => tag !== '').length === 0) return <></>
+
+        return (
+          tags.map((tag: string) => (<Tag style={{ marginInlineEnd: 0 }} >
+            {tag.toUpperCase()}
+          </Tag>))
+        )
+      }
     }
   ]
 

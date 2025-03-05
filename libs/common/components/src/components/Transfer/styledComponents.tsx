@@ -37,7 +37,7 @@ export const TransferLayout = styled(Space)`
     .ant-transfer-list-search {
       border: 1px solid var(--acx-neutrals-40) !important;
       padding: 0 8px;
-      height: 24px;
+      height: 28px;
       .ant-input-prefix {
         margin-right: 8px;
         span[role=img] {
@@ -159,6 +159,12 @@ export const TransferLayout = styled(Space)`
           .ant-table-tbody > tr > td {
             height: 25px;
             padding: 2px 8px;
+
+            .ant-tag {
+              background: #f5f5f5;
+              border: 1px solid #f0f0f0;
+              border-radius: 4px;
+            }
           }
         }
 
@@ -171,7 +177,7 @@ export const TransferLayout = styled(Space)`
   .ant-transfer-list-footer {
     position: absolute;
     top: calc(100%);
-    left: 285px;
+    left: 275px;
     border-top: none;
   }
 `
