@@ -1,8 +1,12 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useCreateEthernetPortProfileMutation, useUpdateEthernetPortProfileRadiusIdMutation } from '@acx-ui/rc/services'
-import { EthernetPortProfileFormType }                                                        from '@acx-ui/rc/utils'
+import {
+  useAddEthernetPortProfileTemplateMutation,
+  useCreateEthernetPortProfileMutation,
+  useUpdateEthernetPortProfileRadiusIdMutation
+} from '@acx-ui/rc/services'
+import { EthernetPortProfileFormType, useConfigTemplate, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
 
 import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
 
@@ -15,10 +19,16 @@ interface AddEthernetPortProfileFormProps {
 
 export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) => {
   const { $t } = useIntl()
-  const [ createEthernetPortProfile ] = useCreateEthernetPortProfileMutation()
-  const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
   const [form] = Form.useForm()
+  const { isTemplate } = useConfigTemplate()
   const { onClose, isEmbedded, updateInstance } = props
+
+  const [ createEthernetPortProfile ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreateEthernetPortProfileMutation,
+    useTemplateMutationFn: useAddEthernetPortProfileTemplateMutation
+  })
+
+  const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
 
   const handleAddEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
@@ -26,7 +36,7 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
       const createResult =
         await createEthernetPortProfile({ payload }).unwrap()
       const createId = createResult.response?.id
-      if (createId) {
+      if (createId && !isTemplate) {
         if (payload.authRadiusId) {
           updateEthernetPortProfileRadiusId({ params: {
             id: createId,
@@ -54,7 +64,6 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
     <Row>
       <Col span={12}>
         <EthernetPortProfileForm
-          title={$t({ defaultMessage: 'Add Ethernet Port Profile' })}
           submitButtonLabel={$t({ defaultMessage: 'Add' })}
           onFinish={handleAddEthernetPortProfile}
           form={form}
@@ -63,6 +72,5 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
         />
       </Col>
     </Row>
-
   )
 }

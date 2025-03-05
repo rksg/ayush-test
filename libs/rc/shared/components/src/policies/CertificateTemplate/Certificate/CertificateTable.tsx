@@ -25,10 +25,11 @@ import {
   SEARCH,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
-  IdentityDetailsLink
+  IdentityDetailsLink,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
-import { RequestPayload }         from '@acx-ui/types'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { RequestPayload }                    from '@acx-ui/types'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'
 
@@ -233,6 +234,7 @@ export function CertificateTable (
   const rowActions: TableProps<Certificate>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCertificate)],
       label: $t({ defaultMessage: 'Revoke' }),
       disabled: ([selectedRow]) =>
         getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
@@ -250,6 +252,7 @@ export function CertificateTable (
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCertificate)],
       label: $t({ defaultMessage: 'Unrevoke' }),
       disabled: ([selectedRow]) =>
         getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
@@ -278,6 +281,7 @@ export function CertificateTable (
   const actionButtons = [
     ...(templateData && showGenerateCert && templateData.identityGroupId && !!privateKeyBase64 ? [{
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
+      rbacOpsIds: [getOpsApi(CertificateUrls.generateCertificatesToIdentity)],
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
         setCertificateDrawerOpen(true)

@@ -2,9 +2,10 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { get }                                       from '@acx-ui/config'
-import { notificationApi, Provider, rbacApi, store } from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
+import { get }                                                   from '@acx-ui/config'
+import { notificationApi, Provider, rbacApi, store }             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                   from '@acx-ui/test-utils'
+import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
 
 import { webhooks, mockResourceGroups, webhooksUrl, resourceGroups } from './__fixtures__'
 import { WebhookDto, webhookDtoKeys }                                from './services'
@@ -131,9 +132,14 @@ describe('WebhookForm', () => {
   }
 
   describe('RAI', () => {
+    const permissions = Object.keys(raiPermissionsList)
+      .filter(v => isNaN(Number(v)))
+      .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
+
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
+      setRaiPermissions(permissions)
 
       mockServer.use(mockResourceGroups())
     })

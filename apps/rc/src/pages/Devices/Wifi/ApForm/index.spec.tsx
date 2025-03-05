@@ -47,6 +47,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getEnabledDialogImproved: jest.fn().mockReturnValue(false),
+  isShowImprovedErrorSuggestion: jest.fn().mockReturnValue(false)
+}))
 const venue = [
   {
     id: '0842f2133565438d85e1e46103889744',

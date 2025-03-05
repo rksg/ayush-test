@@ -37,9 +37,12 @@ import {
   hasPolicyPermission,
   macAuthMacFormatOptions,
   useConfigTemplate,
-  SecurityOptionsDescription
+  SecurityOptionsDescription,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import {
   ApCompatibilityDrawer,
@@ -246,6 +249,7 @@ function CertAuth () {
         </GridCol>
         { hasPolicyPermission({
           type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          hasAllowedOperations([getOpsApi(CertificateUrls.addCertificateTemplate)]) &&
         <Button
           type='link'
           style={{ top: '28px' }}

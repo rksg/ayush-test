@@ -38,9 +38,11 @@ export function PropertyUnitDetails () {
   const [identitiesCount, setIdentitiesCount] = useState(0)
   const identities = useGetPersonaIdentitiesQuery({ params: { venueId, unitId },
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
+
+  const settingsId = 'property-units-identity-table'
   const identitiesList = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    pagination: { pageSize: 10 },
+    pagination: { pageSize: 10, settingsId },
     defaultPayload: { keyword: '' }
   })
   useEffect(() => {
@@ -79,19 +81,23 @@ export function PropertyUnitDetails () {
     }
   }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading ])
 
+  const updateDetails = () => {
+    getUnitById({ params: { venueId, unitId } })
+      .then(result => {
+        if (result.data) {
+          const { personaId, guestPersonaId } = result.data
+          combinePersonaInfo(result.data, personaId, guestPersonaId)
+          const url = (result.data as PropertyUnit)?._links?.residentPortal?.href
+          if (url) {
+            setResidentPortalUrl(url)
+          }
+        }
+      })
+  }
+
   useEffect(() => {
     if (unitId && venueId && personaGroupId) {
-      getUnitById({ params: { venueId, unitId } })
-        .then(result => {
-          if (result.data) {
-            const { personaId, guestPersonaId } = result.data
-            combinePersonaInfo(result.data, personaId, guestPersonaId)
-            const url = (result.data as PropertyUnit)?._links?.residentPortal?.href
-            if (url) {
-              setResidentPortalUrl(url)
-            }
-          }
-        })
+      updateDetails()
     }
   }, [unitId, personaGroupId])
 
@@ -130,7 +136,7 @@ export function PropertyUnitDetails () {
   }
 
   const handleSuspend = () => {
-    showActionModal({
+    unitData?.status === PropertyUnitStatus.ENABLED ? showActionModal({
       type: 'confirm',
       title: $t({
         defaultMessage: 'Suspend "{entityValue}"?' }, {
@@ -142,9 +148,12 @@ export function PropertyUnitDetails () {
         updateUnitById({
           params: { venueId, unitId: unitId },
           payload: { status: PropertyUnitStatus.DISABLED }
-        })
+        }).then(() => updateDetails())
       }
-    })
+    }) : updateUnitById({
+      params: { venueId, unitId: unitId },
+      payload: { status: PropertyUnitStatus.ENABLED }
+    }).then(() => updateDetails())
   }
 
   const UnitDetails = () => {
@@ -167,7 +176,7 @@ export function PropertyUnitDetails () {
             label={$t({ defaultMessage: 'Status' })}
             children={<Paragraph>
               {unitData?.status === PropertyUnitStatus.ENABLED ? $t({ defaultMessage: 'Active' })
-                : $t({ defaultMessage: 'Blocked' })}
+                : $t({ defaultMessage: 'Suspended' })}
             </Paragraph>} />
           <Form.Item
             colon={false}
@@ -374,7 +383,8 @@ export function PropertyUnitDetails () {
       extra={[
         <Button
           onClick={handleSuspend}
-        >{$t({ defaultMessage: 'Suspend' })} </Button>,
+        >{unitData?.status === PropertyUnitStatus.ENABLED
+            ? $t({ defaultMessage: 'Suspend' }) : $t({ defaultMessage: 'Activate' }) } </Button>,
         <Button
           onClick={() => {
             window.open(residentPortalUrl, '_blank')
@@ -394,6 +404,7 @@ export function PropertyUnitDetails () {
     <Loader states={[ identitiesList ]}>
       <Table
         rowKey='name'
+        settingsId={settingsId}
         columns={columns}
         enableApiFilter
         dataSource={identitiesList.data?.data}
@@ -411,7 +422,10 @@ export function PropertyUnitDetails () {
         countryCode={venueData?.address?.countryCode}
         unitId={unitId}
         isEdit={true}
-        onClose={() => setConfigurePropertyUnitDrawerVisible(false)}
+        onClose={() => {
+          setConfigurePropertyUnitDrawerVisible(false)
+          updateDetails()
+        }}
       />
     }
     {addIdentityAssociationDrawerVisible &&

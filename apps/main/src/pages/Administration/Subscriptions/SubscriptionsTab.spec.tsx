@@ -7,6 +7,7 @@ import { AdministrationUrlsInfo, LicenseUrlsInfo }                         from 
 import { Provider, store, userApi }                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                    from '@acx-ui/user'
+import { AccountType }                                                     from '@acx-ui/utils'
 
 import { fakeMspEcProfile, mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
 import { SubscriptionTabs }                                       from './SubscriptionsTab'
@@ -102,7 +103,7 @@ describe('SubscriptionsTab', () => {
 
     render(
       <Provider>
-        <SubscriptionTabs />
+        <SubscriptionTabs tenantType={AccountType.REC} />
       </Provider>, {
         route: { params }
       })
@@ -125,7 +126,7 @@ describe('SubscriptionsTab', () => {
     )
     render(
       <Provider>
-        <SubscriptionTabs />
+        <SubscriptionTabs tenantType={AccountType.REC} />
       </Provider>, {
         route: { params }
       })
@@ -141,7 +142,7 @@ describe('SubscriptionsTab', () => {
   it('should navigate correctly on tab click', async () => {
     render(
       <Provider>
-        <SubscriptionTabs />
+        <SubscriptionTabs tenantType={AccountType.REC} />
       </Provider>, {
         route: { params }
       })

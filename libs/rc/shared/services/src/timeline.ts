@@ -129,7 +129,6 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       }
     }),
     eventsNoMeta: build.query<TableResult<Event>, RequestPayload>({
-      providesTags: [{ type: 'Event', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const timeFilter = latestTimeFilter(arg.payload)
         const eventListInfo = {
@@ -162,11 +161,6 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             })) as Event[]
           }
         }
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, () => {
-          api.dispatch(timelineApi.util.invalidateTags([{ type: 'Event', id: 'LIST' }]))
-        })
       }
     }),
     adminLogs: build.query<TableResult<AdminLog>, RequestPayload>({

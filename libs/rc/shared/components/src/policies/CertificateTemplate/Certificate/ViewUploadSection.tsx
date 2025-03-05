@@ -1,9 +1,11 @@
 import { Row, Col, Divider, Typography, Checkbox, Modal } from 'antd'
 import { MessageDescriptor, defineMessage, useIntl }      from 'react-intl'
 
-import { Button }                                                                 from '@acx-ui/components'
-import { useDeleteCaPrivateKeyMutation }                                          from '@acx-ui/rc/services'
-import { CertificateAuthority, PolicyOperation, PolicyType, hasPolicyPermission } from '@acx-ui/rc/utils'
+import { Button }                                                                                  from '@acx-ui/components'
+import { useDeleteCaPrivateKeyMutation }                                                           from '@acx-ui/rc/services'
+import { CertificateAuthority, CertificateUrls, PolicyOperation, PolicyType, hasPolicyPermission } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                                                    from '@acx-ui/user'
+import { getOpsApi }                                                                               from '@acx-ui/utils'
 
 import { deleteDescription }                                         from '../contentsMap'
 import { ButtonWrapper, CollapseTitle, Description, DescriptionRow } from '../styledComponents'
@@ -77,6 +79,7 @@ export default function ViewUploadSection (props: ViewUploadDrawerProps) {
             <Row justify='end'>
               {// eslint-disable-next-line max-len
                 hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.DELETE }) &&
+                hasAllowedOperations([getOpsApi(CertificateUrls.deleteCAPrivateKey)]) &&
                 <><Divider type='vertical' />
                   <Button type='link'
                     size='small'
@@ -89,7 +92,8 @@ export default function ViewUploadSection (props: ViewUploadDrawerProps) {
         </Col>
       </Row>
       {!data?.privateKeyBase64 ?
-        (hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) ?
+        (hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) &&
+          hasAllowedOperations([getOpsApi(CertificateUrls.uploadCAPrivateKey)])?
           (<ButtonWrapper>
             <Button onClick={() => setUploadDrawerOpen(true)}>
               {$t({ defaultMessage: 'Upload' })}

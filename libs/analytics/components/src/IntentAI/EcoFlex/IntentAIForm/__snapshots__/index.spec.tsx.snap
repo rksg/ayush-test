@@ -1392,6 +1392,7 @@ h5.c5.ant-typography {
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-2-line-height);
   border: 1px solid transparent;
+  cursor: pointer;
 }
 
 .c11.highlight {
