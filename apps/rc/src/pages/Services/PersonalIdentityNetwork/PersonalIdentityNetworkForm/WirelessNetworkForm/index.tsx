@@ -5,10 +5,12 @@ import { Checkbox, Col, Form, Row, Select, Space, Typography } from 'antd'
 import { CheckboxValueType }                                   from 'antd/lib/checkbox/Group'
 import { useIntl }                                             from 'react-intl'
 
-import { Button, Loader, StepsForm, useStepFormContext, defaultRichTextFormatValues } from '@acx-ui/components'
-import { Features }                                                                   from '@acx-ui/feature-toggle'
-import { TunnelProfileAddModal, useIsEdgeFeatureReady }                               from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData }     from '@acx-ui/rc/utils'
+import { Button, Loader, StepsForm, useStepFormContext, defaultRichTextFormatValues }                                                from '@acx-ui/components'
+import { Features }                                                                                                                  from '@acx-ui/feature-toggle'
+import { TunnelProfileAddModal, useIsEdgeFeatureReady }                                                                              from '@acx-ui/rc/components'
+import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData, TunnelProfileUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                                                             from '@acx-ui/user'
+import { getOpsApi }                                                                                                                 from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
@@ -48,6 +50,21 @@ export const WirelessNetworkForm = () => {
     setDpskModalVisible(true)
   }
 
+  const hasCreateTunnelPermission = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(TunnelProfileUrls.createTunnelProfile)
+    ]
+  })
+
+  const hasCreateDpskPermission = hasPermission({
+    rbacOpsIds: [
+      [
+        getOpsApi(WifiRbacUrlsInfo.addNetworkDeep),
+        getOpsApi(WifiUrlsInfo.activateDpskService)
+      ]
+    ]
+  })
+
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -65,9 +82,12 @@ export const WirelessNetworkForm = () => {
               />}
           />
         </Col>
-        <TunnelProfileAddModal
-          initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
-        />
+        {
+          hasCreateTunnelPermission &&
+          <TunnelProfileAddModal
+            initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
+          />
+        }
       </Row>
       <Row gutter={20}>
         <Col>
@@ -98,11 +118,14 @@ export const WirelessNetworkForm = () => {
                 </Checkbox.Group>
               </Form.Item>
             </Loader>
-            <Button
-              type='link'
-              onClick={openDpskModal}
-              children={$t({ defaultMessage: 'Add DPSK Network' })}
-            />
+            {
+              hasCreateDpskPermission &&
+              <Button
+                type='link'
+                onClick={openDpskModal}
+                children={$t({ defaultMessage: 'Add DPSK Network' })}
+              />
+            }
 
             {isEdgePinEnhanceReady && <Row style={{ marginTop: '20px' }}>
               <Col span={24}>
