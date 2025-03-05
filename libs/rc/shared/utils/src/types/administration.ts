@@ -1,3 +1,5 @@
+import { TreeDataNode } from 'antd'
+
 import { RolesEnum }   from '@acx-ui/types'
 import { AccountTier } from '@acx-ui/utils'
 
@@ -563,5 +565,10 @@ export interface ScopeFeature {
   name: string,
   description: string,
   category: string,
-  subFeatures?: ScopeFeature[]
+  subFeatures?: ScopeFeature[],
+  inTandem?: boolean
+}
+
+export interface ScopeTreeDataNode extends TreeDataNode {
+  inTandem?: boolean
 }
