@@ -152,7 +152,6 @@ describe('ActionsLibraryDrawer', () =>{
       onClose={jest.fn()}
       onClickAction={jest.fn()}
       relationshipMap={mockedOneOfRelationshipMap}
-      onConfigureClose={jest.fn()}
       visible/></Provider>,
     { route: { params } })
 

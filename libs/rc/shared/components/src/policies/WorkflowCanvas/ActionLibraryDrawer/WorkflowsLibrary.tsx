@@ -29,13 +29,12 @@ import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
 interface WorkflowsLibraryProps {
   onClose: () => void,
-  onConfigureClose: () => void,
   workflowId: string,
   stepId: string | undefined
 }
 
 export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
-  const { onClose, onConfigureClose, workflowId, stepId } = props
+  const { onClose, workflowId, stepId } = props
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewId, setPreviewId] = useState<string>()
   const [nestedCloneWorkflow] = useNestedCloneWorkflowMutation()
@@ -101,7 +100,6 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
     setPreviewId(undefined)
     setPreviewVisible(false)
     onClose()
-    onConfigureClose()
   }
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {

@@ -75,7 +75,6 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
         workflowId={workflowId}
         type={PanelType.NoCard}
         mode={WorkflowPanelMode.Design}
-        onConfigureClose={onClose}
       />
     </UI.Drawer>
 

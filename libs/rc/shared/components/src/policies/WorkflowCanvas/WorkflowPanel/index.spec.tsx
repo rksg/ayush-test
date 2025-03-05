@@ -53,8 +53,7 @@ describe('WorkflowPanel', () => {
   })
 
   it('should render WorkflowPanel correctly', async () => {
-    render(<Provider><WorkflowPanel workflowId={mockWorkflowId}
-      onConfigureClose={jest.fn()}/></Provider>)
+    render(<Provider><WorkflowPanel workflowId={mockWorkflowId} /></Provider>)
 
     await waitFor(() => expect(spyGetStepsFn).toHaveBeenCalled())
     await waitFor(() => expect(spyGetDefinitionFn).toHaveBeenCalled())

@@ -33,8 +33,7 @@ export enum PanelType {
 interface WorkflowPanelProps {
   workflowId: string,
   mode?: WorkflowPanelMode,
-  type?: PanelType,
-  onConfigureClose: () => void
+  type?: PanelType
 }
 
 export interface RequiredDependency {
@@ -89,7 +88,7 @@ const useRequiredDependency = () => {
 
 
 function WorkflowPanelWrapper (props: WorkflowPanelProps) {
-  const { workflowId: policyId, mode, onConfigureClose } = props
+  const { workflowId: policyId, mode } = props
   const {
     nodeState,
     stepDrawerState,
@@ -148,7 +147,6 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
               onClose={actionDrawerState.onClose}
               existingActionTypes={nodeState.existingDependencies}
               relationshipMap={requiredDependency}
-              onConfigureClose={onConfigureClose}
               workflowId={policyId}
               priorNode={nodeState.interactedNode}
             />

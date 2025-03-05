@@ -128,7 +128,6 @@ describe('WorkflowsLibrary', () =>{
   it('should render correctly', async () => {
     render(<Provider><WorkflowsLibrary
       onClose={jest.fn()}
-      onConfigureClose={jest.fn()}
       stepId='testStepId'
       workflowId='testWorkflowId'/></Provider>,
     { route: { params } })
@@ -143,7 +142,6 @@ describe('WorkflowsLibrary', () =>{
   it('should go preview workflow successfully', async () => {
     render(<Provider><WorkflowsLibrary
       onClose={jest.fn()}
-      onConfigureClose={jest.fn()}
       stepId='testStepId'
       workflowId='testWorkflowId'/></Provider>,
     { route: { params } })
@@ -160,7 +158,6 @@ describe('WorkflowsLibrary', () =>{
   it('should add workflow successfully', async () => {
     render(<Provider><WorkflowsLibrary
       onClose={jest.fn()}
-      onConfigureClose={jest.fn()}
       stepId='testStepId'
       workflowId='testWorkflowId'/></Provider>,
     { route: { params } })
