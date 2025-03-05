@@ -18,7 +18,7 @@ export enum Features {
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
   CLOUDPATH_BETA = 'BETA-CP',
-  IDENTITY_UI_REFACTOR = 'dpsk-require-identity-group',
+  IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
