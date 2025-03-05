@@ -54,7 +54,7 @@ export function IdentityGroup () {
             <PersonaGroupSelect
               data-testid={'identity-group-select'}
               style={{ width: '400px' }}
-              defaultOptions={[{ label: 'Select...', value: '' }]}
+              placeholder={'Select...'}
             />
           }
         />

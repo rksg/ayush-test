@@ -1,14 +1,13 @@
-import { Select }                         from 'antd'
-import { SelectProps, DefaultOptionType } from 'antd/lib/select'
+import { Select }      from 'antd'
+import { SelectProps } from 'antd/lib/select'
 
 import { useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 
 export function PersonaGroupSelect (props: {
   filterProperty?: boolean,
-  whiteList?: string[],
-  defaultOptions?: DefaultOptionType[]
+  whiteList?: string[]
 } & SelectProps) {
-  const { filterProperty, whiteList, defaultOptions, ...customSelectProps } = props
+  const { filterProperty, whiteList, ...customSelectProps } = props
 
   const { data } = useSearchPersonaGroupListQuery({
     payload: {
@@ -34,9 +33,7 @@ export function PersonaGroupSelect (props: {
       filterOption={(input, option) =>
         ((option?.label ?? '') as string).toLowerCase().includes(input.toLowerCase())
       }
-      options={
-        defaultOptions ? defaultOptions.concat(personaGroupList) : personaGroupList
-      }
+      options={personaGroupList}
     />
   )
 }
