@@ -11,6 +11,7 @@ import { getIntl }                                        from './intlUtil'
 import { useEncodedParameter }                            from './useEncodedParameter'
 
 import type { Moment } from 'moment-timezone'
+import { get } from '@acx-ui/config'
 
 
 export interface DateFilter extends DateRangeFilter {
@@ -26,7 +27,8 @@ export const useDateFilter = ({
 } = {})=> {
   const { read, write } = useEncodedParameter<DateFilter>('period')
   const { $t } = getIntl()
-  const period = read()
+  const isRA = get('IS_MLISA_SA')
+  const period = isRA ? useMemo(() => read(), [read]) : read()
   const [, setSearch] = useSearchParams()
 
   return useMemo(() => {
@@ -61,6 +63,7 @@ export const useDateFilter = ({
         )
       })
     }
+    console.log(period, read())
 
     return {
       dateFilter,
