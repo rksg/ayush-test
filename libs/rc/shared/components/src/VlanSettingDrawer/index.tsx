@@ -179,7 +179,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   useEffect(() => {
     form.resetFields()
-  }, [vlan])
+  }, [])
 
   useEffect(() => {
     if(vlan && editMode){
