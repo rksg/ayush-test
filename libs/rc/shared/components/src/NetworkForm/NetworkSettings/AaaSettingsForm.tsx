@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Input, Radio, Space } from 'antd'
 import {
@@ -37,9 +37,12 @@ import {
   hasPolicyPermission,
   macAuthMacFormatOptions,
   useConfigTemplate,
-  SecurityOptionsDescription
+  SecurityOptionsDescription,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import {
   ApCompatibilityDrawer,
@@ -54,6 +57,8 @@ import { MLOContext }                                          from '../NetworkF
 import NetworkFormContext                                      from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                                                 from '../styledComponents'
+
+import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
 
 
 const { Option } = Select
@@ -139,6 +144,8 @@ function SettingsForm () {
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
@@ -181,6 +188,13 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
+
+        {
+          (isWifiIdentityManagementEnable && !isTemplate) &&
+          <Form.Item>
+            <IdentityGroup />
+          </Form.Item>
+        }
         <Form.Item
           label='Security Protocol'
           name={['wlan', 'wlanSecurity']}
@@ -246,6 +260,7 @@ function CertAuth () {
         </GridCol>
         { hasPolicyPermission({
           type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          hasAllowedOperations([getOpsApi(CertificateUrls.addCertificateTemplate)]) &&
         <Button
           type='link'
           style={{ top: '28px' }}

@@ -5,14 +5,18 @@ import { Drawer, Loader }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApCompatibility,
-  IncompatibilityFeatures,
-  CompatibilityDeviceEnum,
-  CompatibilityType,
   Compatibility,
-  CompatibilitySelectedApInfo
+  CompatibilityDeviceEnum,
+  CompatibilitySelectedApInfo,
+  CompatibilityType,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
-import { apCompatibilityDataGroupByFeatureDeviceType, compatibilityDataGroupByFeatureDeviceType } from '../utils'
+import { useIsEdgeFeatureReady }              from '../../useEdgeActions'
+import {
+  apCompatibilityDataGroupByFeatureDeviceType,
+  compatibilityDataGroupByFeatureDeviceType
+} from '../utils'
 
 import { CompatibilityItem }           from './CompatibilityItem'
 import { SameDeviceTypeCompatibility } from './SameDeviceTypeCompatibility'
@@ -82,11 +86,13 @@ interface DrawerContentUnitProps extends Omit<CompatibilityDrawerProps, 'data' |
 }
 const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  // eslint-disable-next-line max-len
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const { data, deviceType = CompatibilityDeviceEnum.AP, ...others } = props
   const description = useDescription(omit(props, 'data'))
 
   // eslint-disable-next-line max-len
-  const compatibilityData = (isApCompatibilitiesByModel && (deviceType === CompatibilityDeviceEnum.AP))
+  const compatibilityData = ((isApCompatibilitiesByModel && deviceType === CompatibilityDeviceEnum.AP) || (deviceType === CompatibilityDeviceEnum.EDGE && isEdgeCompatibilityEnhancementEnabled))
     ? compatibilityDataGroupByFeatureDeviceType(data as Compatibility)
     : apCompatibilityDataGroupByFeatureDeviceType(data as ApCompatibility)
   const deviceTypes = Object.keys(compatibilityData)

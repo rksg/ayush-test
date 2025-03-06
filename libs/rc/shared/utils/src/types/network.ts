@@ -179,7 +179,9 @@ export interface NetworkSaveData {
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
-  ipsecAssociationUpdate?: NetworkTunnelIpsecAction
+  ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
+  identityGroupId?: string,
+  identityId?: string
 }
 
 export interface NetworkSummaryExtracData {

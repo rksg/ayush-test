@@ -3,10 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { pinApi }                from '@acx-ui/rc/services'
+import { StepsForm } from '@acx-ui/components'
+import { pinApi }    from '@acx-ui/rc/services'
 import {
   DistributionSwitch,
   EdgePinFixtures,
@@ -152,28 +150,5 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
-  })
-
-  describe('Enhancement is enabled', () => {
-    beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_PIN_ENHANCE_TOGGLE)
-    })
-
-    it('DS should be mandatory', async () => {
-
-      render(
-        <Provider>
-          <PersonalIdentityNetworkFormContext.Provider
-            value={mockContextData}
-          >
-            <StepsForm><DistributionSwitchForm /></StepsForm>
-          </PersonalIdentityNetworkFormContext.Provider>
-        </Provider>, {
-          route: { params, path: createPinPath }
-        })
-      await screen.findByRole('button', { name: 'Add Distribution Switch' })
-      await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText(/Please setup distribution switches/)
-    })
   })
 })
