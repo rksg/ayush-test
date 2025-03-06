@@ -60,7 +60,7 @@ const mockReqAdminsData = jest.fn()
 const services = require('@acx-ui/rc/services')
 
 describe('Add user drawer component', () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   beforeEach(() => {
