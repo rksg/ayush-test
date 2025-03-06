@@ -3,8 +3,10 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Button, Loader, StepsForm }  from '@acx-ui/components'
-import { DpskSaveData, PersonaGroup } from '@acx-ui/rc/utils'
+import { Button, Loader, StepsForm }                    from '@acx-ui/components'
+import { DpskSaveData, PersonaGroup, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                         from '@acx-ui/user'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../../PersonalIdentityNetworkFormContext'
 import * as UI                                from '../../styledComponents'
@@ -43,6 +45,9 @@ export const PropertyManagementInfo = (props: PropertyManagementInfoProps) => {
     setPropertyManagementDrawerVisible(true)
   }
 
+  const hasActivatePropertyPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.updatePropertyConfigs)])
+
   return <>
     <Loader states={[{
       isLoading: false,
@@ -68,7 +73,8 @@ export const PropertyManagementInfo = (props: PropertyManagementInfoProps) => {
         ? <PersonaInfo
           personaGroupData={personaGroupData}
           dpskData={dpskData} />
-        : <Button type='link' onClick={openPropertyManagementDrawer}>
+        : hasActivatePropertyPermission
+        && <Button type='link' onClick={openPropertyManagementDrawer}>
           {$t({ defaultMessage: 'Activate Property Management' })}
         </Button>}
 
