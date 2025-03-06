@@ -399,16 +399,6 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.LIST })),
       disabled: !isIpsecEnabled
-    },
-    {
-      type: PolicyType.SSO_SAML,
-      categories: [RadioCardCategory.WIFI],
-      // eslint-disable-next-line max-len
-      // totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SSO_SAML, oper: PolicyOperation.LIST })),
-      disabled: !isCaptivePortalSsoSamlEnabled
     }
-
   ]
 }
