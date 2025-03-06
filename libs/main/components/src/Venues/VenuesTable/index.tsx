@@ -34,7 +34,6 @@ import {
 import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
-  SwitchRbacUrlsInfo,
   TableQuery,
   usePollingTableQuery,
   Venue
@@ -299,7 +298,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
-      getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
@@ -352,7 +351,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
           scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
-            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
           ]
         }) && rowSelection}
       />

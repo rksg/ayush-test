@@ -178,7 +178,8 @@ export interface NetworkSaveData extends EnforceableFields {
   certificateTemplateId?: string
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
-  softGreAssociationUpdate?: NetworkTunnelSoftGreAction,
+  softGreAssociationUpdate?: NetworkTunnelSoftGreAction
+  ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
   identityGroupId?: string,
   identityId?: string
 }
@@ -278,5 +279,15 @@ export interface NetworkTunnelSoftGreAction {
     newProfileId: string,
     newProfileName: string,
     oldProfileId: string
+  }
+}
+
+export interface NetworkTunnelIpsecAction {
+  [name:string]: {
+    softGreProfileId: string,
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
   }
 }
