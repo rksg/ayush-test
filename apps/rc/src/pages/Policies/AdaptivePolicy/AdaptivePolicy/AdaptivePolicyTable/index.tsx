@@ -14,7 +14,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType, SEARCH, useTableQuery, getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation, RulesManagementUrlsInfo
+  filterByAccessForServicePolicyMutation, RulesManagementUrlsInfo, getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getOpsApi }                                    from '@acx-ui/utils'
@@ -106,10 +106,7 @@ export default function AdaptivePolicyTable () {
 
   const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT),
-    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.updatePolicy),
-      getOpsApi(RulesManagementUrlsInfo.addConditions),
-      getOpsApi(RulesManagementUrlsInfo.deleteConditions),
-      getOpsApi(RulesManagementUrlsInfo.updateConditions)],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -125,7 +122,7 @@ export default function AdaptivePolicyTable () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.DELETE),
-    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY, PolicyOperation.DELETE),
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
       doProfileDelete(
@@ -181,7 +178,7 @@ export default function AdaptivePolicyTable () {
         actions={filterByAccessForServicePolicyMutation([{
           scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
           // eslint-disable-next-line max-len
-          rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.createPolicy), getOpsApi(RulesManagementUrlsInfo.addConditions)],
+          rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
           label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {
             navigate({

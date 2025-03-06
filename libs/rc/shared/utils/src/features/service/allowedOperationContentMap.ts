@@ -14,7 +14,7 @@ import {
   EthernetPortProfileUrls,
   IdentityProviderUrls,
   LbsServerProfileUrls,
-  MacRegListUrlsInfo,
+  MacRegListUrlsInfo, RulesManagementUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -222,5 +222,15 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)],
     [PolicyOperation.DELETE]: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
     [PolicyOperation.LIST]: [getOpsApi(MacRegListUrlsInfo.getMacRegistrationPools)]
+  },
+  [PolicyType.ADAPTIVE_POLICY]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions)],
+    [PolicyOperation.EDIT]: [getOpsApi(RulesManagementUrlsInfo.updatePolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions),
+      getOpsApi(RulesManagementUrlsInfo.deleteConditions),
+      getOpsApi(RulesManagementUrlsInfo.updateConditions)],
+    [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
+    [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPoliciesByQuery)]
   }
 }

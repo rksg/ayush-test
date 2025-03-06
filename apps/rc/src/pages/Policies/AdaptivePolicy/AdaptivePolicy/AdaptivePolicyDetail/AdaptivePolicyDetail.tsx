@@ -18,10 +18,9 @@ import {
   PolicyType,
   getAdaptivePolicyDetailLink,
   useAdaptivePolicyBreadcrumb,
-  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, RulesManagementUrlsInfo
+  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }  from '@acx-ui/utils'
 
 export default function AdaptivePolicyDetail () {
   const { $t } = useIntl()
@@ -83,7 +82,7 @@ export default function AdaptivePolicyDetail () {
                 templateId: templateId!
               })}
             scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT)}
-            rbacOpsIds={[getOpsApi(RulesManagementUrlsInfo.updatePolicy)]}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
