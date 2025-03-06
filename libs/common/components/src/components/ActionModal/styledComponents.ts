@@ -1,7 +1,8 @@
 import { Collapse as AntCollapse } from 'antd'
 import styled, { css }             from 'styled-components/macro'
 
-import { Button } from '../Button'
+import { Button }       from '../Button'
+import { Descriptions } from '../Descriptions'
 
 export const Content = styled.div`
   min-height: 43px;
@@ -67,6 +68,17 @@ export const Collapse = styled(AntCollapse)`
   }
 `
 
+export const CopyButtonLegacy = styled(Button)`
+  display: inline-flex;
+  justify-content: flex-end;
+  font-size: var(--acx-body-5-font-size);
+  line-height: 16px;
+  color: var(--acx-accents-blue-50);
+  height: auto;
+  padding: 0;
+  margin: 4px 0 4px auto;
+`
+
 export const CopyButton = styled(Button)`
   display: inline-flex;
   justify-content: flex-end;
@@ -76,4 +88,21 @@ export const CopyButton = styled(Button)`
   height: auto;
   padding: 0;
   margin: 4px 0 4px auto;
+  position: absolute;
+  right: 40px;
+  bottom: 23px;
+`
+
+export const ErrorDescriptions = styled(Descriptions)`
+  padding: 10px 30px 10px 10px;
+  .ant-descriptions-item-label {
+    color: #333333 !important;
+    font-size: 11px !important;
+  }
+  .ant-descriptions-item-content {
+    font-size: 11px !important;
+  }
+  .ant-descriptions-item {
+    padding-bottom: 0px;
+  }
 `

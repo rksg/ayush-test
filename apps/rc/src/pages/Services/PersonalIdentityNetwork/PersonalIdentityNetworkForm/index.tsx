@@ -14,22 +14,19 @@ import {
   LocationExtended,
   PersonalIdentityNetworkFormData,
   redirectPreviousPage,
-  EdgeClusterInfo,
-  DistributionSwitch,
-  AccessSwitch
+  EdgeClusterInfo
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
-import { AccessSwitchForm }                         from './AccessSwitchForm'
-import { DistributionSwitchForm }                   from './DistributionSwitchForm'
-import { GeneralSettingsForm }                      from './GeneralSettingsForm'
-import { NetworkTopologyForm, NetworkTopologyType } from './NetworkTopologyForm'
-import { Prerequisite }                             from './Prerequisite'
-import { SmartEdgeForm }                            from './SmartEdgeForm'
-import { SummaryForm }                              from './SummaryForm'
-import { WirelessNetworkForm }                      from './WirelessNetworkForm'
+import { AccessSwitchForm }       from './AccessSwitchForm'
+import { DistributionSwitchForm } from './DistributionSwitchForm'
+import { GeneralSettingsForm }    from './GeneralSettingsForm'
+import { Prerequisite }           from './Prerequisite'
+import { SmartEdgeForm }          from './SmartEdgeForm'
+import { SummaryForm }            from './SummaryForm'
+import { WirelessNetworkForm }    from './WirelessNetworkForm'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
@@ -52,10 +49,6 @@ export const PrerequisiteStep = {
 export const GeneralSettingsStep = {
   title: defineMessage({ defaultMessage: 'General Settings' }),
   content: <GeneralSettingsForm />
-}
-export const NetworkTopologyStep = {
-  title: defineMessage({ defaultMessage: 'Network Topology' }),
-  content: <NetworkTopologyForm />
 }
 export const SmartEdgeStep = {
   title: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
@@ -92,11 +85,6 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
 
   // eslint-disable-next-line max-len
   const doSwitchValidation = async (formData: PersonalIdentityNetworkFormData, payload: RequestPayload, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    // skip when topology type is wireless
-    if (formData.networkTopologyType === NetworkTopologyType.Wireless) {
-      return Promise.resolve()
-    }
-
     if (formData.distributionSwitchInfos?.length > 0 && (
       formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
         as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
@@ -166,9 +154,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       console.log(error) // eslint-disable-line no-console
       const errorRes = error as CatchErrorResponse
 
-      // expected error format
-      // eslint-disable-next-line max-len
-      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
+      if (errorRes.data.errors.length > 0) {
         showActionModal({
           type: 'error',
           title: $t({ defaultMessage: 'Validation Error' }),
@@ -293,26 +279,7 @@ export const afterSubmitMessage = (
   return message.map(m=><p>{m}</p>)
 }
 
-export const getStepsByTopologyType = (type: string) => {
-  const steps = [PrerequisiteStep, GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
-  switch (type) {
-    case NetworkTopologyType.Wireless:
-      steps.push(WirelessNetworkStep, SummaryStep)
-      break
-    case NetworkTopologyType.TwoTier:
-      steps.push(DistributionSwitchStep, AccessSwitchStep, SummaryStep)
-      break
-    case NetworkTopologyType.ThreeTier:
-      steps.push(DistributionSwitchStep, AccessSwitchStep, WirelessNetworkStep, SummaryStep)
-      break
-  }
-  return steps
-}
-
 export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
-  // `networkTopologyType` have value only when PIN enhancement FF is enabled
-  const networkTopologyType = formData.networkTopologyType
-
   const payload = {
     id: formData.id,
     name: formData.name,
@@ -320,25 +287,14 @@ export const getSubmitPayload = (formData: PersonalIdentityNetworkFormData) => {
     edgeClusterInfo: {
       edgeClusterId: formData.edgeClusterId,
       segments: formData.segments,
-      devices: formData.devices,
       dhcpInfoId: formData.dhcpId,
       dhcpPoolId: formData.poolId
     },
-    networkIds: [] as string[],
-    distributionSwitchInfos: [] as DistributionSwitch[],
-    accessSwitchInfos: [] as AccessSwitch[]
-  }
-
-  if (networkTopologyType !== NetworkTopologyType.Wireless) {
-    payload.distributionSwitchInfos = formData.distributionSwitchInfos?.map(ds => omit(
-      ds, ['accessSwitches', 'name']))
-
-    payload.accessSwitchInfos = formData.accessSwitchInfos?.map(as => omit(
+    networkIds: formData.networkIds,
+    distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
+      ds, ['accessSwitches', 'name'])),
+    accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
       as, ['name', 'familyId', 'firmwareVersion', 'model']))
-  }
-
-  if (networkTopologyType !== NetworkTopologyType.TwoTier) {
-    payload.networkIds = formData.networkIds
   }
 
   return payload

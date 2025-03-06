@@ -39,7 +39,8 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
   },
   getPreconfiguredIdentityProvider: {
     method: 'get',
-    url: '/hotspot20IdentityProviders/preconfiguredProviders'
+    url: '/hotspot20IdentityProviders/preconfiguredProviders',
+    newApi: true
   },
   activateIdentityProviderRadius: {
     method: 'put',

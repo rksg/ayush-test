@@ -1,17 +1,16 @@
 /* eslint-disable max-len */
-
-
 import { useContext, useState } from 'react'
 
+import { Checkbox, Col, Form, Row, Select, Space, Typography } from 'antd'
+import { CheckboxValueType }                                   from 'antd/lib/checkbox/Group'
+import { useIntl }                                             from 'react-intl'
 
-import { Checkbox, Col, Form, Row, Select, Space } from 'antd'
-import { CheckboxValueType }                       from 'antd/lib/checkbox/Group'
-import { useIntl }                                 from 'react-intl'
-
-import { Button, Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
-import { Features }                                                               from '@acx-ui/feature-toggle'
-import { TunnelProfileAddModal, useIsEdgeFeatureReady }                           from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
+import { Button, Loader, StepsForm, useStepFormContext, defaultRichTextFormatValues }                                                from '@acx-ui/components'
+import { Features }                                                                                                                  from '@acx-ui/feature-toggle'
+import { TunnelProfileAddModal, useIsEdgeFeatureReady }                                                                              from '@acx-ui/rc/components'
+import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData, TunnelProfileUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                                                             from '@acx-ui/user'
+import { getOpsApi }                                                                                                                 from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
@@ -51,6 +50,21 @@ export const WirelessNetworkForm = () => {
     setDpskModalVisible(true)
   }
 
+  const hasCreateTunnelPermission = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(TunnelProfileUrls.createTunnelProfile)
+    ]
+  })
+
+  const hasCreateDpskPermission = hasPermission({
+    rbacOpsIds: [
+      [
+        getOpsApi(WifiRbacUrlsInfo.addNetworkDeep),
+        getOpsApi(WifiUrlsInfo.activateDpskService)
+      ]
+    ]
+  })
+
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -68,15 +82,18 @@ export const WirelessNetworkForm = () => {
               />}
           />
         </Col>
-        <TunnelProfileAddModal
-          initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
-        />
+        {
+          hasCreateTunnelPermission &&
+          <TunnelProfileAddModal
+            initialValues={tunnelProfileFormInitValues as TunnelProfileFormType}
+          />
+        }
       </Row>
       <Row gutter={20}>
         <Col>
           <Space direction='vertical'>
             {isEdgePinEnhanceReady
-              ? $t({ defaultMessage: 'Select DPSK networks that you want to enable PIN service:*' })
+              ? $t({ defaultMessage: 'Select DPSK networks that you want to enable PIN service:' })
               : $t({ defaultMessage: 'Apply the tunnel profile to the following networks that you want to enable personal identity network:' })
             }
             {!isEdgePinEnhanceReady && <Space size={1}>
@@ -88,9 +105,6 @@ export const WirelessNetworkForm = () => {
             <Loader states={[{ isLoading: isNetworkOptionsLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
-                rules={isEdgePinEnhanceReady ? [{
-                  required: true, message: $t({ defaultMessage: 'Please select network' })
-                }] : undefined}
               >
                 <Checkbox.Group onChange={onNetworkChange}>
                   <Space direction='vertical'>
@@ -104,25 +118,36 @@ export const WirelessNetworkForm = () => {
                 </Checkbox.Group>
               </Form.Item>
             </Loader>
-            <Button
-              type='link'
-              onClick={openDpskModal}
-              children={$t({ defaultMessage: 'Add DPSK Network' })}
-            />
+            {
+              hasCreateDpskPermission &&
+              <Button
+                type='link'
+                onClick={openDpskModal}
+                children={$t({ defaultMessage: 'Add DPSK Network' })}
+              />
+            }
 
-            {isEdgePinEnhanceReady && <Row>
-              <Space size={1}>
-                <UI.InfoIcon />
-                <UI.Description>
-                  {$t({ defaultMessage: 'The client isolation service will be disabled and VLAN ID will be set to 1 for the selected networks.' })}
-                </UI.Description>
-              </Space>
-              <Space size={1}>
-                <UI.InfoIcon />
-                <UI.Description>
-                  {$t({ defaultMessage: 'Only DPSK networks linked to the DPSK service ({dpskServiceName}) can operate in this PIN service.' }, { dpskServiceName: dpskData?.name })}
-                </UI.Description>
-              </Space>
+            {isEdgePinEnhanceReady && <Row style={{ marginTop: '20px' }}>
+              <Col span={24}>
+                <Typography.Text children={$t({ defaultMessage: 'Notes:' })} />
+              </Col>
+              <Col span={24}>
+                <Space size={1}>
+                  <UI.InfoIcon />
+                  <UI.Description>
+                    {$t({ defaultMessage: 'The client isolation service will be disabled and VLAN ID will be set to 1 for the selected networks.' })}
+                  </UI.Description>
+                </Space>
+              </Col>
+              <Col span={24}>
+                <Space size={1}>
+                  <UI.InfoIcon />
+                  <UI.Description>
+                    {$t({ defaultMessage: 'Only DPSK networks linked to the DPSK service (<b>{dpskServiceName}</b>) can operate in this PIN service.' },
+                      { ...defaultRichTextFormatValues, dpskServiceName: dpskData?.name })}
+                  </UI.Description>
+                </Space>
+              </Col>
             </Row>}
             <AddDpskModal
               visible={dpskModalVisible}

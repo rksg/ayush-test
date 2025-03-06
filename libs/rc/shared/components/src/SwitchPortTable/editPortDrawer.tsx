@@ -55,7 +55,8 @@ import {
   VlanModalType,
   isFirmwareVersionAbove10020b,
   PortProfilesBySwitchId,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { store }              from '@acx-ui/store'
@@ -233,6 +234,7 @@ export function EditPortDrawer ({
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
+  const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -245,6 +247,8 @@ export function EditPortDrawer ({
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
   const isFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10020b(s.firmware))
+  const isFirmwareAbove10010gOr10020b = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010g2Or10020b(s.firmware))
   const isAnyFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10020b(s.firmware))
   const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
@@ -296,6 +300,7 @@ export function EditPortDrawer ({
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [drawerAclVisible, setDrawerAclVisible] = useState(false)
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
+  const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -539,6 +544,9 @@ export function EditPortDrawer ({
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
       setCliApplied(isCliApplied)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
+      setShowErrorRecoveryTooltip(isSwitchErrorRecoveryEnabled &&
+        ((selectedSwitchList && selectedSwitchList.length > 1) ||
+        isFirmwareAbove10010gOr10020b))
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
@@ -2252,7 +2260,8 @@ export function EditPortDrawer ({
         { getFieldTemplate({
           field: 'stpBpduGuard',
           extraLabel: true,
-          tooltip: <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>,
+          tooltip: showErrorRecoveryTooltip &&
+            <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>,
           content: <Form.Item
             noStyle
             label={false}

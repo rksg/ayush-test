@@ -332,7 +332,17 @@ export const EdgeClusterTable = () => {
   ]
 
   const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE],
+    rbacOpsIds: [
+      ...EdgePermissions.editEdgeCluster,
+      ...EdgePermissions.editEdgeClusterConfigWizard,
+      getOpsApi(EdgeUrlsInfo.deleteEdgeCluster),
+      getOpsApi(EdgeUrlsInfo.deleteEdge),
+      getOpsApi(EdgeUrlsInfo.sendOtp),
+      getOpsApi(EdgeUrlsInfo.factoryReset),
+      getOpsApi(EdgeUrlsInfo.reboot),
+      getOpsApi(EdgeUrlsInfo.shutdown)
+    ]
   })
 
   return (

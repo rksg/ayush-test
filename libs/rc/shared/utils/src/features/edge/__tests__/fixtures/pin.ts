@@ -30,7 +30,6 @@ export const mockPinListForMutullyExclusive = {
         edgeClusterId: '0000000001',
         edgeClusterName: 'Edge1',
         segments: 1,
-        devices: 1,
         dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
         dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
         vniRange: ''
@@ -77,7 +76,6 @@ export const mockPinStatsList = {
         edgeClusterId: '0000000001',
         edgeClusterName: 'Edge1',
         segments: 1,
-        devices: 1,
         dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
         dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
         vniRange: ''
@@ -107,7 +105,6 @@ export const mockPinStatsList = {
         edgeClusterId: '0000000002',
         edgeClusterName: 'Edge2',
         segments: 10,
-        devices: 10,
         dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
         dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
         vniRange: ''
@@ -125,7 +122,6 @@ export const mockPinData = {
   edgeClusterInfo: {
     edgeClusterId: '0000000001',
     segments: 10,
-    devices: 10,
     dhcpInfoId: '1',
     dhcpPoolId: '1'
   },

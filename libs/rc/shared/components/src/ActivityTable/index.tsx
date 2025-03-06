@@ -70,13 +70,12 @@ export function useActivityTableQuery (
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 
-  useEffect(
-    () => tableQuery.setPayload({
+  useEffect(() => {
+    tableQuery.setPayload({
       ...tableQuery.payload,
       filters: { ...(tableQuery.payload.filters as object), ...filters }
-    }),
-    [dateFilter]
-  )
+    })
+  }, [dateFilter.startDate, dateFilter.endDate, dateFilter.range])
 
   return tableQuery
 }

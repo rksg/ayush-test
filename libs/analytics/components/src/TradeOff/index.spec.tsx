@@ -19,6 +19,7 @@ describe('TradeOff', () => {
 
     const mockedUpdateReq = jest.fn()
     const mockedChangeReq = jest.fn()
+    const mockedOnChange = jest.fn()
 
     render(<Provider>
       <StepsForm
@@ -28,7 +29,11 @@ describe('TradeOff', () => {
         <StepsForm.StepForm>
           <Form.Item
             name={name}
-            children={<TradeOff {..._.pick(props, ['headers', 'radios'])} />} />
+            children={<TradeOff
+              {..._.pick(props, ['headers', 'radios'])}
+              onChange={mockedOnChange}
+            />}
+          />
         </StepsForm.StepForm>
       </StepsForm>
     </Provider>, { route: { params: { tenantId: 't-id' } } })
@@ -41,10 +46,16 @@ describe('TradeOff', () => {
 
     await click(screen.getByRole('radio', { name: 'Lable3' }))
     expect(screen.getByRole('radio', { name: 'Lable3' })).toBeChecked()
+
     expect(mockedChangeReq).toBeCalledWith('value3')
+
+    const rowToClick = screen.getByText('Full Optimization')
+    await userEvent.click(rowToClick)
+
+    expect(mockedOnChange).toHaveBeenCalledWith('value1')
+
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     const call = mockedUpdateReq.mock.calls[0]
-    expect(call[0]).toStrictEqual({ tradeOff: 'value3' })
+    expect(call[0]).toStrictEqual({ tradeOff: 'value1' })
   })
-
 })

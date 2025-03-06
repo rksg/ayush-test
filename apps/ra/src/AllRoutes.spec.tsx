@@ -40,7 +40,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   getUserProfile: jest.fn(),
   updateSelectedTenant: jest.fn()
 }))
-const userProfile = getUserProfile as jest.Mock
+const userProfile = jest.mocked(getUserProfile)
 
 const defaultReportsPermissions = {
   READ_DASHBOARD: false,
@@ -54,7 +54,7 @@ const defaultReportsPermissions = {
 describe('AllRoutes', () => {
   const defaultUserProfile = {
     accountId: 'aid',
-    tenants: [],
+    tenants: [{ id: 'aid', permissions: { READ_ONBOARDED_SYSTEMS: true } }],
     invitations: [],
     selectedTenant: {
       id: 'aid',
@@ -105,14 +105,14 @@ describe('AllRoutes', () => {
     }, {})
   })
 
-  it('redirects to data subscriptions', async () => {
+  it('redirects to data connector', async () => {
     setRaiPermissions({
       ...defaultReportsPermissions,
       READ_DATA_CONNECTOR: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
-      to: { pathname: '/ai/dataSubscriptions', search: '?selectedTenants=WyJhaWQiXQ==' }
+      to: { pathname: '/ai/dataConnector', search: '?selectedTenants=WyJhaWQiXQ==' }
     }, {})
   })
 
@@ -227,8 +227,8 @@ describe('AllRoutes', () => {
       , wrapper: Provider })
     await screen.findByTestId('reports')
   })
-  it('should render Data Subscriptions correctly', async () => {
-    render(<AllRoutes />, { route: { path: '/ai/dataSubscriptions' }
+  it('should render Data Connector correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/dataConnector' }
       , wrapper: Provider })
     await screen.findByTestId('reports')
   })

@@ -87,3 +87,10 @@ export interface PersonaEthernetPort {
   name?: string,
   createdAt?: string
 }
+
+export interface PersonaAssociation {
+  unitId: string,
+  personaType: string,
+  personaId: string,
+  links: string[]
+}

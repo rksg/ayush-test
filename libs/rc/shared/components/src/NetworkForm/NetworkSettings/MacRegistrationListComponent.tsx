@@ -5,6 +5,9 @@ import { useIntl }      from 'react-intl'
 
 import { Button, GridCol, GridRow, Modal, ModalType } from '@acx-ui/components'
 import { useMacRegListsQuery }                        from '@acx-ui/rc/services'
+import { MacRegListUrlsInfo }                         from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                       from '@acx-ui/user'
+import { getOpsApi }                                  from '@acx-ui/utils'
 
 import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
 
@@ -62,14 +65,17 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
           }
         />
       </GridCol>
-      <Button
-        type='link'
-        style={{ top: '5px' }}
-        onClick={() => {
-          setMacModalVisible(true)
-        }}>
-        {intl.$t({ defaultMessage: 'Add' })}
-      </Button>
+      {
+        hasAllowedOperations([getOpsApi(MacRegListUrlsInfo.createMacRegistrationPool)]) &&
+        <Button
+          type='link'
+          style={{ top: '5px' }}
+          onClick={() => {
+            setMacModalVisible(true)
+          }}>
+          {intl.$t({ defaultMessage: 'Add' })}
+        </Button>
+      }
     </GridRow>
     <Modal
       title={intl.$t({ defaultMessage: 'Add MAC Registration List' })}

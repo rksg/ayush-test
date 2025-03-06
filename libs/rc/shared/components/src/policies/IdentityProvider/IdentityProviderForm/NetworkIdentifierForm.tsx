@@ -183,7 +183,8 @@ const PreconfiguredIdpsDropdown = (props: PreconfiguredIdpsDropdownProps) => {
 
   return (
     <Dropdown overlay={idpsMeun}>{() =>
-      <Button type='link'>{ $t({ defaultMessage: 'Import from Identity Provider' }) }</Button>
+      // eslint-disable-next-line max-len
+      <Button type='link'>{ $t({ defaultMessage: 'Import from a Known Identity Provider' }) }</Button>
     }</Dropdown>
   )
 }

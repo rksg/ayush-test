@@ -30,6 +30,7 @@ import Clients, { AIClientsTabEnum }         from './pages/Clients'
 import ConfigChange                          from './pages/ConfigChange'
 import IncidentDetails                       from './pages/IncidentDetails'
 import Layout                                from './pages/Layout'
+import { canAccessOnboardedSystems }         from './pages/Layout/menuConfig'
 import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
 import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
@@ -50,13 +51,20 @@ const getDefaultRoute = () => {
     case hasRaiPermission('READ_HEALTH'):      return 'health'
     case hasRaiPermission('READ_REPORTS'):     return 'reports'
     case hasRaiPermission('READ_DATA_STUDIO'): return 'dataStudio'
-    case hasRaiPermission('READ_DATA_CONNECTOR'): return 'dataSubscriptions'
+    case hasRaiPermission('READ_DATA_CONNECTOR'): return 'dataConnector'
   }
   return 'profile/settings'
 }
 
-const check = (permission: RaiPermission, component?: JSX.Element) =>
-  !permission || hasRaiPermission(permission) ? component : <Init />
+const check = (permission: RaiPermission | boolean, component?: JSX.Element) => {
+  let canAccess = false
+  if (typeof permission === 'boolean') {
+    canAccess = permission
+  } else {
+    canAccess = !permission || hasRaiPermission(permission)
+  }
+  return canAccess ? component : <Init />
+}
 
 function Init () {
   const [ search ] = useSearchParams()
@@ -139,7 +147,7 @@ function AllRoutes () {
       <Route path='configChange' element={check('READ_CONFIG_CHANGE', <ConfigChange />)} />
       <Route path='reports/*' element={check('READ_REPORTS', <ReportsRoutes />)} />
       <Route path='dataStudio/*' element={check('READ_DATA_STUDIO', <ReportsRoutes />)} />
-      <Route path='dataSubscriptions/*'
+      <Route path='dataConnector/*'
         element={check('READ_DATA_CONNECTOR', <ReportsRoutes />)} />
       <Route path='serviceValidation/*' element={check('READ_SERVICE_VALIDATION')} >
         <Route index
@@ -171,9 +179,9 @@ function AllRoutes () {
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
         <Route path='onboarded'
-          element={check('READ_ONBOARDED_SYSTEMS',
-            <AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>
-          )}
+          element={check(canAccessOnboardedSystems(), <AccountManagement
+            tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}
+          />)}
         />
         <Route path='users'
           element={check('READ_USERS',

@@ -15,8 +15,7 @@ import {
   EdgeUrlsInfo,
   EdgeClusterStatus,
   EdgeNokiaOltCreatePayload,
-  EdgeNokiaCageStateEnum,
-  oltCageCannedSpeeds
+  EdgeNokiaCageStateEnum
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -193,7 +192,7 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
         result?.map((item) => ({
           ...item,
           // eslint-disable-next-line max-len
-          speed: item.state === EdgeNokiaCageStateEnum.UP ? oltCageCannedSpeeds[Math.floor(Math.random() * 2)] : undefined
+          speed: item.state === EdgeNokiaCageStateEnum.UP ? 10 : undefined
         })),
       providesTags: [{ type: 'EdgeNokiaOlt', id: 'CAGE_LIST' }]
     }),
