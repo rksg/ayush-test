@@ -2,6 +2,7 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
@@ -64,6 +65,9 @@ describe('IdentityProvider', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+
     render(
       <Provider>
         <IdentityProvider currentTabType={IdentityProviderTabType.Hotspot20}/>
