@@ -374,8 +374,11 @@ function ApiCollapsePanel (props: {
     }
 
     if (errorObj.reason) {
-      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason}\n`
     }
+    // if (errorObj.reason || errorObj.message) { // Next phase
+    //   result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
+    // }
 
     if (errorObj.suggestion) {
       result += `${$t({ defaultMessage: 'Suggestion' })}: ${errorObj.suggestion}\n`
@@ -417,8 +420,13 @@ function ApiCollapsePanel (props: {
       {errorObj.reason &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Reason' })}
-           children={errorObj.reason || errorObj.message} />
+           children={errorObj.reason} />
       }
+      {/* {(errorObj.reason || errorObj.message) && Next phase
+         <Descriptions.Item
+           label={$t({ defaultMessage: 'Reason' })}
+           children={errorObj.reason || errorObj.message} />
+      } */}
       {errorObj.suggestion &&
          <Descriptions.Item
            label={$t({ defaultMessage: 'Suggestion' })}
