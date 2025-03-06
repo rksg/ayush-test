@@ -212,6 +212,53 @@ describe('ActionModal', () => {
     })
   })
 
+  describe('show_errors modal with details without suggestion', () => {
+    const mockErrorDetails = {
+      requestId: '690ed9b6-3409-4799-9050-c69f379a5e63',
+      errors: [
+        {
+          code: 'SWITCH-10402',
+          message: 'Switch FEK1224R99V already exists.',
+          reason: 'Use a unique serial number for switch FEK1224R99V.'
+        }
+      ]
+    }
+    beforeEach(async () => {
+      jest.mocked(getEnabledDialogImproved).mockReturnValue(true)
+      showActionModal({
+        type: 'error',
+        title: 'Something went wrong',
+        content: 'Some descriptions',
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: mockErrorDetails
+        }
+      })
+
+      await assertModalVisible({
+        className: 'ant-modal-confirm-error',
+        contents: [
+          'Something went wrong',
+          'Some descriptions'
+        ]
+      })
+    })
+
+    it('should copy details content', async () => {
+      const collapseBtn = await screen.findByTestId('deactiveButton')
+      fireEvent.click(collapseBtn)
+
+      const copyBtn = await screen.findByTestId('copyButton')
+      fireEvent.click(copyBtn)
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
+
+      await assertButtonClicked({
+        label: 'OK',
+        shouldClose: true
+      })
+    })
+  })
+
 
 
   describe('type = confirm', () => {
