@@ -4,11 +4,11 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
-import { useLazyApListQuery }                     from '@acx-ui/rc/services'
+import { AnchorLayout, StepsFormLegacy, Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                            from '@acx-ui/icons'
+import { EnforcedStepsFormLegacy, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useLazyApListQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,
   redirectPreviousPage,
@@ -237,7 +237,7 @@ export function NetworkingTab () {
   }
 
   return (
-    <StepsFormLegacy
+    <EnforcedStepsFormLegacy
       onFinish={handleUpdateAllSettings}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
@@ -247,6 +247,6 @@ export function NetworkingTab () {
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+    </EnforcedStepsFormLegacy>
   )
 }

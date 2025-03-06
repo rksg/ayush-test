@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Steps, Space } from 'antd'
-import _                from 'lodash'
-import toArray          from 'rc-util/lib/Children/toArray'
-import { useIntl }      from 'react-intl'
+import { Steps, Space, Tooltip } from 'antd'
+import _                         from 'lodash'
+import toArray                   from 'rc-util/lib/Children/toArray'
+import { useIntl }               from 'react-intl'
 
 import { Button }                       from '../Button'
 import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
@@ -42,6 +42,13 @@ export type StepsFormLegacyProps <FormValue = any> =
       pre?: string
       cancel?: string
     }
+
+    buttonProps?: {
+      submit?: {
+        disabled?: boolean
+        tooltip?: string | React.ReactNode
+      }
+    }
   }
 
 export type StepFormLegacyProps <FormValue> = Omit<
@@ -60,6 +67,7 @@ export function StepsFormLegacy <FormValue = any> (
     current: propCurrent,
     formRef: propFormRef,
     onCancel,
+    buttonProps = {},
     ...otherProps
   } = props
   const { $t } = useIntl()
@@ -137,7 +145,15 @@ export function StepsFormLegacy <FormValue = any> (
           key={submitKey}
           type='primary'
           children={buttonLabel[submitKey]}
+          {...(submitKey === 'submit' && buttonProps.submit
+            ? { disabled: buttonProps.submit.disabled }
+            : {}
+          )}
         />
+
+        const resolvedSubmitButton = submitKey === 'submit' && buttonProps.submit?.tooltip
+          ? <Tooltip title={buttonProps.submit.tooltip}><span>{submitButton}</span></Tooltip>
+          : submitButton
 
         const back = domArray.pop() as React.ReactElement<ButtonProps>
         const backButton = <Button
@@ -151,10 +167,10 @@ export function StepsFormLegacy <FormValue = any> (
           ? [
             cancelButton,
             <Space align='center' size={12} key='back-submit'>
-              {props.step === 0 ? submitButton : [backButton, submitButton]}
+              {props.step === 0 ? resolvedSubmitButton : [backButton, resolvedSubmitButton]}
             </Space>
           ]
-          : [submitButton, cancelButton]
+          : [resolvedSubmitButton, cancelButton]
       }
     }
   }

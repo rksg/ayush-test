@@ -14,6 +14,8 @@ import {
 import { EditPropertyConfigMessages, PropertyConfigs, PropertyConfigStatus, ResidentPortalType } from '@acx-ui/rc/utils'
 import { useParams }                                                                             from '@acx-ui/react-router-dom'
 
+import { EnforcedStepsForm } from '../configTemplates'
+
 import { showDeletePropertyManagementModal }                                                  from './DeletePropertyManagementModal'
 import { PropertyManagementForm }                                                             from './PropertyManagementForm'
 import { getInitialPropertyFormValues, toResidentPortalPayload, useRegisterMessageTemplates } from './utils'
@@ -30,13 +32,14 @@ interface VenuePropertyManagementFormProps {
   form?: FormInstance
   preSubmit?: () => void
   postSubmit?: () => void
+  editMode?: boolean
 }
 
 export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormProps) => {
   const {
     form: customForm, venueId, onFinish, onCancel,
     onValueChange, isSubmitting, submitButtonLabel,
-    preSubmit, postSubmit
+    preSubmit, postSubmit, editMode
   } = props
 
   const { $t } = useIntl()
@@ -168,13 +171,17 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
       </Col>
     </Row>
 
-    <StepsForm
+    <EnforcedStepsForm
       form={form}
       onFinish={onFinish || onFormFinish}
       onValuesChange={onValueChange}
       onCancel={onCancel}
-      buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{
+        submit: submitButtonLabel || $t({ defaultMessage: 'Save' }),
+        apply: $t({ defaultMessage: 'Save' })
+      }}
       initialValues={initialValues}
+      editMode={editMode}
     >
       <StepsForm.StepForm>
         {isPropertyEnable && <Row>
@@ -187,6 +194,6 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
           </Col>
         </Row>}
       </StepsForm.StepForm>
-    </StepsForm>
+    </EnforcedStepsForm>
   </Loader>
 }

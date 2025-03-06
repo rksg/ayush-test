@@ -4,7 +4,12 @@ import { ConfigTemplateType }                                     from '@acx-ui/
 export * from './ConfigTemplateLink'
 export * from './utils'
 export { ProtectedEnforceTemplateToggle } from './EnforceTemplateToggle'
-export { EnforcedButton, useEnforcedStatus } from './EnforcedButton'
+export {
+  useEnforcedStatus,
+  ConfigTemplateEnforcementContext,
+  EnforcedStepsForm,
+  EnforcedStepsFormLegacy
+} from './EnforcedStepsForm'
 
 export function useIsConfigTemplateBeta (): boolean {
   return useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE)

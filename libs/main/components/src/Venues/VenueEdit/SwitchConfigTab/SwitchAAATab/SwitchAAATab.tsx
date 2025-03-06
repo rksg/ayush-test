@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Alert, AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
+import { EnforcedStepsFormLegacy, usePathBasedOnConfigTemplate }         from '@acx-ui/rc/components'
 import {
   useGetVenueTemplateSwitchSettingQuery, useUpdateAAASettingMutation,
   useUpdateVenueTemplateSwitchAAASettingMutation,
@@ -143,7 +143,7 @@ export function SwitchAAATab () {
     )
   }]
   return (
-    <StepsFormLegacy
+    <EnforcedStepsFormLegacy
       formRef={formRef}
       onFinish={() => cliApplied ? Promise.resolve() : handleUpdate()}
       onCancel={() =>
@@ -152,6 +152,6 @@ export function SwitchAAATab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save AAA' }) }}
     >
       <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
-    </StepsFormLegacy>
+    </EnforcedStepsFormLegacy>
   )
 }

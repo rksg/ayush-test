@@ -2,10 +2,10 @@ import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy, Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                            from '@acx-ui/icons'
+import { EnforcedStepsFormLegacy, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
@@ -221,7 +221,7 @@ export function RadioTab () {
   }
 
   return (
-    <StepsFormLegacy
+    <EnforcedStepsFormLegacy
       onFinish={() => handleUpdateSetting(false)}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
@@ -231,6 +231,6 @@ export function RadioTab () {
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+    </EnforcedStepsFormLegacy>
   )
 }

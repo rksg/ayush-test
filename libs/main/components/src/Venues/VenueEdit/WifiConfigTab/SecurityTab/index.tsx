@@ -14,8 +14,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { EnforcedStepsFormLegacy, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -354,7 +354,7 @@ export function SecurityTab () {
       // eslint-disable-next-line max-len
       isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp || isUpdatingVenueApEnhancedKey
     }]}>
-      <StepsFormLegacy
+      <EnforcedStepsFormLegacy
         formRef={formRef}
         onFinish={handleUpdateSecuritySettings}
         onCancel={() =>
@@ -540,7 +540,7 @@ export function SecurityTab () {
             </StepsFormLegacy.FieldLabel>
           </Space> }
         </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+      </EnforcedStepsFormLegacy>
     </Loader>
   )
 }

@@ -2,9 +2,9 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }                                  from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
-import { useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy }                                                           from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { EnforcedStepsFormLegacy, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   ApSnmpRbacUrls,
   ConfigTemplateType,
@@ -154,7 +154,7 @@ export function ServerTab () {
   }
 
   return (
-    <StepsFormLegacy
+    <EnforcedStepsFormLegacy
       onFinish={handleUpdateSetting}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
@@ -164,6 +164,6 @@ export function ServerTab () {
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+    </EnforcedStepsFormLegacy>
   )
 }

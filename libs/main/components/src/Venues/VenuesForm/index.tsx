@@ -14,6 +14,7 @@ import {
 import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
 import { SearchOutlined }                                                                            from '@acx-ui/icons'
 import {
+  EnforcedStepsFormLegacy,
   GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes
 } from '@acx-ui/rc/components'
 import {
@@ -384,7 +385,7 @@ export function VenuesForm (props: VenuesFormProps) {
         isLoading: false,
         isFetching: updateVenueIsLoading
       }]}>
-        <StepsFormLegacy
+        <EnforcedStepsFormLegacy
           formRef={formRef}
           onFinish={saveHandlerMap[action]}
           onCancel={onCancel}
@@ -501,7 +502,7 @@ export function VenuesForm (props: VenuesFormProps) {
               </Row>
             }
           </StepsFormLegacy.StepForm>
-        </StepsFormLegacy>
+        </EnforcedStepsFormLegacy>
       </Loader>
     </>
   )

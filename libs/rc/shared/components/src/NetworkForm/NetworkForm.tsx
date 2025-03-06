@@ -72,9 +72,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                                   from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
+import { ConfigTemplateEnforcementContext, usePathBasedOnConfigTemplate, EnforcedStepsForm } from '../configTemplates'
+import { useGetNetwork }                                                                     from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }                                                             from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
@@ -348,7 +348,6 @@ export function NetworkForm (props:{
     instanceLabel: intl.$t({ defaultMessage: 'Network' }),
     addLabel: intl.$t({ defaultMessage: 'Create New' })
   })
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   useEffect(() => {
     if(saveState){
@@ -1260,90 +1259,84 @@ export function NetworkForm (props:{
             isDisableMLO: MLOButtonDisable,
             disableMLO: setMLOButtonDisable
           }}>
-            <StepsForm<NetworkSaveData>
-              form={form}
-              editMode={editMode}
-              onCancel={() => modalMode
-                ? modalCallBack?.()
-                : redirectPreviousPage(navigate, previousPath, linkToNetworks)
-              }
-              onFinish={editMode ? handleEditNetwork : handleAddNetwork}
-              {...(hasEnforcedItem([saveState])
-                ? { buttonProps: {
-                  apply: {
-                    disabled: true,
-                    tooltip: getEnforcedActionMsg([saveState])
-                  } } }
-                : {})
-              }
-            >
-              {
-                !isRuckusAiMode && <StepsForm.StepForm
-                  name='details'
-                  title={intl.$t({ defaultMessage: 'Network Details' })}
-                  onFinish={handleDetails}
-                >
-                  <NetworkDetailForm />
-                </StepsForm.StepForm>
-
-              }
-
-              <StepsForm.StepForm
-                name='settings'
-                title={intl.$t(settingTitle, { type: saveState.type })}
-                onFinish={handleSettings}
+            <ConfigTemplateEnforcementContext.Provider value={saveState}>
+              <EnforcedStepsForm<NetworkSaveData>
+                form={form}
+                editMode={editMode}
+                onCancel={() => modalMode
+                  ? modalCallBack?.()
+                  : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+                }
+                onFinish={editMode ? handleEditNetwork : handleAddNetwork}
               >
-                {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
-                {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
-                {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
-              <DpskSettingsForm />}
-                {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
-                <PortalTypeForm/>}
-                {saveState.type === NetworkTypeEnum.PSK &&
-              <PskSettingsForm />}
-
-              </StepsForm.StepForm>
-              { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-                <StepsForm.StepForm
-                  name='onboarding'
-                  title={
-                    intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
-                  onFinish={handleOnboarding}
-                >
-                  {!!(saveState?.guestPortal?.guestNetworkType) &&
-                      pickOneCaptivePortalForm(saveState)}
-                </StepsForm.StepForm>
-              }
-              { editMode && !isRuckusAiMode &&
-                <StepsForm.StepForm
-                  name='moreSettings'
-                  title={intl.$t({ defaultMessage: 'More Settings' })}
-                  onFinish={handleMoreSettings}>
-
-                  <NetworkMoreSettingsForm wlanData={saveState} />
-
-                </StepsForm.StepForm>
-              }
-              { isPortalWebRender(saveState) &&<StepsForm.StepForm
-                name='portalweb'
-                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-                onFinish={handlePortalWebPage}
-              >
-                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-              </StepsForm.StepForm>
-              }
-              {!isRuckusAiMode &&
-                  <StepsForm.StepForm
-                    name='venues'
-                    title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
-                    onFinish={handleVenues}
+                {
+                  !isRuckusAiMode && <StepsForm.StepForm
+                    name='details'
+                    title={intl.$t({ defaultMessage: 'Network Details' })}
+                    onFinish={handleDetails}
                   >
-                    <Venues />
+                    <NetworkDetailForm />
                   </StepsForm.StepForm>
-              }
 
-            </StepsForm>
+                }
+
+                <StepsForm.StepForm
+                  name='settings'
+                  title={intl.$t(settingTitle, { type: saveState.type })}
+                  onFinish={handleSettings}
+                >
+                  {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                  {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
+                  {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+                  {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+                <DpskSettingsForm />}
+                  {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
+                  <PortalTypeForm/>}
+                  {saveState.type === NetworkTypeEnum.PSK &&
+                <PskSettingsForm />}
+
+                </StepsForm.StepForm>
+                { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+                  <StepsForm.StepForm
+                    name='onboarding'
+                    title={
+                      intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
+                    onFinish={handleOnboarding}
+                  >
+                    {!!(saveState?.guestPortal?.guestNetworkType) &&
+                        pickOneCaptivePortalForm(saveState)}
+                  </StepsForm.StepForm>
+                }
+                { editMode && !isRuckusAiMode &&
+                  <StepsForm.StepForm
+                    name='moreSettings'
+                    title={intl.$t({ defaultMessage: 'More Settings' })}
+                    onFinish={handleMoreSettings}>
+
+                    <NetworkMoreSettingsForm wlanData={saveState} />
+
+                  </StepsForm.StepForm>
+                }
+                { isPortalWebRender(saveState) &&<StepsForm.StepForm
+                  name='portalweb'
+                  title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                  onFinish={handlePortalWebPage}
+                >
+                  <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+                </StepsForm.StepForm>
+                }
+                {!isRuckusAiMode &&
+                    <StepsForm.StepForm
+                      name='venues'
+                      title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+                      onFinish={handleVenues}
+                    >
+                      <Venues />
+                    </StepsForm.StepForm>
+                }
+
+              </EnforcedStepsForm>
+            </ConfigTemplateEnforcementContext.Provider>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Loader>

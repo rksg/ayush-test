@@ -36,7 +36,7 @@ import {
 } from '@acx-ui/user'
 import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../configTemplates/EnforcedButton'
+import { useEnforcedStatus } from '../configTemplates'
 
 
 const disabledType: NetworkTypeEnum[] = []
