@@ -52,6 +52,7 @@ import {
   baseDirectoryServerApi as directoryServerApi,
   baseRuckusAiChatApi as ruckusAiChatApi,
   baseClientIsolationApi as clientIsolationApi,
+  baseIpSecApi as ipSecApi,
   baseSamlIdpProfileApi as samlIdpProfileApi
 } from './baseApi'
 import { cancelMiddleware } from './cancelMiddleware'
@@ -112,6 +113,7 @@ export const store = configureStore({
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
     [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
     [clientIsolationApi.reducerPath]: clientIsolationApi.reducer,
+    [ipSecApi.reducerPath]: ipSecApi.reducer,
     [samlIdpProfileApi.reducerPath]: samlIdpProfileApi.reducer
   },
 
@@ -172,6 +174,7 @@ export const store = configureStore({
       directoryServerApi.middleware,
       ruckusAiChatApi.middleware,
       clientIsolationApi.middleware,
+      ipSecApi.middleware,
       samlIdpProfileApi.middleware
     ])
   },

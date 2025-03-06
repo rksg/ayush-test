@@ -57,7 +57,9 @@ import {
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useDectivateSoftGreMutation,
+  useActivateIpsecMutation,
+  useDectivateIpsecMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -79,7 +81,8 @@ import {
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  NetworkTunnelIpsecAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -911,6 +914,31 @@ export const useUpdateSoftGreActivations = () => {
   }
 
   return updateSoftGreActivations
+}
+
+export const useUpdateIpsecActivations = () => {
+  const [ activateIpsec ] = useActivateIpsecMutation()
+  const [ dectivateIpsec ] = useDectivateIpsecMutation()
+
+  // eslint-disable-next-line max-len
+  const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
+        return dectivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
+        return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
+      }
+      return Promise.resolve()
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateIpsecActivations
 }
 
 export const getNetworkTunnelSdLanUpdateData = (
