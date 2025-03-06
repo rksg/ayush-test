@@ -285,12 +285,12 @@ export function SingleRadioSettings (props:{
             const allowOutdoorChannels = form.getFieldValue(allowedOutdoorChannelsFieldName)
 
             // eslint-disable-next-line max-len
-            if (allowIndoorChannels && allowIndoorChannels.length !== 1 || !availableIndoorChannels.includes(allowIndoorChannels)) {
+            if (allowIndoorChannels && availableIndoorChannels && (allowIndoorChannels.length !== 1 || !availableIndoorChannels.includes(allowIndoorChannels))) {
               form.setFieldValue(allowedIndoorChannelsFieldName, [])
               setIndoorChannelList(selectedIndoorChannels)
             }
             // eslint-disable-next-line max-len
-            if (allowOutdoorChannels && allowOutdoorChannels.length !== 1 || !availableOutdoorChannels.includes(allowOutdoorChannels)) {
+            if (allowOutdoorChannels && availableOutdoorChannels && (allowOutdoorChannels.length !== 1 || !availableOutdoorChannels.includes(allowOutdoorChannels))) {
               form.setFieldValue(allowedOutdoorChannelsFieldName, [])
               setOutdoorChannelList(selectedOutdoorChannels)
             }
