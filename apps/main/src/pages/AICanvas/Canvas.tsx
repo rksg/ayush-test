@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, showToast }                              from '@acx-ui/components'
+import { Button }                                         from '@acx-ui/components'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
 import Layout            from './components/Layout'
@@ -39,6 +39,7 @@ export interface CardInfo {
   isShadow: boolean
   currentSizeIndex: number
   sizes: Size[]
+  groupIndex: number
   chartType?: string
   widgetId?: string
   chatId?: string
@@ -179,12 +180,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
           content: hasCard ? JSON.stringify(tmp) : '',
           widgetIds
         }
-      })
-      showToast({
-        type: 'success',
-        content: $t(
-          { defaultMessage: 'Canvas saved successfully' }
-        )
       })
     }
     setCanvasChange(false)
