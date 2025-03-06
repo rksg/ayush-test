@@ -108,7 +108,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
       setGatewayIpMapIds(gatewayIpMaps)
       if (!form.getFieldValue(['softGre', 'newProfileId'])) {
         const profileId = optionsDataQuery.data.id
-        if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre 
+        if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre
             && (cachedSoftGre?.length ?? 0) > 0) {
           const softGreInfo = cachedSoftGre?.find(
             sg => sg.venueId === venueId && sg.networkIds.includes(networkId!))
