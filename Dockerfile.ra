@@ -53,7 +53,7 @@ RUN echo NX_GIT_DATE=$(date -R) >> .env
 RUN node ./node_modules/.bin/nx run ra:build
 
 ###############################################################
-FROM nginx:1.21.6-alpine
+FROM nginx:1.27.4-alpine
 
 WORKDIR /usr/share/nginx/html
 

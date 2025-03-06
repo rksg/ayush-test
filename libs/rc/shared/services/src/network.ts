@@ -1764,6 +1764,24 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    bindingPersonaGroupWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
+    }),
+    bindingSpecificIdentityPersonaGroupWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingSpecificIdentityPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -2126,7 +2144,9 @@ export const {
   useDeactivateVenueApGroupMutation,
   useUpdateVenueApGroupMutation,
   useVenueWifiRadioActiveNetworksQuery,
-  useLazyVenueWifiRadioActiveNetworksQuery
+  useLazyVenueWifiRadioActiveNetworksQuery,
+  useBindingPersonaGroupWithNetworkMutation,
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

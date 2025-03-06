@@ -49,6 +49,7 @@ import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSetti
 import * as UI                     from '../styledComponents'
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
+import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
 
 const { Option } = Select
 const { useWatch } = Form
@@ -141,6 +142,8 @@ function SettingsForm () {
     </>)
   }
   const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
     <Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
@@ -309,6 +312,7 @@ function SettingsForm () {
               children={<PasswordInput />}
             />
         }
+        { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
         <Form.Item
           label={$t({ defaultMessage: 'Security Protocol' })}
           name={['wlan', 'wlanSecurity']}
