@@ -194,7 +194,11 @@ export {
   useEdgePinDetailsCompatibilitiesData,
   useEdgePinsCompatibilityData,
   useEdgeMdnsDetailsCompatibilitiesData,
-  useEdgeMdnssCompatibilityData
+  useEdgeMdnssCompatibilityData,
+  useEdgeHqosDetailsCompatibilitiesData,
+  useEdgeHqosCompatibilityData,
+  useEdgeDhcpDetailsCompatibilitiesData,
+  useEdgeDhcpCompatibilityData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
 export * from './EdgeMdns/EdgeMdnsProxyForm'
