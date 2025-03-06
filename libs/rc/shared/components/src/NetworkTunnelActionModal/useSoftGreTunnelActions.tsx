@@ -1,5 +1,11 @@
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
-import { useActivateSoftGreMutation, useDectivateSoftGreMutation, useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import {
+  useActivateIpsecMutation,
+  useActivateSoftGreMutation,
+  useDectivateIpsecMutation,
+  useDectivateSoftGreMutation,
+  useGetSoftGreViewDataListQuery
+} from '@acx-ui/rc/services'
 
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 
@@ -75,8 +81,11 @@ export function useGetSoftGreScopeNetworkMap (networkId?: string) {
 
 export function useSoftGreTunnelActions () {
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const [ activateSoftGre ] = useActivateSoftGreMutation()
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
+  const [ activateIpSec ] = useActivateIpsecMutation()
+  const [ dectivateIpSec ] = useDectivateIpsecMutation()
 
   const activateSoftGreTunnel = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
@@ -108,8 +117,44 @@ export function useSoftGreTunnelActions () {
     return Promise.resolve()
   }
 
+  const activateIpSecOverSoftGre = (
+    venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
+    if (isSoftGreEnabled && isIpSecEnabled
+      && formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+      formValues.ipsec?.enableIpsec === true &&
+      formValues.ipsec?.newProfileId &&
+      formValues.ipsec?.oldProfileId !== formValues.ipsec?.newProfileId) {
+      return activateIpSec({
+        params: {
+          venueId,
+          networkId,
+          softGreProfileId: formValues.softGre.newProfileId,
+          ipsecProfileId: formValues.ipsec.newProfileId
+        } }).unwrap()
+    }
+    return Promise.resolve()
+  }
+
+  const deactivateIpSecOverSoftGre = (
+    venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
+    if (isSoftGreEnabled && isIpSecEnabled
+      && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
+      && formValues.ipsec?.oldProfileId && !formValues.ipsec?.newProfileId) {
+      return dectivateIpSec({
+        params: {
+          venueId,
+          networkId,
+          softGreProfileId: formValues.softGre.newProfileId,
+          ipsecProfileId: formValues.ipsec.oldProfileId
+        } }).unwrap()
+    }
+    return Promise.resolve()
+  }
+
   return {
     activateSoftGreTunnel,
-    dectivateSoftGreTunnel
+    dectivateSoftGreTunnel,
+    activateIpSecOverSoftGre,
+    deactivateIpSecOverSoftGre
   }
 }
