@@ -35,7 +35,7 @@ export const createDefaultEthPort = (
   return {
     apSerialNumbers: [] as string[],
     authType: EthernetPortAuthType.DISABLED,
-    id: `${tenantId}_${type}${isTemplate? '_template': ''}`,
+    id: `${tenantId}_${type}${isTemplate? '_Template': ''}`,
     isDefault: true,
     name,
     type,
