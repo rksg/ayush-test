@@ -1,10 +1,8 @@
-import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { configTemplateApi, configTemplateInstanceEnforcedApiMap }                      from '@acx-ui/rc/services'
-import { ConfigTemplateContext, ConfigTemplateType }                                    from '@acx-ui/rc/utils'
-import { Provider, store }                                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { ConfigTemplateContext }                 from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { EnforcedButton, useEnforcedStatus } from '.'
 
@@ -13,14 +11,6 @@ describe('EnforcedButton', () => {
 
   beforeEach(() => {
     networkResponseGenerator.mockReturnValue(generateEnforcedNetworkResponse(false))
-
-    store.dispatch(configTemplateApi.util.resetApiState())
-    mockServer.use(
-      rest.post(
-        configTemplateInstanceEnforcedApiMap[ConfigTemplateType.NETWORK].url,
-        (req, res, ctx) => res(ctx.json(networkResponseGenerator()))
-      )
-    )
   })
 
   it('disables the button and shows tooltip when enforcement is active', async () => {
@@ -29,14 +19,9 @@ describe('EnforcedButton', () => {
 
     render(<Provider>
       <ConfigTemplateContext.Provider value={{ isTemplate: false }}>
-        <EnforcedButton
-          configTemplateType={ConfigTemplateType.NETWORK}
-          instanceId={'12345'}
-        >Test Button</EnforcedButton>
+        <EnforcedButton isEnforced={true}>Test Button</EnforcedButton>
       </ConfigTemplateContext.Provider>
     </Provider>)
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     expect(screen.getByRole('button')).toBeDisabled()
 
@@ -51,14 +36,9 @@ describe('EnforcedButton', () => {
 
     render(<Provider>
       <ConfigTemplateContext.Provider value={{ isTemplate: false }}>
-        <EnforcedButton
-          configTemplateType={ConfigTemplateType.NETWORK}
-          instanceId={'12345'}
-        >Test Button</EnforcedButton>
+        <EnforcedButton isEnforced={false}>Test Button</EnforcedButton>
       </ConfigTemplateContext.Provider>
     </Provider>)
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     expect(screen.getByRole('button')).toBeEnabled()
   })
@@ -68,10 +48,7 @@ describe('EnforcedButton', () => {
 
     render(<Provider>
       <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-        <EnforcedButton
-          configTemplateType={ConfigTemplateType.NETWORK}
-          instanceId={'12345'}
-        >Test Button</EnforcedButton>
+        <EnforcedButton isEnforced={true}>Test Button</EnforcedButton>
       </ConfigTemplateContext.Provider>
     </Provider>)
 

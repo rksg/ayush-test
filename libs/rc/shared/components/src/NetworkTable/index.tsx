@@ -385,12 +385,16 @@ export function NetworkTable ({
     return list
   }
 
-  const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>) => {
+  // eslint-disable-next-line max-len
+  const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>, actionType: 'edit' | 'delete' | 'clone') => {
     // eslint-disable-next-line max-len
     const isDsaeEnabled = (isBetaDPSK3FeatureEnabled && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
-    const isEnforced = hasEnforcedItem(selectedRows)
 
-    return isDsaeEnabled || isEnforced
+    if (['edit', 'clone'].includes(actionType)) {
+      return isDsaeEnabled
+    }
+
+    return isDsaeEnabled || hasEnforcedItem(selectedRows)
   }
 
   const getRowActionTooltip = (selectedRows: Array<Network|WifiNetwork>) => {
@@ -405,7 +409,7 @@ export function NetworkTable ({
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: isActionDisabled,
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'edit'),
       tooltip: getRowActionTooltip
     },
     {
@@ -415,8 +419,7 @@ export function NetworkTable ({
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'clone')
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -457,7 +460,7 @@ export function NetworkTable ({
           }).then(clearSelection)
         })
       },
-      disabled: isActionDisabled,
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'delete'),
       tooltip: getRowActionTooltip
     }
   ]

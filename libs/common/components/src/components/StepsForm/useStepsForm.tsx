@@ -1,12 +1,12 @@
 import React, { ReactNode, useState } from 'react'
 
-import { Col, Form, Row, Space, Steps }    from 'antd'
-import _                                   from 'lodash'
-import { ValidateErrorEntity }             from 'rc-field-form/es/interface'
-import { useIntl }                         from 'react-intl'
-import { useStepsForm as useStepsFormAnt } from 'sunflower-antd'
+import { Col, Form, Row, Space, Steps, Tooltip } from 'antd'
+import _                                         from 'lodash'
+import { ValidateErrorEntity }                   from 'rc-field-form/es/interface'
+import { useIntl }                               from 'react-intl'
+import { useStepsForm as useStepsFormAnt }       from 'sunflower-antd'
 
-import { Button } from '../Button'
+import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
@@ -48,6 +48,13 @@ type UseStepsFormParam <T> = Omit<
     apply?: string
   }
 
+  buttonProps?: {
+    apply?: {
+      disabled?: boolean
+      tooltip?: string | React.ReactNode
+    }
+  }
+
   customSubmit?: {
     label: string,
     onCustomFinish: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
@@ -63,6 +70,7 @@ export function useStepsForm <T> ({
   editMode,
   steps,
   buttonLabel = {},
+  buttonProps = {},
   onFinish,
   onCancel,
   onFinishFailed,
@@ -234,14 +242,15 @@ export function useStepsForm <T> ({
     />,
     // TODO:
     // - handle disable when validation not passed
-    apply: labels.apply.length === 0 ? null : <Button
-      type='primary'
-      value={StepsFormActionButtonEnum.SUBMIT}
-      loading={loading}
-      disabled={customSubmitLoading}
-      onClick={() => submit()}
-      children={labels.apply}
-    />,
+    apply: labels.apply.length === 0
+      ? null
+      : <ApplyButton
+        loading={loading}
+        disabled={customSubmitLoading || buttonProps.apply?.disabled}
+        onClick={() => submit()}
+        children={labels.apply}
+        tooltip={buttonProps.apply?.tooltip}
+      />,
     submit: labels.submit.length === 0 ? null : (!isLastStep
       ? <Button
         type='primary'
@@ -324,4 +333,20 @@ export function useStepsForm <T> ({
   }
 
   return { ...newConfig, elements }
+}
+
+type ApplyButtonProps = ButtonProps & { tooltip?: string | React.ReactNode }
+function ApplyButton (props: ApplyButtonProps) {
+  const { loading, disabled, children, onClick, tooltip } = props
+
+  const button = <Button
+    type='primary'
+    value={StepsFormActionButtonEnum.SUBMIT}
+    loading={loading}
+    disabled={disabled}
+    onClick={onClick}
+    children={children}
+  />
+
+  return tooltip ? <Tooltip title={tooltip}><span>{button}</span></Tooltip> : button
 }

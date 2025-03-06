@@ -13,7 +13,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -70,27 +70,27 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }        from '../useEdgeActions'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '../configTemplates'
+import { useGetNetwork }                                   from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { CloudpathForm }            from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }      from './CaptivePortal/DirectoryServerForm'
+import { GuestPassForm }            from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }         from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }           from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }           from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }           from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }                from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext           from './NetworkFormContext'
+import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }              from './NetworkSummary/SummaryForm'
 import {
   handleServicePolicyRbacPayload,
   tranferSettingsToSave,
@@ -99,7 +99,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance               from './PortalInstance'
+import PortalInstance                from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -343,6 +343,7 @@ export function NetworkForm (props:{
     instanceLabel: intl.$t({ defaultMessage: 'Network' }),
     addLabel: intl.$t({ defaultMessage: 'Create New' })
   })
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   useEffect(() => {
     if(saveState){
@@ -1240,6 +1241,14 @@ export function NetworkForm (props:{
                 : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
+              {...(hasEnforcedItem([saveState])
+                ? { buttonProps: {
+                  apply: {
+                    disabled: true,
+                    tooltip: getEnforcedActionMsg([saveState])
+                  } } }
+                : {})
+              }
             >
               {
                 !isRuckusAiMode && <StepsForm.StepForm

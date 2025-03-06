@@ -302,9 +302,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    },
-    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
-    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),

@@ -23,8 +23,7 @@ import {
   transformWifiNetwork,
   ConfigTemplateCloneUrlsInfo,
   AllowedCloneTemplateTypes,
-  VlanPool,
-  EnforceableFields
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -46,7 +45,6 @@ import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
   useCasesToRefreshNetworkTemplateList
 } from './constants'
-import { AllowedEnforcedConfigTemplateTypes, configTemplateInstanceEnforcedApiMap } from './utils'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -506,24 +504,6 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           body: JSON.stringify({ isEnforced: payload?.enabled })
         }
       }
-    }),
-    getConfigTemplateInstanceEnforced: build.query<EnforceableFields, RequestPayload<{ instanceId: string, type: AllowedEnforcedConfigTemplateTypes }>>({
-      query: ({ params, payload }) => {
-        const { instanceId, type } = payload!
-        const apiInfo = configTemplateInstanceEnforcedApiMap[type]
-        return {
-          ...createHttpRequest(apiInfo, params),
-          body: JSON.stringify({
-            fields: ['id', 'isEnforced'],
-            filters: { id: [instanceId] }
-          })
-        }
-      },
-      transformResponse (result: TableResult<EnforceableFields>) {
-        return {
-          isEnforced: result.data[0]?.isEnforced ?? false
-        }
-      }
     })
   })
 })
@@ -556,6 +536,5 @@ export const {
   useLazyGetDriftReportQuery,
   usePatchDriftReportMutation,
   useCloneTemplateMutation,
-  useUpdateEnforcementStatusMutation,
-  useGetConfigTemplateInstanceEnforcedQuery
+  useUpdateEnforcementStatusMutation
 } = configTemplateApi

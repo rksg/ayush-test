@@ -109,7 +109,7 @@ export interface NetworkDetail {
 
 export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
 
-export interface NetworkSaveData {
+export interface NetworkSaveData extends EnforceableFields {
   id?: string
   name?: string
   tenantId?: string

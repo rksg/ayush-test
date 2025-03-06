@@ -1,39 +1,27 @@
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, ButtonProps, Loader, Tooltip }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { AllowedEnforcedConfigTemplateTypes, useGetConfigTemplateInstanceEnforcedQuery } from '@acx-ui/rc/services'
-import { EnforceableFields, useConfigTemplate }                                          from '@acx-ui/rc/utils'
+import { Button, ButtonProps, Tooltip }         from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { EnforceableFields, useConfigTemplate } from '@acx-ui/rc/utils'
 
 // eslint-disable-next-line max-len
 const enforcedActionMsg = defineMessage({ defaultMessage: 'Action is disabled due to enforcement from the template' })
 
-interface EnforcedAwareButtonProps extends ButtonProps {
-  configTemplateType: AllowedEnforcedConfigTemplateTypes
-  instanceId?: string
-}
+type EnforcedAwareButtonProps = ButtonProps & EnforceableFields
 
 export function EnforcedButton (props: EnforcedAwareButtonProps) {
   const isFFEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
   const { isTemplate } = useConfigTemplate()
-  const { instanceId, configTemplateType, ...rest } = props
-  const isEnforcementEnabled = isFFEnabled && !isTemplate && instanceId
+  const { isEnforced, ...rest } = props
+  const isEnforcementEnabled = isFFEnabled && !isTemplate
   const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
-  const { data, isLoading } = useGetConfigTemplateInstanceEnforcedQuery({
-    params: {}, payload: { instanceId: instanceId!, type: configTemplateType }
-  }, { skip: !isEnforcementEnabled })
-
-  return <Loader states={[ { isLoading } ]} style={{ height: '32px' }}>
-    {data && hasEnforcedItem([data])
-      ? <Tooltip
-        title={getEnforcedActionMsg([data])}
-        placement='left'
-        children={<span><Button {...rest} disabled={true} /></span>}
-      />
-      : <Button {...rest} />
-    }
-  </Loader>
+  return (isEnforcementEnabled && hasEnforcedItem([props]))
+    ? <Tooltip
+      title={getEnforcedActionMsg([props])}
+      children={<span><Button {...rest} disabled={true} /></span>}
+    />
+    : <Button {...rest} />
 }
 
 export function useEnforcedStatus () {
