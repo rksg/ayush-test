@@ -34,7 +34,6 @@ import {
 import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
-  SwitchRbacUrlsInfo,
   TableQuery,
   usePollingTableQuery,
   Venue
@@ -355,7 +354,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
           scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
-            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
           ]
         }) && rowSelection}
       />

@@ -8,7 +8,6 @@ import { useVenueDetailsHeaderQuery }                       from '@acx-ui/rc/ser
 import {
   ConfigTemplateType,
   CommonUrlsInfo,
-  SwitchRbacUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
