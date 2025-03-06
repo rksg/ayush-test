@@ -3,10 +3,10 @@ import { Key, useContext, useEffect, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Table, TableProps, showActionModal, useStepFormContext } from '@acx-ui/components'
-import { isInterfaceInVRRPSetting, SubInterface }                 from '@acx-ui/rc/utils'
-import { EdgeScopes }                                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }                          from '@acx-ui/user'
+import { Table, TableProps, showActionModal, useStepFormContext }                                        from '@acx-ui/components'
+import { isInterfaceInVRRPSetting, SubInterface, convertEdgeSubinterfaceToApiPayload, EdgeSubInterface } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                                    from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                 from '@acx-ui/user'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 import * as UI                        from '../styledComponents'
@@ -145,18 +145,23 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   }
 
   const handleAdd = async (data: SubInterface): Promise<unknown> => {
+    const savedData = convertEdgeSubinterfaceToApiPayload(data as EdgeSubInterface)
+
     form.setFieldValue(
       props.namePath,
-      [...form.getFieldValue(props.namePath), data])
+      [...form.getFieldValue(props.namePath), savedData])
     props.onChange?.(form.getFieldValue(props.namePath))
     return
   }
 
   const handleUpdate = async (data: SubInterface): Promise<unknown> => {
     const existingData = form.getFieldValue(props.namePath)
+    const savedData = convertEdgeSubinterfaceToApiPayload(data as EdgeSubInterface)
+
     const updatedData = existingData.map((item: SubInterface) =>
-      item.id === data.id ? data : item
+      item.id === data.id ? savedData : item
     )
+
     form.setFieldValue(props.namePath, updatedData)
     props.onChange?.(form.getFieldValue(props.namePath))
     return

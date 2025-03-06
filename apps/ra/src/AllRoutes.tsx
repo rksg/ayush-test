@@ -30,6 +30,7 @@ import Clients, { AIClientsTabEnum }         from './pages/Clients'
 import ConfigChange                          from './pages/ConfigChange'
 import IncidentDetails                       from './pages/IncidentDetails'
 import Layout                                from './pages/Layout'
+import { canAccessOnboardedSystems }         from './pages/Layout/menuConfig'
 import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
 import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
@@ -55,8 +56,15 @@ const getDefaultRoute = () => {
   return 'profile/settings'
 }
 
-const check = (permission: RaiPermission, component?: JSX.Element) =>
-  !permission || hasRaiPermission(permission) ? component : <Init />
+const check = (permission: RaiPermission | boolean, component?: JSX.Element) => {
+  let canAccess = false
+  if (typeof permission === 'boolean') {
+    canAccess = permission
+  } else {
+    canAccess = !permission || hasRaiPermission(permission)
+  }
+  return canAccess ? component : <Init />
+}
 
 function Init () {
   const [ search ] = useSearchParams()
@@ -171,9 +179,9 @@ function AllRoutes () {
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
         <Route path='onboarded'
-          element={check('READ_ONBOARDED_SYSTEMS',
-            <AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>
-          )}
+          element={check(canAccessOnboardedSystems(), <AccountManagement
+            tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}
+          />)}
         />
         <Route path='users'
           element={check('READ_USERS',

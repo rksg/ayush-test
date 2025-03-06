@@ -178,7 +178,9 @@ export interface NetworkSaveData extends EnforceableFields {
   certificateTemplateId?: string
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
-  softGreAssociationUpdate?: NetworkTunnelSoftGreAction
+  softGreAssociationUpdate?: NetworkTunnelSoftGreAction,
+  identityGroupId?: string,
+  identityId?: string
 }
 
 export interface NetworkSummaryExtracData {
