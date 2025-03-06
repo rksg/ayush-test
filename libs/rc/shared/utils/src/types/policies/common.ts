@@ -36,6 +36,7 @@ export enum PolicyType {
   DIRECTORY_SERVER = 'Directory Server',
   PORT_PROFILE = 'Port Profile',
   SWITCH_PORT_PROFILE = 'Switch Port Profile',
+  IPSEC = 'IPsec',
   SAML_IDP = 'SAML IDP'
 }
 
@@ -94,6 +95,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' }),
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
+  [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'Secures IP communications through encryption and authentication' }),
   [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Provides Identity Provider (IdP) identification and authentication profiles for Hotspot 2.0 and Captive Portal SAML Network Services' })
 }
 

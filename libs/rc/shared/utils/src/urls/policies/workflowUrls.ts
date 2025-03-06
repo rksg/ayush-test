@@ -354,7 +354,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   },
   nestedCloneWorkflow: {
     method: 'post',
-    url: `${WorkflowBaseUrl}/:id/steps/:stepId:/nextSteps/workflows/:referencedWorkflowId`,
+    url: `${WorkflowBaseUrl}/:id/steps/:stepId/nextSteps/workflows/:referencedWorkflowId`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

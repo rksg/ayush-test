@@ -18,9 +18,9 @@ import { IntentIcon }           from '../common/IntentIcon'
 import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
+import { IntentWlan }           from '../config'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
-import { IntentWlan }           from '../utils'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 

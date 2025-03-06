@@ -25,6 +25,7 @@ import {
   EditEthernetPortProfile,
   EthernetPortProfileDetail,
   IdentityProviderForm,
+  IpsecForm,
   LbsServerProfileForm,
   MacRegistrationListForm,
   NetworkForm,
@@ -122,6 +123,9 @@ import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosB
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProvider                             from './pages/Policies/IdentityProvider'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
+import IdentityProviderTable                        from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
+import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
+import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
 import LbsServerProfileDetail                       from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
 import LbsServerProfileTable                        from './pages/Policies/LbsServerProfile/LbsServerProfileTable/LbsServerProfileTable'
 import MacRegistrationListDetails
@@ -886,6 +890,7 @@ function PolicyRoutes () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1559,6 +1564,33 @@ function PolicyRoutes () {
           } />
       </>
       }
+      {isIpsecEnabled && <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.IPSEC} oper={PolicyOperation.CREATE}>
+              <IpsecForm editMode={false} />
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.LIST })}
+          element={<IpsecTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.DETAIL })}
+          element={<IpsecDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.IPSEC} oper={PolicyOperation.EDIT}>
+              <IpsecForm editMode={true} />
+            </PolicyAuthRoute>
+          }
+        />
+      </>
+      },
       {isCaptivePortalSsoSamlEnabled &&<>
         <Route
           path={getPolicyRoutePath({
