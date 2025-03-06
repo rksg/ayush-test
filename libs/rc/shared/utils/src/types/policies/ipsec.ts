@@ -13,6 +13,8 @@ import {
   IpSecFailoverModeEnum
 } from '../../models'
 
+import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
+
 export interface Ipsec {
   id: string
   name: string
@@ -113,19 +115,12 @@ export interface IpsecActivation {
   wifiNetworkIds: string[]
 }
 
-export interface IpsecWiredActivation {
-  venueId: string
+export interface IpsecWiredActivation extends ProfileLanVenueActivations {
   softGreProfileId: string
-  apModel?: string
-  apSerialNumbers: string[],
-  portId: number
 }
 
-export interface IpsecWiredApActivation {
-  venueId: string
+export interface IpsecWiredApActivation extends ProfileLanApActivations {
   softGreProfileId: string
-  apSerialNumber: string,
-  portId: number
 }
 
 export const authTypeLabelMapping: Record<IpSecAuthEnum, MessageDescriptor> = {
@@ -138,7 +133,5 @@ export interface IpSecOptionsData {
   options: DefaultOptionType[],
   id?: string,
   isLockedOptions: boolean,
-  // gatewayIpMaps: Record<string, string[]>,
-  // gatewayIps: string[]
   activationProfiles: string[]
 }

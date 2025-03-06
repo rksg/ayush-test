@@ -4,10 +4,15 @@ import {  Form, Space, Select, Switch, Row, Alert } from 'antd'
 import { DefaultOptionType }                        from 'antd/lib/select'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                        from '@acx-ui/icons'
-import { useGetSoftGreOptionsQuery, useLazyGetSoftGreOptionsQuery, useGetIpsecOptionsQuery } from '@acx-ui/rc/services'
-import { hasPolicyPermission, PolicyOperation, PolicyType }                                  from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import {
+  useGetSoftGreOptionsQuery,
+  useLazyGetSoftGreOptionsQuery,
+  useGetIpsecOptionsQuery,
+  useLazyGetIpsecOptionsQuery
+} from '@acx-ui/rc/services'
+import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
 import {
   ApCompatibilityDrawer,
@@ -56,6 +61,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const [ ipsecOption, setIpsecOption ] = useState<DefaultOptionType[]>([])
   const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
   const [ getSoftGreOptions ] = useLazyGetSoftGreOptionsQuery()
+  const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
   const [ enableIpsec, setEnableIpsec ] = useState<boolean>(false)
   const [ enableOption, setEnableOption ] = useState<boolean>(true)
 
@@ -75,13 +81,20 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   )
 
   const ipsecOptionsDataQuery = useGetIpsecOptionsQuery(
-    { params: { venueId, networkId },
+    { params: { venueId, networkId, softGreProfileId },
       payload: { ...defaultIpsecPayload }
     },
     { skip: !venueId || !networkId }
   )
 
   useEffect(() => {
+    if (ipsecOptionsDataQuery.data) {
+      const { options } = ipsecOptionsDataQuery.data
+      setIpsecOption(options)
+      if(form.getFieldValue(['ipsec', 'enableIpsec'])) {
+        setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
+      }
+    }
     if (disabledInfo?.isDisabled || disabledInfo?.noChangePermission) {
       setEnableOption(false)
     }
@@ -93,30 +106,49 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
       setSoftGreOption(options)
       setIsLocked(isLockedOptions)
       setGatewayIpMapIds(gatewayIpMaps)
-      const profileId = optionsDataQuery.data.id
-      if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre && (cachedSoftGre?.length ?? 0) > 0) {
-        const softGreInfo = cachedSoftGre?.find(
-          sg => sg.venueId === venueId && sg.networkIds.includes(networkId!))
-        if (softGreInfo) {
-          form.setFieldValue(['softGre', 'newProfileId'], softGreInfo.profileId)
-          form.setFieldValue(['softGre', 'newProfileName'], softGreInfo.profileName)
+      if (!form.getFieldValue(['softGre', 'newProfileId'])) {
+        const profileId = optionsDataQuery.data.id
+        if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre 
+            && (cachedSoftGre?.length ?? 0) > 0) {
+          const softGreInfo = cachedSoftGre?.find(
+            sg => sg.venueId === venueId && sg.networkIds.includes(networkId!))
+          if (softGreInfo) {
+            form.setFieldValue(['softGre', 'newProfileId'], softGreInfo.profileId)
+            form.setFieldValue(['softGre', 'newProfileName'], softGreInfo.profileName)
+            form.setFieldValue(['softGre', 'oldProfileId'], profileId)
+          }
+        } else if (profileId) {
+          form.setFieldValue(['softGre', 'newProfileId'], profileId)
           form.setFieldValue(['softGre', 'oldProfileId'], profileId)
+          form.setFieldValue(['softGre', 'newProfileName'],
+            options.find(item => item.value === profileId)?.label)
         }
-      } else if (profileId) {
-        form.setFieldValue(['softGre', 'newProfileId'], profileId)
-        form.setFieldValue(['softGre', 'oldProfileId'], profileId)
-        form.setFieldValue(['softGre', 'newProfileName'],
-          options.find(item => item.value === profileId)?.label)
       }
     }
-    if (ipsecOptionsDataQuery.data) {
-      const { options } = ipsecOptionsDataQuery.data
-      setIpsecOption(options)
-      if(form.getFieldValue(['ipsec', 'enableIpsec'])) {
-        setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
-      }
+
+    if (form.getFieldValue(['ipsec', 'enableIpsec'])) {
+      setEnableIpsec(form.getFieldValue(['ipsec', 'enableIpsec']))
     }
   }, [form, optionsDataQuery, ipsecOptionsDataQuery])
+
+  useEffect(() => {
+    reloadIpsecOptions(softGreProfileId)
+  }, [softGreProfileId])
+
+  const reloadIpsecOptions = async (value: string) => {
+    const queryData = await getIpsecOptions(
+      { params: {
+        venueId,
+        networkId,
+        softGreId: value },
+      payload: { ...defaultIpsecPayload } }
+    ).unwrap()
+
+    if (queryData) {
+      const { options } = queryData
+      setIpsecOption(options)
+    }
+  }
 
   useEffect(() => {
     if (currentTunnelType !== NetworkTunnelTypeEnum.SoftGre) {

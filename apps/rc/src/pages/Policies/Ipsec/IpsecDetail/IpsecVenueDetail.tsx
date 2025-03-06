@@ -162,7 +162,7 @@ function getAggregatedActivations (
       if (!aggregated[activation.venueId]) {
         aggregated[activation.venueId] = createVenueTableIpsecActivation()
       }
-      activation.apSerialNumbers.forEach(serial =>
+      activation.apSerialNumbers?.forEach(serial =>
         aggregated[activation.venueId].apSerialNumbers.add(serial)
       )
     })

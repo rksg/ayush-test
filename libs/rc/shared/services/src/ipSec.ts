@@ -226,7 +226,8 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
     }),
     getIpsecOptions: build.query<IpSecOptionsData, RequestPayload>({
       queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
-        const { venueId, networkId } = params as { venueId: string, networkId?: string }
+        const { venueId, networkId, softGreId } =
+          params as { venueId: string, networkId?: string, softGreId?: string }
         const activationProfiles:string[] = []
 
         const ipsecListReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
@@ -248,6 +249,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
 
         const options = listData?.map(item => {
           let isSame = false
+          let isSameSoftGre = false
 
           const profileActivations = consolidateActivations(item, venueId)
 
@@ -257,6 +259,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
               activationProfiles.push(item.id)
               // let isOnlyAppliedCurrentNetwork = false
               isSame = activation.venueId === venueId
+              isSameSoftGre = activation.softGreProfileId === softGreId
               if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
                 ipsecProfileId = item.id
                 if (activation.wifiNetworkIds.length === 1) {
@@ -270,7 +273,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
             }
           })
           return {
-            disabled: !isSame,
+            disabled: !isSame || !isSameSoftGre,
             value: item.id,
             label: item.name
           } as DefaultOptionType
@@ -279,7 +282,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           activationProfiles
         }
 
-        if (venueTotal >= 3) {
+        if (venueTotal >= 1) {
           return {
             data: {
               options: options,
@@ -376,8 +379,25 @@ const consolidateActivations = (
   profile: IpsecViewData,
   venueId: string
 ):IpsecActivation[] => {
-
   let finalActivations = cloneDeep(profile.activations ?? [])
+  let venueActivations = cloneDeep(profile.venueActivations ?? [])
+    .filter(v => v.venueId === venueId).map(va => {
+      return {
+        venueId: va.venueId,
+        softGreProfileId: va.softGreProfileId,
+        wifiNetworkIds: [] as string[]
+      } as IpsecActivation
+    })
+  let apActivations = cloneDeep(profile.apActivations ?? [])
+    .filter(v => v.venueId === venueId).map(va => {
+      return {
+        venueId: va.venueId,
+        softGreProfileId: va.softGreProfileId,
+        wifiNetworkIds: [] as string[]
+      } as IpsecActivation
+    })
+
+  finalActivations = [...finalActivations, ...venueActivations, ...apActivations]
 
   const isExistVenueActivation = profile.venueActivations?.some(v => v.venueId === venueId) || false
   const isExistApActivation = profile.apActivations?.some(a => a.venueId === venueId) || false

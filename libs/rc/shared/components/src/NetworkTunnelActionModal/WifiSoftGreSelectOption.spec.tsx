@@ -58,7 +58,7 @@ describe('WifiSoftGreSelectOption', () => {
         IpsecUrls.getIpsecViewDataList.url,
         (_, res, ctx) => {
           mockedGetFn()
-          return res(ctx.json(mockIpSecTable))
+          return res(ctx.json(mockIpSecTable.data))
         })
     )}
   )
@@ -133,7 +133,6 @@ describe('WifiSoftGreSelectOption', () => {
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
     expect(formRef.current.getFieldsValue()).toEqual({
       ipsec: {
-        enbaleIpsec: undefined
       },
       softGre: {
         newProfileId: '75aa5131892d44a6a85a623dd3e524ed'
