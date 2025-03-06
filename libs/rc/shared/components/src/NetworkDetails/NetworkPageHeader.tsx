@@ -48,9 +48,10 @@ function NetworkPageHeader ({
   const { rbacOpsApiEnabled } = getUserProfile()
   const basePath = useTenantLink('/networks/wireless')
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
-  const { networkId, activeTab } = useParams()
+  const { networkId, activeTab, settings } = useParams()
   const { $t } = useIntl()
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const hideConfigureButton = () => ['no-configure'].includes(settings as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   const GenBreadcrumb = () => {
@@ -104,7 +105,7 @@ function NetworkPageHeader ({
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]: []),
-        ...(hasUpdateNetworkPermission ? [
+        ...((hasUpdateNetworkPermission && !hideConfigureButton()) ? [
           <EnforcedButton
             configTemplateType={ConfigTemplateType.NETWORK}
             instanceId={networkId}

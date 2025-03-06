@@ -95,7 +95,11 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
             ? <span>
               {row.name}
             </span>
-            : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+            : <TenantLink to={
+              (row?.isOweMaster === false && row?.owePairNetworkId !== undefined) ?
+                `/networks/wireless/${row.id}/network-details/overview/no-configure` :
+                `/networks/wireless/${row.id}/network-details/overview`}
+            >
               {row.name}
               {row.name !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
