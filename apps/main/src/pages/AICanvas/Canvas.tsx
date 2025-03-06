@@ -39,6 +39,7 @@ export interface CardInfo {
   isShadow: boolean
   currentSizeIndex: number
   sizes: Size[]
+  groupIndex: number
   chartType?: string
   widgetId?: string
   chatId?: string
