@@ -31,7 +31,8 @@ import {
   KeyValue,
   ServerCertificate,
   CertificateStatusType,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  transformDisplayOnOff
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -148,25 +149,13 @@ const SamlIdpTable = () => {
       title: $t({ defaultMessage: 'Require SAML requests to be signed' }),
       key: 'authnRequestSignedEnabled',
       dataIndex: 'authnRequestSignedEnabled',
-      render: (_, row) => {
-        return (
-          row.responseEncryptionEnabled ?
-            $t({ defaultMessage: 'On' }) :
-            $t({ defaultMessage: 'Off' })
-        )
-      }
+      render: (_, row) => transformDisplayOnOff(row.authnRequestSignedEnabled)
     },
     {
       title: $t({ defaultMessage: 'SAML Response Encryption' }),
       key: 'responseEncryptionEnabled',
       dataIndex: 'responseEncryptionEnabled',
-      render: (_, row) => {
-        return (
-          row.responseEncryptionEnabled ?
-            $t({ defaultMessage: 'On' }) :
-            $t({ defaultMessage: 'Off' })
-        )
-      }
+      render: (_, row) => transformDisplayOnOff(row.responseEncryptionEnabled)
     },
     {
       title: $t({ defaultMessage: 'Server sertificate' }),
