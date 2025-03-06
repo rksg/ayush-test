@@ -40,6 +40,7 @@ import { PortProfile }                              from './PortProfile'
 import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
+import { VlanPortSetting }                          from './VlanPortSetting'
 import { VlanSetting }                              from './VlanSetting'
 import { VoiceVlan }                                from './VoiceVlan'
 
@@ -61,6 +62,7 @@ export function ConfigurationProfileForm () {
   const isSwitchPortProfileToggle = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isBulkVlanProvisioningEnabled = useIsSplitOn(Features.BULK_VLAN_PROVISIONING)
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
 
   const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
@@ -216,8 +218,10 @@ export function ConfigurationProfileForm () {
 
   }
 
-  const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>,
-    timing?: string) => {
+  const updateVlanCurrentData = async (
+    data: Partial<SwitchConfigurationProfile>,
+    timing?: string
+  ) => {
     const nextCurrentData = {
       ...currentData,
       ...data
@@ -385,6 +389,7 @@ export function ConfigurationProfileForm () {
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
       return true
+
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
@@ -420,6 +425,13 @@ export function ConfigurationProfileForm () {
           >
             <VlanSetting />
           </StepsForm.StepForm>
+
+          { isBulkVlanProvisioningEnabled && <StepsForm.StepForm
+            title={$t({ defaultMessage: 'Ports' })}
+            onFinish={(data:Partial<SwitchConfigurationProfile>) => updateVlanCurrentData(data)}
+          >
+            <VlanPortSetting />
+          </StepsForm.StepForm> }
 
           {
             vlansWithTaggedPorts &&

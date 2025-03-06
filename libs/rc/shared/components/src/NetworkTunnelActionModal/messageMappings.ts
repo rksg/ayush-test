@@ -3,6 +3,7 @@ import { defineMessage } from 'react-intl'
 
 export const messageMappings = {
   description: defineMessage({ defaultMessage: 'Define how this network traffic will be tunnelled at <venueSingular></venueSingular> "{venueName}":' }),
+  drawer_description: defineMessage({ defaultMessage: 'Define how this network traffic will be tunneled at <venueSingular></venueSingular>.' }),
   localbreakout_opt_description: defineMessage({ defaultMessage: 'All network traffic will local breakout on this <venueSingular></venueSingular>' }),
   disable_deactivate_last_network: defineMessage({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' }),
   disable_pin_network: defineMessage({ defaultMessage: 'This network already used in Personal Identity Network, cannot be SD-LAN traffic network.' }),
