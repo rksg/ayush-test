@@ -18,6 +18,12 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 export const History = styled.div`
+  .hint{
+    font-style: italic;
+    color: var(--acx-neutrals-70);
+    font-size: 11px;
+    line-height: 16px;
+  }
   .duration {
     margin: 0 -20px;
     border-bottom: 1px solid var(--acx-neutrals-30);
@@ -212,6 +218,20 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       }
       .messages-wrapper {
         margin: 5px 10px 30px 10px;
+        .ant-divider-inner-text {
+          font-style: italic;
+          color: var(--acx-neutrals-70);
+          font-size: 11px;
+          white-space: normal;
+          line-height: 16px;
+        }
+        .ant-divider-horizontal.ant-divider-with-text {
+          border-top-color: var(--acx-neutrals-30);
+        }
+        .ant-divider-horizontal.ant-divider-with-text::before, 
+        .ant-divider-horizontal.ant-divider-with-text::after {
+          width: 20%;
+        }
       }
       .chat-container {
         display: flex;

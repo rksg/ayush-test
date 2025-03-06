@@ -26,6 +26,8 @@ export default function HistoryDrawer (props: DrawerProps) {
   const [history, setHistory] = useState([] as HistoryListItem[])
   const [editModeId, setEditModeId] = useState('')
   const [form] = Form.useForm()
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations will be deleted due to the 30-day retention policy.' })
 
   const checkDate = (chats: ChatHistory[]) => {
     const list = {
@@ -203,6 +205,7 @@ export default function HistoryDrawer (props: DrawerProps) {
         }
       </div>)
     }
+    <div className='hint'>{deletedHint}</div>
   </UI.History></Form>
 
   return (

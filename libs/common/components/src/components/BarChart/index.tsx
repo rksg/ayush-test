@@ -74,14 +74,26 @@ export function BarChart<TChartData extends BarChartData>
   labelFormatter,
   tooltipFormatter,
   labelRichStyle,
-  barColors = qualitativeColorSet(),
+  barColors,
   barWidth,
   onClick,
   ...props
 }: BarChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
   useLegendSelectChanged(eChartsRef)
-
+  const getBarColors = () => {
+    const defaultColors = qualitativeColorSet()
+    const dataCount = data.source.length
+    if (!barColors) {
+      if(dataCount <= defaultColors.length && dataCount >= 1) {
+        return defaultColors.slice(0, dataCount).reverse()
+      } else {
+        return defaultColors.reverse()
+      }
+    } else {
+      return barColors
+    }
+  }
   const option: EChartsOption = {
     animation: false,
     grid: { ...gridOptions(), ...gridProps },
@@ -91,7 +103,7 @@ export function BarChart<TChartData extends BarChartData>
     },
     barWidth: barWidth || 12,
     barGap: '50%',
-    color: barColors,
+    color: getBarColors(),
     tooltip: {
       show: tooltipFormatter !== undefined,
       ...tooltipOptions(),
@@ -132,7 +144,7 @@ export function BarChart<TChartData extends BarChartData>
         }
       }
     },
-    series: getSeries(data, barColors, labelFormatter, labelRichStyle, !!onClick)
+    series: getSeries(data, barColors as string[], labelFormatter, labelRichStyle, !!onClick)
   }
 
   return (
