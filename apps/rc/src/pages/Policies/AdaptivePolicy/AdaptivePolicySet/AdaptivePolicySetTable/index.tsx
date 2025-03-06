@@ -10,7 +10,7 @@ import {
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet, FILTER, filterByAccessForServicePolicyMutation,
+  AdaptivePolicySet, FILTER, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
@@ -163,7 +163,7 @@ export default function AdaptivePolicySetTable () {
 
   const rowActions: TableProps<AdaptivePolicySet>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT),
-    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.updatePolicySet)],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -178,7 +178,7 @@ export default function AdaptivePolicySetTable () {
   },
   {
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.DELETE),
-    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
@@ -210,7 +210,7 @@ export default function AdaptivePolicySetTable () {
   const actions = [{
     label: $t({ defaultMessage: 'Add Set' }),
     scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE),
-    rbacOpsIds: [getOpsApi(RulesManagementUrlsInfo.createPolicySet)],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE),
     onClick: () => {
       navigate({
         ...tenantBasePath,

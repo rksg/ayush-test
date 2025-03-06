@@ -12,13 +12,12 @@ import {
 import {
   AdaptivePolicy,
   AttributeAssignment, filterByAccessForServicePolicyMutation,
-  getAdaptivePolicyDetailLink,
+  getAdaptivePolicyDetailLink, getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroupUrlsInfo, useAdaptivePolicyBreadcrumb, useTableQuery
+  PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }  from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
@@ -111,7 +110,8 @@ export default function RadiusAttributeGroupDetail () {
               policyId: policyId!
             })}
             scopeKey={getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
-            rbacOpsIds={[getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)]}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

@@ -9,7 +9,7 @@ import {
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER, filterByAccessForServicePolicyMutation,
+  FILTER, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink, getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, RadiusAttributeGroup, RadiusAttributeGroupUrlsInfo, SEARCH,
@@ -62,7 +62,7 @@ export default function RadiusAttributeGroupTable () {
         })
       },
       scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT),
-      rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)]
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -92,7 +92,8 @@ export default function RadiusAttributeGroupTable () {
         )
       },
       scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE),
-      rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup)]
+      // eslint-disable-next-line max-len
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE)
     }]
 
     function useColumns () {
@@ -169,7 +170,8 @@ export default function RadiusAttributeGroupTable () {
           actions={filterByAccessForServicePolicyMutation([{
             // eslint-disable-next-line max-len
             scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
-            rbacOpsIds: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
+            // eslint-disable-next-line max-len
+            rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({

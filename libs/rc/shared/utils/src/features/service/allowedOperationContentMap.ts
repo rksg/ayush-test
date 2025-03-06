@@ -14,7 +14,7 @@ import {
   EthernetPortProfileUrls,
   IdentityProviderUrls,
   LbsServerProfileUrls,
-  MacRegListUrlsInfo, RulesManagementUrlsInfo,
+  MacRegListUrlsInfo, RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -223,6 +223,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
     [PolicyOperation.LIST]: [getOpsApi(MacRegListUrlsInfo.getMacRegistrationPools)]
   },
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
+    [PolicyOperation.EDIT]: [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)],
+    [PolicyOperation.DELETE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup)],
+    [PolicyOperation.LIST]: [getOpsApi(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery)]
+  },
   [PolicyType.ADAPTIVE_POLICY]: {
     [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicy),
       getOpsApi(RulesManagementUrlsInfo.addConditions)],
@@ -232,5 +238,11 @@ export const policyAllowedOperationMap = {
       getOpsApi(RulesManagementUrlsInfo.updateConditions)],
     [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
     [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPoliciesByQuery)]
+  },
+  [PolicyType.ADAPTIVE_POLICY_SET]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicySet)],
+    [PolicyOperation.EDIT]: [getOpsApi(RulesManagementUrlsInfo.updatePolicySet)],
+    [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
+    [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPolicySetsByQuery)]
   }
 }

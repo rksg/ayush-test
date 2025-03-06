@@ -14,14 +14,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CertTemplateLink, DpskPoolLink,
-  filterByAccessForServicePolicyMutation,
+  filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy, IdentityGroupLink, MacRegistrationPoolLink,
   PolicyOperation,
-  PolicyType, RulesManagementUrlsInfo,
+  PolicyType,
   useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-import { getOpsApi }  from '@acx-ui/utils'
 
 import { NetworkTable } from './NetworkTable'
 
@@ -216,7 +215,8 @@ export default function AdaptivePolicySetDetail () {
                 policyId: policyId as string
               })}
             scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
-            rbacOpsIds={[getOpsApi(RulesManagementUrlsInfo.updatePolicySet)]}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
