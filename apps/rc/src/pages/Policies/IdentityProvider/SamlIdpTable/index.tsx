@@ -11,6 +11,7 @@ import {  CodeDocument }                                             from '@acx-
 import { CertificateToolTip, SimpleListTooltip }                     from '@acx-ui/rc/components'
 import {
   useDeleteSamlIdpProfileMutation,
+  useDownloadSamlServiceProviderMetadataMutation,
   useGetSamlIdpProfileViewDataListQuery,
   useGetServerCertificatesQuery,
   useLazyGetSamlIdpProfileByIdQuery,
@@ -48,6 +49,7 @@ const SamlIdpTable = () => {
 
   const [deleteSamlIdpProfile] = useDeleteSamlIdpProfileMutation()
   const [lazyGetSamlIdpProfile] = useLazyGetSamlIdpProfileByIdQuery()
+  const [downloadSamlServiceProviderMetadata] = useDownloadSamlServiceProviderMetadataMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetSamlIdpProfileViewDataListQuery,
@@ -216,7 +218,6 @@ const SamlIdpTable = () => {
   const rowActions: TableProps<SamlIdpProfileViewData>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.SAML_IDP, PolicyOperation.EDIT),
     rbacOpsIds: getPolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.EDIT),
-    // Default Ethernet Port Profile cannot Edit
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
@@ -230,9 +231,16 @@ const SamlIdpTable = () => {
       })
     }
   }, {
+    // scopeKey: getScopeKeyByPolicy(PolicyType.SAML_IDP, PolicyOperation.EDIT),
+    // rbacOpsIds: getPolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.EDIT),
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Download SAML Metadata' }),
+    onClick: (selectedRows) => {
+      downloadSamlServiceProviderMetadata({ params: { id: selectedRows[0].id } })
+    }
+  }, {
     scopeKey: getScopeKeyByPolicy(PolicyType.SAML_IDP, PolicyOperation.DELETE),
     rbacOpsIds: getPolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.DELETE),
-    // Default Ethernet Port Profile cannot Delete
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
       showActionModal({
@@ -278,7 +286,7 @@ const SamlIdpTable = () => {
               setIdpMetadataModalVisible(false)
             }}
           >
-            {$t({ defaultMessage: 'Close' })}
+            {$t({ defaultMessage: 'OK' })}
           </Button>
         }
       >

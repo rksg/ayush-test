@@ -68,5 +68,14 @@ export const SamlIdpProfileUrls: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  downloadSamlServiceProviderMetadata: {
+    method: 'get',
+    url: '/samlIdpProfiles/:id/serviceProviderMetadata',
+    opsApi: 'GET:/samlIdpProfiles/{id}/serviceProviderMetadata',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   }
 }

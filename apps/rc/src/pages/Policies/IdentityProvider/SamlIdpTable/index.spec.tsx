@@ -15,7 +15,7 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 
 import { dummyNetworksResult } from '../__tests__/fixtures'
 
-import { certList, mockSamlIdpProfileId, mockedSamlIpdProfileList } from './__tests__/fixtures'
+import { certList, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedSamlIpdProfileList } from './__tests__/fixtures'
 
 import SamlIdpTable from '.'
 
@@ -53,6 +53,13 @@ describe('SAML IdP Profile Table', ()=>{
     }
 
     mockServer.use(
+      rest.get(
+        SamlIdpProfileUrls.getSamlIdpProfile.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockedSamlIdpProfile))
+        }
+      ),
+
       rest.post(
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (req, res, ctx) => {
