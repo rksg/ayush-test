@@ -238,11 +238,9 @@ function ApiErrorTemplate ({ errors, ...props }: {
           errorCode={props.errorCode}
         />
         }
-        <UI.FooterButtons
-          style={{ pointerEvents: 'none' }}>
+        <UI.FooterButtons>
           <Button
             type='primary'
-            style={{ pointerEvents: 'auto' }}
             onClick={() => {
               props.onOk?.()
               props.modal.destroy()
@@ -349,42 +347,11 @@ function ApiCollapsePanel (props: {
   path?: string
   errorCode?: number
 }) {
+  const inputEl = useRef<TextAreaRef>(null)
 
   const copyText = () => {
-    const content = getCopyText()
-    navigator.clipboard.writeText(content)
-  }
-
-  const getCopyText = function () {
-    const { $t } = getIntl()
-    const content = props.content
-    const object = JSON.parse(content)
-    const errorObj = object.errors?.[0] || {}
-
-    let result = `${$t({ defaultMessage: 'URL' })}: ${props.path}\n`
-    result += `${$t({ defaultMessage: 'HTTP Code' })}: ${props.errorCode}\n`
-
-    if (object.requestId) {
-      result += `${$t({ defaultMessage: 'Request ID' })}: ${object.requestId}\n`
-    }
-    result += `${$t({ defaultMessage: 'Timestamp' })}: ${moment().format('YYYYMMDD-HHmmss')}\n`
-
-    if (errorObj.code) {
-      result += `${$t({ defaultMessage: 'RUCKUS Code' })}: ${errorObj.code}\n`
-    }
-
-    if (errorObj.reason) {
-      result += `${$t({ defaultMessage: 'Reason' })}: ${errorObj.reason || errorObj.message}\n`
-    }
-
-    if (errorObj.suggestion) {
-      result += `${$t({ defaultMessage: 'Suggestion' })}: ${errorObj.suggestion}\n`
-    }
-
-    result += 'Error Response:\n'
-    result += content
-
-    return result
+    navigator.clipboard.writeText(props.content)
+    inputEl.current?.resizableTextArea?.textArea.select()
   }
 
   const getContent = function () {
@@ -402,7 +369,7 @@ function ApiCollapsePanel (props: {
         children={props.errorCode} />
       {object.requestId &&
         <Descriptions.Item
-          label={$t({ defaultMessage: 'Request ID' })}
+          label={$t({ defaultMessage: 'Requeset ID' })}
           children={object.requestId} />
       }
       <Descriptions.Item
@@ -445,12 +412,13 @@ function ApiCollapsePanel (props: {
       marginBottom: '-10px'
     }
 
-    return (
-      <Tooltip placement='top' title={$t({ defaultMessage: 'Show more details' })}>
-        {isActive ? <ReportsSolid style={iconStyle} data-testid='activeButton' /> :
-          <ReportsOutlined style={iconStyle} data-testid='deactiveButton' />}
-      </Tooltip>
-    )
+    return <Tooltip placement='top'
+      title={
+        $t({ defaultMessage: 'Show more details' })
+      }>
+      {isActive ? <ReportsSolid style={iconStyle} data-testid='activeButton' />:
+        <ReportsOutlined style={iconStyle} data-testid='deactiveButton' />}
+    </Tooltip>
   }
 
   return (
@@ -460,7 +428,9 @@ function ApiCollapsePanel (props: {
       expandIcon={({ isActive }) => getExpandIcon(isActive)}
     >
       <Panel header={undefined} key={'ApiCollapsePanel'}>
-        <div style={{ backgroundColor: 'var(--acx-neutrals-10)', borderRadius: '4px' }}>
+        <div style={{
+          backgroundColor: 'var(--acx-neutrals-10)',
+          borderRadius: '4px' }}>
           {getContent()}
         </div>
         <UI.CopyButton

@@ -146,16 +146,9 @@ describe('ActionModal', () => {
 
   describe('show_errors modal with details', () => {
     const mockErrorDetails = {
-      requestId: '690ed9b6-3409-4799-9050-c69f379a5e63',
-      errors: [
-        {
-          code: 'SWITCH-10402',
-          message: 'Switch FEK1224R99V already exists.',
-          reason: 'Use a unique serial number for switch FEK1224R99V.',
-          suggestion: 'Please Use a unique serial number for switch FEK1224R99V, and try again.'
-        }
-      ]
+      message: 'Some error details'
     }
+    const detailsContent = convertToJSON(mockErrorDetails)
     beforeEach(async () => {
       jest.mocked(getEnabledDialogImproved).mockReturnValue(true)
       showActionModal({
@@ -203,7 +196,7 @@ describe('ActionModal', () => {
 
       const copyBtn = await screen.findByTestId('copyButton')
       fireEvent.click(copyBtn)
-      expect(navigator.clipboard.writeText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(detailsContent)
 
       await assertButtonClicked({
         label: 'OK',
