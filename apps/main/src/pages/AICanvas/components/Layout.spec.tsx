@@ -464,7 +464,7 @@ jest.mock('@acx-ui/rc/services', () => {
     useGetWidgetQuery: jest.fn().mockReturnValue(chart),
     useCreateWidgetMutation: () => [
       jest.fn(() => ({
-        unwrap: jest.fn().mockResolvedValue({
+        then: jest.fn().mockResolvedValue({
           id: '123'
         })
       }))

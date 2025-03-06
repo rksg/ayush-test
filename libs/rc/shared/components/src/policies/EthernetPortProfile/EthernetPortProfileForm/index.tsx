@@ -413,6 +413,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                         <Tooltip.Question
                           title={$t(EthernetPortProfileMessages.MAC_AUTH_BYPASS)}
                           placement='bottom'
+                          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                         />
                       </Space>
                       <Form.Item

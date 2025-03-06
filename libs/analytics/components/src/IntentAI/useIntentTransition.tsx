@@ -14,13 +14,14 @@ import {
   aiFeaturesLabel,
   codes,
   stateToGroupedStates,
-  Intent
+  Intent,
+  IntentWlan
 } from './config'
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { getUserName }                            from './useIntentAIActions'
-import { IntentWlan, TransitionIntentMetadata }   from './utils'
+import { TransitionIntentMetadata }               from './utils'
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 

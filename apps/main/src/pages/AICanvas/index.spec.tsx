@@ -222,7 +222,7 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
-    const suggestQuestion = await screen.findByText('Design custom metrics widget')
+    const suggestQuestion = await screen.findByText('Show me the top-consuming clients.')
     expect(suggestQuestion).toBeVisible()
     fireEvent.click(suggestQuestion)
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
