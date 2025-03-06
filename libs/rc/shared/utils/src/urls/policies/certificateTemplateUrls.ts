@@ -5,7 +5,8 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   getCertificateTemplates: {
     method: 'post',
     newApi: true,
-    url: '/certificateTemplates/query'
+    url: '/certificateTemplates/query',
+    opsApi: 'POST:/certificateTemplates/query'
   },
   getCertificateTemplate: {
     method: 'get',
@@ -73,7 +74,8 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   getCAs: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities/query'
+    url: '/certificateAuthorities/query',
+    opsApi: 'POST:/certificateAuthorities/query'
   },
   getCA: {
     method: 'get',
@@ -83,7 +85,8 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   getSubCAs: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities/:caId/subCas/query'
+    url: '/certificateAuthorities/:caId/subCas/query',
+    opsApi: 'POST:/certificateAuthorities/:caId/subCas/query'
   },
   addCA: {
     method: 'post',
@@ -211,7 +214,8 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   getCertificateList: {
     method: 'post',
     newApi: true,
-    url: '/certificates/query'
+    url: '/certificates/query',
+    opsApi: 'POST:/certificates/query'
   },
   activateCertificateAuthorityOnRadius: {
     method: 'put',
