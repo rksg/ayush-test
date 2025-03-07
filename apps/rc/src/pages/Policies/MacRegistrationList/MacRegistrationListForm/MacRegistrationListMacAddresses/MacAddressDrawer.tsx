@@ -102,7 +102,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
           toExpireEndDate(data.expiration?.date),
         identityId: data.identityId,
-        deviceName: data.deviceName
+        deviceName: data.deviceName,
+        location: data.location
       }
       if (isEdit) {
         await editMacRegistration(
@@ -166,6 +167,11 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       <Form.Item name='deviceName'
         rules={[{ max: 255 }]}
         label={intl.$t({ defaultMessage: 'Device Name' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='location'
+        rules={[{ max: 255 }]}
+        label={intl.$t({ defaultMessage: 'Location' })}>
         <Input/>
       </Form.Item>
       <ExpirationDateSelector
