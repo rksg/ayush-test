@@ -24,9 +24,11 @@ export const History = styled.div`
     font-size: 11px;
     line-height: 16px;
     position: absolute;
-    bottom: 25px;
+    bottom: 0px;
     text-align: center;
-    padding: 0 70px 0px 20px;
+    padding: 10px 70px 25px 40px;
+    margin-left: -20px;
+    background: var(--acx-neutrals-10);
   }
   .duration {
     margin: 0 -20px;
