@@ -8,7 +8,9 @@ import {
   ExternalAntenna,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings,
-  CommonUrlsInfo } from '@acx-ui/rc/utils'
+  CommonUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
 import {
@@ -142,7 +144,10 @@ export function VenueEdit () {
     if (!activeTab) {
       const navigateTo =
       hasDetailsPermission ? 'details' :
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
+        hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+        }) ? 'wifi' :
           hasPermission({
             scopes: [SwitchScopes.UPDATE],
             rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
@@ -158,7 +163,10 @@ export function VenueEdit () {
     }
 
     const hasNoPermissions
-    = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
+    = (!hasPermission({
+      scopes: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+    }) && activeTab === 'wifi')
     || (!hasPermission({
       scopes: [SwitchScopes.UPDATE],
       rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
