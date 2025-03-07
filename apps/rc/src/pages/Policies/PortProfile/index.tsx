@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
@@ -71,21 +72,16 @@ export default function PortProfile () {
   const getAddButton = () => {
     return activeTab === PortProfileTabsEnum.WIFI ? filterByAccessForServicePolicyMutation([
       <TenantLink
-        scopeKey={
-          getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
-        // eslint-disable-next-line max-len
+        scopeKey={getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
         to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
       </TenantLink>
     ]) : hasCrossVenuesPermission() && filterByAccess([
       <TenantLink
-        scopeKey={
-          getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)
-        }
-        rbacOpsIds={
-          getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)
-        }
+        scopeKey={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}
         to={'/policies/portProfile/switch/profiles/add'}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add ICX Port Profile' })}</Button>

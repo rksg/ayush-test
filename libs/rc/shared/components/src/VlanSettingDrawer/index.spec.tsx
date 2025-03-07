@@ -195,34 +195,48 @@ describe('VlanSettingDrawer', () => {
 describe('checkVlanRange', () => {
   it('should render correctly', () => {
     expect(checkVlanRange('20')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false, vlans: ['20']
+      isIncludeOriginal: true, isLengthValid: true,isValidRange: true, isVlanDuplicate: false,
+      vlans: ['20']
     })
     expect(checkVlanRange('1-5, 10, 11-12')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false,
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
       vlans: ['1', '2', '3', '4', '5', '10', '11', '12']
     })
     expect(checkVlanRange('1-20,22,30-100')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false,
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
       vlans: expect.arrayContaining(['22', '98', '99', '100'])
     })
     expect(checkVlanRange('1-20, 22, 30-100')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false, vlans: expect.any(Array)
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
     })
     expect(checkVlanRange('1-10, 10-15')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: true, vlans: expect.any(Array)
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: true,
+      vlans: expect.any(Array)
     })
     expect(checkVlanRange('1-10, 100-1000000000')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: false, isVlanDuplicate: false, vlans: expect.any(Array)
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: false, isVlanDuplicate: false,
+      vlans: expect.any(Array)
     })
     expect(checkVlanRange('20-30', '20')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false, vlans: expect.any(Array)
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
     })
     expect(checkVlanRange('1, 10,25-30, 20', '20')).toStrictEqual({
-      isIncludeOriginal: true, isValidRange: true, isVlanDuplicate: false, vlans: expect.any(Array)
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
     })
     expect(checkVlanRange('25-30', '20')).toStrictEqual({
-      isIncludeOriginal: false, isValidRange: true, isVlanDuplicate: false,
+      isIncludeOriginal: false, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
       vlans: ['25', '26', '27', '28', '29', '30']
+    })
+    expect(checkVlanRange('1-1025')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: false, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('100-200, 1000-2000')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: false, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
     })
   })
 })

@@ -357,11 +357,14 @@ function VlanSettingForm (props: VlanSettingFormProps) {
               validator: (_: RuleObject, value: string) => {
                 const originalVlanId = vlan?.vlanId?.toString()
                 const {
-                  isValidRange, isVlanDuplicate, isIncludeOriginal, vlans
+                  isValidRange, isVlanDuplicate, isIncludeOriginal, isLengthValid, vlans
                 } = checkVlanRange(value, originalVlanId)
                 const isIncludeOriginalInEditMode
                   = editMode && !isIncludeOriginal && vlans.length > 1
 
+                if (!isLengthValid) {
+                  return Promise.reject($t(validationMessages.vlanRangeLimitExceeded))
+                }
                 if (isIncludeOriginalInEditMode) {
                   return Promise.reject($t(validationMessages.originalVlanNotIncluded))
                 }
@@ -593,6 +596,7 @@ export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) 
 
 export const checkVlanRange = (value: string, originalVlanId?: string) => {
   let isValidRange = true
+  const maxLength = 1024
   const vlans = value.toString().split(',').flatMap(v => {
     if (v.includes('-')) {
       const vlanRanges = v.split('-')
@@ -615,5 +619,6 @@ export const checkVlanRange = (value: string, originalVlanId?: string) => {
   const vlansSet = new Set(vlans)
   const isVlanDuplicate = vlansSet.size !== vlans.length
   const isIncludeOriginal = originalVlanId ? vlans.includes(originalVlanId) : true
-  return { isValidRange, isVlanDuplicate, isIncludeOriginal, vlans }
+  const isLengthValid = vlans.length > 0 && vlans.length <= maxLength
+  return { isValidRange, isVlanDuplicate, isIncludeOriginal, isLengthValid, vlans }
 }
