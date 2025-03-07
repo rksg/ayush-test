@@ -1,14 +1,16 @@
-import { Form, Switch, Space } from 'antd'
-import { useWatch }            from 'antd/lib/form/Form'
-import { DefaultOptionType }   from 'antd/lib/select'
-import { useIntl }             from 'react-intl'
+import { Form, Switch, Space }       from 'antd'
+import { useWatch }                  from 'antd/lib/form/Form'
+import { DefaultOptionType }         from 'antd/lib/select'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 
+import { IPSecProfileSettings }   from './IPSecProfileSettings'
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
 
@@ -42,10 +44,15 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     validateIsFQDNDuplicate
   } = props
 
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
+  const ipsecFieldName = ['lan', index, 'ipsecEnabled']
   const form = Form.useFormInstance()
   const isSoftGreTunnelToggleEnabled = useWatch<boolean>(softgreTunnelFieldName, form)
+  const isIpSecToggleEnabled = useWatch<boolean>(ipsecFieldName, form)
   const softGreProfileId = useWatch<string>(['lan', index, 'softGreProfileId'], form)
+  const ipsecProfileId = useWatch<string>(['lan', index, 'ipsecProfileId'], form)
   return (
     <>
       <StepsForm.StepForm>
@@ -104,6 +111,19 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })
             }
           />
+          {isIpSecOverNetworkEnabled && <Alert
+            data-testid={'enable-softgre-tunnel-ipsec-banner'}
+            showIcon={true}
+            style={{ verticalAlign: 'middle' }}
+            message={
+              <FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage={'A <venueSingular></venueSingular> supports <b>up to 3 SoftGRE activated profiles without IPsec</b> or <b>1 SoftGRE with IPsec.</b>'}
+                values={{
+                  b: chunks => <b>{chunks}</b>
+                }}
+              />}
+          />}
           <SoftGREProfileSettings
             index={index}
             softGreProfileId={softGreProfileId}
@@ -117,6 +137,41 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             optionDispatch={optionDispatch}
             validateIsFQDNDuplicate={validateIsFQDNDuplicate}
           />
+          {isIpSecOverNetworkEnabled &&
+          <FieldLabel width='220px'>
+            <Space>
+              {$t({ defaultMessage: 'Enable IPsec' })}
+              <Tooltip.Question
+                title={toggleButtonToolTip ||
+                  $t({ defaultMessage: 'Enable IPsec' })
+                }
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
+            <Form.Item
+              valuePropName='checked'
+              style={{ marginTop: '-5px' }}
+              name={ipsecFieldName}
+              children={
+                <Switch
+                  data-testid={'ipsec-switch'}
+                  disabled={readonly}
+                  onChange={() => {
+                    onGUIChanged?.('ipsecEnabled')
+                  }}
+                />
+              }
+            />
+          </FieldLabel>}
+          {isIpSecToggleEnabled &&
+          <IPSecProfileSettings
+            index={index}
+            ipsecProfileId={ipsecProfileId}
+            onGUIChanged={onGUIChanged}
+            readonly={readonly}
+            softGreProfileId={softGreProfileId}
+          />}
         </>
       }
     </>
