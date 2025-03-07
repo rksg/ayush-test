@@ -17,16 +17,29 @@ const mockedIdentityClientList = {
   totalElements: 10,
   totalPages: 1,
   page: 1,
-  content: [{
-    id: 'device-id-1',
-    tenantId: 'tenant-id',
-    groupId: testPersonaGroupId,
-    identityId: testPersonaId,
-    clientMac: '11:11:11:11:11:11'
-  }]
+  content: [
+    {
+      id: 'device-id-1',
+      tenantId: 'tenant-id',
+      groupId: testPersonaGroupId,
+      identityId: testPersonaId,
+      clientMac: '11:11:11:11:11:11'
+    },
+    {
+      id: 'device-without-mapping',
+      tenantId: 'tenant-id',
+      groupId: testPersonaGroupId,
+      identityId: testPersonaId,
+      clientMac: '99:99:99:99:99:99'
+    }
+  ]
 }
 
 describe('IdentityClientTable', () => {
+  const params = {
+    personaGroupId: 'group-id',
+    personaId: 'persona-id'
+  }
   const searchIdentityClientFn = jest.fn()
   const getClientsFn = jest.fn()
 
@@ -53,9 +66,10 @@ describe('IdentityClientTable', () => {
               ipAddress: '10.206.1.93',
               username: 'My Device',
               hostname: 'Persona_Host_name',
-              venueInformation: { name: 'UI-TEST-VENUE' },
-              apInformation: { name: 'UI team ONLY' },
-              networkInformation: { authenticationMethod: 'Standard+Mac' }  // for MAC auth devices
+              venueInformation: { id: 'VENUE_ID', name: 'UI-TEST-VENUE' },
+              apInformation: { serialNumber: 'AP_SERIAL_NUMBER', name: 'UI team ONLY' },
+              networkInformation: { authenticationMethod: 'Standard+Mac' },  // for MAC auth devices
+              lastUpdatedTime: '2022-01-01T00:00:00.000Z'
             },
             {
               osType: 'Windows',
@@ -65,7 +79,8 @@ describe('IdentityClientTable', () => {
               hostname: 'dpsk-hostname',
               venueInformation: { name: 'UI-TEST-VENUE' },
               apInformation: { name: 'UI team ONLY' },
-              networkInformation: { authenticationMethod: 'Standard+Open' }// for DPSK auth devices
+              networkInformation: { authenticationMethod: 'Standard+Open' }, // for DPSK auth devices
+              lastUpdatedTime: '2022-01-01T00:00:00.000Z'
             }
           ] }))
         })
@@ -88,7 +103,8 @@ describe('IdentityClientTable', () => {
             personaGroupId={testPersonaGroupId}
           />
         </Provider>
-      </IdentityDetailsContext.Provider>)
+      </IdentityDetailsContext.Provider>,
+      { route: { params } })
 
 
     await waitFor(() => expect(searchIdentityClientFn).toHaveBeenCalledTimes(1))
