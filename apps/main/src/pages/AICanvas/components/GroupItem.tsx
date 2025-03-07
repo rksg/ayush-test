@@ -33,7 +33,7 @@ export interface GroupProps {
 export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
   const { id, cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
-
+  // const sectionRef = useRef(null)
   useEffect(() => {
     let clientWidth
     const containerDom = document.querySelector('#card-container')
@@ -94,6 +94,7 @@ export default function GroupItem (props: GroupProps) {
       <div className='group-item-container'>
         <section
           id='card-container'
+          // ref={sectionRef}
           style={{
             height:
                 containerHeight > defaultLayout.containerHeight
@@ -113,6 +114,7 @@ export default function GroupItem (props: GroupProps) {
               updateShadowCard={props.updateShadowCard}
               updateGroupList={props.updateGroupList}
               deleteCard={props.deleteCard}
+              // sectionRef={sectionRef}
             />
             )
           }

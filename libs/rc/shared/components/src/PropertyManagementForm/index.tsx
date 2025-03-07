@@ -11,8 +11,16 @@ import {
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
-import { EditPropertyConfigMessages, PropertyConfigs, PropertyConfigStatus, ResidentPortalType } from '@acx-ui/rc/utils'
-import { useParams }                                                                             from '@acx-ui/react-router-dom'
+import {
+  EditPropertyConfigMessages,
+  PropertyConfigs,
+  PropertyConfigStatus,
+  PropertyUrlsInfo,
+  ResidentPortalType
+} from '@acx-ui/rc/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import { showDeletePropertyManagementModal }                                                  from './DeletePropertyManagementModal'
 import { PropertyManagementForm }                                                             from './PropertyManagementForm'
@@ -56,6 +64,19 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
     (propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404,
   [propertyConfigsQuery.error]
   )
+  // Create -> PUT, Update -> Put + PATCH, Delete -> PATCH
+  const hasActivatePropertyPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.updatePropertyConfigs)])
+  const hasDeactivatePropertyPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)])
+  const hasManagePermission = propertyNotFound
+    ? hasActivatePropertyPermission
+    : hasDeactivatePropertyPermission
+  // Two cases can modify the PropertyConfig.
+  // 1. Has PUT permission means user can modify the PropertyConfig
+  // 2. If only has PATCH permission, user can only disable the Property
+  const hasSavePermission
+    = hasActivatePropertyPermission || (!propertyNotFound && !isPropertyEnable)
   const { data: propertyConfigs } = propertyConfigsQuery
 
   // set initial values
@@ -157,6 +178,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
         <Switch
           data-testid={'property-enable-switch'}
           checked={isPropertyEnable}
+          disabled={!hasManagePermission}
           onChange={handlePropertyEnable}
           style={{ marginLeft: '20px' }}
         />
@@ -169,6 +191,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
     </Row>
 
     <StepsForm
+      disabled={!hasSavePermission}
       form={form}
       onFinish={onFinish || onFormFinish}
       onValuesChange={onValueChange}
