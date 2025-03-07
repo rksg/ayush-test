@@ -31,7 +31,8 @@ import {
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
-import { IdentityDeviceContext } from './index'
+import { IdentityDeviceContext } from './LegacyPersonaDetails'
+
 
 
 const defaultClientPayload = {

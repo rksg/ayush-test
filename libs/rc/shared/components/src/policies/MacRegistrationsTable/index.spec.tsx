@@ -10,7 +10,7 @@ import {
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { MacRegistrationsTab } from './index'
+import { MacRegistrationsTable } from './index'
 
 const list = {
   content: [
@@ -70,7 +70,7 @@ const macReg = {
   networkIds: []
 }
 
-describe.skip('MacRegistrationsTab', () => {
+describe.skip('MacRegistrationsTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
@@ -107,7 +107,7 @@ describe.skip('MacRegistrationsTab', () => {
       )
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
 
@@ -153,7 +153,7 @@ describe.skip('MacRegistrationsTab', () => {
         })
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
 
@@ -183,7 +183,7 @@ describe.skip('MacRegistrationsTab', () => {
         })
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
 
@@ -215,7 +215,7 @@ describe.skip('MacRegistrationsTab', () => {
         })
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
 
@@ -241,7 +241,7 @@ describe.skip('MacRegistrationsTab', () => {
       )
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
@@ -281,7 +281,7 @@ describe.skip('MacRegistrationsTab', () => {
       )
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
 
@@ -311,7 +311,7 @@ describe.skip('MacRegistrationsTab', () => {
       )
     )
 
-    render(<Provider><MacRegistrationsTab /></Provider>, {
+    render(<Provider><MacRegistrationsTable /></Provider>, {
       route: { params, path: tablePath }
     })
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))

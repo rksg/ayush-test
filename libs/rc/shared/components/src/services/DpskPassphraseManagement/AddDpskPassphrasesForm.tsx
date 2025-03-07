@@ -11,12 +11,10 @@ import {
 } from 'antd'
 import { Rule }                      from 'antd/lib/form'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { useParams }                 from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector, IdentitySelector, PhoneInput } from '@acx-ui/rc/components'
-import { useGetDpskPassphraseQuery, useGetDpskQuery }           from '@acx-ui/rc/services'
+import { Tooltip, PasswordInput }                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
+import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
   emailRegExp,
@@ -32,6 +30,10 @@ import {
   validateVlanId
 } from '@acx-ui/rc/utils'
 
+import { ExpirationDateSelector } from '../../ExpirationDateSelector'
+import PhoneInput                 from '../../PhoneInput'
+import { IdentitySelector }       from '../../users/IdentitySelector'
+
 import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import { FieldSpace }             from './styledComponents'
 
@@ -42,13 +44,13 @@ enum DeviceNumberType {
 
 export interface AddDpskPassphrasesFormProps {
   form: FormInstance<CreateDpskPassphrasesFormFields>
+  serviceId: string,
   editMode: DpskPassphraseEditMode
 }
 
 export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormProps) {
   const { $t } = useIntl()
-  const params = useParams()
-  const { form, editMode } = props
+  const { form, serviceId, editMode } = props
   const numberOfDevices = Form.useWatch('numberOfDevices', form)
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
@@ -61,11 +63,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
     ? NEW_MAX_DEVICES_PER_PASSPHRASE
     : OLD_MAX_DEVICES_PER_PASSPHRASE
   const { data: serverData, isSuccess } = useGetDpskPassphraseQuery(
-    { params: { ...params, passphraseId: editMode.passphraseId } },
+    { params: { serviceId, passphraseId: editMode.passphraseId } },
     { skip: !editMode.isEdit }
   )
   const { poolDeviceCount, identityGroupId } = useGetDpskQuery({
-    params: { ...params }
+    params: { serviceId }
   }, {
     skip: !isCloudpathEnabled,
     selectFromResult ({ data }) {
