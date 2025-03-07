@@ -51,7 +51,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
   }
 
   const onSave = async () => {
-    if (identityCount + selectedRows.length > 10) {
+    if (( identityCount?identityCount: 0 ) + selectedRows.length > 10) {
       (showActionModal({
         type: 'error',
         content: $t({
