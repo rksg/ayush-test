@@ -13,13 +13,13 @@ import {
 import {
   ConfigTemplate,
   ConfigTemplateDriftType,
-  ConfigTemplateType, ConfigTemplateUrlsInfo, PolicyType, configTemplatePolicyTypeMap,
+  ConfigTemplateType, PolicyType, configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap, policyTypeLabelMapping,
   serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { hasAllowedOperations, hasRoles, useUserProfileContext }            from '@acx-ui/user'
-import { AccountType, getIntl, getOpsApi, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                             from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
+import { AccountType, getIntl, isDelegationMode, noDataDisplay } from '@acx-ui/utils'
 
 import { configTemplateDriftTypeLabelMap } from './ShowDriftsDrawer/contents'
 
@@ -79,10 +79,6 @@ export function getConfigTemplateEnforcementLabel (enforced: boolean | undefined
 }
 
 type DriftStatusCallback = Partial<Record<ConfigTemplateDriftType, () => void>>
-const driftStatusAllowedOperationsMap: Record<ConfigTemplateDriftType, string[]> = {
-  [ConfigTemplateDriftType.DRIFT_DETECTED]: [getOpsApi(ConfigTemplateUrlsInfo.getDriftReport)],
-  [ConfigTemplateDriftType.IN_SYNC]: []
-}
 
 // eslint-disable-next-line max-len
 export function ConfigTemplateDriftStatus (props: { row: ConfigTemplate, callbackMap?: DriftStatusCallback }) {
@@ -91,10 +87,9 @@ export function ConfigTemplateDriftStatus (props: { row: ConfigTemplate, callbac
   if (!row.driftStatus) return <span>{noDataDisplay}</span>
 
   const callback = callbackMap[row.driftStatus]
-  const isAllowed = hasAllowedOperations(driftStatusAllowedOperationsMap[row.driftStatus])
   const label = getConfigTemplateDriftStatusLabel(row.driftStatus)
 
-  if (!callback || !isAllowed) {
+  if (!callback) {
     return <span>{label}</span>
   }
 
