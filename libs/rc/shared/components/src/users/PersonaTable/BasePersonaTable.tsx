@@ -80,6 +80,13 @@ function useColumns (
       ...props.email
     },
     {
+      key: 'phoneNumber',
+      dataIndex: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      sorter: true,
+      ...props.phoneNumber
+    },
+    {
       key: 'description',
       dataIndex: 'description',
       title: $t({ defaultMessage: 'Description' }),
