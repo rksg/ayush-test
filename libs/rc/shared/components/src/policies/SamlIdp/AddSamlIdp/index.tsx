@@ -4,23 +4,22 @@ import { useIntl }        from 'react-intl'
 import { useActivateSamlIdpProfileCertificateMutation, useCreateSamlIdpProfileMutation } from '@acx-ui/rc/services'
 import { SamlIdpProfileFormType }                                                        from '@acx-ui/rc/utils'
 
-import { SsoSamlForm, requestPreProcess } from '../SsoSamlForm'
+import { SamlIdpForm, requestPreProcess } from '../SamlIdpForm'
 
-interface AddSsoSamlProps {
+interface AddSamlIdpProps {
   isEmbedded?: boolean
   onClose?: ()=>void
   updateInstance?: (createId:string)=>void
 }
 
-
-export const AddSsoSaml = (props: AddSsoSamlProps) => {
+export const AddSamlIdp = (props: AddSamlIdpProps) => {
   const { $t } = useIntl()
   const [ createSamlIdpProfile ] = useCreateSamlIdpProfileMutation()
   const [ activateCertificate ] = useActivateSamlIdpProfileCertificateMutation()
   const [form] = Form.useForm()
   const { onClose, isEmbedded, updateInstance } = props
 
-  const handleAddSsoSaml = async (data: SamlIdpProfileFormType) => {
+  const handleAddSamlIdp = async (data: SamlIdpProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
       const createResult =
@@ -46,11 +45,11 @@ export const AddSsoSaml = (props: AddSsoSamlProps) => {
   return (
     <Row>
       <Col span={12}>
-        <SsoSamlForm
+        <SamlIdpForm
           title={$t({ defaultMessage: 'Add SAML Identity Provider' })}
           form={form}
           submitButtonLabel={$t({ defaultMessage: 'Add' })}
-          onFinish={handleAddSsoSaml}
+          onFinish={handleAddSamlIdp}
           onCancel={onClose}
           isEmbedded={isEmbedded}
         />

@@ -1,9 +1,14 @@
+import { CertificateStatusType } from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockSamlIdpProfileId = '__samlIdpProfile_ID__'
 export const mockSamlIdpProfileId2 = '__samlIdpProfile_ID_2__'
+export const mockSamlIdpProfileId3 = '__samlIdpProfile_ID_3__'
+
 export const mockSamlIdpProfileName = '__samlIdpProfile_Name__'
 export const mockSamlIdpProfileName2 = '__samlIdpProfile_Name_2__'
+export const mockSamlIdpProfileName3 = '__samlIdpProfile_Name_3__'
+
 export const mockCertId1 = '__certId_1__'
 export const mockCertId2 = '__certId_2__'
 
@@ -20,7 +25,7 @@ export const mockedSamlIdpProfile = {
 
 export const mockedSamlIpdProfileList = {
   page: 1,
-  totalCount: 2,
+  totalCount: 3,
   data: [
     {
       id: mockSamlIdpProfileId,
@@ -37,10 +42,15 @@ export const mockedSamlIpdProfileList = {
       responseEncryptionEnabled: true,
       encryptionCertificateId: mockCertId2,
       wifiNetworkIds: [moeckedNetworkId]
+    },
+    {
+      id: mockSamlIdpProfileId3,
+      name: mockSamlIdpProfileName3,
+      authenticationRequestSignedEnabled: false,
+      responseEncryptionEnabled: false
     }
   ]
 }
-
 
 export const caList = {
   page: 1,
@@ -67,15 +77,13 @@ export const certList = {
       id: mockCertId1,
       name: mockCertName1,
       commonName: mockCertName1,
-      status: ['VALID']
+      status: [CertificateStatusType.VALID]
     },
     {
       id: mockCertId2,
       name: mockCertName2,
       commonName: mockCertName2,
-      status: ['VALID']
+      status: [CertificateStatusType.EXPIRED]
     }
   ]
 }
-
-
