@@ -12,8 +12,8 @@ type PersonaUrlType =
   'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
-  'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet'
-
+  'associateDpskPool' | 'associatePolicySet' | 'dissociatePolicySet' |
+  'searchIdentityClients'
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
   addPersonaGroup: {

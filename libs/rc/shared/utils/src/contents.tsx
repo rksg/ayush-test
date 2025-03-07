@@ -596,9 +596,7 @@ export const ClientIsolationMessages = {
   })
 }
 
-
-
-export const SsoSamlMessages = {
+export const SamlIdpMessages = {
   /* eslint-disable max-len */
   METADATA_TEXTAREA: defineMessage({
     defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
