@@ -247,7 +247,7 @@ export default function AICanvas () {
 
   const Message = (props:{ chat: ChatMessage }) => {
     const { chat } = props
-    return chat.role ==='USER' ? <Divider plain>{deletedHint}</Divider>
+    return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
       : <div className='message'>
         <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
           <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />

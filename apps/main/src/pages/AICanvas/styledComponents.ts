@@ -9,7 +9,7 @@ import WaveBackground   from './assets/waves.svg'
 export const Input = styled(AntInput.TextArea)`
   height: 28px;
   font-size: 12px;
-  background: var(--acx-neutrals-10);;
+  background: var(--acx-neutrals-10);
   border-radius: 16px;
   border: none;
   padding: 16px 60px 16px 16px;
@@ -20,9 +20,13 @@ export const Input = styled(AntInput.TextArea)`
 export const History = styled.div`
   .hint{
     font-style: italic;
-    color: var(--acx-neutrals-70);
+    color: var(--acx-neutrals-60);
     font-size: 11px;
     line-height: 16px;
+    position: absolute;
+    bottom: 25px;
+    text-align: center;
+    padding: 0 70px 0px 20px;
   }
   .duration {
     margin: 0 -20px;

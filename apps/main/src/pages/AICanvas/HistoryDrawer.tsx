@@ -174,39 +174,41 @@ export default function HistoryDrawer (props: DrawerProps) {
       </div>
     </div>
 
-  const content = <Form form={form} onFinish={onSubmit}><UI.History>
-    {
-      history.map(i => <div className='duration' key={i.duration}>
-        <div className='time'>{i.duration}</div>
-        {
-          i.history.map(j =>
+  const content = <UI.History>
+    <Form form={form} onFinish={onSubmit}>
+      {
+        history.map(i => <div className='duration' key={i.duration}>
+          <div className='time'>{i.duration}</div>
+          {
+            i.history.map(j =>
             // eslint-disable-next-line max-len
-            isEditMode(j) ? (
-              editChatTitle(j)
-            ) : (<div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>
-              <Tooltip title={j.name}>
-                <div className='title' onClick={() => onClickChat(j.id)}>
-                  {j.name}
+              isEditMode(j) ? (
+                editChatTitle(j)
+              ) : (<div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>
+                <Tooltip title={j.name}>
+                  <div className='title' onClick={() => onClickChat(j.id)}>
+                    {j.name}
+                  </div>
+                </Tooltip>
+                <div className='action'>
+                  <div className='button'
+                    data-testid='edit'
+                    onClick={()=> { onEditChatTitle(j) }}>
+                    <EditOutlined size='sm' />
+                  </div>
+                  <div className='button'
+                    data-testid='delete'
+                    onClick={()=> { onDeleteChat(j) }}>
+                    <DeleteOutlined size='sm' />
+                  </div>
                 </div>
-              </Tooltip>
-              <div className='action'>
-                <div className='button'
-                  data-testid='edit'
-                  onClick={()=> { onEditChatTitle(j) }}>
-                  <EditOutlined size='sm' />
-                </div>
-                <div className='button'
-                  data-testid='delete'
-                  onClick={()=> { onDeleteChat(j) }}>
-                  <DeleteOutlined size='sm' />
-                </div>
-              </div>
-            </div>))
-        }
-      </div>)
-    }
+              </div>))
+          }
+        </div>)
+      }
+    </Form>
     <div className='hint'>{deletedHint}</div>
-  </UI.History></Form>
+  </UI.History>
 
   return (
     <Drawer
