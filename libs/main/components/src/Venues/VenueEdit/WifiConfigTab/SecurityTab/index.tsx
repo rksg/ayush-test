@@ -14,8 +14,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { EnforcedStepsFormLegacy, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -45,7 +45,7 @@ import {
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 
-import { VenueEditContext }               from '../..'
+import { VenueEditContext }                from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateOpsApiSwitcher,
@@ -103,6 +103,7 @@ export function SecurityTab () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
   const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const venueDosProtectionOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateDenialOfServiceProtection,
@@ -354,7 +355,7 @@ export function SecurityTab () {
       // eslint-disable-next-line max-len
       isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp || isUpdatingVenueApEnhancedKey
     }]}>
-      <EnforcedStepsFormLegacy
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={handleUpdateSecuritySettings}
         onCancel={() =>
@@ -362,6 +363,7 @@ export function SecurityTab () {
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
+        {...getEnforcedStepsFormProps('StepsFormLegacy')}
       >
         <StepsFormLegacy.StepForm>
           <FieldsetItem
@@ -540,7 +542,7 @@ export function SecurityTab () {
             </StepsFormLegacy.FieldLabel>
           </Space> }
         </StepsFormLegacy.StepForm>
-      </EnforcedStepsFormLegacy>
+      </StepsFormLegacy>
     </Loader>
   )
 }

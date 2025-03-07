@@ -2,9 +2,9 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }                                                           from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
-import { EnforcedStepsFormLegacy, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy }                                                     from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   ApSnmpRbacUrls,
   ConfigTemplateType,
@@ -53,7 +53,7 @@ export function ServerTab () {
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
-
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const syslogApiUrlInfo = (!isTemplate)? SyslogUrls : PoliciesConfigTemplateUrlsInfo
 
@@ -154,16 +154,17 @@ export function ServerTab () {
   }
 
   return (
-    <EnforcedStepsFormLegacy
+    <StepsFormLegacy
       onFinish={handleUpdateSetting}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
-    </EnforcedStepsFormLegacy>
+    </StepsFormLegacy>
   )
 }

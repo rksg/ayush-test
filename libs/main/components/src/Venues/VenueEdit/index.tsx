@@ -196,7 +196,7 @@ export function VenueEdit () {
       previousPath,
       setPreviousPath
     }}>
-      <ConfigTemplateEnforcementContext.Provider value={venueInstance ?? {}}>
+      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced: venueInstance?.isEnforced }}>
         <VenueEditPageHeader />
         { Tab && <Tab /> }
       </ConfigTemplateEnforcementContext.Provider>

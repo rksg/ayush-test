@@ -22,7 +22,7 @@ import { useParams }            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getOpsApi }            from '@acx-ui/utils'
 
-import { EnforcedStepsForm } from '../configTemplates'
+import { useEnforcedStatus } from '../configTemplates'
 
 import { showDeletePropertyManagementModal }                                                  from './DeletePropertyManagementModal'
 import { PropertyManagementForm }                                                             from './PropertyManagementForm'
@@ -53,6 +53,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm(customForm)
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const [isPropertyEnable, setIsPropertyEnable] = useState<boolean>(false)
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
@@ -193,7 +194,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
       </Col>
     </Row>
 
-    <EnforcedStepsForm
+    <StepsForm
       disabled={!hasSavePermission}
       form={form}
       onFinish={onFinish || onFormFinish}
@@ -205,6 +206,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
       }}
       initialValues={initialValues}
       editMode={editMode}
+      {...getEnforcedStepsFormProps('StepsForm')}
     >
       <StepsForm.StepForm>
         {isPropertyEnable && <Row>
@@ -217,6 +219,6 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
           </Col>
         </Row>}
       </StepsForm.StepForm>
-    </EnforcedStepsForm>
+    </StepsForm>
   </Loader>
 }

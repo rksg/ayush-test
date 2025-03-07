@@ -11,11 +11,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                                                            from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
 import {
-  EnforcedStepsFormLegacy,
-  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes
+  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes,
+  useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
@@ -195,6 +195,7 @@ export function VenuesForm (props: VenuesFormProps) {
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
   const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   useEffect(() => {
     if (data) {
@@ -385,13 +386,14 @@ export function VenuesForm (props: VenuesFormProps) {
         isLoading: false,
         isFetching: updateVenueIsLoading
       }]}>
-        <EnforcedStepsFormLegacy
+        <StepsFormLegacy
           formRef={formRef}
           onFinish={saveHandlerMap[action]}
           onCancel={onCancel}
           buttonLabel={{ submit: action === 'edit' ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Add' }) }}
+          {...getEnforcedStepsFormProps('StepsFormLegacy')}
         >
           <StepsFormLegacy.StepForm>
             <Row gutter={20}>
@@ -502,7 +504,7 @@ export function VenuesForm (props: VenuesFormProps) {
               </Row>
             }
           </StepsFormLegacy.StepForm>
-        </EnforcedStepsFormLegacy>
+        </StepsFormLegacy>
       </Loader>
     </>
   )

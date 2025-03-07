@@ -140,20 +140,12 @@ export function StepsFormLegacy <FormValue = any> (
 
         const submit = domArray.pop() as React.ReactElement<ButtonProps>
         const submitKey = stepCount - 1 === props.step ? 'submit' : 'next'
-        const submitButton = <Button
-          {...submit.props}
-          key={submitKey}
-          type='primary'
+        const submitButton = <SubmitButton
+          originalProps={submit.props}
+          customProps={buttonProps}
+          submitKey={submitKey}
           children={buttonLabel[submitKey]}
-          {...(submitKey === 'submit' && buttonProps.submit
-            ? { disabled: buttonProps.submit.disabled }
-            : {}
-          )}
         />
-
-        const resolvedSubmitButton = submitKey === 'submit' && buttonProps.submit?.tooltip
-          ? <Tooltip title={buttonProps.submit.tooltip}><span>{submitButton}</span></Tooltip>
-          : submitButton
 
         const back = domArray.pop() as React.ReactElement<ButtonProps>
         const backButton = <Button
@@ -167,10 +159,10 @@ export function StepsFormLegacy <FormValue = any> (
           ? [
             cancelButton,
             <Space align='center' size={12} key='back-submit'>
-              {props.step === 0 ? resolvedSubmitButton : [backButton, resolvedSubmitButton]}
+              {props.step === 0 ? submitButton : [backButton, submitButton]}
             </Space>
           ]
-          : [resolvedSubmitButton, cancelButton]
+          : [submitButton, cancelButton]
       }
     }
   }
@@ -185,6 +177,31 @@ export function StepsFormLegacy <FormValue = any> (
       />
     </UI.Wrapper>
   )
+}
+
+
+interface SubmitButtonProps {
+  submitKey: 'next' | 'submit'
+  originalProps: ButtonProps
+  customProps?: StepsFormLegacyProps['buttonProps']
+}
+
+function SubmitButton (props: React.PropsWithChildren<SubmitButtonProps>) {
+  const { originalProps, customProps, submitKey, children } = props
+  const submitButton = <Button
+    {...originalProps}
+    key={submitKey}
+    type='primary'
+    children={children}
+    {...(submitKey === 'submit' && customProps?.submit
+      ? { disabled: !!customProps.submit?.disabled }
+      : {}
+    )}
+  />
+
+  return submitKey === 'submit' && customProps?.submit?.tooltip
+    ? <Tooltip title={customProps.submit.tooltip}><span>{submitButton}</span></Tooltip>
+    : submitButton
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
