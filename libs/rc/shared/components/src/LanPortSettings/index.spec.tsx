@@ -12,8 +12,9 @@ import {
   EthernetPortProfileUrls,
   ClientIsolationUrls,
   SoftGreUrls,
-  LanPortsUrls, 
-  IpsecUrls} from '@acx-ui/rc/utils'
+  LanPortsUrls,
+  IpsecUrls
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
