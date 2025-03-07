@@ -3,9 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { StepsForm } from '@acx-ui/components'
 import {
   EdgePinFixtures,
   EdgePinUrls
@@ -31,11 +29,6 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
-}))
-
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  useIsEdgeFeatureReady: jest.fn()
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -190,166 +183,5 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
     expect(screen.getByText('Distribution Switch (0)')).toBeInTheDocument()
     expect(screen.getByText('Access Switch (0)')).toBeInTheDocument()
     expect(screen.getByText('Wireless Networks (0)')).toBeVisible()
-  })
-})
-
-describe('Enhanced PersonalIdentityNetworkForm - SummaryForm', () => {
-
-  let params: { tenantId: string, serviceId: string }
-  beforeEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serviceId: 'testServiceId'
-    }
-
-    mockServer.use(
-      rest.post(
-        EdgePinUrls.getWebAuthTemplateList.url,
-        (_req, res, ctx) => res(ctx.json({ data: webAuthList }))
-      )
-    )
-  })
-
-  it('should show wireless info correctly', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldsValue({
-        networkTopologyType: 'Wireless',
-        name: 'testNsgName',
-        venueId: 'venueId',
-        edgeClusterId: 'edgeId',
-        segments: 10,
-        devices: 10,
-        dhcpId: 'dhcpId',
-        poolId: 'poolId',
-        poolName: 'DHCP_Pool',
-        vxlanTunnelProfileId: 'vxlanTunnelProfileId',
-        networkIds: ['testDpsk1', 'testDpsk2'],
-        distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
-        accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
-      })
-      return form
-    })
-    render(
-      <PersonalIdentityNetworkFormContext.Provider
-        value={{
-          ...mockContextData,
-          getVenueName: mockedGetVenueName,
-          getClusterName: mockedGetClusterName,
-          getDhcpName: mockedGetDhcpName,
-          getTunnelProfileName: mockedGetTunnelProfileName,
-          getNetworksName: mockedGetNetworksName
-        }}
-      >
-        <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
-          <StepsForm.StepForm>
-            <SummaryForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </PersonalIdentityNetworkFormContext.Provider>,
-      { route: { params, path: createPinPath } })
-
-    expect(screen.getByText('General Settings')).toBeVisible()
-    expect(screen.getAllByText('RUCKUS Edge')[0]).toBeVisible()
-    expect(screen.queryByText('Distribution Switch')).not.toBeInTheDocument()
-    expect(screen.queryByText('Access Switch')).not.toBeInTheDocument()
-    expect(screen.getByText('Wireless Network')).toBeVisible()
-  })
-
-  it('should show 2 tier info correctly', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldsValue({
-        networkTopologyType: '2-Tier',
-        name: 'testNsgName',
-        venueId: 'venueId',
-        edgeClusterId: 'edgeId',
-        segments: 10,
-        devices: 10,
-        dhcpId: 'dhcpId',
-        poolId: 'poolId',
-        poolName: 'DHCP_Pool',
-        vxlanTunnelProfileId: 'vxlanTunnelProfileId',
-        networkIds: ['testDpsk1', 'testDpsk2'],
-        distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
-        accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
-      })
-      return form
-    })
-    render(
-      <Provider>
-        <PersonalIdentityNetworkFormContext.Provider
-          value={{
-            ...mockContextData,
-            getVenueName: mockedGetVenueName,
-            getClusterName: mockedGetClusterName,
-            getDhcpName: mockedGetDhcpName,
-            getTunnelProfileName: mockedGetTunnelProfileName,
-            getNetworksName: mockedGetNetworksName
-          }}
-        >
-          <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
-            <StepsForm.StepForm>
-              <SummaryForm />
-            </StepsForm.StepForm>
-          </StepsForm>
-        </PersonalIdentityNetworkFormContext.Provider>
-      </Provider>,
-      { route: { params, path: createPinPath } })
-
-    expect(screen.getByText('General Settings')).toBeVisible()
-    expect(screen.getAllByText('RUCKUS Edge')[0]).toBeVisible()
-    expect(screen.getByText('Distribution Switch (1)')).toBeVisible()
-    expect(screen.getByText('Access Switch (1)')).toBeVisible()
-    expect(screen.queryByText('Wireless Network')).not.toBeInTheDocument()
-  })
-
-  it('should show 3 tier info correctly', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldsValue({
-        networkTopologyType: '3-Tier',
-        name: 'testNsgName',
-        venueId: 'venueId',
-        edgeClusterId: 'edgeId',
-        segments: 10,
-        devices: 10,
-        dhcpId: 'dhcpId',
-        poolId: 'poolId',
-        poolName: 'DHCP_Pool',
-        vxlanTunnelProfileId: 'vxlanTunnelProfileId',
-        networkIds: ['testDpsk1', 'testDpsk2'],
-        distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
-        accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
-      })
-      return form
-    })
-    render(
-      <Provider>
-        <PersonalIdentityNetworkFormContext.Provider
-          value={{
-            ...mockContextData,
-            getVenueName: mockedGetVenueName,
-            getClusterName: mockedGetClusterName,
-            getDhcpName: mockedGetDhcpName,
-            getTunnelProfileName: mockedGetTunnelProfileName,
-            getNetworksName: mockedGetNetworksName
-          }}
-        >
-          <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
-            <StepsForm.StepForm>
-              <SummaryForm />
-            </StepsForm.StepForm>
-          </StepsForm>
-        </PersonalIdentityNetworkFormContext.Provider>
-      </Provider>,
-      { route: { params, path: createPinPath } })
-
-    expect(screen.getByText('General Settings')).toBeVisible()
-    expect(screen.getAllByText('RUCKUS Edge')[0]).toBeVisible()
-    expect(screen.getByText('Distribution Switch (1)')).toBeVisible()
-    expect(screen.getByText('Access Switch (1)')).toBeVisible()
-    expect(screen.getByText('Wireless Network')).toBeVisible()
   })
 })

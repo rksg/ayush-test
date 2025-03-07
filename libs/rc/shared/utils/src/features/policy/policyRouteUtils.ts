@@ -64,6 +64,7 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.DIRECTORY_SERVER]: 'directoryServer',
   [PolicyType.PORT_PROFILE]: 'portProfile',
   [PolicyType.SWITCH_PORT_PROFILE]: 'switchPortProfile',
+  [PolicyType.IPSEC]: 'ipsec',
   [PolicyType.SSO_SAML]: 'ssoSaml'
 }
 

@@ -204,6 +204,7 @@ export const AAAServerTable = (props: {
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
     label: $t({ defaultMessage: 'Add {serverType}' }, { serverType: $t(serversDisplayText[type]) }),
     disabled: cliApplied,
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAaaServer)],
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     onClick: handleAddAction
   }]

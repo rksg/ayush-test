@@ -1,11 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                                                                                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                       from '@acx-ui/feature-toggle'
-import { CertificateTable }                                                                                                                                                             from '@acx-ui/rc/components'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery, useGetServerCertificatesQuery }                                                   from '@acx-ui/rc/services'
-import { CertificateCategoryType, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                 from '@acx-ui/react-router-dom'
+import { Button, PageHeader, Tabs }                                                                                                                                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                        from '@acx-ui/feature-toggle'
+import { CertificateTable }                                                                                                                                                                              from '@acx-ui/rc/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery, useGetServerCertificatesQuery }                                                                    from '@acx-ui/rc/services'
+import { CertificateCategoryType, CertificateUrls, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                  from '@acx-ui/react-router-dom'
+import { getOpsApi }                                                                                                                                                                                     from '@acx-ui/utils'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
 import CertificateTemplateTable  from '../CertificateTemplateTable/CertificateTemplateTable'
@@ -76,6 +77,18 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
       getPolicyRoutePath({ type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE })
   }
 
+  const rbacOpsMapping: Record<CertificateCategoryType, string[]> = {
+    /* eslint-disable max-len */
+    [CertificateCategoryType.CERTIFICATE_TEMPLATE]: [getOpsApi(CertificateUrls.addCertificateTemplate)],
+    /* eslint-disable max-len */
+    [CertificateCategoryType.CERTIFICATE_AUTHORITY]: [getOpsApi(CertificateUrls.addCA), getOpsApi(CertificateUrls.addSubCA)],
+    /* eslint-disable max-len */
+    [CertificateCategoryType.CERTIFICATE]: [getOpsApi(CertificateUrls.generateCertificatesToIdentity)],
+    /* eslint-disable max-len */
+    [CertificateCategoryType.SERVER_CERTIFICATES]: [getOpsApi(CertificateUrls.generateClientServerCertificate), getOpsApi(CertificateUrls.uploadCertificate)]
+  }
+
+
   const onTabChange = (tab: string) => {
     navigate(tabsPathMapping[tab as CertificateCategoryType])
   }
@@ -94,6 +107,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
           <TenantLink
             to={buttonLinkMapping[props.tabKey]}
             scopeKey={getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE)}
+            rbacOpsIds={rbacOpsMapping[props.tabKey]}
           >
             <Button key='configure' type='primary'>{buttonTextMapping[props.tabKey]}</Button>
           </TenantLink>

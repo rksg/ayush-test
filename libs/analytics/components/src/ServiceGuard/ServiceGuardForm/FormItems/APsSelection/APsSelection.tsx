@@ -9,14 +9,14 @@ import { System, SystemMap, useSystems }                          from '@acx-ui/
 import { defaultNetworkPath, meetVersionRequirements, nodeTypes } from '@acx-ui/analytics/utils'
 import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
-import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
+import { FilterListNode, DateRange, PathNode, NetworkNode }       from '@acx-ui/utils'
 
-import { APsSelectionInput }                                                                           from '../../../../APsSelectionInput'
-import { isAPListNodes, isNetworkNodes }                                                               from '../../../../APsSelectionInput/types'
-import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
-import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { ClientType as ClientTypeEnum }                                                                from '../../../types'
-import { ClientType }                                                                                  from '../ClientType'
+import { APsSelectionInput }                                                              from '../../../../APsSelectionInput'
+import { isAPListNodes, isNetworkNodes }                                                  from '../../../../APsSelectionInput/types'
+import { getNetworkFilterData }                                                           from '../../../../NetworkFilter'
+import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery } from '../../../../NetworkFilter/services'
+import { ClientType as ClientTypeEnum }                                                   from '../../../types'
+import { ClientType }                                                                     from '../ClientType'
 
 
 import { DeviceRequirementsType, deviceRequirements } from './deviceRequirements'

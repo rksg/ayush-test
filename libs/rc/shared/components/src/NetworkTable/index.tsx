@@ -171,6 +171,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
                   })}
                   placement='right'
                   iconStyle={{
+                    position: 'absolute',
                     height: '16px',
                     width: '16px',
                     marginBottom: '-3px',

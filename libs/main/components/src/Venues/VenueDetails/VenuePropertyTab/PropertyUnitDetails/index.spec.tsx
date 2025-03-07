@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }                                                 from '@acx-ui/react-router-dom'
-import { Provider }                                                                from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen,  waitFor, within }                 from '@acx-ui/test-utils'
+import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }                                                                     from '@acx-ui/react-router-dom'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen,  waitFor, within }                                     from '@acx-ui/test-utils'
 
 
 import { PropertyUnitDetails } from './index'
@@ -25,7 +25,8 @@ const unitData = {
   guestPersonaId: 'guestPersonaId123',
   resident: {
     name: 'Test Resident Name'
-  }
+  },
+  status: PropertyUnitStatus.ENABLED
 }
 
 const personaData = {
@@ -143,7 +144,7 @@ describe('Property Unit Details', () => {
 
     await screen.findByText('Test Venue')
     await screen.findByText('Unit Details')
-    screen.getByRole('button', { name: 'Suspend' })
+    await screen.findByRole('button', { name: 'Suspend' })
     screen.getByRole('button', { name: 'View Portal' })
     screen.getByRole('button', { name: 'Configure' })
     screen.getByRole('button', { name: 'Add Identity Association' })
@@ -154,7 +155,7 @@ describe('Property Unit Details', () => {
       <PropertyUnitDetails />
     </Provider></Router>)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Suspend' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Suspend' }))
     await screen.findByText('Suspend "Test Venue"?')
     const dialog = screen.getByRole('dialog')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Suspend' }))

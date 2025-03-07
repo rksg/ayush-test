@@ -2763,3 +2763,117 @@ export const mockedMacRegistrationPools = {
   numberOfElements: 1,
   empty: false
 }
+
+export const mockIdentityGroupQuery = {
+  totalElements: 4,
+  totalPages: 1,
+  size: 2000,
+  content: [
+    {
+      id: 'd613141c-780f-4296-8795-4289489a73a7',
+      name: 'DPSK_auto-generated-from-dpsk_d6131',
+      description: null,
+      dpskPoolId: '3afaeffc909e468691045ac499f02504',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-01-13T10:24:18.603153Z',
+      updatedAt: '2025-01-28T05:17:50.486872Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/d613141c-780f-4296-8795-4289489a73a7'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 1
+    },
+    {
+      id: '68c6f030-2aa9-4911-b116-7c50cf17f08c',
+      name: 'Identity_Group_68c6f030-2aa9-4911-b116-7c50cf17f08c',
+      description: null,
+      dpskPoolId: null,
+      macRegistrationPoolId: '752bbef5-a645-4cb0-861b-545843cfa6f9',
+      propertyId: null,
+      createdAt: '2025-01-09T06:10:38.81519Z',
+      updatedAt: '2025-01-20T13:19:54.531194Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/68c6f030-2aa9-4911-b116-7c50cf17f08c'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 0
+    },
+    {
+      id: '0d973a0e-15e1-46cb-884a-d3d04bdc8db8',
+      name: 'IG-1',
+      description: null,
+      dpskPoolId: '317a063e01c44467871b9a28a42bcdd6',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-02-26T16:47:45.081437Z',
+      updatedAt: '2025-02-26T17:03:18.620709Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/0d973a0e-15e1-46cb-884a-d3d04bdc8db8'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 11
+    },
+    {
+      id: '4e548bc7-e473-49eb-98c8-617de8ca516a',
+      name: 'IG-2',
+      description: null,
+      dpskPoolId: null,
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-02-26T16:52:58.297587Z',
+      updatedAt: '2025-02-26T16:52:58.297587Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/4e548bc7-e473-49eb-98c8-617de8ca516a'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 5
+    }
+  ],
+  number: 0,
+  sort: {
+    empty: false,
+    unsorted: false,
+    sorted: true
+  },
+  last: true,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 2000,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: true
+    },
+    offset: 0,
+    unpaged: false,
+    paged: true
+  },
+  first: true,
+  numberOfElements: 4,
+  empty: false
+}
