@@ -2524,7 +2524,7 @@ export function EditPortDrawer ({
         })}
 
         { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b &&
-          portSecurity && <Table
+          portSecurity && !isMultipleEdit && <Table
           rowKey='id'
           columns={stickyMacAclsColumns}
           onChange={stickyMacAclsQuery.handleTableChange}
