@@ -22,7 +22,7 @@ export interface PropertyUnitIdentityDrawerProps {
   groupId?: string,
   venueId?: string,
   unitId?: string,
-  identityCount: number | 0
+  identityCount?: number | 0
 }
 
 export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerProps) {
