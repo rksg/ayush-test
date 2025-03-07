@@ -112,7 +112,8 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   VenueLanPortSettings,
-  UnitLinkedPersona
+  UnitLinkedPersona,
+  PersonaAssociation
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2126,6 +2127,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getUnitsLinkedIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getUnitsLinkedIdentities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<PersonaAssociation>) {
+        return transferToTableResult<PersonaAssociation>(result)
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : CommonUrlsInfo
@@ -2537,6 +2551,7 @@ export const {
   useAddUnitLinkedIdentityMutation,
   useDeletePropertyUnitsMutation,
   useNotifyPropertyUnitsMutation,
+  useGetUnitsLinkedIdentitiesQuery,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,

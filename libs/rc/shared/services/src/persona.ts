@@ -257,32 +257,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       providesTags: [{ type: 'Persona', id: 'ID' }]
     }),
-    getPersonaIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaIdentities, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewTableResult<PersonaAssociation>) {
-        return transferToTableResult<PersonaAssociation>(result)
-      },
-      providesTags: [{ type: 'Persona', id: 'ID' }]
-    }),
-    getPropertyIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.getPropertyIdentities, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewTableResult<PersonaAssociation>) {
-        return transferToTableResult<PersonaAssociation>(result)
-      },
-      providesTags: [{ type: 'Persona', id: 'ID' }]
-    }),
     searchPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
@@ -436,7 +410,6 @@ export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
   useLazyGetPersonaByIdQuery,
-  useGetPersonaIdentitiesQuery,
   useGetPropertyIdentitiesQuery,
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,

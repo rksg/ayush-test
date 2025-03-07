@@ -6,7 +6,7 @@ import { Drawer, Loader, showActionModal, Table, TableProps } from '@acx-ui/comp
 import {
   useSearchPersonaListQuery,
   useAddUnitLinkedIdentityMutation,
-  useGetPropertyIdentitiesQuery,
+  useGetUnitsLinkedIdentitiesQuery,
   useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -29,7 +29,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
   const { $t } = useIntl()
   const { visible, onClose, groupId, venueId, unitId, identityCount } = props
   const settingsId = 'property-units-identity-table'
-  const identities = new Map(useGetPropertyIdentitiesQuery({ params: { venueId },
+  const identities = new Map(useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
   }).data?.data.map(identity => [identity.personaId,identity.unitId]))
   const units = new Map(useGetPropertyUnitListQuery({
@@ -51,7 +51,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
   }
 
   const onSave = async () => {
-    if ((identityCount?identityCount:0 + selectedRows.length) > 10) {
+    if (identityCount?identityCount:0 + selectedRows.length > 10) {
       (showActionModal({
         type: 'error',
         content: $t({

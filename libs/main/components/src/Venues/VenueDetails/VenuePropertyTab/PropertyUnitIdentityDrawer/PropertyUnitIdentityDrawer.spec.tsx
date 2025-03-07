@@ -46,7 +46,7 @@ describe('Property Unit Identity Drawer', () => {
           addUnitIdentity()
           return res(ctx.json(mockedUnitLinkedIdentity))
         }),
-      rest.post(PersonaUrls.getPropertyIdentities.url,
+      rest.post(PropertyUrlsInfo.getUnitsLinkedIdentities.url,
         (req, res, ctx) => {
           getPropertyIdentities()
           return res(ctx.json(personaIds))

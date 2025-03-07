@@ -25,7 +25,8 @@ type PropertyUrlType =
   'getResidentPortalFavicon' |
   'deleteResidentPortalLogo' |
   'deleteResidentPortalFavicon' |
-  'bulkUpdateUnitProfile'
+  'bulkUpdateUnitProfile' |
+  'getUnitsLinkedIdentities'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -165,5 +166,13 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/qosProfileAssignments/:profileId',
     opsApi: 'PUT:/venues/{id}/units/qosProfileAssignments/{id}'
+  },
+  getUnitsLinkedIdentities: {
+    method: 'post',
+    url: '/venues/:venueId/units/identities/query',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   }
 }
