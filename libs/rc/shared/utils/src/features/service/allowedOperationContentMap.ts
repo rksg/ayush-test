@@ -232,16 +232,21 @@ export const policyAllowedOperationMap = {
   [PolicyType.ADAPTIVE_POLICY]: {
     [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicy),
       getOpsApi(RulesManagementUrlsInfo.addConditions)],
-    [PolicyOperation.EDIT]: [getOpsApi(RulesManagementUrlsInfo.updatePolicy),
+    [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicy),
       getOpsApi(RulesManagementUrlsInfo.addConditions),
       getOpsApi(RulesManagementUrlsInfo.deleteConditions),
-      getOpsApi(RulesManagementUrlsInfo.updateConditions)],
+      getOpsApi(RulesManagementUrlsInfo.updateConditions)]],
     [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
     [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPoliciesByQuery)]
   },
   [PolicyType.ADAPTIVE_POLICY_SET]: {
-    [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicySet)],
-    [PolicyOperation.EDIT]: [getOpsApi(RulesManagementUrlsInfo.updatePolicySet)],
+    [PolicyOperation.CREATE]: [[getOpsApi(RulesManagementUrlsInfo.createPolicySet),
+      getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority)
+    ]],
+    [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicySet),
+      getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority),
+      getOpsApi(RulesManagementUrlsInfo.removePrioritizedAssignment)
+    ]],
     [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
     [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPolicySetsByQuery)]
   }
