@@ -245,7 +245,7 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.NETWORK] && <>
           <Route path='networks/wireless/add' element={<NetworkForm />} />
           <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
-          <Route path='networks/wireless/:networkId/network-details/:activeTab/:settings'
+          <Route path='networks/wireless/:networkId/network-details/:activeTab/'
             element={<NetworkDetails />}
           />
         </>}
