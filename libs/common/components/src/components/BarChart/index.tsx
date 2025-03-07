@@ -83,12 +83,19 @@ export function BarChart<TChartData extends BarChartData>
   useLegendSelectChanged(eChartsRef)
   const getBarColors = () => {
     const defaultColors = qualitativeColorSet()
-    const dataCount = data.source.length
+    const multiSeries = data.seriesEncode.length > 1
+    const dataCount = multiSeries ? data.seriesEncode.length : data.source.length
     if (!barColors) {
+      let colors
       if(dataCount <= defaultColors.length && dataCount >= 1) {
-        return defaultColors.slice(0, dataCount).reverse()
+        colors = defaultColors.slice(0, dataCount)
       } else {
-        return defaultColors.reverse()
+        colors = defaultColors
+      }
+      if(multiSeries) {
+        return colors
+      } else {
+        return colors.reverse()
       }
     } else {
       return barColors
