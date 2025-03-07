@@ -39,7 +39,8 @@ export interface EntitlementSummaries {
   isTrial: boolean,
   licenseType: EntitlementDeviceType,
   remainingLicenses: number,
-  usageType: string
+  usageType: string,
+  remainingQuantity: number
 }
 
 export interface RbacEntitlementSummary {

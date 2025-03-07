@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                         from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
+import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                                                                from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -59,6 +59,7 @@ import { AddRecCustomer }                          from './pages/MspRecCustomers
 import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
 import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
+import { NewAssignMspLicense }                     from './pages/Subscriptions/NewAssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
 export function Init () {
@@ -171,13 +172,16 @@ export default function MspRoutes () {
 }
 
 function CustomersRoutes () {
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   return rootRoutes(
     <Route>
       <Route path='*' element={<PageNotFound />} />
       <Route path=':tenantId/v/dashboard/mspCustomers'>
         <Route index element={<MspCustomers />} />
-        <Route path='create' element={<ManageCustomer />} />
-        <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} />
+        <Route path='create'
+          element={solutionTokenFFToggled ? <NewManageCustomer /> : <ManageCustomer />} />
+        <Route path=':action/:status/:mspEcTenantId'
+          element={solutionTokenFFToggled ? <NewManageCustomer /> : <ManageCustomer />} />
       </Route>
       <Route path=':tenantId/v/dashboard/mspRecCustomers'>
         <Route index element={<MspRecCustomers />} />
@@ -186,13 +190,23 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/integrators'>
         <Route index element={<Integrators />} />
-        <Route path='create' element={<ManageIntegrator />} />
-        <Route path=':action/:type/:mspEcTenantId' element={<ManageIntegrator />} />
+        <Route path='create'
+          element={solutionTokenFFToggled
+            ? <NewManageIntegrator />
+            : <ManageIntegrator />} />
+        <Route path=':action/:type/:mspEcTenantId'
+          element={solutionTokenFFToggled
+            ? <NewManageIntegrator />
+            : <ManageIntegrator />} />
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
         <Route path=':activeTab' element={<Subscriptions />} />
-        <Route path='assign' element={<AssignMspLicense />} />
+        <Route path='assign'
+          element={
+            solutionTokenFFToggled
+              ? <NewAssignMspLicense />
+              : <AssignMspLicense />} />
       </Route>
     </Route>
   )
