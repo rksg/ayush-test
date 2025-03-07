@@ -7,8 +7,9 @@ import { Provider }                                                             
 import { fireEvent, mockServer, render, screen,  waitFor, within }                        from '@acx-ui/test-utils'
 
 
-import { PropertyUnitDetails } from './index'
 import { mockPropertyUnitList } from '../../../__tests__/fixtures'
+
+import { PropertyUnitDetails } from './index'
 
 const personaIds = { data: [
   { unitId: '', personaType: '', personaId: '123', links: [] },

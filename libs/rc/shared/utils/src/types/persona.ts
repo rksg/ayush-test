@@ -41,8 +41,7 @@ export interface Persona {
   meteringProfileId?: string,
   expirationEpoch?: number | null,
   expirationDate?: string | null,
-  unit?: string | null
-  expirationDate?: string | null,
+  unit?: string | null,
   phoneNumber?: string
 }
 
