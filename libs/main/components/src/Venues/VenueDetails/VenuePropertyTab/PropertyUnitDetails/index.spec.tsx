@@ -1,13 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }                                                                     from '@acx-ui/react-router-dom'
-import { Provider }                                                                                    from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen,  waitFor, within }                                     from '@acx-ui/test-utils'
+import { PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }                                                        from '@acx-ui/react-router-dom'
+import { Provider }                                                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen,  waitFor, within }                        from '@acx-ui/test-utils'
 
 
 import { PropertyUnitDetails } from './index'
+import { mockPropertyUnitList } from '../../../__tests__/fixtures'
 
 const personaIds = { data: [
   { unitId: '', personaType: '', personaId: '123', links: [] },
@@ -127,12 +128,18 @@ describe('Property Unit Details', () => {
     })
     mockServer.use(
       rest.post(
-        PersonaUrls.searchPersonaList.url.split('?')[0],
+        PropertyUrlsInfo.getUnitsLinkedIdentities.url.split('?')[0],
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         PropertyUrlsInfo.getUnitById.url,
         (_, res, ctx) => res(ctx.json(unitData))
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyUnitList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockPropertyUnitList))
+        }
       )
     )
   })
