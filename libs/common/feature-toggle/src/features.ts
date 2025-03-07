@@ -302,7 +302,8 @@ export enum Features {
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
-  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle'
+  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
+  SWITCH_SUPPORT_ICX8100X_TOGGLE = 'switch-support-icx8100x-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

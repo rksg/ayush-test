@@ -52,6 +52,7 @@ import {
   SWITCH_SERIAL_PATTERN_INCLUDED_8100,
   SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
   SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV_8100X,
   FirmwareSwitchVenueVersionsV1002,
   SwitchFirmwareModelGroup,
   getSwitchFwGroupVersionV1002
@@ -87,6 +88,7 @@ export function SwitchForm () {
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -457,6 +459,8 @@ export function SwitchForm () {
   }
 
   const switchSerialPatterns = [
+    // eslint-disable-next-line max-len
+    { condition: isSupport8100 && isSupport8200AV && isSupport8100X, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV_8100X },
     // eslint-disable-next-line max-len
     { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
     { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },

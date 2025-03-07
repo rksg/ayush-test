@@ -61,6 +61,7 @@ import {
   SWITCH_SERIAL_PATTERN_INCLUDED_8100,
   SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
   SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV_8100X,
   SwitchTable,
   SwitchStatusEnum,
   isOperationalSwitch,
@@ -114,14 +115,17 @@ export type SwitchModelParams = {
   serialNumber: string;
   isSupport8200AV: boolean;
   isSupport8100: boolean;
+  isSupport8100X: boolean;
   activeSerialNumber?: string;
 }
 
 export const validatorSwitchModel = ( props: SwitchModelParams ) => {
-  const { serialNumber, isSupport8200AV, isSupport8100, activeSerialNumber } = props
+  const { serialNumber, isSupport8200AV, isSupport8100, isSupport8100X, activeSerialNumber } = props
   const { $t } = getIntl()
 
   const switchSerialPatterns = [
+    // eslint-disable-next-line max-len
+    { condition: isSupport8100 && isSupport8200AV && isSupport8100X, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV_8100X },
     // eslint-disable-next-line max-len
     { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
     { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
@@ -178,6 +182,7 @@ export function StackForm () {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_TOGGLE)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -712,6 +717,7 @@ export function StackForm () {
                   serialNumber: value,
                   isSupport8200AV: isSupport8200AV,
                   isSupport8100: isSupport8100,
+                  isSupport8100X: isSupport8100X,
                   activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
                 }
                 return validatorSwitchModel(switchModelParams)}
