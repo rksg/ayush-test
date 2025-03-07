@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
-
 import { Button, Form, Steps } from 'antd'
 import { useIntl }             from 'react-intl'
 
-
 import { cssStr, showActionModal }                                       from '@acx-ui/components'
-import { OnboardingAssistantDog }                                        from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { DogAndPerson, OnboardingAssistantDog }                          from '@acx-ui/icons'
+import { RuckusAiDog }                                                   from '@acx-ui/icons-new'
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                    from '@acx-ui/react-router-dom'
 
 import BasicInformationPage    from './BasicInformationPage'
 import Congratulations         from './Congratulations'
@@ -28,6 +29,9 @@ export enum RuckusAiStepsEnum {
 
 export default function RuckusAiButton () {
   const { $t } = useIntl()
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
+
   const [basicFormRef] = Form.useForm()
 
   const [visible, setVisible] = useState(false)
@@ -115,12 +119,10 @@ export default function RuckusAiButton () {
   const renderFooter = function () {
     switch (step) {
       case RuckusAiStepsEnum.WELCOME:
-        return <Button key='next'
+        return isCanvasEnabled ? <div style={{ height: '26px' }}/> : <Button key='next'
           type='primary'
           loading={isLoading}
-          onClick={async () => {
-            setStep(RuckusAiStepsEnum.VERTICAL)
-          }}>
+          onClick={startOnboardingAssistant}>
           {$t({ defaultMessage: 'Start' })}
         </Button>
       case RuckusAiStepsEnum.VERTICAL:
@@ -253,13 +255,33 @@ export default function RuckusAiButton () {
     setConfigResponse({})
     setSelectedType('')
   }
+
+  const canvasLink = useTenantLink('/canvas')
+  const navigate = useNavigate()
+
+  const startOnboardingAssistant = () => {
+    setStep(RuckusAiStepsEnum.VERTICAL)
+  }
+
+  const goChatCanvas = () => {
+    navigate(canvasLink)
+    setVisible(false)
+  }
+
   return <>
-    <UI.ButtonSolid
-      icon={<OnboardingAssistantDog />}
+    { isCanvasEnabled ? <UI.AiButton
       onClick={() => {
         setVisible(!visible)
       }}
-    />
+    ><RuckusAiDog /></UI.AiButton>
+      : <UI.ButtonSolid
+        icon={<OnboardingAssistantDog />}
+        onClick={() => {
+          setVisible(!visible)
+        }}
+      />
+    }
+
     <UI.GptModal
       needBackground={step === RuckusAiStepsEnum.WELCOME || step === RuckusAiStepsEnum.FINISHED}
       titleType={step === RuckusAiStepsEnum.CONFIGURATION ? 'wizard' : 'default'}
@@ -273,10 +295,34 @@ export default function RuckusAiButton () {
       destroyOnClose={true}
       children={
         <>
+          {isCanvasEnabled && step === RuckusAiStepsEnum.WELCOME && <>
+            <DogAndPerson style={{
+              position: 'absolute',
+              bottom: '-1px',
+              left: '25px',
+              zIndex: '2'
+            }} />
+            <div style={{
+              position: 'absolute',
+              fontSize: '12px',
+              bottom: '20px',
+              right: '40px',
+              zIndex: '2'
+            }}>
+              {$t({ defaultMessage: 'AI-Powered by' })}
+              <span style={{ fontWeight: 600, paddingLeft: '4px' }}>
+                {$t({ defaultMessage: 'Mlisa' })}
+              </span>
+            </div>
+          </>}
           <Form form={basicFormRef}
             layout={'vertical'}
             labelAlign='left'>
-            {step === RuckusAiStepsEnum.WELCOME && <WelcomePage />}
+            {step === RuckusAiStepsEnum.WELCOME && <WelcomePage
+              startOnboardingAssistant={startOnboardingAssistant}
+              goChatCanvas={goChatCanvas}
+            />
+            }
             {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage
               selectedType={selectedType}
               setSelectedType={setSelectedType} />}
