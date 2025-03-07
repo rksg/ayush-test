@@ -100,7 +100,7 @@ describe('Identity Provider Form - NetworkIdentifierForm', () => {
     render(renderElement)
 
     expect(await screen.findByText('Provider Settings')).toBeVisible()
-    const btn = await screen.findByRole('button', { name: /Import from Identity Provider/ })
+    const btn = await screen.findByRole('button', { name: /Import from a Known Identity Provider/ })
     expect(btn).toBeVisible()
     await userEvent.click(btn)
 

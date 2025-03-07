@@ -415,6 +415,24 @@ export const validationMessages = {
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'
   }),
+  invalidVlanRange: defineMessage({
+    defaultMessage: 'Please enter a valid range.',
+    description: 'Validation - validate vlan range'
+  }),
+  invalidVlanRangeRegExp: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Invalid format. Spaces, punctuation marks etc., are not allowed. Please use commas to separate VLANs, or use \'-\' to define the range or a combination of both.',
+    description: 'Validation - validate vlan range format'
+  }),
+  originalVlanNotIncluded: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'The VLAN range above does not include the VLAN selected from the table. Select at least one VLAN from the range defined above and try editing again.',
+    description: 'Validation - validate vlan range does not include the original VLAN'
+  }),
+  vlanRangeLimitExceeded: defineMessage({
+    defaultMessage: 'Can\'t have more than 1024 VLANs at a time',
+    description: 'Validation - VLAN range exceeds the allowed limit (1024 VLANs at a time)'
+  }),
   subnetOverlapping: defineMessage({
     defaultMessage: 'The ports have overlapping subnets',
     description: 'Validation - subnet range'

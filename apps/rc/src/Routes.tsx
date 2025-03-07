@@ -25,6 +25,7 @@ import {
   EditEthernetPortProfile,
   EthernetPortProfileDetail,
   IdentityProviderForm,
+  IpsecForm,
   LbsServerProfileForm,
   MacRegistrationListForm,
   NetworkForm,
@@ -125,80 +126,85 @@ import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosB
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                        from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
+import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
+import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
 import LbsServerProfileDetail                       from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
 import LbsServerProfileTable                        from './pages/Policies/LbsServerProfile/LbsServerProfileTable/LbsServerProfileTable'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
-import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MyPolicies                                                       from './pages/Policies/MyPolicies'
-import PortProfile                                                      from './pages/Policies/PortProfile'
-import CreatePortProfile                                                from './pages/Policies/PortProfile/create'
-import SwitchPortProfileDetail                                          from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
-import SwitchPortProfileForm                                            from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
-import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
-import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
-import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
-import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
-import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
-import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
-import SsoSaml                                                          from './pages/Policies/SsoSaml'
-import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
-import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
-import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
-import TunnelProfileDetail                                              from './pages/Policies/TunnelProfile/TunnelProfileDetail'
-import TunnelProfileTable                                               from './pages/Policies/TunnelProfile/TunnelProfileTable'
-import VLANPoolTable                                                    from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
-import { WifiOperatorDetailView }                                       from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
-import WifiOperatorTable                                                from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
-import WorkflowDetails                                                  from './pages/Policies/Workflow/WorkflowDetail'
-import WorkflowPageForm                                                 from './pages/Policies/Workflow/WorkflowPageForm'
-import WorkflowTable                                                    from './pages/Policies/Workflow/WorkflowTable'
-import DHCPTable                                                        from './pages/Services/DHCP/DHCPTable/DHCPTable'
-import AddDHCP                                                          from './pages/Services/DHCP/Edge/AddDHCP'
-import EdgeDHCPDetail                                                   from './pages/Services/DHCP/Edge/DHCPDetail'
-import EdgeDhcpTable                                                    from './pages/Services/DHCP/Edge/DHCPTable'
-import EditDhcp                                                         from './pages/Services/DHCP/Edge/EditDHCP'
-import DpskDetails                                                      from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskTable                                                        from './pages/Services/Dpsk/DpskTable/DpskTable'
-import AddFirewall                                                      from './pages/Services/EdgeFirewall/AddFirewall'
-import EditFirewall                                                     from './pages/Services/EdgeFirewall/EditFirewall'
-import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
-import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
-import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
-import { EdgeTnmDetails }                                               from './pages/Services/EdgeTnm/EdgeTnmDetails'
-import { EdgeTnmServiceTable }                                          from './pages/Services/EdgeTnm/EdgeTnmServiceTable'
-import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
-import EdgeMdnsProxyDetails                                             from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
-import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
-import EditEdgeMdnsProxy                                                from './pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy'
-import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
-import MyServices                                                       from './pages/Services/MyServices'
-import NetworkSegAuthDetail                                             from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
-import NetworkSegAuthForm                                               from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
-import NetworkSegAuthTable                                              from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
-import AddPersonalIdentityNetwork                                       from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
-import EditPersonalIdentityNetwork                                      from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
-import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
-import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
-import PersonalIdentityNetworkTable                                     from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
-import PersonalIdentityNetworkTableEnhanced                             from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
-import PortalServiceDetail                                              from './pages/Services/Portal/PortalDetail'
-import PortalTable                                                      from './pages/Services/Portal/PortalTable'
-import ResidentPortalDetail                                             from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
-import ResidentPortalTable                                              from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
-import SelectServiceForm                                                from './pages/Services/SelectServiceForm'
-import ServiceCatalog                                                   from './pages/Services/ServiceCatalog'
-import WifiCallingTable                                                 from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                                                         from './pages/Timeline'
-import PersonaPortal                                                    from './pages/Users/Persona'
-import PersonaDetails                                                   from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                                              from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList                                                 from './pages/Users/Switch/ClientList'
-import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
-import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
-import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
+import MacRegistrationListsTable             from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MyPolicies                            from './pages/Policies/MyPolicies'
+import PortProfile                           from './pages/Policies/PortProfile'
+import CreatePortProfile                     from './pages/Policies/PortProfile/create'
+import SwitchPortProfileDetail               from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
+import SwitchPortProfileForm                 from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
+import SelectPolicyForm                      from './pages/Policies/SelectPolicyForm'
+import SnmpAgentDetail                       from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
+import SnmpAgentForm                         from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
+import SnmpAgentTable                        from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
+import SoftGreDetail                         from './pages/Policies/SoftGre/SoftGreDetail'
+import SoftGreTable                          from './pages/Policies/SoftGre/SoftGreTable'
+import SsoSaml                               from './pages/Policies/SsoSaml'
+import SyslogTable                           from './pages/Policies/Syslog/SyslogTable/SyslogTable'
+import AddTunnelProfile                      from './pages/Policies/TunnelProfile/AddTunnelProfile'
+import EditTunnelProfile                     from './pages/Policies/TunnelProfile/EditTunnelProfile'
+import TunnelProfileDetail                   from './pages/Policies/TunnelProfile/TunnelProfileDetail'
+import TunnelProfileTable                    from './pages/Policies/TunnelProfile/TunnelProfileTable'
+import VLANPoolTable                         from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
+import { WifiOperatorDetailView }            from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
+import WifiOperatorTable                     from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                       from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                      from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                         from './pages/Policies/Workflow/WorkflowTable'
+import DHCPTable                             from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                               from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDHCPDetail                        from './pages/Services/DHCP/Edge/DHCPDetail'
+import EdgeDhcpTable                         from './pages/Services/DHCP/Edge/DHCPTable'
+import EditDhcp                              from './pages/Services/DHCP/Edge/EditDHCP'
+import DpskDetails                           from './pages/Services/Dpsk/DpskDetail/DpskDetails'
+import DpskTable                             from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddFirewall                           from './pages/Services/EdgeFirewall/AddFirewall'
+import EditFirewall                          from './pages/Services/EdgeFirewall/EditFirewall'
+import FirewallDetail                        from './pages/Services/EdgeFirewall/FirewallDetail'
+import FirewallTable                         from './pages/Services/EdgeFirewall/FirewallTable'
+import { AddEdgeSdLan }                      from './pages/Services/EdgeSdLan/AddEdgeSdLan'
+import { EdgeSdLanDetail }                   from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
+import { EdgeSdLanTable }                    from './pages/Services/EdgeSdLan/EdgeSdLanTable'
+import { EditEdgeSdLan }                     from './pages/Services/EdgeSdLan/EditEdgeSdLan'
+import { EdgeTnmDetails }                    from './pages/Services/EdgeTnm/EdgeTnmDetails'
+import { EdgeTnmServiceTable }               from './pages/Services/EdgeTnm/EdgeTnmServiceTable'
+import AddEdgeMdnsProxy                      from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
+import EdgeMdnsProxyDetails                  from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
+import { EdgeMdnsProxyTable }                from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
+import EditEdgeMdnsProxy                     from './pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy'
+import MdnsProxyDetail                       from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm                         from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import MdnsProxyTable                        from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MyServices                            from './pages/Services/MyServices'
+import NetworkSegAuthDetail                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
+import NetworkSegAuthForm                    from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
+import NetworkSegAuthTable                   from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
+import AddPersonalIdentityNetwork            from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import EditPersonalIdentityNetwork           from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
+import PersonalIdentityNetworkDetail         from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
+import PersonalIdentityNetworkDetailEnhanced from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
+import PersonalIdentityNetworkTable          from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
+import PersonalIdentityNetworkTableEnhanced  from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
+import PortalServiceDetail                   from './pages/Services/Portal/PortalDetail'
+import PortalTable                           from './pages/Services/Portal/PortalTable'
+import ResidentPortalDetail                  from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
+import ResidentPortalTable                   from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
+import SelectServiceForm                     from './pages/Services/SelectServiceForm'
+import ServiceCatalog                        from './pages/Services/ServiceCatalog'
+import WifiCallingTable                      from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                              from './pages/Timeline'
+import PersonaPortal                         from './pages/Users/Persona'
+import PersonaDetails                        from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails                   from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList                      from './pages/Users/Switch/ClientList'
+import WifiClientDetails                     from './pages/Users/Wifi/ClientDetails'
+import { WifiClientList, WirelessTabsEnum }  from './pages/Users/Wifi/ClientList'
+import GuestManagerPage                      from './pages/Users/Wifi/GuestManagerPage'
 
 
 export default function RcRoutes () {
@@ -887,6 +893,7 @@ function PolicyRoutes () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1558,6 +1565,33 @@ function PolicyRoutes () {
               <DirectoryServerForm editMode={true} />
             </PolicyAuthRoute>
           } />
+      </>
+      }
+      {isIpsecEnabled && <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.IPSEC} oper={PolicyOperation.CREATE}>
+              <IpsecForm editMode={false} />
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.LIST })}
+          element={<IpsecTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.DETAIL })}
+          element={<IpsecDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.IPSEC} oper={PolicyOperation.EDIT}>
+              <IpsecForm editMode={true} />
+            </PolicyAuthRoute>
+          }
+        />
       </>
       }
       {<>

@@ -26,12 +26,12 @@ import {
   IntentListItem,
   Intent,
   failureCodes,
-  Metadata
+  Metadata,
+  IntentWlan
 } from './config'
 import { DisplayStates } from './states'
 import {
   Actions,
-  IntentWlan,
   parseTransitionGQLByAction,
   TransitionIntentItem
 } from './utils'
