@@ -11,7 +11,7 @@ import { mockServer, render } from '@acx-ui/test-utils'
 
 import { certList, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedsamlIpdProfileList } from '../__tests__/fixtures'
 
-import {  SsoSamlDetail } from '.'
+import {  SamlIdpDetail } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -21,7 +21,7 @@ jest.mock('react-router-dom', () => ({
 
 let params: { tenantId: string, policyId: string }
 const detailViewPath = '/:tenantId/' + getPolicyRoutePath({
-  type: PolicyType.SSO_SAML,
+  type: PolicyType.SAML_IDP,
   oper: PolicyOperation.DETAIL
 })
 
@@ -65,14 +65,13 @@ describe('SSO/SAML Detail', () => {
         CertificateUrls.getServerCertificates.url,
         (req, res, ctx) => res(ctx.json(certList))
       )
-
     )
   })
 
-  it('should create SSO/SAML profile successful', async () => {
+  it('should create SAML IdP profile successful', async () => {
     render(
       <Provider>
-        <SsoSamlDetail />
+        <SamlIdpDetail />
       </Provider>
       , { route: { path: detailViewPath, params } }
     )

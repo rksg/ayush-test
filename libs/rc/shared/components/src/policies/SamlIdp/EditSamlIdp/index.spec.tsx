@@ -12,7 +12,7 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { certList, mockCertName1, mockCertName2, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedsamlIpdProfileList } from '../__tests__/fixtures'
 
-import { EditSsoSaml } from '.'
+import { EditSamlIdp } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -22,7 +22,7 @@ jest.mock('react-router-dom', () => ({
 
 let params: { tenantId: string, policyId:string }
 const editViewPath = '/:tenantId/' + getPolicyRoutePath({
-  type: PolicyType.SSO_SAML,
+  type: PolicyType.SAML_IDP,
   oper: PolicyOperation.EDIT
 })
 
@@ -91,7 +91,7 @@ describe('Edit SSO/SAML', () => {
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <EditSsoSaml />
+        <EditSamlIdp />
       </Provider>
       , { route: { path: editViewPath, params } }
     )
@@ -108,7 +108,7 @@ describe('Edit SSO/SAML', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EditSsoSaml />
+        <EditSamlIdp />
       </Provider>
       ,{ route: { path: editViewPath, params } }
     )
@@ -117,7 +117,7 @@ describe('Edit SSO/SAML', () => {
     await user.click(certCombo)
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/policies/identityProvider/list`,
+      pathname: `/${params.tenantId}/t/policies/samlIdp/list`,
       hash: '',
       search: ''
     })
@@ -128,7 +128,7 @@ describe('Edit SSO/SAML', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EditSsoSaml />
+        <EditSamlIdp />
       </Provider>
       ,{ route: { path: editViewPath, params } }
     )

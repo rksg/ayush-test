@@ -14,9 +14,9 @@ import {
 import { SamlIdpProfileFormType } from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
 
-import { SsoSamlForm, requestPreProcess } from '../SsoSamlForm'
+import { SamlIdpForm, requestPreProcess } from '../SamlIdpForm'
 
-export const EditSsoSaml = () => {
+export const EditSamlIdp = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const [ updateSamlIdpProfile ] = useUpdateSamlIdpProfileMutation()
@@ -86,7 +86,7 @@ export const EditSsoSaml = () => {
 
   return (
     <Loader states={[{ isLoading }]}>
-      <SsoSamlForm
+      <SamlIdpForm
         title={$t({ defaultMessage: 'Edit SAML Identity Provider' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handleEditSamlIdpProfile}

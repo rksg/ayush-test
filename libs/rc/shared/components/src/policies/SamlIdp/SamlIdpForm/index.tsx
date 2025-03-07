@@ -14,7 +14,7 @@ import {
   PolicyOperation,
   PolicyType,
   SamlIdpProfileFormType,
-  SsoSamlMessages,
+  SamlIdpMessages,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   redirectPreviousPage
@@ -24,7 +24,7 @@ import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-do
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
 import CertificateDrawer                                   from '../../CertificateTemplate/Certificate/CertificateDrawer'
 
-interface SsoSamlFormProps {
+interface SamlIdpFormProps {
     title: string
     form: FormInstance
     submitButtonLabel: string
@@ -34,7 +34,7 @@ interface SsoSamlFormProps {
     isEmbedded?: boolean
   }
 
-export const SsoSamlForm = (props: SsoSamlFormProps) => {
+export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const { $t } = useIntl()
   const {
     title,
@@ -42,12 +42,11 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
     submitButtonLabel,
     onFinish,
     onCancel,
-    // isEditMode = false,
     isEmbedded = false
   } = props
 
   const tablePath = getPolicyRoutePath({
-    type: PolicyType.IDENTITY_PROVIDER,
+    type: PolicyType.SAML_IDP,
     oper: PolicyOperation.LIST
   })
   const navigate = useNavigate()
@@ -147,7 +146,7 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
                     {$t({ defaultMessage: 'Identity Provider (IdP) Metadata' })}
                     <Tooltip.Question
                     // eslint-disable-next-line max-len
-                      title={$t(SsoSamlMessages.METADATA_TEXTAREA) + '\n' + $t({ defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.' })}
+                      title={$t(SamlIdpMessages.METADATA_TEXTAREA) + '\n' + $t({ defaultMessage: 'Note: Importing metadata from a file will overwrite any existing configuration.' })}
                       placement='bottom'
                       iconStyle={{ width: 16, height: 16 }}
                     />
@@ -203,7 +202,7 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
                 <Space>
                   {$t({ defaultMessage: 'Require SAML requests to be signed' })}
                   <Tooltip.Question
-                    title={$t(SsoSamlMessages.AUTHN_REQUEST_TOGGLE)}
+                    title={$t(SamlIdpMessages.AUTHN_REQUEST_TOGGLE)}
                     placement='bottom'
                     iconStyle={{ width: 16, height: 16 }}
                   />
@@ -223,7 +222,7 @@ export const SsoSamlForm = (props: SsoSamlFormProps) => {
                 <Space >
                   {$t({ defaultMessage: 'Enable SAML Response Encryption' })}
                   <Tooltip.Question
-                    title={$t(SsoSamlMessages.RESPONSE_ENCRYPTION_TOGGLE)}
+                    title={$t(SamlIdpMessages.RESPONSE_ENCRYPTION_TOGGLE)}
                     placement='bottom'
                     iconStyle={{ width: 16, height: 16 }}
                   />
