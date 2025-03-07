@@ -75,7 +75,7 @@ export const SamlIdpProfileUrls: { [key: string]: ApiInfo } = {
     opsApi: 'GET:/samlIdpProfiles/{id}/serviceProviderMetadata',
     newApi: true,
     defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json'
+      Accept: 'text/xml'
     }
   }
 }
