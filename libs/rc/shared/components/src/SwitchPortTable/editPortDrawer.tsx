@@ -15,8 +15,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { PoeUsage }                from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PoeUsage }               from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -34,8 +34,8 @@ import {
   useSavePortsSettingMutation,
   useCyclePoeMutation,
   useLazyPortProfileOptionsForMultiSwitchesQuery,
-  useLazyGetSwitchMacAclsQuery,
-  useGetSwitchStickyMacAclsQuery
+  useGetSwitchStickyMacAclsQuery,
+  useGetSwitchMacAclsQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -324,7 +324,6 @@ export function EditPortDrawer ({
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
-  const [getSwitchMacAcls] = useLazyGetSwitchMacAclsQuery()
   const [getPortProfileOptionsForSwitches] =
   useLazyPortProfileOptionsForMultiSwitchesQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
@@ -357,6 +356,14 @@ export function EditPortDrawer ({
     enableRbac: isSwitchRbacEnabled
   }, {
     skip: !switchDetail?.venueId
+  })
+
+  const { data: macAclList } = useGetSwitchMacAclsQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: { sortField: 'name', pageSize: 10000 },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b || !switchDetail?.venueId
   })
 
   const stickyMacAclsColumns: TableProps<string[]>['columns'] = [
@@ -519,16 +526,6 @@ export function EditPortDrawer ({
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
-      const macAclList = await getSwitchMacAcls({
-        payload: {
-          sortField: 'name',
-          pageSize: 10000
-        },
-        params: { tenantId, switchId, venueId: switchDetail?.venueId },
-        enableRbac: isSwitchRbacEnabled,
-        skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b
-      }).unwrap()
-
       if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b) {
         portProfileOptions.current = await getPortProfileSelectList(selectedSwitchList)
       }
@@ -582,7 +579,7 @@ export function EditPortDrawer ({
       setVlanUsedByVe(vlanUsedByVe)
       setPortSpeedOptions(portSpeed)
       setAclsOptions(getAclOptions(aclUnion))
-      setMacAclsOptions(getMacAclOptions(macAclList.data))
+      setMacAclsOptions(getMacAclOptions(macAclList?.data))
       setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
