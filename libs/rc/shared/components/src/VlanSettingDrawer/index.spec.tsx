@@ -4,7 +4,7 @@ import { IntlProvider } from 'react-intl'
 
 import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
-import { VlanSettingDrawer } from '.'
+import { VlanSettingDrawer, checkVlanRange } from '.'
 
 jest.mock('./VlanPortsSetting/VlanPortsModal', () => ({
   VlanPortsModal: () => <div data-testid='VlanPortsModal' />
@@ -189,5 +189,54 @@ describe('VlanSettingDrawer', () => {
     expect(screen.getByText('Add VLAN')).toBeDefined()
     expect(await screen.findByText('Add Ports')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+})
+
+describe('checkVlanRange', () => {
+  it('should render correctly', () => {
+    expect(checkVlanRange('20')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true,isValidRange: true, isVlanDuplicate: false,
+      vlans: ['20']
+    })
+    expect(checkVlanRange('1-5, 10, 11-12')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: ['1', '2', '3', '4', '5', '10', '11', '12']
+    })
+    expect(checkVlanRange('1-20,22,30-100')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.arrayContaining(['22', '98', '99', '100'])
+    })
+    expect(checkVlanRange('1-20, 22, 30-100')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('1-10, 10-15')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: true,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('1-10, 100-1000000000')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: false, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('20-30', '20')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('1, 10,25-30, 20', '20')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('25-30', '20')).toStrictEqual({
+      isIncludeOriginal: false, isLengthValid: true, isValidRange: true, isVlanDuplicate: false,
+      vlans: ['25', '26', '27', '28', '29', '30']
+    })
+    expect(checkVlanRange('1-1025')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: false, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
+    expect(checkVlanRange('100-200, 1000-2000')).toStrictEqual({
+      isIncludeOriginal: true, isLengthValid: false, isValidRange: true, isVlanDuplicate: false,
+      vlans: expect.any(Array)
+    })
   })
 })
