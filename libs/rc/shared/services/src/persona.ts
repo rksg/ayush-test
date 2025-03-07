@@ -13,8 +13,7 @@ import {
   downloadFile,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TxStatus,
-  PersonaAssociation
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -327,15 +326,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    deletePersonaAssociation: build.mutation({
-      query: ({ params }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.deletePersonaAssociation, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Persona' }]
-    }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
@@ -410,12 +400,10 @@ export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
   useLazyGetPersonaByIdQuery,
-  useGetPropertyIdentitiesQuery,
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,
   useDeletePersonasMutation,
-  useDeletePersonaAssociationMutation,
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
   useImportPersonasMutation,

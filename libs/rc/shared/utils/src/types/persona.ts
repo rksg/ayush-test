@@ -27,7 +27,6 @@ export interface Persona {
   description?: string,
   tenantId?: string,
   email?: string,
-  phoneNumber?: string,
   vlan?: number,
   vni?: number,
   dpskGuid?: string,
@@ -88,11 +87,4 @@ export interface PersonaEthernetPort {
   portIndex: number,
   name?: string,
   createdAt?: string
-}
-
-export interface PersonaAssociation {
-  unitId: string,
-  personaType: string,
-  personaId: string,
-  links: string[]
 }

@@ -112,8 +112,7 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   VenueLanPortSettings,
-  UnitLinkedPersona,
-  PersonaAssociation
+  UnitLinkedPersona
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2095,16 +2094,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    addUnitLinkedIdentity: build.mutation<UnitLinkedPersona, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.addUnitLinkedIdentity, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
-    }),
     deletePropertyUnits: build.mutation<CommonResult, RequestPayload<string[]>>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         const requests = payload?.map(unitId => ({ params: { ...params, unitId } })) ?? []
@@ -2127,7 +2116,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getUnitsLinkedIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
+    getUnitsLinkedIdentities: build.query<TableResult<UnitLinkedPersona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.getUnitsLinkedIdentities, params)
         return {
@@ -2135,10 +2124,29 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: NewTableResult<PersonaAssociation>) {
-        return transferToTableResult<PersonaAssociation>(result)
+      transformResponse (result: NewTableResult<UnitLinkedPersona>) {
+        return transferToTableResult<UnitLinkedPersona>(result)
       },
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    removeUnitLinkedIdentity: build.mutation({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.removeUnitLinkedIdenity, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit' }]
+    }),
+    addUnitLinkedIdentity: build.mutation<UnitLinkedPersona, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addUnitLinkedIdentity, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -2548,10 +2556,11 @@ export const {
   useGetPropertyUnitListQuery,
   useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
-  useAddUnitLinkedIdentityMutation,
   useDeletePropertyUnitsMutation,
   useNotifyPropertyUnitsMutation,
   useGetUnitsLinkedIdentitiesQuery,
+  useAddUnitLinkedIdentityMutation,
+  useRemoveUnitLinkedIdentityMutation,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,

@@ -8,7 +8,7 @@ import { useIntl }   from 'react-intl'
 import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
 import {
-  useDeletePersonaAssociationMutation,
+  useRemoveUnitLinkedIdentityMutation,
   useGetUnitsLinkedIdentitiesQuery,
   useGetPropertyConfigsQuery,
   useGetVenueQuery,
@@ -67,7 +67,7 @@ export function PropertyUnitDetails () {
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const [updatePersona] = useUpdatePersonaMutation()
-  const [deletePersonaAssociation] = useDeletePersonaAssociationMutation()
+  const [deletePersonaAssociation] = useRemoveUnitLinkedIdentityMutation()
   const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
   const [residentPortalUrl, setResidentPortalUrl] = useState<string|undefined>(undefined)
   const [unitData, setUnitData] = useState<PropertyUnitFormFields>()
