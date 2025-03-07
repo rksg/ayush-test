@@ -21,7 +21,7 @@ export interface PropertyUnitIdentityDrawerProps {
   onClose: () => void,
   groupId?: string,
   venueId?: string,
-  unitId?: string
+  unitId?: string,
   identityCount: number | 0
 }
 
