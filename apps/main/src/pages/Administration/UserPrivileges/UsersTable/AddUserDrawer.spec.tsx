@@ -58,6 +58,11 @@ const mockedCloseDialog = jest.fn()
 const mockedAddAdminFn = jest.fn()
 const mockReqAdminsData = jest.fn()
 const services = require('@acx-ui/rc/services')
+const mobilePlaceHolder = '555'
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  PhoneInput: () => <input data-testid='PhoneInput' placeholder={mobilePlaceHolder}/>
+}))
 
 describe('Add user drawer component', () => {
   jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
