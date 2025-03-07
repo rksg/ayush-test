@@ -12,7 +12,8 @@ import {
   EthernetPortProfileUrls,
   ClientIsolationUrls,
   SoftGreUrls,
-  LanPortsUrls } from '@acx-ui/rc/utils'
+  LanPortsUrls, 
+  IpsecUrls} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -73,6 +74,32 @@ export const mockSoftgreViewModel = {
       disassociateClientEnabled: false,
       activations: [
 
+      ],
+      venueActivations: [
+        {
+          venueId: 'bad700975bbb42c1b8c7e5cdb764dfb6',
+          apModel: 'H320',
+          portId: 1,
+          apSerialNumbers: [
+
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const mockIpsecViewModel = {
+  fields: null,
+  totalCount: 0,
+  page: 1,
+  data: [
+    {
+      id: '668898664055502d800cf1ab7e7a6d04',
+      name: 'Ipsec1',
+      description: '',
+      serverAddress: '1.1.1.1',
+      activations: [
       ],
       venueActivations: [
         {
@@ -565,6 +592,9 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
         }),
       rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftgreViewModel))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockIpsecViewModel))
       }),
       rest.post(AaaUrls.queryAAAPolicyList.url,
         (_, res, ctx) => {

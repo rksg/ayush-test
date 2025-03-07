@@ -112,7 +112,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             }
           />
           {isIpSecOverNetworkEnabled && <Alert
-            data-testid={'enable-softgre-tunnel-ipsec-banner'}
+            data-testid={'enable-ipsec-banner'}
             showIcon={true}
             style={{ verticalAlign: 'middle' }}
             message={
