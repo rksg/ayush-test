@@ -45,7 +45,7 @@ import {
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
 
-import { VenueEditContext }                from '../..'
+import { VenueEditContext }               from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateOpsApiSwitcher,
