@@ -22,7 +22,7 @@ export interface PropertyUnitIdentityDrawerProps {
   groupId?: string,
   venueId?: string,
   unitId?: string
-  identityCount: number | 0
+  identityCount?: number
 }
 
 export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerProps) {
@@ -51,7 +51,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
   }
 
   const onSave = async () => {
-    if ((identityCount + selectedRows.length) > 10) {
+    if ((identityCount?identityCount:0 + selectedRows.length) > 10) {
       (showActionModal({
         type: 'error',
         content: $t({
