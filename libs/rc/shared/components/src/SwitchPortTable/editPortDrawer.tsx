@@ -1339,6 +1339,12 @@ export function EditPortDrawer ({
     })
   }
 
+  const onPortSecurityChange = (value: boolean) => {
+    if(value && !hasMultipleValue.includes('portSecurityMaxEntries')) {
+      form.setFieldValue('portSecurityMaxEntriesCheckbox', true)
+    }
+  }
+
   const onPortSecurityMaxEntriesChange = (value: number | null) => {
     if (value && switchDetail?.portSecurityMaxEntries &&
       value < switchDetail.portSecurityMaxEntries) {
@@ -2485,6 +2491,7 @@ export function EditPortDrawer ({
                     disabled={getFieldDisabled('portSecurity')}
                     className={getToggleClassName('portSecurity',
                       isMultipleEdit, hasMultipleValue)}
+                    onChange={onPortSecurityChange}
                   />
                 </Form.Item>
               </Space>
@@ -2494,34 +2501,36 @@ export function EditPortDrawer ({
         })}
 
         { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b &&
-          portSecurity && getFieldTemplate({
-          field: 'portSecurityMaxEntries',
-          content: <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='portSecurityMaxEntries'
-            label={$t(FIELD_LABEL.portSecurityMaxEntries)}
-            initialValue='1'
-            rules={[
-              {
-                type: 'number',
-                min: 1,
-                max: 64
-              }
-            ]}
-            validateFirst
-            children={
-              shouldRenderMultipleText({
-                field: 'portSecurityMaxEntries', ...commonRequiredProps
-              }) ? <MultipleText />
-                : <InputNumber
-                  min={1}
-                  max={64}
-                  data-testid='port-security-max-entries-input'
-                  style={{ width: '100%' }}
-                  onChange={onPortSecurityMaxEntriesChange}
-                />}
-          />
-        })}
+          portSecurity && <div style={isMultipleEdit ? { marginLeft: '25px' } : {}}>
+          {getFieldTemplate({
+            field: 'portSecurityMaxEntries',
+            content: <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='portSecurityMaxEntries'
+              label={$t(FIELD_LABEL.portSecurityMaxEntries)}
+              initialValue='1'
+              rules={[
+                {
+                  type: 'number',
+                  min: 1,
+                  max: 64
+                }
+              ]}
+              validateFirst
+              children={
+                shouldRenderMultipleText({
+                  field: 'portSecurityMaxEntries', ...commonRequiredProps
+                }) ? <MultipleText />
+                  : <InputNumber
+                    min={1}
+                    max={64}
+                    data-testid='port-security-max-entries-input'
+                    style={{ width: '100%' }}
+                    onChange={onPortSecurityMaxEntriesChange}
+                  />}
+            />
+          })}</div>
+        }
 
         { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b &&
           portSecurity && !isMultipleEdit && <Table
