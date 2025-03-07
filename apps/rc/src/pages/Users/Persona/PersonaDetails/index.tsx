@@ -219,7 +219,13 @@ function PersonaDetails () {
   </Button>,
   <Button
     type={'primary'}
-    onClick={() => setEditDrawerVisible(true)}
+    onClick={() => {
+      if (isIdentityRefactorEnabled) {
+        navigate(basePath.pathname.concat('/edit'))
+      } else {
+        setEditDrawerVisible(true)
+      }
+    }}
     rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
   >
     {$t({ defaultMessage: 'Configure' })}

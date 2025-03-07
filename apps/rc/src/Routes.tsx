@@ -48,7 +48,8 @@ import {
   AddSsoSaml,
   EditSsoSaml,
   SsoSamlDetail,
-  IdentityGroupForm
+  IdentityGroupForm,
+  IdentityForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -1659,9 +1660,28 @@ function UserRoutes () {
               </AuthRoute>}
           />
           <Route
+            path='users/identity-management/identity-group/identity/create'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.addPersona)]}>
+                <IdentityForm />
+              </AuthRoute>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/create'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.addPersona)]}>
+                <IdentityForm />
+              </AuthRoute>}
+          />
+          <Route
             path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
           >
             <Route index element={<Navigate replace to='./overview' />} />
+            <Route path='edit'
+              element={
+                <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}>
+                  <IdentityForm editMode={true} />
+                </AuthRoute>} />
             <Route path=':activeTab' element={<PersonaDetails />} />
           </Route>
         </> : <></>}

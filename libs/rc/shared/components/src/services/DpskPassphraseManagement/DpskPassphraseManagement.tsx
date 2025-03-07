@@ -70,7 +70,6 @@ interface DpskPassphraseManagementProps {
   }
 }
 
-// FIXME: Support disable some components by props value
 export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) {
   const { serviceId, tableQuery, disabledFeatures } = props
   const intl = useIntl()

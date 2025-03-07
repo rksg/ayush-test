@@ -78,6 +78,10 @@ export function PersonaContextForm (props: {
         ]}
         children={<PhoneInput
           name={'phoneNumber'}
+          callback={(value: string) => {
+            form.setFieldValue('phoneNumber', value)
+            form.validateFields(['phoneNumber'])
+          }}
           onTop={false}
         />}
       />
