@@ -9,8 +9,8 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
-import { useDashboardFilter }           from '@acx-ui/utils'
+import { useNavigateToPath, useParams }                         from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -52,9 +52,9 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 export function VenuesDashboardWidgetV2 () {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/venues/')
-
   const { venueIds } = useDashboardFilter()
 
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const query = isNewDashboardQueryEnabled ? useVenueSummariesQuery : useDashboardV2OverviewQuery
 
@@ -71,6 +71,13 @@ export function VenuesDashboardWidgetV2 () {
       ...rest
     })
   })
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.VENUES_DASHBOARD_WIDGET,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}

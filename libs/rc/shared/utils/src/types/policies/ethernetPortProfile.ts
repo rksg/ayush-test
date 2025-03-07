@@ -25,6 +25,7 @@ export interface EthernetPortProfileViewData {
     venueActivations?: ProfileLanVenueActivations[]
     apActivations?: ProfileLanApActivations[]
     apPortOverwrites?: APLanPortSettings[]
+    vni?: number
   }
 
 export interface EthernetPortProfile {

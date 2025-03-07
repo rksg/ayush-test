@@ -226,7 +226,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
           </Col>}
 
         {isEdgePinEnhanceEnabled &&
-        <Row style={{ marginTop: 8 }}>
+        <Row style={{ marginTop: 8, paddingLeft: '4.5px' }}>
           <Col span={24}>
             <Form.Item
               noStyle
@@ -238,7 +238,9 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
                 return <HaModeRadioGroupFormItem
                   setEdgeCompatibilityModalFeature={setEdgeCompatibilityFeature}
-                  disabled={disabled} />
+                  disabled={disabled}
+                  editMode={isEdit}
+                />
               }}
             </Form.Item>
           </Col>

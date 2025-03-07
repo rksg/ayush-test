@@ -5,6 +5,7 @@ export * from './PersonaForm'
 export * from './PersonaForm/PersonaDevicesForm'
 export * from './PersonaForm/PersonaDevicesImportDialog'
 export * from './IdentitySelector'
+export * from './PassphraseDrawer'
 
 export { PersonaGroupDrawer } from './PersonaGroupDrawer'
 export { PersonaGroupSelect } from './PersonaGroupSelect'

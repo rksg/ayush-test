@@ -5,16 +5,15 @@ import { defineMessage, useIntl } from 'react-intl'
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
   getServiceRoutePath,
+  hasServicePermission,
   ServiceOperation,
   ServiceType,
   serviceTypeDescMapping,
-  serviceTypeLabelMapping,
-  hasServicePermission
+  serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                               from '@acx-ui/types'
-
-export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
+export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories' | 'isBetaFeature'> & {
   serviceType: ServiceType
   count?: number
   helpIcon?: ReactNode
@@ -69,6 +68,7 @@ export function ServiceCard (props: ServiceCardProps) {
         }
       }}
       helpIcon={helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''}
+      isBetaFeature={props.isBetaFeature}
     />
   )
 }

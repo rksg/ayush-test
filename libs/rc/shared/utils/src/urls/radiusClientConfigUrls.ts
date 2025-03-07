@@ -14,6 +14,7 @@ export const RadiusClientConfigUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: newApiUrl,
     oldUrl: apiUrl,
+    opsApi: 'PATCH:/radiusClient',
     newApi: true
   },
   getRadiusServerSetting: {

@@ -7,13 +7,13 @@ import { Provider, store }                                               from '@
 import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { CageDetailsDrawer } from './CageDetailsDrawer'
-const { mockOnuList, mockOltCageList } = EdgeOltFixtures
+const { mockOlt, mockOnuList, mockOltCageList } = EdgeOltFixtures
 
 describe('CageDetailsDrawer', () => {
   const defaultProps = {
     visible: true,
     setVisible: jest.fn(),
-    oltId: 'oltId',
+    oltData: mockOlt,
     currentCage: mockOltCageList[0]
   }
 
@@ -21,7 +21,7 @@ describe('CageDetailsDrawer', () => {
     store.dispatch(edgeTnmServiceApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
+      rest.post(
         EdgeTnmServiceUrls.getEdgeOnuList.url,
         (_, res, ctx) => {
           return res(ctx.json(mockOnuList))
@@ -35,9 +35,9 @@ describe('CageDetailsDrawer', () => {
     </Provider>)
     expect(screen.getByText('S1/1')).toBeInTheDocument()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const row = screen.getByRole('row', { name: /ont_9 1/ })
+    const row = screen.getByRole('row', { name: /ont_9 3/ })
     expect(row).toBeVisible()
-    screen.getByRole('row', { name: /ont_7 2/ })
+    screen.getByRole('row', { name: /ont_7 1/ })
   })
 
   it('renders with invalid props (missing currentCage)', () => {
@@ -68,6 +68,6 @@ describe('CageDetailsDrawer', () => {
     const onuRow = await screen.findByRole('row', { name: /ont_9/ })
     await userEvent.click(within(onuRow).getByRole('button', { name: mockOnuList[0].name }))
     expect(screen.getByRole('heading', { name: 'ont_9' })).toBeInTheDocument()
-    expect(screen.getByText('Ports (1)')).toBeInTheDocument()
+    expect(screen.getByText('Ports (3)')).toBeInTheDocument()
   })
 })

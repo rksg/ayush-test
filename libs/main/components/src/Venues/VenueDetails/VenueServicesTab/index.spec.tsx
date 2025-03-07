@@ -54,6 +54,13 @@ jest.mock('./SdLan', () => ({
   __esModule: true
 }))
 
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
+
 describe('Venue service tab', () => {
   let params: { tenantId: string, venueId: string }
 

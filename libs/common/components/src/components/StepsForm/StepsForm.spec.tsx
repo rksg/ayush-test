@@ -234,6 +234,22 @@ describe('StepsForm', () => {
     expect(screen.getAllByRole('button').length).toBe(2)
   })
 
+  it('should not display apply button when label is empty value in editMode', async () => {
+    render(<CustomForm
+      editMode
+      buttonLabel={{
+        pre: 'Before',
+        next: 'After',
+        cancel: 'CacnelAction',
+        apply: ''
+      }} />)
+
+    expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'CacnelAction' })).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'After' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Apply' })).toBeNull()
+  })
+
   it.skip('prevent navigate to other steps when field invalid', async () => {
     render(
       <StepsForm editMode>

@@ -55,7 +55,8 @@ import {
   VlanModalType,
   isFirmwareVersionAbove10020b,
   PortProfilesBySwitchId,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { store }              from '@acx-ui/store'
@@ -130,7 +131,8 @@ import {
   PortVlan,
   MultipleText,
   updateSwitchVlans,
-  getPortProfileOptions
+  getPortProfileOptions,
+  ptToPtMacActionMessages
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -149,7 +151,8 @@ export const allMultipleEditableFields = [
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId'
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
+  'adminPtToPt'
 ]
 
 interface ProfileVlans {
@@ -230,6 +233,8 @@ export function EditPortDrawer ({
     useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
+  const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -242,6 +247,8 @@ export function EditPortDrawer ({
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
   const isFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10020b(s.firmware))
+  const isFirmwareAbove10010gOr10020b = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10010g2Or10020b(s.firmware))
   const isAnyFirmwareAbove10020b = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10020b(s.firmware))
   const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
@@ -293,6 +300,7 @@ export function EditPortDrawer ({
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [drawerAclVisible, setDrawerAclVisible] = useState(false)
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
+  const [showErrorRecoveryTooltip, setShowErrorRecoveryTooltip] = useState(false)
   const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
@@ -536,6 +544,9 @@ export function EditPortDrawer ({
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
       setCliApplied(isCliApplied)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
+      setShowErrorRecoveryTooltip(isSwitchErrorRecoveryEnabled &&
+        ((selectedSwitchList && selectedSwitchList.length > 1) ||
+        isFirmwareAbove10010gOr10020b))
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
@@ -844,6 +855,8 @@ export function EditPortDrawer ({
           || getAuthFieldDisabled(field, authfieldValues)
       case 'switchPortProfileId':
         return !isFirmwareAbove10020b || isCloudPort
+      case 'adminPtToPt':
+        return !isFirmwareAbove10020b
       default: return false
     }
   }
@@ -851,9 +864,10 @@ export function EditPortDrawer ({
   const getFieldTemplate = (props: {
     content: React.ReactNode,
     field: string,
-    extraLabel?: boolean
+    extraLabel?: boolean,
+    tooltip?: React.ReactNode
   }) => {
-    const { content, field, extraLabel } = props
+    const { content, field, extraLabel, tooltip } = props
     const shouldControlHiddenFields = [
       'changeAuthOrder', 'restrictedVlan', 'criticalVlan'
     ]
@@ -873,7 +887,8 @@ export function EditPortDrawer ({
           disabled={getOverrideDisabled(field)}
         />}
       />}
-      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }</UI.ExtraLabel> }
+      { extraLabel && <UI.ExtraLabel>{ $t(FIELD_LABEL[field]) }
+        <UI.FieldTemplateTooltip>{tooltip}</UI.FieldTemplateTooltip></UI.ExtraLabel> }
       { content }
     </UI.FormItem>
   }
@@ -2215,9 +2230,38 @@ export function EditPortDrawer ({
           />
         })}
 
+        {isSwitchRstpPtToPtMacEnabled && isAnyFirmwareAbove10020b && <>
+          { getFieldTemplate({
+            field: 'adminPtToPt',
+            content: <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              label={$t(FIELD_LABEL.ptToPtMac)}
+              children={shouldRenderMultipleText({
+                field: 'adminPtToPt', ...commonRequiredProps
+              }) ? <MultipleText />
+                : <Form.Item
+                  name='adminPtToPt'
+                  initialValue='AUTO'>
+                  <Select
+                    options={Object.keys(ptToPtMacActionMessages).map((key) => {
+                      // eslint-disable-next-line max-len
+                      const label = ptToPtMacActionMessages[key as keyof typeof ptToPtMacActionMessages]
+                      return {
+                        value: key,
+                        label: $t(label)
+                      }
+                    })}
+                    disabled={getFieldDisabled('adminPtToPt')}
+                  /></Form.Item>}
+            />
+          })}</>
+        }
+
         { getFieldTemplate({
           field: 'stpBpduGuard',
           extraLabel: true,
+          tooltip: showErrorRecoveryTooltip &&
+            <Tooltip.Question title={$t(EditPortMessages.STP_BPDU_GUARD)}/>,
           content: <Form.Item
             noStyle
             label={false}

@@ -5,8 +5,8 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { DateRangeType, RangePicker, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { DateRangeType, getDefaultEarliestStart, RangePicker, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import {
   ACLDirection,
   EdgeFirewallSetting,
@@ -26,12 +26,14 @@ interface GroupedStatsTablesProps {
 
 export const GroupedStatsTables =
   styled((props: GroupedStatsTablesProps) => {
+    const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+    const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
     const { $t } = useIntl()
     const { className, edgeData, edgeFirewallData } = props
-    const { startDate, endDate, range, setDateFilter } = useDateFilter()
+    const { startDate, endDate, range, setDateFilter } = useDateFilter({
+      showResetMsg, earliestStart: getDefaultEarliestStart() })
     const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
     const directionOpts = getACLDirectionOptions($t)
-    const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
     const handleACLDirectionChange = (val:ACLDirection) => {
       setACLDirection(val)

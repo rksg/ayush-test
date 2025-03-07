@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import {
@@ -6,46 +6,47 @@ import {
   Space
 } from 'antd'
 
-import { Button } from '@acx-ui/components'
+import { Button }        from '@acx-ui/components'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { StyledFormItem } from './styledComponents'
 
 interface TextInlineEditorProps {
   value: number,
-  onChange: (data: number) => void,
+  onChange: (data: number) => Promise<void>,
 }
 export const TextInlineEditor = (props: TextInlineEditorProps) => {
-  const { onChange } = props
+  const { value: propsValue, onChange } = props
 
   const [isEditMode, setEditMode] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [initialValue, setInitialValue] = useState<number>(props.value)
-  const [editingValue, setEditingValue] = useState<number>(props.value)
-
-  useEffect(() => {
-    setEditingValue(initialValue)
-  }, [initialValue])
+  const [editingValue, setEditingValue] = useState<number>(propsValue)
 
   const handleEdit = () => {
-    setEditingValue(editingValue)
+    setEditingValue(propsValue)
     setEditMode(true)
   }
 
   const handleApply = () => {
-    onChange(editingValue)
-    setInitialValue(editingValue)
     setIsSubmitting(true)
 
-    // TODO: trigger API and show loading icon
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setEditMode(false)
-    }, 1000)
+    onChange(editingValue)
+      .catch(() => {
+        handleResetValue()
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+        setEditMode(false)
+      })
+  }
+
+  const handleResetValue = () => {
+    setEditingValue(propsValue)
   }
 
   const handleCancel = () => {
-    setEditingValue(initialValue)
+    handleResetValue()
     setEditMode(false)
   }
 
@@ -83,7 +84,7 @@ export const TextInlineEditor = (props: TextInlineEditorProps) => {
           />
         </>
       ) : (<>
-        <label>{editingValue}</label>
+        <label>{propsValue ? propsValue : noDataDisplay}</label>
         <Button type='link' icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
       </>
       )}

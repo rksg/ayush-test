@@ -31,11 +31,12 @@ import {
   AdministrationUrlsInfo,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { AccountType, noDataDisplay }               from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -265,6 +266,7 @@ export const SubscriptionTable = () => {
   const actions: TableProps<Entitlement>['actions'] = [
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
@@ -272,6 +274,7 @@ export const SubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: refreshFunc
     }
   ]
@@ -322,18 +325,20 @@ export const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const params = useParams()
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const tenantType = tenantDetailsData.data?.tenantType
 
   return (
-    (isPendingActivationEnabled &&
-      (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC))
-      ? <SubscriptionTabs />
-      : <SpaceWrapper fullWidth size='large' direction='vertical'>
-        <SubscriptionHeader />
-        <SubscriptionTable />
-      </SpaceWrapper>
+    tenantType ?
+      (isPendingActivationEnabled && isEntitlementRbacApiEnabled
+        ? <SubscriptionTabs tenantType={tenantType} />
+        : <SpaceWrapper fullWidth size='large' direction='vertical'>
+          <SubscriptionHeader />
+          <SubscriptionTable />
+        </SpaceWrapper>
+      ) : <></>
   )
 }
 

@@ -17,6 +17,10 @@ jest.mock('@acx-ui/rc/components', () => ({
   ApCompatibilityToolTip: ({ onClick }: { onClick: () => void }) =>
     <div data-testid='ApCompatibilityToolTip' onClick={onClick} />
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
 
 const mockedActivateHqospApi = jest.fn()
 const mockedDeactivateHqosApi = jest.fn()

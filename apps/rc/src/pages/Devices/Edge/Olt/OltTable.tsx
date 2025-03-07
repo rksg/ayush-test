@@ -8,6 +8,7 @@ import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { useGetEdgeOltListQuery }        from '@acx-ui/rc/services'
 import { transformDisplayNumber }        from '@acx-ui/rc/utils'
 import { filterByAccess }                from '@acx-ui/user'
+import { TABLE_QUERY_POLLING_INTERVAL }  from '@acx-ui/utils'
 
 export default function useEdgeNokiaOltTable () {
   const { $t } = useIntl()
@@ -15,7 +16,8 @@ export default function useEdgeNokiaOltTable () {
   const oltTableRef = useRef<{ openAddDrawer: () => void }>(null)
 
   const { data, isLoading, isFetching } = useGetEdgeOltListQuery({}, {
-    skip: !isEdgeOltEnabled
+    skip: !isEdgeOltEnabled,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
   const handleAddOlt = () => {

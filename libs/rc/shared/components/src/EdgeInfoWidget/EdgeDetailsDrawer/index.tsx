@@ -2,13 +2,14 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Drawer, PasswordInput }                                                                                                                     from '@acx-ui/components'
-import { Features }                                                                                                                                  from '@acx-ui/feature-toggle'
-import { formatter }                                                                                                                                 from '@acx-ui/formatter'
-import { useGetEdgePasswordDetailQuery }                                                                                                             from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDnsServers, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                                                                     from '@acx-ui/user'
+import { Drawer, PasswordInput }                                                                                                                                   from '@acx-ui/components'
+import { Features }                                                                                                                                                from '@acx-ui/feature-toggle'
+import { formatter }                                                                                                                                               from '@acx-ui/formatter'
+import { useGetEdgePasswordDetailQuery }                                                                                                                           from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDnsServers, EdgeStatus, EdgeStatusEnum, EdgeUrlsInfo, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                              from '@acx-ui/react-router-dom'
+import { hasPermission, useUserProfileContext }                                                                                                                    from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                               from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -28,7 +29,8 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { visible, setVisible, currentEdge, currentCluster, dnsServers } = props
   const { data: userProfile } = useUserProfileContext()
 
-  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
+  const isShowEdgePassword = (userProfile?.support || userProfile?.var || userProfile?.dogfood)
+  && hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.getEdgePasswordDetail)] })
   const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
     {
       params: {

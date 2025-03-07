@@ -10,10 +10,10 @@ import {
   useAnalyticsFilter,
   Roles as RolesEnumRA
 } from '@acx-ui/analytics/utils'
-import type { UserProfile as UserProfileRA } from '@acx-ui/analytics/utils'
-import { RadioBand, Loader }                 from '@acx-ui/components'
-import { get }                               from '@acx-ui/config'
-import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
+import type { UserProfile as UserProfileRA }          from '@acx-ui/analytics/utils'
+import { RadioBand, Loader, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                        from '@acx-ui/config'
+import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
 import {
   useGuestTokenMutation,
   useEmbeddedIdMutation,
@@ -206,10 +206,14 @@ export function EmbeddedReport (props: ReportProps) {
   const isRA = get('IS_MLISA_SA')
   const embedDashboardName = reportTypeDataStudioMapping[reportName]
   const systems = useSystems()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
 
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
-  const { startDate, endDate } = useDateFilter(moment().subtract(12, 'month'))
+  const { startDate, endDate } = useDateFilter({
+    showResetMsg,
+    earliestStart: isRA ? moment().subtract(12, 'month'):
+      getDefaultEarliestStart({ isReport: true }) })
   const { pathFilters: { path } } = useAnalyticsFilter()
   const { filters: { paths, bands } } = useReportsFilter()
 

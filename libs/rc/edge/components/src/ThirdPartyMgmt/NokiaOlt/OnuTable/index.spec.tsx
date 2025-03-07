@@ -1,53 +1,68 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
 
-import { edgeTnmServiceApi }                                     from '@acx-ui/rc/services'
-import { EdgeOltFixtures, EdgeTnmServiceUrls }                   from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { EdgeNokiaOnuData, EdgeOltFixtures } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
+import { render, screen }                    from '@acx-ui/test-utils'
 
 import { EdgeNokiaOnuTable } from './index'
-const { mockOnuList } = EdgeOltFixtures
+const mockOnuList = EdgeOltFixtures.mockOnuList as EdgeNokiaOnuData[]
 
 describe('EdgeNokiaOnuTable', () => {
   const defaultProps = {
-    oltId: 'oltId',
-    cageName: 'cageName'
+    data: mockOnuList as EdgeNokiaOnuData[],
+    cageName: 'cageName',
+    onClickRow: jest.fn(),
+    onClearSelection: jest.fn()
   }
-
-  const mockGetOnuList = jest.fn()
-  beforeEach(() => {
-    store.dispatch(edgeTnmServiceApi.util.resetApiState())
-    mockGetOnuList.mockClear()
-
-    mockServer.use(
-      rest.get(
-        EdgeTnmServiceUrls.getEdgeOnuList.url,
-        (_, res, ctx) => {
-          mockGetOnuList()
-          return res(ctx.json(mockOnuList))
-        }))
-  })
 
   it('renders with data', async () => {
     render(<Provider>
-      <EdgeNokiaOnuTable {...defaultProps} onClick={jest.fn()} />
+      <EdgeNokiaOnuTable {...defaultProps} />
     </Provider>)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText('ont_9')).toBeInTheDocument()
+    screen.getByRole('row', { name: 'ont_9 3 2 (802.3af 7.0 W)' })
   })
 
-  it('renders with loading state', () => {
-    render(<Provider>
-      <EdgeNokiaOnuTable {...defaultProps} onClick={jest.fn()} />
+  it('should clear selection when cageName is changed', async () => {
+    const mockOnClick = jest.fn()
+    const mockOnClearSelection = jest.fn()
+
+    const { rerender } = render(<Provider>
+      <EdgeNokiaOnuTable data={mockOnuList}
+        cageName={'mock-cage'}
+        onClickRow={mockOnClick}
+        onClearSelection={mockOnClearSelection}
+      />
     </Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('row', { name: 'ont_9 3 2 (802.3af 7.0 W)' }))
+    expect(mockOnClick).toHaveBeenNthCalledWith(1, mockOnuList.find((onu) => onu.name === 'ont_9'))
+
+    rerender(<Provider>
+      <EdgeNokiaOnuTable data={mockOnuList}
+        cageName={'mock-cage-2'}
+        onClickRow={mockOnClick}
+        onClearSelection={mockOnClearSelection}
+      />
+    </Provider>)
+    expect(mockOnClearSelection).toBeCalledTimes(2)
   })
 
-  it('should not trigger API when oltId or cageName is not provided', () => {
+  it('should call onClick with undefined when selection is cleared', async () => {
+    const mockOnClick = jest.fn()
+    const mockOnClearSelection = jest.fn()
     render(<Provider>
-      <EdgeNokiaOnuTable oltId={undefined} cageName={undefined} onClick={jest.fn()} />
+      <EdgeNokiaOnuTable data={mockOnuList}
+        cageName={'mock-cage'}
+        onClickRow={mockOnClick}
+        onClearSelection={mockOnClearSelection}
+      />
     </Provider>)
-    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    expect(mockGetOnuList).not.toHaveBeenCalled()
+
+    await userEvent.click(screen.getByRole('row', { name: 'ont_9 3 2 (802.3af 7.0 W)' }))
+    expect(mockOnClick).toHaveBeenCalledWith(mockOnuList.find((onu) => onu.name === 'ont_9'))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Clear selection' }))
+    expect(mockOnClearSelection).toBeCalledTimes(1)
   })
 })

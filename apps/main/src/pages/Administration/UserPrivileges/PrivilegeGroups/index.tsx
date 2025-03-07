@@ -150,18 +150,6 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   ]
 
   const rowActions: TableProps<PrivilegeGroup>['rowActions'] = [
-    // {
-    //   label: $t({ defaultMessage: 'View' }),
-    //   visible: (selectedRows) => {
-    //     return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
-    //   },
-    //   onClick: (selectedRows) => {
-    //     navigate({
-    //       ...linkAddPriviledgePath,
-    //       pathname: `${linkAddPriviledgePath.pathname}/view/${selectedRows[0].id}`
-    //     }, { state: selectedRows[0] })
-    //   }
-    // },
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {

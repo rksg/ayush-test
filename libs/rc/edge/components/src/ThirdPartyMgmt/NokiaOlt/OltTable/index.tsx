@@ -1,6 +1,7 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
 
 import { Row, Button } from 'antd'
+import { omit }        from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import {
@@ -17,7 +18,9 @@ import {
   filterByAccessForServicePolicyMutation,
   VenueLink,
   EdgeNokiaOltData,
-  getOltStatusConfig
+  getOltStatusConfig,
+  isOltValidSerialNumber,
+  EdgeNokiaOltStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -48,14 +51,14 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
   }))
 
   const rowActions: TableProps<EdgeNokiaOltData>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (rows) => {
-        setCurrentOlt(rows[0])
-        setVisible(true)
-      },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
-    },
+    // {
+    //   label: $t({ defaultMessage: 'Edit' }),
+    //   onClick: (rows) => {
+    //     setCurrentOlt(rows[0])
+    //     setVisible(true)
+    //   },
+    //   scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.EDIT)
+    // },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -73,7 +76,8 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
               params: {
                 venueId: row.venueId,
                 edgeClusterId: row.edgeClusterId,
-                oltId: row.serialNumber }
+                // special case for OLT which has no serial number (ex: before it onboard to R1)
+                oltId: isOltValidSerialNumber(row.serialNumber) ? row.serialNumber : row.ip }
             }).unwrap())).then(clearSelection)
           }
         })
@@ -86,7 +90,7 @@ export const EdgeNokiaOltTable = forwardRef((props: EdgeNokiaOltTableProps, ref)
 
   return <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
     <Table
-      rowKey='serialNumber'
+      rowKey='ip'
       settingsId={settingsId}
       columns={useColumns()}
       dataSource={data}
@@ -115,23 +119,12 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: (_, row) => {
-        // TODO: remove after IT done
-        const mockData = {
-          name: 'mwc_barcelona',
-          status: 'online',
-          vendor: 'Nokia',
-          model: 'MF-2',
-          firmware: '22.649',
-          ip: '134.242.136.112',
-          serialNumber: 'FH2408A0B5D'
-        }
-
         return <Button type='link'
           onClick={() => {
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/devices/optical/${mockData.serialNumber}/details`
-            }, { state: mockData })
+              pathname: `${basePath.pathname}/devices/optical/${row.serialNumber}/details`
+            }, { state: omit(row, 'children') })
           }}>
           {row.name}
         </Button>
@@ -142,10 +135,12 @@ function useColumns () {
       key: 'status',
       dataIndex: 'stauts',
       width: 80,
-      align: 'center',
       render: (_, row) =>
-        <Row justify='center'>
-          <EdgeNokiaOltStatus config={getOltStatusConfig()} status={row.status} />
+        <Row>
+          <EdgeNokiaOltStatus
+            config={getOltStatusConfig()}
+            status={row.status || EdgeNokiaOltStatusEnum.UNKNOWN}
+            showText />
         </Row>
     },
     {

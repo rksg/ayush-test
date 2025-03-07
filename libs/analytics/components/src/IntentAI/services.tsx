@@ -26,12 +26,12 @@ import {
   IntentListItem,
   Intent,
   failureCodes,
-  Metadata
+  Metadata,
+  IntentWlan
 } from './config'
 import { DisplayStates } from './states'
 import {
   Actions,
-  IntentWlan,
   parseTransitionGQLByAction,
   TransitionIntentItem
 } from './utils'
@@ -66,18 +66,35 @@ export const formatValues: typeof richTextFormatValues = {
   p: (chunks) => <p>{chunks}</p>
 }
 
+const crrmRevertErrorDetail = defineMessage({
+  defaultMessage: `{apName} ({apMac}){configKey, select,
+    radio5gLower { on Lower 5 GHz}
+    radio5gUpper { on Upper 5 GHz}
+    other        {}
+  }: {message}`
+})
+
 export const getStatusTooltip = (
   state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
   const stateConfig = states[state] ?? { tooltip: defineMessage({ defaultMessage: 'Unknown' }) }
 
-  const errMsg = React.createElement('ul', {},
-    metadata.failures?.map(failure =>
-      React.createElement('li', { key: failure }, failureCodes[failure]
-        ? $t(failureCodes[failure]) : failure
-      )
-    )
-  )
+  let errMsg: JSX.Element
+  if (String(metadata.failures?.at(0)).includes('Revert failed') && metadata.error?.details) {
+    errMsg = <ul>
+      {metadata.error.details.map((item, index) => <li
+        key={index}
+        children={$t(crrmRevertErrorDetail, { ...item } as typeof formatValues)}
+      />)}
+    </ul>
+  } else {
+    errMsg = <ul>
+      {metadata.failures?.map(failure => <li
+        key={failure}
+        children={failureCodes[failure] ? $t(failureCodes[failure]) : failure}
+      />)}
+    </ul>
+  }
 
   const values = {
     ...formatValues,

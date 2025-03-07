@@ -6,6 +6,7 @@ import {
   DirectoryServer,
   DirectoryServerProfileEnum,
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -47,6 +48,7 @@ export default function DirectoryServerDetail () {
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
           })}
+          rbacOpsIds={getPolicyAllowedOperation(PolicyType.DIRECTORY_SERVER, PolicyOperation.EDIT)}
           scopeKey={getScopeKeyByPolicy(PolicyType.DIRECTORY_SERVER, PolicyOperation.EDIT)}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

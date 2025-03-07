@@ -1,12 +1,12 @@
 import { omit } from 'lodash'
 
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Loader }             from '@acx-ui/components'
-import { AnalyticsFilter }    from '@acx-ui/utils'
+import { useAnalyticsFilter }           from '@acx-ui/analytics/utils'
+import { Loader }                       from '@acx-ui/components'
+import { AnalyticsFilter, NetworkNode } from '@acx-ui/utils'
 
 import { SlidingDoor } from '..'
 
-import { NetworkNode, useNetworkHierarchyQuery } from './services'
+import { useNetworkHierarchyQuery } from './services'
 
 type SANetworkFilterProps = {
   shouldQueryAp?: boolean

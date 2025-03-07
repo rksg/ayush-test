@@ -32,7 +32,8 @@ import {
   ApModelFirmware,
   dateSort,
   defaultSort, FirmwareLabel,
-  FirmwareType, FirmwareUrlsInfo,
+  FirmwareType,
+  FirmwareUrlsInfo,
   FirmwareVenuePerApModel,
   sortProp,
   SortResult,
@@ -162,7 +163,8 @@ export function VenueFirmwareListPerApModel () {
   const genUpdateDisplayData = useCallback((apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
     let eaApModelFirmwares = [] as ApModelFirmware[]
     let updateAlphaGroups = apModelFirmwares.filter(data => isAlphaFilter(data.labels))
-    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels))
+    // eslint-disable-next-line max-len
+    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels, (apFirmwareContext.isBetaFlag && !apFirmwareContext.isAlphaFlag)))
 
     eaApModelFirmwares = [
       ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),

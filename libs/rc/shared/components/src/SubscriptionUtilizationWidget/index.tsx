@@ -2,6 +2,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { cssStr, StackedBarChart } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { EntitlementDeviceType }   from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper'
@@ -19,6 +20,7 @@ interface SubscriptionUtilizationWidgetProps {
 
 export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps) => {
   const { $t } = useIntl()
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   const {
     deviceType,
     title,
@@ -40,7 +42,11 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
       value: isZeroQuantity ? 0: (used / total)*100 },
     { name: 'available',
       value: isZeroQuantity ? 100 : ((total-used) / total)*100 }
-  ]
+  ].map(item => {
+    return { ...item, itemStyle: {
+      borderRadius: [0, 0, 0, 0]
+    } }
+  })
 
   if (isOverused) {
     usedBarColors = [
@@ -49,29 +55,35 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
     ]
 
     const overPercent = (Math.abs(total-used) / total)*100
-    series = [
-      { name: 'used',
-        value: isZeroQuantity ? 0 : (100 - (overPercent > 100 ? 100 : overPercent)) },
-      { name: 'overused',
-        value: isZeroQuantity ? 100: overPercent }
-    ]
+
+    series.forEach(item => {
+      return {
+        ...item,
+        value:
+        item.name === 'used'
+          ? isZeroQuantity ? 0 : (100 - (overPercent > 100 ? 100 : overPercent))
+          : isZeroQuantity ? 100: overPercent
+      }
+    })
   }
 
   const utilBar =
   <SpaceWrapper full size='small' justifycontent='space-around'>
     <Typography.Text>{title}</Typography.Text>
-    <StackedBarChart
-      style={{ height: 16, width: 135 }}
-      showLabels={false}
-      showTotal={false}
-      showTooltip={false}
-      barWidth={12}
-      data={[{
-        category: `${deviceType} Licenses `,
-        series
-      }]}
-      barColors={usedBarColors}
-    />
+    <UI.StackedBarContainer>
+      <StackedBarChart
+        style={{ height: 16, width: 135 }}
+        showLabels={false}
+        showTotal={false}
+        showTooltip={false}
+        barWidth={12}
+        data={[{
+          category: `${deviceType} Licenses `,
+          series
+        }]}
+        barColors={usedBarColors}
+      />
+    </UI.StackedBarContainer>
     <Typography.Text>
       {
         isOverused
@@ -89,18 +101,20 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
         <div>{title2}</div>
       </div>
       <Space size={10} direction='vertical'>
-        <StackedBarChart
-          style={{ height: 12, width: 250 }}
-          showLabels={false}
-          showTotal={false}
-          showTooltip={false}
-          barWidth={12}
-          data={[{
-            category: `${deviceType} Licenses `,
-            series
-          }]}
-          barColors={usedBarColors}
-        />
+        <UI.StackedBarContainer>
+          <StackedBarChart
+            style={{ height: 12, width: 250 }}
+            showLabels={false}
+            showTotal={false}
+            showTooltip={false}
+            barWidth={12}
+            data={[{
+              category: `${deviceType} Licenses `,
+              series
+            }]}
+            barColors={usedBarColors}
+          />
+        </UI.StackedBarContainer>
         <div style={{ fontSize: '11px' }}>
           <UI.LegendDot style={{ marginLeft: '25px', backgroundColor: usedBarColors[0] }} />
           <span >{$t({ defaultMessage: 'Used' })} ({used})</span>
@@ -118,5 +132,7 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
     </UI.FieldLabelUtil>
   </Space>
 
-  return title2 ? utilBar2 : utilBar
+  return solutionTokenFFToggled
+    ? utilBar2
+    : title2 ? utilBar2 : utilBar
 }

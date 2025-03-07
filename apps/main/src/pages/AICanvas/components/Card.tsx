@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
@@ -25,6 +25,7 @@ interface CardProps {
   updateGroupList: Dispatch<SetStateAction<Group[]>>
   deleteCard:(id: string, groupIndex: number) => void
   drag?: ConnectDragSource
+  // sectionRef?: React.MutableRefObject<null>
 }
 const DraggableCard = (props: CardProps) => {
   const [, drag, preview] = useDrag({
@@ -64,6 +65,7 @@ function Card (props: CardProps) {
     deleteCard,
     drag,
     card
+    // ,sectionRef
   } = props
   const {
     id,
@@ -74,6 +76,7 @@ function Card (props: CardProps) {
     isShadow
   } = props.card
   const { margin, rowHeight, calWidth } = props.layout
+  const [visible, setVisible] = useState(false)
   const { x, y } = utils.calGridItemPosition(
     gridx,
     gridy,
@@ -129,8 +132,58 @@ function Card (props: CardProps) {
     changeCardsLayout(nextSizeIndex)
   }
 
+  const widgetRef = useRef(null)
+  // const [resizing, setResizing] = useState(false)
+  // const handler = (mouseDownEvent, card) => {
+  //   mouseDownEvent.preventDefault() // prevent drag event
+  //   const startSize = { x: x + wPx, y: y + hPx }
+  //   const startPosition = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY }
+  //   const ranges = card.sizes.map(s => {
+  //     const { wPx, hPx } = utils.calWHtoPx(
+  //       s.width,
+  //       s.height,
+  //       margin,
+  //       rowHeight,
+  //       calWidth
+  //     )
+  //     return ({ x: x + wPx, y: y + hPx })
+  //   })
+
+  //   function onMouseMove (mouseMoveEvent) {
+  //     const x = startSize.x - startPosition.x + mouseMoveEvent.pageX
+  //     const y = startSize.y - startPosition.y + mouseMoveEvent.pageY
+  //     ranges.some((r, index) => {
+  //       if(index === ranges.length-1) {
+  //         changeCardsLayout(index)
+  //         return true
+  //       }
+  //       if (x <= r.x && y <= r.y) {
+  //         changeCardsLayout(index)
+  //         return true
+  //       }
+
+  //       if((x > r.x || y > r.y) && (x < ranges[index + 1].x || y < ranges[index + 1].y)) {
+  //         changeCardsLayout(index+1)
+  //         return true
+  //       }
+  //       return false
+  //     })
+  //   }
+  //   function onMouseUp () {
+  //     setResizing(false)
+  //     widgetRef.current.removeEventListener('mousemove', onMouseMove)
+  //     // uncomment the following line if not using `{ once: true }`
+  //     // widgetRef.current.removeEventListener("mouseup", onMouseUp);
+  //   }
+  //   if (widgetRef && widgetRef.current && sectionRef) {
+  //     setResizing(true)
+  //     widgetRef.current.addEventListener('mousemove', onMouseMove)
+  //     sectionRef.current.addEventListener('mouseup', onMouseUp, { once: true })
+  //   }
+  // }
+
   return (
-    <div>
+    <div ref={widgetRef}>
       {
         isShadow ?
           <div
@@ -148,7 +201,7 @@ function Card (props: CardProps) {
             style={{
               width: wPx,
               height: hPx,
-              opacity: 1,
+              opacity: 1, //resizing ? 0.6 : 1,
               transform: `translate(${x}px, ${y}px)`
             }}
           >
@@ -172,7 +225,13 @@ function Card (props: CardProps) {
               >
                 <Minus />
               </div>
-              <div className='icon disabled'>
+              <div
+                data-testid='editCard'
+                className='icon'
+                onClick={() => {
+                  setVisible(true)
+                }}
+              >
                 <EditOutlined />
               </div>
               <div
@@ -187,8 +246,13 @@ function Card (props: CardProps) {
             </div>
             {
               card.chartType &&
-              <WidgetChart data={card as unknown as WidgetListData} />
+              <WidgetChart
+                data={card as unknown as WidgetListData}
+                visible={visible}
+                setVisible={setVisible}
+              />
             }
+            {/* <div className='resizeHandle' onMouseDown={(e) => {handler(e, card)}}/> */}
           </div>
       }
     </div>

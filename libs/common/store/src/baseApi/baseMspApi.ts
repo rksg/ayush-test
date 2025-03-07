@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseMspApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'mspApi',
-  tagTypes: ['Msp'],
+  tagTypes: ['Msp', 'SolutionTokenSettings'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

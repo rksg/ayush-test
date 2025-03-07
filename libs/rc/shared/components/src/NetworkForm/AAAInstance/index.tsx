@@ -129,10 +129,10 @@ export const AAAInstance = (props: AAAInstanceProps) => {
       <Form.Item
         label={<>
           {serverLabel}
-          {excludeRadSec && networkType === NetworkTypeEnum.DPSK &&
+          {excludeRadSec && networkType === NetworkTypeEnum.DPSK && type === 'authRadius' &&
           <Tooltip.Question
             title={
-              'For a DPSK network with WPA3/WPA2 mixed mode,'+
+              'For a DPSK network with WPA2/WPA3 mixed mode,'+
               ' only Cloudpath RADIUS server configured in non-proxy mode is supported.'
             }
             placement='bottom'
@@ -161,17 +161,16 @@ export const AAAInstance = (props: AAAInstanceProps) => {
               ]}
             />}
           />
-          <Tooltip>
-            <AAAPolicyModal updateInstance={(data) => {
-              setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-              form.setFieldValue(radiusIdName, data.id)
-              form.setFieldValue(type, data)
-            }}
-            aaaCount={aaaDropdownItems.length}
-            type={radiusType}
-            forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
-            />
-          </Tooltip></Space>
+          <AAAPolicyModal updateInstance={(data) => {
+            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+            form.setFieldValue(radiusIdName, data.id)
+            form.setFieldValue(type, data)
+          }}
+          aaaCount={aaaDropdownItems.length}
+          type={radiusType}
+          forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
+          />
+        </Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>

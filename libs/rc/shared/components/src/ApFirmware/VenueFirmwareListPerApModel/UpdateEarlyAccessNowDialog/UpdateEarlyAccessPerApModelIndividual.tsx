@@ -3,8 +3,10 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Select } from '@acx-ui/components'
+import { Select }                  from '@acx-ui/components'
+import { FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 
+import { isEarlyAccessOrLegacyEarlyAccess } from '../../FirmwareUtils'
 import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModelUtils'
 
 const { Option } = Select
@@ -15,6 +17,7 @@ interface UpdateEarlyAccessPerApModelIndividualProps extends ApModelIndividualDi
   labelSize?: 'small' | 'large'
   emptyOptionLabel?: string
   noOptionsMessage?: string
+  selectedVenuesFirmwares?: FirmwareVenuePerApModel[]
 }
 
 // eslint-disable-next-line max-len
@@ -23,7 +26,8 @@ export function UpdateEarlyAccessPerApModelIndividual (props: UpdateEarlyAccessP
   const { apModel, versionOptions, update, defaultVersion, extremeFirmware,
     labelSize = 'small',
     emptyOptionLabel = $t({ defaultMessage: 'Do not update firmware' }),
-    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' })
+    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' }),
+    selectedVenuesFirmwares = []
   } = props
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
 
@@ -58,12 +62,24 @@ export function UpdateEarlyAccessPerApModelIndividual (props: UpdateEarlyAccessP
     }
   }
 
+  const {
+    earlyAccess,
+    legacyEarlyAccess
+  } = isEarlyAccessOrLegacyEarlyAccess(
+    selectedVenuesFirmwares, apModel, extremeFirmware
+  )
+
+  const earlyAccessContent = earlyAccess
+    // eslint-disable-next-line max-len
+    ? legacyEarlyAccess ? ` ${$t({ defaultMessage: 'Legacy Early Access' })}` : ` ${$t({ defaultMessage: 'Early Access' })}`
+    : ''
+
   return (
     <Space>
       <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
       {versionOptions.length === 0
         // eslint-disable-next-line max-len
-        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware}{` ${$t({ defaultMessage: 'Early Access' })}`})</strong></span></div>
+        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware}{earlyAccessContent})</strong></span></div>
         : <Select
           value={selectedVersion}
           onChange={onSelectedVersionChange}

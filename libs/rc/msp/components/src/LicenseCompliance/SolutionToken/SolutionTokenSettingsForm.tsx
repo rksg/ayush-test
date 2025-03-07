@@ -1,86 +1,171 @@
 import { useEffect, useState } from 'react'
 
 import { Form, InputNumber, Switch } from 'antd'
+import { FormInstance }              from 'antd/es/form/Form'
 import { useIntl }                   from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { useGetSolutionTokenSettingsQuery }                  from '@acx-ui/msp/services'
-import { DeviceComplianceTypeLabels, SolutionTokenSettings } from '@acx-ui/msp/utils'
+import { Loader, showToast }                                                        from '@acx-ui/components'
+import { useGetSolutionTokenSettingsQuery, useUpdateSolutionTokenSettingsMutation } from '@acx-ui/msp/services'
+import { DeviceComplianceType, DeviceComplianceTypeLabels, SolutionTokenSettings }  from '@acx-ui/msp/utils'
 
 import * as UI from '../styledComponents'
 
-export default function SolutionTokenSettingsForm () {
+interface FormValues {
+  [key: string]: SolutionTokenSettings
+}
+
+export default function SolutionTokenSettingsForm (props: {
+  form: FormInstance<SolutionTokenSettings> }) {
   const { $t } = useIntl()
   const params = useParams()
-  const [settingsData, setSettingsData] = useState<SolutionTokenSettings[]>([])
+  const [formValues, setFormValues] = useState<FormValues>({} as FormValues)
+  const [isLoading, setIsLoading] = useState(true)
 
   const queryData = useGetSolutionTokenSettingsQuery(
     { params })
 
+  const [updateSolutionTokenSettings, {
+    isLoading: updating
+  }] = useUpdateSolutionTokenSettingsMutation()
+
   useEffect(() => {
 
     if (queryData.data){
-      setSettingsData(queryData?.data)
+      setFormValues(queryData.data.reduce((acc, setting: SolutionTokenSettings) => {
+        acc[setting.featureType] = {
+          ...setting
+        }
+        return acc
+      }, {} as FormValues))
+
+      setIsLoading(false)
     }
 
   }, [queryData])
 
-  return <div><UI.SettingsFieldLabel width='600px'>
-    <label>{ $t({ defaultMessage: 'Enabled Solutions' }) }</label>
-    <label>{ $t({ defaultMessage: 'Token License Cost' }) }</label>
-    <label>{ $t({ defaultMessage: 'Solution Usage Cap' }) }</label>
-    <label></label>
-  </UI.SettingsFieldLabel>
-  <Form name='solutionTokenSettings'>
-    <UI.SettingsFieldLabelKeyValue width='600px'>
-      {
-        settingsData.map((setting: SolutionTokenSettings) =>
-          <>
-            <label>
-              {DeviceComplianceTypeLabels[setting.featureType]
-                ? $t(DeviceComplianceTypeLabels[setting.featureType])
-                : setting.featureType}
-            </label>
-            <label>{`${setting?.licenseToken} ${setting?.featureCostUnit}`}</label>
-            <label>
-              <Form.Item
-                name='capped'
-                style={{
-                  margin: '0px'
-                }}
-                initialValue={setting.capped}
-                children={<>
-                  <Switch
-                    checked={setting.capped}
-                  />
-                  <span>{setting.capped ? $t({ defaultMessage: 'Capped' })
-                    : $t({ defaultMessage: 'Uncapped' })}</span></>
-                }/>
-            </label>
-            <label>
-              <Form.Item
-                name='maxQuantity'
-                initialValue={setting.maxQuantity}
-                style={{
-                  margin: '0px'
-                }}
-                children={<>
-                  <InputNumber
-                    controls={false}
-                    style={{
-                      height: '28px',
-                      fontSize: '12px',
-                      width: '60px'
-                    }}/>
-                  <span style={{
-                    fontSize: '12px'
-                  }}>{` ${setting.featureUnit}`}</span></>
-                }/>
-            </label>
-          </>
-        )
+  const handleSwitchChange = (featureType: DeviceComplianceType, checked: boolean) => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      [featureType]: {
+        ...prevState[featureType],
+        capped: checked
       }
-    </UI.SettingsFieldLabelKeyValue>
-  </Form>
-  </div>
+    }))
+  }
+
+  const handleQuantityChange = (featureType: DeviceComplianceType, value: number) => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      [featureType]: {
+        ...prevState[featureType],
+        maxQuantity: value || 0
+      }
+    }))
+  }
+
+  const submitForm = async () => {
+    const result = Object.values(formValues).map(item => {
+      return { featureType: item.featureType,
+        capped: item.capped,
+        ...(!item.capped ? { maxQuantity: item.maxQuantity } : {}) }
+    })
+    await updateSolutionTokenSettings({
+      params,
+      payload: result
+    }).unwrap()
+      .then(() => {
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'Solution Usage Cap Updated!' })
+        })
+      }).catch((error) => {
+        showToast({
+          type: 'error',
+          content: error?.data?.message || error?.data?.error?.message
+        })
+      })
+  }
+
+  return <Loader states={[{
+    isLoading: (isLoading && queryData.isLoading) || updating
+  }]}><div>
+      <UI.SettingsFieldLabel width='600px'>
+        <label>{ $t({ defaultMessage: 'Enabled Solutions' }) }</label>
+        <label>{ $t({ defaultMessage: 'Token License Cost' }) }</label>
+        <label>{ $t({ defaultMessage: 'Solution Usage Cap' }) }</label>
+        <label></label>
+      </UI.SettingsFieldLabel>
+      <Form name='solutionTokenSettings' form={props.form} onFinish={submitForm}>
+        {
+          Object.entries(formValues).map((setting) => {
+            const { capped, maxQuantity, featureType,
+              licenseToken, featureCostUnit, enabled, featureName, featureUnit } = setting[1]
+
+            return <UI.SettingsFieldLabelKeyValue width='600px' key={featureType}>
+              <label>
+                {DeviceComplianceTypeLabels[featureType]
+                  ? $t(DeviceComplianceTypeLabels[featureType])
+                  : featureName}
+              </label>
+              <label>{`${licenseToken} ${featureCostUnit}`}</label>
+              <label>
+                <Form.Item
+                  name={featureType + '-capped'}
+                  style={{
+                    margin: '0px'
+                  }}
+                  initialValue={capped}
+                  valuePropName='checked'
+                  children={<>
+                    <Switch
+                      checked={capped}
+                      disabled={!enabled}
+                      onChange={(ev) => handleSwitchChange(featureType, ev)}/>
+                    <span>
+                      { capped ? $t({ defaultMessage: 'Capped' })
+                        : $t({ defaultMessage: 'Uncapped' }) }
+                    </span>
+                  </>
+                  }/>
+              </label>
+              { !capped
+          && <label>
+            <Form.Item
+              name={featureType + '-maxQuantity'}
+              style={{
+                margin: '0px'
+              }}
+              rules={[{
+                required: true,
+                message: $t({ defaultMessage: 'Please enter quantity!' })
+              }]}
+              initialValue={maxQuantity}
+              children={<>
+                <InputNumber
+                  controls={false}
+                  disabled={!enabled}
+                  min={0}
+                  defaultValue={maxQuantity}
+                  value={maxQuantity}
+                  onChange={(ev) => handleQuantityChange(featureType, ev)}
+                  style={{
+                    height: '28px',
+                    fontSize: '12px',
+                    width: '60px',
+                    margin: '0 4px'
+                  }}/>
+                <label>{featureUnit}</label>
+              </>
+              }/>
+          </label>
+              }
+            </UI.SettingsFieldLabelKeyValue>
+          }
+          )
+        }
+
+      </Form>
+    </div>
+  </Loader>
 }

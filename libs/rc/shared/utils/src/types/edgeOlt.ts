@@ -1,7 +1,6 @@
 import { EdgeNokiaOltStatusEnum, EdgeNokiaCageStateEnum } from '../models'
 
 export interface EdgeNokiaOltData {
-  id: string
   name: string
   status: EdgeNokiaOltStatusEnum
   vendor: string
@@ -28,19 +27,21 @@ export interface EdgeNokiaOltCreatePayload {
 }
 
 export interface EdgeNokiaCageData {
-  name: string
+  cage: string
   state: EdgeNokiaCageStateEnum
 }
 
 export interface EdgeNokiaOnuData {
   name: string
+  poeClass: string
   ports: number
   usedPorts: number
   portDetails: EdgeNokiaOnuPortData[]
 }
 
 export interface EdgeNokiaOnuPortData {
-  portId: string
+  portIdx: string
   status: EdgeNokiaCageStateEnum
   vlan: string[]
+  poePower: number
 }

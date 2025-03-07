@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Input, Radio, Space } from 'antd'
 import {
@@ -37,9 +37,19 @@ import {
   hasPolicyPermission,
   macAuthMacFormatOptions,
   useConfigTemplate,
-  SecurityOptionsDescription
+  SecurityOptionsDescription,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../ApCompatibility'
 import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT } from '../../policies'
 import { AAAInstance }                                         from '../AAAInstance'
 import { NetworkDiagram }                                      from '../NetworkDiagram/NetworkDiagram'
@@ -47,6 +57,8 @@ import { MLOContext }                                          from '../NetworkF
 import NetworkFormContext                                      from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                                                 from '../styledComponents'
+
+import { IdentityGroup } from './SharedComponent/IdentityGroup/IdentityGroup'
 
 
 const { Option } = Select
@@ -132,6 +144,8 @@ function SettingsForm () {
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
@@ -174,6 +188,13 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
+
+        {
+          (isWifiIdentityManagementEnable && !isTemplate) &&
+          <Form.Item>
+            <IdentityGroup />
+          </Form.Item>
+        }
         <Form.Item
           label='Security Protocol'
           name={['wlan', 'wlanSecurity']}
@@ -239,6 +260,7 @@ function CertAuth () {
         </GridCol>
         { hasPolicyPermission({
           type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          hasAllowedOperations([getOpsApi(CertificateUrls.addCertificateTemplate)]) &&
         <Button
           type='link'
           style={{ top: '28px' }}
@@ -270,14 +292,17 @@ function CertAuth () {
 
 function AaaService () {
   const { $t } = useIntl()
+  const { networkId } = useParams()
   const { editMode, setData, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const enableAccountingService = useWatch('enableAccountingService', form)
   const enableMacAuthentication = useWatch<boolean>(
     ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
 
@@ -390,11 +415,24 @@ function AaaService () {
         <UI.FieldLabel width={labelWidth}>
           <Space align='start'>
             { $t({ defaultMessage: 'MAC Authentication' }) }
-            <Tooltip.Question
+            {!isR370UnsupportedFeatures && <Tooltip.Question
               title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
               placement='bottom'
               iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              showDetailButton
+              placement='bottom'
+              onClick={() => setDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={drawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={networkId}
+              featureName={InCompatibilityFeatures.MAC_AUTH}
+              onClose={() => setDrawerVisible(false)}
+            />}
           </Space>
           <Form.Item
             name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}

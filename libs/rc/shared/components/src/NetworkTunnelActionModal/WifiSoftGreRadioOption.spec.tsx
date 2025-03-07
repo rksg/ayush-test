@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { softGreApi }                                      from '@acx-ui/rc/services'
 import { SoftGreUrls }                                     from '@acx-ui/rc/utils'
 import { Provider, store }                                 from '@acx-ui/store'
@@ -33,6 +34,12 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
 
 const tenantId = 'tenantId'
 describe('WifiSoftGreRadioOption', () => {
@@ -251,5 +258,33 @@ describe('WifiSoftGreRadioOption', () => {
     expect(await screen.findByRole('option', { name: 'softGreProfileName5' })).toBeEnabled()
     expect(await screen.findByRole('option', { name: 'softGreProfileName6' })).toBeEnabled()
     expect(await screen.findByRole('option', { name: 'softGreProfileName7' })).toBeEnabled()
+  })
+
+  it('should render softGRE tunneling with R370 compatiblity tooltip', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_R370_TOGGLE)
+
+    const venueId = 'venue-id'
+    const networkId = 'network-id'
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <WifiSoftGreRadioOption
+            currentTunnelType={NetworkTunnelTypeEnum.SoftGre}
+            venueId={venueId}
+            networkId={networkId}
+            cachedSoftGre={[]}
+          />
+        </Form>
+      </Provider>,
+      { route: { path: viewPath, params: { venueId, tenantId } } }
+    )
+
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(1)
+    toolTips.forEach(t => expect(t).toBeVisible())
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
   })
 })

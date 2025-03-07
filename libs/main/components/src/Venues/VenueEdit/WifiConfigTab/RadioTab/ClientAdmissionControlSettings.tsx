@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -19,8 +19,11 @@ import {
 } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl, useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }                                                                from '../..'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }               from '../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../venueConfigTemplateApiSwitcher'
 
 
 const { useWatch } = Form
@@ -152,32 +155,36 @@ export function ClientAdmissionControlSettings (props: {
     isLoading: getClientAdmissionControl.isLoading,
     isFetching: isUpdatingClientAdmissionControl
   }]}>
-    <ClientAdmissionControlForm
-      key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
-      level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
-      type={ClientAdmissionControlTypeEnum.CAC_24G}
-      readOnly={!isAllowEdit}
-      isEnabled={enable24G}
-      isMutuallyExclusive={isTurnedOffAndGrayedOut}
-      enabledFieldName={enable24GFieldName}
-      minClientCountFieldName={minClientCount24GFieldName}
-      maxRadioLoadFieldName={maxRadioLoad24GFieldName}
-      minClientThroughputFieldName={minClientThroughput24GFieldName}
-      onFormDataChanged={onFormDataChanged}
-    />
-    <ClientAdmissionControlForm
-      key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
-      level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
-      type={ClientAdmissionControlTypeEnum.CAC_5G}
-      readOnly={!isAllowEdit}
-      isEnabled={enable50G}
-      isMutuallyExclusive={isTurnedOffAndGrayedOut}
-      enabledFieldName={enable50GFieldName}
-      minClientCountFieldName={minClientCount50GFieldName}
-      maxRadioLoadFieldName={maxRadioLoad50GFieldName}
-      minClientThroughputFieldName={minClientThroughput50GFieldName}
-      onFormDataChanged={onFormDataChanged}
-    />
+    <Row gutter={0}>
+      <Col style={{ width: '340px' }}>
+        <ClientAdmissionControlForm
+          key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+          level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
+          type={ClientAdmissionControlTypeEnum.CAC_24G}
+          readOnly={!isAllowEdit}
+          isEnabled={enable24G}
+          isMutuallyExclusive={isTurnedOffAndGrayedOut}
+          enabledFieldName={enable24GFieldName}
+          minClientCountFieldName={minClientCount24GFieldName}
+          maxRadioLoadFieldName={maxRadioLoad24GFieldName}
+          minClientThroughputFieldName={minClientThroughput24GFieldName}
+          onFormDataChanged={onFormDataChanged}
+        />
+        <ClientAdmissionControlForm
+          key={ClientAdmissionControlLevelEnum.VENUE_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+          level={ClientAdmissionControlLevelEnum.VENUE_LEVEL}
+          type={ClientAdmissionControlTypeEnum.CAC_5G}
+          readOnly={!isAllowEdit}
+          isEnabled={enable50G}
+          isMutuallyExclusive={isTurnedOffAndGrayedOut}
+          enabledFieldName={enable50GFieldName}
+          minClientCountFieldName={minClientCount50GFieldName}
+          maxRadioLoadFieldName={maxRadioLoad50GFieldName}
+          minClientThroughputFieldName={minClientThroughput50GFieldName}
+          onFormDataChanged={onFormDataChanged}
+        />
+      </Col>
+    </Row>
   </Loader>
   )
 }

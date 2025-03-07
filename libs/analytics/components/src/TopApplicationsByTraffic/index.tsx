@@ -11,8 +11,10 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { formatter, intlFormats } from '@acx-ui/formatter'
-import type { AnalyticsFilter }   from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter, intlFormats }           from '@acx-ui/formatter'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
 import { TrafficPercent }                                                from './styledComponents'
@@ -25,6 +27,7 @@ export function TopApplicationsByTraffic ({
 }) {
   const { $t } = useIntl()
   const queryResults = useTopApplicationsByTrafficQuery(filters)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const columns=[
     {
@@ -94,6 +97,12 @@ export function TopApplicationsByTraffic ({
     { label: $t({ defaultMessage: 'Upload' }) , children: uploadTable, value: 'upload' },
     { label: $t({ defaultMessage: 'Download' }), children: downloadTable, value: 'download' }
   ]
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.TOP_APPLICATIONS_BY_TRAFFIC,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[queryResults]}>

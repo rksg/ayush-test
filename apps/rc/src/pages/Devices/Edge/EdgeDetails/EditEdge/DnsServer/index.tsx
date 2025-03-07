@@ -7,11 +7,13 @@ import {
   Loader,
   StepsForm
 } from '@acx-ui/components'
-import { useUpdateDnsServersMutation }           from '@acx-ui/rc/services'
-import { EdgeDnsServers, serverIpAddressRegExp } from '@acx-ui/rc/utils'
+import { useUpdateDnsServersMutation }                         from '@acx-ui/rc/services'
+import { EdgeDnsServers, EdgeUrlsInfo, serverIpAddressRegExp } from '@acx-ui/rc/utils'
 import {
   useNavigate, useParams, useTenantLink
 } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
@@ -58,12 +60,18 @@ const DnsServer = () => {
     }
   }
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(EdgeUrlsInfo.updateDnsServers)
+    ] })
+
   return (
     <StepsForm
       form={form}
       onFinish={handleApplyDns}
       onCancel={() => navigate(linkToEdgeList)}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Apply DNS Server' }) }}
+      buttonLabel={{
+        submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply DNS Server' }) : '' }}
     >
       <StepsForm.StepForm>
         <Row gutter={20}>

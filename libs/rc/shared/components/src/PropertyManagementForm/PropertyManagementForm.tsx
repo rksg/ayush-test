@@ -19,10 +19,10 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
 import { TemplateSelector }                       from '../TemplateSelector'
+import { hasCreateIdentityGroupPermission }       from '../useIdentityGroupUtils'
 import { PersonaGroupDrawer, PersonaGroupSelect } from '../users'
 
 import { AddResidentPortalModal }                       from './AddResidentPortalModal'
@@ -39,7 +39,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const { $t } = useIntl()
   const msgTemplateEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const dpskRequireIdentityGroupEnabled = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
-  const hasAddPersonaGroupPermission = hasCrossVenuesPermission({ needGlobalPermission: true })
   const hasAddResidentPortalPermission = hasServicePermission({
     type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
   })
@@ -114,7 +113,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               />
           }
         </Form.Item>
-        { hasAddPersonaGroupPermission && !dpskRequireIdentityGroupEnabled &&
+        { hasCreateIdentityGroupPermission() && !dpskRequireIdentityGroupEnabled &&
           <Form.Item
             noStyle
             hidden={personaGroupHasBound}

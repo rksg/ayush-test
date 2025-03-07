@@ -457,6 +457,21 @@ jest.mock('@acx-ui/components', () => {
   }
 })
 
+jest.mock('./CustomizeWidgetDrawer', () => () => <div>CustomizeWidgetDrawer</div>)
+
+jest.mock('@acx-ui/rc/services', () => {
+  return {
+    useGetWidgetQuery: jest.fn().mockReturnValue(chart),
+    useCreateWidgetMutation: () => [
+      jest.fn(() => ({
+        then: jest.fn().mockResolvedValue({
+          id: '123'
+        })
+      }))
+    ]
+  }
+})
+
 describe('Layout', () => {
   const renderWithDndProvider = (component: JSX.Element) => {
     return render(
@@ -468,7 +483,7 @@ describe('Layout', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RuckusAiChatUrlInfo.chart.url,
+        RuckusAiChatUrlInfo.getWidget.url,
         (req, res, ctx) => res(ctx.json(chart))
       )
     )
@@ -486,6 +501,7 @@ describe('Layout', () => {
           setGroups={mockedSetGroups}
           compactType={'horizontal'}
           layout={layout}
+          canvasId={DEFAULT_CANVAS[0].id}
         />
       </Provider>
     )
@@ -513,6 +529,7 @@ describe('Layout', () => {
           setGroups={mockedSetGroups}
           compactType={'horizontal'}
           layout={layout}
+          canvasId={PIE_CANVAS[0].id}
         />
       </Provider>
     )

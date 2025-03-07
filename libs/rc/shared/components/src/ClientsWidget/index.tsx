@@ -10,7 +10,7 @@ import { Features, useIsSplitOn }                               from '@acx-ui/fe
 import { useClientSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
-import { useDashboardFilter }                                   from '@acx-ui/utils'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
 
@@ -87,6 +87,7 @@ export function ClientsWidgetV2 () {
   const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery
 
   const queryResults = query({
@@ -109,6 +110,13 @@ export function ClientsWidgetV2 () {
   })
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.CLIENTS_WIDGET,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>

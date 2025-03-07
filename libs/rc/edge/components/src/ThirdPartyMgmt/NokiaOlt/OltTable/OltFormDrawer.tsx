@@ -37,7 +37,6 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
   const [updateOlt, { isLoading: isUpdating }] = useUpdateEdgeOltMutation()
 
   const [ form ] = Form.useForm()
-  const venueId = Form.useWatch('venueId', form)
 
   const {
     venueOptions, isVenueOptsLoading
@@ -58,11 +57,11 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
   const { clusterOptions, isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: clusterDataDefaultPayload },
     {
-      skip: !visible || !venueId,
+      skip: !visible,
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterOptions: data?.data
-            .map(item => ({ label: item.name, value: item.clusterId })),
+            .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
           isClusterOptsLoading: isLoading
         }
       }
@@ -123,7 +122,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
       onFinish={handleFinish}
       disabled={isCreating || isUpdating}
     >
-      <Form.Item
+      {/*<Form.Item
         name='name'
         label={$t({ defaultMessage: 'Device Name' })}
         rules={[{
@@ -132,6 +131,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
         }]}
         children={<Input />}
       />
+      */}
       <Form.Item
         name='venueId'
         label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
@@ -163,7 +163,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
               <Select
                 loading={isClusterOptsLoading}
                 placeholder={$t({ defaultMessage: 'Select RUCKUS Edge...' })}
-                options={clusterOptions}
+                options={venueId ? clusterOptions?.filter(item => item.venueId === venueId) : []}
                 disabled={!venueId || isEditMode}
               />
             }
@@ -179,7 +179,7 @@ export const NokiaOltFormDrawer = (props: NokiaOltCreateFormDrawerProps) => {
         }, { validator: async (_, value) => {
           return networkWifiIpRegExp(value)
         } }]}
-        children={<Input />}
+        children={<Input disabled={isEditMode} />}
       />
     </Form>
   </Drawer>

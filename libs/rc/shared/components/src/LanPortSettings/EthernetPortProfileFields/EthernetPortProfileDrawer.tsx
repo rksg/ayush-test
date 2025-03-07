@@ -12,10 +12,11 @@ import EthernetPortProfileDetailsDrawer from './EthernetPortProfileDetailsDrawer
 
 export default function EthernetPortProfileDrawer (props:{
   updateInstance: (createId:string) => void,
-  disabled?: boolean
+  disabled?: boolean,
+  addBtnVisible?: boolean,
   currentEthernetPortData?: EthernetPortProfileViewData
 }) {
-  const { updateInstance, currentEthernetPortData, disabled }=props
+  const { updateInstance, currentEthernetPortData, disabled, addBtnVisible=true }=props
   const { $t } = useIntl()
   const onClose = () => {
     setFormVisible(false)
@@ -32,13 +33,12 @@ export default function EthernetPortProfileDrawer (props:{
 
   return (
     <>
-      <Space split='|'>
+      <Space split={addBtnVisible && '|'} >
         <Button type='link'
-          onClick={()=>setDetailVisible(true)}
-          disabled={disabled}>
+          onClick={()=>setDetailVisible(true)}>
           {$t({ defaultMessage: 'Profile Details' })}
         </Button>
-        {hasPolicyPermission(
+        {addBtnVisible && hasPolicyPermission(
           { type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE }) &&
         <Button type='link'
           onClick={()=>setFormVisible(true)}

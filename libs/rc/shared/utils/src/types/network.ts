@@ -1,4 +1,4 @@
-import { EdgeMvSdLanViewData, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, EnforceableFields, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -63,7 +63,7 @@ export type DsaeOnboardNetwork = {
   securityProtocol?: string
 }
 
-export interface Network extends BaseNetwork{
+export interface Network extends BaseNetwork, EnforceableFields {
   children?: BaseNetwork[]
   dsaeOnboardNetwork?: DsaeOnboardNetwork
   securityProtocol?: string
@@ -179,6 +179,9 @@ export interface NetworkSaveData {
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
+  ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
+  identityGroupId?: string,
+  identityId?: string
 }
 
 export interface NetworkSummaryExtracData {
@@ -276,5 +279,15 @@ export interface NetworkTunnelSoftGreAction {
     newProfileId: string,
     newProfileName: string,
     oldProfileId: string
+  }
+}
+
+export interface NetworkTunnelIpsecAction {
+  [name:string]: {
+    softGreProfileId: string,
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
   }
 }

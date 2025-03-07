@@ -23,14 +23,12 @@ export function getMetaList<T extends MetaBase> (
   const httpRequest = metaListInfo.urlInfo
   const body = {
     fields: metaListInfo.fields,
-    filters: metaListInfo.filters ? {
+    filters: {
       id: list.data.map((item: { id: string }) => item.id),
-      fromTime: metaListInfo.filters['fromTime'],
-      toTime: metaListInfo.filters['toTime']
-    } :
-      {
-        id: list.data.map((item: { id: string }) => item.id)
-      }
+      fromTime: metaListInfo.filters?.['fromTime'],
+      toTime: metaListInfo.filters?.['toTime'],
+      alarmType: metaListInfo.filters?.['alarmType']
+    }
   }
   return {
     ...httpRequest, body

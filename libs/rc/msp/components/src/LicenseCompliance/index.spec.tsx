@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
-import { MspRbacUrlsInfo, MspUrlsInfo }                          from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { render, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn, Features }                                           from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo }                                     from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { render, screen, mockServer, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps }                      from '@acx-ui/user'
 
 import { LicenseCompliance } from '.'
 
@@ -140,6 +141,29 @@ const mileageReportData = {
   ]
 }
 
+const list = [
+  {
+    featureType: 'SLTN_PI_NET',
+    featureName: 'Personal Identity Network',
+    maxQuantity: 0,
+    enabled: false,
+    capped: false,
+    licenseToken: 1,
+    featureCostUnit: 'per Tunnel',
+    featureUnit: 'Tunnels'
+  },
+  {
+    featureType: 'SLTN_ADAPT_POLICY',
+    featureName: 'Adaptive Policy',
+    maxQuantity: 0,
+    enabled: true,
+    capped: true,
+    licenseToken: 5,
+    featureCostUnit: 'per Policy',
+    featureUnit: 'Policies'
+  }
+]
+
 const fakeTenantDetails = {
   id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
   createdDate: '2023-01-31T04:19:00.241+00:00',
@@ -158,6 +182,11 @@ const fakeTenantDetails = {
   status: 'active',
   tenantType: 'REC'
 }
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  isPrimeAdmin
+} as UserProfileContextProps
 
 const services = require('@acx-ui/msp/services')
 describe('LicenseCompliance', () => {
@@ -189,6 +218,14 @@ describe('LicenseCompliance', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        MspRbacUrlsInfo.getSolutionTokenSettings.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.patch(
+        MspRbacUrlsInfo.updateSolutionTokenSettings.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
       )
     )
     params = {
@@ -322,12 +359,16 @@ describe('LicenseCompliance', () => {
     expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
   })
 
-  it('should render solution token card with solution token FF enabled', async () => {
+  it('should render rec solution token card with solution token FF enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={false}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={false}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -335,12 +376,91 @@ describe('LicenseCompliance', () => {
 
     expect(screen.getByText('Solution Token Licenses')).toBeVisible()
 
-    const tabMaxLiceses = screen.getAllByRole('tab', { name: 'Summary' })[1]
-    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
-    const tabMaxPeriod = screen.getAllByRole('tab', { name: 'My Account' })[1]
-    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
+    const tabSummary = screen.getAllByRole('tab', { name: 'Summary' })[1]
+    expect(tabSummary.getAttribute('aria-selected')).toBeTruthy()
+    const tabMyAccount = screen.getAllByRole('tab', { name: 'My Account' })[1]
+    expect(tabMyAccount.getAttribute('aria-selected')).toBe('false')
+    const tabSettings = screen.getByRole('tab', { name: 'Settings' })
+    expect(tabSettings.getAttribute('aria-selected')).toBe('false')
 
-    await userEvent.click(tabMaxPeriod)
+    await userEvent.click(tabMyAccount)
     expect(screen.getByText('Adaptive Policy')).toBeVisible()
+
+    await userEvent.click(tabSettings)
+
+    expect(screen.getByRole('tabpanel', { name: 'Settings' } )).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit Settings' }))
+
+    expect(screen.getByRole('checkbox', { name: 'Personal Identity Network' } )).toBeVisible()
+    expect(screen.getByRole('checkbox', { name: 'Adaptive Policy' } )).toBeVisible()
+
+    expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
+
+    expect(screen.getByRole('switch', { name: 'Uncapped' } )).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Capped' } )).toBeVisible()
+
+    await userEvent.click((await screen.findByRole('button', { name: 'Save' })))
+
+    expect(await screen.findByText('Solution Usage Cap Updated!')).toBeVisible()
+
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[1])
+
+  })
+
+  it('should render msp solution token card settings tab', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isExtendedTrial={true} isMsp={true}/>
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/t/administration/subscriptions/compliance' }
+      })
+
+    expect(screen.getByText('Solution Token Licenses')).toBeVisible()
+
+    const tabSummary = screen.getAllByRole('tab', { name: 'MSP Subscriptions' })[1]
+    expect(tabSummary.getAttribute('aria-selected')).toBeTruthy()
+    const tabMyAccount = screen.getAllByRole('tab', { name: 'My Account' })[1]
+    expect(tabMyAccount.getAttribute('aria-selected')).toBe('false')
+    const tabSettings = screen.getByRole('tab', { name: 'Settings' })
+    expect(tabSettings.getAttribute('aria-selected')).toBe('false')
+
+    await userEvent.click(tabMyAccount)
+
+    expect(tabMyAccount.getAttribute('aria-selected')).toBe('true')
+
+    await userEvent.click(tabSettings)
+
+    expect(screen.getByRole('tabpanel', { name: 'Settings' } )).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit Settings' }))
+
+    expect(screen.getByRole('checkbox', { name: 'Personal Identity Network' } )).toBeVisible()
+    expect(screen.getByRole('checkbox', { name: 'Adaptive Policy' } )).toBeVisible()
+
+    expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
+
+    expect(screen.getByRole('switch', { name: 'Uncapped' } )).toBeVisible()
+    expect(screen.getByRole('switch', { name: 'Capped' } )).toBeVisible()
+
+    expect(screen.getAllByRole('spinbutton')).toHaveLength(1)
+
+    await userEvent.click(screen.getByRole('switch', { name: 'Capped' }))
+
+    expect(screen.getAllByRole('spinbutton')).toHaveLength(2)
+
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'Tunnels' }), { target: { value: 12 } })
+
+    await userEvent.click((await screen.findByRole('button', { name: 'Save' })))
+
+    expect(await screen.findByText('Solution Usage Cap Updated!')).toBeVisible()
+
+    await userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[1])
+
   })
 })

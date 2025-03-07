@@ -44,6 +44,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
+  const dpskWlanSecurity = useWatch('dpskWlanSecurity', form)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
@@ -93,7 +94,8 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
         <SettingsForm/>
       </Col>
       <Col span={14} style={{ height: '100%' }}>
-        <NetworkDiagram />
+        <NetworkDiagram
+          wlanSecurity={dpskWlanSecurity}/>
       </Col>
     </Row>
     {!(editMode) && !(isRuckusAiMode) && <Row>
@@ -122,6 +124,19 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
+
+  const handleDpsk3NonProxyMode = (
+    dpskWlanSecurity: WlanSecurityEnum,
+    isCloudpathEnabled: boolean
+  ) => {
+    if(dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed && isCloudpathEnabled) {
+      setData && setData({ ...data, enableAccountingProxy: false, enableAuthProxy: false })
+      form.setFieldsValue({
+        enableAccountingProxy: false,
+        enableAuthProxy: false
+      })
+    }
+  }
   useEffect(()=>{
     !supportRadsec && form.setFieldsValue({ ...data })
   },[data])
@@ -133,7 +148,9 @@ function SettingsForm () {
   useEffect(() => {
     if (!isSupportDpsk3NonProxyMode && dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
       form.setFieldValue('isCloudpathEnabled', false)
-  }, [dpskWlanSecurity])
+
+    handleDpsk3NonProxyMode(dpskWlanSecurity, isCloudpathEnabled)
+  }, [dpskWlanSecurity, isCloudpathEnabled])
 
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
@@ -180,7 +197,10 @@ function SettingsForm () {
                   (!isSupportDpsk3NonProxyMode &&
                     dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed) || editMode
                 }>
-                { $t({ defaultMessage: 'Use RADIUS Server' }) }
+                {(dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)?
+                  $t({ defaultMessage: 'Use RADIUS Server(Cloudpath Server Only)' }) :
+                  $t({ defaultMessage: 'Use RADIUS Server' })
+                }
               </Radio>
             </Space>
           </Radio.Group>

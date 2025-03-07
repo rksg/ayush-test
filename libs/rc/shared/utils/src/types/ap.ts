@@ -543,7 +543,8 @@ export interface CapabilitiesApModel {
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
   supportMesh5GOnly6GOnly?: boolean,
-  supportSoftGRE?: boolean,
+  supportSoftGre?: boolean,
+  supportIoT?: boolean,
   usbPowerEnable?: boolean
 }
 

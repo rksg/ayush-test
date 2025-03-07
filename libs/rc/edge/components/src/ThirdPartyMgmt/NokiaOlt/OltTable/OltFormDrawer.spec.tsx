@@ -96,18 +96,18 @@ describe('NokiaOltFormDrawer', () => {
     </Provider>, { route: { params, path: mockPath } })
 
     screen.getByText('Edit Device')
-    const nameInput = screen.getByLabelText('Device Name')
+    // const nameInput = screen.getByLabelText('Device Name')
     const venueIdInput = screen.getByRole('combobox', { name: 'Venue' })
     const edgeClusterIdInput = screen.getByRole('combobox', { name: 'RUCKUS Edge' })
     const ipInput = screen.getByLabelText('IP Address')
     await screen.findByText(mockOlt.venueName)
-    expect(nameInput).toHaveValue(mockOlt.name)
+    // expect(nameInput).toHaveValue(mockOlt.name)
     expect(venueIdInput).toHaveValue(mockOlt.venueId)
     expect(edgeClusterIdInput).toHaveValue(mockOlt.edgeClusterId)
     expect(ipInput).toHaveValue(mockOlt.ip)
 
-    // edit: change name
-    await userEvent.type(nameInput, ' Testing')
+    // edit: change ip
+    await userEvent.type(ipInput, '11')
     const submitButton = screen.getByText('Save')
     await userEvent.click(submitButton)
     await waitFor(() => expect(props.setVisible).toHaveBeenCalledTimes(1))
@@ -123,14 +123,17 @@ describe('NokiaOltFormDrawer', () => {
     render(<Provider>
       <NokiaOltFormDrawer {...props} />
     </Provider>, { route: { params, path: mockPath } })
-    const nameInput = screen.getByLabelText('Device Name')
+    // const nameInput = screen.getByLabelText('Device Name')
     const venueIdInput = screen.getByRole('combobox', { name: 'Venue' })
     const edgeClusterIdInput = screen.getByRole('combobox', { name: 'RUCKUS Edge' })
     const ipInput = screen.getByLabelText('IP Address')
 
-    await userEvent.type(nameInput, 'Test Device')
-    await userEvent.selectOptions(venueIdInput, 'Mock Venue 3')
-    await userEvent.selectOptions(edgeClusterIdInput, 'Edge Cluster 2')
+    // await userEvent.type(nameInput, 'Test Device')
+    await screen.findByText('Mock Venue 1')
+    await userEvent.selectOptions(venueIdInput, 'Mock Venue 1')
+
+    await screen.findByText('Edge Cluster 1')
+    await userEvent.selectOptions(edgeClusterIdInput, 'Edge Cluster 1')
     await userEvent.type(ipInput, '192.168.1.1')
 
     const submitButton = screen.getByText('Add')
@@ -159,7 +162,8 @@ describe('NokiaOltFormDrawer', () => {
   })
 
   it('submits form with error', async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    const spyOnConsole = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(spyOnConsole)
 
     mockServer.use(
       rest.post(
@@ -176,19 +180,21 @@ describe('NokiaOltFormDrawer', () => {
         setVisible={jest.fn()}
       />
     </Provider>, { route: { params, path: mockPath } })
-    const nameInput = screen.getByLabelText('Device Name')
+    // const nameInput = screen.getByLabelText('Device Name')
     const venueIdInput = screen.getByRole('combobox', { name: 'Venue' })
     const edgeClusterIdInput = screen.getByRole('combobox', { name: 'RUCKUS Edge' })
     const ipInput = screen.getByLabelText('IP Address')
 
-    await userEvent.type(nameInput, 'Test Device')
+    // await userEvent.type(nameInput, 'Test Device')
+    await screen.findByText('Mock Venue 1')
     await userEvent.selectOptions(venueIdInput, 'Mock Venue 1')
+
+    await screen.findByText('Edge Cluster 1')
     await userEvent.selectOptions(edgeClusterIdInput, 'Edge Cluster 1')
     await userEvent.type(ipInput, '192.168.1.1')
 
     const submitButton = screen.getByText('Add')
     await userEvent.click(submitButton)
-    // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalled()
+    await waitFor(() => expect(spyOnConsole).toHaveBeenCalled())
   })
 })

@@ -57,6 +57,7 @@ export default function SolutionTokenMspTabContent (props: TabContentProps
     {
       tableRow.map((row: SlnTableRow, idx: number) =>
         <UI.FieldLabelSubs width='275px'
+          key={idx}
           style={
             idx === 0
               ? { marginTop: '10px' } :

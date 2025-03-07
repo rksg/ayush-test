@@ -148,12 +148,20 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
   }
 }
 
-export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
+// eslint-disable-next-line max-len
+export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
 
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
     payload.gateway = ''
   }
+
+  // prevent DHCP mode from having IP and subnet
+  if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+    if (payload.ip) payload.ip = ''
+    if (payload.subnet) payload.subnet = ''
+  }
+
 
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
@@ -184,8 +192,8 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
 export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
   const payload = { ...formData }
   if (payload.ipMode === EdgeIpModeEnum.DHCP) {
-    payload.ip = ''
-    payload.subnet = ''
+    if (payload.ip) payload.ip = ''
+    if (payload.subnet) payload.subnet = ''
   }
 
   return payload

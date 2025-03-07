@@ -734,6 +734,11 @@
               height: 16px;
               margin-right: 7px;
             }
+            &.ant-select-item-option-disabled {
+              &:before {
+                border-color: rgba(0, 0, 0, 0.25);
+              }
+            }
             &-selected {
               &:before {
                 background: var(--acx-accents-blue-50);
@@ -741,7 +746,7 @@
               &:not(.ant-select-item-option-disabled) {
                 background: var(--acx-primary-white);
               }
-            }
+            }            
           }
         }
       }

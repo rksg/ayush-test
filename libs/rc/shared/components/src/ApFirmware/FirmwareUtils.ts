@@ -11,7 +11,7 @@ import {
   FirmwareSwitchVenueV1002,
   FirmwareType,
   firmwareTypeTrans,
-  FirmwareVenue,
+  FirmwareVenue, FirmwareVenuePerApModel,
   FirmwareVenueVersion,
   FirmwareVersion,
   LatestEdgeFirmwareVersion,
@@ -139,9 +139,11 @@ export const isAlphaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.ALPHA)
 }
 
-export const isBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+// eslint-disable-next-line max-len
+export const isBetaFilter = (labels: FirmwareLabel[] = [], ignoreAlphaLabel: boolean = false): boolean => {
   return !labels.includes(FirmwareLabel.GA)
-    && !labels.includes(FirmwareLabel.ALPHA) && labels.includes(FirmwareLabel.BETA)
+    && (ignoreAlphaLabel || !labels.includes(FirmwareLabel.ALPHA))
+    && labels.includes(FirmwareLabel.BETA)
 }
 
 export const isAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
@@ -152,6 +154,7 @@ export const isAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
 export const isLegacyAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
   return !labels.includes(FirmwareLabel.GA)
     && (labels.includes(FirmwareLabel.LEGACYALPHA) || labels.includes(FirmwareLabel.LEGACYBETA))
+    && !labels.includes(FirmwareLabel.ALPHA) && !labels.includes(FirmwareLabel.BETA)
 }
 
 export const toUserDate = (date: string): string => {
@@ -357,4 +360,23 @@ export function patchPayloadForApModelFirmware (
   }
 
   return _.compact(result)
+}
+
+// eslint-disable-next-line max-len
+export function isEarlyAccessOrLegacyEarlyAccess (selectedVenuesFirmwares: FirmwareVenuePerApModel[], apModel: string, extremeFirmware: string) {
+  // eslint-disable-next-line max-len
+  const currentApFirmwaresList = selectedVenuesFirmwares.flatMap(selectedVenuesFirmware => selectedVenuesFirmware.currentApFirmwares || [])
+  const earlyAccess = currentApFirmwaresList.find(
+    // eslint-disable-next-line max-len
+    fw => fw.apModel === apModel && fw.firmware === extremeFirmware && !fw.labels?.includes(FirmwareLabel.GA)
+  )
+  const legacyEarlyAccess = currentApFirmwaresList.find(
+    // eslint-disable-next-line max-len
+    fw => fw.apModel === apModel && fw.firmware === extremeFirmware && isLegacyAlphaOrBetaFilter(fw.labels)
+  )
+
+  return {
+    earlyAccess,
+    legacyEarlyAccess
+  }
 }

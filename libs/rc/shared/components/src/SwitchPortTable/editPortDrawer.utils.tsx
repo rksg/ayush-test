@@ -51,6 +51,7 @@ export const FIELD_LABEL: Record<string, MessageDescriptor> = {
   lldpEnable: defineMessage({ defaultMessage: 'LLDP Enabled' }),
   portSpeed: defineMessage({ defaultMessage: 'Port Speed' }),
   rstpAdminEdgePort: defineMessage({ defaultMessage: 'RSTP Admin Edge Port' }),
+  ptToPtMac: defineMessage({ defaultMessage: 'Point-to-Point Mac' }),
   stpBpduGuard: defineMessage({ defaultMessage: 'STP BPDU Guard' }),
   stpRootGuard: defineMessage({ defaultMessage: 'STP Root Guard' }),
   dhcpSnoopingTrust: defineMessage({ defaultMessage: 'DHCP Snooping Trust' }),
@@ -540,4 +541,10 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     isVoiceVlanEqual: voiceVlanEqual,
     portsProfileVlans: portsProfileVlans
   }
+}
+
+export const ptToPtMacActionMessages = {
+  AUTO: defineMessage({ defaultMessage: 'Auto' }),
+  DISABLE: defineMessage({ defaultMessage: 'Disable' }),
+  ENABLE: defineMessage({ defaultMessage: 'Enable' })
 }

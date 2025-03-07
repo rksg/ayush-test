@@ -6,19 +6,22 @@ import { useIntl }                    from 'react-intl'
 import { GridCol, GridRow, Modal, ModalType, Select, SelectionControl }                                       from '@acx-ui/components'
 import { useAdaptivePolicySetListQuery, useLazyGetCertificateTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 import {
+  CertificateUrls,
   checkObjectNotExists,
   PersonaGroup,
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
-import { hasRoles }  from '@acx-ui/user'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                      from '@acx-ui/utils'
 
-import { AdaptivePolicySetForm }      from '../../../AdaptivePolicySetForm'
-import { PersonaGroupDrawer }         from '../../../users'
-import { MAX_CERTIFICATE_PER_TENANT } from '../constants'
-import { onboardSettingsDescription } from '../contentsMap'
-import { Section, Title }             from '../styledComponents'
+import { AdaptivePolicySetForm }            from '../../../AdaptivePolicySetForm'
+import { hasCreateIdentityGroupPermission } from '../../../useIdentityGroupUtils'
+import { PersonaGroupDrawer }               from '../../../users'
+import { MAX_CERTIFICATE_PER_TENANT }       from '../constants'
+import { onboardSettingsDescription }       from '../contentsMap'
+import { Section, Title }                   from '../styledComponents'
 
 export default function OnboardForm ({ editMode = false }) {
   const { $t } = useIntl()
@@ -37,6 +40,10 @@ export default function OnboardForm ({ editMode = false }) {
     data: {} as PersonaGroup | undefined
   })
 
+  /* eslint-disable max-len */
+  const allowUpdatePolicySetting = (!editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet)])) ||
+  /* eslint-disable max-len */
+  (editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet), getOpsApi(CertificateUrls.unbindCertificateTemplateWithPolicySet)]))
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
 
   useEffect(() => {
@@ -135,7 +142,7 @@ export default function OnboardForm ({ editMode = false }) {
             />
           </GridCol>
           {
-            (!editMode && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+            (!editMode && hasCreateIdentityGroupPermission()) &&
             <>
               <Space align='center'>
                 <Button
@@ -169,6 +176,7 @@ export default function OnboardForm ({ editMode = false }) {
               ]}
               children={
                 <Select
+                  disabled={!allowUpdatePolicySetting}
                   allowClear
                   placeholder={$t({ defaultMessage: 'Select ...' })}
                   options={

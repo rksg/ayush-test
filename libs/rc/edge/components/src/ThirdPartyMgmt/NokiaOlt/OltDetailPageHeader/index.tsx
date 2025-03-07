@@ -1,25 +1,47 @@
-import React from 'react'
+import { useState, useMemo } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Typography, Descriptions as AntdDescriptions } from 'antd'
+import { get }                                          from 'lodash'
+import { useIntl }                                      from 'react-intl'
 
-import { Card, GridRow,  GridCol, PageHeader, Button }                  from '@acx-ui/components'
-import { EdgeNokiaOltData, EdgeNokiaOltStatusEnum, getOltStatusConfig } from '@acx-ui/rc/utils'
+import { Card, GridRow,  GridCol, PageHeader, Button, cssStr } from '@acx-ui/components'
+import {
+  EdgeNokiaCageData,
+  EdgeNokiaCageStateEnum,
+  EdgeNokiaOltData,
+  EdgeNokiaOltStatusEnum,
+  getOltStatusConfig,
+  oltLineCardSerailNumberMap
+} from '@acx-ui/rc/utils'
 
+import OltImage                    from '../../../assets/images/olt/olt.png'
 import { EdgeOverviewDonutWidget } from '../../../ChartWidgets/EdgeOverviewDonutWidget'
 
-import { OltDetailsDrawer }         from './DetailsDrawer'
-import { PoeUtilizationBox }        from './PoeUtilizationBox'
-import { StyledEdgeNokiaOltStatus } from './styledComponents'
-
+import { OltDetailsDrawer }                                 from './DetailsDrawer'
+import { StyledAntdDescriptions, StyledEdgeNokiaOltStatus } from './styledComponents'
 interface EdgeNokiaOltDetailsPageHeaderProps {
   currentOlt: EdgeNokiaOltData
+  cagesList: EdgeNokiaCageData[] | undefined,
+  isLoading: boolean,
+  isFetching: boolean
 }
 
 export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHeaderProps) => {
-  const { currentOlt } = props
+  const {
+    currentOlt,
+    cagesList,
+    isLoading: isCageListLoading,
+    isFetching: isCageListFetching
+  } = props
   const { $t } = useIntl()
-  const [visible, setVisible] = React.useState(false)
+  const [visible, setVisible] = useState(false)
+
+  const { upCages, totalCages } = useMemo(() => {
+    return {
+      upCages: cagesList?.filter(item => item.state === EdgeNokiaCageStateEnum.UP).length ?? 0,
+      totalCages: cagesList?.length ?? 0
+    }
+  }, [cagesList])
 
   const onClickDetailsHandler = () => {
     setVisible(true)
@@ -34,8 +56,8 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
         { text: 'Optical', link: '/devices/optical' }
       ]}
     />
-    <GridRow>
-      <GridCol col={{ span: 24 }} style={{ height: '150px' }}>
+    <GridRow style={{ marginBottom: '20px' }}>
+      <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
         <Card type='solid-bg'>
           <GridRow>
             <GridCol col={{ span: 24 }} style={{ alignItems: 'flex-end' }}>
@@ -45,41 +67,85 @@ export const EdgeNokiaOltDetailsPageHeader = (props: EdgeNokiaOltDetailsPageHead
             </GridCol>
           </GridRow>
           <GridRow style={{ flexGrow: '1', justifyContent: 'space-around' }}>
-            <GridCol col={{ span: 4 }}
+            <GridCol col={{ span: 3 }}
               style={{ justifyContent: 'center', alignItems: 'center', gap: '10px' }}
             >
               <Typography.Text>{$t({ defaultMessage: 'Status' })}</Typography.Text>
               <StyledEdgeNokiaOltStatus
                 config={getOltStatusConfig()}
-                status={currentOlt.status}
+                status={currentOlt.status || EdgeNokiaOltStatusEnum.UNKNOWN}
                 showText />
             </GridCol>
             <GridCol col={{ span: 4 }}>
               <EdgeOverviewDonutWidget
                 title={$t({ defaultMessage: 'Cages' })}
-                data={[{
-                  color: '#23AB36',
-                  name: 'Enabled',
-                  value: 1
-                }, {
-                  color: '#FF9D49',
-                  name: 'Disabled',
-                  value: 3
-                }]}
-                isLoading={false}
-              />
-            </GridCol>
-            <GridCol col={{ span: 5 }}>
-              <PoeUtilizationBox
-                title={$t({ defaultMessage: 'PoE Usage' })}
-                isOnline={currentOlt.status === EdgeNokiaOltStatusEnum.ONLINE}
-                value={232}
-                totalVal={280}
-                isLoading={false}
+                data={totalCages ?
+                  [{
+                    color: cssStr('--acx-neutrals-50'),
+                    name: 'Down',
+                    value: totalCages - upCages
+                  }, {
+                    color: cssStr('--acx-semantics-green-50'),
+                    name: 'Up',
+                    value: upCages
+                  }]
+                  : [{
+                    color: cssStr('--acx-neutrals-50'),
+                    name: '',
+                    value: 0
+                  }]}
+                isLoading={isCageListLoading}
+                isFetching={isCageListFetching}
               />
             </GridCol>
             <GridCol col={{ span: 5 }} style={{ justifyContent: 'center' }}>
-              <img src='' alt='OLT device' />
+              <img src={OltImage} alt='OLT device' />
+            </GridCol>
+            <GridCol col={{ span: 10 }} style={{ justifyContent: 'center' }}>
+              <StyledAntdDescriptions column={12}>
+                <AntdDescriptions.Item
+                  span={3}
+                  label={$t({ defaultMessage: 'PON LC 1' })}
+                  children={'Online'}
+                />
+                <AntdDescriptions.Item
+                  span={3}
+                  label={$t({ defaultMessage: 'Model' })}
+                  children={'LWLT-C'}
+                />
+                <AntdDescriptions.Item
+                  span={2}
+                  label={$t({ defaultMessage: 'Cages' })}
+                  children={'16'}
+                />
+                <AntdDescriptions.Item
+                  span={4}
+                  label={$t({ defaultMessage: 'S/N' })}
+                  children={get(oltLineCardSerailNumberMap, currentOlt.serialNumber, 'YP2306F4B2D')}
+                />
+              </StyledAntdDescriptions>
+              <StyledAntdDescriptions column={12}>
+                <AntdDescriptions.Item
+                  span={3}
+                  label={$t({ defaultMessage: 'PON LC 2' })}
+                  children={'Empty'}
+                />
+                <AntdDescriptions.Item
+                  span={3}
+                  label={$t({ defaultMessage: 'Model' })}
+                  children={'LWLT-C'}
+                />
+                <AntdDescriptions.Item
+                  span={2}
+                  label={$t({ defaultMessage: 'Cages' })}
+                  children={'16'}
+                />
+                <AntdDescriptions.Item
+                  span={4}
+                  label={$t({ defaultMessage: 'S/N' })}
+                  children={'N/A'}
+                />
+              </StyledAntdDescriptions>
             </GridCol>
           </GridRow>
         </Card>

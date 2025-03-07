@@ -22,8 +22,11 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   LinkedinOutlined as LinkedIn,
   Twitter,
   SMSOutlined,
-  EyeOpenSolid
+  EyeOpenSolid,
+  EnvelopClosedSolid as UIEmailOTP
 }   from '@acx-ui/icons'
+
+import { WhatsAppOutline } from '../../NetworkForm/styledComponents'
 
 export const popoverClassName = 'portal-demo-popover'
 export const modalClassName = 'portal-modal-preview'
@@ -363,8 +366,10 @@ export const ViewSectionTabs = styled(UITabs)`
 `
 export const ViewSectionSocial=styled.div<{ $type: string | null }>`
   color: var(--acx-primary-white);
-  ${props => props.$type === 'sms' ? css`
+  ${props => (props.$type === 'sms' || props.$type === 'email' ) ? css`
   background-color:var(--acx-neutrals-60);
+  ` : props => props.$type === 'whatsapp' ? css`
+    background-color:var(--acx-semantics-green-50);
   ` : props => props.$type === 'facebook' ? css`
   background-color:var(--acx-accents-blue-55);
   ` : props => props.$type === 'microsoft' ? css`
@@ -592,13 +597,25 @@ export const TwitterOutlined = styled(Twitter)`
   margin-top: 5px;
 `
 export const LinkedinOutlined = styled(LinkedIn)`
-${socialIconStyle}
+  ${socialIconStyle}
 `
 export const SMSMobileOutlined = styled(SMSOutlined)`
-${socialIconStyle}
+  ${socialIconStyle}
+`
+export const EmailOTPOutlined = styled(UIEmailOTP)`
+  ${socialIconStyle}
+  path:first-of-type {
+    fill: white;
+  }
+  path {
+    stroke: white;
+  }
+`
+export const WhatsAppOutlined = styled(WhatsAppOutline)`
+  ${socialIconStyle}
 `
 export const GoogleOutlined = styled(GoogleSolidPlus)`
-${socialIconStyle}
+  ${socialIconStyle}
 `
 export const ViewDivInput = styled.div`
 border:1px solid var(--acx-neutrals-50);

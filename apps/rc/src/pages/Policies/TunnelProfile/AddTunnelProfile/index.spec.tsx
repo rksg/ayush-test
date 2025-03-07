@@ -12,6 +12,10 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
 
 const createViewPath = '/:tenantId/t/policies/tunnelProfile/create'
 

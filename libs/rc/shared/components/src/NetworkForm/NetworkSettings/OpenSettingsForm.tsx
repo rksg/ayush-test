@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   Col,
@@ -17,7 +17,14 @@ import {
   WifiNetworkMessages,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../ApCompatibility'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -99,11 +106,14 @@ function SettingsForm () {
     useWatch('enableOwe'),
     useWatch('enableOweTransition')
   ]
+  const { networkId } = useParams()
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   const onMacAuthChange = (checked: boolean) => {
@@ -233,11 +243,24 @@ function SettingsForm () {
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               {$t({ defaultMessage: 'MAC Authentication' })}
-              <Tooltip.Question
+              {!isR370UnsupportedFeatures && <Tooltip.Question
                 title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
                 placement='bottom'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+                showDetailButton
+                placement='bottom'
+                onClick={() => setDrawerVisible(true)}
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                visible={drawerVisible}
+                type={ApCompatibilityType.ALONE}
+                networkId={networkId}
+                featureName={InCompatibilityFeatures.MAC_AUTH}
+                onClose={() => setDrawerVisible(false)}
+              />}
             </Space>
             <Form.Item name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'

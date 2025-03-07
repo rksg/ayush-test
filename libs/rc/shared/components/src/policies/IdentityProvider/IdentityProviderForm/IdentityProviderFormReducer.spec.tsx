@@ -380,4 +380,53 @@ describe('IdentityProviderFormReducer test', () => {
       roamConsortiumOIs: [roi]
     })
   })
+
+  it('should update state with the loaded preconfigured data when is dispatched', () => {
+    const realm = {
+      name: 'realm1',
+      encoding: NaiRealmEcodingEnum.UTF8,
+      eaps: [{
+        method: NaiRealmEapMethodEnum.PEAP,
+        authInfos: [{
+          info: NaiRealmAuthInfoEnum.Tunneled,
+          tunneledType: NaiRealmAuthTypeTunneledEnum.Certificate
+        }]
+      }]
+    }
+    const initState = {
+      name: 'test1',
+      naiRealms: [realm],
+      plmns: [{ mcc: '000', mnc: '001' }],
+      roamConsortiumOIs: [{ name: 'roi1', organizationId: '000011' }]
+    } as IdentityProvider
+
+
+    const preRealm = {
+      name: 'preRealm1',
+      encoding: NaiRealmEcodingEnum.UTF8,
+      eaps: []
+    }
+    const prePlmn = { mcc: '111', mnc: '111' }
+    const preRoi = { name: 'preRoi1', organizationId: '111111' }
+    const preconfiguredIdp = {
+      name: 'preconfiguredIdp1',
+      naiRealms: [preRealm],
+      plmns: [prePlmn],
+      roamConsortiumOIs: [preRoi]
+    } as IdentityProvider
+
+    const roadingAction: IdentityProviderActionPayload = {
+      type: IdentityProviderActionType.LOAD_PRECONFIGURED,
+      payload: { state: preconfiguredIdp }
+    }
+    const updatedState = IdentityProviderFormReducer(initState, roadingAction)
+    expect(updatedState).toEqual({
+      ...initState,
+      name: 'test1',
+      naiRealms: [preRealm],
+      plmns: [prePlmn],
+      roamConsortiumOIs: [preRoi]
+    })
+
+  })
 })

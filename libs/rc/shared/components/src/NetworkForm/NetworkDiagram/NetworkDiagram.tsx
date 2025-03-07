@@ -26,6 +26,7 @@ import CloudpathDiagram                from '../assets/images/network-wizard-dia
 import DirectoryServerWithOweDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-owe.png'
 import DirectoryServerWithPskDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-psk.png'
 import DirectoryServerDiagram          from '../assets/images/network-wizard-diagrams/directoryserver.png'
+import DpskCloudpathNonProxyDiagram    from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-non-proxy.png'
 import DpskUsingRadiusNonProxyDiagram  from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
 import DpskUsingRadiusDiagram          from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
 import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
@@ -63,6 +64,7 @@ interface DpskDiagramProps extends DiagramProps {
   enableAuthProxy?: boolean;
   enableAccountingProxy?: boolean;
   enableAaaAuthBtn?: boolean;
+  wlanSecurity?: WlanSecurityEnum
 }
 
 interface OpenDiagramProps extends DiagramProps {
@@ -115,8 +117,12 @@ function getDPSKDiagram (props:DpskDiagramProps) {
 function getDpskUsingRadiusDiagram (props: DpskDiagramProps) {
   const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
   const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
-  return enableAuthProxyService || enableAccProxyService ?
-    DpskUsingRadiusDiagram : DpskUsingRadiusNonProxyDiagram
+  if (props.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+    return DpskCloudpathNonProxyDiagram
+  } else {
+    return enableAuthProxyService || enableAccProxyService ?
+      DpskUsingRadiusDiagram : DpskUsingRadiusNonProxyDiagram
+  }
 }
 function getPSKDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? AaaDiagram : PskDiagram
@@ -154,7 +160,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const wlanSecurity = props.wlanSecurity as WlanSecurityEnum
   const wisprWithPsk=Object.keys(PskWlanSecurityEnum)
     .includes(wlanSecurity as keyof typeof PskWlanSecurityEnum)
-  const wisprWithOwe=wlanSecurity === WlanSecurityEnum.OWE
+  const wisprWithOwe=
+    (wlanSecurity === WlanSecurityEnum.OWE) || (wlanSecurity === WlanSecurityEnum.OWETransition)
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]: wisprWithPsk ? ClickThroughWithPskDiagram :

@@ -14,39 +14,51 @@ import AICanvas from '.'
 
 
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
-jest.mock('./Canvas', () => () => <div>Canvas</div>)
+jest.mock('./Canvas', () => {
+  const { forwardRef } = jest.requireActual('react')
+  return forwardRef(() => <div>Canvas</div>)
+})
 jest.mock('./components/WidgetChart', () => ({
   DraggableChart: () => <div>DraggableChart</div>
 }))
 
+const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
-  useNavigate: jest.fn(),
+  useNavigate: () => mockedNavigate,
   useTenantLink: jest.fn()
 }))
+
+const mockedShowActionModal = jest.fn()
+jest.mock('@acx-ui/components', () => {
+  const Loader = jest.requireActual('@acx-ui/components').Loader
+  const Tooltip = jest.requireActual('@acx-ui/components').Tooltip
+  const Button = jest.requireActual('@acx-ui/components').Button
+  const Card = jest.requireActual('@acx-ui/components').Card
+  return {
+    Card,
+    Button,
+    Loader,
+    Tooltip,
+    showActionModal: () => mockedShowActionModal
+  }
+})
 
 jest.mock('@acx-ui/rc/services', () => {
   const useGetAllChatsQuery = jest.requireActual('@acx-ui/rc/services').useGetAllChatsQuery
   return {
     useGetAllChatsQuery,
-    useLazyGetChatQuery: () => [
+    useGetChatsMutation: () => [
       jest.fn(() => ({
         unwrap: jest.fn().mockResolvedValue({
-          sessionId: 'c9f18d3d-b34a-4005-8418-c20b32435eca',
-          title: 'Alerts Widget Generation Request',
-          updatedDate: '2025-01-20T09:26:46.706+00:00',
-          messages: [
+          page: 1,
+          totalCount: 4,
+          totalPages: 1,
+          data: [
             {
-              id: 'f33c9c53f28046be95290127776ba022',
-              role: 'USER',
-              text: 'what can you do?',
-              created: '2025-01-20T09:26:53.446+00:00'
-            },
-            {
-              id: '884877e7ee8248bf8edf677d1be593e9',
+              id: 'afa2591ede524f3884e21acd06ccb8b4',
               role: 'AI',
-              text: `I am happy to assist you with analyzing and visualizing Ruckus WiFi
-               related data. Please try again.`,
-              created: '2025-01-20T09:27:53.446+00:00',
+              text: 'Failed to get response from AI....',
+              created: '2025-02-10T11:05:26.373+00:00',
               widgets: [{
                 multiSeries: false,
                 chartType: 'pie',
@@ -65,15 +77,19 @@ jest.mock('@acx-ui/rc/services', () => {
                   }
                 ]
               }]
+            },
+            {
+              id: '39f10e1e9daa47adba1dffcbd3dcd0cd',
+              role: 'USER',
+              text: 'what can you do?',
+              created: '2025-02-10T11:05:26.365+00:00'
             }
-          ],
-          totalCount: 4
-        })
+          ] })
       }))
     ],
     useChatAiMutation: () => [
-      jest.fn(() => ({
-        unwrap: jest.fn().mockResolvedValue({
+      jest.fn().mockResolvedValue({
+        data: {
           sessionId: 'b2c7f415-4306-4ecf-a001-dd7288eca7f8',
           title: 'New Chat',
           updatedDate: '2025-01-20T09:56:05.006+00:00',
@@ -92,8 +108,7 @@ jest.mock('@acx-ui/rc/services', () => {
             }
           ],
           totalCount: 2
-        })
-      }))
+        } })
     ]
   }
 })
@@ -172,14 +187,48 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
-    expect(await screen.findByText('History Drawer')).toBeVisible()
-    expect(await screen.findByTestId('historyIcon')).toBeVisible()
-    expect(await screen.findByTestId('newChatIcon')).toBeVisible()
+    expect(await screen.findByText('what can you do?')).toBeVisible()
+    const newChatBtn = await screen.findByTestId('newChatIcon')
+    expect(newChatBtn).toBeVisible()
+    fireEvent.click(newChatBtn)
+    // New chat cannot be started because the history limit of 10 has been reached.
     expect(await screen.findByText('what can you do?')).toBeVisible()
     expect(await screen.findByText('DraggableChart')).toBeVisible()
+    const historyBtn = await screen.findByTestId('historyIcon')
+    expect(historyBtn).toBeVisible()
+    fireEvent.click(historyBtn)
+    expect(await screen.findByText('History Drawer')).toBeVisible()
+    const searchInput = await screen.findByTestId('search-input')
+    fireEvent.change(searchInput, { target: { value: 'hello' } })
+    const searchBtn = await screen.findByTestId('search-button')
+    fireEvent.click(searchBtn)
+    expect(await screen.findByText('hello')).toBeVisible()
+    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
   })
 
   it('should render a new chat correctly', async () => {
+    const scrollTo = jest.fn()
+    HTMLElement.prototype.scrollTo = scrollTo
+    mockServer.use(
+      rest.get(
+        RuckusAiChatUrlInfo.getAllChats.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+    render(
+      <Provider>
+        <AICanvas />
+      </Provider>
+    )
+    expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
+    expect(await screen.findByText('Canvas')).toBeVisible()
+    const suggestQuestion = await screen.findByText('Show me the top-consuming clients.')
+    expect(suggestQuestion).toBeVisible()
+    fireEvent.click(suggestQuestion)
+    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
+  })
+
+  it('should close without changes correctly', async () => {
     const scrollTo = jest.fn()
     HTMLElement.prototype.scrollTo = scrollTo
     render(
@@ -189,11 +238,9 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
-    const searchInput = await screen.findByTestId('search-input')
-    fireEvent.change(searchInput, { target: { value: 'hello' } })
-    const searchBtn = await screen.findByTestId('search-button')
-    fireEvent.click(searchBtn)
-    expect(await screen.findByText('hello')).toBeVisible()
-    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
+    const closeBtn = await screen.findByTestId('close-icon')
+    fireEvent.click(closeBtn)
+    expect(mockedNavigate).toBeCalled()
   })
+
 })

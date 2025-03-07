@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -6,8 +6,9 @@ import { useIntl } from 'react-intl'
 import { Button }                                         from '@acx-ui/components'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
-import Layout  from './components/Layout'
-import * as UI from './styledComponents'
+import Layout            from './components/Layout'
+import * as UI           from './styledComponents'
+import { compactLayout } from './utils/compact'
 
 // import mockData from './mock'
 
@@ -38,7 +39,11 @@ export interface CardInfo {
   isShadow: boolean
   currentSizeIndex: number
   sizes: Size[]
+  groupIndex: number
   chartType?: string
+  widgetId?: string
+  chatId?: string
+  canvasId?: string
 }
 export interface Group {
   id: string
@@ -81,10 +86,18 @@ const DEFAULT_CANVAS = [
   }
 ] as unknown as Section[]
 
-export default function Canvas () {
+export interface CanvasRef {
+  save: () => Promise<void>;
+}
+
+interface CanvasProps {
+  onCanvasChange?: (hasChanges: boolean) => void;
+  groups: Group[]
+  setGroups: React.Dispatch<React.SetStateAction<Group[]>>
+}
+
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, setGroups }, ref) => {
   const { $t } = useIntl()
-  // const [widgets, setWidgets] = useState([])
-  const [groups, setGroups] = useState([] as Group[])
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
   const [getCanvas] = useLazyGetCanvasQuery()
@@ -98,22 +111,48 @@ export default function Canvas () {
     getDefaultCanvas()
   }, [])
 
+  useEffect(() => {
+    if (!groups.length || !sections.length) return
+    const tmp = _.cloneDeep(sections)
+    tmp.forEach(s => {
+      s.groups = groups.filter(g => g.sectionId === s.id)
+    })
+    let hasDiff = !_.isEqual(tmp, sections)
+    setCanvasChange(hasDiff)
+  }, [groups, sections])
+
   // const getFromLS = () => {
   //   let ls = localStorage.getItem('acx-ui-canvas') ?
   //     JSON.parse(localStorage.getItem('acx-ui-canvas') || '') : DEFAULT_CANVAS // mockData
   //   return ls
   // }
 
-  const getDefaultCanvas = async ()=>{
+  const setCanvasChange = (hasChanges: boolean) => {
+    if (onCanvasChange) {
+      onCanvasChange(hasChanges)
+    }
+  }
+
+  const getDefaultCanvas = async () => {
     const response = await getCanvas({}).unwrap()
-    if(response?.length && response[0].content){
-      setCanvasId(response[0].id)
-      const data = JSON.parse(response[0].content)
+    if (response?.length && response[0].content) {
+      const canvasId = response[0].id
+      let data = JSON.parse(response[0].content) as Section[]
+      data = data.map(section => ({
+        ...section,
+        groups: section.groups.map(group => ({
+          ...group,
+          cards: compactLayout(group.cards)
+        }))
+      }))
+      const groups = data.flatMap(section => section.groups)
+
+      setCanvasId(canvasId)
       setSections(data)
-      const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
-      setGroups(group)
+      setGroups(groups)
+      setCanvasChange(false)
     } else {
-      if(response?.length && response[0].id){
+      if (response?.length && response[0].id) {
         setCanvasId(response[0].id)
       }
       emptyCanvas()
@@ -122,29 +161,39 @@ export default function Canvas () {
 
   const onSave = async () => {
     const tmp = _.cloneDeep(sections)
+    let widgetIds = [] as string[]
     let hasCard = false
     tmp.forEach(s => {
       s.groups = groups.filter(g => g.sectionId === s.id)
       s.groups.forEach(g => {
-        if(g.cards.length && !hasCard) {
+        if (g.cards.length && !hasCard) {
           hasCard = true
         }
+        const groupWidgets = g.cards.map(i => i.widgetId) as string[]
+        widgetIds = widgetIds.concat(groupWidgets)
       })
     })
-    if(canvasId) {
+    if (canvasId) {
       await updateCanvas({
         params: { canvasId },
         payload: {
-          content: hasCard ? JSON.stringify(tmp) : ''
+          content: hasCard ? JSON.stringify(tmp) : '',
+          widgetIds
         }
       })
     }
+    setCanvasChange(false)
     // localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
+
+  useImperativeHandle(ref, () => ({
+    save: onSave
+  }))
 
   const emptyCanvas = () => {
     setSections(DEFAULT_CANVAS)
     setGroups(DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], []))
+    setCanvasChange(false)
   }
 
   return (
@@ -176,9 +225,12 @@ export default function Canvas () {
             setGroups={setGroups}
             compactType={compactType}
             layout={layout}
+            canvasId={canvasId}
           />
         </UI.Grid>
       </div>
     </UI.Canvas>
   )
-}
+})
+
+export default Canvas

@@ -7,15 +7,16 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
+import { getUserProfile }                                 from '@acx-ui/user'
 import {
   defaultRanges,
   DateRange,
   dateRangeMap,
   resetRanges,
   dateRangeForLast,
-  getJwtTokenPayload,
   AccountTier
 } from '@acx-ui/utils'
 
@@ -47,6 +48,7 @@ interface DatePickerProps {
   showLast8hours?: boolean;
   isReport?: boolean;
   maxMonthRange?: number;
+  allowedMonthRange?: number;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -76,7 +78,8 @@ export const RangePicker = ({
   selectionType,
   isReport,
   showLast8hours,
-  maxMonthRange
+  maxMonthRange,
+  allowedMonthRange
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
@@ -90,15 +93,19 @@ export const RangePicker = ({
     }
     return { translatedRanges, translatedOptions }
   }, [$t, rangeOptions])
+  const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
-  const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const { accountTier } = getUserProfile()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
-  const allowedDateRange = accountTier === AccountTier.GOLD
-    ? dateRangeForLast(1, 'month')
-    : dateRangeForLast(isReport ? 12 : 3, 'months')
+  const allowedDateRange = (showResetMsg && allowedMonthRange)
+    ? dateRangeForLast(allowedMonthRange,'months')
+    : (accountTier === AccountTier.GOLD
+      ? dateRangeForLast(1, 'month')
+      : dateRangeForLast(isReport ? 12 : 3, 'months'))
+
 
   const disabledDate = useCallback(
     (current: Moment) => (
@@ -110,7 +117,13 @@ export const RangePicker = ({
   )
 
   useEffect(
-    () => setRange(selectedRange),
+    () => {
+      if (showResetMsg && !isCalendarOpen) {
+        setRange(selectedRange)
+      } else if (!showResetMsg) {
+        setRange(selectedRange)
+      }
+    },
     [selectedRange.startDate, selectedRange.endDate] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
@@ -295,3 +308,11 @@ export const DateTimePicker = ({
   </Tooltip>
 }
 
+export function getDefaultEarliestStart (props?: { isReport?: boolean }) {
+  const { accountTier } = getUserProfile()
+  const allowedDateRange = (accountTier === AccountTier.GOLD
+    ? dateRangeForLast(1,'month')
+    : dateRangeForLast(props?.isReport ? 12 : 3, 'months')
+  )
+  return allowedDateRange[0].startOf('day')
+}

@@ -1,38 +1,58 @@
-import {  Space }  from 'antd'
-import { useIntl } from 'react-intl'
+import { useEffect, useState } from 'react'
+
+import { Space }                   from 'antd'
+import { Key as AntdTableKeyType } from 'antd/lib/table/interface'
+import { useIntl }                 from 'react-intl'
 
 import {
   Table,
   TableProps,
-  Loader,
   Button,
   ProgressBarV2
 } from '@acx-ui/components'
-import { useGetEdgeOnuListQuery } from '@acx-ui/rc/services'
 import {
-  EdgeNokiaOnuData
+  EdgeNokiaOnuData,
+  getOltPoeClassText
 } from '@acx-ui/rc/utils'
 
+import { GreenPercentageBar } from './styledComponents'
+
 interface EdgeNokiaOnuTableProps {
-  oltId: string | undefined
+  data: EdgeNokiaOnuData[] | undefined
   cageName: string | undefined
-  onClick: (onu: EdgeNokiaOnuData) => void
+  onClickRow: (onu: EdgeNokiaOnuData | undefined) => void
+  onClearSelection: () => void
 }
 
 export function EdgeNokiaOnuTable (props: EdgeNokiaOnuTableProps) {
-  const { oltId, cageName } = props
-  const { data, isLoading } = useGetEdgeOnuListQuery({
-    params: { oltId, cageName }
-  }, { skip: !oltId || !cageName })
+  const { data, cageName, onClickRow, onClearSelection } = props
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
-  return <Loader states={[{ isLoading }]}>
-    <Table
-      rowKey='name'
-      columns={useColumns(props)}
-      dataSource={data}
-      rowSelection={{ type: 'radio' }}
-    />
-  </Loader>
+  // eslint-disable-next-line max-len
+  const handleRowSelectChange = (selectedRowKeys: AntdTableKeyType[], selectedRows: EdgeNokiaOnuData[]) => {
+    setSelectedRowKeys(selectedRowKeys)
+    onClickRow(selectedRowKeys.length === 0 ? undefined : selectedRows[0])
+  }
+
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+    onClearSelection()
+  }
+
+  useEffect(() => {
+    clearSelection()
+  }, [cageName])
+
+  return <Table
+    rowKey='name'
+    columns={useColumns(props)}
+    dataSource={data}
+    rowSelection={{
+      type: 'radio',
+      onChange: handleRowSelectChange,
+      selectedRowKeys
+    }}
+  />
 }
 
 function useColumns (props: EdgeNokiaOnuTableProps) {
@@ -40,12 +60,12 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
   const columns: TableProps<EdgeNokiaOnuData>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'ONU Name' }),
+      title: $t({ defaultMessage: 'ONU/ONT Name' }),
       dataIndex: 'name',
       sorter: true,
       fixed: 'left',
       render: (_, row) =>
-        <Button type='link' onClick={() => props.onClick(row)}>
+        <Button type='link' onClick={() => props.onClickRow(row)}>
           {row.name}
         </Button>
     },
@@ -56,13 +76,16 @@ function useColumns (props: EdgeNokiaOnuTableProps) {
       render: (_, row) =>
         <Space>
           <span>{row.ports}</span>
-          <ProgressBarV2 percent={33.33} />
+          <GreenPercentageBar>
+            <ProgressBarV2 percent={(row.usedPorts/row.ports) * 100} />
+          </GreenPercentageBar>
         </Space>
     },
     {
       key: 'poeClass',
       title: $t({ defaultMessage: 'PoE Class' }),
-      dataIndex: 'poeClass'
+      dataIndex: 'poeClass',
+      render: (_, row) => getOltPoeClassText(row.poeClass)
     }
   ]
 

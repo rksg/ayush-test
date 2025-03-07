@@ -22,4 +22,8 @@ export const FieldLabelUtil = styled.div`
   grid-template-columns: 180px 260px 100px;
   align-items: baseline;
 `
-
+export const StackedBarContainer = styled.div`
+  border-radius: 20px;
+  overflow: hidden;
+  display: inline-block;
+`

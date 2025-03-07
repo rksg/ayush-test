@@ -29,6 +29,7 @@ import {
   isFirmwareSupportAdminPassword,
   isFirmwareVersionAbove10010f,
   isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010g2Or10020b,
   vlanPortsParser
 } from '.'
 
@@ -464,6 +465,23 @@ describe('Test isFirmwareVersionAbove10020b function', () => {
     expect(isFirmwareVersionAbove10020b('SPR10020b_rc35')).toBe(true)
     expect(isFirmwareVersionAbove10020b('TNR10020b_b205')).toBe(true)
     expect(isFirmwareVersionAbove10020b('TNR10020b_cd1')).toBe(true)
+  })
+})
+
+describe('Test isFirmwareVersionAbove10010g2Or10020b function', () => {
+  it('should render correctly', async () => {
+    expect(isFirmwareVersionAbove10010g2Or10020b('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10010c_cd1')).toBe(false)
+    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10020a_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010f_b467')).toBe(false)
+    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010f_cd1_rc11')).toBe(false)
+    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010f_cd2')).toBe(false)
+
+    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10010g_rc50')).toBe(true)
+    expect(isFirmwareVersionAbove10010g2Or10020b('SPR10020b_rc35')).toBe(true)
+    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10020b_b205')).toBe(true)
+    expect(isFirmwareVersionAbove10010g2Or10020b('TNR10020b_cd1')).toBe(true)
   })
 })
 

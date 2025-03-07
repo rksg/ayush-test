@@ -1,13 +1,13 @@
 /* eslint-disable testing-library/no-node-access */
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { CapabilitiesApModel }     from '@acx-ui/rc/utils'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
-import { cleanup, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { CapabilitiesApModel, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }               from '@acx-ui/react-router-dom'
+import { Provider }                              from '@acx-ui/store'
+import { cleanup, mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -1239,6 +1239,19 @@ const support6gSeparationChannels = {
   [ApRadioTypeEnum.RadioUpper5G]: validRadioChannels['5GUpperChannels']
 }
 
+const mockedApModelFamilies = [
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: ['R560',' R760']
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: ['R770', 'R670', 'T670', 'T670SN', 'H670']
+  }
+]
+
 jest.mock('./RadioSettingsContents', () => ({
   ...jest.requireActual('./RadioSettingsContents'),
   txPowerAdjustmentOptions: [
@@ -1259,6 +1272,11 @@ const resetToDefaultSpy = jest.fn()
 describe('SignaleRadioSettings component', () => {
   beforeEach(() => {
     resetToDefaultSpy.mockClear()
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => res(ctx.json(mockedApModelFamilies)))
+    )
   })
   afterEach(() => cleanup())
 

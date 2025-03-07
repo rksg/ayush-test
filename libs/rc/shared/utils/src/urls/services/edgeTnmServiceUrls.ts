@@ -113,13 +113,19 @@ export const EdgeTnmServiceUrls: { [key: string]: ApiInfo } = {
   },
   toggleEdgeCageState: {
     method: 'put',
-    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/cages/:cageName',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/cages',
     newApi: true,
     defaultHeaders: versionHeaders
   },
   getEdgeOnuList: {
-    method: 'get',
-    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/cages/:cageName/onus',
+    method: 'post',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/onus',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  setEdgeOnuPortVlan: {
+    method: 'put',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/olts/:oltId/onus',
     newApi: true,
     defaultHeaders: versionHeaders
   }
