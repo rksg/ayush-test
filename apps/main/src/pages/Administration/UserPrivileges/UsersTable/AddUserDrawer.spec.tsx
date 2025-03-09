@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }            from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
@@ -58,9 +58,15 @@ const mockedCloseDialog = jest.fn()
 const mockedAddAdminFn = jest.fn()
 const mockReqAdminsData = jest.fn()
 const services = require('@acx-ui/rc/services')
+const mobilePlaceHolder = '555'
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  PhoneInput: () => <input data-testid='PhoneInput' placeholder={mobilePlaceHolder}/>
+}))
 
 describe('Add user drawer component', () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   beforeEach(() => {
     mockReqAdminsData.mockReset()

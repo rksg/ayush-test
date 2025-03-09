@@ -1,14 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { useSearchMacRegistrationsQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   MacRegistrationDetailsTabKey,
-  MacRegListUrlsInfo, PolicyOperation, PolicyType
+  MacRegListUrlsInfo, PolicyOperation, PolicyType,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { Provider }                                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { Provider }                                                                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { MacRegistrationsTable } from './index'
 
@@ -70,7 +72,13 @@ const macReg = {
   networkIds: []
 }
 
-describe.skip('MacRegistrationsTable', () => {
+jest.mock('../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer', () => ({
+  MacAddressDrawer: jest.fn(({ visible }) => {
+    return visible ? <div data-testid='macAddressDrawer'></div> : null
+  })
+}))
+
+describe('MacRegistrationsTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
@@ -100,18 +108,33 @@ describe.skip('MacRegistrationsTable', () => {
   })
 
   it('should render correctly', async () => {
+    const { result } = renderHook(() =>
+      useTableQuery({
+        useQuery: useSearchMacRegistrationsQuery,
+        defaultPayload: {},
+        pagination: { settingsId: 'identity-macregistration-table' },
+        apiParams: { policyId: macReg.id }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockServer.use(
       rest.patch(
         MacRegListUrlsInfo.updateMacRegistration.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
 
-    render(<Provider><MacRegistrationsTable /></Provider>, {
+    render(<Provider>
+      <MacRegistrationsTable
+        policyId={macReg.id}
+        tableQuery={result.current}
+      />
+    </Provider>, {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(result.current.data).not.toBeUndefined()
+    })
 
     const row1 = await screen.findByRole('row', { name: /11-22-33-44-55-66/i })
     expect(row1).toHaveTextContent('Active')
@@ -127,21 +150,29 @@ describe.skip('MacRegistrationsTable', () => {
     expect(row2).toHaveTextContent('12/08/2065')
     expect(row2).toHaveTextContent('12/08/2021')
 
-    fireEvent.click(within(row1).getByRole('checkbox'))
+    fireEvent.click(within(row1).getByRole('radio'))
     fireEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
     fireEvent.click(await screen.findByRole('button', { name: /clear selection/i }))
 
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    fireEvent.click(within(row2).getByRole('radio'))
     fireEvent.click(await screen.findByRole('button', { name: /unrevoke/i }))
     fireEvent.click(await screen.findByRole('button', { name: /clear selection/i }))
+    // expect(await screen.findByTestId('macAddressDrawer')).toBeInTheDocument()
 
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    fireEvent.click(within(row2).getByRole('radio'))
     fireEvent.click(await screen.findByRole('button', { name: /edit/i }))
-
-    fireEvent.click(await screen.findByRole('button', { name: /add mac address/i }))
+    expect(await screen.findByTestId('macAddressDrawer')).toBeInTheDocument()
   })
 
   it('should delete address correctly', async () => {
+    const { result } = renderHook(() =>
+      useTableQuery({
+        useQuery: useSearchMacRegistrationsQuery,
+        defaultPayload: {},
+        pagination: { settingsId: 'identity-macregistration-table' },
+        apiParams: { policyId: macReg.id }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -153,15 +184,22 @@ describe.skip('MacRegistrationsTable', () => {
         })
     )
 
-    render(<Provider><MacRegistrationsTable /></Provider>, {
+    render(<Provider>
+      <MacRegistrationsTable
+        policyId={macReg.id}
+        tableQuery={result.current}
+      />
+    </Provider>, {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(result.current.data).not.toBeUndefined()
+    })
 
     const row = await screen.findByRole('row', { name: /3A-B8-A9-29-35-D5/ })
 
-    fireEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: /delete/i }))
     await screen.findByText('Delete "3A-B8-A9-29-35-D5"?')
     fireEvent.click(screen.getByText('Delete MAC Address'))
@@ -171,7 +209,7 @@ describe.skip('MacRegistrationsTable', () => {
     })
   })
 
-  it('should bulk delete address correctly', async () => {
+  it.skip('should bulk delete address correctly', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -203,7 +241,7 @@ describe.skip('MacRegistrationsTable', () => {
     })
   })
 
-  it('should delete address and show error correctly', async () => {
+  it.skip('should delete address and show error correctly', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -234,16 +272,38 @@ describe.skip('MacRegistrationsTable', () => {
   })
 
   it('should show "Import from file" correctly', async () => {
+    const uploadFn = jest.fn()
+    const { result } = renderHook(() =>
+      useTableQuery({
+        useQuery: useSearchMacRegistrationsQuery,
+        defaultPayload: {},
+        pagination: { settingsId: 'identity-macregistration-table' },
+        apiParams: { policyId: macReg.id }
+      }), { wrapper: ({ children }) => <Provider children={children} /> })
+
     mockServer.use(
       rest.post(
         MacRegListUrlsInfo.uploadMacRegistration.url,
-        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+        (_, res, ctx) => {
+          uploadFn()
+          return res(ctx.status(201), ctx.json({}))
+        }
       )
     )
 
-    render(<Provider><MacRegistrationsTable /></Provider>, {
+    render(<Provider>
+      <MacRegistrationsTable
+        policyId={macReg.id}
+        tableQuery={result.current}
+      />
+    </Provider>, {
       route: { params, path: tablePath }
     })
+
+    await waitFor(() => {
+      expect(result.current.data).not.toBeUndefined()
+    })
+
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
 
     const dialog = await screen.findByRole('dialog')
@@ -256,9 +316,10 @@ describe.skip('MacRegistrationsTable', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+    expect(uploadFn).toHaveBeenCalled()
   })
 
-  it('should show error toast when "Import from file"', async () => {
+  it.skip('should show error toast when "Import from file"', async () => {
     const error = {
       status: 'BAD_REQUEST',
       timestamp: '2023-02-14 07:47:47',
@@ -301,7 +362,7 @@ describe.skip('MacRegistrationsTable', () => {
     await waitForElementToBeRemoved(validating)
   })
 
-  it('import file async correctly', async () => {
+  it.skip('import file async correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(

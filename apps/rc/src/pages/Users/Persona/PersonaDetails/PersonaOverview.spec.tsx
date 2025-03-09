@@ -6,7 +6,7 @@ import { mockServer, render, waitFor, screen }                from '@acx-ui/test
 
 import { mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
-import PersonaOverview from './PersonaOverview'
+import { PersonaOverview } from './PersonaOverview'
 
 const mockPropertyUnit: PropertyUnit = {
   id: '84f5749615134e53804c3a0e4b193b56',
