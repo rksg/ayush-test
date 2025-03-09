@@ -24,7 +24,9 @@ import { hasAllowedOperations }               from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
 
 
-function PersonaOverview (props: { personaData?: Persona, personaGroupData?: PersonaGroup }) {
+export function PersonaOverview (props:
+   { personaData?: Persona, personaGroupData?: PersonaGroup }
+) {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
   const { personaData, personaGroupData } = props
@@ -184,5 +186,3 @@ function PersonaOverview (props: { personaData?: Persona, personaGroupData?: Per
     </Row>
   )
 }
-
-export default PersonaOverview
