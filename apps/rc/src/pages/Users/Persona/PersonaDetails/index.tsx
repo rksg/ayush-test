@@ -33,7 +33,7 @@ import DpskPassphraseTab    from './DpskPassphraseTab'
 import IdentityClientTable  from './IdentityClientTable'
 import LegacyPersonaDetails from './LegacyPersonaDetails'
 import MacAddressTab        from './MacAddressTab'
-import PersonaOverview      from './PersonaOverview'
+import { PersonaOverview }  from './PersonaOverview'
 
 export const IdentityDetailsContext = createContext({} as {
   setDeviceCount: (count: number) => void,
