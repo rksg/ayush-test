@@ -6,8 +6,8 @@ import { useIntl }     from 'react-intl'
 import { GridRow, GridCol, PageHeader, Select, Button, ActionsContainer, showToast, Loader } from '@acx-ui/components'
 import { useNavigate, useParams }                                                            from '@acx-ui/react-router-dom'
 
-import { useGetConnectorQuery, useSaveConnectorMutation } from './services'
-import { Frequency }                                      from './types'
+import { useGetConnectorQuery, useSaveConnectorMutation, useGetDataSetsQuery } from './services'
+import { DataSets, Frequency }                                      from './types'
 import { frequencyMap, getUserName, generateBreadcrumb }  from './utils'
 
 type DataConnectorFormProps = {
@@ -21,20 +21,20 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
   const params = useParams()
   const connectorId = params.settingId
   const selectedConnector = useGetConnectorQuery({ id: connectorId }, { skip: !editMode })
+  const { data, isLoading: isDataSetsLoading } = useGetDataSetsQuery({})
+  const dataSets = (data as unknown as DataSets)?.map(({ dataSet }) => ({
+    label: $t(dataSet.name),
+    value: dataSet.value
+  }))
   const [form] = Form.useForm()
 
   const selectedDataSet = Form.useWatch('dataSource', form) || selectedConnector.data?.dataSource
-  // todo prepare map from api response
-  const dataSetColumns = {
-    apInventory: [
-      { value: 'apMac', label: $t({ defaultMessage: 'MAC Address' }) },
-      { value: 'apName', label: $t({ defaultMessage: 'AP Name' }) }
-    ],
-    switchInventory: [
-      { value: 'switchMac', label: $t({ defaultMessage: 'Mac Address' }) },
-      { value: 'switchName', label: $t({ defaultMessage: 'Switch Name' }) }
-    ]
-  }
+  const dataSetColumns = (data as unknown as DataSets)?.reduce((acc, { dataSet, cols }) => {
+    return {
+      ...acc,
+      [dataSet.value]: cols.map(col => ({ label: col, value: col }))
+    }
+  }, {})
   const [updateConnector, { isLoading }] = useSaveConnectorMutation()
   const saveConnector = useCallback(() => {
     const data = form.getFieldsValue()
@@ -65,7 +65,9 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
         : $t({ defaultMessage: 'New Connector' })}
       breadcrumb={generateBreadcrumb()}
     />
-    <Loader states={[{ isLoading: isLoading || selectedConnector.isLoading }]}>
+    <Loader states={[
+      { isLoading: isDataSetsLoading || isLoading || selectedConnector.isLoading }
+    ]}>
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
           <Form
@@ -94,10 +96,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
               <Select
                 data-testid='dataSourceSelect'
                 onSelect={() => form.setFieldValue('columns', undefined)}
-                options={[
-                  { value: 'apInventory', label: $t({ defaultMessage: 'AP Inventory' }) },
-                  { value: 'switchInventory', label: $t({ defaultMessage: 'Switch Inventory' }) }
-                ]}
+                options={dataSets}
               />
             </Form.Item>
             <Form.Item
@@ -112,7 +111,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
                 data-testid='columnsSelect'
                 showSearch
                 mode='multiple'
-                options={dataSetColumns[selectedDataSet as keyof typeof dataSetColumns]}
+                options={dataSetColumns?.[selectedDataSet as keyof typeof dataSetColumns]}
               />
             </Form.Item>
             <Form.Item

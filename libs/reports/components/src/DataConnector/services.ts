@@ -2,6 +2,7 @@ import { TableResult }     from '@acx-ui/rc/utils'
 import { notificationApi } from '@acx-ui/store'
 import { RequestPayload }  from '@acx-ui/types'
 
+import { MLISA_DATASET_NAME_MAPPING } from './utils'
 import {
   Response,
   AuditDto,
@@ -11,8 +12,11 @@ import {
   PatchDataConnector,
   StorageData,
   StoragePayload,
-  ConnectorPayload
+  ConnectorPayload,
+  DataSetResult,
+  DataSets
 } from './types'
+import { MessageDescriptor } from 'react-intl'
 
 export const dataConnectorApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -49,6 +53,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
+      providesTags: [{ type: 'DataConnector', id: 'GET_CONNECTOR' }],
       transformResponse: (response: Response<ConnectorPayload>) => response.data
     }),
     saveConnector: build.mutation<{ data: { id: string } }, ConnectorPayload>({
@@ -146,6 +151,32 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
         credentials: 'include'
       }),
       invalidatesTags: [{ type: 'DataConnector', id: 'GET_AUDIT_LIST' }]
+    }),
+    getDataSets: build.query<DataSets, {}>({
+      query: () => {
+        return {
+          url: '/dataConnector/dataSets',
+          method: 'get',
+          credentials: 'include'
+        }
+      },
+      providesTags: [{ type: 'DataConnector', id: 'GET_DATASETS' }],
+      transformResponse: (response: DataSetResult[]) => {
+        const data = response?.reduce((dataSets, item) => {
+          const name = MLISA_DATASET_NAME_MAPPING[
+            item.dataSet as keyof typeof MLISA_DATASET_NAME_MAPPING
+          ]
+          // ensure the name exists else filter the data set
+          if (name) {
+            dataSets.push({
+              dataSet: { name, value: item.dataSet },
+              cols: item.columns
+            })
+          }
+          return dataSets
+        }, [] as DataSets)
+        return data
+      }
     })
   })
 })
@@ -161,5 +192,6 @@ export const {
   useDeleteDataConnectorMutation,
   useGetDataConnectorByIdQuery,
   useGetAuditsQuery,
-  useRetryAuditMutation
+  useRetryAuditMutation,
+  useGetDataSetsQuery
 } = dataConnectorApis

@@ -47,3 +47,27 @@ export const isVisibleByAction = (rows: DataConnector[], action: Actions) => {
 export const frequencyMap = {
   [Frequency.Daily]: defineMessage({ defaultMessage: 'Daily' })
 }
+
+export const MLISA_DATASET_NAME_MAPPING = {
+  'apAlarms': defineMessage({ defaultMessage: 'AP Alarms' }),
+  'apInventory': defineMessage({ defaultMessage: 'AP Inventory' }),
+  'apEvents': defineMessage({ defaultMessage: 'AP Events' }),
+  'apWiredClient': defineMessage({ defaultMessage: 'AP Wired Device' }),
+  'binnedApTraffic': defineMessage({ defaultMessage: 'AP Info and Statistics' }),
+  'binnedAvc': defineMessage({ defaultMessage: 'Applications' }),
+  'binnedRadio': defineMessage({ defaultMessage: 'AP Airtime and Hardware' }),
+  'binnedSessions': defineMessage({ defaultMessage: 'Client Info and Statistics' }),
+  'controllerInventory': defineMessage({ defaultMessage: 'Controller Inventory' }),
+  'mlisa-apAfc': defineMessage({ defaultMessage: 'AP AFC' }),
+  'mlisa-apConnectionStats': defineMessage({ defaultMessage: 'Client Connection Counts' }),
+  'mlisa-apMesh': defineMessage({ defaultMessage: 'AP Mesh' }),
+  'mlisa-apPeer': defineMessage({ defaultMessage: 'AP Peer' }),
+  'mlisa-clientTTC': defineMessage({ defaultMessage: 'Client Time to Connect' }),
+  'mlisa-clientConnectionStats': defineMessage({ defaultMessage: 'Client Connection Events' }),
+  'mlisa-edgeAvc': defineMessage({ defaultMessage: 'Edge AVC' }),
+  'rogueAp': defineMessage({ defaultMessage: 'AP Rogues' }),
+  'sessionsSummary': defineMessage({ defaultMessage: 'Client Sessions' }),
+  'switchInventory': defineMessage({ defaultMessage: 'Switch Inventory' }),
+  'switchNetwork': defineMessage({ defaultMessage: 'Switch Network' }),
+  'wifiCalling': defineMessage({ defaultMessage: 'AP WiFi Calling' }),
+}
