@@ -574,8 +574,14 @@ const thumbStyles = `
   }
   &:hover {
     path {
-      stroke: var(--acx-neutrals-60);
-      fill: var(--acx-neutrals-15);
+      stroke: var(--acx-neutrals-60) !important;
+      fill: var(--acx-neutrals-15) !important;
+    }
+  }
+  &.clicked {
+    path {
+      stroke: var(--acx-primary-white);
+      fill: var(--acx-neutrals-70);
     }
   }
 `

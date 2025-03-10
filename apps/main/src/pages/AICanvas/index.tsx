@@ -296,13 +296,19 @@ export default function AICanvas () {
             {
               chat.role === 'AI' &&
               <div className='user-feedback'>
-                <UI.ThumbsUp onClick={() => {
-                  onSubmitFeedback(true, chat)
-                }}
+                <UI.ThumbsUp
+                  // eslint-disable-next-line max-len
+                  className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_UP' ? 'clicked' : '') : ''}`}
+                  onClick={() => {
+                    onSubmitFeedback(true, chat)
+                  }}
                 />
-                <UI.ThumbsDown onClick={() => {
-                  onSubmitFeedback(false, chat)
-                }}
+                <UI.ThumbsDown
+                  // eslint-disable-next-line max-len
+                  className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_DOWN' ? 'clicked' : '') : ''}`}
+                  onClick={() => {
+                    onSubmitFeedback(false, chat)
+                  }}
                 />
               </div>
             }
