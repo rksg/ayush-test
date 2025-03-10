@@ -24,6 +24,11 @@ function isPromise <T> (value: unknown): value is Promise<T> {
   return Boolean((value as Promise<unknown>).then)
 }
 
+export type CustomButtonPropsType = {
+  disabled?: boolean
+  tooltip?: string | React.ReactNode
+}
+
 type UseStepsFormParam <T> = Omit<
   UseStepsFormConfig,
   'form' | 'defaultFormValues' | 'current' | 'submit'
@@ -49,10 +54,7 @@ type UseStepsFormParam <T> = Omit<
   }
 
   buttonProps?: {
-    apply?: {
-      disabled?: boolean
-      tooltip?: string | React.ReactNode
-    }
+    apply?: CustomButtonPropsType
   }
 
   customSubmit?: {
@@ -246,10 +248,10 @@ export function useStepsForm <T> ({
       ? null
       : <ApplyButton
         loading={loading}
+        {...buttonProps.apply}
         disabled={customSubmitLoading || buttonProps.apply?.disabled}
         onClick={() => submit()}
         children={labels.apply}
-        tooltip={buttonProps.apply?.tooltip}
       />,
     submit: labels.submit.length === 0 ? null : (!isLastStep
       ? <Button

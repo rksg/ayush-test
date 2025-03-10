@@ -6,11 +6,12 @@ import toArray                   from 'rc-util/lib/Children/toArray'
 import { useIntl }               from 'react-intl'
 
 import { Button }                       from '../Button'
+import { CustomButtonPropsType }        from '../StepsForm/useStepsForm'
 import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
 
 import * as UI from './styledComponents'
 
-import type { ButtonProps }              from '../Button'
+import type { ButtonProps }               from '../Button'
 import type {
   StepsFormProps as ProAntStepsFormProps,
   StepFormProps as ProAntStepFormProps
@@ -44,10 +45,7 @@ export type StepsFormLegacyProps <FormValue = any> =
     }
 
     buttonProps?: {
-      submit?: {
-        disabled?: boolean
-        tooltip?: string | React.ReactNode
-      }
+      submit?: CustomButtonPropsType
     }
   }
 
@@ -143,7 +141,7 @@ export function StepsFormLegacy <FormValue = any> (
         const submitButton = <SubmitButton
           key={submitKey}
           originalProps={submit.props}
-          customProps={buttonProps}
+          customProps={buttonProps.submit}
           submitKey={submitKey}
           children={buttonLabel[submitKey]}
         />
@@ -184,23 +182,22 @@ export function StepsFormLegacy <FormValue = any> (
 interface SubmitButtonProps {
   submitKey: 'next' | 'submit'
   originalProps: ButtonProps
-  customProps?: StepsFormLegacyProps['buttonProps']
+  customProps?: CustomButtonPropsType
 }
 
 function SubmitButton (props: React.PropsWithChildren<SubmitButtonProps>) {
-  const { originalProps, customProps, submitKey, children } = props
+  const { submitKey, originalProps, customProps = {}, children } = props
+  const { tooltip, ...restCustomProps } = customProps
+
   const submitButton = <Button
     {...originalProps}
     type='primary'
     children={children}
-    {...(submitKey === 'submit' && customProps?.submit
-      ? { disabled: !!customProps.submit?.disabled }
-      : {}
-    )}
+    {...(submitKey === 'submit' && restCustomProps)}
   />
 
-  return submitKey === 'submit' && customProps?.submit?.tooltip
-    ? <Tooltip title={customProps.submit.tooltip}><span>{submitButton}</span></Tooltip>
+  return submitKey === 'submit' && tooltip
+    ? <Tooltip title={tooltip}><span>{submitButton}</span></Tooltip>
     : submitButton
 }
 
