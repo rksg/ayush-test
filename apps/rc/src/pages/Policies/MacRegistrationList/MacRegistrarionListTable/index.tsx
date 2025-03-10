@@ -30,9 +30,11 @@ import {
   returnExpirationString,
   useTableQuery,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByPolicy
+  getScopeKeyByPolicy,
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }                                               from '@acx-ui/utils'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
@@ -116,6 +118,7 @@ export default function MacRegistrationListsTable () {
                 policyId: row.id!,
                 activeTab: MacRegistrationDetailsTabKey.OVERVIEW
               })}
+              rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.getMacRegistrationPool)]}
             >{highlightFn(row.name)}</TenantLink>
           )
         }
@@ -161,6 +164,7 @@ export default function MacRegistrationListsTable () {
                 policyId: row.id!,
                 activeTab: MacRegistrationDetailsTabKey.MAC_REGISTRATIONS
               })}
+              rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.getMacRegistrations)]}
             >{row.registrationCount ?? 0}</TenantLink>
           )
         }
@@ -187,6 +191,7 @@ export default function MacRegistrationListsTable () {
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -201,6 +206,7 @@ export default function MacRegistrationListsTable () {
   },
   {
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
+    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       if (isIdentityRequired) {
@@ -271,6 +277,7 @@ export default function MacRegistrationListsTable () {
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
             scopeKey={getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE)}
+            rbacOpsIds={[getOpsApi(MacRegListUrlsInfo.createMacRegistrationPool)]}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>

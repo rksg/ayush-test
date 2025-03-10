@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 
 import type { Settings } from '@acx-ui/analytics/utils'
+import { hasPermission } from '@acx-ui/user'
 
 import { useGetTenantSettingsQuery } from './rbacApi'
 
@@ -21,7 +22,9 @@ const mapper: Record<keyof Brand360Names, keyof Settings> = {
 
 export function useBrand360Config () {
   const { $t } = useIntl()
-  const settingsQuery = useGetTenantSettingsQuery()
+  const settingsQuery = useGetTenantSettingsQuery(undefined, {
+    skip: !hasPermission({ permission: 'READ_USERS' })
+  })
   const settings = settingsQuery.data
 
   return useMemo(() => {

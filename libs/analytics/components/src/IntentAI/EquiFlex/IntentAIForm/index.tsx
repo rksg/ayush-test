@@ -7,9 +7,10 @@ import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
+import { IntentWlan }                                                                       from '../../config'
 import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
-import { Actions, getTransitionStatus, IntentWlan, TransitionIntentItem }                   from '../../utils'
+import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'

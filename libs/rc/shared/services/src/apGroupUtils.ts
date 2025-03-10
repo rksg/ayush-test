@@ -197,7 +197,7 @@ export const getApGroupsListFn = (isTemplate: boolean = false) : QueryFn<TableRe
         const apQueryPayload = {
           fields: ['name', 'serialNumber'],
           pageSize: 10000,
-          filters: { id: apIds }
+          filters: { serialNumber: apIds }
         }
         const apsListQuery = await fetchWithBQ({
           ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),

@@ -8,14 +8,17 @@ import { Alert, Button, StepsForm, useStepFormContext }     from '@acx-ui/compon
 import { AddEdgeDhcpServiceModal }                          from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
 import {
-  MAX_SEGMENT_PER_VENUE,
+  EdgeDhcpUrls,
   MAX_DEVICE_PER_SEGMENT,
+  MAX_SEGMENT_PER_VENUE,
   PersonalIdentityNetworkFormData,
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
@@ -110,6 +113,14 @@ export const SmartEdgeForm = () => {
   const getDhcpPoolName = useCallback(() => {
     return poolList?.find(item => item.id === poolId)?.poolName
   }, [poolList, poolId])
+
+  const hasCreateDhcpPermission = hasPermission({
+    rbacOpsIds: [
+      [
+        getOpsApi(EdgeDhcpUrls.addDhcpService)
+      ]
+    ]
+  })
 
   useEffect(() => {
     form.setFieldValue('poolName', getDhcpPoolName())
@@ -257,7 +268,7 @@ export const SmartEdgeForm = () => {
           />
         </Col>
         {
-          !shouldDhcpDisabled && (
+          !shouldDhcpDisabled && hasCreateDhcpPermission && (
             <Col ><AddEdgeDhcpServiceModal /></Col>
           )
         }
