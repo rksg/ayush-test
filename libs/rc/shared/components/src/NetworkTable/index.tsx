@@ -398,10 +398,6 @@ export function NetworkTable ({
     return isDsaeEnabled || hasEnforcedItem(selectedRows)
   }
 
-  const getRowActionTooltip = (selectedRows: Array<Network|WifiNetwork>) => {
-    return getEnforcedActionMsg(selectedRows)
-  }
-
   const rowActions: TableProps<Network|WifiNetwork>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -410,8 +406,7 @@ export function NetworkTable ({
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRows) => isActionDisabled(selectedRows, 'edit'),
-      tooltip: getRowActionTooltip
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'edit')
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
@@ -462,7 +457,7 @@ export function NetworkTable ({
         })
       },
       disabled: (selectedRows) => isActionDisabled(selectedRows, 'delete'),
-      tooltip: getRowActionTooltip
+      tooltip: getEnforcedActionMsg
     }
   ]
 

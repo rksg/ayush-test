@@ -248,10 +248,10 @@ export function useStepsForm <T> ({
       ? null
       : <ApplyButton
         loading={loading}
-        {...buttonProps.apply}
-        disabled={customSubmitLoading || buttonProps.apply?.disabled}
+        disabled={customSubmitLoading}
         onClick={() => submit()}
         children={labels.apply}
+        customProps={buttonProps.apply}
       />,
     submit: labels.submit.length === 0 ? null : (!isLastStep
       ? <Button
@@ -337,9 +337,10 @@ export function useStepsForm <T> ({
   return { ...newConfig, elements }
 }
 
-type ApplyButtonProps = ButtonProps & { tooltip?: string | React.ReactNode }
+type ApplyButtonProps = ButtonProps & { customProps?: CustomButtonPropsType }
 function ApplyButton (props: ApplyButtonProps) {
-  const { loading, disabled, children, onClick, tooltip } = props
+  const { loading, disabled, children, onClick, customProps = {} } = props
+  const { tooltip, ...restCustomProps } = customProps
 
   const button = <Button
     type='primary'
@@ -348,6 +349,7 @@ function ApplyButton (props: ApplyButtonProps) {
     disabled={disabled}
     onClick={onClick}
     children={children}
+    {...restCustomProps}
   />
 
   return tooltip ? <Tooltip title={tooltip}><span>{button}</span></Tooltip> : button
