@@ -12,7 +12,6 @@ type PropertyUrlType =
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
-  'addUnitLinkedIdentity' |
   'deletePropertyUnit' |
   'notifyPropertyUnits' |
   'getResidentPortalList' |
@@ -25,7 +24,10 @@ type PropertyUrlType =
   'getResidentPortalFavicon' |
   'deleteResidentPortalLogo' |
   'deleteResidentPortalFavicon' |
-  'bulkUpdateUnitProfile'
+  'bulkUpdateUnitProfile' |
+  'getUnitsLinkedIdentities' |
+  'removeUnitLinkedIdenity' |
+  'addUnitLinkedIdentity'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -84,15 +86,6 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/:unitId',
     opsApi: 'PATCH:/venues/{id}/units/{id}'
-  },
-  addUnitLinkedIdentity: {
-    method: 'PUT',
-    newApi: true,
-    url: '/venues/:venueId/units/:unitId/identities/:identityId',
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
   },
   deletePropertyUnit: {
     method: 'delete',
@@ -165,5 +158,30 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/qosProfileAssignments/:profileId',
     opsApi: 'PUT:/venues/{id}/units/qosProfileAssignments/{id}'
+  },
+  getUnitsLinkedIdentities: {
+    method: 'post',
+    url: '/venues/:venueId/units/identities/query',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  addUnitLinkedIdentity: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  removeUnitLinkedIdenity: {
+    method: 'delete',
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   }
 }
