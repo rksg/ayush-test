@@ -47,6 +47,10 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const tableQuery = useTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
+    sorter: {
+      sortField: 'username',
+      sortOrder: 'ASC'
+    },
     defaultPayload: { identityIds: [personaId] },
     option: { skip: !personaId || !personaGroupId }
   })

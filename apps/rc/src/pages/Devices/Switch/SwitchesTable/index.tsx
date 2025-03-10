@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Menu, MenuProps }        from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
@@ -7,16 +7,14 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { SwitchTable, SwitchTabContext, defaultSwitchPayload, SwitchTableRefType } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { SwitchTable, SwitchTabContext, SwitchTableRefType } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
-  useSwitchListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  SwitchRbacUrlsInfo,
-  usePollingTableQuery
+  SwitchRbacUrlsInfo
 }      from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { SwitchScopes }          from '@acx-ui/types'
@@ -29,21 +27,6 @@ export default function useSwitchesTable () {
   const [ switchCount, setSwitchCount ] = useState(0)
   const switchTableRef = useRef<SwitchTableRefType>(null)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
-  const tableQuery = usePollingTableQuery({
-    useQuery: useSwitchListQuery,
-    enableRbac: isSwitchRbacEnabled,
-    defaultPayload: {
-      ...defaultSwitchPayload
-    },
-    search: {
-      searchTargetFields: defaultSwitchPayload.searchTargetFields
-    }
-  })
-
-  useEffect(() => {
-    setSwitchCount(tableQuery.data?.totalCount!)
-  }, [tableQuery.data])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {
