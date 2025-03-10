@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }                                                        from '@acx-ui/react-router-dom'
-import { Provider }                                                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen,  waitFor, within }                        from '@acx-ui/test-utils'
+import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }                                                                     from '@acx-ui/react-router-dom'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen,  waitFor, within }                                     from '@acx-ui/test-utils'
 
 
 import { mockPropertyUnitList } from '../../../__tests__/fixtures'
@@ -91,7 +91,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyGetPersonaGroupByIdQuery: () => ([ mockGetPersonaGroupByIdQuery, {} ]),
   useUpdatePropertyUnitMutation: () => ([ mockUpdatePropertyUnitMutation ]),
   useUpdatePersonaMutation: () => ([ mockUpdatePersonaMutation ]),
-  useDeletePersonaAssociationMutation: () => ([ mockDeleteAssociationMutation ])
+  useRemoveUnitLinkedIdentityMutation: () => ([ mockDeleteAssociationMutation ])
 }))
 
 jest.mock('react-router-dom', () => ({
@@ -129,7 +129,7 @@ describe('Property Unit Details', () => {
     })
     mockServer.use(
       rest.post(
-        PropertyUrlsInfo.getUnitsLinkedIdentities.url.split('?')[0],
+        PersonaUrls.searchPersonaList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
