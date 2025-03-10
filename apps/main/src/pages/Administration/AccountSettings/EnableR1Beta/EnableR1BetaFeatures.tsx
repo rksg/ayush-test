@@ -3,10 +3,18 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { BetaIndicator, Loader, showActionModal }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { SpaceWrapper }                                                                 from '@acx-ui/rc/components'
-import { useUserProfileContext, useToggleBetaStatusMutation, hasCrossVenuesPermission } from '@acx-ui/user'
+import { BetaIndicator, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { SpaceWrapper }                           from '@acx-ui/rc/components'
+import {
+  useUserProfileContext,
+  useToggleBetaStatusMutation,
+  hasCrossVenuesPermission,
+  getUserProfile,
+  hasAllowedOperations,
+  UserRbacUrlsInfo
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -25,11 +33,15 @@ export interface EnableR1BetaFeaturesProps {
 function EnableR1BetaFeatures (props: EnableR1BetaFeaturesProps) {
   const { $t } = useIntl()
   const { betaEnabled } = useUserProfileContext()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { className, betaStatus } = props
   const [showFeatureListDrawer, setFeatureListDrawer] = useState(false)
   const [checked, setChecked] = useState(betaEnabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
-  const isDisabled = !hasCrossVenuesPermission() || isUpdating
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(UserRbacUrlsInfo.toggleBetaStatus)])
+    : hasCrossVenuesPermission()
+  const isDisabled = !hasPermission || isUpdating
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const openR1FeatureListDrawer = () => {
@@ -93,7 +105,9 @@ function EnableR1BetaFeatures (props: EnableR1BetaFeaturesProps) {
               </Checkbox>
             </Tooltip>
 
-            {checked && <Typography.Link role='link' onClick={openR1FeatureListDrawer}>
+            {checked && <Typography.Link role='link'
+              onClick={openR1FeatureListDrawer}
+              disabled={!hasAllowedOperations([getOpsApi(UserRbacUrlsInfo.toggleBetaStatus)])}>
               {$t({ defaultMessage: 'Manage' })}
             </Typography.Link>}
           </UI.IconCheckboxWrapper>

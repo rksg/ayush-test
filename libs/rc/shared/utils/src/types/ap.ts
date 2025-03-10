@@ -489,6 +489,8 @@ export interface LanPort {
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
   softGreEnabled?: boolean,
+  ipsecProfileId?: string,
+  ipsecEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
   clientIsolationEnabled?: boolean,
@@ -543,7 +545,8 @@ export interface CapabilitiesApModel {
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
   supportMesh5GOnly6GOnly?: boolean,
-  supportSoftGRE?: boolean,
+  supportSoftGre?: boolean,
+  supportIoT?: boolean,
   usbPowerEnable?: boolean
 }
 

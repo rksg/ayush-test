@@ -1,22 +1,29 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { useSwitchPortProfileAppliedListQuery, useVenuesListQuery }              from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                      from '@acx-ui/components'
+import { useSwitchPortProfileAppliedListQuery, useVenuesListQuery, useSwitchPortProfilesDetailQuery } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
+  getPolicyAllowedOperation,
   SwitchPortProfilesAppliedTargets,
+  PolicyType,
+  PolicyOperation,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import SwitchPortProfileWidget from './SwitchPortProfileWidget'
 
 export default function SwitchPortProfileDetail () {
   const { $t } = useIntl()
-  const { portProfileId } = useParams()
+  const params = useParams()
+  const portProfileId = params.portProfileId
 
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/switch/profiles'
   const settingsId = 'switch-port-profile-detail'
+  const { data, isLoading } = useSwitchPortProfilesDetailQuery({ params })
 
   const defaultPayload = {
     fields: [ 'id' ],
@@ -68,7 +75,10 @@ export default function SwitchPortProfileDetail () {
         title: $t({ defaultMessage: 'Model' }),
         dataIndex: 'model',
         filterable: true,
-        sorter: true
+        sorter: true,
+        render: function (_, row) {
+          return row.model?.replace('_', '-')
+        }
       },
       {
         key: 'venueName',
@@ -89,7 +99,11 @@ export default function SwitchPortProfileDetail () {
 
   const getConfigureButton = () => {
     return (
-      <TenantLink to={`/policies/portProfile/switch/profiles/${portProfileId}/edit`}>
+      <TenantLink
+        scopeKey={[SwitchScopes.UPDATE]}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}
+        to={`/policies/portProfile/switch/profiles/${portProfileId}/edit`}
+      >
         <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
       </TenantLink>
     )
@@ -98,11 +112,7 @@ export default function SwitchPortProfileDetail () {
   return (
     <>
       <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Port Profiles' }
-          )
-        }
+        title={data?.name || ''}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
@@ -115,11 +125,14 @@ export default function SwitchPortProfileDetail () {
           }
         ]}
 
-        extra={getConfigureButton()}
+        extra={hasCrossVenuesPermission() && filterByAccess([getConfigureButton()])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <SwitchPortProfileWidget />
+          <SwitchPortProfileWidget
+            data={data}
+            isLoading={isLoading}
+          />
         </GridCol>
 
         <GridCol col={{ span: 24 }}>

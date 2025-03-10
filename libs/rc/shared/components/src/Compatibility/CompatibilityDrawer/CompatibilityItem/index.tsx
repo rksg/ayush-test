@@ -40,6 +40,7 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
 
       return <FeatureItem
+        key={itemDetail.featureName}
         isMultiple={!featureName || isMultipleFeatures}
         deviceType={deviceType}
         data={itemDetail}

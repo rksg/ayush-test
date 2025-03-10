@@ -16,11 +16,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting,
-  VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+  VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  SwitchUrlsInfo, SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
@@ -202,6 +204,7 @@ export const AAAServerTable = (props: {
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
     label: $t({ defaultMessage: 'Add {serverType}' }, { serverType: $t(serversDisplayText[type]) }),
     disabled: cliApplied,
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addAaaServer)],
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     onClick: handleAddAction
   }]
@@ -263,6 +266,7 @@ export const AAAServerTable = (props: {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.updateAaaServer)],
       onClick: (selectedRows) => {
         setIsEditMode(true)
         setEditData(selectedRows[0])
@@ -274,6 +278,7 @@ export const AAAServerTable = (props: {
       disabled: disabledDelete,
       tooltip: deleteButtonTooltip,
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteAaaServer)],
       onClick: (rows, clearSelection) => {
         let disableDeleteList:string[] = []
         if ((tableQuery.data?.totalCount === rows.length) &&
@@ -346,7 +351,12 @@ export const AAAServerTable = (props: {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={cliApplied || !hasPermission({ scopes: [SwitchScopes.UPDATE] })
+        rowSelection={cliApplied || !hasPermission({
+          scopes: [SwitchScopes.UPDATE],
+          rbacOpsIds: [
+            getOpsApi(SwitchUrlsInfo.updateAaaServer),
+            getOpsApi(SwitchRbacUrlsInfo.deleteAaaServer)]
+        })
           ? undefined
           : { type: 'checkbox', onChange: onSelectChange }}
       />

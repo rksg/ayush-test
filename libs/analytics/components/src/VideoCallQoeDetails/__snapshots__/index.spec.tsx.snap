@@ -1422,6 +1422,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c2 {
@@ -1573,16 +1576,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -2120,16 +2115,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -2696,16 +2683,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -3278,16 +3257,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -3854,16 +3825,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -4321,16 +4284,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -4837,16 +4792,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -5337,16 +5284,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -7265,6 +7204,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c2 {
@@ -7416,16 +7358,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -7933,16 +7867,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -8449,16 +8375,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -8946,16 +8864,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -9462,16 +9372,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -9919,16 +9821,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -10430,16 +10324,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -10885,16 +10771,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -12612,6 +12490,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c2 {
@@ -12763,16 +12644,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -13310,16 +13183,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -13886,16 +13751,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -14468,16 +14325,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -15044,16 +14893,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -15511,16 +15352,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -16027,16 +15860,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -16527,16 +16352,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -18431,6 +18248,9 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c8 {
@@ -18608,16 +18428,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -18692,16 +18504,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -18790,16 +18594,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -18874,16 +18670,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -18972,16 +18760,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -19056,16 +18836,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -19154,16 +18926,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -19238,16 +19002,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -20713,6 +20469,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c8 {
@@ -20897,16 +20656,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -20981,16 +20732,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -21517,16 +21260,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -21601,16 +21336,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -22152,16 +21879,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -22236,16 +21955,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -22672,16 +22383,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"
@@ -22756,16 +22459,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                     class="ant-card-head-title"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="c6"
-                        />
-                      </div>
-                    </div>
+                      class="c6"
+                    />
                   </div>
                   <div
                     class="ant-card-extra"

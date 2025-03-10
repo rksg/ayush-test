@@ -213,9 +213,7 @@ export const pinApi = basePinApi.injectEndpoints({
         }
       }
     }),
-    getWebAuthTemplateSwitches: build.query<{
-      switchVenueInfos?: SwitchLite[]
-    }, RequestPayload>({
+    getWebAuthTemplateSwitches: build.query<SwitchLite[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1001 : {}
         const pinUrls = getEdgePinUrls(enableRbac)

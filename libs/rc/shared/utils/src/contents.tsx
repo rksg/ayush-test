@@ -330,6 +330,9 @@ export const EditPortMessages = {
   }),
   CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE: defineMessage({
     defaultMessage: 'Port Profile cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
+  }),
+  STP_BPDU_GUARD: defineMessage({
+    defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level : Applicable to firmware versions FI 10.0.10g and later (or) FI 10.0.20b and later'
   })
 }
 
@@ -590,5 +593,21 @@ export const ClientIsolationMessages = {
   /* eslint-disable max-len */
   ENABLE_TOGGLE: defineMessage({
     defaultMessage: 'Switching client isolation requires a manual device reboot to take effect. You can select the specific AP devices from the AP list and click the ‘Reboot’ button to restart them.'
+  })
+}
+
+export const SamlIdpMessages = {
+  /* eslint-disable max-len */
+  METADATA_TEXTAREA: defineMessage({
+    defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
+                    'Note: Importing metadata from a file will overwrite any existing configuration.'
+  }),
+  /* eslint-disable max-len */
+  AUTHN_REQUEST_TOGGLE: defineMessage({
+    defaultMessage: 'If this option is enabled, the public certificate for IDP needs to be configured with adding the R1 SAML metadata, which can be found on the SSO/SAML list page.'
+  }),
+  /* eslint-disable max-len */
+  RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
+    defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
   })
 }

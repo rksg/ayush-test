@@ -98,7 +98,9 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
         <Alert
           showIcon={true}
           style={{ verticalAlign: 'middle' }}
-          message={$t({ defaultMessage: 'Enabling on the uplink will disconnect AP(s)' })}
+          message={$t({
+            defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })
+          }
         />
         <Form.Item
           name={['lan', index, 'clientIsolationSettings', 'packetsType']}

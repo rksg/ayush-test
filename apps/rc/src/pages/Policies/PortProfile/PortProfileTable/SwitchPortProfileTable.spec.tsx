@@ -144,7 +144,7 @@ describe('SwitchPortProfileTable', () => {
 
     // Check column headers
     expect(screen.getByText('Name')).toBeVisible()
-    expect(screen.getByText('Server Type')).toBeVisible()
+    expect(screen.getByText('Type')).toBeVisible()
     expect(screen.getByText('Untagged VLAN')).toBeVisible()
     expect(screen.getByText('Tagged VLAN')).toBeVisible()
     expect(screen.getByText('MAC OUI')).toBeVisible()

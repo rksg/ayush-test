@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { Form } from 'antd'
 
 import {
-  AccessControlPolicyForTemplateCheckType,
+  AccessControlPolicyForTemplateCheckType, AclOptionType,
   ConfigTemplateType,
   PolicyType
 } from '@acx-ui/rc/utils'
 
+import { SimpleListTooltip }                                             from '../../SimpleListTooltip'
 import { Layer2Drawer, Layer3Drawer, DeviceOSDrawer, ApplicationDrawer } from '../AccessControlForm'
 
 type AccessControlSubPolicyType =
@@ -117,4 +118,13 @@ export const subPolicyMappingType : Partial<Record<ConfigTemplateType, PolicyTyp
   [ConfigTemplateType.LAYER_3_POLICY]: PolicyType.LAYER_3_POLICY,
   [ConfigTemplateType.DEVICE_POLICY]: PolicyType.DEVICE_POLICY,
   [ConfigTemplateType.APPLICATION_POLICY]: PolicyType.APPLICATION_POLICY
+}
+
+// eslint-disable-next-line max-len
+export function getToolTipByNetworkFilterOptions (row: { networkIds?: string[] }, networkFilterOptions: AclOptionType[]) {
+  if (!row.networkIds || row.networkIds.length === 0) return 0
+  const tooltipItems = networkFilterOptions
+    .filter(v => row.networkIds!.includes(v.key))
+    .map(v => v.value)
+  return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
 }

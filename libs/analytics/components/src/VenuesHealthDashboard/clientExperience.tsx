@@ -3,8 +3,10 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, HistoricalCard, Loader, ProgressBarV2 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { useNavigateToPath }                                       from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                        from '@acx-ui/user'
+import { useTrackLoadTime, widgetsMapping }                        from '@acx-ui/utils'
 import type { AnalyticsFilter }                                    from '@acx-ui/utils'
 
 import { HealthData, useHealthQuery } from './services'
@@ -17,6 +19,7 @@ export function ClientExperience ({
       filters: AnalyticsFilter;
     }) {
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const queryResults = useHealthQuery(filters)
   const { data } = queryResults
   const getHealthData = (healthData:HealthData[])=>{
@@ -59,6 +62,12 @@ export function ClientExperience ({
   }
   const healthData = data && data.health.length ? getHealthData(data.health) : null
   const onArrowClick = useNavigateToPath('/analytics/health/')
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.CLIENT_EXPERIENCE,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return(<Loader states={[queryResults]}>
     <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}

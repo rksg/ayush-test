@@ -26,4 +26,26 @@ describe('ProgressBarV2', () => {
     </>)
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should match usage - snapshot', () => {
+    const { asFragment } = render(<>
+      <ProgressBarV2 percent={0}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }}/>
+      <ProgressBarV2
+        percent={25}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }}/>
+      <ProgressBarV2
+        percent={50}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }}/>
+      <ProgressBarV2
+        percent={75}
+        gradientMode='usage'
+        style={{ height: '8px', lineHeight: '8px' }} />
+    </>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
 })

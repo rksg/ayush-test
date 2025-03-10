@@ -23,7 +23,8 @@ import {
   mockSMS_TWILIO_Under100,
   mockSMS_TWILIO_Over100,
   mockSMS_Unset_Over100,
-  mockSMS_Unset_Under100
+  mockSMS_Unset_Under100,
+  mock_SelfSignIn_WhatsApp_Error
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -68,12 +69,32 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
+  it('should render Self sign in network successfully for snapshot test', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
+    const { asFragment } = render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: true, data: selfsignData, isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should test Self sign in network successfully', async () => {
     render(
       <Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: false, cloneMode: true, data: selfsignData
+            editMode: false, cloneMode: true, data: selfsignData, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -112,7 +133,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: false, cloneMode: false, data: selfsignData
+          editMode: false, cloneMode: false, data: selfsignData, isRuckusAiMode: false
         }}
       >
         <MLOContext.Provider value={{
@@ -143,7 +164,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: false, cloneMode: true, data: selfsignData
+          editMode: false, cloneMode: true, data: selfsignData, isRuckusAiMode: false
         }}
       >
         <MLOContext.Provider value={{
@@ -167,7 +188,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       render(<Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: false, cloneMode: true, data: selfsignData
+            editMode: false, cloneMode: true, data: selfsignData, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -204,7 +225,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: false, cloneMode: false, data: selfsignData
+          editMode: false, cloneMode: false, data: selfsignData, isRuckusAiMode: false
         }}
       >
         <MLOContext.Provider value={{
@@ -243,7 +264,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: true, cloneMode: false, data: selfsignData
+          editMode: true, cloneMode: false, data: selfsignData, isRuckusAiMode: false
         }}
       >
         <MLOContext.Provider value={{
@@ -437,7 +458,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     const SelfSignInComponent = (<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: false, cloneMode: false, data: selfsignData
+          editMode: false, cloneMode: false, data: selfsignData, isRuckusAiMode: false
         }}
       >
         <MLOContext.Provider value={{
@@ -554,7 +575,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_ON
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_ON, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -588,7 +609,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_Off
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_Off, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -621,7 +642,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_ON
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_ON, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -653,7 +674,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
-            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_Off
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_Off, isRuckusAiMode: false
           }}
         >
           <MLOContext.Provider value={{
@@ -677,6 +698,41 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       fireEvent.click(formItem)
 
       expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      expect(formItem).toBeDisabled()
+    })
+
+    it('Unset, WhatsApp still enabled',() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
+      const SelfSignInComponent = (<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            // eslint-disable-next-line max-len
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_WhatsApp_Error, isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>)
+
+      const router = { route: { params } }
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Over100 }
+      })
+      render(SelfSignInComponent, router)
+
+      const formItem = screen.getByRole('checkbox', { name: /WhatsApp/ })
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      fireEvent.click(formItem)
 
       expect(formItem).toBeDisabled()
     })

@@ -42,5 +42,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
   [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Directory Server' }),
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
-  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' })
+  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
+  [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'IPsec' }),
+  [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'SAML Identity Provider' })
 }

@@ -4,15 +4,14 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
-  // useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -22,13 +21,17 @@ import {
   SwitchVlan,
   SwitchMessages,
   SwitchViewModel,
-  usePollingTableQuery
+  usePollingTableQuery,
+  SwitchRbacUrlsInfo,
+  isFirmwareVersionAbove10020b,
+  isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { SwitchScopes }                      from '@acx-ui/types'
-import { filterByAccess, hasPermission }     from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import { getIntl }                           from '@acx-ui/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { ErrorDisableRecoveryDrawer }                   from '@acx-ui/switch/components'
+import { SwitchScopes }                                 from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                                      from '@acx-ui/utils'
 
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
@@ -49,11 +52,17 @@ export function SwitchPortTable (props: {
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
+  const isSwitchErrorDisableEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_STATUS)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+  const [recoveryDrawerVisible, setRecoveryDrawerVisible] = useState(false)
+  const [switchSupportErrorRecovery, setSwitchSupportErrorRecovery] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
+
+  const switchFirmware = switchDetail?.firmware
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
@@ -89,11 +98,6 @@ export function SwitchPortTable (props: {
     key: v.vlanId.toString(), value: v.vlanId.toString()
   })) : []
 
-  // const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
-  //   params: { tenantId },
-  //   payload: { fields: ['id'] }
-  // }, { skip: !isSwitchPortProfileEnabled })
-
   useEffect(() => {
     const setData = async () => {
       if (isVenueLevel) {
@@ -113,6 +117,8 @@ export function SwitchPortTable (props: {
           .concat(vlanUnion.profileVlan || [])
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
+        setSwitchSupportErrorRecovery(isSwitchErrorRecoveryEnabled &&
+          isFirmwareVersionAbove10010g2Or10020b(switchDetail?.firmware))
       }
     }
     setData()
@@ -161,12 +167,15 @@ export function SwitchPortTable (props: {
     dataIndex: 'name',
     searchable: true,
     sorter: true
-  }, {
-    key: 'switchName',
-    title: $t({ defaultMessage: 'Switch' }),
-    dataIndex: 'switchName',
-    sorter: true
-  }, {
+  },
+  ...( isVenueLevel
+    ? [{
+      key: 'switchName',
+      title: $t({ defaultMessage: 'Switch' }),
+      dataIndex: 'switchName',
+      sorter: true
+    }] : [])
+  , {
     key: 'status',
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
@@ -178,7 +187,35 @@ export function SwitchPortTable (props: {
     title: $t({ defaultMessage: 'Admin Status' }),
     dataIndex: 'adminStatus',
     sorter: true
-  }, {
+  },
+  ...( isSwitchErrorDisableEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
+    ? [{
+      key: 'errDisable',
+      title: $t({ defaultMessage: 'ErrDisabled' }),
+      dataIndex: 'errorDisableStatus',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return (
+          <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
+            {row.errorDisableStatus ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' }) }
+          </span>
+        )}
+    }, {
+      key: 'errDisableReason',
+      title: $t({ defaultMessage: 'ErrDisable Reason' }),
+      dataIndex: 'errorDisableStatus',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return (
+          <span style={{ color: row.errorDisableStatus ? 'red' : 'inherit' }}>
+            {row.errorDisableStatus ? row.errorDisableStatus : '--' }
+          </span>
+        )}
+    }] : [])
+  , {
     key: 'portSpeed',
     title: $t({ defaultMessage: 'Speed' }),
     dataIndex: 'portSpeed',
@@ -213,29 +250,28 @@ export function SwitchPortTable (props: {
       }
     }
   },
-  //Temporarily commented
-  // {
-  //   key: 'switchPortProfileId',
-  //   title: $t({ defaultMessage: 'Profile Name' }),
-  //   dataIndex: 'switchPortProfileId',
-  //   show: isSwitchPortProfileEnabled,
-  //   sorter: true,
-  //   render: (_, row) => {
-  //     return switchPortProfilesList?.data?.find(
-  //       profile => profile.id === row.switchPortProfileId)?.name
-  //   }
-  // }, {
-  //   key: 'switchPortProfileId',
-  //   title: $t({ defaultMessage: 'Type' }),
-  //   dataIndex: 'switchPortProfileId',
-  //   show: isSwitchPortProfileEnabled,
-  //   sorter: true,
-  //   render: (_, row) => {
-  //     return switchPortProfilesList?.data?.find(
-  //       profile => profile.id === row.switchPortProfileId)?.type
-  //   }
-  // },
-  {
+  ...( isSwitchPortProfileEnabled
+    && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
+    ? [{
+      key: 'switchPortProfileName',
+      title: $t({ defaultMessage: 'Port Profile Name' }),
+      dataIndex: 'switchPortProfileName',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.switchPortProfileName ? row.switchPortProfileName : ''
+      }
+    }, {
+      key: 'switchPortProfileType',
+      title: $t({ defaultMessage: 'Port Profile Type' }),
+      dataIndex: 'switchPortProfileType',
+      sorter: true,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchPortViewModel) => {
+        return row.switchPortProfileType ? row.switchPortProfileType : ''
+      }
+    }] : [])
+  , {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
@@ -355,14 +391,9 @@ export function SwitchPortTable (props: {
     sorter: true
   }]
 
-  const getColumns = () => columns.filter(
-    item => !isVenueLevel
-      ? item.key !== 'switchName'
-      : item
-  )
-
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)],
     scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       setSelectedPorts(selectedRows)
@@ -378,7 +409,7 @@ export function SwitchPortTable (props: {
   return <Loader states={[tableQuery]}>
     <Table
       settingsId={settingsId}
-      columns={getColumns()}
+      columns={columns}
       dataSource={transformData(tableQuery.data?.data)}
       getAllPagesData={getAllPagesData}
       pagination={tableQuery.pagination}
@@ -387,24 +418,34 @@ export function SwitchPortTable (props: {
       enableApiFilter={true}
       rowKey='portId'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? {
-        type: 'checkbox',
-        renderCell: (checked, record, index, originNode) => {
-          return record?.inactiveRow
-            ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
-            : originNode
-        },
-        getCheckboxProps: (record) => {
-          return {
-            disabled: record?.inactiveRow
+      rowSelection={hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+      }) ? {
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            return record?.inactiveRow
+              ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
+              : originNode
+          },
+          getCheckboxProps: (record) => {
+            return {
+              disabled: record?.inactiveRow
+            }
           }
-        }
-      } : undefined}
+        } : undefined}
       actions={!isVenueLevel
-        ? filterByAccess([{
-          label: $t({ defaultMessage: 'Manage LAG' }),
-          onClick: () => {setLagDrawerVisible(true)}
-        }])
+        ? filterByAccess([
+          ...(
+            switchSupportErrorRecovery ? [{
+              label: $t({ defaultMessage: 'Error Disable Recovery' }),
+              onClick: () => { setRecoveryDrawerVisible(true) }
+            }] : []),
+          {
+            label: $t({ defaultMessage: 'Manage LAG' }),
+            onClick: () => { setLagDrawerVisible(true) }
+          }
+        ])
         : []
       }
     />
@@ -413,6 +454,12 @@ export function SwitchPortTable (props: {
       visible={lagDrawerVisible}
       setVisible={setLagDrawerVisible}
     />}
+
+    {switchSupportErrorRecovery && recoveryDrawerVisible &&
+      <ErrorDisableRecoveryDrawer
+        visible={recoveryDrawerVisible}
+        setVisible={setRecoveryDrawerVisible}
+      />}
 
     { drawerVisible && <EditPortDrawer
       key='edit-port'

@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseEdgeTnmServiceApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'edgeTnmServiceApi',
-  tagTypes: ['EdgeTnmService'],
+  tagTypes: ['EdgeTnmService', 'EdgeNokiaOlt'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -24,10 +24,11 @@ import {
   WifiNetwork
 } from '@acx-ui/rc/utils'
 
-import { defaultNetworkPayload }           from '../../../NetworkTable'
-import { AddModeProps }                    from '../../AccessControlForm'
-import { DeviceOSDrawer }                  from '../../AccessControlForm/DeviceOSDrawer'
-import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { AddModeProps }                     from '../../AccessControlForm'
+import { DeviceOSDrawer }                   from '../../AccessControlForm/DeviceOSDrawer'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY }  from '../constants'
 
 
 const defaultPayload = {
@@ -36,6 +37,7 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -225,7 +227,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

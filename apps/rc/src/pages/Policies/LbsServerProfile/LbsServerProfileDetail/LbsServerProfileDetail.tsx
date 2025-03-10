@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
@@ -12,7 +13,8 @@ import {
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getScopeKeyByPolicy,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink }               from '@acx-ui/react-router-dom'
 import { hasCrossVenuesPermission } from '@acx-ui/user'
@@ -55,7 +57,8 @@ const LbsServerProfileDetail = () => {
           oper: PolicyOperation.EDIT,
           policyId: policyId as string
         })}
-        scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}>
+        scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ])} />

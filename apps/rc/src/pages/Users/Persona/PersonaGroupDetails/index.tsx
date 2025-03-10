@@ -25,9 +25,10 @@ import {
   useLazyGetVenueQuery,
   useLazyGetAdaptivePolicySetQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }             from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }            from '@acx-ui/utils'
+import { PersonaGroup, PersonaUrls }                    from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -38,16 +39,20 @@ function PersonaGroupDetailsPageHeader (props: {
   const { title, onClick } = props
 
   const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
-    && [
-      <Button type={'primary'} onClick={onClick} >
+    ? [
+      <Button
+        type={'primary'}
+        onClick={onClick}
+        rbacOpsIds={[getOpsApi(PersonaUrls.updatePersonaGroup)]}
+      >
         {$t({ defaultMessage: 'Configure' })}
       </Button>
-    ]
+    ] : []
 
   return (
     <PageHeader
       title={title}
-      extra={extra}
+      extra={filterByOperations(extra)}
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
@@ -66,9 +71,12 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const basePath = useTenantLink('users/identity-management/identity-group')
+  const navigate = useNavigate()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnable = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
@@ -221,7 +229,16 @@ function PersonaGroupDetails () {
     <>
       <PersonaGroupDetailsPageHeader
         title={detailsQuery.data?.name ?? personaGroupId}
-        onClick={() => setEditVisible(true)}
+        onClick={() => {
+          if (isIdentityRefactorEnabled) {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/${personaGroupId}/edit`
+            })
+          } else {
+            setEditVisible(true)
+          }
+        }}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

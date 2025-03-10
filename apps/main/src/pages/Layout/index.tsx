@@ -7,8 +7,8 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { HomeSolid }              from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { HomeSolid }                                from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -50,6 +50,8 @@ function Layout () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isOnboardingAssistantEnabled = useIsSplitOn(Features.RUCKUS_ONBOARDING_ASSISTANT_TOGGLE)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
 
   const logo = useLogo(tenantId)
 
@@ -93,7 +95,8 @@ function Layout () {
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
-  const hasOnboardingAssistantAccess = isOnboardingAssistantEnabled &&
+
+  const hasOnboardingAssistantAccess = (isOnboardingAssistantEnabled || isCanvasEnabled) &&
   isSystemAdmin && hasCrossVenuesPermission()
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')

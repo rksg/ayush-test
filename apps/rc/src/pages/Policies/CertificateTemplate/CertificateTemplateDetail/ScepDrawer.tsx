@@ -103,7 +103,7 @@ export default function ScepDrawer
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
-      overrideDays: 10,
+      overrideDays: 0,
       cnValue1: ScepKeyCommonNameType.USERNAME,
       cnValue2: ScepKeyCommonNameType.IGNORE,
       cnValue3: ScepKeyCommonNameType.IGNORE,

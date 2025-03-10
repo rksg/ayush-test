@@ -14,7 +14,7 @@ import type { CheckboxProps } from 'antd/lib/checkbox'
 
 interface DrawerHeaderProps {
   drawerType?: UI.DrawerTypes,
-  title: string | React.ReactNode,
+  title?: string | React.ReactNode,
   icon?: React.ReactNode,
   subTitle?: string,
   onBackClick?: () => void
@@ -22,7 +22,7 @@ interface DrawerHeaderProps {
 
 export interface DrawerProps extends
   Omit<AntDrawerProps,
-    'title'|'placement'|'extra'|'maskClosable'|'maskStyle'|'mask'|'closeIcon'>,
+    'title'|'extra'|'closeIcon'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
@@ -68,18 +68,19 @@ export function useCloseOutsideClick (
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, drawerType = UI.DrawerTypes.Default, ...rest } = props
+  const { title, placement, icon, subTitle, mask, maskStyle, maskClosable,
+    onBackClick, drawerType = UI.DrawerTypes.Default, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
   useCloseOutsideClick(onClose, props.footer, Boolean(props.visible))
   return <>
     <UI.Drawer
       {...rest}
-      title={<Header {...headerProps}/>}
-      placement='right'
-      mask={false}
-      maskStyle={{ background: 'none' }}
-      maskClosable={false}
+      title={title && <Header {...headerProps}/>}
+      placement={placement || 'right'}
+      mask={!!mask}
+      maskStyle={maskStyle || { background: 'none' }}
+      maskClosable={!!maskClosable}
       width={props.width || '336px'}
       closeIcon={<CloseSymbol />}
     />

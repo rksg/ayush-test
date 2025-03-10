@@ -30,7 +30,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
+const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeCompatibilityFixtures
 
 describe('Venues Table', () => {
   let params: { tenantId: string }
@@ -106,6 +106,13 @@ describe('Venues Table', () => {
   })
 
   it('should delete selected row', async () => {
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
     render(
       <Provider>
         <VenuesTable />
@@ -119,7 +126,7 @@ describe('Venues Table', () => {
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    const deleteButton = screen.getByRole('button', { name: 'Delete' })
     await userEvent.click(deleteButton)
 
     const dialog = await screen.findByRole('dialog')
@@ -127,7 +134,7 @@ describe('Venues Table', () => {
       = await within(dialog).findByRole('textbox', { name: 'Type the word "Delete" to confirm:' })
     expect(await within(dialog).findByText('Delete "My-Venue"?')).toBeVisible()
     fireEvent.change(confirmInput, { target: { value: 'Delete' } })
-    await userEvent.click(await within(dialog).findByRole('button', { name: /Delete Venue/i }))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete Venue' }))
     expect(mockedDeleteReq).toBeCalledTimes(1)
   })
 
@@ -192,8 +199,6 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    // jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
-
     render(
       <Provider>
         <VenuesTable />
@@ -223,6 +228,39 @@ describe('Venues Table', () => {
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Test-Edge-Compatibility/i })
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
+    expect(icon).toBeVisible()
+  })
+
+  it('should have edge compatibilies correct - V1_1', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE,
+        Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE].includes(ff as Features))
+    const mockVenuelist = cloneDeep(venuelist)
+    mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenueV1_1.compatibilities![0].id
+    mockVenuelist.data[0].name = 'Test-Edge-Compatibility'
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockVenuelist))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilitiesV1_1.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenueV1_1))
       )
     )
 

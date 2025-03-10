@@ -15,11 +15,13 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
+  SwitchRbacUrlsInfo,
   usePollingTableQuery
 }      from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { SwitchScopes }          from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
+import { getOpsApi }             from '@acx-ui/utils'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
@@ -99,9 +101,11 @@ export default function useSwitchesTable () {
   })
 
   const extra = filterByAccess([
-    <Dropdown overlay={addMenu} scopeKey={[SwitchScopes.CREATE]}>{() =>
-      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    <Dropdown overlay={addMenu}
+      scopeKey={[SwitchScopes.CREATE]}
+      rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.addSwitch)]}>{() =>
+        <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }</Dropdown>
   ])
 
   const component =

@@ -12,12 +12,13 @@ import {
   PortSettingModel,
   VenueMessages,
   Vlan,
-  VlanModalType
+  VlanModalType,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { SwitchScopes }  from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
-import { getIntl }       from '@acx-ui/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { SwitchScopes }       from '@acx-ui/types'
+import { hasPermission }      from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { VlanSettingDrawer } from '../VlanSettingDrawer'
 
@@ -302,27 +303,30 @@ export function SelectVlanModal (props: {
       onCancel={onCancel}
       footer={[
         <Space style={{ display: 'flex', justifyContent: 'space-between' }} key='button-wrapper'>
-          { hasPermission({ scopes: [SwitchScopes.CREATE] }) ? <Tooltip
-            placement='top'
-            key='disable-add-vlan-tooltip'
-            title={isSwitchLevelVlanEnabled
-              ? (cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
-              : (!hasSwitchProfile ? vlanDisabledTooltip : '')
-            }
-          >
-            <Space>
-              <Button key='add-vlan'
-                type='link'
-                size='small'
-                disabled={isSwitchLevelVlanEnabled ? cliApplied : !hasSwitchProfile}
-                onClick={() => {
-                  setVlanDrawerVisible(true)
-                }}
-              >
-                {$t({ defaultMessage: 'Add VLAN' })}
-              </Button>
-            </Space>
-          </Tooltip> : <Space> </Space>}
+          { hasPermission({
+            scopes: [SwitchScopes.CREATE],
+            rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addVlan)]
+          }) ? <Tooltip
+              placement='top'
+              key='disable-add-vlan-tooltip'
+              title={isSwitchLevelVlanEnabled
+                ? (cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
+                : (!hasSwitchProfile ? vlanDisabledTooltip : '')
+              }
+            >
+              <Space>
+                <Button key='add-vlan'
+                  type='link'
+                  size='small'
+                  disabled={isSwitchLevelVlanEnabled ? cliApplied : !hasSwitchProfile}
+                  onClick={() => {
+                    setVlanDrawerVisible(true)
+                  }}
+                >
+                  {$t({ defaultMessage: 'Add VLAN' })}
+                </Button>
+              </Space>
+            </Tooltip> : <Space> </Space>}
           <Space>
             <Button key='back' onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
             <Tooltip

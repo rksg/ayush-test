@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { FirmwareLabel }  from '@acx-ui/rc/utils'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { UpdateFirmwarePerApModelIndividual, UpdateFirmwarePerApModelIndividualProps } from './UpdateFirmwarePerApModelIndividual'
@@ -52,6 +53,19 @@ describe('UpdateFirmwarePerApModelIndividual', () => {
     earlyAccess: true,
     defaultVersion: '',
     labelSize: 'large',
+    selectedVenuesFirmwares: [
+      {
+        id: '7.1.1.520.214',
+        name: '7.1.1.520.214',
+        currentApFirmwares: [
+          {
+            apModel: 'R750',
+            firmware: '7.1.1.520.214',
+            labels: [FirmwareLabel.ALPHA]
+          }
+        ]
+      }
+    ],
     isUpgrade: true
   }
 

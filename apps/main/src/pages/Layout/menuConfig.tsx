@@ -56,11 +56,15 @@ export function useMenuConfig () {
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
+  const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -266,6 +270,11 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Switch List' }),
               isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
             },
+            ...(isEdgeOltMgmtEnabled ? [{
+              uri: '/devices/optical',
+              isActiveCheck: new RegExp('^/devices/optical'),
+              label: $t({ defaultMessage: 'Optical' })
+            }] : []),
             {
               uri: '/devices/switch/reports/wired',
               label: $t({ defaultMessage: 'Wired Report' })
@@ -337,6 +346,10 @@ export function useMenuConfig () {
       activeIcon: BulbSolid,
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
+        ...(isDataConnectorEnabled && isAdmin ? [{
+          uri: '/dataConnector',
+          label: $t({ defaultMessage: 'Data Connector' })
+        }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     },
@@ -383,6 +396,12 @@ export function useMenuConfig () {
               } : {
                 uri: '/administration/administrators',
                 label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
+            ...(isMspAppMonitoringEnabled && !isCustomRole ? [
+              {
+                uri: '/administration/privacy',
+                label: $t({ defaultMessage: 'Privacy' })
               }
             ] : []),
             ...(

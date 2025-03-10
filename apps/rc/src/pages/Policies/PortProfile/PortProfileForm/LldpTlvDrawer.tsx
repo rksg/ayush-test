@@ -10,9 +10,10 @@ import {
   useLazySwitchPortProfileLldpTlvsListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  LldpTlvMatchingTitle,
   LldpTlvMatchingType,
   LldpTlvs } from '@acx-ui/rc/utils'
+
+import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
 
 interface LldpTlvDrawerProps {
   visible: boolean
@@ -117,8 +118,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
           <Space direction='vertical'>
             {Object.entries(LldpTlvMatchingType).map(([key, value]) => (
               <Radio key={key} value={value}>
-                {$t({ defaultMessage: '{nameMatchingType}' },
-                  { nameMatchingType: LldpTlvMatchingTitle[value] })}
+                {$t(lldpTlvMatchingTypeTextMap[value])}
               </Radio>
             ))}
           </Space>
@@ -143,8 +143,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
           <Space direction='vertical'>
             {Object.entries(LldpTlvMatchingType).map(([key, value]) => (
               <Radio key={key} value={value}>
-                {$t({ defaultMessage: '{descMatchingType}' },
-                  { descMatchingType: LldpTlvMatchingTitle[value] })}
+                {$t(lldpTlvMatchingTypeTextMap[value])}
               </Radio>
             ))}
           </Space>

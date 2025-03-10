@@ -34,6 +34,7 @@ export const SigPackUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/applicationLibrary/csvFile?type=:type',
     newApi: true,
+    opsApi: 'GET:/applicationLibrary/csvFile',
     defaultHeaders: {
       Accept: 'text/csv'
     }
@@ -49,6 +50,7 @@ export const SigPackUrlsInfo: { [key: string]: ApiInfo } = {
   updateSigPack: {
     method: 'PATCH',
     url: '/applicationLibrary',
+    opsApi: 'PATCH:/applicationLibrary',
     newApi: true
   },
   updateSigPackRbac: {

@@ -111,7 +111,10 @@ import {
   ClientIsolationUrls,
   ClientIsolationViewModel,
   LanPortsUrls,
-  VenueLanPortSettings
+  VenueLanPortSettings,
+  UnitLinkedPersona,
+  IpsecUrls,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -136,7 +139,8 @@ import {
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs,
   mappingLanPortWithClientIsolationPolicy,
   mappingLanPortWithEthernetPortProfile,
-  mappingLanPortWithSoftGreProfile
+  mappingLanPortWithSoftGreProfile,
+  mappingLanPortWithIpsecProfile
 } from './venue.utils'
 
 const customHeaders = {
@@ -318,7 +322,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addVenue: build.mutation<VenueExtended, RequestPayload>({
+    addVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
         return {
@@ -358,7 +362,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    updateVenue: build.mutation<VenueExtended, RequestPayload>({
+    updateVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
         return {
@@ -2093,6 +2097,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
+    addUnitLinkedIdentity: build.mutation<UnitLinkedPersona, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addUnitLinkedIdentity, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
     deletePropertyUnits: build.mutation<CommonResult, RequestPayload<string[]>>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         const requests = payload?.map(unitId => ({ params: { ...params, unitId } })) ?? []
@@ -2287,6 +2301,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
+        const isIpSecOverNetworkEnabled = (arg.payload as any)?.isIpSecOverNetworkEnabled
 
         if(venueId) {
 
@@ -2318,6 +2333,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
             )
             const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
             mappingLanPortWithSoftGreProfile(venueLanPortSettings, softgreProfiles, venueId)
+          }
+
+          // Mapping IpSec profile relation to Lan port settings
+          if(isEthernetPortProfileEnabled && isIpSecOverNetworkEnabled) {
+            const ipsecProfileReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
+            const ipsecProfileQuery = await fetchWithBQ(
+              { ...ipsecProfileReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
+                  }
+                })
+              }
+            )
+            const ipsecProfiles = (ipsecProfileQuery.data as TableResult<IpsecViewData>).data
+            mappingLanPortWithIpsecProfile(venueLanPortSettings, ipsecProfiles, venueId)
           }
 
           // Mapping Client Isolation Policy relation to Lan port settings
@@ -2523,6 +2554,7 @@ export const {
   useGetPropertyUnitListQuery,
   useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
+  useAddUnitLinkedIdentityMutation,
   useDeletePropertyUnitsMutation,
   useNotifyPropertyUnitsMutation,
 

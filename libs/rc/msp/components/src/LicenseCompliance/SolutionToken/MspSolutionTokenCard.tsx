@@ -1,24 +1,39 @@
 import { useState } from 'react'
 
-import { Col }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Col, Form } from 'antd'
+import { useIntl }   from 'react-intl'
 
-import { Card, Tabs }          from '@acx-ui/components'
-import { MspLicenseCardProps } from '@acx-ui/msp/utils'
-import { TrialType }           from '@acx-ui/rc/utils'
+import { Button, Card, Drawer, Tabs } from '@acx-ui/components'
+import { MspLicenseCardProps }        from '@acx-ui/msp/utils'
+import { TrialType }                  from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
-import SolutionTokenMspTabContent from './SolutionTokenMspTabContent'
+import SolutionTokenMspTabContent      from './SolutionTokenMspTabContent'
+import SolutionTokenSettingsForm       from './SolutionTokenSettingsForm'
+import SolutionTokenSettingsTabContent from './SolutionTokenSettingsTabContent'
 
 
 export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string | undefined>('mspSubscriptions')
+  const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false)
   const { title, selfData, mspData, isExtendedTrial, footerContent } = props
+
+  const [form] = Form.useForm()
 
   function onTabChange (tab: string) {
     setCurrentTab(tab)
+  }
+
+  const openSolutionTokenSettings = function () {
+    if(!openSettingsDrawer)
+      setOpenSettingsDrawer(true)
+  }
+
+  function closeSolutionTokenSettings () {
+    if(openSettingsDrawer)
+      setOpenSettingsDrawer(false)
   }
 
   const tabs = {
@@ -41,7 +56,23 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
         trialType={TrialType.TRIAL}
       />,
       visible: true
+    },
+    settings: {
+      title: $t({ defaultMessage: 'Settings' }),
+      content: <SolutionTokenSettingsTabContent
+        isTabSelected={currentTab === 'settings'}/>,
+      visible: true
     }
+  }
+
+  const onSubmitHandler = () => {
+    form.submit()
+  }
+
+  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation()
+    setOpenSettingsDrawer(false)
+    form.resetFields()
   }
 
   return <Col style={{ width: '395px', paddingLeft: 0, marginTop: '15px' }}>
@@ -74,6 +105,41 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
           </div>
         </div>
         { currentTab === 'mspSubscriptions' && footerContent }
+        { currentTab === 'settings' &&
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'end'
+            }}>
+              <Button
+                size='small'
+                type={'link'}
+                onClick={openSolutionTokenSettings}>
+                {$t({ defaultMessage: 'Edit Settings' })}
+              </Button>
+            </div>
+        }
+        {
+          openSettingsDrawer && <Drawer
+            title={$t({ defaultMessage: 'Edit Solution Usage Cap' })}
+            visible={openSettingsDrawer}
+            onClose={closeSolutionTokenSettings}
+            destroyOnClose={true}
+            width={610}
+            footer={
+              <div><Button
+                type='primary'
+                onClick={() => onSubmitHandler()}>
+                {$t({ defaultMessage: 'Save' })}
+              </Button>
+              <Button type='default' onClick={closeDrawer}>
+                {$t({ defaultMessage: 'Close' })}
+              </Button></div>
+            }
+          >
+            <SolutionTokenSettingsForm form={form}/>
+          </Drawer>
+        }
       </div>
     </Card>
   </Col>

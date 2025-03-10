@@ -51,24 +51,30 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
       value: isZeroQuantity ? 0: (assigned / total)*100 },
     { name: '<1>available',
       value: isZeroQuantity ? 100 : ((total-used-assigned) / total)*100 }
-  ]
+  ].map(item => {
+    return { ...item, itemStyle: {
+      borderRadius: [0, 0, 0, 0]
+    } }
+  })
 
   const utilBar = <>
     <SpaceWrapper full size='small' justifycontent='space-around'>
       <Typography.Text>{title}</Typography.Text>
-      <StackedBarChart
-        style={{ height: 16, width: 190 }}
-        showLabels={false}
-        showTotal={false}
-        showTooltip={false}
-        total={100}
-        barWidth={12}
-        data={[{
-          category: `${deviceType} Licenses `,
-          series
-        }]}
-        barColors={usedBarColors}
-      />
+      <UI.StackedBarContainer>
+        <StackedBarChart
+          style={{ height: 16, width: 190 }}
+          showLabels={false}
+          showTotal={false}
+          showTooltip={false}
+          total={100}
+          barWidth={12}
+          data={[{
+            category: `${deviceType} Licenses `,
+            series
+          }]}
+          barColors={usedBarColors}
+        />
+      </UI.StackedBarContainer>
       {tooltip ?
         <Tooltip
           title={trial ? '' : tooltip}
@@ -105,19 +111,21 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
         </li>
       </div>
       <Space size={10} direction='vertical'>
-        <StackedBarChart
-          style={{ height: 12, width: 290 }}
-          showLabels={false}
-          showTotal={false}
-          showTooltip={false}
-          total={100}
-          barWidth={12}
-          data={[{
-            category: `${deviceType} Licenses `,
-            series
-          }]}
-          barColors={usedBarColors}
-        />
+        <UI.StackedBarContainer>
+          <StackedBarChart
+            style={{ height: 12, width: 290 }}
+            showLabels={false}
+            showTotal={false}
+            showTooltip={false}
+            total={100}
+            barWidth={12}
+            data={[{
+              category: `${deviceType} Licenses `,
+              series
+            }]}
+            barColors={usedBarColors}
+          />
+        </UI.StackedBarContainer>
         {trial && (!extendedTrial && used === 0)
           ? <div style={{ marginLeft: '25px', fontSize: '11px' }}>
             <UI.LegendDot style={{ backgroundColor: usedBarColors[1] }} />

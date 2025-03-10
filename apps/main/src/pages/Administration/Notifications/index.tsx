@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Row, Col, Badge, Typography } from 'antd'
-import { useIntl }                     from 'react-intl'
+import { IntlShape, useIntl }          from 'react-intl'
 
 import {
   Button,
@@ -22,15 +22,18 @@ import {
   NotificationRecipientUIModel,
   NotificationEndpointType,
   sortProp,
-  defaultSort
+  defaultSort,
+  NotificationRecipientType,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import {
   filterByAccess,
-  hasAccess,
   hasCrossVenuesPermission
 } from '@acx-ui/user'
+import { noDataDisplay, getOpsApi } from '@acx-ui/utils'
 
+import AddRecipientDrawer       from './AddRecipientDrawer'
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
 import RecipientDialog          from './RecipientDialog'
@@ -45,6 +48,18 @@ const FunctionEnabledStatusLightConfig = {
   }
 }
 
+const recipientTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'All Recipient Type' }) },
+  {
+    key: NotificationRecipientType.PRIVILEGEGROUP,
+    value: $t({ defaultMessage: 'Privileges Groups' })
+  },
+  {
+    key: NotificationRecipientType.GLOBAL,
+    value: $t({ defaultMessage: 'Global Recipients' })
+  }
+]
+
 export const NotificationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
@@ -52,6 +67,8 @@ export const NotificationsTable = () => {
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
+  const notificationAdminContextualEnabled =
+    useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -98,7 +115,18 @@ export const NotificationsTable = () => {
     return data ? <Badge
       color={FunctionEnabledStatusLightConfig[enabled ? 'active' : 'inActive'].color}
       text={data}
-    /> : data
+    /> : noDataDisplay
+  }
+
+  const renderDeliveryPreference = (row: NotificationRecipientUIModel) => {
+    const deliveryPreference = []
+    if (row.emailEnabled || row.emailPreferences)
+      deliveryPreference.push($t({ defaultMessage: 'Email' }))
+    if (row.mobileEnabled || row.smsPreferences)
+      deliveryPreference.push($t({ defaultMessage: 'SMS' }))
+    return deliveryPreference.length > 0
+      ? deliveryPreference.join(', ')
+      : noDataDisplay
   }
 
   const columns: TableProps<NotificationRecipientUIModel>['columns'] = [
@@ -107,16 +135,39 @@ export const NotificationsTable = () => {
       key: 'description',
       dataIndex: 'description',
       defaultSortOrder: 'ascend',
-      width: 600,
       sorter: { compare: sortProp('description', defaultSort) }
     },
+    ...(!notificationAdminContextualEnabled ? [] : [
+      {
+        title: $t({ defaultMessage: 'Recipient Type' }),
+        dataIndex: 'recipientType',
+        key: 'recipientType',
+        filterMultiple: false,
+        filterable: recipientTypeFilterOpts($t),
+        render: (data: ReactNode, row: NotificationRecipientUIModel ) => {
+          return row.recipientType === NotificationRecipientType.PRIVILEGEGROUP
+            ? $t({ defaultMessage: 'Privilege Group' })
+            : $t({ defaultMessage: 'Global' })
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Delivery Preference' }),
+        dataIndex: 'deliveryPreference',
+        key: 'deliveryPreference',
+        render: (data: ReactNode, row: NotificationRecipientUIModel ) => {
+          return renderDeliveryPreference(row)
+        }
+      }
+    ]),
     {
       title: $t({ defaultMessage: 'Email Address' }),
       key: 'email',
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) },
       render: (_, row) => {
-        return renderDataWithStatus(row.email, row.emailEnabled)
+        return row.recipientType === NotificationRecipientType.GLOBAL
+          ? renderDataWithStatus(row.email, row.emailEnabled)
+          : noDataDisplay
       }
     },
     {
@@ -125,7 +176,9 @@ export const NotificationsTable = () => {
       dataIndex: 'mobile',
       sorter: { compare: sortProp('mobile', defaultSort) },
       render: (_, row) => {
-        return renderDataWithStatus(row.mobile, row.mobileEnabled)
+        return row.recipientType === NotificationRecipientType.GLOBAL
+          ? renderDataWithStatus(row.mobile, row.mobileEnabled)
+          : noDataDisplay
       }
     }
   ]
@@ -134,6 +187,7 @@ export const NotificationsTable = () => {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateRecipient)],
       onClick: (selectedRows) => {
         // show edit dialog
         setEditMode(true)
@@ -143,6 +197,7 @@ export const NotificationsTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteNotificationRecipients)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -177,10 +232,12 @@ export const NotificationsTable = () => {
   const tableActions = [
     {
       label: $t({ defaultMessage: 'Add Recipient' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addRecipient)],
       onClick: handleClickAddRecipient
     },
     {
       label: titleNotification,
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantSelf)],
       onClick: handleEnableIncidents
     }
   ]
@@ -197,18 +254,29 @@ export const NotificationsTable = () => {
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCrossVenuesPermission() && hasAccess() && { type: 'checkbox' }}
+          rowSelection={hasCrossVenuesPermission()
+            && filterByAccess(rowActions).length > 0
+            && { type: 'checkbox' }}
           actions={hasCrossVenuesPermission() ? filterByAccess(tableActions) : []}
         />
       </Loader>
 
-      <RecipientDialog
-        visible={showDialog}
-        setVisible={setShowDialog}
-        editMode={editMode}
-        editData={editData}
-        isDuplicated={isDuplicated}
-      />
+      {notificationAdminContextualEnabled
+        ? <AddRecipientDrawer
+          visible={showDialog}
+          setVisible={setShowDialog}
+          editMode={editMode}
+          editData={editData}
+          isDuplicated={isDuplicated}
+          RecipientData={notificationList.data ?? []}
+        />
+        : <RecipientDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
+          editMode={editMode}
+          editData={editData}
+          isDuplicated={isDuplicated}
+        />}
       {showDrawer
       && <AINotificationDrawer
         showDrawer={showDrawer}

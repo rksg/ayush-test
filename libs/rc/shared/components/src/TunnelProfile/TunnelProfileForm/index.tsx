@@ -14,7 +14,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features }         from '@acx-ui/feature-toggle'
+import { getTitleWithBetaIndicator }                from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled } from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
   IncompatibilityFeatures,
@@ -116,6 +117,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     }
   }
 
+  const isNatTraversalBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_NAT_T)
+
   return (
     <>
       {<Row>
@@ -177,6 +180,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               <Form.Item
                 label={<>
                   {$t({ defaultMessage: 'Enable NAT-T Support' })}
+                  { isNatTraversalBetaEnabled ? getTitleWithBetaIndicator('') : null }
                   {<ApCompatibilityToolTip
                     title={$t(MessageMapping.nat_traversal_support_tooltip)}
                     placement='bottom'

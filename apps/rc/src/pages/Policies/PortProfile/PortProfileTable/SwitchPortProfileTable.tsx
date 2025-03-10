@@ -9,8 +9,8 @@ import {
 }from '@acx-ui/rc/services'
 import {
   FILTER,
-  filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
+  getPolicyAllowedOperation,
   GROUPBY,
   PolicyOperation,
   PolicyType,
@@ -20,6 +20,10 @@ import {
   vlanPortsParser
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import {
+  filterByAccess,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
 
 export default function SwitchPortProfileTable () {
   const { $t } = useIntl()
@@ -67,18 +71,18 @@ export default function SwitchPortProfileTable () {
         sorter: true,
         searchable: true,
         defaultSortOrder: 'ascend',
-        render: function (_, row) {
+        render: function (_, row, index, highlightFn) {
           return (
             <TenantLink
               to={`/policies/portProfile/switch/profiles/${row.id}/detail`}>
-              {row.name}
+              {highlightFn(row.name)}
             </TenantLink>
           )
         }
       },
       {
         key: 'type',
-        title: $t({ defaultMessage: 'Server Type' }),
+        title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'type'
       },
       {
@@ -177,6 +181,7 @@ export default function SwitchPortProfileTable () {
   const rowActions: TableProps<SwitchPortProfiles>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
@@ -188,6 +193,7 @@ export default function SwitchPortProfileTable () {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
         const appliedSwitchesCount = selectedRows.reduce(
@@ -228,8 +234,7 @@ export default function SwitchPortProfileTable () {
     }
   ]
 
-  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
-
+  const allowedRowActions = hasCrossVenuesPermission() ? filterByAccess(rowActions) : []
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)

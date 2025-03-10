@@ -1,24 +1,29 @@
 import { useContext, useEffect } from 'react'
 
 import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import { StepsForm }             from '@acx-ui/components'
-import { EdgeSettingForm }       from '@acx-ui/rc/components'
-import { useUpdateEdgeMutation } from '@acx-ui/rc/services'
-import { EdgeGeneralSetting }    from '@acx-ui/rc/utils'
+import { StepsForm }                                                         from '@acx-ui/components'
+import { EdgeSettingForm }                                                   from '@acx-ui/rc/components'
+import { useUpdateEdgeMutation }                                             from '@acx-ui/rc/services'
+import { EdgeGeneralSetting, EdgeUrlsInfo, ClusterHighAvailabilityModeEnum } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
 const GeneralSettings = () => {
+  const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const {
-    generalSettings
+    generalSettings,
+    clusterInfo
   } = useContext(EditEdgeDataContext)
   const [upadteEdge, { isLoading: isEdgeUpdating }] = useUpdateEdgeMutation()
 
@@ -27,6 +32,14 @@ const GeneralSettings = () => {
       form.setFieldsValue(generalSettings)
     }
   }, [generalSettings])
+
+  // display HA mode data on SettingForm
+  useEffect(() => {
+    if(clusterInfo) {
+      // eslint-disable-next-line max-len
+      form.setFieldValue('highAvailabilityMode', clusterInfo?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY)
+    }
+  }, [clusterInfo])
 
   const handleUpdateEdge = async (data: EdgeGeneralSetting) => {
     try {
@@ -48,12 +61,15 @@ const GeneralSettings = () => {
     }
   }
 
+  const hasUpdatePermission = hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateEdge)] })
+
   return (
     <StepsForm
       editMode
       form={form}
       onFinish={handleUpdateEdge}
       onCancel={() => navigate(linkToEdgeList)}
+      buttonLabel={{ apply: hasUpdatePermission ? $t({ defaultMessage: 'Apply' }) : '' }}
     >
       <StepsForm.StepForm>
         <Row gutter={20}>

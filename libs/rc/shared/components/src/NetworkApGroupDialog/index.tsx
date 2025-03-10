@@ -84,7 +84,8 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 
 export type NetworkApGroupDialogContextProps = {
   network: NetworkSaveData | undefined | null,
-  vlanPoolSelectOptions: VlanPool[] | undefined
+  vlanPoolSelectOptions: VlanPool[] | undefined,
+  isSupport6G: boolean
 }
 
 export const NetworkApGroupDialogContext = createContext({} as NetworkApGroupDialogContextProps)
@@ -122,11 +123,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     }
   }, [form, prevOpen, open])
 
-  const defaultVlanString = getVlanString(networkVenue?.vlanPoolId ? {
-    id: networkVenue?.vlanPoolId,
-    name: networkVenue?.vlanPoolName ?? '',
-    vlanMembers: networkVenue?.vlanMembers ?? []
-  } : null, wlan?.vlanId)
+  const networkVlanPool = wlan?.advancedCustomization?.vlanPool
+  const defaultVlanString = getVlanString(networkVlanPool, wlan?.vlanId ?? 1)
 
   function useNetworkApGroupsInstance () {
     const params = { tenantId }
@@ -246,7 +244,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         name={formName}
         onFinish={props.onOk}
       >
-        <NetworkApGroupDialogContext.Provider value={{ network, vlanPoolSelectOptions }}>
+        <NetworkApGroupDialogContext.Provider value={{ network, vlanPoolSelectOptions, isSupport6G }}>
           <Form.Item name='selectionType'
             rules={[
               {

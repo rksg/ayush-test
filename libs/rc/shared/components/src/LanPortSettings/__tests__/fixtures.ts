@@ -72,6 +72,17 @@ export const ethernetPortProfileList = [
         portId: 1
       }
     ]
+  },
+  {
+    id: 'mockEthertnetPortProfileId1',
+    tenantId: 'tenant-id',
+    name: 'Hidden profile',
+    type: 'ACCESS',
+    untagId: 1,
+    vlanMembers: '1',
+    authType: 'DISABLED',
+    isDefault: false,
+    vni: 123
   }
 ]
 

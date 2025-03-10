@@ -5,9 +5,9 @@ import { get, isEmpty }        from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AAAViewModalType, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AAAViewModalType, NetworkTypeEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
@@ -23,6 +23,7 @@ const radiusTypeMap: { [key:string]: string } = {
 interface AAAInstanceProps {
   serverLabel: string
   type: 'authRadius' | 'accountingRadius',
+  networkType?: NetworkTypeEnum,
   excludeRadSec?: boolean
 }
 
@@ -30,7 +31,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const { serverLabel, type, excludeRadSec = false } = props
+  const { serverLabel, type, networkType, excludeRadSec = false } = props
   const radiusType = radiusTypeMap[type]
   const radiusIdName = type + 'Id'
   const watchedRadius = Form.useWatch(type) || form.getFieldValue(type)
@@ -75,7 +76,14 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     if (aaaListQuery?.data) {
       setAaaDropdownItems(convertAaaListToDropdownItems(radiusType, aaaListQuery.data))
     }
-  },[aaaListQuery])
+  },[aaaListQuery, props.excludeRadSec])
+
+  useEffect(()=>{
+    if(aaaDropdownItems.length > 0 &&
+      !aaaDropdownItems.find(m => m.value === form.getFieldValue(radiusIdName)) ){
+      form.setFieldValue(radiusIdName, '')
+    }
+  },[aaaDropdownItems])
 
   useEffect(() => {
     if (shouldExcludeRadSec() && isRadSecRadius) {
@@ -116,31 +124,43 @@ export const AAAInstance = (props: AAAInstanceProps) => {
       form.setFieldValue(type, undefined)
     }
   }, [watchedRadiusId])
-
   return (
     <>
-      <Form.Item label={serverLabel} required><Space>
-        <Form.Item
-          name={radiusIdName}
-          noStyle
-          label={serverLabel}
-          rules={[
-            { required: true }
-          ]}
-          initialValue={watchedRadiusId ?? ''}
-          children={<Select
-            style={{ width: 210 }}
-            showSearch
-            filterOption={(input, option) =>
-              (option?.label as string).toLowerCase().includes(input.toLowerCase())
+      <Form.Item
+        label={<>
+          {serverLabel}
+          {excludeRadSec && networkType === NetworkTypeEnum.DPSK && type === 'authRadius' &&
+          <Tooltip.Question
+            title={
+              'For a DPSK network with WPA2/WPA3 mixed mode,'+
+              ' only Cloudpath RADIUS server configured in non-proxy mode is supported.'
             }
-            options={[
-              { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
-              ...aaaDropdownItems
-            ]}
+            placement='bottom'
           />}
-        />
-        <Tooltip>
+        </>
+        }
+        required
+      >
+        <Space>
+          <Form.Item
+            name={radiusIdName}
+            noStyle
+            rules={[
+              { required: true }
+            ]}
+            initialValue={watchedRadiusId ?? ''}
+            children={<Select
+              style={{ width: 210 }}
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label as string).toLowerCase().includes(input.toLowerCase())
+              }
+              options={[
+                { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
+                ...aaaDropdownItems
+              ]}
+            />}
+          />
           <AAAPolicyModal updateInstance={(data) => {
             setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
             form.setFieldValue(radiusIdName, data.id)
@@ -148,8 +168,9 @@ export const AAAInstance = (props: AAAInstanceProps) => {
           }}
           aaaCount={aaaDropdownItems.length}
           type={radiusType}
+          forceDisableRadsec={excludeRadSec && networkType === NetworkTypeEnum.DPSK}
           />
-        </Tooltip></Space>
+        </Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>

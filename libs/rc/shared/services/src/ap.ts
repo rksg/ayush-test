@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }        from '@acx-ui/components'
+import { Filter } from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -93,7 +93,9 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   APLanPortSettings,
-  mergeLanPortSettings
+  mergeLanPortSettings,
+  IpsecUrls,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -102,6 +104,7 @@ import {
   ApiInfo,
   batchApi,
   createHttpRequest,
+  getEnabledDialogImproved,
   ignoreErrorModal
 } from '@acx-ui/utils'
 
@@ -366,7 +369,7 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.addAp, params, {
-          ...ignoreErrorModal,
+          ...(getEnabledDialogImproved() ? {} : ignoreErrorModal),
           ...apiCustomHeader
         })
         return {
@@ -485,17 +488,20 @@ export const apApi = baseApApi.injectEndpoints({
         if(ap) {
           ap.serialNumber = params?.serialNumber ?? ''
           ap.venueId = params?.venueId ?? ''
-          const apGroupPayload = {
-            fields: ['id'],
+
+          // get AP group ID from the AP list data from the view model
+          const apListQueryPayload = {
+            fields: ['name', 'serialNumber', 'apGroupId'],
             pageSize: 1,
-            filters: { apSerialNumbers: [ap.serialNumber] }
+            filters: { serialNumber: [ap.serialNumber] }
           }
-          const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
-          const apGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(apGroupPayload) })
-          const apGroupList = apGroupListRes.data as TableResult<ApGroup>
-          const targetApGroup = apGroupList.data[0]
-          if(targetApGroup) {
-            ap.apGroupId = targetApGroup.id
+          const apListQuery = await fetchWithBQ({
+            ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
+            body: JSON.stringify(apListQueryPayload)
+          })
+          const aps = apListQuery.data as TableResult<NewAPModel>
+          if(aps?.data) {
+            ap.apGroupId = aps.data[0].apGroupId
           }
         }
         return { data: ap }
@@ -519,8 +525,8 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.updateAp, params, {
-          ...ignoreErrorModal,
-          ...apiCustomHeader
+          ...apiCustomHeader,
+          ...(getEnabledDialogImproved() ? {} : ignoreErrorModal)
         })
         return {
           ...req,
@@ -928,7 +934,8 @@ export const apApi = baseApApi.injectEndpoints({
         params, enableRbac,
         enableEthernetProfile,
         enableSoftGreOnEthernet,
-        enableClientIsolationOnEthernet
+        enableClientIsolationOnEthernet,
+        enableIpsecOverNetwork
       },
       _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
@@ -968,6 +975,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
+              fields: ['id', 'venueIds', 'venueActivations', 'apSerialNumbers', 'apActivations', 'vni'],
               pageSize: 1000
             })
           }
@@ -1022,6 +1030,29 @@ export const apApi = baseApApi.injectEndpoints({
             for (let softGre of softGreList.data) {
               findTargetLanPorts(apLanPorts, softGre.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.softGreProfileId = softGre.id
+              })
+            }
+          }
+        }
+
+        if (enableIpsecOverNetwork) {
+          const ipsecReq = {
+            ...createHttpRequest(IpsecUrls.getIpsecViewDataList),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const ipsecListQuery = await fetchWithBQ(ipsecReq)
+          const ipsecList = ipsecListQuery.data as TableResult<IpsecViewData>
+          if (ipsecList.data && apLanPorts.lanPorts) {
+            for (let ipsec of ipsecList.data) {
+              findTargetLanPorts(apLanPorts, ipsec.apActivations, params.serialNumber).forEach(targetPort => {
+                targetPort.ipsecProfileId = ipsec.id
+                targetPort.ipsecEnabled = true
               })
             }
           }
@@ -1113,6 +1144,17 @@ export const apApi = baseApApi.injectEndpoints({
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
+          const ipsecActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.ipsecProfileId && (l.ipsecEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                softGreProfileId: l.softGreProfileId,
+                ipsecProfileId: l.ipsecProfileId
+              }
+            }))
           const clientIsolationActivateRequests = apSettings?.lanPorts
             ?.filter(l => {
               return l.clientIsolationEnabled
@@ -1150,6 +1192,9 @@ export const apApi = baseApApi.injectEndpoints({
           if(!useVenueSettings) {
             await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
               softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(IpsecUrls.activateIpsecOnApLanPort,
+              ipsecActivateRequests!, fetchWithBQ, customHeaders)
 
             await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
               clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
@@ -1875,7 +1920,6 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetEnhanceApFeatureSetsQuery,
-  useGetApCompatibilitiesQuery,
   useLazyGetApCompatibilitiesQuery,
   useLazyGetApNeighborsQuery,
   useMoveApToTargetApGroupMutation,

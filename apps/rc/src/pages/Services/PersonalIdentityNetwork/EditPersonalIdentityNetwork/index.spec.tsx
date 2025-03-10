@@ -5,8 +5,6 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features }               from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
   EdgePinFixtures,
@@ -84,6 +82,7 @@ describe('Edit PersonalIdentityNetwork', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
+  const mockValidateEdgeClusterConfigFn = jest.fn()
 
   beforeEach(() => {
     jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
@@ -91,6 +90,7 @@ describe('Edit PersonalIdentityNetwork', () => {
 
     mockedUsedNavigate.mockClear()
     mockValidateEdgePinSwitchConfigMutation.mockClear()
+    mockValidateEdgeClusterConfigFn.mockClear()
 
     mockServer.use(
       rest.put(
@@ -98,7 +98,10 @@ describe('Edit PersonalIdentityNetwork', () => {
         (_req, res, ctx) => res(ctx.status(202))),
       rest.post(
         EdgePinUrls.validateEdgeClusterConfig.url,
-        (_req, res, ctx) => res(ctx.status(202)))
+        (_req, res, ctx) => {
+          mockValidateEdgeClusterConfigFn()
+          return res(ctx.status(202))
+        })
     )
   })
 
@@ -208,129 +211,6 @@ describe('Edit PersonalIdentityNetwork', () => {
     await screen.findByRole('dialog')
     expect(await screen.findByText('Validation Error')).toBeVisible()
     expect(mockedUsedNavigate).toBeCalledTimes(0)
-  })
-})
-
-describe('Enhanced PersonalIdentityNetwork', () => {
-  const params: { tenantId: string, serviceId: string } = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-    serviceId: 'testServiceId'
-  }
-  beforeEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-
-    mockValidateEdgePinSwitchConfigMutation.mockClear()
-
-    mockServer.use(
-      rest.put(
-        EdgePinUrls.updateEdgePin.url,
-        (_req, res, ctx) => res(ctx.status(202)))
-
-    )
-  })
-
-  it('should show correct steps with wireless data', async () => {
-    const mockModifiedPinData = cloneDeep(mockPinData)
-    mockModifiedPinData.distributionSwitchInfos = []
-    mockModifiedPinData.accessSwitchInfos = []
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockModifiedPinData, isLoading: false, refetch: jest.fn() }))
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await user.click(screen.getByText('Wireless Network'))
-    // step 3
-    expect(await screen.findByTestId('WirelessNetworkForm')).toBeVisible()
-    expect(screen.queryByText('Dist. Switch')).not.toBeInTheDocument()
-    expect(screen.queryByText('Access Switch')).not.toBeInTheDocument()
-  })
-
-  it('should show correct steps with 2-Tier data', async () => {
-    const mockModifiedPinData = cloneDeep(mockPinData)
-    mockModifiedPinData.tunneledWlans = []
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockModifiedPinData, isLoading: false, refetch: jest.fn() }))
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await user.click(screen.getByText('Dist. Switch'))
-    // step 3
-    expect(await screen.findByTestId('DistributionSwitchForm')).toBeVisible()
-    await user.click((screen.getByText('Access Switch')))
-    // step 4
-    expect(await screen.findByTestId('AccessSwitchForm')).toBeVisible()
-    expect(screen.queryByText('Wireless Network')).not.toBeInTheDocument()
-  })
-
-  it('should show correct steps with 3-Tier data', async () => {
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockPinData, isLoading: false, refetch: jest.fn() }))
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await user.click(screen.getByText('Dist. Switch'))
-    // step 3
-    expect(await screen.findByTestId('DistributionSwitchForm')).toBeVisible()
-    await user.click((screen.getByText('Access Switch')))
-    // step 4
-    expect(await screen.findByTestId('AccessSwitchForm')).toBeVisible()
-    await user.click(screen.getByText('Wireless Network'))
-    // step 5
-    expect(await screen.findByTestId('WirelessNetworkForm')).toBeVisible()
-  })
-
-  it('should skip switch validation when topology is wireless', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await userEvent.click(await screen.findByText('Wireless Network'))
-
-    // step 3
-    await screen.findByTestId('WirelessNetworkForm')
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(mockValidateEdgePinSwitchConfigMutation).toBeCalledTimes(0)
   })
 })
 

@@ -8,10 +8,10 @@ import {
   useGetApPhotoQuery,
   useAddApPhotoMutation
 } from '@acx-ui/rc/services'
-import { useApContext }  from '@acx-ui/rc/utils'
-import { WifiScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
-import { getIntl }       from '@acx-ui/utils'
+import { useApContext, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { hasPermission }                  from '@acx-ui/user'
+import { getIntl, getOpsApi }             from '@acx-ui/utils'
 
 import PlaceHolder              from '../../../../../../assets/images/ap-models-images/placeholder.svg'
 import { useGetApCapabilities } from '../../../hooks'
@@ -28,7 +28,10 @@ import {
 
 export function ApPhoto () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasUpdatePermission = hasPermission({
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApPhoto)]
+  })
   const [imageUrl, setImageUrl] = useState('')
   const [defaultImageUrl, setDefaultImageUrl] = useState(PlaceHolder)
   const [tempUrl, setTempUrl] = useState('')

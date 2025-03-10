@@ -51,7 +51,9 @@ export const policyTypeScopeMap: SvcPcyScopeMap<PolicyType>= {
   [PolicyType.CLIENT_ISOLATION]: ['wifi'],
   [PolicyType.SNMP_AGENT]: ['wifi'],
   [PolicyType.WIFI_OPERATOR]: ['wifi'],
-  [PolicyType.IDENTITY_PROVIDER]: ['wifi']
+  [PolicyType.IDENTITY_PROVIDER]: ['wifi'],
+  [PolicyType.FLEX_AUTH]: ['switch'],
+  [PolicyType.SWITCH_PORT_PROFILE]: ['switch']
 }
 
 export const policyOperScopeMap: SvcPcyOperMap<PolicyOperation> = {

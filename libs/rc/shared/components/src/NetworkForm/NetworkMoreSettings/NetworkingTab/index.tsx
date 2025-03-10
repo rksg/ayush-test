@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl, defineMessage }                         from 'react-intl'
@@ -8,6 +8,12 @@ import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }               
 import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../../ApCompatibility'
 import { RadiusOptionsForm }                  from '../../../RadiusOptionsForm'
 import NetworkFormContext                     from '../../NetworkFormContext'
 import { hasAccountingRadius, hasAuthRadius } from '../../utils'
@@ -34,6 +40,11 @@ export function NetworkingTab (props: {
     including beacon report, channel non-preference, cellular capability, and association disallow.
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
+  const bssPriorityTooltipContent = $t({ defaultMessage:
+    // eslint-disable-next-line max-len
+    'LOW setting reduces the priority of the WLAN by limiting the throughput to all clients connected to this WLAN.\
+     HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'
+  })
 
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableDSSupport = useIsSplitOn(Features.WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE)
@@ -42,6 +53,11 @@ export function NetworkingTab (props: {
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
   const isSupportHotspot20NasId = useIsSplitOn(Features.WIFI_NAS_ID_HOTSPOT20_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+
+  const [airtimeDrawerVisible, setAirtimeDrawerVisible] = useState(false)
+  const [joinRssiDrawerVisible, setJoinRssiDrawerVisible] = useState(false)
+  const [bssPriorityDrawerVisible, setBssPriorityDrawerVisible] = useState(false)
 
   const [
     enableFastRoaming,
@@ -299,7 +315,27 @@ export function NetworkingTab (props: {
       />
 
       <UI.FieldLabel width={labelWidth}>
-        { $t({ defaultMessage: 'Airtime Decongestion:' }) }
+        {isR370UnsupportedFeatures ?
+          <Space>
+            { $t({ defaultMessage: 'Airtime Decongestion' }) }
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              showDetailButton
+              placement='right'
+              onClick={() => setAirtimeDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={airtimeDrawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={wlanData?.id}
+              featureName={InCompatibilityFeatures.AIRTIME_DECONGESTION}
+              onClose={() => setAirtimeDrawerVisible(false)}
+            />}
+          </Space> :
+          <>
+            { $t({ defaultMessage: 'Airtime Decongestion:' }) }
+          </>
+        }
         <Form.Item
           name={['wlan','advancedCustomization','enableAirtimeDecongestion']}
           style={{ marginBottom: '10px' }}
@@ -311,7 +347,27 @@ export function NetworkingTab (props: {
 
       {!enableAirtimeDecongestion &&
         <UI.FieldLabel width={labelWidth}>
-          { $t({ defaultMessage: 'Join RSSI Threshold:' }) }
+          {isR370UnsupportedFeatures ?
+            <Space>
+              { $t({ defaultMessage: 'Join RSSI Threshold' }) }
+              {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                title={''}
+                showDetailButton
+                placement='right'
+                onClick={() => setJoinRssiDrawerVisible(true)}
+              />}
+              {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                visible={joinRssiDrawerVisible}
+                type={ApCompatibilityType.ALONE}
+                networkId={wlanData?.id}
+                featureName={InCompatibilityFeatures.JOIN_RSSI_THRESHOLD}
+                onClose={() => setJoinRssiDrawerVisible(false)}
+              />}
+            </Space> :
+            <>
+              { $t({ defaultMessage: 'Join RSSI Threshold:' }) }
+            </>
+          }
           <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>
             <Form.Item
               name={['wlan','advancedCustomization','enableJoinRSSIThreshold']}
@@ -504,12 +560,23 @@ export function NetworkingTab (props: {
           name={['wlan','advancedCustomization','bssPriority']}
           label={<>
             {$t({ defaultMessage: 'BSS Priority' })}
-            <Tooltip.Question
-              // eslint-disable-next-line max-len
-              title={'LOW setting reduces the priority of the WLAN by limiting the throughput to all clients connected to this WLAN.\
-               HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'}
+            {!isR370UnsupportedFeatures && <Tooltip.Question
+              title={bssPriorityTooltipContent}
               placement='right'
-            />
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={bssPriorityTooltipContent}
+              showDetailButton
+              placement='right'
+              onClick={() => setBssPriorityDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={bssPriorityDrawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={wlanData?.id}
+              featureName={InCompatibilityFeatures.BSS_PRIORITY}
+              onClose={() => setBssPriorityDrawerVisible(false)}
+            />}
           </>}
           initialValue={BasicServiceSetPriorityEnum.HIGH}
           valuePropName='value'

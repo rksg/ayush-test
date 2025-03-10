@@ -143,6 +143,11 @@ describe('timeSeriesTooltipFormatter', () => {
     expect(result).toMatchSnapshot()
     expect(dataFormatters.default).toBeCalledTimes(1)
   })
+  it('should ignore time formatter if ignoretimeXAxis is true', async () => {
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters, true)(singleparameters)
+    expect(result.includes('1605628800000')).toBeTruthy()
+  })
   it('should hide badge when show is false (only show in tooltip not in chart)', async () => {
     const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
     const noBadgeSeries = [

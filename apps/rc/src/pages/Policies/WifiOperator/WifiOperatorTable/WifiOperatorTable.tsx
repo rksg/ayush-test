@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -65,6 +66,7 @@ export default function WifiOperatorTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.WIFI_OPERATOR, PolicyOperation.DELETE),
       onClick: (selectedRows: WifiOperatorViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
@@ -72,6 +74,7 @@ export default function WifiOperatorTable () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.WIFI_OPERATOR, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -105,6 +108,7 @@ export default function WifiOperatorTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.WIFI_OPERATOR, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.WIFI_OPERATOR,
               oper: PolicyOperation.CREATE })}>

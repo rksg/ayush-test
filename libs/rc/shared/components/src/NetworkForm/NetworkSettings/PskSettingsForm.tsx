@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Radio, Space } from 'antd'
 import {
@@ -33,7 +33,14 @@ import {
   passphraseRegExp,
   generateHexKey, useConfigTemplate
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../ApCompatibility'
 import { AAAInstance }             from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
@@ -42,6 +49,7 @@ import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSetti
 import * as UI                     from '../styledComponents'
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
+import { IdentityGroup }            from './SharedComponent/IdentityGroup/IdentityGroup'
 
 const { Option } = Select
 const { useWatch } = Form
@@ -99,7 +107,9 @@ function SettingsForm () {
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
+  const { networkId } = useParams()
   const { isTemplate } = useConfigTemplate()
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [
     wlanSecurity,
     macAddressAuthentication,
@@ -132,6 +142,9 @@ function SettingsForm () {
     </>)
   }
   const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
     <Option key={key} disabled={isDeprecateWep && key === 'WEP'}>
       {isDeprecateWep && key === 'WEP' ?
@@ -299,6 +312,7 @@ function SettingsForm () {
               children={<PasswordInput />}
             />
         }
+        { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
         <Form.Item
           label={$t({ defaultMessage: 'Security Protocol' })}
           name={['wlan', 'wlanSecurity']}
@@ -341,11 +355,24 @@ function SettingsForm () {
         <UI.FieldLabel width={labelWidth}>
           <Space align='start'>
             { $t({ defaultMessage: 'MAC Authentication' }) }
-            <Tooltip.Question
+            {!isR370UnsupportedFeatures && <Tooltip.Question
               title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
               placement='bottom'
               iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              showDetailButton
+              placement='bottom'
+              onClick={() => setDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={drawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={networkId}
+              featureName={InCompatibilityFeatures.MAC_AUTH}
+              onClose={() => setDrawerVisible(false)}
+            />}
           </Space>
           <Form.Item
             name={['wlan', 'macAddressAuthentication']}

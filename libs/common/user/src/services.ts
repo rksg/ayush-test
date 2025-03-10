@@ -15,7 +15,8 @@ import {
   UserSettingsUIModel,
   BetaStatus,
   // FeatureAPIResults,
-  BetaFeatures
+  BetaFeatures,
+  AllowedOperationsResponse
 } from './types'
 
 const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -179,6 +180,7 @@ export const UserRbacUrlsInfo = {
     method: 'PATCH',
     url: '/tenants/self',
     oldUrl: '/tenants/betaStatus/:enable',
+    opsApi: 'PATCH:/tenants/self',
     newApi: true
   },
   getPrivilegeGroups: {
@@ -205,6 +207,11 @@ export const UserRbacUrlsInfo = {
     method: 'put',
     url: '/tenants/betaFeatures',
     newApi: true
+  },
+  getAllowedOperations: {
+    method: 'get',
+    url: '/allowedOperations',
+    newApi: false // TODO: Awaiting backend support
   }
 }
 
@@ -236,7 +243,8 @@ export const {
   useGetPrivilegeGroupsQuery,
   useGetVenuesListQuery,
   useGetBetaFeatureListQuery,
-  useUpdateBetaFeatureListMutation
+  useUpdateBetaFeatureListMutation,
+  useGetAllowedOperationsQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -300,6 +308,11 @@ export const {
     getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudMessageBanner, params)
     }),
+
+    getAllowedOperations: build.query<AllowedOperationsResponse, void>({
+      query: () => createHttpRequest(UserRbacUrlsInfo.getAllowedOperations)
+    }),
+
     getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const userUrlsInfo = getUserUrls(enableRbac)

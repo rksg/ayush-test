@@ -13,7 +13,8 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/templates/query'
   },
   applyConfigTemplate: {
     method: 'post',
@@ -253,6 +254,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addNetworkVenueTemplateRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId',
+    opsApi: 'PUT:/templates/venues/{id}/wifiNetworks/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -267,6 +269,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNetworkVenueTemplateRbac: {
     method: 'delete',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId',
+    opsApi: 'DELETE:/templates/venues/{id}/wifiNetworks/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -286,6 +289,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenueTemplateRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
+    opsApi: 'PUT:/templates/venues/{id}/wifiNetworks/{id}/settings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -354,21 +358,31 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDriftReport: {
     method: 'get',
-    url: '/templates/:templateId/tenants/:tenantId/diffReport',
+    url: '/templates/:templateId/tenants/:tenantId/diffReports',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'GET:/templates/{id}/tenants/{id}/diffReport'
+    opsApi: 'GET:/templates/{id}/tenants/{id}/diffReports'
   },
   patchDriftReport: {
     method: 'PATCH',
-    url: '/templates/:templateId/tenants/:tenantId/diffReport',
+    url: '/templates/:templateId/tenants/:tenantId/diffReports',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReport'
+    opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReports'
+  },
+  updateEnforcement: {
+    method: 'put',
+    url: '/templates/:templateId/enforcementSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PUT:/templates/{id}/enforce'
   }
 }

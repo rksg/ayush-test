@@ -27,11 +27,12 @@ import {
   EntitlementDeviceType,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { filterByAccess }           from '@acx-ui/user'
+import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from './styledComponent'
 
@@ -103,11 +104,7 @@ const entitlementListPayload = {
   page: 1,
   pageSize: 1000,
   sortField: 'expirationDate',
-  sortOrder: 'DESC',
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'SELF'
-  }
+  sortOrder: 'DESC'
 }
 
 export const RbacSubscriptionTable = () => {
@@ -118,7 +115,7 @@ export const RbacSubscriptionTable = () => {
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
-
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   const queryResults = useGetEntitlementsListQuery({ params },
     { skip: isEntitlementRbacApiEnabled })
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
@@ -127,8 +124,15 @@ export const RbacSubscriptionTable = () => {
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
+
+  const filters = {
+    licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+    usageType: 'SELF'
+  }
+
+  const _entitlementListPayload = { ...entitlementListPayload, filters }
   const { data: rbacQueryResults } = useRbacEntitlementListQuery(
-    { params: useParams(), payload: entitlementListPayload },
+    { params: useParams(), payload: _entitlementListPayload },
     { skip: !isEntitlementRbacApiEnabled })
 
 
@@ -270,6 +274,7 @@ export const RbacSubscriptionTable = () => {
   const actions: TableProps<Entitlement>['actions'] = [
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
@@ -277,6 +282,7 @@ export const RbacSubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: refreshFunc
     }
   ]

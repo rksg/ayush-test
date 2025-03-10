@@ -8,9 +8,9 @@ import {
 import { defineMessages, useIntl } from 'react-intl'
 
 
-import { Subtitle, Tooltip }                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { NetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages } from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip }                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { NetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
@@ -19,11 +19,16 @@ import * as UI            from '../styledComponents'
 
 const { useWatch } = Form
 
-export function CloudpathServerForm () {
+interface CloudpathServerFormProps {
+  dpskWlanSecurity?: WlanSecurityEnum
+}
+
+export function CloudpathServerForm (props: CloudpathServerFormProps) {
   const labelWidth = '250px'
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
+  const { dpskWlanSecurity } = props
   const onProxyChange = (value: boolean, fieldName: string) => {
     setData && setData({ ...data, [fieldName]: value })
   }
@@ -108,9 +113,15 @@ export function CloudpathServerForm () {
     <Space direction='vertical' size='middle'>
       <div>
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'/>
-        {(data?.type && authProxyNetworkTypes.includes(data.type)) &&
+        <AAAInstance
+          serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+          type='authRadius'
+          networkType={data?.type}
+          excludeRadSec={dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed}
+        />
+        {((data?.type && authProxyNetworkTypes.includes(data.type)) &&
+          dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed
+        ) &&
         <UI.FieldLabel width={labelWidth}>
           <Space align='start'>
             { $t({ defaultMessage: 'Proxy Service' }) }
@@ -144,8 +155,14 @@ export function CloudpathServerForm () {
         {enableAccountingService && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'
-            excludeRadSec={data?.type === NetworkTypeEnum.DPSK}/>
-          {(data?.type && accountingProxyNetworkTypes.includes(data.type))&&
+            networkType={data?.type}
+            excludeRadSec={
+              data?.type === NetworkTypeEnum.DPSK ||
+              dpskWlanSecurity===WlanSecurityEnum.WPA23Mixed
+            }
+          />
+          {(data?.type && accountingProxyNetworkTypes.includes(data.type)) &&
+            dpskWlanSecurity!==WlanSecurityEnum.WPA23Mixed &&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               { $t({ defaultMessage: 'Proxy Service' }) }
@@ -159,7 +176,9 @@ export function CloudpathServerForm () {
               children={<Switch
                 data-testid='enable-accounting-proxy'
                 onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
-                disabled={supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled}
+                disabled={
+                  (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled)
+                }
               />}
             />
           </UI.FieldLabel>}

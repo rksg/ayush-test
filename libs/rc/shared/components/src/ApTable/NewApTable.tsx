@@ -57,12 +57,13 @@ import {
   IncompatibleFeatureLevelEnum,
   CompatibilityResponse,
   Compatibility,
-  CompatibilitySelectedApInfo
+  CompatibilitySelectedApInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
-import { exportMessageMapping }                                           from '@acx-ui/utils'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes, RolesEnum }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                     from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
@@ -121,6 +122,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
   // old API
@@ -640,6 +642,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE],
     roles: [...operationRoles],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
@@ -648,6 +651,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
     roles: [...operationRoles],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -661,6 +665,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     label: $t({ defaultMessage: 'Reboot' }),
     scopeKey: [WifiScopes.UPDATE],
     roles: [...operationRoles],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -741,6 +746,17 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     }
   }
 
+  useTrackLoadTime({
+    itemName: widgetsMapping.AP_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
+  const allowedRowActions = rowActions?.filter((item) => {
+    const { scopeKey: scopes, rbacOpsIds, roles } = item
+    return hasPermission({ scopes, rbacOpsIds, roles })
+  })
+
   return (
     <Loader states={[tableQuery]}>
       <Table<NewAPModelExtended|NewAPExtendedGrouped>
@@ -755,10 +771,11 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         onChange={handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
-        rowActions={rowActions?.filter((item) => hasPermission({ scopes: item.scopeKey, roles: item.roles }))}
+        rowActions={allowedRowActions}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)],
           onClick: () => {
             navigate({
               ...basePath,
@@ -768,6 +785,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         }, {
           label: $t({ defaultMessage: 'Add AP Group' }),
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApGroup)],
           onClick: () => {
             navigate({
               ...basePath,
@@ -780,6 +798,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         }, {
           label: $t({ defaultMessage: 'Import APs' }),
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)],
           onClick: () => {
             setImportVisible(true)
           }

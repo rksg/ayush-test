@@ -1,15 +1,17 @@
 import { useContext, useEffect } from 'react'
 
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { Col, Form, Input, Menu, MenuProps, Row, Space } from 'antd'
+import { useIntl }                                       from 'react-intl'
+import { useParams }                                     from 'react-router-dom'
 
-import { StepsForm }                           from '@acx-ui/components'
-import { useLazyGetIdentityProviderListQuery } from '@acx-ui/rc/services'
+import { Button, Dropdown, StepsForm, Tooltip }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { useGetPreconfiguredIdentityProviderQuery, useLazyGetIdentityProviderListQuery } from '@acx-ui/rc/services'
 import {
   IdentityProviderActionType,
   checkObjectNotExists,
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  IdentityProvider
 } from '@acx-ui/rc/utils'
 
 
@@ -28,6 +30,7 @@ const IdentityProviderListPayload = {
 }
 
 const NetworkIdentifierForm = () => {
+  const isSupportPreConfiguredIdp = useIsSplitOn(Features.PRECONFIGURED_HS20_IDP_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
 
@@ -35,6 +38,14 @@ const NetworkIdentifierForm = () => {
   const { state, dispatch } = useContext(IdentityProviderFormContext)
 
   const [getInstanceList] = useLazyGetIdentityProviderListQuery()
+
+  const { data: preconfiguredIdps } = useGetPreconfiguredIdentityProviderQuery({
+  }, { skip: !isSupportPreConfiguredIdp })
+
+  const preconfiguredIdpsNote = $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Import pre-configured settings from your identity provider to simplify setup. Please note that importing will populate and replace the existing configuration below.'
+  })
 
   useEffect(() => {
     if (form && state.name !== '') {
@@ -60,6 +71,20 @@ const NetworkIdentifierForm = () => {
     })
   }
 
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    const findPreConfiguredIdp = preconfiguredIdps?.find((idp) => idp.name === e.key)
+    if (findPreConfiguredIdp) {
+      dispatch({
+        type: IdentityProviderActionType.LOAD_PRECONFIGURED,
+        payload: {
+          state: {
+            ...findPreConfiguredIdp
+          }
+        }
+      })
+    }
+  }
+
   return (<>
     <Row gutter={20} >
       <Col span={15}>
@@ -83,6 +108,22 @@ const NetworkIdentifierForm = () => {
         />
       </Col>
     </Row>
+    {isSupportPreConfiguredIdp && <Row gutter={20}>
+      <Col span={15} style={{ marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            {$t({ defaultMessage: 'Provider Settings' })}
+          </div>
+          <Space>
+            <PreconfiguredIdpsDropdown idps={preconfiguredIdps} handleMenuClick={handleMenuClick} />
+            <Tooltip.Question
+              title={preconfiguredIdpsNote}
+              placement='right'
+              iconStyle={{ width: 16, height: 16 }}/>
+          </Space>
+        </div>
+      </Col>
+    </Row>}
     <Row gutter={20} style={{ marginBottom: '16px' }}>
       <Col span={15}>
         <Form.Item
@@ -120,6 +161,31 @@ const NetworkIdentifierForm = () => {
       </Col>
     </Row>
   </>
+  )
+}
+
+type PreconfiguredIdpsDropdownProps = {
+  idps?: IdentityProvider[],
+  handleMenuClick: MenuProps['onClick']
+}
+const PreconfiguredIdpsDropdown = (props: PreconfiguredIdpsDropdownProps) => {
+  const { $t } = useIntl()
+
+  const { idps = [], handleMenuClick } = props
+  const onMenuClick: MenuProps['onClick'] = (e) => {
+    handleMenuClick && handleMenuClick(e)
+  }
+
+  const idpsMeun = <Menu
+    onClick={onMenuClick}
+    items={idps.map(({ name }) => ({ key: name, label: name }))}
+  />
+
+  return (
+    <Dropdown overlay={idpsMeun}>{() =>
+      // eslint-disable-next-line max-len
+      <Button type='link'>{ $t({ defaultMessage: 'Import from a Known Identity Provider' }) }</Button>
+    }</Dropdown>
   )
 }
 

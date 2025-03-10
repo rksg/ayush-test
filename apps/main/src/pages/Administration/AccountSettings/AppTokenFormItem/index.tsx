@@ -14,11 +14,13 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   ApplicationAuthenticationStatus,
-  roleDisplayText
+  roleDisplayText,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { store }                    from '@acx-ui/store'
-import { RolesEnum }                from '@acx-ui/types'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
+import { store }                                                        from '@acx-ui/store'
+import { RolesEnum }                                                    from '@acx-ui/types'
+import { filterByOperations, getUserProfile, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                                    from '@acx-ui/utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -39,6 +41,7 @@ export const reloadAuthTable = (timeoutSec?: number) => {
 
 const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { tenantAuthenticationData } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [isEditMode, setEditMode] = useState(false)
@@ -163,14 +166,15 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     const actions: TableProps<TenantAuthentications>['actions'] = [
       {
         label: $t({ defaultMessage: 'Add Token' }),
-        onClick: () => {onAddAppToken()
-        }
+        rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addTenantAuthentications)],
+        onClick: () => {onAddAppToken()}
       }
     ]
 
     const rowActions: TableProps<TenantAuthentications>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantAuthentications)],
         onClick: (rows) => {
           setAuthenticationsData(rows[0])
           setEditMode(true)
@@ -257,14 +261,22 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       }
     ]
 
+    const getActions = function () {
+      if ( rbacOpsApiEnabled ) {
+        return filterByOperations(actions)
+      } else {
+        return (hasCrossVenuesPermission() ? actions : [])
+      }
+    }
+
     return (
       <Table
         columns={columns}
-        actions={hasCrossVenuesPermission() ? actions : []}
+        actions={getActions()}
         dataSource={appTokenData}
         rowKey='id'
-        rowActions={rowActions}
-        rowSelection={hasCrossVenuesPermission() && { type: 'radio' }}
+        rowActions={filterByOperations(rowActions)}
+        rowSelection={getActions().length > 0 && { type: 'radio' }}
       />
     )
   }

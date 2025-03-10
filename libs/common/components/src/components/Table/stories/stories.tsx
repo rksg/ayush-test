@@ -4,6 +4,7 @@ import { BasicTable }              from './BasicTable'
 import { ColumnSettings }          from './ColumnSettings'
 import { CompactTable }            from './CompactTable'
 import { CompactTableWithBorders } from './CompactTableWithBorders'
+import { CompactWidgetTable }      from './CompactWidgetTable'
 import { CustomTable }             from './CustomTable'
 import { FilteredTable }           from './FilteredTable'
 import { FormTable }               from './FormTable'
@@ -30,6 +31,7 @@ storiesOf('Table', module)
   .add('No Selected Bar Table', NoSelectedBarTable)
   .add('Compact', CompactTable)
   .add('Compact Table With Borders in Rows', CompactTableWithBorders)
+  .add('Compact Table for Widget', CompactWidgetTable)
   .add('Form Table', FormTable)
   .add('Group Table', GroupTable)
   .add('Nested Table', NestedTable)

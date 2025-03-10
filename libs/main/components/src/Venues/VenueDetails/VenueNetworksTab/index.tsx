@@ -26,6 +26,7 @@ import {
   useIsEdgeFeatureReady,
   NetworkTunnelActionModalProps,
   NetworkTunnelActionModal,
+  NetworkTunnelActionDrawer,
   NetworkTunnelActionForm,
   useUpdateNetworkTunnelAction,
   NetworkTunnelTypeEnum,
@@ -70,12 +71,20 @@ import {
   EdgeMvSdLanViewData,
   EdgeSdLanViewDataP2,
   useConfigTemplateQueryFnSwitcher,
-  TableResult
+  TableResult,
+  WifiRbacUrlsInfo,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                        from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { useTunnelColumn } from './useTunnelColumn'
 
@@ -173,13 +182,43 @@ export function VenueNetworksTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+
+  const addNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkDeep)
+
+  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasAddNetworkPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([addNetworkOpsApi])
+    : (hasPermission({ scopes: [WifiScopes.CREATE] }) && hasCrossVenuesPermission())
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasUpdatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasUpdatePermission)
 
   const { venueId } = params
   const settingsId = 'venue-networks-table'
@@ -390,6 +429,7 @@ export function VenueNetworksTab () {
     {
       label: $t({ defaultMessage: 'Add Network' }),
       scopeKey: [WifiScopes.CREATE],
+      rbacOpsIds: [addNetworkOpsApi],
       onClick: () => {
         navigate(`${isTemplate ? linkToAddNetworkTemplate.pathname : linkToAddNetwork.pathname}`)
       }
@@ -447,7 +487,7 @@ export function VenueNetworksTab () {
         let disabled = false
         let title = ''
 
-        if (hasUpdatePermission) {
+        if (hasActivateNetworkVenuePermission) {
           if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
             disabled = true
             title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
@@ -463,7 +503,7 @@ export function VenueNetworksTab () {
           title={title}
           placement='bottom'><Switch
             checked={Boolean(row.activated?.isActivated)}
-            disabled={!hasUpdatePermission || disabled}
+            disabled={!hasActivateNetworkVenuePermission || disabled}
             onClick={(checked, event) => {
               if (!checked) {
                 checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks.scopedNetworkIds, [row.id], () => {
@@ -483,7 +523,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        const isReadOnly = !hasUpdateNetworkVenuePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
         return transformVLAN(
           getCurrentVenue(row),
           row.deepNetwork,
@@ -498,7 +538,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        const isReadOnly = !hasUpdateNetworkVenuePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
         return transformAps(
           getCurrentVenue(row),
           row.deepNetwork,
@@ -513,7 +553,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        const isReadOnly = !hasUpdateNetworkVenuePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
         return transformRadios(
           getCurrentVenue(row),
           row.deepNetwork,
@@ -526,7 +566,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (_, row) {
-        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        const isReadOnly = !hasUpdateNetworkVenuePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
         return transformScheduling(
           getCurrentVenue(row),
           scheduleSlotIndexMap[row.id],
@@ -661,6 +701,9 @@ export function VenueNetworksTab () {
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
       await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
+      if (isIpSecOverNetworkEnabled) {
+        await softGreTunnelActions.activateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+      }
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
     } catch (e){
@@ -681,7 +724,7 @@ export function VenueNetworksTab () {
       <Table
         settingsId={settingsId}
         rowKey='id'
-        actions={hasCrossVenuesPermission()? filterByAccess(actions): []}
+        actions={hasAddNetworkPermission? filterByAccess(actions): []}
         // rowSelection={{
         //   type: 'checkbox'
         // }}
@@ -716,11 +759,18 @@ export function VenueNetworksTab () {
         />
       </Form.Provider>
       {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
-        <NetworkTunnelActionModal
-          {...tunnelModalState}
-          onFinish={handleNetworkTunnelActionFinish}
-          onClose={handleCloseTunnelModal}
-        />
+        <>
+          {!isIpSecOverNetworkEnabled && <NetworkTunnelActionModal
+            {...tunnelModalState}
+            onFinish={handleNetworkTunnelActionFinish}
+            onClose={handleCloseTunnelModal}
+          />}
+          {isIpSecOverNetworkEnabled && <NetworkTunnelActionDrawer
+            {...tunnelModalState}
+            onFinish={handleNetworkTunnelActionFinish}
+            onClose={handleCloseTunnelModal}
+          />}
+        </>
       }
     </Loader>
   )

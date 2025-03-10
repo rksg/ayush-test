@@ -75,6 +75,24 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         })
       }
     }),
+    cloneWorkflow: build.mutation({
+      query: ({ params }) => {
+        const req = createHttpRequest(WorkflowUrls.cloneWorkflow, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Workflow' }]
+    }),
+    nestedCloneWorkflow: build.mutation({
+      query: ({ params }) => {
+        const req = createHttpRequest(WorkflowUrls.nestedCloneWorkflow, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Workflow' }, { type: 'Step' }]
+    }),
     deleteWorkflow: build.mutation({
       query: ({ params }) => {
         const req = createHttpRequest(WorkflowUrls.deleteWorkflow, params)
@@ -179,7 +197,9 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'CREATE_WORKFLOW',
             'UPDATE_WORKFLOW',
             'DELETE_WORKFLOW',
-            'INITIATE_PUBLISH_WORKFLOW'
+            'INITIATE_PUBLISH_WORKFLOW',
+            'CLONE_WORKFLOW',
+            'IMPORT_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -264,7 +284,9 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'CREATE_WORKFLOW',
             'UPDATE_WORKFLOW',
             'DELETE_WORKFLOW',
-            'INITIATE_PUBLISH_WORKFLOW'
+            'INITIATE_PUBLISH_WORKFLOW',
+            'CLONE_WORKFLOW',
+            'IMPORT_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -399,7 +421,8 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CREATE_STEP',
-            'DELETE_STEP'
+            'DELETE_STEP',
+            'IMPORT_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -577,7 +600,9 @@ export const {
   useLazyGetUIConfigurationQuery,
   useUpdateUIConfigurationMutation,
   useLazyGetUIConfigurationLogoImageQuery,
-  useLazyGetUIConfigurationBackgroundImageQuery
+  useLazyGetUIConfigurationBackgroundImageQuery,
+  useCloneWorkflowMutation,
+  useNestedCloneWorkflowMutation
 } = workflowApi
 
 export const {
@@ -591,6 +616,7 @@ export const {
   useCreateWorkflowChildStepMutation,
   useGetWorkflowStepByIdQuery,
   useGetWorkflowStepsByIdQuery,
+  useLazyGetWorkflowStepsByIdQuery,
   useDeleteWorkflowStepByIdMutation,
   useCreateSplitOptionMutation,
   useCreateWorkflowStepUnderOptionMutation,

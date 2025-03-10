@@ -6,29 +6,30 @@ import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { RolesEnum }                         from '@acx-ui/types'
 import { AuthRoute, hasRoles }               from '@acx-ui/user'
 
-import Administration                                       from './pages/Administration'
-import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
-import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
-import { AddNewCustomRole }                                 from './pages/Administration/UserPrivileges/CustomRoles/AddNewCustomRole'
-import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
-import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
-import AnalyticsBase                                        from './pages/Analytics'
-import Dashboard                                            from './pages/Dashboard'
-import DevicesBase                                          from './pages/Devices'
-import Layout                                               from './pages/Layout'
-import { MFACheck }                                         from './pages/Layout/MFACheck'
-import NetworksBase                                         from './pages/Networks'
-import PoliciesBase                                         from './pages/Policies'
-import ReportsBase                                          from './pages/Reports'
-import { RWGDetails }                                       from './pages/RWG/RWGDetails'
-import { RWGForm }                                          from './pages/RWG/RWGForm'
-import { RWGTable }                                         from './pages/RWG/RWGTable'
-import SearchResults                                        from './pages/SearchResults'
-import ServicesBase                                         from './pages/Services'
-import TimelineBase                                         from './pages/Timeline'
-import { UserProfile }                                      from './pages/UserProfile'
-import UsersBase                                            from './pages/Users'
-import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
+import Administration                                                            from './pages/Administration'
+import MigrationForm                                                             from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import MigrationSummary                                                          from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import { AddNewCustomRole }                                                      from './pages/Administration/UserPrivileges/CustomRoles/AddNewCustomRole'
+import { AddPrivilegeGroup }                                                     from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
+import { EditPrivilegeGroup }                                                    from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
+import AICanvas                                                                  from './pages/AICanvas'
+import AnalyticsBase                                                             from './pages/Analytics'
+import Dashboard                                                                 from './pages/Dashboard'
+import DevicesBase                                                               from './pages/Devices'
+import Layout                                                                    from './pages/Layout'
+import { MFACheck }                                                              from './pages/Layout/MFACheck'
+import NetworksBase                                                              from './pages/Networks'
+import PoliciesBase                                                              from './pages/Policies'
+import ReportsBase                                                               from './pages/Reports'
+import { RWGDetails }                                                            from './pages/RWG/RWGDetails'
+import { RWGForm }                                                               from './pages/RWG/RWGForm'
+import { RWGTable }                                                              from './pages/RWG/RWGTable'
+import SearchResults                                                             from './pages/SearchResults'
+import ServicesBase                                                              from './pages/Services'
+import TimelineBase                                                              from './pages/Timeline'
+import { UserProfile }                                                           from './pages/UserProfile'
+import UsersBase                                                                 from './pages/Users'
+import { VenueDetails, VenuesForm, VenueEdit, VenuesTable, PropertyUnitDetails } from './pages/Venues'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
@@ -60,6 +61,7 @@ function AllRoutes () {
           <Route path='*' element={<PageNotFound />} />
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
+          <Route path='canvas' element={<AICanvas />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
@@ -72,6 +74,9 @@ function AllRoutes () {
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
           <Route path='dataStudio/*' element={<ReportsBase />}>
+            <Route path='*' element={<ReportsRoutes />} />
+          </Route>
+          <Route path='dataConnector/*' element={<ReportsBase />}>
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
           <Route path='devices/*' element={<DevicesBase />}>
@@ -137,6 +142,7 @@ function VenuesRoutes () {
       <Route path=':venueId/edit' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
+      <Route path=':venueId/:unitId/property-units' element={<PropertyUnitDetails />} />
     </Route>
   )
 }

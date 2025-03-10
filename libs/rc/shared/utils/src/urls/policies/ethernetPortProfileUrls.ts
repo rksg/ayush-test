@@ -4,6 +4,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   createEthernetPortProfile: {
     method: 'post',
     url: '/ethernetPortProfiles',
+    opsApi: 'POST:/ethernetPortProfiles',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -13,6 +14,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   getEthernetPortProfileViewDataList: {
     method: 'post',
     url: '/ethernetPortProfiles/query',
+    opsApi: 'POST:/ethernetPortProfiles/query',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -22,6 +24,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   deleteEthernetPortProfile: {
     method: 'delete',
     url: '/ethernetPortProfiles/:id',
+    opsApi: 'DELETE:/ethernetPortProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
@@ -38,6 +41,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   updateEthernetPortProfile: {
     method: 'put',
     url: '/ethernetPortProfiles/:id',
+    opsApi: 'PUT:/ethernetPortProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -51,8 +55,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
     }
-  }
-  ,
+  },
   deleteEthernetPortProfileRadiusId: {
     method: 'delete',
     url: '/ethernetPortProfiles/:id/radiusServerProfiles/:radiusId',

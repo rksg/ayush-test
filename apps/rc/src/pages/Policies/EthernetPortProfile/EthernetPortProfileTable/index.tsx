@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 import { useEffect } from 'react'
 
@@ -10,13 +11,15 @@ import {
   useDeleteEthernetPortProfileMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetEthernetPortProfileViewDataListQuery,
-  useGetVenuesQuery }                     from '@acx-ui/rc/services'
+  useGetVenuesQuery
+} from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
   EthernetPortProfileViewData,
   filterByAccessForServicePolicyMutation,
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -49,7 +52,7 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
       searchTargetFields: ['name', 'venue']
     }
   })
-  // eslint-disable-next-line max-len
+
   const { radiusNameMap = [] } = useGetAAAPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -209,48 +212,47 @@ const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
     }
   ]
 
-  const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [
-    {
-      scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
-      // Default Ethernet Port Profile cannot Edit
-      visible: (selectedRows) => selectedRows.length === 1
+  const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
+    // Default Ethernet Port Profile cannot Edit
+    visible: (selectedRows) => selectedRows.length === 1
             && !selectedRows[0].isDefault,
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.ETHERNET_PORT_PROFILE,
-            oper: PolicyOperation.EDIT,
-            policyId: selectedRows[0].id
-          })
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
+          type: PolicyType.ETHERNET_PORT_PROFILE,
+          oper: PolicyOperation.EDIT,
+          policyId: selectedRows[0].id
         })
-      }
-    },
-    {
-      scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
-      // Default Ethernet Port Profile cannot Delete
-      visible: (selectedRows) => {
-        return !selectedRows.some(row => row.isDefault)
-      },
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            Promise.all(rows.map(row => deleteEthernetPortProfile({ params: { id: row.id } })))
-              .then(clearSelection)
-          }
-        })
-      }
+      })
     }
-  ]
+  }, {
+    scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
+    // Default Ethernet Port Profile cannot Delete
+    visible: (selectedRows) => {
+      return !selectedRows.some(row => row.isDefault)
+    },
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: (rows, clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Profile' }),
+          entityValue: rows.length === 1 ? rows[0].name : undefined,
+          numOfEntities: rows.length
+        },
+        onOk: () => {
+          Promise.all(rows.map(row => deleteEthernetPortProfile({ params: { id: row.id } })))
+            .then(clearSelection)
+        }
+      })
+    }
+  }]
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 

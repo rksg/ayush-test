@@ -57,6 +57,7 @@ export interface StackedAreaChartProps
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
     onDataZoom?: (range: TimeStampRange) => void
+    xAxisType?: 'time' & 'category'
   }
 
 export function getSeriesTotal <DataType extends TimeSeriesChartData> (
@@ -109,6 +110,7 @@ export function StackedAreaChart <
   useLegendSelectChanged(eChartsRef)
 
   const { $t } = useIntl()
+  const xAxisType = props.xAxisType || 'time'
 
   disableLegend = Boolean(disableLegend)
   const [canResetZoom, resetZoomCallback] =
@@ -145,12 +147,13 @@ export function StackedAreaChart <
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(
         data,
-        { ...seriesFormatters, default: dataFormatter }
+        { ...seriesFormatters, default: dataFormatter },
+        xAxisType !== 'time'
       )
     },
     xAxis: {
       ...xAxisOptions(),
-      type: 'time',
+      type: xAxisType,
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dateAxisFormatter()

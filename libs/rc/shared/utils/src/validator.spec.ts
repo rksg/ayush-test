@@ -29,11 +29,13 @@ import {
   validateRecoveryPassphrasePart,
   validateVlanId,
   validateVlanExcludingReserved,
+  validateVlanRangeFormat,
   ipv6RegExp,
   validateTags,
   multicastIpAddressRegExp,
   URLProtocolRegExp,
-  radiusIpAddressRegExp
+  radiusIpAddressRegExp,
+  checkTaggedVlan
 } from './validator'
 
 describe('validator', () => {
@@ -192,6 +194,23 @@ describe('validator', () => {
       const result1 = validateVlanExcludingReserved('4092')
       // eslint-disable-next-line max-len
       await expect(result1).rejects.toEqual('Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+    })
+  })
+
+  describe('validateVlanRangeFormat', () => {
+    it('should render correctly', async () => {
+      await expect(validateVlanRangeFormat('20')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20,22,30-100')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20,22, 30-100')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20, 22, 30-100')).resolves.toEqual(undefined)
+      await expect(validateVlanRangeFormat('1-20, 22,  30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, 22,, 30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-2 0, 22, 30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1--20, 22, 30-100')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, 22,')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat(',1-20, 22')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, -22, 33')).rejects.toMatch(/Invalid format/)
+      await expect(validateVlanRangeFormat('1-20, 0.1, 33')).rejects.toMatch(/Invalid format/)
     })
   })
 
@@ -578,6 +597,41 @@ describe('validator', () => {
         radiusIpAddressRegExp('192.168.1.256')).rejects.toEqual('Please enter a valid IP address')
       await expect(
         radiusIpAddressRegExp('256.256.256.256')).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('checkTaggedVlan', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('should reject invalid format', async () => {
+      await expect(checkTaggedVlan('1,2,3a')).rejects.toEqual('This field is invalid')
+      await expect(checkTaggedVlan('1,2,')).rejects.toEqual('This field is invalid')
+      await expect(checkTaggedVlan('1,,3')).rejects.toEqual('This field is invalid')
+    })
+
+    it('should reject duplicate VLANs', async () => {
+      await expect(checkTaggedVlan('1,2,2,3')).rejects.toEqual(
+        'Tagged VLAN with that value already exists ')
+    })
+
+    it('should reject VLANs outside the valid range', async () => {
+      await expect(checkTaggedVlan('0,1,2')).rejects.toEqual(
+        'Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+      await expect(checkTaggedVlan('1,4096,2')).rejects.toEqual(
+        'Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+    })
+
+    it('should reject reserved VLANs', async () => {
+      await expect(checkTaggedVlan('1,4087,4090')).rejects.toEqual(
+        'Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+    })
+
+    it('should accept valid VLAN ranges', async () => {
+      await expect(checkTaggedVlan('1,10,100,1000,4095')).resolves.toBeUndefined()
+      await expect(checkTaggedVlan('1')).resolves.toBeUndefined()
+      await expect(checkTaggedVlan('1,2,3,4,5')).resolves.toBeUndefined()
     })
   })
 })

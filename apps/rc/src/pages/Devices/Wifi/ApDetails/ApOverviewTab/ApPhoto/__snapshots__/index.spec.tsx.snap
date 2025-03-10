@@ -72,6 +72,9 @@ exports[`ApPhoto should reset upload photo correctly 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c0 {
@@ -166,16 +169,8 @@ exports[`ApPhoto should reset upload photo correctly 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center"
-              >
-                <div
-                  class="ant-space-item"
-                >
-                  <div
-                    class="c2"
-                  />
-                </div>
-              </div>
+                class="c2"
+              />
             </div>
             <div
               class="ant-card-extra"

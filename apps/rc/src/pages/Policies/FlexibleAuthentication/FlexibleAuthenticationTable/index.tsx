@@ -14,15 +14,23 @@ import {
   FlexibleAuthentication,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
+  getPolicyAllowedOperation,
   getPolicyRoutePath,
+  SwitchUrlsInfo,
   PolicyOperation,
   PolicyType,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                 from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
-import { noDataDisplay }                                from '@acx-ui/utils'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+}                from '@acx-ui/user'
+import { noDataDisplay, getOpsApi } from '@acx-ui/utils'
 
 export const getItemTooltip = (items: string[]) => {
   return items?.length ? <FormattedMessage
@@ -41,6 +49,8 @@ export const getItemTooltip = (items: string[]) => {
 const FlexibleAuthenticationTable = () => {
   const { $t } = useIntl()
   const basePath: Path = useTenantLink('')
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const navigate = useNavigate()
   const [deleteFlexAuthenticationProfile] = useDeleteFlexAuthenticationProfileMutation()
 
@@ -71,11 +81,13 @@ const FlexibleAuthenticationTable = () => {
     sorter: true,
     defaultSortOrder: 'ascend',
     render: (_, row) => {
-      return <TenantLink to={getPolicyDetailsLink({
-        type: PolicyType.FLEX_AUTH,
-        oper: PolicyOperation.DETAIL,
-        policyId: row.id || ''
-      })}>
+      return <TenantLink
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.DETAIL)}
+        to={getPolicyDetailsLink({
+          type: PolicyType.FLEX_AUTH,
+          oper: PolicyOperation.DETAIL,
+          policyId: row.id || ''
+        })}>
         {row.profileName}
       </TenantLink>
     }
@@ -106,6 +118,7 @@ const FlexibleAuthenticationTable = () => {
 
   const rowActions: TableProps<FlexibleAuthentication>['rowActions'] = [{
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.EDIT),
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([selectedRow]) => {
@@ -121,6 +134,7 @@ const FlexibleAuthenticationTable = () => {
   },
   {
     scopeKey: [SwitchScopes.DELETE],
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       showActionModal({
@@ -138,9 +152,14 @@ const FlexibleAuthenticationTable = () => {
     }
   }]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
+  const isSelectionVisible = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      getOpsApi(SwitchUrlsInfo.updateFlexAuthenticationProfile),
+      getOpsApi(SwitchUrlsInfo.deleteFlexAuthenticationProfile)
+    ])
+    : hasCrossVenuesPermission() && hasPermission({
+      scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    })
 
   return (<>
     <PageHeader
@@ -158,8 +177,9 @@ const FlexibleAuthenticationTable = () => {
         }
       ]}
 
-      extra={filterByAccess([<TenantLink
+      extra={hasCrossVenuesPermission() && filterByAccess([<TenantLink
         scopeKey={[SwitchScopes.CREATE]}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.CREATE)}
         to={getPolicyRoutePath({
           type: PolicyType.FLEX_AUTH,
           oper: PolicyOperation.CREATE
@@ -173,7 +193,7 @@ const FlexibleAuthenticationTable = () => {
       <Table
         rowKey='id'
         columns={columns}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={hasCrossVenuesPermission() ? filterByAccess(rowActions) : []}
         rowSelection={isSelectionVisible && { type: 'radio' }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

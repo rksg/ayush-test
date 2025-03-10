@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { policyApi }                                                                 from '@acx-ui/rc/services'
 import { LbsServerProfileUrls }                                                      from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
@@ -30,6 +31,12 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
 describe('Location Based Service', () => {
@@ -127,5 +134,25 @@ describe('Location Based Service', () => {
     // drawer
     await screen.findByText('Add Location Based Service Server')
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
+  it('should render R370 Compatibility ToolTip', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_R370_TOGGLE)
+
+    render(
+      <Provider>
+        <Form>
+          <LocationBasedService />
+        </Form>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('Use LBS Server'))
+
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(1)
+    toolTips.forEach(t => expect(t).toBeVisible())
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
   })
 })

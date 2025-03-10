@@ -9,7 +9,7 @@ import {
   isEmpty,
   uniq,
   isInteger
-}                from 'lodash'
+} from 'lodash'
 
 import { RolesEnum }                                from '@acx-ui/types'
 import { roleStringMap }                            from '@acx-ui/user'
@@ -1053,6 +1053,15 @@ export function validateVlanExcludingReserved (vlanName: string){
   return Promise.resolve()
 }
 
+export const validateVlanRangeFormat = (value: string) => {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.invalidVlanRangeRegExp))
+  }
+  return Promise.resolve()
+}
+
 export function validateDuplicateVlanName (vlanName: string, vlanList: Vlan[]) {
   const { $t } = getIntl()
   const index = vlanList.filter(item => item.vlanName === vlanName)
@@ -1273,4 +1282,37 @@ export function radiusIpAddressRegExp (value: string) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
+}
+
+export function checkTaggedVlan (value: string) {
+  const { $t } = getIntl()
+
+  const validFormat = /^[0-9]+(,[0-9]+)*$/.test(value)
+  if (!validFormat) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  const items = value.toString().split(',')
+
+  if(items.some((num, index) => items.indexOf(num) !== index)){
+    return Promise.reject($t(validationMessages.duplication, {
+      entityName: $t({ defaultMessage: 'Tagged VLAN' }),
+      key: $t({ defaultMessage: 'taggedVlan' }),
+      extra: ''
+    }))
+  }
+
+  const isValid = items.every((item: string) => {
+    const num = Number(item.trim())
+    const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4093|4095)$')
+    if (!vlanRegexp.test(item)) {
+      return false
+    }
+    return !isNaN(num) && num > 0 && num <= 4095
+  })
+
+  if (isValid) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t(validationMessages.vlanInvalidExclReserved))
 }

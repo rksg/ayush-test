@@ -19,100 +19,100 @@ import { LicenseBanner } from './index'
 
 const list = [
   {
-    deviceCount: 1,
+    licenseCount: 1,
     deviceSubType: null,
-    deviceType: 'ANALYTICS',
+    licenseType: 'ANALYTICS',
     effectDate: '2023-02-17T02:03:25.311+00:00',
-    effectDays: 0,
+    effectiveDays: 0,
     multipleLicense: false,
     totalActiveDevices: 1,
     totalRALicense: 0,
     type: 'RA_BELOW_50_PERCENT_OF_DEVICES'
   },
   {
-    deviceCount: 1,
+    licenseCount: 1,
     deviceSubType: null,
-    deviceType: 'ANALYTICS',
+    licenseType: 'ANALYTICS',
     effectDate: '2023-02-17T02:03:25.311+00:00',
-    effectDays: 0,
+    effectiveDays: 0,
     multipleLicense: true,
     totalActiveDevices: 1,
     totalRALicense: 0,
     type: 'INITIAL'
   },
   {
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'WIFI',
+    licenseType: 'WIFI',
     effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 53,
+    effectiveDays: 53,
     multipleLicense: false,
     type: 'INITIAL'
   },
   {
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'SWITCH',
+    licenseType: 'SWITCH',
     effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 54,
+    effectiveDays: 54,
     multipleLicense: false,
     type: 'INITIAL'
   },
   {
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'WIFI',
+    licenseType: 'WIFI',
     effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 53,
+    effectiveDays: 53,
     multipleLicense: false,
     type: 'GRACE_PERIOD'
   },
   {
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'WIFI',
+    licenseType: 'WIFI',
     effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
+    effectiveDays: 5,
     multipleLicense: false,
     type: 'CLOSE_TO_EXPIRATION'
   },{
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'ANALYTICS',
+    licenseType: 'ANALYTICS',
     effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 10,
+    effectiveDays: 10,
     multipleLicense: true,
     type: 'INITIAL'
   },{
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'ANALYTICS',
+    licenseType: 'ANALYTICS',
     effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
+    effectiveDays: 5,
     multipleLicense: true,
     type: 'CLOSE_TO_EXPIRATION'
   },{
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'ANALYTICS',
+    licenseType: 'ANALYTICS',
     effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
+    effectiveDays: 5,
     multipleLicense: true,
     type: 'GRACE_PERIOD'
   },{
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'ANALYTICS',
+    licenseType: 'ANALYTICS',
     effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
+    effectiveDays: 5,
     multipleLicense: true,
     type: 'EXPIRED'
   },{
-    deviceCount: 40,
+    licenseCount: 40,
     deviceSubType: null,
-    deviceType: 'WIFI',
+    licenseType: 'WIFI',
     effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
+    effectiveDays: 5,
     multipleLicense: true,
     type: 'GRACE_PERIOD'
   }]

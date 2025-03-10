@@ -1,12 +1,13 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, Loader, NoData, Tabs }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                            from '@acx-ui/types'
-import { hasPermission }                                         from '@acx-ui/user'
+import { Button, Loader, NoData, Tabs }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                          from '@acx-ui/types'
+import { hasPermission }                                                       from '@acx-ui/user'
+import { getOpsApi }                                                           from '@acx-ui/utils'
 
 import { EdgeSubInterfacesTable } from './EdgeSubInterfacesTable'
 import { LagSubInterfaceTable }   from './LagSubInterfaceTable'
@@ -65,8 +66,18 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
     })
   }
 
+  const hasUpdatePermission = hasPermission({
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: [
+      getOpsApi(EdgeUrlsInfo.addSubInterfaces),
+      getOpsApi(EdgeUrlsInfo.updateSubInterfaces),
+      getOpsApi(EdgeUrlsInfo.deleteSubInterfaces),
+      getOpsApi(EdgeUrlsInfo.importSubInterfacesCSV)
+    ]
+  })
+
   return <Row justify='end'>
-    {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
+    {hasUpdatePermission && isConfigurable &&
       <Button
         size='small'
         type='link'
@@ -77,7 +88,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
     }
 
     <Col span={24}>
-      <Loader states={[{ isLoading }]}>
+      <Loader states={[{ isLoading }]} style={{ minHeight: '80px' }}>
         {serialNumber && ports.length > 0
           ? <Tabs type='third'>
             {tabs?.map((item) => {

@@ -78,7 +78,7 @@ describe('SwitchPortProfileDetail', () => {
       }
     )
 
-    expect(await screen.findByRole('heading', { name: 'Port Profiles' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Profile One' })).toBeVisible()
     expect(await screen.findByRole('table')).toBeInTheDocument()
   })
 

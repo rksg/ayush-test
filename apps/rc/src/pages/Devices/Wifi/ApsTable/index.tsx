@@ -14,9 +14,11 @@ import {
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery }  from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
+import { usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { WifiScopes }                             from '@acx-ui/types'
+import { hasPermission }                          from '@acx-ui/user'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 const apsCountQueryPayload = {
   fields: ['serialNumber', 'name'],
@@ -82,16 +84,20 @@ export default function useApsTable () {
 
   const addMenu = <Menu
     onClick={handleMenuClick}
-    items={[{
-      key: 'ap',
-      label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
-    }, {
-      key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import APs' })
-    }, {
-      key: 'ap-group',
-      label: <TenantLink to='devices/apgroups/add'>
-        {$t({ defaultMessage: 'AP Group' })}</TenantLink> }
+    items={[
+      ...( hasPermission({ scopes: [WifiScopes.CREATE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)] }) ? [{
+          key: 'ap',
+          label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
+        }, {
+          key: 'import-from-file',
+          label: $t({ defaultMessage: 'Import APs' })
+        }]: [] ),
+      ...( hasPermission({ scopes: [WifiScopes.CREATE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApGroup)] }) ? [{
+          key: 'ap-group',
+          label: <TenantLink to='devices/apgroups/add'>
+            {$t({ defaultMessage: 'AP Group' })}</TenantLink> }] : [] )
     ]}
   />
 
@@ -103,6 +109,7 @@ export default function useApsTable () {
   const extra = [
     <Dropdown
       scopeKey={[WifiScopes.CREATE]}
+      rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.addAp), getOpsApi(WifiRbacUrlsInfo.addApGroup)]}
       overlay={addMenu}>{() =>
         <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
       }

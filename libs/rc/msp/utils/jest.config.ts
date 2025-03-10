@@ -5,6 +5,10 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: './test-results', outputName: 'msp-utils.xml' }]
+  ],
   coverageDirectory: '../../../../coverage/libs/rc/msp/utils',
   coverageThreshold: {
     global: {

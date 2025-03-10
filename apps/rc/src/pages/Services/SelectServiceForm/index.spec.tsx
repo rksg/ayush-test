@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
+import { Features, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                      from '@acx-ui/rc/components'
 import {
   getSelectServiceRoutePath,
   getServiceListRoutePath,
@@ -34,6 +34,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('Select Service Form', () => {
@@ -138,11 +145,13 @@ describe('Select Service Form', () => {
     jest.mocked(useIsEdgeFeatureReady)
       .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
               || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsBetaEnabled).mockReturnValue(true)
     render(<SelectServiceForm />, {
       route: { params, path }
     })
 
     expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
+    expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
   })
 
   it('should display Edge TNM service when its FF ON', async () => {
@@ -154,5 +163,28 @@ describe('Select Service Form', () => {
     })
 
     expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
+  })
+
+  describe('Edge OLT', () => {
+    it('should render Edge OLT when FF is ON', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      await screen.findByText('NOKIA GPON Services')
+    })
+
+    it('should not render Edge OLT when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
   })
 })

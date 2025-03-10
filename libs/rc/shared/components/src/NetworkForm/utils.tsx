@@ -25,7 +25,6 @@ import {
   useGetEnhancedWifiCallingServiceListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
-  useGetVLANPoolPolicyViewModelListQuery,
   useActivateVlanPoolTemplateOnWifiNetworkMutation,
   useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useUnbindClientIsolationMutation,
@@ -57,9 +56,10 @@ import {
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useDectivateSoftGreMutation,
+  useActivateIpsecMutation,
+  useDectivateIpsecMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -81,8 +81,8 @@ import {
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
-  VLANPoolViewModelType,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  NetworkTunnelIpsecAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -516,46 +516,8 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
   return { updateClientIsolationActivations }
 }
 
-function useVlanPoolId (networkId: string | undefined): string | undefined {
-  const { isTemplate } = useConfigTemplate()
-  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-
-  const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => {
-    return { vlanPoolId: data?.data[0]?.id }
-  }
-
-  const vlanPoolPayload = {
-    fields: ['name', 'id'],
-    filters: { wifiNetworkIds: [networkId] },
-    sortField: 'name',
-    sortOrder: 'ASC',
-    page: 1,
-    pageSize: 10000
-  }
-
-  const vlanPool: { vlanPoolId?: string } = useGetVLANPoolPolicyViewModelListQuery({
-    payload: vlanPoolPayload,
-    enableRbac: true
-  }, {
-    skip: isTemplate || !isPolicyRbacEnabled || !networkId,
-    selectFromResult: transformVlanPoolData
-  })
-
-  const vlanPoolTemplate: { vlanPoolId?: string } = useGetEnhancedVlanPoolPolicyTemplateListQuery({
-    payload: vlanPoolPayload,
-    enableRbac: true
-  }, {
-    skip: !isTemplate || !enableTemplateRbac || !networkId,
-    selectFromResult: transformVlanPoolData
-  })
-
-  return isTemplate ? vlanPoolTemplate.vlanPoolId : vlanPool.vlanPoolId
-}
-
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const { networkId } = useParams()
   const [activate] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useActivateVlanPoolMutation,
     useTemplateMutationFn: useActivateVlanPoolTemplateOnWifiNetworkMutation
@@ -565,8 +527,6 @@ export function useVlanPool () {
     useMutationFn: useDeactivateVlanPoolMutation,
     useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
   })
-
-  const vlanPoolId = useVlanPoolId(networkId)
 
   // eslint-disable-next-line max-len
   const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {
@@ -592,7 +552,7 @@ export function useVlanPool () {
   }
 
   return {
-    vlanPoolId,
+    //vlanPoolId,
     updateVlanPoolActivation
   }
 }
@@ -954,6 +914,31 @@ export const useUpdateSoftGreActivations = () => {
   }
 
   return updateSoftGreActivations
+}
+
+export const useUpdateIpsecActivations = () => {
+  const [ activateIpsec ] = useActivateIpsecMutation()
+  const [ dectivateIpsec ] = useDectivateIpsecMutation()
+
+  // eslint-disable-next-line max-len
+  const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
+        return dectivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
+        return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
+      }
+      return Promise.resolve()
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateIpsecActivations
 }
 
 export const getNetworkTunnelSdLanUpdateData = (

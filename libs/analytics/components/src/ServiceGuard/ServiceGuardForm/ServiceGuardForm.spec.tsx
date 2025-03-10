@@ -63,14 +63,20 @@ jest.mock('antd', () => {
 const [wlans, networkNames] = _(Array(5))
   .map((_, i) => [
     { name: `Network ${i}`, authMethods: [] },
-    { id: `n-${i}`, name: `Network ${i}`, aps: 1, venues: { count: 1 } }
+    { id: `n-${i}`, name: `Network ${i}`, apCount: 1, venueApGroups: [
+      {
+        venueId: 'v-1',
+        apGroupIds: ['ap-1'],
+        isAllApGroup: true
+      }
+    ] }
   ])
   .unzip()
   .value()
 
 
 const mockNetworksQuery = (data = networkNames) => mockServer.use(
-  rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+  rest.post(CommonUrlsInfo.getWifiNetworksList.url, (_, res, ctx) =>
     res(ctx.json({ data, totalCount: data.length }))
   )
 )

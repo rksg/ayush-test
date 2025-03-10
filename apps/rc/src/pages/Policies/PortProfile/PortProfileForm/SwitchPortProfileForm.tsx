@@ -16,9 +16,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  checkVlanMember,
+  checkTaggedVlan,
   getDefaultPortSpeedOption,
   getPolicyListRoutePath,
+  LldpTlvMatchingType,
   LldpTlvs,
   MacOuis,
   PORT_SPEED,
@@ -31,6 +32,8 @@ import {
   validateVlanExcludingReserved
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { lldpTlvMatchingTypeTextMap } from '../portProfile.utils'
 
 import * as UI from './styledComponents'
 
@@ -174,7 +177,13 @@ export default function SwitchPortProfileForm () {
       title: $t({ defaultMessage: 'Name Match' }),
       key: 'nameMatchingType',
       dataIndex: 'nameMatchingType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingType
+        return lldpTlvMatchingTypeTextMap[nameMatchingType]
+          ? $t(lldpTlvMatchingTypeTextMap[nameMatchingType])
+          : $t({ defaultMessage: 'Exact' })
+      }
     },
     {
       title: $t({ defaultMessage: 'System Description' }),
@@ -186,7 +195,13 @@ export default function SwitchPortProfileForm () {
       title: $t({ defaultMessage: 'Description Match' }),
       key: 'descMatchingType',
       dataIndex: 'descMatchingType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingType
+        return lldpTlvMatchingTypeTextMap[descMatchingType]
+          ? $t(lldpTlvMatchingTypeTextMap[descMatchingType])
+          : $t({ defaultMessage: 'Exact' })
+      }
     }
   ]
 
@@ -281,7 +296,7 @@ export default function SwitchPortProfileForm () {
     return new Promise<void>((resolve, reject) => {
       if (value !== undefined) {
         if (value) {
-          checkVlanMember(value)
+          checkTaggedVlan(value)
             .then(() => resolve())
             .catch((error) => reject(error))
         } else {
@@ -347,7 +362,16 @@ export default function SwitchPortProfileForm () {
                 { validator: (_, value) => validateUntaggedVlan(value) }
               ]}
             >
-              <Input type='number' style={{ width: '280px' }}/>
+              <Input
+                type='number'
+                style={{ width: '280px' }}
+                onKeyDown={(e) => {
+                  if (!/\d/.test(e.key) && e.key !== 'Backspace' &&
+                  e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                    e.preventDefault()
+                  }
+                }}
+              />
             </Form.Item>
             <Form.Item
               name='taggedVlans'

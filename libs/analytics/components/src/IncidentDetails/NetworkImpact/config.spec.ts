@@ -159,6 +159,26 @@ it('getAirtimeMetricColorSet', () => {
     cssStr('--acx-viz-qualitative-7'),
     cssStr('--acx-viz-qualitative-8'),
     cssStr('--acx-viz-qualitative-9'),
-    cssStr('--acx-viz-qualitative-10')
+    cssStr('--acx-viz-qualitative-10'),
+    cssStr('--acx-viz-qualitative-11'),
+    cssStr('--acx-viz-qualitative-12'),
+    cssStr('--acx-viz-qualitative-13'),
+    cssStr('--acx-viz-qualitative-14'),
+    cssStr('--acx-viz-qualitative-15'),
+    cssStr('--acx-viz-qualitative-16'),
+    cssStr('--acx-viz-qualitative-17'),
+    cssStr('--acx-viz-qualitative-18'),
+    cssStr('--acx-viz-qualitative-19'),
+    cssStr('--acx-viz-qualitative-20'),
+    cssStr('--acx-viz-qualitative-21'),
+    cssStr('--acx-viz-qualitative-22'),
+    cssStr('--acx-viz-qualitative-23'),
+    cssStr('--acx-viz-qualitative-24'),
+    cssStr('--acx-viz-qualitative-25'),
+    cssStr('--acx-viz-qualitative-26'),
+    cssStr('--acx-viz-qualitative-27'),
+    cssStr('--acx-viz-qualitative-28'),
+    cssStr('--acx-viz-qualitative-29'),
+    cssStr('--acx-viz-qualitative-30')
   ])
 })

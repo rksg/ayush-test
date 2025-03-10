@@ -1,12 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Form, Select, Space } from 'antd'
 import { DefaultOptionType }   from 'antd/lib/select'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { useQueryEthernetPortProfilesWithOverwritesQuery }                                                   from '@acx-ui/rc/services'
-import { CapabilitiesApModel, EthernetPortAuthType, EthernetPortProfileViewData, EthernetPortType, LanPort } from '@acx-ui/rc/utils'
+import {
+  useGetEthernetPortProfilesTemplateWithOverwritesQuery,
+  useGetEthernetPortProfilesWithOverwritesQuery
+} from '@acx-ui/rc/services'
+import {
+  CapabilitiesApModel,
+  EthernetPortAuthType,
+  EthernetPortProfileViewData,
+  EthernetPortType,
+  LanPort,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
 
 import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
 import EthernetPortProfileInput  from './EthernetPortProfileInput'
@@ -20,6 +31,7 @@ interface EthernetPortProfileFieldsProps {
     isDhcpEnabled?: boolean,
     hasVni?: boolean,
     readOnly?: boolean,
+    useVenueSettings?: boolean,
     serialNumber?: string,
     venueId?: string,
     onGUIChanged?: (fieldName: string) => void,
@@ -38,37 +50,57 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
     selectedModelCaps,
     selectedPortCaps,
     venueId,
+    useVenueSettings=false,
     onEthernetPortProfileChanged
   } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
 
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
 
-  const { ethernetPortDropdownItems, ethernetPortListQuery,
-    isLoading: isLoadingEthPortList } =
-    useQueryEthernetPortProfilesWithOverwritesQuery({
-      payload: {
-        sortField: 'name',
-        sortOrder: 'ASC',
-        pageSize: 1000
-      },
-      params: { ...params, venueId },
-      selectedModelCaps
-    }, {
-      selectFromResult: ({ data: queryResult, ...rest }) => ({
-        ethernetPortDropdownItems: (queryResult)?
-          convertEthernetPortListToDropdownItems(
-            queryResult.data, selectedModelCaps, selectedPortCaps
-          ) : [],
-        ethernetPortListQuery: queryResult,
-        ...rest
-      })
-    })
+  const payload = {
+    fields: [
+      'id','name','isDefault','type','untagId','vlanMembers','authType','authRadiusId',
+      'accountingRadiusId','bypassMacAddressAuthentication','supplicantAuthenticationOptions',
+      'dynamicVlanEnabled','unauthenticatedGuestVlan','enableAuthProxy','enableAccountingProxy',
+      'apSerialNumbers','venueIds','venueActivations','apActivations','apPortOverwrites','vni'
+    ],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    pageSize: 1000
+  }
+
+  const getEthPortsWithOverwrites = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEthernetPortProfilesWithOverwritesQuery,
+    useTemplateQueryFn: useGetEthernetPortProfilesTemplateWithOverwritesQuery,
+    enableRbac: true,
+    extraParams: { ...params, venueId },
+    payload,
+    extraQueryArgs: { selectedModelCaps }
+  })
+
+  const {
+    ethernetPortDropdownItems,
+    ethernetPortListQuery,
+    isLoading: isLoadingEthPortList
+  } = useMemo(() => {
+    const { data: queryResult, ...rest } = getEthPortsWithOverwrites
+
+    return {
+      ethernetPortDropdownItems: (queryResult)?
+        convertEthernetPortListToDropdownItems(
+          queryResult.data, selectedModelCaps, selectedPortCaps
+        ) : [],
+      ethernetPortListQuery: queryResult,
+      ...rest
+    }
+
+  }, [getEthPortsWithOverwrites, selectedModelCaps, selectedPortCaps])
 
   useEffect(()=> {
     if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
@@ -113,14 +145,17 @@ const EthernetPortProfileFields = (props:EthernetPortProfileFieldsProps) => {
               onGUIChanged?.('ethernetPortProfileId')
               setEthernetProfileCreateId(createId)
             }}
+            disabled={isDhcpEnabled}
+            addBtnVisible={!useVenueSettings}
             currentEthernetPortData={currentEthernetPortData} />
         </Space>
       )}
-      <EthernetPortProfileInput
+      {!isTemplate && <EthernetPortProfileInput
         currentEthernetPortData={currentEthernetPortData}
         currentIndex={index}
         onGUIChanged={onGUIChanged}
         isEditable={!readOnly && !!serialNumber && !isDhcpEnabled} />
+      }
     </>
   )
 }
@@ -131,6 +166,10 @@ export const convertEthernetPortListToDropdownItems = (
   selectedPortCaps: LanPort
 ): DefaultOptionType[] => {
   return ethernetPortList.filter((m) => {
+    // A profile with VNI configuration is hidden and should not be accessible
+    if(m.vni) {
+      return false
+    }
     // Not allow port-based ethernet port when LAN port is single port
     if(selectedModelCaps.lanPorts.length === 1 &&
         m.authType === EthernetPortAuthType.PORT_BASED) {

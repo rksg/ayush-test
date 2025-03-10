@@ -1,5 +1,6 @@
 import { defineMessage } from 'react-intl'
 
+import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
   ServiceStatus,
@@ -26,6 +27,7 @@ export * from './policies'
 export * from './msp'
 export * from './license'
 export * from './edge'
+export * from './edgeOlt'
 export * from './client'
 export * from './components'
 export * from './switch'
@@ -64,7 +66,7 @@ export interface KeyValue<K, V> {
   value: V;
 }
 
-export interface Venue {
+export interface Venue extends EnforceableFields {
   id: string
   venueId?: string
   name: string
@@ -103,6 +105,7 @@ export interface Venue {
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
+  addressLine?: string
 }
 
 export interface AlarmBase {
@@ -115,6 +118,7 @@ export interface AlarmBase {
   entityId: string
   sourceType: string,
   switchMacAddress: string,
+  clearTime?: string,
   clearedBy?: string
 }
 

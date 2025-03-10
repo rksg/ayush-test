@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { ProtectedEnforceTemplateToggle }            from '../../configTemplates'
 import { networkTypesDescription }                   from '../contentsMap'
 import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext                            from '../NetworkFormContext'
@@ -61,7 +62,7 @@ export function NetworkDetailForm () {
 
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
-      enableAccountingProxy: false,
+      enableAccountingProxy: e.target.value === NetworkTypeEnum.DPSK,
       enableAuthProxy: e.target.value === NetworkTypeEnum.DPSK, // to set default value as true for DPSK while adding new network
       enableAccountingService: false })
   }
@@ -235,6 +236,7 @@ export function NetworkDetailForm () {
             </Form.Item>
           }
         </Form.Item>
+        <ProtectedEnforceTemplateToggle templateId={data?.id} />
       </Col>
 
       <Col span={14}>

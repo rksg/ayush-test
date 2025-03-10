@@ -78,12 +78,14 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //url: '/networkActivations',
     method: 'put',
     url: '/venues/:venueId/wifiNetworks/:networkId',
+    opsApi: 'PUT:/venues/{id}/wifiNetworks/{id}',
     newApi: true
   },
   updateNetworkVenue: {
     method: 'put',
     //url: '/networkActivations/:networkVenueId?quickAck=true',
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',
+    opsApi: 'PUT:/venues/{id}/wifiNetworks/{id}/settings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -94,6 +96,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     //url: '/networkActivations/:networkVenueId',
     url: '/venues/:venueId/wifiNetworks/:networkId',
+    opsApi: 'DELETE:/venues/{id}/wifiNetworks/{id}',
     newApi: true
   },
   getVenueApCapabilities: {
@@ -458,6 +461,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/venues/:venueId/aps/:serialNumber/lanPortSpecificSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindingPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindingSpecificIdentityPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId/identities/:identityId',
+    newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'

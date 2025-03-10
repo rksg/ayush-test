@@ -47,6 +47,12 @@ jest.mock('../Venues/TunnelColumn/useTunnelColumn', () => ({
   useTunnelColumn: jest.fn().mockReturnValue([])
 }))
 
+jest.mock('../../ApCompatibility', () => ({
+  ...jest.requireActual('../../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -278,9 +284,9 @@ describe('NetworkForm', () => {
 
     await screen.findByText(/select mac registration list/i)
 
-    await userEvent.click(await screen.findByRole('button', {
+    await userEvent.click((await screen.findAllByRole('button', {
       name: /add/i
-    }))
+    }))[1])
 
     await screen.findByText(/add mac registration list/i)
 
@@ -391,5 +397,18 @@ describe('NetworkForm', () => {
     expect(option).toHaveClass('ant-select-item-option-disabled')
     await userEvent.click(option)
     expect(screen.queryAllByTitle('Generate').length).toBe(0)
+  })
+
+  it('should render PSK network with R370 compatibility tooltip', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_R370_TOGGLE)
+
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
+
+    await fillInBeforeSettings('PSK network test')
+
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(1)
+    toolTips.forEach(t => expect(t).toBeVisible())
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
   })
 })

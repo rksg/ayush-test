@@ -12,7 +12,9 @@ import {
   EthernetPortProfileUrls,
   ClientIsolationUrls,
   SoftGreUrls,
-  LanPortsUrls } from '@acx-ui/rc/utils'
+  LanPortsUrls,
+  IpsecUrls
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -31,6 +33,31 @@ jest.mock('../ApCompatibility', () => ({
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+  dropdownClassName?: string
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options,
+    dropdownClassName, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {children ? children : null}
+      {options?.map((option) => (
+        <option
+          key={`option-${option.value}`}
+          value={option.value as string}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
 export const mockSoftgreViewModel = {
   fields: null,
   totalCount: 0,
@@ -48,6 +75,32 @@ export const mockSoftgreViewModel = {
       disassociateClientEnabled: false,
       activations: [
 
+      ],
+      venueActivations: [
+        {
+          venueId: 'bad700975bbb42c1b8c7e5cdb764dfb6',
+          apModel: 'H320',
+          portId: 1,
+          apSerialNumbers: [
+
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const mockIpsecViewModel = {
+  fields: null,
+  totalCount: 0,
+  page: 1,
+  data: [
+    {
+      id: '668898664055502d800cf1ab7e7a6d04',
+      name: 'Ipsec1',
+      description: '',
+      serverAddress: '1.1.1.1',
+      activations: [
       ],
       venueActivations: [
         {
@@ -448,6 +501,45 @@ describe('Ethernet Port Profile', () => {
     expect(screen.queryByRole('button', { name: 'add Profile' }))
       .not.toBeInTheDocument()
   })
+
+  it('the ethernetport profile with vni should be removed from the dropdown', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByLabelText(/Ethernet Port Profile/)).toBeInTheDocument()
+    const ethernetPortProfileCombo = screen.getByRole('combobox', { name: 'Ethernet Port Profile' })
+    await userEvent.click(ethernetPortProfileCombo)
+    const options = await screen.findAllByRole('option')
+    expect(options.length).toBe(2)
+    expect(options[0].innerHTML).toBe('Default Trunk')
+    expect(options[1].innerHTML).toBe('trunk Profile 1')
+  })
 })
 describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
   const venueId = 'bad700975bbb42c1b8c7e5cdb764dfb6'
@@ -501,6 +593,9 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
         }),
       rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftgreViewModel))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockIpsecViewModel))
       }),
       rest.post(AaaUrls.queryAAAPolicyList.url,
         (_, res, ctx) => {
@@ -558,6 +653,47 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
     expect(screen.getByTestId('dhcpOption82SubOption1-switch')).toBeInTheDocument()
     await userEvent.click(screen.getAllByText('Apply')[0])
     expect(screen.getByTestId('dhcp82toption-icon')).toBeInTheDocument()
+  })
+  it('Venue Level with IPSec', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
+
+    expect(screen.getByTestId(/enable-ipsec-banner/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('ipsec-switch'))
+    expect(screen.getByTestId('ipsec-profile-select')).toBeInTheDocument()
+    expect(screen.getByLabelText(/IPsec Profile/)).toBeInTheDocument()
   })
   it('AP Level - should render read-only mode correctly with DHCP service enalbed', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
@@ -644,7 +780,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
 
     const selectedApModelCaps = {
       model: 'R370',
-      supportSoftGRE: false
+      supportSoftGre: false
     }
 
     render(<Provider>
@@ -723,7 +859,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
 
     const selectedApModelCaps = {
       model: 'R370',
-      supportSoftGRE: false
+      supportSoftGre: false
     }
 
     render(<Provider>

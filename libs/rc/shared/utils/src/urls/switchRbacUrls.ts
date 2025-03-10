@@ -17,6 +17,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAaaServer: {
     method: 'delete',
     url: '/venues/:venueId/aaaServers/:aaaServerId',
+    opsApi: 'DELETE:/venues/{id}/aaaServers/{id}',
     newApi: true
   },
   bulkDeleteAaaServer: {
@@ -28,12 +29,14 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/switches',
     oldUrl: '/api/switch/tenant/:tenantId/switches',
+    opsApi: 'DELETE:/venues/{id}/switches',
     newApi: true
   },
   deleteStackMember: {
     method: 'delete',
     url: '/venues/:venueId/stacks/:stackSwitchSerialNumber',
     oldUrl: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber',
+    opsApi: 'DELETE:/venues/{id}/stacks/{id}',
     newApi: true
   },
   acknowledgeSwitch: {
@@ -51,6 +54,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/switches/importRequests',
     oldUrl: '/api/switch/tenant/:tenantId/import',
+    opsApi: 'POST:/venues/{id}/switches/importRequests',
     newApi: true
   },
   getPortSetting: {
@@ -81,6 +85,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateSwitch: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId',
+    opsApi: 'PUT:/venues/{id}/switches/{id}',
     newApi: true
   },
   convertToStack: {
@@ -103,23 +108,27 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addBackup: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/configBackups',
+    opsApi: 'POST:/venues/{id}/switches/{id}/configBackups',
     newApi: true
   },
   restoreBackup: {
     method: 'PATCH',
     url: '/venues/:venueId/switches/:switchId/configBackups/:configBackupId',
+    opsApi: 'PATCH:/venues/{id}/switches/{id}/configBackups/{id}',
     newApi: true
   },
   downloadSwitchConfig: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/configBackups/:configBackupId',
     oldUrl: '/api/switch/tenant/:tenantId/configBackup/download/:configId',
+    opsApi: 'POST:/venues/{id}/switches/{id}/configBackups/{id}',
     newApi: true
   },
   deleteBackups: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/configBackups',
     oldUrl: '/api/switch/tenant/:tenantId/configBackup',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/configBackups',
     newApi: true
   },
   getSwitchConfigHistory: {
@@ -153,16 +162,19 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteSwitchVlan: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/vlans/:vlanId',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/vlans/{id}',
     newApi: true
   },
   updateSwitchVlan: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/vlans/:vlanId',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/vlans/{id}',
     newApi: true
   },
   addSwitchVlans: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/vlans',
+    opsApi: 'POST:/venues/{id}/switches/{id}/vlans',
     newApi: true
   },
   addSwitchesVlans: {
@@ -173,12 +185,14 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteSwitchVlans: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/vlans',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/vlans',
     newApi: true
   },
   savePortsSetting: {
     method: 'put',
     url: '/venues/:venueId/switches/portSettings',
     oldUrl: '/api/switch/tenant/:tenantId/port/switches',
+    opsApi: 'PUT:/venues/{id}/switches/portSettings',
     newApi: true
   },
   getAclUnion: {
@@ -191,17 +205,20 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/vePorts',
     oldUrl: '/api/switch/tenant/:tenantId/vePort/switch/:switchId',
+    opsApi: 'POST:/venues/{id}/switches/{id}/vePorts',
     newApi: true
   },
   updateVePort: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/vePorts/:vePortId',
     oldUrl: '/api/switch/tenant/:tenantId/vePort',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/vePorts/{id}',
     newApi: true
   },
   deleteVePorts: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/vePorts',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/vePorts',
     newApi: true
   },
   getSwitchAcls: {
@@ -240,6 +257,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addStaticRoute: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
+    opsApi: 'POST:/venues/{id}/switches/{id}/staticRoutes',
     newApi: true
   },
   updateStaticRoute: {
@@ -250,27 +268,32 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteStaticRoutes: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/staticRoutes',
     newApi: true
   },
   reboot: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/deviceRequests',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/reboot',
+    opsApi: 'POST:/venues/{id}/switches/{id}/deviceRequests',
     newApi: true
   },
   syncData: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/deviceRequests',
+    opsApi: 'POST:/venues/{id}/switches/{id}/deviceRequests',
     newApi: true
   },
   syncSwitchesData: {
     method: 'post',
     url: '/venues/:venueId/deviceRequests',
+    opsApi: 'POST:/venues/{id}/deviceRequests',
     newApi: true
   },
   retryFirmwareUpdate: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/firmwareUpgrade',
+    opsApi: 'POST:/venues/{id}/switches/{id}/firmwareUpgrade',
     newApi: true
   },
   getTroubleshooting: {
@@ -318,6 +341,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/dhcpServers',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer',
+    opsApi: 'POST:/venues/{id}/switches/{id}/dhcpServers',
     newApi: true
   },
   getDhcpServer: {
@@ -330,12 +354,14 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/dhcpServers/:dhcpServerId',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/dhcpServers/{id}',
     newApi: true
   },
   deleteDhcpServers: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/dhcpServers',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServers',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/dhcpServers',
     newApi: true
   },
   getDhcpLeases: {
@@ -355,6 +381,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/venues/:venueId/switches/:switchId/dhcpServerStates',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state',
+    opsApi: 'PATCH:/venues/{id}/switches/{id}/dhcpServerStates',
     newApi: true
   },
   associateSwitchProfile: {
@@ -397,18 +424,21 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/lags/:lagId',
     oldUrl: '/api/switch/tenant/:tenantId/lag',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/lags/{id}',
     newApi: true
   },
   addLag: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/lags',
     oldUrl: '/api/switch/tenant/:tenantId/lag/switch/:switchId',
+    opsApi: 'POST:/venues/{id}/switches/{id}/lags',
     newApi: true
   },
   deleteLag: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/lags/:lagId',
     oldUrl: '/api/switch/tenant/:tenantId/lag/:lagId',
+    opsApi: 'DELETE:/venues/{id}/switches/{id}/lags/{id}',
     newApi: true
   },
   getJwtToken: {

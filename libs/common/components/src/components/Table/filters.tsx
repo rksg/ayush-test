@@ -14,7 +14,7 @@ import { IntlShape }   from 'react-intl'
 import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
 
-import { RangePicker } from '../DatePicker'
+import { getDefaultEarliestStart, RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
@@ -38,9 +38,11 @@ interface RangePickerProps {
 }
 
 function RangePickerComp (props: RangePickerProps) {
-  const { filterValues, setFilterValues, settingsId, filterPersistence } = props
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { filterValues, setFilterValues, settingsId, filterPersistence } = props
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   return <UI.FilterRangePicker>
     <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -110,7 +112,8 @@ export function renderSearch <RecordType> (
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
   setSearchValue: Function,
-  width: number
+  width: number,
+  customPlaceHolder?: string
 ): React.ReactNode {
 
   const getColumnTitle = (column: TableColumn<RecordType, 'text'>): string => {
@@ -128,7 +131,7 @@ export function renderSearch <RecordType> (
 
     return ''
   }
-  const placeHolderText = intl.$t({ defaultMessage: 'Search {searchables}' }, {
+  const placeHolderText = customPlaceHolder || intl.$t({ defaultMessage: 'Search {searchables}' }, {
     searchables: searchables.map(column => getColumnTitle(column)).join(', ')
   })
   return <UI.SearchInput

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import {
   Checkbox,
@@ -12,8 +12,16 @@ import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { HttpURLRegExp }              from '@acx-ui/rc/utils'
 
+import NetworkFormContext from '../NetworkFormContext'
+
 export function RedirectUrlInput () {
   const intl = useIntl()
+
+  const {
+    data,
+    setData,
+    editMode
+  } = useContext(NetworkFormContext)
 
   const REDIRECT_TOOLTIP =
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
@@ -38,7 +46,21 @@ export function RedirectUrlInput () {
       form.setFieldValue(['guestPortal','redirectUrl'], redirectUrlValue)
     } else {
       setRedirectUrlValue(redirectUrl)
-      form.setFieldValue(['guestPortal','redirectUrl'], null)
+      form.setFieldValue(['guestPortal','redirectUrl'], undefined)
+    }
+
+    if(editMode && data) {
+      setData && setData({
+        ...data,
+        guestPortal: {
+          ...data.guestPortal,
+          ...(e.target.checked ? {
+            redirectUrl: redirectUrlValue
+          } : {
+            redirectUrl: undefined
+          })
+        }
+      })
     }
   }
 

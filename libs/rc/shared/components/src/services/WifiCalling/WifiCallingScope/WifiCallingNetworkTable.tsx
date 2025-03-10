@@ -4,8 +4,8 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Table, TableProps }      from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   useGetNetworkTemplateListQuery,
   useGetWifiCallingServiceQuery,
@@ -21,16 +21,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import { useEnforcedStatus }  from '../../../configTemplates'
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
 const defaultPayload = {
   searchString: '',
   fields: [
-    'name',
-    'nwSubType',
-    'venues',
-    'id',
-    'venueApGroups'
+    'name', 'nwSubType', 'venues', 'id', 'venueApGroups',
+    'isEnforced', 'isManagedByTemplate'
   ]
 }
 
@@ -44,6 +42,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
@@ -84,16 +83,24 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       dataIndex: 'activate',
       key: 'activate',
       render: (_, row) => {
-        return <Switch
-          checked={state.networkIds.includes(row.id)}
-          onClick={(_, e) => {
-            e.stopPropagation()
-            state.networkIds.includes(row.id)
-              ? deactivateNetwork([row])
-              : activateNetwork([row])
-          }
-          }
-        />
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
+
+        return <Tooltip
+          title={enforcedActionMsg}
+          placement='bottom'>
+          <Switch
+            checked={state.networkIds.includes(row.id)}
+            disabled={isEnforcedByTemplate}
+            onClick={(_, e) => {
+              e.stopPropagation()
+              state.networkIds.includes(row.id)
+                ? deactivateNetwork([row])
+                : activateNetwork([row])
+            }
+            }
+          />
+        </Tooltip>
       }
     }
   ]
@@ -145,17 +152,21 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
+    disabled: (selectedRows: Network[]) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows: Network[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: Network[], clearSelection: () => void) => {
       activateNetwork(selectRows)
       clearSelection()
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
+    disabled: (selectedRows: Network[]) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows: Network[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: Network[], clearSelection: () => void) => {
       deactivateNetwork(selectRows)
       clearSelection()
     }
-  }] as { label: string, onClick: () => void }[]
+  }]
 
   return (
     <Table

@@ -8,6 +8,7 @@ import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   CommonUrlsInfo,
   useConfigTemplate,
+  WifiRbacUrlsInfo,
   type LocationExtended
 } from '@acx-ui/rc/utils'
 import {
@@ -93,10 +94,16 @@ function VenueEditTabs () {
           key='details' />
       }
       {
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+        }) &&
         <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       }
-      {hasPermission({ scopes: [SwitchScopes.UPDATE] }) &&
+      {hasPermission({
+        scopes: [SwitchScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+      }) &&
         <Tabs.TabPane
           key='switch'
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}

@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }        from 'antd'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
@@ -14,9 +15,10 @@ import {
   useLazyBatchGetPropertyUnitsByIdsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }                    from '@acx-ui/user'
-import { exportMessageMapping }                                        from '@acx-ui/utils'
+import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission }                                 from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -76,6 +78,13 @@ function useColumns (
       title: $t({ defaultMessage: 'Email' }),
       sorter: true,
       ...props.email
+    },
+    {
+      key: 'phoneNumber',
+      dataIndex: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      sorter: true,
+      ...props.phoneNumber
     },
     {
       key: 'description',
@@ -201,6 +210,12 @@ export function BasePersonaTable (props: PersonaTableProps) {
     disableAddDevices
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isIdentityRefactor = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
+
+  const basePath = useTenantLink('/users/identity-management/identity-group')
+  const navigate = useNavigate()
+
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
@@ -299,15 +314,25 @@ export function BasePersonaTable (props: PersonaTableProps) {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersona)],
         onClick: () => {
-        // if user is under PersonaGroup page, props groupId into Drawer
-          setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+          if (isIdentityRefactor) {
+            let pathname = basePath.pathname
+            if (personaGroupId) {
+              pathname = pathname.concat(`/${personaGroupId}`)
+            }
+            navigate({ ...basePath, pathname: `${pathname}/identity/create` })
+          } else {
+            // if user is under PersonaGroup page, props groupId into Drawer
+            setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+          }
         }
       },
       ...isSelectMode
         ? []
         : [{
           label: $t({ defaultMessage: 'Import From File' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.importPersonas)],
           onClick: () => setUploadCsvDrawerVisible(true)
         }]] : []
 
@@ -316,14 +341,24 @@ export function BasePersonaTable (props: PersonaTableProps) {
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           onClick: ([data], clearSelection) => {
-            setDrawerState({ data, isEdit: true, visible: true })
+            if (isIdentityRefactor) {
+              let pathname = basePath.pathname
+              if (data.groupId) {
+                pathname = pathname.concat(`/${data.groupId}`)
+                navigate({ ...basePath, pathname: `${pathname}/identity/${data.id}/edit` })
+              }
+            } else {
+              setDrawerState({ data, isEdit: true, visible: true })
+            }
             clearSelection()
           },
           visible: (selectedItems => selectedItems.length === 1)
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonas)],
           // We would not allow the user to delete the persons which was created by the Unit.
           disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
           onClick: (selectedItems, clearSelection) => {
@@ -390,6 +425,13 @@ export function BasePersonaTable (props: PersonaTableProps) {
   }
 
   setIdentitiesCount?.(personaListQuery.data?.totalCount || 0)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.IDENTITY_TABLE,
+    states: [personaListQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader
       states={[

@@ -13,11 +13,21 @@ import {
   useGetCustomRolesQuery,
   useDeleteCustomRoleMutation
 } from '@acx-ui/rc/services'
-import { sortProp, defaultSort, CustomRole, CustomGroupType }   from '@acx-ui/rc/utils'
-import { useTenantLink }                                        from '@acx-ui/react-router-dom'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { filterByAccess, roleStringMap, useUserProfileContext } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import {
+  sortProp,
+  defaultSort,
+  CustomRole,
+  CustomGroupType,
+  AdministrationUrlsInfo
+}   from '@acx-ui/rc/utils'
+import { useTenantLink }  from '@acx-ui/react-router-dom'
+import { RolesEnum }      from '@acx-ui/types'
+import {
+  filterByAccess,
+  roleStringMap,
+  useUserProfileContext
+} from '@acx-ui/user'
+import { AccountType, getOpsApi } from '@acx-ui/utils'
 
 interface CustomRolesTableProps {
   isPrimeAdminUser: boolean;
@@ -80,6 +90,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
       visible: (selectedRows) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateCustomRole)],
       onClick: (selectedRows) => {
         navigate({
           ...linkAddCustomRolePath,
@@ -92,6 +103,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
       visible: (selectedRows) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteCustomRole)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',

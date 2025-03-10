@@ -22,11 +22,13 @@ import {
   TableQuery,
   Lag,
   SwitchRow,
-  SwitchPortStatus
+  SwitchPortStatus,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes } from '@acx-ui/types'
-import { hasPermission }                from '@acx-ui/user'
+import { useParams, TenantLink }                       from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }                from '@acx-ui/types'
+import { hasPermission }                               from '@acx-ui/user'
+import { getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -55,8 +57,6 @@ export const defaultSwitchClientPayload = {
     'switchPortId', 'switchSerialNumber', 'venueId', 'venueName',
     'vlanName', 'vni', 'clientAuthType'
   ],
-  sortField: 'clientMac',
-  sortOrder: 'DESC',
   filters: {}
 }
 
@@ -74,6 +74,7 @@ export function ClientsTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -95,9 +96,14 @@ export function ClientsTable (props: {
       ...defaultSwitchClientPayload
     },
     search: {
+      searchString: '',
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery },
+    sorter: {
+      sortField: 'clientName',
+      sortOrder: 'ASC'
+    },
     pagination: { settingsId },
     enableRbac: isSwitchRbacEnabled
   })
@@ -105,6 +111,12 @@ export function ClientsTable (props: {
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.WIRED_CLIENTS_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
     payload: {
@@ -229,7 +241,10 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
+        if (!portLinkEnabled || !hasPermission({
+          scopes: [SwitchScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.savePortsSetting)]
+        })) {
           return row['switchPort']
         }
 

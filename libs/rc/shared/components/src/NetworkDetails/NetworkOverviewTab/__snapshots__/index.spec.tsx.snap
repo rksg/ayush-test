@@ -84,6 +84,9 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c0 {
@@ -370,6 +373,9 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c0 {
@@ -662,6 +668,9 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c0 {

@@ -11,8 +11,10 @@ import {
   TypeForm,
   useClusterInterfaceActions
 } from '@acx-ui/rc/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSerialNumber, getEdgePortIpFromStatusIp } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                 from '@acx-ui/react-router-dom'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSerialNumber, EdgeUrlsInfo, getEdgePortIpFromStatusIp } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                               from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                               from '@acx-ui/user'
+import { getOpsApi }                                                                                   from '@acx-ui/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -126,6 +128,10 @@ export const ClusterInterfaceSettings = () => {
     navigate(clusterListPage)
   }
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updatePortConfig)] }
+  )
+
   return (
     <Loader states={[{ isLoading: isInterfaceDataFetching }]}>
       <StepsForm<ClusterInterfaceSettingsFormType>
@@ -134,12 +140,12 @@ export const ClusterInterfaceSettings = () => {
         onCancel={handleCancel}
         initialValues={clusterInterfaceSettings}
         buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply & Finish' })
+          submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
         }}
-        customSubmit={{
+        customSubmit={hasUpdatePermission ? {
           label: $t({ defaultMessage: 'Apply & Continue' }),
           onCustomFinish: applyAndContinue
-        }}
+        } : undefined}
       >
         <StepsForm.StepForm>
           <TypeForm

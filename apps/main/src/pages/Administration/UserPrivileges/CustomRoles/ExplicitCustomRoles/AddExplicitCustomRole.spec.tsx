@@ -13,7 +13,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { fakedExplicitCustomRoleList } from '../../__tests__/fixtures'
+import { fakedExplicitCustomRoleList, fakedScopeTree } from '../../__tests__/fixtures'
 
 import { AddExplicitCustomRole } from './AddExplicitCustomRole'
 
@@ -51,6 +51,9 @@ describe('Add Explicit Custom Role', () => {
     )
     services.useGetCustomRolesQuery = jest.fn().mockImplementation(() => {
       return { data: fakedExplicitCustomRoleList }
+    })
+    services.useGetCustomRoleFeaturesQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedScopeTree }
     })
   })
   it('should render correctly for add', async () => {
@@ -122,7 +125,7 @@ describe('Add Explicit Custom Role', () => {
     await userEvent.click(screen.getAllByRole('checkbox')[2])
     await userEvent.click(screen.getAllByRole('checkbox')[3])
     await userEvent.click(screen.getAllByRole('button', { name: 'Expand row' })[0])
-    const row = await screen.findByRole('row', { name: /Venue Management/i })
+    const row = await screen.findByRole('row', { name: /Account Management/i })
     await userEvent.click(within(row).getAllByRole('checkbox')[1])
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -161,7 +164,7 @@ describe('Add Explicit Custom Role', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Permissions' }))
     await userEvent.click(screen.getByRole('tab', { name: 'Advanced Permissions' }))
-    expect(await screen.findByRole('tab', { name: 'Wi-Fi' })).toBeVisible()
+    await userEvent.click(screen.getByRole('tab', { name: 'Wi-Fi' }))
     const clientsRow = await screen.findByRole('row', { name: /Clients/i })
     expect(within(clientsRow).getAllByRole('checkbox')[1]).toBeChecked()
     await userEvent.click(screen.getByRole('tab', { name: 'Wired' }))

@@ -35,12 +35,21 @@ import {
   GuestNetworkTypeEnum,
   FILTER,
   SEARCH,
-  ClientInfo
+  ClientInfo,
+  ClientUrlsInfo,
+  CommonRbacUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import {
+  hasCrossVenuesPermission,
+  hasRoles,
+  hasPermission,
+  hasAllowedOperations,
+  getUserProfile
+} from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { defaultGuestPayload, GuestsDetail, isEnabledGeneratePassword } from '../GuestsDetail'
 import { GenerateNewPasswordModal }                                     from '../GuestsDetail/generateNewPasswordModal'
@@ -69,9 +78,18 @@ export const operationRoles =
 
 export const GuestsTable = () => {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const params = useParams()
+
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = !hasCrossVenuesPermission() || hasRoles(RolesEnum.READ_ONLY)
+  const addNetworkOpsApi = getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)
+  const hasAddNetworkPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([addNetworkOpsApi])
+    : (hasCrossVenuesPermission() && hasPermission({
+      scopes: [WifiScopes.CREATE]
+    }))
+
   const filters = {
     includeExpired: ['true']
   }
@@ -105,10 +123,7 @@ export const GuestsTable = () => {
       <span>
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
-      {
-        hasCrossVenuesPermission() && hasPermission({
-          scopes: [WifiScopes.CREATE]
-        }) &&
+      { hasAddNetworkPermission &&
         <Button type='link'
           onClick={() => setNetworkModalVisible(true)}
           size='small'>
@@ -331,6 +346,7 @@ export const GuestsTable = () => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
+      rbacOpsIds: [getOpsApi(ClientUrlsInfo.deleteGuest)],
       roles: operationRoles,
       onClick: (selectedRows:Guest[]) => {
         guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
@@ -349,6 +365,7 @@ export const GuestsTable = () => {
       key: 'generatePassword',
       label: $t({ defaultMessage: 'Generate New Password' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(ClientUrlsInfo.generateGuestPassword)],
       roles: operationRoles,
       visible: (selectedRows:Guest[]) => {
         if (selectedRows.length !== 1) { return false }
@@ -364,6 +381,7 @@ export const GuestsTable = () => {
       key: 'disableGuest',
       label: $t({ defaultMessage: 'Disable' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(ClientUrlsInfo.disableGuests)],
       roles: operationRoles,
       visible: (selectedRows:Guest[]) => {
         return selectedRows.length === 1 &&
@@ -378,6 +396,7 @@ export const GuestsTable = () => {
       key: 'enableGuest',
       label: $t({ defaultMessage: 'Enable' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(ClientUrlsInfo.enableGuests)],
       roles: operationRoles,
       visible: (selectedRows:Guest[]) => {
         return selectedRows.length === 1 &&
@@ -388,7 +407,7 @@ export const GuestsTable = () => {
       { guestAction.enableGuest(selectedRows[0], params.tenantId)}
     }
   ].filter(item =>
-    hasPermission({ scopes: item.scopeKey, roles: item.roles }))
+    hasPermission({ scopes: item.scopeKey, rbacOpsIds: item.rbacOpsIds, roles: item.roles }))
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestType?.includes('SelfSign')) {
@@ -402,6 +421,8 @@ export const GuestsTable = () => {
     }
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
+
+
 
   return (
     <Loader states={[
@@ -429,30 +450,35 @@ export const GuestsTable = () => {
         actions={[{
           key: 'addGuest',
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [getOpsApi(CommonRbacUrlsInfo.addGuestPass)],
           roles: operationRoles,
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }, {
+        },
+        ...( hasAddNetworkPermission? [{
           key: 'addNetworks',
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [addNetworkOpsApi],
           roles: operationRoles.filter(role => role !== RolesEnum.GUEST_MANAGER),
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) }
-        },
+        }] : []),
         {
           key: 'importGuests',
           scopeKey: [WifiScopes.CREATE],
+          rbacOpsIds: [getOpsApi(ClientUrlsInfo.importGuestPass)],
           roles: operationRoles,
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }]
-          .filter(item =>
-            hasCrossVenuesPermission() && hasPermission({
-              scopes: item.scopeKey,
-              roles: item.roles
-            }))}
+          .filter(item => {
+            const { scopeKey: scopes, rbacOpsIds, roles } = item
+            return rbacOpsApiEnabled
+              ? hasAllowedOperations([rbacOpsIds])
+              : (hasCrossVenuesPermission() && hasPermission({ scopes, roles }))
+          })}
       />
 
       <Drawer

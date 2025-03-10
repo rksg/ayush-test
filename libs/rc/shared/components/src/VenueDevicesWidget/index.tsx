@@ -4,6 +4,7 @@ import { useRwgListQuery, useVenueDetailsHeaderQuery } from '@acx-ui/rc/services
 import { useParams }                                   from '@acx-ui/react-router-dom'
 import { RolesEnum }                                   from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }             from '@acx-ui/user'
+import { useTrackLoadTime, widgetsMapping }            from '@acx-ui/utils'
 
 import {
   getApDonutChartData,
@@ -27,12 +28,19 @@ export function VenueDevicesWidget () {
     })
   })
   const { isCustomRole } = useUserProfileContext()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY
   ]) || isCustomRole
   const { data: rwgs } = useRwgListQuery({ params: useParams() },
     { skip: !(showRwgUI && rwgHasPermission) })
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.VENUE_DEVICES_WIDGET,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[queryResults]}>

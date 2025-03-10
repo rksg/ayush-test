@@ -12,12 +12,13 @@ import {
 import { checkObjectNotExists, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
-import { hasRoles }                                                from '@acx-ui/user'
+import {  hasRoles }                                               from '@acx-ui/user'
 
-import { AdaptivePolicySetForm }  from '../../AdaptivePolicySetForm'
-import { ExpirationDateSelector } from '../../ExpirationDateSelector'
-import { PersonaDrawer }          from '../../users'
-import { IdentityGroupForm }      from '../../users/IdentityGroupForm'
+import { AdaptivePolicySetForm }                                         from '../../AdaptivePolicySetForm'
+import { ExpirationDateSelector }                                        from '../../ExpirationDateSelector'
+import { hasCreateIdentityPermission, hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
+import { PersonaDrawer }                                                 from '../../users'
+import { IdentityGroupForm }                                             from '../../users/IdentityGroupForm'
 
 export function MacRegistrationListSettingForm ({ editMode = false }) {
   const { $t } = useIntl()
@@ -130,7 +131,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               />
             </GridCol>
             {
-              (!editMode && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+              (!editMode && hasCreateIdentityGroupPermission()) &&
           <>
             <Space align='center'>
               <Button
@@ -148,6 +149,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               visible={identityGroupModelVisible}
               type={ModalType.ModalStepsForm}
               children={<IdentityGroupForm
+                modalMode={true}
                 callback={(identityGroupId?: string) => {
                   if (identityGroupId) {
                     form.setFieldValue('identityGroupId', identityGroupId)
@@ -192,7 +194,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           </Form.Item>
         </GridCol>
         {
-          (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+          hasCreateIdentityPermission() &&
           <Space align='center'>
             <Button
               type='link'

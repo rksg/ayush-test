@@ -1126,7 +1126,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'CREATE_REGISTRATION',
             'UPDATE_REGISTRATION',
-            'DELETE_REGISTRATION'
+            'DELETE_REGISTRATION',
+            'CREATE_DEVICE'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'MacRegistration', id: 'LIST' }
@@ -1550,6 +1551,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    getPreconfiguredIdentityProvider: build.query<IdentityProvider[], RequestPayload>({
+      query: () => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.getPreconfiguredIdentityProvider, {}, customHeaders)
+        return {
+          ...req
+        }
+      }
     }),
     activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -3815,6 +3825,7 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetPreconfiguredIdentityProviderQuery,
   useActivateIdentityProviderRadiusMutation,
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,

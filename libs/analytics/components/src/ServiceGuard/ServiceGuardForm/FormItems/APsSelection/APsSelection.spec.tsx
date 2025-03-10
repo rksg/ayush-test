@@ -5,8 +5,8 @@ import { defaultNetworkPath }                                    from '@acx-ui/a
 import { get }                                                   from '@acx-ui/config'
 import { dataApi, dataApiURL, rbacApi, rbacApiURL, store }       from '@acx-ui/store'
 import { mockGraphqlQuery, mockServer, screen, waitFor, within } from '@acx-ui/test-utils'
+import { NetworkNode }                                           from '@acx-ui/utils'
 
-import { NetworkNode }                                                                                     from '../../../../NetworkFilter/services'
 import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems, mockNetworkNodes } from '../../../__tests__/fixtures'
 import { ClientType }                                                                                      from '../../../types'
 

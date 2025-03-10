@@ -8,6 +8,7 @@ import { MspAdministrator, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo }        
 import { PrivilegeGroup }                                                                    from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                                                    from '@acx-ui/user'
 import { AccountType }                                                                       from '@acx-ui/utils'
 
 import { MspCustomers } from '.'
@@ -984,5 +985,42 @@ describe('MspCustomers', () => {
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getAllByText('Assign MSP Administrators')).toHaveLength(2)
+  })
+  it('should render filter correctly for extended trial', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: { extendedTrial: true } }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+  })
+  it('should render correctly when rbacOpsApiEnabled nabled', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('MSP Customers')).toBeVisible()
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
   })
 })

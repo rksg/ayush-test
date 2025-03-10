@@ -3,10 +3,9 @@ import React, { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { cssStr, DonutChartData }                                  from '@acx-ui/components'
+import { EdgeOverviewDonutWidget }                                 from '@acx-ui/edge/components'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, EventSeverityEnum, useTableQuery } from '@acx-ui/rc/utils'
-
-import { EdgeOverviewDonutWidget, ReduceReturnType } from '../EdgeOverviewDonutWidget'
 
 const alarmListPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -39,7 +38,7 @@ export const getAlarmChartData = (alarms: Alarm[] | undefined): DonutChartData[]
   const chartData: DonutChartData[] = []
 
   if (alarms && alarms.length > 0) {
-    const alarmsSummary = alarms.reduce<ReduceReturnType>((acc, { severity }) => {
+    const alarmsSummary = alarms.reduce<Record<string, number>>((acc, { severity }) => {
       acc[severity] = (acc[severity] || 0) + 1
       return acc
     }, {})
@@ -107,6 +106,7 @@ export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
       isLoading={isLoading || isAlarmListLoading}
       emptyMessage={$t({ defaultMessage: 'No active alarms' })}
       onClick={handleDonutClick}
+      size={{ width: 100, height: 100 }}
     />
   )
 }
