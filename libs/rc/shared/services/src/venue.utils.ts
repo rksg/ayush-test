@@ -8,6 +8,7 @@ import {
   FloorPlanMeshAP,
   GetApiVersionHeader,
   NewAPModel,
+  IpsecViewData,
   ProfileLanVenueActivations,
   SoftGreViewData,
   VenueConfigTemplateUrlsInfo,
@@ -202,6 +203,28 @@ export const mappingLanPortWithSoftGreProfile = (
         if(targetLanPort) {
           targetLanPort.softGreProfileId = profile.id
           targetLanPort.softGreEnabled = true
+        }
+      })
+    }
+  })
+}
+
+export const mappingLanPortWithIpsecProfile = (
+  venueLanPortSettings: VenueLanPorts[],
+  ipsecProfiles: IpsecViewData[],
+  venueId: string
+) => {
+  ipsecProfiles.forEach((profile) => {
+    if (profile.venueActivations) {
+      profile.venueActivations.forEach((activity) => {
+        const targetLanPort = getTargetLanPortByActivations(
+          venueLanPortSettings,
+          activity,
+          venueId
+        )
+        if(targetLanPort) {
+          targetLanPort.ipsecProfileId = profile.id
+          targetLanPort.ipsecEnabled = true
         }
       })
     }
