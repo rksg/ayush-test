@@ -15,7 +15,9 @@ const macAddress = {
   macAddress: '3A-B8-A9-29-35-D5',
   username: 'ex proident',
   email: 'test@commscope.com',
-  createdDate: '2065-12-08T18:40:01Z'
+  createdDate: '2065-12-08T18:40:01Z',
+  deviceName: 'test device',
+  location: 'test location'
 }
 
 const list = {
@@ -58,6 +60,7 @@ const list = {
 }
 
 describe('MacAddressDrawer', () => {
+  const mockPolicyId = 'mocked-mac-reg-id'
   const mockSaveMacFn = jest.fn()
   const mockUpdateMacFn = jest.fn()
 
@@ -94,6 +97,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}
@@ -123,6 +127,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}
@@ -148,6 +153,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={true}
@@ -177,6 +183,12 @@ describe('MacAddressDrawer', () => {
     const emailInput = await screen.findByRole('textbox', { name: 'E-mail' })
     expect(emailInput).toHaveValue(macAddress.email)
 
+    const deviceNameInput = await screen.findByRole('textbox', { name: 'Device Name' })
+    expect(deviceNameInput).toHaveValue(macAddress.deviceName)
+
+    const locationInput = await screen.findByRole('textbox', { name: 'Location' })
+    expect(locationInput).toHaveValue(macAddress.location)
+
     await userEvent.click(saveButton)
 
     await waitFor(() => expect(mockUpdateMacFn).toHaveBeenCalled())
@@ -187,6 +199,7 @@ describe('MacAddressDrawer', () => {
     render(
       <Provider>
         <MacAddressDrawer
+          policyId={mockPolicyId}
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}

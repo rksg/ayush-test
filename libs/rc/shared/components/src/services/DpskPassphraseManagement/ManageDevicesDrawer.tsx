@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
 
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
@@ -32,6 +31,7 @@ import { getOpsApi }  from '@acx-ui/utils'
 
 export interface ManageDeviceDrawerProps {
   visible: boolean;
+  serviceId: string;
   setVisible: (v: boolean) => void;
   passphraseInfo: NewDpskPassphrase;
   setPassphraseInfo: (i: NewDpskPassphrase) => void;
@@ -44,8 +44,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const { $t } = useIntl()
 
-  const { visible, setVisible, passphraseInfo } = props
-  const params = useParams()
+  const { visible, serviceId, setVisible, passphraseInfo } = props
   const [modalVisible, setModalVisible] = useState(false)
   const [addAnother, setAddAnother] = useState(false)
   const [searchString, setSearchString] = useState('')
@@ -55,12 +54,12 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const { data: devicesData } = useGetDpskPassphraseDevicesQuery({
     params: {
-      ...params,
+      serviceId,
       passphraseId: passphraseInfo.id
     }
   })
 
-  const { data } = useGetDpskQuery({ params: { ...params } })
+  const { data } = useGetDpskQuery({ params: { serviceId } })
 
   useEffect(() => {
     if (data?.networkIds?.length) {
@@ -160,7 +159,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       onClick: async (rows, clearSelection) => {
         await deleteDevicesData({
           params: {
-            ...params,
+            serviceId,
             passphraseId: passphraseInfo.id
           },
           payload: rows.map(row => row.mac)
@@ -184,7 +183,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       await form.validateFields()
       await updateDevicesData({
         params: {
-          ...params,
+          serviceId,
           passphraseId: passphraseInfo.id
         },
         payload: [macAddress]

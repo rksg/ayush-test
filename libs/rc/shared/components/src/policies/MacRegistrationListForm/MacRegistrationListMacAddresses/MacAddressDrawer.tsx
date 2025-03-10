@@ -4,9 +4,8 @@ import { Form, Input } from 'antd'
 import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector, IdentitySelector } from '@acx-ui/rc/components'
+import { Drawer }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
   useUpdateMacRegistrationMutation
@@ -19,12 +18,15 @@ import {
   toExpireEndDate,
   toLocalDateString
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+
+import { ExpirationDateSelector } from '../../../ExpirationDateSelector'
+import { IdentitySelector }       from '../../../users/IdentitySelector'
 
 interface MacAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  isEdit: boolean
+  isEdit: boolean,
+  policyId: string,
   editData?: MacRegistration,
   expirationOfPool: string,
   identityGroupId?: string,
@@ -34,12 +36,11 @@ interface MacAddressDrawerProps {
 export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const intl = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit, editData, expirationOfPool, identityGroupId, defaultIdentityId } = props
+  const { policyId, visible, setVisible, isEdit, editData, expirationOfPool, identityGroupId, defaultIdentityId } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm<MacRegistration>()
   const [addMacRegistration] = useAddMacRegistrationMutation()
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
-  const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
@@ -101,7 +102,9 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         email: data.email?.length === 0 ? null : data.email,
         expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
           toExpireEndDate(data.expiration?.date),
-        identityId: data.identityId
+        identityId: data.identityId,
+        deviceName: data.deviceName,
+        location: data.location
       }
       if (isEdit) {
         await editMacRegistration(
@@ -160,6 +163,16 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
         ]}
         label={intl.$t({ defaultMessage: 'E-mail' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='deviceName'
+        rules={[{ max: 255 }]}
+        label={intl.$t({ defaultMessage: 'Device Name' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='location'
+        rules={[{ max: 255 }]}
+        label={intl.$t({ defaultMessage: 'Location' })}>
         <Input/>
       </Form.Item>
       <ExpirationDateSelector

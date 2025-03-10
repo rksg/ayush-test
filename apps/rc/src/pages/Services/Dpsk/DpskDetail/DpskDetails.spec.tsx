@@ -36,13 +36,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  DpskOverview: () => <div>DPSK Overview</div>
+  DpskOverview: () => <div>DPSK Overview</div>,
+  DpskPassphraseManagement: () => <div data-testid='DpskPassphraseManagement'></div>
 }))
 
-jest.mock('./DpskPassphraseManagement', () => ({
-  __esModule: true,
-  default: () => <div data-testid='DpskPassphraseManagement'></div>
-}))
 
 describe('DpskDetails', () => {
   const paramsForOverviewTab = {
