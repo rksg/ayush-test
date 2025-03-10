@@ -69,7 +69,12 @@ describe('DpskPassphraseDrawer', () => {
 
     render(
       <Provider>
-        <DpskPassphraseDrawer visible={true} setVisible={setVisible} editMode={{ isEdit: false }} />
+        <DpskPassphraseDrawer
+          serviceId={mockedServiceId}
+          visible={true}
+          setVisible={setVisible}
+          editMode={{ isEdit: false }}
+        />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -106,7 +111,12 @@ describe('DpskPassphraseDrawer', () => {
 
     render(
       <Provider>
-        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
+        <DpskPassphraseDrawer
+          serviceId={mockedServiceId}
+          visible={true}
+          setVisible={jest.fn()}
+          editMode={{ isEdit: false }}
+        />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -140,7 +150,12 @@ describe('DpskPassphraseDrawer', () => {
 
     render(
       <Provider>
-        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
+        <DpskPassphraseDrawer
+          serviceId={mockedServiceId}
+          visible={true}
+          setVisible={jest.fn()}
+          editMode={{ isEdit: false }}
+        />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -190,6 +205,7 @@ describe('DpskPassphraseDrawer', () => {
     render(
       <Provider>
         <DpskPassphraseDrawer
+          serviceId={mockedServiceId}
           visible={true}
           setVisible={jest.fn()}
           editMode={{ isEdit: true, passphraseId: mockedDpskPassphrase.id }}

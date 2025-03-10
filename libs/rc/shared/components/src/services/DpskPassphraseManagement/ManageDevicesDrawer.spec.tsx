@@ -13,7 +13,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedDevices
+  mockedDevices,
+  mockedServiceId
 } from './__tests__/fixtures'
 import ManageDevicesDrawer from './ManageDevicesDrawer'
 
@@ -61,6 +62,7 @@ describe('ManageDevicesDrawer', () => {
     render(
       <Provider>
         <ManageDevicesDrawer
+          serviceId={mockedServiceId}
           visible={true}
           setVisible={() => {}}
           passphraseInfo={managePassphraseInfo}

@@ -8,6 +8,7 @@ import { Provider }                                        from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
+  mockedServiceId,
   mockedCloudpathDpsk,
   mockedDpskPassphraseMultipleDevices
 } from './__tests__/fixtures'
@@ -48,7 +49,11 @@ describe('AddDpskPassphrasesForm', () => {
 
     render(
       <Provider>
-        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+        <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
+          form={formRef.current}
+          editMode={{ isEdit: false }}
+        />
       </Provider>
     )
 
@@ -65,7 +70,11 @@ describe('AddDpskPassphrasesForm', () => {
 
     render(
       <Provider>
-        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+        <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
+          form={formRef.current}
+          editMode={{ isEdit: false }}
+        />
       </Provider>,
       { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
     )
@@ -86,6 +95,7 @@ describe('AddDpskPassphrasesForm', () => {
     render(
       <Provider>
         <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
           form={formRef.current}
           editMode={{ isEdit: true, passphraseId: '123456' }}
         />
@@ -117,7 +127,11 @@ describe('AddDpskPassphrasesForm', () => {
 
     render(
       <Provider>
-        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+        <AddDpskPassphrasesForm
+          serviceId={mockedServiceId}
+          form={formRef.current}
+          editMode={{ isEdit: false }}
+        />
       </Provider>,
       { route: { params: { tenantId: 'T1', serviceId: 'S1' }, path: '/:tenantId/:serviceId' } }
     )
