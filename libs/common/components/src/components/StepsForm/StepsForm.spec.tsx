@@ -580,10 +580,17 @@ describe('StepsForm', () => {
 
   it('supports button props', async () => {
     const onFinish = jest.fn()
-    render(<CustomForm editMode onFinish={onFinish} buttonProps={{ apply: { disabled: true } }} />)
+    render(<CustomForm
+      editMode
+      onFinish={onFinish}
+      buttonProps={{ apply: { disabled: true, tooltip: 'Test Me' } }}
+    />)
 
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
     expect(applyButton).toBeDisabled()
+
+    await userEvent.hover(applyButton)
+    expect(await screen.findByText('Test Me')).toBeInTheDocument()
   })
 
   describe('hasPrerequisite step', () => {

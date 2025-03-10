@@ -187,12 +187,15 @@ describe('StepsFormLegacy', () => {
     render(<CustomForm
       editMode={true}
       onFinish={onFinish}
-      buttonProps={{ submit: { disabled: true } }}
+      buttonProps={{ submit: { disabled: true, tooltip: 'Test Me' } }}
     />)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     const submitButton = await screen.findByRole('button', { name: 'Finish' })
     expect(submitButton).toBeDisabled()
+
+    await userEvent.hover(submitButton)
+    expect(await screen.findByText('Test Me')).toBeInTheDocument()
   })
 })
