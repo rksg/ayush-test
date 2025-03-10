@@ -489,6 +489,8 @@ export interface LanPort {
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
   softGreEnabled?: boolean,
+  ipsecProfileId?: string,
+  ipsecEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
   clientIsolationEnabled?: boolean,

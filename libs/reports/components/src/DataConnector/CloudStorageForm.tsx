@@ -120,7 +120,7 @@ const getStorageMap = () => {
       {
         id: 'sftpPrivateKey',
         name: $t({ defaultMessage: 'SFTP private key' }),
-        component: <Input />
+        component: <Input.TextArea rows={5} />
       },
       {
         id: 'sftpStoragePath',

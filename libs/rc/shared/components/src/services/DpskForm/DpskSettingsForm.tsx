@@ -307,6 +307,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
                   visible={identityGroupModelVisible}
                   type={ModalType.ModalStepsForm}
                   children={<IdentityGroupForm
+                    modalMode={true}
                     callback={(identityGroupId?: string) => {
                       if (identityGroupId) {
                         form.setFieldValue('identityId', identityGroupId)

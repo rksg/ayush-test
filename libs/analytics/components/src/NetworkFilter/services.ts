@@ -1,8 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }              from '@acx-ui/store'
-import { PathNode }             from '@acx-ui/utils'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { dataApi }                                     from '@acx-ui/store'
+import type { AnalyticsFilter, PathNode, NetworkNode } from '@acx-ui/utils'
 
 // R1
 type NetworkData = PathNode & { id:string }
@@ -20,10 +19,6 @@ export type Child = NetworkData & ApsOrSwitches
 interface VenuesResponse { network: { venueHierarchy: Child[] } }
 
 // RAI
-type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
-export interface NetworkNode extends NetworkHierarchy<PathNode & {
-  mac?: string, model?: string, firmware?: string, deviceId?: string
-}>{}
 interface HierarchyResponse {
   network: {
     apHierarchy: NetworkNode[]

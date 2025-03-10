@@ -20,6 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import {
+  TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -248,7 +249,14 @@ export function PropertyUnitDetails () {
       key: 'identityName',
       title: $t({ defaultMessage: 'Identity Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        return (
+          <TenantLink
+            to={`/users/identity-management/identity-group/${row.groupId}/identity/${row.id}`}>
+            {highlightFn(row.name)}</TenantLink>
+        )
+      }
     },
     {
       key: 'revoked',

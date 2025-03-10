@@ -1,6 +1,12 @@
 /* eslint-disable max-len */
 import { defineMessage } from 'react-intl'
 
+
+export enum IdentityProviderTabType {
+  SAML = 'SAML',
+  Hotspot20 = 'Hotspot20'
+}
+
 export enum NaiRealmEcodingEnum {
   RFC4282 = 'RFC4282',
   UTF8 = 'UTF8'
