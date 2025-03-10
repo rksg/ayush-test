@@ -4,10 +4,11 @@ import { Form, FormInstance, Input, InputNumber } from 'antd'
 import TextArea                                   from 'antd/lib/input/TextArea'
 import { useIntl }                                from 'react-intl'
 
-import { useLazySearchPersonaListQuery }                                        from '@acx-ui/rc/services'
-import { checkObjectNotExists, emailRegExp, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { validationMessages }                                                   from '@acx-ui/utils'
+import { useLazySearchPersonaListQuery }                                                     from '@acx-ui/rc/services'
+import { checkObjectNotExists, emailRegExp, Persona, phoneRegExp, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                from '@acx-ui/utils'
 
+import PhoneInput             from '../../PhoneInput'
 import { PersonaGroupSelect } from '../PersonaGroupSelect'
 
 
@@ -68,6 +69,21 @@ export function PersonaContextForm (props: {
           { max: 255 },
           { validator: (_, value) => emailRegExp(value) }]}
         children={<Input />}
+      />
+      <Form.Item
+        name='phoneNumber'
+        label={$t({ defaultMessage: 'Phone' })}
+        rules={[
+          { validator: (_, value) => phoneRegExp(value) }
+        ]}
+        children={<PhoneInput
+          name={'phoneNumber'}
+          callback={(value: string) => {
+            form.setFieldValue('phoneNumber', value)
+            form.validateFields(['phoneNumber'])
+          }}
+          onTop={false}
+        />}
       />
       <Form.Item
         name='description'

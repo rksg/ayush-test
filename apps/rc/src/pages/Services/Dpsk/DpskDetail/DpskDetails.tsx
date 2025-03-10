@@ -2,7 +2,7 @@ import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                               from '@acx-ui/components'
-import { DpskOverview }                                           from '@acx-ui/rc/components'
+import { DpskOverview, DpskPassphraseManagement }                 from '@acx-ui/rc/components'
 import { useGetDpskQuery, useGetEnhancedDpskPassphraseListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -12,13 +12,23 @@ import {
   useServiceListBreadcrumb,
   getScopeKeyByService,
   filterDpskOperationsByPermission,
-  getServiceAllowedOperation
+  getServiceAllowedOperation, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
+import { dpskTabNameMapping } from './contentsMap'
 
-import { dpskTabNameMapping }   from './contentsMap'
-import DpskPassphraseManagement from './DpskPassphraseManagement'
+
+
+const defaultSearch = {
+  searchTargetFields: ['username', 'mac'],
+  searchString: ''
+}
+
+const defaultSorter = {
+  sortField: 'createdDate',
+  sortOrder: 'DESC'
+}
 
 export default function DpskDetails () {
   const { tenantId, activeTab, serviceId } = useParams()
@@ -35,6 +45,15 @@ export default function DpskDetails () {
         activePassphraseCount: data?.totalCount
       }
     }
+  })
+  const settingsId = 'dpsk-passphrase-table'
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedDpskPassphraseListQuery,
+    sorter: defaultSorter,
+    defaultPayload: {},
+    search: defaultSearch,
+    enableSelectAllPagesData: ['id'],
+    pagination: { settingsId }
   })
 
   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
@@ -61,7 +80,10 @@ export default function DpskDetails () {
       return <DpskOverview data={dpskDetail} />
     }
 
-    return <DpskPassphraseManagement />
+    return <DpskPassphraseManagement
+      serviceId={serviceId!}
+      tableQuery={tableQuery}
+    />
   }
 
   return (

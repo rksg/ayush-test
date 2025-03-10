@@ -12,7 +12,9 @@ import {
   PropertyConfigStatus,
   ConnectionMetering,
   BillingCycleType,
-  DPSKDeviceInfo
+  DPSKDeviceInfo,
+  PropertyUnit,
+  PropertyUnitStatus
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -71,6 +73,13 @@ export const mockPersona: Persona = {
   ],
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
   expirationDate: moment().add(-8, 'days').toISOString()
+}
+
+export const mockUnit: PropertyUnit = {
+  id: 'unit-id-1',
+  name: 'unit-id-name',
+  status: PropertyUnitStatus.ENABLED,
+  personaId: 'persona-id-1'
 }
 
 export const mockPersonaGroup: PersonaGroup = {
