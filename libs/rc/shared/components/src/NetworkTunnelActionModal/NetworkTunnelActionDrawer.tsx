@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { Form, Select, Typography } from 'antd'
+import { Form, Select, Tooltip, Typography } from 'antd'
 
 import { Drawer, Loader }         from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
@@ -118,12 +118,30 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
             >
               <Select.Option value={''}>{$t({ defaultMessage: 'Select...' })}</Select.Option>
               <Select.Option
+                data-testid='softgre-option'
                 value={NetworkTunnelTypeEnum.SoftGre}
-                disabled={isDisabledAll || noChangePermission}>SoftGRE</Select.Option>
+                disabled={isDisabledAll || noChangePermission}>
+                <Tooltip
+                  title={isDisabledAll
+                    ? $t(messageMappings.disable_deactivate_last_network)
+                    : undefined}>
+                  {$t({ defaultMessage: 'SoftGRE' })}
+                </Tooltip>
+              </Select.Option>
               <Select.Option
+                data-testid='sd-lan-option'
                 value={NetworkTunnelTypeEnum.SdLan}
                 disabled={isDisabledAll || noChangePermission
-                  || isPinNetwork || !!!venueSdLanInfo}>SD-LAN</Select.Option>
+                  || isPinNetwork || !!!venueSdLanInfo}>
+                <Tooltip
+                  title={isPinNetwork
+                    ? $t(messageMappings.disable_pin_network)
+                    : (isDisabledAll
+                      ? $t(messageMappings.disable_deactivate_last_network)
+                      : undefined)}>
+                  {$t({ defaultMessage: 'SD-LAN' })}
+                </Tooltip>
+              </Select.Option>
             </Select>
           }
         />
@@ -196,8 +214,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
           save: $t({ defaultMessage: 'Add' })
         }}
         onCancel={onClose}
-        showSaveButton={!noChangePermission &&
-          (tunnelType !== NetworkTunnelTypeEnum.SdLan && !!!venueSdLanInfo)}
+        showSaveButton={!noChangePermission}
         onSave={() => {
           return handleApply()
         }}

@@ -28,4 +28,30 @@ describe('SelectionControl', () => {
     expect(onChange.mock.calls[0][0].target.value).toEqual('v2')
     expect(screen.getByText('Some text')).toBeVisible()
   })
+
+  it('renders radio buttons with tooltip', () => {
+    const onChange = jest.fn()
+    render(<SelectionControl
+      onChange={onChange}
+      noPadding
+      options={[{
+        label: 'l1',
+        value: 'v1',
+        disabled: true
+      }, {
+        label: 'l2',
+        value: 'v2',
+        tooltip: 'v2'
+      }]}
+      extra={'Some text'}
+    />)
+    expect(screen.getByText('l1')).toBeVisible()
+    expect(screen.getByText('l2')).toBeVisible()
+    screen.getByText('l1').click()
+    expect(onChange).not.toHaveBeenCalled()
+    screen.getByText('l2').click()
+    expect(onChange).toHaveBeenCalled()
+    expect(onChange.mock.calls[0][0].target.value).toEqual('v2')
+    expect(screen.getByText('Some text')).toBeVisible()
+  })
 })
