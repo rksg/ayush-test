@@ -230,7 +230,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v1.1+json'
+      'Accept': 'application/vnd.ruckus.v1+json'
     }
   }
 }
