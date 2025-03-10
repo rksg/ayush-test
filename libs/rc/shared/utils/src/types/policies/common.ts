@@ -37,7 +37,7 @@ export enum PolicyType {
   PORT_PROFILE = 'Port Profile',
   SWITCH_PORT_PROFILE = 'Switch Port Profile',
   IPSEC = 'IPsec',
-  SSO_SAML = 'SSO SAML'
+  SAML_IDP = 'SAML IDP'
 }
 
 export enum PolicyOperation {
@@ -96,7 +96,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
   [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
   [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'Secures IP communications through encryption and authentication' }),
-  [PolicyType.SSO_SAML]: defineMessage({ defaultMessage: 'SSO/SAML' })
+  [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Provides Identity Provider (IdP) identification and authentication profiles for Hotspot 2.0 and Captive Portal SAML Network Services' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

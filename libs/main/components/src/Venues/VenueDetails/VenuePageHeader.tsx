@@ -9,7 +9,8 @@ import {
   CommonUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
-  VenueDetailHeader
+  VenueDetailHeader,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -71,6 +72,7 @@ function VenuePageHeader () {
           type='primary'
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
             getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
           ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}

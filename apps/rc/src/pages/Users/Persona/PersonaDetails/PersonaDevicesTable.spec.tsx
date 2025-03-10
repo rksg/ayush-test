@@ -8,9 +8,9 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedDpskPassphraseDevices, mockPersona } from '../__tests__/fixtures'
 
-import { PersonaDevicesTable } from './PersonaDevicesTable'
+import { IdentityDeviceContext } from './LegacyPersonaDetails'
+import { PersonaDevicesTable }   from './PersonaDevicesTable'
 
-import { IdentityDeviceContext } from '.'
 
 type MockModalProps = React.PropsWithChildren<{
   visible: boolean
