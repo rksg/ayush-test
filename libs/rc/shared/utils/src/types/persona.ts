@@ -41,6 +41,7 @@ export interface Persona {
   meteringProfileId?: string,
   expirationEpoch?: number | null,
   expirationDate?: string | null,
+  unit?: string | null,
   phoneNumber?: string
 }
 
@@ -110,11 +111,4 @@ export interface PersonaEthernetPort {
   portIndex: number,
   name?: string,
   createdAt?: string
-}
-
-export interface PersonaAssociation {
-  unitId: string,
-  personaType: string,
-  personaId: string,
-  links: string[]
 }

@@ -7,6 +7,8 @@ import { Provider }                                                             
 import { fireEvent, mockServer, render, screen,  waitFor, within }                                     from '@acx-ui/test-utils'
 
 
+import { mockPropertyUnitList } from '../../../__tests__/fixtures'
+
 import { PropertyUnitDetails } from './index'
 
 const personaIds = { data: [
@@ -89,7 +91,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyGetPersonaGroupByIdQuery: () => ([ mockGetPersonaGroupByIdQuery, {} ]),
   useUpdatePropertyUnitMutation: () => ([ mockUpdatePropertyUnitMutation ]),
   useUpdatePersonaMutation: () => ([ mockUpdatePersonaMutation ]),
-  useDeletePersonaAssociationMutation: () => ([ mockDeleteAssociationMutation ])
+  useRemoveUnitLinkedIdentityMutation: () => ([ mockDeleteAssociationMutation ])
 }))
 
 jest.mock('react-router-dom', () => ({
@@ -104,7 +106,7 @@ describe('Property Unit Details', () => {
   beforeEach(() => {
     openFn.mockClear()
     window.open = openFn
-    services.useGetPersonaIdentitiesQuery = jest.fn().mockImplementation(() => {
+    services.useGetUnitsLinkedIdentitiesQuery = jest.fn().mockImplementation(() => {
       return { data: personaIds, refetch: jest.fn() }
     })
     services.useSearchPersonaListQuery = jest.fn().mockImplementation(() => {
@@ -133,6 +135,12 @@ describe('Property Unit Details', () => {
       rest.get(
         PropertyUrlsInfo.getUnitById.url,
         (_, res, ctx) => res(ctx.json(unitData))
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyUnitList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(mockPropertyUnitList))
+        }
       )
     )
   })
