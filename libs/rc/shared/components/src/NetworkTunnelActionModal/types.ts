@@ -15,6 +15,13 @@ export interface NetworkTunnelActionForm {
     newProfileName: string,
     oldProfileId: string
   }
+  ,
+  ipsec?: {
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
+  }
 }
 
 export interface NetworkTunnelingActivation {

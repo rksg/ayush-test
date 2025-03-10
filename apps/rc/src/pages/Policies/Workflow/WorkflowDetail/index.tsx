@@ -97,7 +97,7 @@ export default function WorkflowDetails () {
     fetchVersionHistory(workflowQuery.data.id!!)
   }, [workflowQuery.data, workflowQuery.isLoading])
 
-
+  useEffect(() => { setIsDesignerOpen(false)}, [policyId])
 
   const openWorkflowDesigner = () => {
     setIsDesignerOpen(true)

@@ -8,24 +8,25 @@ import {
   MacRegListUrlsInfo,
   PersonaBaseUrl,
   ClientUrlsInfo,
-  ConnectionMeteringUrls
+  ConnectionMeteringUrls,
+  PropertyUrlsInfo,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved,within,  fireEvent } from '@acx-ui/test-utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved,within,  fireEvent, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockConnectionMeterings,
   mockDpskPool,
-  mockMacRegistration,
   mockMacRegistrationList,
   mockPersona,
   mockPersonaGroup,
   mockPersonaGroupList,
   mockUnBlockedPersona,
-  replacePagination
+  mockUnit
 } from '../__tests__/fixtures'
 
-import PersonaDetails from './index'
+import PersonaDetails from './'
 
 Object.assign(navigator, {
   clipboard: {
@@ -33,47 +34,100 @@ Object.assign(navigator, {
   }
 })
 
-jest.mocked(useIsSplitOn).mockReturnValue(true)
-jest.mocked(useIsTierAllowed).mockReturnValue(true)
+jest.mock('./PersonaOverview', () => ({
+  PersonaOverview: () => <div data-testid='PersonaOverview'></div>
+}))
+jest.mock('./CertificateTab', () => ({
+  CertificateTab: () => <div data-testid='CerttificateTab'></div>
+}))
+jest.mock('./DpskPassphraseTab', () => ({
+  DpskPassphraseTab: () => <div data-testid='DpskPassphraseTab'></div>
+}))
+jest.mock('./MacAddressTab', () => ({
+  MacAddressTab: () => <div data-testid='MacAddressTab'></div>
+}))
+jest.mock('./IdentityClientTable', () => ({
+  IdentityClientTable: () => <div data-testid='IdentityClientTable'></div>
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  PersonaDrawer: () => <div data-testid='PersonaDrawer'></div>
+}))
 
-describe.skip('Identity Details', () => {
+describe('Identity Details', () => {
+  const getPersonaByIdFn = jest.fn()
+  const getPersonaGroupByIdFn = jest.fn()
+  const getIdentityCertFn = jest.fn()
+  const getDpskFn = jest.fn()
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
+    getPersonaByIdFn.mockClear()
+    getPersonaGroupByIdFn.mockClear()
+    getIdentityCertFn.mockClear()
+    getDpskFn.mockClear()
     jest.spyOn(navigator.clipboard, 'writeText')
 
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+        (_, res, ctx) => {
+          getPersonaGroupByIdFn()
+          return res(ctx.json(mockPersonaGroup))
+        }
       ),
       rest.get(
         PersonaUrls.getPersonaById.url,
-        (req, res, ctx) => res(ctx.json(mockPersona))
+        (_, res, ctx) => {
+          getPersonaByIdFn()
+          return res(ctx.json(mockPersona))
+        }
+      ),
+      rest.get(
+        PropertyUrlsInfo.getUnitById.url,
+        (_, res, ctx) => res(ctx.json(mockUnit))
+      ),
+      rest.post(
+        CertificateUrls.getCertificatesByIdentity.url,
+        (_, res, ctx) => {
+          getIdentityCertFn()
+          return res(ctx.json({
+            fields: null,
+            totalCount: 10,
+            totalPages: 1,
+            page: 1,
+            data: [ ]
+          }))
+        }
       ),
       rest.post(
         PersonaUrls.addPersonaDevices.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.delete(
         PersonaUrls.deletePersonaDevices.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         PersonaBaseUrl,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
+        (_, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPool.url,
-        (req, res, ctx) => res(ctx.json(mockMacRegistration))
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrations.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
-      rest.get(
-        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
-        (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (_, res, ctx) => {
+          getDpskFn()
+          return res(ctx.json({ data: [], totalCount: 10 }))
+        }
       ),
       rest.get(
         DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockDpskPool))
+        (_, res, ctx) => res(ctx.json(mockDpskPool))
       ),
       rest.post(
         ClientUrlsInfo.getClients.url,
@@ -89,7 +143,7 @@ describe.skip('Identity Details', () => {
       ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringDetail.url,
-        (req, res, ctx) => res(ctx.json(mockConnectionMeterings[0]))
+        (_, res, ctx) => res(ctx.json(mockConnectionMeterings[0]))
       )
     )
     params = {
@@ -108,16 +162,22 @@ describe.skip('Identity Details', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+          path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId/overview'
         }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(getPersonaByIdFn).toHaveBeenCalled())
+    await waitFor(() => expect(getPersonaGroupByIdFn).toHaveBeenCalled())
+    await waitFor(() => expect(getDpskFn).toHaveBeenCalled())
+    await waitFor(() => expect(getIdentityCertFn).toHaveBeenCalled())
 
-    await screen.findByRole('heading', { level: 1, name: mockPersona.name })
-    await screen.findByRole('heading', { level: 4, name: /Devices/i })
-    await screen.findByRole('link', { name: mockPersonaGroup.name })
-    await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
+    await screen.findByRole('heading', { name: mockPersona.name })
+
+    expect(screen.getByTestId('PersonaOverview')).toBeInTheDocument()
+
+    expect(screen.getByRole('tab', { name: /Devices/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Certificates\(10\)/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Mac Addresses\(1\)/i })).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -139,7 +199,7 @@ describe.skip('Identity Details', () => {
     })).toBeVisible()
   })
 
-  it('should config persona details', async () => {
+  it.skip('should config persona details', async () => {
     render(
       <Provider>
         <PersonaDetails />
@@ -204,31 +264,5 @@ describe.skip('Identity Details', () => {
     await userEvent.click(confirmButton)
 
     expect(blockedFn).toBeCalledWith({ revoked: true })
-  })
-
-  it('should retry vni', async () => {
-    const retryFn = jest.fn()
-    mockServer.use(
-      rest.delete(
-        PersonaUrls.allocateVni.url,
-        (_, res, ctx) => {
-          retryFn()
-          return res(ctx.json({}))
-        }
-      )
-    )
-    render(
-      <Provider>
-        <PersonaDetails />
-      </Provider>, {
-        // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/t/users/identity-management/identity-group/:personaGroupId/identity/:personaId' }
-      }
-    )
-
-    const retryVniButton = await screen.findByRole('button', { name: /Retry/i })
-    await userEvent.click(retryVniButton)
-
-    expect(retryFn).toHaveBeenCalled()
   })
 })

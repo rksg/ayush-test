@@ -246,7 +246,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
         color: var(--acx-primary-white);
         width: fit-content;
-        max-width: 80%;
+        max-width: 90%;
         padding: 16px;
         border-radius: 16px 16px 16px 0px;
         margin: 7px;
@@ -397,6 +397,16 @@ export const Grid = styled.div`
   }
   &:hover .card-actions{
     display: flex;
+  }
+  .resizeHandle{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+    height: 20px;
+    width: 20px;
+    border-right: 2px solid #888;
+    border-bottom: 2px solid #888;
   }
 }
 .rglb_group-item .group-item-container #card-container .card .card-footer {

@@ -112,7 +112,9 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   VenueLanPortSettings,
-  UnitLinkedPersona
+  UnitLinkedPersona,
+  IpsecUrls,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -137,7 +139,8 @@ import {
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs,
   mappingLanPortWithClientIsolationPolicy,
   mappingLanPortWithEthernetPortProfile,
-  mappingLanPortWithSoftGreProfile
+  mappingLanPortWithSoftGreProfile,
+  mappingLanPortWithIpsecProfile
 } from './venue.utils'
 
 const customHeaders = {
@@ -2298,6 +2301,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
+        const isIpSecOverNetworkEnabled = (arg.payload as any)?.isIpSecOverNetworkEnabled
 
         if(venueId) {
 
@@ -2329,6 +2333,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
             )
             const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
             mappingLanPortWithSoftGreProfile(venueLanPortSettings, softgreProfiles, venueId)
+          }
+
+          // Mapping IpSec profile relation to Lan port settings
+          if(isEthernetPortProfileEnabled && isIpSecOverNetworkEnabled) {
+            const ipsecProfileReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
+            const ipsecProfileQuery = await fetchWithBQ(
+              { ...ipsecProfileReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
+                  }
+                })
+              }
+            )
+            const ipsecProfiles = (ipsecProfileQuery.data as TableResult<IpsecViewData>).data
+            mappingLanPortWithIpsecProfile(venueLanPortSettings, ipsecProfiles, venueId)
           }
 
           // Mapping Client Isolation Policy relation to Lan port settings
