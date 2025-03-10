@@ -91,7 +91,9 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         if (samlIdpProfileData && idPList?.data) {
           const viewData = idPList.data.find(item => item.id === params.id)
           if(viewData) {
-            samlIdpProfileData.responseEncryptionEnabled = viewData.responseEncryptionEnabled
+            samlIdpProfileData.signingCertificateEnabled = viewData.signingCertificateEnabled
+            samlIdpProfileData.signingCertificateId = viewData.signingCertificateId
+            samlIdpProfileData.encryptionCertificateEnabled = viewData.encryptionCertificateEnabled
             samlIdpProfileData.encryptionCertificateId = viewData.encryptionCertificateId
           }
         }

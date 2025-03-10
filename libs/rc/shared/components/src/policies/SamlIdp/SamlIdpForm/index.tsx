@@ -15,9 +15,9 @@ import {
   PolicyType,
   SamlIdpProfileFormType,
   SamlIdpMessages,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
-  redirectPreviousPage
+  redirectPreviousPage,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -53,6 +53,8 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const linkToTableView = useTenantLink(tablePath)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
+
   const [certFormVisible, setCertFormVisible] = useState(false)
   const isResponseEncryptionEnabled = useWatch('responseEncryptionEnabled', formRef)
   const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
@@ -102,17 +104,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       {!isEmbedded &&
         <PageHeader
           title={title}
-          breadcrumb={[
-            { text: $t({ defaultMessage: 'Network Control' }) },
-            {
-              text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true)
-            },
-            {
-              text: $t({ defaultMessage: 'Identity Provider' }),
-              link: tablePath
-            }
-          ]}
+          breadcrumb={breadcrumb}
         />
       }
       <StepsForm
