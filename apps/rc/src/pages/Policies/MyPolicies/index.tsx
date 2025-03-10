@@ -29,7 +29,8 @@ import {
   useSyslogPolicyListQuery,
   useGetDirectoryServerViewDataListQuery,
   useSwitchPortProfilesCountQuery,
-  useGetIpsecViewDataListQuery
+  useGetIpsecViewDataListQuery,
+  useGetSamlIdpProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -216,14 +217,21 @@ function useCardData (): PolicyCardData[] {
       disabled: !supportHotspot20R1
     },
     {
-      type: PolicyType.IDENTITY_PROVIDER,
+      type: (isCaptivePortalSsoSamlEnabled) ? PolicyType.SAML_IDP : PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetIdentityProviderListQuery({
+      totalCount: (useGetIdentityProviderListQuery({
         params, payload: { tenantId: params.tenantId }
-      }, { skip: !supportHotspot20R1 }).data?.totalCount,
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
-      disabled: !supportHotspot20R1
+      }, { skip: !supportHotspot20R1 }).data?.totalCount ?? 0) +
+      (useGetSamlIdpProfileViewDataListQuery({
+        params, payload: { tenantId: params.tenantId }
+      }, { skip: !isCaptivePortalSsoSamlEnabled }).data?.totalCount ?? 0),
+      listViewPath: useTenantLink(getPolicyRoutePath(
+        ((isCaptivePortalSsoSamlEnabled) ?
+          { type: PolicyType.SAML_IDP, oper: PolicyOperation.LIST } :
+          { type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST }
+        )
+      )),
+      disabled: !supportHotspot20R1 && !isCaptivePortalSsoSamlEnabled
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
@@ -391,16 +399,6 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.LIST })),
       disabled: !isIpsecEnabled
-    },
-    {
-      type: PolicyType.SSO_SAML,
-      categories: [RadioCardCategory.WIFI],
-      // eslint-disable-next-line max-len
-      // totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SSO_SAML, oper: PolicyOperation.LIST })),
-      disabled: !isCaptivePortalSsoSamlEnabled
     }
-
   ]
 }
