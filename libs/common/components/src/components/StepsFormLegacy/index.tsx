@@ -141,6 +141,7 @@ export function StepsFormLegacy <FormValue = any> (
         const submit = domArray.pop() as React.ReactElement<ButtonProps>
         const submitKey = stepCount - 1 === props.step ? 'submit' : 'next'
         const submitButton = <SubmitButton
+          key={submitKey}
           originalProps={submit.props}
           customProps={buttonProps}
           submitKey={submitKey}
@@ -190,7 +191,6 @@ function SubmitButton (props: React.PropsWithChildren<SubmitButtonProps>) {
   const { originalProps, customProps, submitKey, children } = props
   const submitButton = <Button
     {...originalProps}
-    key={submitKey}
     type='primary'
     children={children}
     {...(submitKey === 'submit' && customProps?.submit

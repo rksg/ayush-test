@@ -181,4 +181,18 @@ describe('StepsFormLegacy', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
+
+  it('renders steps form with button props', async () => {
+    const onFinish = jest.fn()
+    render(<CustomForm
+      editMode={true}
+      onFinish={onFinish}
+      buttonProps={{ submit: { disabled: true } }}
+    />)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    const submitButton = await screen.findByRole('button', { name: 'Finish' })
+    expect(submitButton).toBeDisabled()
+  })
 })

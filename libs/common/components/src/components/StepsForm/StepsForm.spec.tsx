@@ -578,6 +578,14 @@ describe('StepsForm', () => {
     expect(step2OnFinishSpy).toBeCalledTimes(2)
   })
 
+  it('supports button props', async () => {
+    const onFinish = jest.fn()
+    render(<CustomForm editMode onFinish={onFinish} buttonProps={{ apply: { disabled: true } }} />)
+
+    const applyButton = await screen.findByRole('button', { name: 'Apply' })
+    expect(applyButton).toBeDisabled()
+  })
+
   describe('hasPrerequisite step', () => {
     const onFinishSpy = jest.fn()
     const onStep1FinishSpy = jest.fn()
