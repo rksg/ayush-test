@@ -378,7 +378,10 @@ export function EditPortDrawer ({
 
   const stickyMacAclsQuery = useTableQuery({
     useQuery: useGetSwitchStickyMacAclsQuery,
-    defaultPayload: {},
+    defaultPayload: {
+      portId: `${selectedPorts?.[0].switchSerial}/${selectedPorts?.[0].portIdentifier}`,
+      fields: ['id']
+    },
     enableRbac: isSwitchRbacEnabled,
     apiParams: { venueId: (switchDetail?.venueId || '') as string },
     sorter: {
@@ -610,7 +613,7 @@ export function EditPortDrawer ({
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible, macAclList])
 
   const getSinglePortValue = async (
     portSpeed: string[],
