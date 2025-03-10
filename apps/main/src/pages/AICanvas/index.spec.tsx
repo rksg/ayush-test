@@ -115,7 +115,8 @@ jest.mock('@acx-ui/rc/services', () => {
           ],
           totalCount: 2
         } })
-    ]
+    ],
+    useSendFeedbackMutation: jest.fn(() => [jest.fn()])
   }
 })
 

@@ -11,9 +11,9 @@ import { v4 as uuidv4 }  from 'uuid'
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
-import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation, useSendFeedbackMutation } from '@acx-ui/rc/services'
+import { ChatHistory, ChatMessage }                                                             from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                           from '@acx-ui/react-router-dom'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
@@ -27,6 +27,7 @@ export default function AICanvas () {
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
+  const [sendFeedback] = useSendFeedbackMutation()
 
   const [getChats] = useGetChatsMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
@@ -245,12 +246,36 @@ export default function AICanvas () {
     setChats([])
   }
 
+  const onSubmitFeedback = (feedback: boolean, message: ChatMessage) => {
+    sendFeedback({
+      params: { sessionId: sessionId, messageId: message.id },
+      payload: feedback
+    }).then(()=> {
+      setTimeout(()=> {
+      }, 300)
+    })
+  }
+
   const Message = (props:{ chat: ChatMessage }) => {
     const { chat } = props
+    const chatBubbleRef = useRef<HTMLDivElement>(null)
+    const messageTailRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+      if (chatBubbleRef.current && messageTailRef.current) {
+        const isFixed = messageTailRef.current.classList.contains('fixed') ||
+          messageTailRef.current.classList.contains('message-tail')
+        if (!isFixed) {
+          messageTailRef.current.style.width = `${chatBubbleRef.current.offsetWidth}px`
+        }
+      }
+    }, [chat.text])
+
     return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
       : <div className='message'>
         <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-          <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
+          {/* eslint-disable-next-line max-len */}
+          <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
         </div>
         { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
           ...chat.widgets[0],
@@ -261,8 +286,26 @@ export default function AICanvas () {
         groups={groups}
         /> }
         {
-          chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-            {moment(chat.created).format('hh:mm A')}
+          chat.created &&
+          <div ref={messageTailRef}
+            // eslint-disable-next-line max-len
+            className={`${chat.role === 'AI' ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'}`}>
+            <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+              {moment(chat.created).format('hh:mm A')}
+            </div>
+            {
+              chat.role === 'AI' &&
+              <div className='user-feedback'>
+                <UI.ThumbsUp onClick={() => {
+                  onSubmitFeedback(true, chat)
+                }}
+                />
+                <UI.ThumbsDown onClick={() => {
+                  onSubmitFeedback(false, chat)
+                }}
+                />
+              </div>
+            }
           </div>
         }
       </div>

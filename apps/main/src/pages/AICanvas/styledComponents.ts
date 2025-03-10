@@ -1,7 +1,9 @@
 import { Input as AntInput, Badge as AntBadge } from 'antd'
 import styled                                   from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Card }            from '@acx-ui/components'
+import { ThumbsDown as UIThumbsDown,
+  ThumbsUp as UIThumbsUp } from '@acx-ui/icons'
 
 import CanvasBackground from './assets/CanvasBackground.svg'
 import WaveBackground   from './assets/waves.svg'
@@ -189,7 +191,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       /* Track */
       &::-webkit-scrollbar-track {
         border-radius: 6px;
-        background: transparent; 
+        background: transparent;
       }
 
       /* Handle */
@@ -234,13 +236,14 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         .ant-divider-horizontal.ant-divider-with-text {
           border-top-color: var(--acx-neutrals-30);
         }
-        .ant-divider-horizontal.ant-divider-with-text::before, 
+        .ant-divider-horizontal.ant-divider-with-text::before,
         .ant-divider-horizontal.ant-divider-with-text::after {
           width: 20%;
         }
       }
       .chat-container {
         display: flex;
+        flex-direction: column;
       }
       .loading {
         display: flex;
@@ -266,6 +269,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         color: #000;
         margin-right: 0px;
         font-weight: 400;
+        align-self: flex-end;
       }
       .chat-bubble {
         background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%,
@@ -279,9 +283,39 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         margin-left: 10px;
         font-weight: 600;
       }
+      .chat-bubble {
+        align-self: flex-start;
+      }
+      .ai-message-tail {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        margin-right: 7px;
+
+        &.fixed {
+          width: 300px;
+        }
+        &.dynamic {
+          align-self: flex-start;
+        }
+        .timestamp {
+          padding: 6px 0px 0px 0px;
+        }
+        .user-feedback {
+          display: flex;
+        }
+        .thumb-button {
+          cursor: pointer;
+          margin-left: 4px;
+        }
+      }
+      .message-tail {
+        align-content: end;
+        .timestamp {
+          display: flex;
+        }
+      }
       .timestamp {
         color: var(--acx-neutrals-70);
-        display: flex;
         font-size: 10px;
         margin-left: 12px;
         margin-top: -5px;
@@ -362,7 +396,7 @@ export const Canvas = styled.div`
     /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 6px;
-      background: transparent; 
+      background: transparent;
     }
 
     /* Handle */
@@ -499,7 +533,7 @@ export const Widget = styled(Card)`
     /* Track */
     &::-webkit-scrollbar-track {
       border-radius: 6px;
-      background: transparent; 
+      background: transparent;
     }
 
     /* Handle */
@@ -530,3 +564,21 @@ export const Badge = styled(AntBadge)`
     }
   }
 `
+
+const thumbStyles = `
+  cursor: pointer;
+  margin: 0px 0px 0px 4px;
+  path {
+    stroke: var(--acx-neutrals-60);
+    fill: var(--acx-primary-white);
+  }
+  &:hover {
+    path {
+      stroke: var(--acx-neutrals-60);
+      fill: var(--acx-neutrals-15);
+    }
+  }
+`
+
+export const ThumbsUp = styled(UIThumbsUp)`${thumbStyles}`
+export const ThumbsDown = styled(UIThumbsDown)`${thumbStyles}`

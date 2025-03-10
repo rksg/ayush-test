@@ -181,7 +181,6 @@ export default function HistoryDrawer (props: DrawerProps) {
           <div className='time'>{i.duration}</div>
           {
             i.history.map(j =>
-            // eslint-disable-next-line max-len
               isEditMode(j) ? (
                 editChatTitle(j)
               ) : (<div className={'chat' + (sessionId === j.id ? ' active' : '')} key={j.id}>

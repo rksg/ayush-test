@@ -360,6 +360,8 @@ export { ReactComponent as TopologySwitchDisconnected } from './icons/TopologySw
 export { ReactComponent as TopologySwitchInitiate } from './icons/TopologySwitchInitiate.svg'
 export { ReactComponent as TopologySwitchOperational } from './icons/TopologySwitchOperational.svg'
 export { ReactComponent as TopologyUnknown } from './icons/TopologyUnknown.svg'
+export { ReactComponent as ThumbsDown } from './icons/ThumbsDown.svg'
+export { ReactComponent as ThumbsUp } from './icons/ThumbsUp.svg'
 export { ReactComponent as Twitter } from './icons/TwitterX.svg'
 export { ReactComponent as TwitterOutlined } from './icons/TwitterXOutlined.svg'
 export { ReactComponent as Ubuntu } from './icons/Ubuntu.svg'
