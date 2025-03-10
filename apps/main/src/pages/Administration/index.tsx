@@ -15,9 +15,16 @@ import {
   useGetNotificationRecipientsQuery,
   useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { hasAdministratorTab, transformDisplayNumber, useTableQuery, Webhook } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                               from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                               from '@acx-ui/user'
+import {
+  hasAdministratorTab,
+  MigrationUrlsInfo,
+  transformDisplayNumber,
+  useTableQuery,
+  Webhook
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                                   from '@acx-ui/utils'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -127,11 +134,14 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
         title: webhookTitle,
         component: webhookComponent
       },
-    {
-      key: 'onpremMigration',
-      title: $t({ defaultMessage: 'ZD Migration' }),
-      component: <OnpremMigration />
-    },
+    ...(
+      hasAllowedOperations([getOpsApi(MigrationUrlsInfo.getZdConfigurationList)])
+        ? [{
+          key: 'onpremMigration',
+          title: $t({ defaultMessage: 'ZD Migration' }),
+          component: <OnpremMigration />
+        }] : []
+    ),
     ...(isRadiusClientEnabled
       ? [{
         key: 'localRadiusServer',

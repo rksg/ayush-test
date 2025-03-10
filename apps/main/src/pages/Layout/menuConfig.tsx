@@ -32,11 +32,12 @@ import {
   getPolicyListRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
-  hasAdministratorTab
+  hasAdministratorTab,
+  MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
-import { useTenantId }                                    from '@acx-ui/utils'
+import { RolesEnum }                                                            from '@acx-ui/types'
+import { hasRoles, useUserProfileContext, RaiPermission, hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi, useTenantId }                                               from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -427,10 +428,11 @@ export function useMenuConfig () {
                   uri: '/administration/webhooks',
                   label: $t({ defaultMessage: 'Webhooks' })
                 },
-                {
-                  uri: '/administration/onpremMigration',
-                  label: $t({ defaultMessage: 'ZD Migration' })
-                }
+                ...(hasAllowedOperations([getOpsApi(MigrationUrlsInfo.getZdConfigurationList)])
+                  ? [{
+                    uri: '/administration/onpremMigration',
+                    label: $t({ defaultMessage: 'ZD Migration' })
+                  }]: [])
               ] : []
             ),
             ...(isRadiusClientEnabled && !isCustomRoleCheck ? [{

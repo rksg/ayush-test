@@ -125,6 +125,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/delegations/:delegationId',
     oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    opsApi: 'DELETE:/tenants/delegations/{id}',
     newApi: true
   },
   inviteVAR: {
