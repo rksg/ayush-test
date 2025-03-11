@@ -21,7 +21,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useEnforcedStatus }                   from '../../../configTemplates'
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
 import WifiCallingScopeForm                    from '../WifiCallingScope/WifiCallingScopeForm'
@@ -67,7 +66,6 @@ export const WifiCallingForm = () => {
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
   const pageTitle = useServicePageHeaderTitle(false, ServiceType.WIFI_CALLING)
   const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
@@ -100,7 +98,6 @@ export const WifiCallingForm = () => {
         form={form}
         onCancel={() => navigate(previousPath, { replace: true })}
         onFinish={handleAddWifiCallingService}
-        {...getEnforcedStepsFormProps('StepsForm')}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='settings'
