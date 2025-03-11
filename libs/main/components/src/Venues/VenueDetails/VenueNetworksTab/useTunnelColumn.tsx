@@ -16,6 +16,7 @@ import {
   tansformSdLanScopedVenueMap,
   useDeactivateNetworkTunnelByType,
   useEdgeAllPinData,
+  useGetIpsecScopeVenueMap,
   useGetSoftGreScopeVenueMap,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -41,6 +42,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const ipsecVenueMap = useGetIpsecScopeVenueMap()
   // eslint-disable-next-line max-len
   const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
   const allPins = useEdgeAllPinData({}, isTemplate)
@@ -83,7 +85,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
-      width: 180,
+      width: 200,
       align: 'center' as const,
       render: function (_: ReactNode, row: Network) {
         if (!venueId || !row.activated?.isActivated) return null
@@ -97,6 +99,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanVenueMap[venueId]
         const venueSoftGre = softGreVenueMap[venueId]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        const targetIpsec = ipsecVenueMap[venueId]
 
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
@@ -135,6 +138,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             venueSdLan={venueSdLanInfo}
             venueSoftGre={targetSoftGre?.[0]}
             venuePin={venuePinInfo}
+            venueIpSec={targetIpsec?.[0]}
           />
         </StepsForm.FieldLabel>
 

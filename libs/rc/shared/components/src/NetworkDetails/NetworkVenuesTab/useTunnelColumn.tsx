@@ -23,6 +23,7 @@ import {
   getNetworkTunnelType,
   useDeactivateNetworkTunnelByType,
   useEdgePinScopedNetworkVenueMap,
+  useGetIpsecScopeNetworkMap,
   useGetSoftGreScopeNetworkMap
 } from '../../NetworkTunnelActionModal'
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
@@ -46,6 +47,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
   const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
+  const ipsecVenueMap = useGetIpsecScopeNetworkMap(networkId)
   const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
   const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
@@ -74,7 +76,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
-      width: 180,
+      width: 200,
       align: 'center' as const,
       render: function (_: ReactNode, row: Venue) {
         if (!networkId || !row.activated?.isActivated) return null
@@ -88,6 +90,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
+        const targetIpsec = ipsecVenueMap[row.id]
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
         // eslint-disable-next-line max-len
@@ -119,6 +122,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             venueSdLan={venueSdLanInfo}
             venueSoftGre={targetSoftGre?.[0]}
             venuePin={venuePinInfo}
+            venueIpSec={targetIpsec?.[0]}
           />
         </StepsForm.FieldLabel>
       }
