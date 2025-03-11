@@ -31,6 +31,7 @@ export function TopApplicationsByTraffic ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
+  const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
   const isRA = Boolean(get('IS_MLISA_SA'))
   const { tenantId } = getJwtTokenPayload()
   const { data: privacySettings } = useGetPrivacySettingsQuery({
@@ -139,7 +140,7 @@ export function TopApplicationsByTraffic ({
             <div style={{ display: 'block', height, width }}>
               {isAppVisibilityEnabled ?
                 <ContentSwitcher tabDetails={tabDetails} size='small' />
-                : <NoData />}
+                : <NoData text={noPermissionText}/>}
             </div>
           )}
         </AutoSizer>

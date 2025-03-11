@@ -48,6 +48,7 @@ export function TopAppsByTraffic ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
+  const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
   const isRA = Boolean(get('IS_MLISA_SA'))
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { tenantId } = getJwtTokenPayload()
@@ -105,7 +106,7 @@ export function TopAppsByTraffic ({
                   size={'x-large'}
                 />
               </div>
-              : <NoData />
+              : <NoData text={isAppVisibilityEnabled === false ? noPermissionText : undefined}/>
           )}
         </AutoSizer>
       </HistoricalCard>

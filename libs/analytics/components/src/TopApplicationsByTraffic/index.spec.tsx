@@ -18,32 +18,6 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
 
-const settingsEnabled = {
-  privacyFeatures: [
-    {
-      featureName: 'APP_VISIBILITY',
-      isEnabled: true
-    },
-    {
-      featureName: 'ARC',
-      isEnabled: true
-    }
-  ]
-}
-
-const settingsDisabled = {
-  privacyFeatures: [
-    {
-      featureName: 'APP_VISIBILITY',
-      isEnabled: false
-    },
-    {
-      featureName: 'ARC',
-      isEnabled: false
-    }
-  ]
-}
-
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
 
 const extractRows = (doc:DocumentFragment)=>{
@@ -73,6 +47,32 @@ describe('TopApplicationsByTrafficWidget', () => {
     filter: {}
   }
 
+  const settingsEnabled = {
+    privacyFeatures: [
+      {
+        featureName: 'APP_VISIBILITY',
+        isEnabled: true
+      },
+      {
+        featureName: 'ARC',
+        isEnabled: true
+      }
+    ]
+  }
+
+  const settingsDisabled = {
+    privacyFeatures: [
+      {
+        featureName: 'APP_VISIBILITY',
+        isEnabled: false
+      },
+      {
+        featureName: 'ARC',
+        isEnabled: false
+      }
+    ]
+  }
+
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
@@ -82,9 +82,11 @@ describe('TopApplicationsByTrafficWidget', () => {
         (_req, res, ctx) => res(ctx.json(settingsEnabled)))
     )
     store.dispatch(api.util.resetApiState())
-  }
+  })
 
-  )
+  afterEach(() => {
+    mockServer.resetHandlers()
+  })
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
@@ -136,7 +138,7 @@ describe('TopApplicationsByTrafficWidget', () => {
     })
     render( <Provider> <TopApplicationsByTraffic filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    expect(screen.queryByText('No data to display')).not.toBeInTheDocument()
+    expect(screen.queryByText('No permission to view application data')).not.toBeInTheDocument()
   })
   it('should render for empty data when APP_VISIBILITY is false', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -147,15 +149,12 @@ describe('TopApplicationsByTrafficWidget', () => {
         (_req, res, ctx) => res(ctx.json(settingsDisabled)))
     )
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
-      data: { network: { hierarchyNode: {
-        topNAppByTotalTraffic: []
-      } } }
+      data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
-    const { asFragment } = render( <Provider>
+    render( <Provider>
       <TopApplicationsByTraffic filters={filters}/>
     </Provider>)
-    await screen.findByText('No data to display')
-    expect(asFragment()).toMatchSnapshot('NoData when APP_VISIBILITY is false')
+    expect(screen.queryByText('No data to display')).not.toBeInTheDocument()
   })
   it('should render for empty data when app privacy api is failed', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -166,15 +165,13 @@ describe('TopApplicationsByTrafficWidget', () => {
         (_req, res, ctx) => res(ctx.status(500), ctx.json(null)))
     )
     mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
-      data: { network: { hierarchyNode: {
-        topNAppByTotalTraffic: []
-      } } }
+      data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
     })
     const { asFragment } = render( <Provider>
       <TopApplicationsByTraffic filters={filters}/>
     </Provider>)
-    await screen.findByText('No data to display')
-    expect(asFragment()).toMatchSnapshot('NoData when privacy api is failed')
+    await screen.findByText('No permission to view application data')
+    expect(asFragment()).toMatchSnapshot('No permission when privacy api is failed')
   })
   it('should render chart when IS_MLISA_RA is true', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -185,7 +182,7 @@ describe('TopApplicationsByTrafficWidget', () => {
     })
     render( <Provider> <TopApplicationsByTraffic filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    expect(screen.queryByText('No data to display')).not.toBeInTheDocument()
+    expect(screen.queryByText('No permission to view application data')).not.toBeInTheDocument()
     process.env = originalEnv
   })
 
