@@ -8,8 +8,8 @@ import { useIntl }   from 'react-intl'
 import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
 import {
-  useDeletePersonaAssociationMutation,
-  useGetPersonaIdentitiesQuery,
+  useRemoveUnitLinkedIdentityMutation,
+  useGetUnitsLinkedIdentitiesQuery,
   useGetPropertyConfigsQuery,
   useGetVenueQuery,
   useLazyGetPersonaByIdQuery,
@@ -20,6 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import {
+  TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -36,8 +37,13 @@ export function PropertyUnitDetails () {
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [identitiesCount, setIdentitiesCount] = useState(0)
-  const identities = useGetPersonaIdentitiesQuery({ params: { venueId, unitId },
-    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
+  const identities = useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
+    payload: {
+      pageSize: 10000, page: 1, sortOrder: 'ASC',
+      filters: {
+        unitId: unitId
+      }
+    } })
 
   const settingsId = 'property-units-identity-table'
   const identitiesList = useTableQuery({
@@ -61,7 +67,7 @@ export function PropertyUnitDetails () {
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const [updatePersona] = useUpdatePersonaMutation()
-  const [deletePersonaAssociation] = useDeletePersonaAssociationMutation()
+  const [deletePersonaAssociation] = useRemoveUnitLinkedIdentityMutation()
   const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
   const [residentPortalUrl, setResidentPortalUrl] = useState<string|undefined>(undefined)
   const [unitData, setUnitData] = useState<PropertyUnitFormFields>()
@@ -81,19 +87,23 @@ export function PropertyUnitDetails () {
     }
   }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading ])
 
+  const updateDetails = () => {
+    getUnitById({ params: { venueId, unitId } })
+      .then(result => {
+        if (result.data) {
+          const { personaId, guestPersonaId } = result.data
+          combinePersonaInfo(result.data, personaId, guestPersonaId)
+          const url = (result.data as PropertyUnit)?._links?.residentPortal?.href
+          if (url) {
+            setResidentPortalUrl(url)
+          }
+        }
+      })
+  }
+
   useEffect(() => {
     if (unitId && venueId && personaGroupId) {
-      getUnitById({ params: { venueId, unitId } })
-        .then(result => {
-          if (result.data) {
-            const { personaId, guestPersonaId } = result.data
-            combinePersonaInfo(result.data, personaId, guestPersonaId)
-            const url = (result.data as PropertyUnit)?._links?.residentPortal?.href
-            if (url) {
-              setResidentPortalUrl(url)
-            }
-          }
-        })
+      updateDetails()
     }
   }, [unitId, personaGroupId])
 
@@ -132,7 +142,7 @@ export function PropertyUnitDetails () {
   }
 
   const handleSuspend = () => {
-    showActionModal({
+    unitData?.status === PropertyUnitStatus.ENABLED ? showActionModal({
       type: 'confirm',
       title: $t({
         defaultMessage: 'Suspend "{entityValue}"?' }, {
@@ -144,9 +154,12 @@ export function PropertyUnitDetails () {
         updateUnitById({
           params: { venueId, unitId: unitId },
           payload: { status: PropertyUnitStatus.DISABLED }
-        })
+        }).then(() => updateDetails())
       }
-    })
+    }) : updateUnitById({
+      params: { venueId, unitId: unitId },
+      payload: { status: PropertyUnitStatus.ENABLED }
+    }).then(() => updateDetails())
   }
 
   const UnitDetails = () => {
@@ -169,7 +182,7 @@ export function PropertyUnitDetails () {
             label={$t({ defaultMessage: 'Status' })}
             children={<Paragraph>
               {unitData?.status === PropertyUnitStatus.ENABLED ? $t({ defaultMessage: 'Active' })
-                : $t({ defaultMessage: 'Blocked' })}
+                : $t({ defaultMessage: 'Suspended' })}
             </Paragraph>} />
           <Form.Item
             colon={false}
@@ -241,7 +254,14 @@ export function PropertyUnitDetails () {
       key: 'identityName',
       title: $t({ defaultMessage: 'Identity Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        return (
+          <TenantLink
+            to={`/users/identity-management/identity-group/${row.groupId}/identity/${row.id}`}>
+            {highlightFn(row.name)}</TenantLink>
+        )
+      }
     },
     {
       key: 'revoked',
@@ -376,7 +396,8 @@ export function PropertyUnitDetails () {
       extra={[
         <Button
           onClick={handleSuspend}
-        >{$t({ defaultMessage: 'Suspend' })} </Button>,
+        >{unitData?.status === PropertyUnitStatus.ENABLED
+            ? $t({ defaultMessage: 'Suspend' }) : $t({ defaultMessage: 'Activate' }) } </Button>,
         <Button
           onClick={() => {
             window.open(residentPortalUrl, '_blank')
@@ -414,7 +435,10 @@ export function PropertyUnitDetails () {
         countryCode={venueData?.address?.countryCode}
         unitId={unitId}
         isEdit={true}
-        onClose={() => setConfigurePropertyUnitDrawerVisible(false)}
+        onClose={() => {
+          setConfigurePropertyUnitDrawerVisible(false)
+          updateDetails()
+        }}
       />
     }
     {addIdentityAssociationDrawerVisible &&

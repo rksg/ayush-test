@@ -1,6 +1,6 @@
 import { defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { NetworkNode }        from '@acx-ui/utils'
 
-import { NetworkNode }      from '../../../NetworkFilter/services'
 import { mockNetworkNodes } from '../__tests__/mockedEcoFlex'
 
 import { transformSANetworkHierarchy } from './APSelection'

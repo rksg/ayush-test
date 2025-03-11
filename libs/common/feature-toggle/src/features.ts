@@ -6,6 +6,7 @@ export enum Features {
   ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
   ALARM_WITH_PRODUCT_FILTER_TOGGLE = 'alarm-with-product-filter-toggle',
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
+  ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
@@ -16,8 +17,10 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
+  BULK_VLAN_PROVISIONING = 'acx-ui-bulk-vlan-provisioning-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
   CLOUDPATH_BETA = 'BETA-CP',
+  IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
@@ -201,6 +204,7 @@ export enum Features {
   WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
+  WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE = 'wifi-ipsec-psk-over-network',
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
   WIFI_DPSK3_NON_PROXY_MODE_TOGGLE='wifi-dpsk3-non-proxy-mode-toggle',
@@ -299,7 +303,8 @@ export enum Features {
   SWITCH_ERROR_DISABLE_STATUS = 'switch-indicate-error-disable-status-toggle',
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
-  LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner'
+  LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
+  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -1,18 +1,21 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { type NetworkPath, type NodeType } from '@acx-ui/utils'
-
-import { type NetworkNode } from '../NetworkFilter/services'
+import type { NetworkPath, NodeType, NetworkNode } from '@acx-ui/utils'
 
 import { DisplayStates, Statuses, StatusReasons } from './states'
-import { type IntentWlan }                        from './utils'
+
+export type IntentWlan = {
+  name: string
+  ssid: string
+}
 
 export type Metadata = {
   appliedAt: string
   changedByName?: string
   dataEndTime: string
   failures?: (keyof typeof failureCodes)[]
+  error?: { details?: Record<string, unknown>[] }
   oneClickOptimize?: boolean
   preferences?: IntentPreferences
   retries?: number

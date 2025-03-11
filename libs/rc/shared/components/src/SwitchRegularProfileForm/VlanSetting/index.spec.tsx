@@ -1,7 +1,9 @@
 import '@testing-library/jest-dom'
+import { waitFor }     from '@storybook/testing-library'
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { SwitchConfigurationProfile }             from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import { act, fireEvent, render, screen, within } from '@acx-ui/test-utils'
@@ -204,6 +206,137 @@ describe('Wired - VlanSetting', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     const deleteButton2 = await screen.findByRole('button', { name: /Delete/i })
     await userEvent.click(deleteButton2)
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete Vlan' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete VLAN' }))
+  })
+
+  describe('Bulk VLAN provisioning', () => {
+    it('should handle edit VLAN correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+      )
+      const params = {
+        tenantId: 'tenant-id',
+        action: 'edit'
+      }
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={{
+            ...configureProfileContextValues,
+            editMode: true,
+            currentData: {
+              ...currentData,
+              vlans
+            } as unknown as SwitchConfigurationProfile
+          }}>
+            <Form>
+              <VlanSetting />
+            </Form>
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+        })
+
+      await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+      const row = await screen.findByRole('row', { name: /vlan-02/i })
+      const radio = await within(row).findByRole('radio')
+      await userEvent.click(radio)
+      await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
+      expect(screen.queryByRole('button', { name: /Add Model/i })).toBeNull()
+    })
+
+    it('should handle delete VLAN correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+      )
+      const params = {
+        tenantId: 'tenant-id'
+      }
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={{
+            ...configureProfileContextValues,
+            editMode: true,
+            currentData: {
+              ...currentData,
+              vlans: vlans
+            } as unknown as SwitchConfigurationProfile
+          }}>
+            <Form>
+              <VlanSetting />
+            </Form>
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        })
+
+      const rows = await screen.findAllByRole('row')
+      expect(within(rows[1]).getByRole('cell', { name: /vlan-01/i })).toBeVisible()
+      await userEvent.click(await within(rows[1]).findByRole('radio'))
+      await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+
+      let dialog = await screen.findByRole('dialog')
+      // eslint-disable-next-line max-len
+      expect(await within(dialog).findByText(/Are you sure you want to delete this VLAN/)).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+      await userEvent.click(await within(rows[2]).findByRole('radio'))
+      await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+
+      dialog = await screen.findByRole('dialog')
+      // eslint-disable-next-line max-len
+      expect(await within(dialog).findByText(/This VLAN has already been configured on some ports/)).toBeVisible()
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete VLAN' }))
+      await waitFor(()=>{
+        expect(dialog).not.toBeVisible()
+      })
+    })
+
+    it('should handle change IPv4 DHCP Snooping correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.BULK_VLAN_PROVISIONING || ff === Features.SWITCH_LEVEL_VLAN
+      )
+      const params = {
+        tenantId: 'tenant-id',
+        action: 'edit'
+      }
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={{
+            ...configureProfileContextValues,
+            editMode: true,
+            currentData: {
+              ...currentData,
+              vlans
+            } as unknown as SwitchConfigurationProfile
+          }}>
+            <Form>
+              <VlanSetting />
+            </Form>
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+        })
+
+      await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+      const row = await screen.findByRole('row', { name: /vlan-02/i })
+      const radio = await within(row).findByRole('radio')
+      await userEvent.click(radio)
+      await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
+
+      const dialog = await screen.findByRole('dialog')
+      await userEvent.click(await within(dialog).findByTestId('dhcpSnooping'))
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'Save' }))
+
+      const confirmDialog = await screen.findByRole('dialog')
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText(/Some of the VLANs in this range have a different/)).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Proceed' }))
+      await waitFor(()=>{
+        expect(confirmDialog).not.toBeVisible()
+      })
+    })
   })
 })

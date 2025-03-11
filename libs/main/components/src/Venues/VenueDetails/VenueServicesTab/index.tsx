@@ -38,7 +38,7 @@ export function VenueServicesTab () {
 
   // get edge by venueId, use 'firewallId' in edge data
   const edgeListFields = ['name', 'serialNumber', 'venueId', 'clusterId']
-  const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
+  const { edgeData, isEdgeLoading, edgeClusterIds = [] } = useGetEdgeListQuery(
     { payload: {
       // Before Edge GA, no need to query firewallId
       fields: (isEdgeHaReady && isEdgeFirewallHaReady)
@@ -49,7 +49,9 @@ export function VenueServicesTab () {
       skip: !!!venueId || !isEdgeEnabled,
       selectFromResult: ({ data, isLoading }) => ({
         edgeData: data?.data[0],
-        isEdgeLoading: isLoading
+        isEdgeLoading: isLoading,
+        // eslint-disable-next-line max-len
+        edgeClusterIds: data?.data.map(item => item.clusterId ?? '').filter((v,i,a)=>a.indexOf(v)===i)
       })
     }
   )
@@ -59,13 +61,13 @@ export function VenueServicesTab () {
         fields: [
           'id'
         ],
-        filters: { edgeClusterIds: [edgeData?.clusterId] }
+        filters: { edgeClusterIds }
       }
     },
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: !Boolean(edgeData?.clusterId) || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: edgeClusterIds.length === 0 || !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: Boolean(data?.data?.[0]?.id),
         isEdgeDhcpLoading: isLoading
