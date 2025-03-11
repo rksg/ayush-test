@@ -61,6 +61,19 @@ export const events = [{
   id: '3082c3547b674eb0b481842595090110',
   entity_id: 'FEK3204N013',
   message: '{ "message_template": "@@switchName Switch is deleted by the cloud controller." }'
+}, {
+  severity: 'Major',
+  product: 'EDGE',
+  serialNumber: '9649DF7CBBD88511EFA46EBE7632E75374',
+  entity_type: 'EDGE',
+  event_datetime: '2025-02-26T22:42:00Z',
+  indexName: 'events-2025.02.26-000912',
+  venueId: '04a61e4ee3484e3c857d170f2465bcb3',
+  name: 'EdgeVxLANTunnelCreationFailedV1',
+  id: '004e6496bbc247a088fba2e5c11ddec5',
+  entity_id: '9649DF7CBBD88511EFA46EBE7632E75374',
+  message: '{"message_template":"Edge @@edgeName : Dynamic VxLAN creation has failed for VLAN 123 for remote device @@remoteApName."}',
+  remoteApSerialId: '962202006696'
 }].map(event => ({
   ...event,
   tableKey: event.event_datetime + event.id
@@ -104,6 +117,18 @@ export const eventsMeta = [{
   isApExists: false,
   isVenueExists: true,
   isSwitchExists: true
+}, {
+  switchName: '9649DF7CBBD88511EFA46EBE7632E75374',
+  id: '004e6496bbc247a088fba2e5c11ddec5',
+  remoteApName: 'R750-11-40',
+  isRemoteApExists: true,
+  isRemoteedgeExists: false,
+  isVenueExists: true,
+  venueName: 'vEdge-Venue-A',
+  edgeName: 'vEdge_1101_n1',
+  isEdgeExists: true,
+  isApExists: false,
+  isSwitchExists: false
 }]
 
 export const eventsForQuery = {
