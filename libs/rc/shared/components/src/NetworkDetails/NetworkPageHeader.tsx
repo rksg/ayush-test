@@ -67,9 +67,11 @@ function NetworkPageHeader ({
   const breadcrumb = GenBreadcrumb()
 
   useEffect(() => {
-    setDisableConfigure(
-      networkData?.isOweMaster === false &&
+    if (!isLoading) {
+      setDisableConfigure(
+        networkData?.isOweMaster === false &&
         networkData?.owePairNetworkId !== undefined)
+    }
   }, [networkData, isLoading])
 
   const updateNetworkOpsApi = getOpsApi(isTemplate
