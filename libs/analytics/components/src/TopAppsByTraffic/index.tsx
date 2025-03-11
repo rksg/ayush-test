@@ -50,21 +50,23 @@ export function TopAppsByTraffic ({
   const { $t } = useIntl()
   const isRA = Boolean(get('IS_MLISA_SA'))
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-
   const { tenantId } = getJwtTokenPayload()
-  console.log('🚀 ~ tenantId:', tenantId)
-
   const { data: privacySettings } = useGetPrivacySettingsQuery({ params: { tenantId } })
-  console.log('🚀 ~ data:', privacySettings)
-  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(true)
+  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
   const isAppPrivacyFeatureEnabled = useIsSplitOn(
     Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
-  console.log('🚀 ~ isAppPrivacyFeatureEnabled:', isAppPrivacyFeatureEnabled)
 
   useEffect(() => {
-    const isPrivacyEnabled = privacySettings?.some(item =>
-      item.featureName === PrivacyFeatureName.APP_VISIBILITY && !item.isEnabled)
-    setIsAppVisibilityEnabled(!isAppPrivacyFeatureEnabled || isRA || !isPrivacyEnabled)
+    if(!isAppPrivacyFeatureEnabled || isRA){
+      setIsAppVisibilityEnabled(true)
+    }
+    else if (privacySettings) {
+      const privacyVisibilitySetting = privacySettings
+        .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
+      if(privacyVisibilitySetting?.isEnabled){
+        setIsAppVisibilityEnabled(true)
+      }
+    }
   }, [isAppPrivacyFeatureEnabled, isRA, privacySettings])
 
   const queryResults = useTopAppsByTrafficQuery(filters,{

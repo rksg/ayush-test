@@ -1018,7 +1018,10 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     getPrivacySettings: build.query<PrivacySettings[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.getPrivacySettings, params)
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivacySettings, params, {
+            'x-rks-tenantid': params?.tenantId
+          }, true)
         return {
           ...req
         }
