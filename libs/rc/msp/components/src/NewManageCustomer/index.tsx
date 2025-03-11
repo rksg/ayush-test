@@ -36,7 +36,6 @@ import {
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
-  useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
   useMspCustomerListQuery,
   usePatchCustomerMutation,
@@ -245,8 +244,6 @@ export function NewManageCustomer () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
-  const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
-    { skip: isEntitlementRbacApiEnabled })
   const { data: licenseSummaryResults } = useRbacEntitlementSummaryQuery(
     { params: useParams(), payload: entitlementSummaryPayload })
   const { data: rbacAssignment } = useTableQuery({
@@ -260,7 +257,7 @@ export function NewManageCustomer () {
       skip: !isEntitlementRbacApiEnabled || action !== 'edit'
     }
   })
-  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
+  const licenseAssignment = rbacAssignment?.data
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
         { skip: action !== 'edit' })
@@ -331,42 +328,30 @@ export function NewManageCustomer () {
         if (ecAdministrators) {
           setMspEcAdmins(ecAdministrators)
         }
-        const assigned = isEntitlementRbacApiEnabled ? licenseAssignment
-          : licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
-        setAssignedLicense(assigned)
-        const apsw = isEntitlementRbacApiEnabled
-          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === false
+
+        setAssignedLicense(licenseAssignment)
+        const apsw = licenseAssignment.filter(en => en.status === 'VALID' && en.isTrial === false
             && en.licenseType === EntitlementDeviceType.APSW
-          )
-          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW
-          && en.status === 'VALID' && en.trialAssignment === false)
+        )
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apswTrial = isEntitlementRbacApiEnabled
-          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === true
+        const apswTrial = licenseAssignment.filter(en => en.status === 'VALID'
+            && en.isTrial === true
             && en.licenseType === EntitlementDeviceType.APSW
-          )
-          : assigned.filter(en =>
-            en.deviceType === EntitlementDeviceType.MSP_APSW
-          && en.status === 'VALID' && en.trialAssignment === true)
+        )
         const apswTrialLic = apswTrial.length > 0 ?
           apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-        const solutionToken = isEntitlementRbacApiEnabled
-          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === false
+        const solutionToken = licenseAssignment.filter(en => en.status === 'VALID'
+          && en.isTrial === false
               && en.licenseType === EntitlementDeviceType.SLTN_TOKEN
-          )
-          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_SLTN_TOKEN
-          && en.status === 'VALID' && en.trialAssignment === false)
+        )
 
         const solutionTokenLic = solutionToken.length > 0
           ? solutionToken.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const solutionTokenTrial = isEntitlementRbacApiEnabled
-          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === true
+        const solutionTokenTrial = licenseAssignment.filter(en => en.status === 'VALID'
+            && en.isTrial === true
               && en.licenseType === EntitlementDeviceType.SLTN_TOKEN
-          )
-          : assigned.filter(en =>
-            en.deviceType === EntitlementDeviceType.MSP_SLTN_TOKEN
-          && en.status === 'VALID' && en.trialAssignment === true)
+        )
         const solutionTokenTrialLic = solutionTokenTrial.length > 0 ?
           solutionTokenTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         isTrialEditMode ? checkAvailableLicense(licenseSummaryResults)
