@@ -13,7 +13,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -57,6 +57,7 @@ import {
   LocationExtended,
   Network,
   NetworkSaveData,
+  SocialIdentities,
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
@@ -77,23 +78,23 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import { useGetNetwork }                from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
-import { CloudpathForm }            from './CaptivePortal/CloudpathForm'
-import { DirectoryServerForm }      from './CaptivePortal/DirectoryServerForm'
-import { GuestPassForm }            from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }         from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }           from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }           from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }           from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }                from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext           from './NetworkFormContext'
-import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }              from './NetworkSummary/SummaryForm'
+import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
+import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
+import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }               from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   handleServicePolicyRbacPayload,
   tranferSettingsToSave,
@@ -102,7 +103,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance          from './PortalInstance'
+import PortalInstance         from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -163,6 +164,38 @@ interface GuestMore {
   guestPortal?: GuestPortal,
   userConnection?: UserConnection
 }
+
+type Processor<NetworkSaveData> = (data: NetworkSaveData) => NetworkSaveData
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const process = (data: NetworkSaveData, ...processors: Processor<any>[]): NetworkSaveData =>
+  processors.reduce((acc, fn) => fn(acc), data)
+
+const mergeButDoNothing: Processor<NetworkSaveData> = (data:NetworkSaveData) => data
+
+const mergeSocialIdentities = (newIdentities?: SocialIdentities): Processor<NetworkSaveData> => {
+  if(newIdentities === undefined) return mergeButDoNothing
+  return (mergedData) => {
+    const cloneData = _.cloneDeep(mergedData)
+    if (cloneData.guestPortal?.socialIdentities) {
+      cloneData.guestPortal.socialIdentities = newIdentities
+    }
+    return cloneData
+  }
+}
+
+const mergeSocialEmails = (newEmails?: string[]): Processor<NetworkSaveData> => {
+  if(newEmails === undefined) return mergeButDoNothing
+  return (mergedData) => {
+    const cloneData = _.cloneDeep(mergedData)
+    if (cloneData.guestPortal?.hostGuestConfig) {
+      cloneData.guestPortal.hostGuestConfig.hostEmails = newEmails
+    }
+    return cloneData
+  }
+}
+
+
 export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
@@ -292,25 +325,16 @@ export function NetworkForm (props:{
         saveData.enableAccountingProxy = false
       }
 
-      const newSavedata = merge({}, updateSate, saveData)
-      newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
-      if(saveData.guestPortal?.walledGardens !== undefined && newSavedata.guestPortal){
-        newSavedata.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
+      const mergedData = merge({}, updateSate, saveData)
+      mergedData.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      if(saveData.guestPortal?.walledGardens !== undefined && mergedData.guestPortal){
+        mergedData.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
       }
-
-      const newEmailList = saveData.guestPortal?.hostGuestConfig?.hostEmails
-      if(
-        newSavedata.guestPortal?.hostGuestConfig?.hostEmails &&
-        newSavedata.guestPortal?.hostGuestConfig?.hostEmails?.length !== 0 &&
-        newEmailList
-      ) {
-        if (newEmailList?.length === 0) {
-          newSavedata.guestPortal.hostGuestConfig.hostEmails = []
-        } else {
-          newSavedata.guestPortal.hostGuestConfig.hostEmails = newEmailList
-        }
-      }
-      return { ...saveState, ...newSavedata }
+      const processedData = process(mergedData,
+        mergeSocialIdentities(saveData.guestPortal?.socialIdentities),
+        mergeSocialEmails(saveData.guestPortal?.hostGuestConfig?.hostEmails)
+      )
+      return { ...saveState, ...processedData }
     })
   }
 
