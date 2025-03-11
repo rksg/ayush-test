@@ -29,10 +29,12 @@ import { useGetNetwork }     from './services'
 
 function NetworkPageHeader ({
   setSelectedVenues,
-  selectedVenues
+  selectedVenues,
+  noConfig
 }: {
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
+  noConfig?: boolean
 }) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
@@ -45,10 +47,9 @@ function NetworkPageHeader ({
   const { rbacOpsApiEnabled } = getUserProfile()
   const basePath = useTenantLink('/networks/wireless')
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
-  const { networkId, activeTab, settings } = useParams()
+  const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
-  const hideConfigureButton = () => ['no-configure'].includes(settings as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   const GenBreadcrumb = () => {
@@ -66,11 +67,9 @@ function NetworkPageHeader ({
   const breadcrumb = GenBreadcrumb()
 
   useEffect(() => {
-    if (!isLoading) {
-      setDisableConfigure(
-        networkData?.isOweMaster === false &&
+    setDisableConfigure(
+      networkData?.isOweMaster === false &&
         networkData?.owePairNetworkId !== undefined)
-    }
   }, [networkData, isLoading])
 
   const updateNetworkOpsApi = getOpsApi(isTemplate
@@ -102,7 +101,7 @@ function NetworkPageHeader ({
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]: []),
-        ...((hasUpdateNetworkPermission && !hideConfigureButton()) ? [
+        ...((hasUpdateNetworkPermission && !noConfig) ? [
           <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'

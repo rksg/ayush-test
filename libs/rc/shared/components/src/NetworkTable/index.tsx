@@ -97,7 +97,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
             </span>
             : <TenantLink to={
               (row?.isOweMaster === false && row?.owePairNetworkId !== undefined) ?
-                `/networks/wireless/${row.id}/network-details/overview/no-configure` :
+                `/networks/wireless/${row.id}/network-details/overview-no-config` :
                 `/networks/wireless/${row.id}/network-details/overview`}
             >
               {row.name}
