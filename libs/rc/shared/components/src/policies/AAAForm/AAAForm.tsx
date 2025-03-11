@@ -37,6 +37,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
+import { useEnforcedStatus } from '../../configTemplates'
+
 import { AAASettingForm } from './AAASettingForm'
 
 
@@ -63,6 +65,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
   const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
@@ -276,6 +279,7 @@ export const AAAForm = (props: AAAFormProps) => {
         onCancel={onCancel}
         onFinish={handleAAAPolicy}
         editMode={isEdit}
+        {...getEnforcedStepsFormProps('StepsFormLegacy')}
       >
         <StepsFormLegacy.StepForm
           name='settings'

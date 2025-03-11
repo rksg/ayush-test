@@ -19,8 +19,8 @@ import {
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 
-import { ProtectedEnforceTemplateToggle } from '../../../configTemplates'
-import WifiCallingFormContext             from '../WifiCallingFormContext'
+import { ProtectedEnforceTemplateToggleP1 } from '../../../configTemplates'
+import WifiCallingFormContext               from '../WifiCallingFormContext'
 
 import EpdgTable from './EpdgTable'
 
@@ -200,7 +200,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
           <EpdgTable edit={edit} />
         </Form.Item>
         <div style={{ marginTop: '20px' }}>
-          <ProtectedEnforceTemplateToggle templateId={data?.id} />
+          <ProtectedEnforceTemplateToggleP1 templateId={data?.id} />
         </div>
       </GridCol>
     </GridRow>

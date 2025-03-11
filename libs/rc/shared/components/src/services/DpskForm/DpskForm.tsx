@@ -43,6 +43,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { useEnforcedStatus } from '../../configTemplates'
+
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
 
@@ -97,6 +99,7 @@ export function DpskForm (props: DpskFormProps) {
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -177,6 +180,7 @@ export function DpskForm (props: DpskFormProps) {
           onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
           onFinish={saveData}
           editMode={editMode}
+          {...getEnforcedStepsFormProps('StepsFormLegacy')}
         >
           <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'

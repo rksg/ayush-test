@@ -50,7 +50,7 @@ import { hasRoles }  from '@acx-ui/user'
 import { getIntl }   from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
-import { ProtectedEnforceTemplateToggle }   from '../../configTemplates'
+import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'
 import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
 import { hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
 import { IdentityGroupForm }                from '../../users/IdentityGroupForm'
@@ -165,7 +165,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
-        <ProtectedEnforceTemplateToggle templateId={id} />
+        <ProtectedEnforceTemplateToggleP1 templateId={id} />
       </GridCol>
     </GridRow>
     {isCloudpathEnabled && <CloudpathFormItems editMode={editMode} />}

@@ -27,7 +27,7 @@ import {
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getOpsApi }            from '@acx-ui/utils'
 
-import { ProtectedEnforceTemplateToggle }                         from '../../configTemplates'
+import { ProtectedEnforceTemplateToggleP1 }                       from '../../configTemplates'
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
 import CertificateDrawer                                          from '../CertificateTemplate/Certificate/CertificateDrawer'
@@ -649,7 +649,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               ]}
               children={<PasswordInput />}
             /></Fieldset>}
-          <ProtectedEnforceTemplateToggle templateId={saveState.id} />
+          <ProtectedEnforceTemplateToggleP1 templateId={saveState.id} />
         </Space>
 
         <CertificateAuthorityDrawer
