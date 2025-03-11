@@ -64,22 +64,26 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
   getWebAuthTemplateList: {
     method: 'post',
     newApi: true,
-    url: '/webAuthPageTemplates/query'
+    url: '/webAuthPageTemplates/query',
+    opsApi: 'POST:/webAuthPageTemplates/query'
   },
   addWebAuthTemplate: {
     method: 'post',
     newApi: true,
-    url: '/webAuthPageTemplates'
+    url: '/webAuthPageTemplates',
+    opsApi: 'POST:/webAuthPageTemplates'
   },
   updateWebAuthTemplate: {
     method: 'put',
     newApi: true,
-    url: '/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId',
+    opsApi: 'PUT:/webAuthPageTemplates/{id}'
   },
   deleteWebAuthTemplate: {
     method: 'delete',
     newApi: true,
-    url: '/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId',
+    opsApi: 'DELETE:/webAuthPageTemplates/{id}'
   },
 
   getAvailableSwitches: {
