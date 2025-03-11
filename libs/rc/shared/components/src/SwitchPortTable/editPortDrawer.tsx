@@ -384,10 +384,6 @@ export function EditPortDrawer ({
     },
     enableRbac: isSwitchRbacEnabled,
     apiParams: { venueId: (switchDetail?.venueId || '') as string },
-    sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
-    },
     option: { skip: !isSwitchMacAclEnabled || !portSecurity || !switchDetail?.venueId }
   })
 
