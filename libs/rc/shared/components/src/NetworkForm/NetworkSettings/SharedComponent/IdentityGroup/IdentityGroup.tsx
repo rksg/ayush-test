@@ -29,6 +29,8 @@ export function IdentityGroup () {
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
   const [identityListTrigger] = useLazySearchPersonaListQuery()
+  const noDisplayUnderSpecificNetwork = ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20]
+    .includes(data?.type ?? NetworkTypeEnum.PSK)
   const handleClose = (identity?: Persona) => {
     setIdentitySelectorDrawerVisible(false)
     if (identity) {
@@ -123,7 +125,7 @@ export function IdentityGroup () {
           </Button>
         </Space>
       </Space>
-      {selectedIdentityGroupId && (
+      {selectedIdentityGroupId && noDisplayUnderSpecificNetwork && (
         <>
           <UI.FieldLabel width={'400px'}>
             {$t({
