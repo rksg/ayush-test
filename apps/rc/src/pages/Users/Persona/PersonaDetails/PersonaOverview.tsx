@@ -17,7 +17,8 @@ import {
   useAllocatePersonaVniMutation,
   useGetConnectionMeteringByIdQuery,
   useGetEdgePinByIdQuery,
-  useGetPropertyUnitByIdQuery
+  useGetPropertyUnitByIdQuery,
+  useGetUnitsLinkedIdentitiesQuery
 } from '@acx-ui/rc/services'
 import { Persona, PersonaGroup, PersonaUrls } from '@acx-ui/rc/utils'
 import { hasAllowedOperations }               from '@acx-ui/user'
@@ -39,13 +40,27 @@ export function PersonaOverview (props:
     { params: { serviceId: personaGroupData?.personalIdentityNetworkId } },
     { skip: !networkSegmentationEnabled || !personaGroupData?.personalIdentityNetworkId }
   )
+
+  const identities = useGetUnitsLinkedIdentitiesQuery(
+    {
+      params: { venueId: personaGroupData?.propertyId },
+      payload: {
+        pageSize: 1, page: 1, sortOrder: 'ASC',
+        filters: {
+          personaId: personaId
+        }
+      }
+    },
+    { skip: !personaGroupData?.propertyId }
+  )
+
   const { data: unitData } = useGetPropertyUnitByIdQuery({
     params: {
       venueId: personaGroupData?.propertyId,
-      unitId: personaData?.identityId
+      unitId: identities?.data?.data[0].unitId
     }
   },
-  { skip: !personaGroupData?.propertyId || !personaData?.identityId }
+  { skip: !personaGroupData?.propertyId || !identities?.data?.data[0].unitId }
   )
   const { data: connectionMetering } = useGetConnectionMeteringByIdQuery(
     { params: { id: personaData?.meteringProfileId } },
@@ -79,7 +94,7 @@ export function PersonaOverview (props:
             showNoData={true}
             name={unitData?.name}
             venueId={personaGroupData?.propertyId}
-            unitId={personaData?.identityId}
+            unitId={unitData?.id}
           />
       }] : []
   ]
