@@ -14,8 +14,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -103,6 +103,7 @@ export function SecurityTab () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
   const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const venueDosProtectionOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateDenialOfServiceProtection,
@@ -362,6 +363,7 @@ export function SecurityTab () {
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
+        {...getEnforcedStepsFormProps('StepsFormLegacy')}
       >
         <StepsFormLegacy.StepForm>
           <FieldsetItem

@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm }   from '@acx-ui/components'
 import { useNavigate } from '@acx-ui/react-router-dom'
+import { NetworkNode } from '@acx-ui/utils'
 
-import { NetworkNode }                                                                      from '../../../NetworkFilter/services'
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
 import { parseExcludedHours, buildExcludedHours }                                           from '../../common/ScheduleWeekly'

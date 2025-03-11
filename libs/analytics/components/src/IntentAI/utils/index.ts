@@ -4,7 +4,7 @@ import { defineMessage } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { Intent, StatusTrail }                    from '../config'
+import { Intent, StatusTrail, IntentWlan }        from '../config'
 import { DisplayStates, Statuses, StatusReasons } from '../states'
 
 type TransitionStatus = Pick<StatusTrail, 'status' | 'statusReason'>
@@ -25,10 +25,7 @@ export const getDefaultTime = () => {
     datetime3AM : datetime3AM.add(1, 'd')
 }
 
-export type IntentWlan = {
-  name: string
-  ssid: string
-}
+
 
 export type TransitionIntentMetadata = {
   scheduledAt?: string

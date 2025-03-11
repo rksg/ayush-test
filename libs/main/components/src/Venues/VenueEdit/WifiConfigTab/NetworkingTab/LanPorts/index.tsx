@@ -39,6 +39,8 @@ import {
   useLazyGetVenueLanPortSettingsByModelQuery,
   useDeactivateSoftGreProfileOnVenueMutation,
   useActivateSoftGreProfileOnVenueMutation,
+  useActivateIpsecOnVenueLanPortMutation,
+  useDeactivateIpsecOnVenueLanPortMutation,
   useGetVenueTemplateLanPortWithEthernetSettingsQuery,
   useActivateTemplateEthernetPortProfileOnVenueApModelPortIdMutation,
   useUpdateVenueTemplateLanPortSpecificSettingsMutation,
@@ -158,6 +160,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetClientIsolationEnabled = useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   // template
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
   const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
@@ -176,7 +179,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     payload: {
       isEthernetPortProfileEnabled,
       isEthernetSoftgreEnabled,
-      isEthernetClientIsolationEnabled
+      isEthernetClientIsolationEnabled,
+      isIpSecOverNetworkEnabled
     },
     skip: isTemplate && (!isEthernetPortTemplate || !isLegacyLanPortEnabled)
   })
@@ -193,6 +197,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
   const [updateActivateSoftGreProfile] = useActivateSoftGreProfileOnVenueMutation()
   const [updateDeactivateSoftGreProfile] = useDeactivateSoftGreProfileOnVenueMutation()
+  const [updateActivateIpSecProfile] = useActivateIpsecOnVenueLanPortMutation()
+  const [updateDeactivateIpSecProfile] = useDeactivateIpsecOnVenueLanPortMutation()
   const [updateActivateClientIsolationPolicy] = useActivateClientIsolationOnVenueMutation()
   const [updateDeactivateClientIsolationPolicy] = useDeleteClientIsolationOnVenueMutation()
 
@@ -301,7 +307,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
 
     const selectedModelWithDefault =
-      getModelWithDefaultEthernetPortProfile(selectedModel, lanPortsCap, tenantId)
+      getModelWithDefaultEthernetPortProfile(selectedModel, lanPortsCap, tenantId, isTemplate)
 
     setSelectedModel(selectedModelWithDefault)
     setSelectedModelCaps(modelCaps as CapabilitiesApModel)
@@ -442,6 +448,37 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }
 
+  const handleDeactivateIpSecProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+    const originSoftGreId = originLanPort?.softGreProfileId
+    const originIpsecId = originLanPort?.ipsecProfileId
+    if(!originSoftGreId || !originIpsecId) {
+      return
+    }
+
+    const isLanPortDisabled = !lanPort.enabled
+    const isSoftGreDisabled = !!!lanPort.softGreEnabled
+    const isIpSecDisabled = !!!lanPort.ipsecEnabled
+    const isSoftGreProfileChanged = originSoftGreId !== lanPort.softGreProfileId
+    const isIpSecProfileChanged = originIpsecId !== lanPort.ipsecProfileId
+
+    if(isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged
+      || isIpSecDisabled || isIpSecProfileChanged) {
+      await updateDeactivateIpSecProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          softGreProfileId: originSoftGreId,
+          ipsecProfileId: originIpsecId
+        }
+      }).unwrap()
+    }
+  }
+
   const handleDeactivateClientIsolationPolicy = async (
     model:string,
     lanPort:LanPort,
@@ -481,6 +518,31 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
           apModel: model,
           portId: lanPort.portId,
           policyId: lanPort.softGreProfileId
+        }
+      }).unwrap()
+    }
+  }
+
+  const handleActivateIpSecProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+
+    const isLanPortEnabled = lanPort.enabled
+    const isSoftGreEnabled = lanPort.softGreEnabled
+    const isIpsecEnabled = lanPort.ipsecEnabled
+    const isIpSecProfileChanged = originLanPort?.ipsecProfileId !== lanPort.ipsecProfileId
+
+    if(isLanPortEnabled && isSoftGreEnabled
+      && isIpsecEnabled && isIpSecProfileChanged) {
+      await updateActivateIpSecProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          softGreProfileId: lanPort.softGreProfileId,
+          ipsecProfileId: lanPort.ipsecProfileId
         }
       }).unwrap()
     }
@@ -645,6 +707,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
               await handleDeactivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
             }
 
+            if(isIpSecOverNetworkEnabled && !isTemplate) {
+              await handleDeactivateIpSecProfile(venueLanPort.model, lanPort, originLanPort)
+            }
+
             // Update ethernet port profile
             await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
 
@@ -660,6 +726,10 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
             if(isEthernetSoftgreEnabled && !isTemplate) {
               await handleActivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            }
+
+            if (isIpSecOverNetworkEnabled && !isTemplate) {
+              await handleActivateIpSecProfile(venueLanPort.model, lanPort, originLanPort)
             }
 
             // Activate Client Isolation must wait Lan settings enable client isolation saved
@@ -798,7 +868,7 @@ function getModelWithDefaultEthernetPortProfile (
 
       const defaultType = lanPortsCaps.find(cap => cap.id === lanPort.portId)?.defaultType
       if (defaultType) {
-        lanPort.ethernetPortProfileId = `${tenantId}_${defaultType}${isTemplate? '_template' : ''}`
+        lanPort.ethernetPortProfileId = `${tenantId}_${defaultType}${isTemplate? '_Template' : ''}`
       }
 
     }

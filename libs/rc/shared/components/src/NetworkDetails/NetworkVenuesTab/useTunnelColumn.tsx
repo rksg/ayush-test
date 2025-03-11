@@ -41,6 +41,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgePinEnhanceReady = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const networkId = network?.id
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
@@ -68,7 +69,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   if (isTemplate) return []
 
-  return isEdgePinEnhanceReady
+  return isEdgePinEnhanceReady || isIpsecEnabled
     ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),

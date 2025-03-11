@@ -26,6 +26,7 @@ import {
   useIsEdgeFeatureReady,
   NetworkTunnelActionModalProps,
   NetworkTunnelActionModal,
+  NetworkTunnelActionDrawer,
   NetworkTunnelActionForm,
   useUpdateNetworkTunnelAction,
   NetworkTunnelTypeEnum,
@@ -188,6 +189,7 @@ export function VenueNetworksTab () {
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const addNetworkOpsApi = getOpsApi(isTemplate
     ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
@@ -699,6 +701,9 @@ export function VenueNetworksTab () {
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
       await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
+      if (isIpSecOverNetworkEnabled) {
+        await softGreTunnelActions.activateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+      }
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
     } catch (e){
@@ -754,11 +759,18 @@ export function VenueNetworksTab () {
         />
       </Form.Provider>
       {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
-        <NetworkTunnelActionModal
-          {...tunnelModalState}
-          onFinish={handleNetworkTunnelActionFinish}
-          onClose={handleCloseTunnelModal}
-        />
+        <>
+          {!isIpSecOverNetworkEnabled && <NetworkTunnelActionModal
+            {...tunnelModalState}
+            onFinish={handleNetworkTunnelActionFinish}
+            onClose={handleCloseTunnelModal}
+          />}
+          {isIpSecOverNetworkEnabled && <NetworkTunnelActionDrawer
+            {...tunnelModalState}
+            onFinish={handleNetworkTunnelActionFinish}
+            onClose={handleCloseTunnelModal}
+          />}
+        </>
       }
     </Loader>
   )

@@ -6,6 +6,8 @@ import moment              from 'moment'
 import { useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 }    from 'uuid'
 
+import { get } from '@acx-ui/config'
+
 import { DateRangeFilter, DateRange, getDateRangeFilter } from './dateUtil'
 import { getIntl }                                        from './intlUtil'
 import { useEncodedParameter }                            from './useEncodedParameter'
@@ -26,7 +28,9 @@ export const useDateFilter = ({
 } = {})=> {
   const { read, write } = useEncodedParameter<DateFilter>('period')
   const { $t } = getIntl()
+  const isRA = get('IS_MLISA_SA')
   const period = read()
+
   const [, setSearch] = useSearchParams()
 
   return useMemo(() => {
@@ -67,7 +71,7 @@ export const useDateFilter = ({
       setDateFilter,
       ...dateFilter
     } as const
-  }, [read, write, period]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, isRA ? [read, write] : [read, write, period]) // eslint-disable-line react-hooks/exhaustive-deps
   // if we add earliestStart as deps, the date will start sliding again
 }
 

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Spin }         from 'antd'
-import { debounce }     from 'lodash'
-import moment           from 'moment'
-import { DndProvider }  from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useIntl }      from 'react-intl'
-import { v4 as uuidv4 } from 'uuid'
+import { Divider, Spin } from 'antd'
+import { debounce }      from 'lodash'
+import moment            from 'moment'
+import { DndProvider }   from 'react-dnd'
+import { HTML5Backend }  from 'react-dnd-html5-backend'
+import { useIntl }       from 'react-intl'
+import { v4 as uuidv4 }  from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
@@ -45,11 +45,13 @@ export default function AICanvas () {
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations have been deleted due to the 30-day retention policy.' })
   const questions = [
     'What can you do?',
-    'Design custom metrics widget',
-    'Generate alerts widget',
-    'Generate device health widget'
+    'Show me the top-consuming clients.',
+    'Generate a graph of my APs usage over the past 24 hours.',
+    'Can you give me the trending network traffic from last week?'
   ] // Only support english default questions in phase 1
 
   const getAllChatsQuery = useGetAllChatsQuery({})
@@ -245,26 +247,25 @@ export default function AICanvas () {
 
   const Message = (props:{ chat: ChatMessage }) => {
     const { chat } = props
-    return <div className='message'>
-      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        <div className='chat-bubble'>
-          {chat.text}
+    return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+      : <div className='message'>
+        <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
+          <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
         </div>
+        { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+          ...chat.widgets[0],
+          sessionId,
+          id: chat.id,
+          chatId: chat.id
+        }}
+        groups={groups}
+        /> }
+        {
+          chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+            {moment(chat.created).format('hh:mm A')}
+          </div>
+        }
       </div>
-      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
-        ...chat.widgets[0],
-        sessionId,
-        id: chat.id,
-        chatId: chat.id
-      }}
-      groups={groups}
-      /> }
-      {
-        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-          {moment(chat.created).format('hh:mm A')}
-        </div>
-      }
-    </div>
   }
 
   return (

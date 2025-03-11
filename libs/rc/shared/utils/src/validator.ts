@@ -1053,6 +1053,15 @@ export function validateVlanExcludingReserved (vlanName: string){
   return Promise.resolve()
 }
 
+export const validateVlanRangeFormat = (value: string) => {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.invalidVlanRangeRegExp))
+  }
+  return Promise.resolve()
+}
+
 export function validateDuplicateVlanName (vlanName: string, vlanList: Vlan[]) {
   const { $t } = getIntl()
   const index = vlanList.filter(item => item.vlanName === vlanName)

@@ -2,7 +2,7 @@
 import { FormInstance }                            from 'antd'
 import { cloneDeep, find, findIndex, isNil, pick } from 'lodash'
 
-import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelIpsecAction, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
 
 import {
   isSdLanGuestUtilizedOnDiffVenue,
@@ -139,4 +139,20 @@ export const handleSoftGreTunnelAction = (props: {
     [`${networkVenueId}`]: { ...modalFormValues.softGre }
   }
   form.setFieldValue('softGreAssociationUpdate', updateContent)
+}
+
+export const handleIpsecAction = (props: {
+  form: FormInstance,
+  networkInfo: NetworkTunnelActionModalProps['network'],
+  modalFormValues: NetworkTunnelActionForm
+}) => {
+  const { form, networkInfo, modalFormValues } = props
+  const networkVenueId = networkInfo?.venueId
+  const ipsecAssociationUpdate = form.getFieldValue('ipsecAssociationUpdate') ??
+  {} as NetworkTunnelIpsecAction
+  const updateContent = {
+    ...ipsecAssociationUpdate,
+    [`${networkVenueId}`]: { ...modalFormValues.ipsec, softGreProfileId: modalFormValues.softGre.newProfileId }
+  }
+  form.setFieldValue('ipsecAssociationUpdate', updateContent)
 }
