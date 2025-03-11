@@ -256,6 +256,7 @@ function PersonaGroupDetails () {
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}
+              venueId={venueDisplay?.id}
               colProps={{
                 name: { searchable: true },
                 email: { searchable: true },

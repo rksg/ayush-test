@@ -13,7 +13,9 @@ import {
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
   useLazyBatchGetPropertyUnitsByIdsQuery,
-  useSearchPersonaGroupListQuery
+  useSearchPersonaGroupListQuery,
+  useGetUnitsLinkedIdentitiesQuery,
+  useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
@@ -47,6 +49,25 @@ function useColumns (
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
+
+  const identities = new Map(useGetUnitsLinkedIdentitiesQuery
+  ({
+    params: { venueId: venueId },
+    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
+  },
+  { skip: !venueId }
+  ).data?.data.map(identity => [identity.personaId, identity.unitId]))
+
+  const units = new Map(useGetPropertyUnitListQuery({
+    params: { venueId: venueId },
+    payload: {
+      page: 1,
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  },
+  { skip: !venueId }).data?.data.map(unit => [unit.id,unit.name]))
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -123,8 +144,8 @@ function useColumns (
         render: (_, row) =>
           <PropertyUnitLink
             venueId={venueId}
-            unitId={row.identityId}
-            name={unitPool.get(row.identityId ?? '')}
+            unitId={identities.get(row.id)}
+            name={units.get(identities.get(row.id) as string)}
           />
         ,
         ...props.identityId
@@ -197,6 +218,7 @@ export interface PersonaTableProps {
   defaultSelectedPersonaId?: string,
   onChange?: (persona?: Persona) => void
   personaGroupId?: string,
+  venueId?: string,
   colProps: PersonaTableColProps,
   settingsId?: string,
   disableAddDevices?: boolean
