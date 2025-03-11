@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Checkbox, Divider, Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                                                  from 'antd/lib/select'
@@ -366,12 +366,11 @@ export function EditPortDrawer ({
     skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b || !switchDetail?.venueId
   })
 
-  const stickyMacAclsColumns: TableProps<string[]>['columns'] = [
+  const stickyMacAclsColumns: TableProps<{ macAddress: string }>['columns'] = [
     {
       key: 'macAddress',
       title: $t({ defaultMessage: 'Sticky MAC Allow List (Learned MAC Address)' }),
-      dataIndex: '0',
-      render: (macAddress: ReactNode) => macAddress?.toString()
+      dataIndex: 'macAddress'
     }
   ]
 
@@ -1342,8 +1341,8 @@ export function EditPortDrawer ({
   }
 
   const onPortSecurityMaxEntriesChange = (value: number | null) => {
-    if (value && switchDetail?.portSecurityMaxEntries &&
-      value < switchDetail.portSecurityMaxEntries) {
+    if (value && editPortData?.portSecurityMaxEntries &&
+      value < editPortData.portSecurityMaxEntries) {
       showActionModal({
         type: 'confirm',
         title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
@@ -1354,7 +1353,7 @@ export function EditPortDrawer ({
         okText: $t({ defaultMessage: 'Delete' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onCancel: () => {
-          form.setFieldsValue({ portSecurityMaxEntries: switchDetail?.portSecurityMaxEntries })
+          form.setFieldsValue({ portSecurityMaxEntries: editPortData?.portSecurityMaxEntries })
         }
       })
     }

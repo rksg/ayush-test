@@ -1998,13 +1998,20 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchMacAcl', id: 'LIST' }]
     }),
-    getSwitchStickyMacAcls: build.query<TableResult<string[]>, RequestPayload>({
+    getSwitchStickyMacAcls: build.query<TableResult<{ macAddress: string }>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getSwitchStickyMacAcls, params, customHeaders.v1)
         return {
           ...req,
           body: JSON.stringify(payload)
+        }
+      },
+      transformResponse: (response: TableResult<string>) => {
+        // Transform the string array into objects with macAddress property
+        return {
+          ...response,
+          data: response.data.map(mac => ({ macAddress: mac }))
         }
       },
       providesTags: [{ type: 'SwitchMacAcl', id: 'STICKYLIST' }]
