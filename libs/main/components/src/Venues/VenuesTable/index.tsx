@@ -36,7 +36,8 @@ import {
   CommonUrlsInfo,
   TableQuery,
   usePollingTableQuery,
-  Venue
+  Venue,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
@@ -299,6 +300,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
+      getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
       getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
@@ -354,6 +356,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
           scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
             getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
           ]
         }) && rowSelection}

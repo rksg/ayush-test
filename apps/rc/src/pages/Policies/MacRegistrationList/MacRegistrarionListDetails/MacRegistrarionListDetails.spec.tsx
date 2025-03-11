@@ -120,6 +120,10 @@ describe('MacRegistrationListDetails', () => {
       rest.get(
         MacRegListUrlsInfo.getMacRegistrations.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macReglist))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrations.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(macReglist))
       )
     )
   })
