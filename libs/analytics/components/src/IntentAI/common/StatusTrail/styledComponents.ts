@@ -13,3 +13,8 @@ export const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 `
+
+export const FootnoteWrapper = styled.div`
+  color: var(--acx-neutrals-50);
+  line-height: 1.5;
+`
