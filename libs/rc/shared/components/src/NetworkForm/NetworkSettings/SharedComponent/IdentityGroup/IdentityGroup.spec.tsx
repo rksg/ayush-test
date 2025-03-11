@@ -18,10 +18,18 @@ describe('IdentityGroup', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(PersonaUrls.searchPersonaGroupList.url
-        .replace(':pageSize', '10000')
-        .replace(':page', '0')
-        .replace(':sort', 'name,asc'),
-      (_, res, ctx) => res(ctx.json(mockIdentityGroupQuery)))
+        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
+      (req, res, ctx) => {
+        const searchParams = req.url.searchParams
+        if (
+          searchParams.get('size') === '10000' &&
+          searchParams.get('page') === '0' &&
+          searchParams.get('sort') === 'name,asc'
+        ) {
+          return res(ctx.json(mockIdentityGroupQuery))
+        }
+        return res(ctx.json(mockIdentityGroupQuery))
+      })
     )
   })
 
