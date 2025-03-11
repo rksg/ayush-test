@@ -633,6 +633,7 @@ export function VenuePropertyTab () {
         groupId={groupId}
         venueId={venueId}
         unitId={selectedUnit?.id}
+        identityCount={selectedUnit?.identityCount?selectedUnit?.identityCount:0}
         onClose={() => {
           setAddIdentityDrawerVisible(false)
         }}

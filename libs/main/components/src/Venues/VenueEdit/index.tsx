@@ -3,12 +3,15 @@ import { createContext, useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
+import { ConfigTemplateEnforcementContext }                    from '@acx-ui/rc/components'
+import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings,
   CommonUrlsInfo,
+  useConfigTemplate,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -110,7 +113,7 @@ export function VenueEdit () {
   const basePath = useTenantLink('')
 
   const { rbacOpsApiEnabled } = getUserProfile()
-  const { activeTab } = useParams()
+  const { venueId, activeTab } = useParams()
   const enablePropertyManagement = usePropertyManagementEnabled()
 
   const Tab = tabs[activeTab as keyof typeof tabs]
@@ -179,6 +182,11 @@ export function VenueEdit () {
     }
   }, [activeTab, basePath, enablePropertyManagement, navigate])
 
+  const { isTemplate } = useConfigTemplate()
+  const { data: venueInstance } = useGetVenueQuery(
+    { params: { venueId } }, { skip: !venueId || isTemplate }
+  )
+
   return (
     <VenueEditContext.Provider value={{
       editContextData,
@@ -196,8 +204,10 @@ export function VenueEdit () {
       previousPath,
       setPreviousPath
     }}>
-      <VenueEditPageHeader />
-      { Tab && <Tab /> }
+      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced: venueInstance?.isEnforced }}>
+        <VenueEditPageHeader />
+        { Tab && <Tab /> }
+      </ConfigTemplateEnforcementContext.Provider>
     </VenueEditContext.Provider>
   )
 }

@@ -148,6 +148,7 @@ export const useCasesToRefreshEthernetPortTemplateList = [
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   'SyncTemplate',
+  'EnforceTemplate',
   'CloneWifiNetworkTemplate',
   ...useCasesToRefreshNetworkTemplateList,
   ...useCasesToRefreshVenueTemplateList,
