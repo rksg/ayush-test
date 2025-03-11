@@ -177,7 +177,7 @@ const mergeSocialIdentities = (newIdentities?: SocialIdentities): Processor<Netw
   if(newIdentities === undefined) return mergeButDoNothing
   return (mergedData) => {
     const cloneData = _.cloneDeep(mergedData)
-    if (cloneData.guestPortal?.socialIdentities) {
+    if (cloneData.guestPortal?.socialIdentities && cloneData.type === NetworkTypeEnum.CAPTIVEPORTAL) {
       cloneData.guestPortal.socialIdentities = newIdentities
     }
     return cloneData
@@ -188,7 +188,7 @@ const mergeSocialEmails = (newEmails?: string[]): Processor<NetworkSaveData> => 
   if(newEmails === undefined) return mergeButDoNothing
   return (mergedData) => {
     const cloneData = _.cloneDeep(mergedData)
-    if (cloneData.guestPortal?.hostGuestConfig) {
+    if (cloneData.guestPortal?.hostGuestConfig && cloneData.type === NetworkTypeEnum.CAPTIVEPORTAL) {
       cloneData.guestPortal.hostGuestConfig.hostEmails = newEmails
     }
     return cloneData
