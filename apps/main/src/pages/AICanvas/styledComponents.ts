@@ -290,6 +290,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         display: grid;
         grid-template-columns: 1fr auto;
         margin-right: 7px;
+        min-height: 25px;
 
         &.fixed {
           width: 300px;
@@ -323,6 +324,12 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           justify-content: end;
           margin-right: 2px;
         }
+      }
+      .message .user-feedback {
+        display: none;
+      }
+      .message:hover .user-feedback {
+        display: block;
       }
       .input {
         background-color: var(--acx-primary-white);

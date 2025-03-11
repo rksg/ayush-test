@@ -247,13 +247,26 @@ export default function AICanvas () {
   }
 
   const onSubmitFeedback = (feedback: boolean, message: ChatMessage) => {
+    const userFeedback = feedback ? 'THUMBS_UP' : 'THUMBS_DOWN'
+    cacheUserFeedback(userFeedback, message)
     sendFeedback({
       params: { sessionId: sessionId, messageId: message.id },
       payload: feedback
-    }).then(()=> {
-      setTimeout(()=> {
-      }, 300)
+    }).catch(()=> {
+      cacheUserFeedback('', message)
     })
+  }
+
+  const cacheUserFeedback = (userFeedback: string, message: ChatMessage) => {
+    const updatedMessage = {
+      ...message,
+      userFeedback: userFeedback
+    }
+    setChats(prevChats =>
+      prevChats.map(chat =>
+        chat.id === message.id ? updatedMessage : chat
+      )
+    )
   }
 
   const Message = (props:{ chat: ChatMessage }) => {
