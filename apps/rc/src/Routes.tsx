@@ -399,7 +399,7 @@ function NetworkRoutes () {
         element={<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT} />} />
       <Route path='networks/wireless/add' element={<NetworkForm />} />
       <Route
-        path='networks/wireless/:networkId/network-details/:activeTab/:settings'
+        path='networks/wireless/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
       />
       <Route
