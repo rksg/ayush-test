@@ -114,13 +114,12 @@ export const createHttpRequest = (
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, tmpParamValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, tmpParamValues)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
-  const respoonseJson = {
+  return {
     headers,
     credentials: 'include' as RequestCredentials,
     method: method,
     url: `${domain}${url}`
   }
-  return respoonseJson
 }
 
 export const batchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
