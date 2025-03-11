@@ -15,6 +15,11 @@ import { dataFormatter, TopAppsByTraffic } from './index'
 
 const params = { tenantId: 'tenant-id' }
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
+}))
+
 const settingsEnabled = {
   privacyFeatures: [
     {
