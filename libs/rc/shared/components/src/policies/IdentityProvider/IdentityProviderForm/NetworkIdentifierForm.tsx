@@ -14,6 +14,7 @@ import {
   IdentityProvider
 } from '@acx-ui/rc/utils'
 
+import { AddRowIdToIdenetityProvider } from '../utils'
 
 import IdentityProviderFormContext from './IdentityProviderFormContext'
 import NaiRealmTable               from './NaiRealm/NaiRealmTable'
@@ -74,11 +75,13 @@ const NetworkIdentifierForm = () => {
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     const findPreConfiguredIdp = preconfiguredIdps?.find((idp) => idp.name === e.key)
     if (findPreConfiguredIdp) {
+      // add RowId
+      const findPreConfiguredIdpData = AddRowIdToIdenetityProvider(findPreConfiguredIdp)
       dispatch({
         type: IdentityProviderActionType.LOAD_PRECONFIGURED,
         payload: {
           state: {
-            ...findPreConfiguredIdp
+            ...findPreConfiguredIdpData
           }
         }
       })

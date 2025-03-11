@@ -65,6 +65,15 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Alarms', id: 'LIST' }, { type: 'Alarms', id: 'OVERVIEW' }]
     }),
+    clearAllAlarms: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.clearAllAlarms, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Alarms', id: 'LIST' }, { type: 'Alarms', id: 'OVERVIEW' }]
+    }),
     getAlarmCount: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
@@ -91,6 +100,7 @@ export const {
   useAlarmsListQuery,
   useClearAlarmMutation,
   useClearAlarmByVenueMutation,
+  useClearAllAlarmsMutation,
   useGetAlarmCountQuery,
   useGetAlarmsCountQuery
 } = eventAlarmApi
