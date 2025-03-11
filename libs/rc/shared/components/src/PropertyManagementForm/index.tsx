@@ -22,6 +22,8 @@ import { useParams }            from '@acx-ui/react-router-dom'
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getOpsApi }            from '@acx-ui/utils'
 
+import { useEnforcedStatus } from '../configTemplates'
+
 import { showDeletePropertyManagementModal }                                                  from './DeletePropertyManagementModal'
 import { PropertyManagementForm }                                                             from './PropertyManagementForm'
 import { getInitialPropertyFormValues, toResidentPortalPayload, useRegisterMessageTemplates } from './utils'
@@ -38,18 +40,20 @@ interface VenuePropertyManagementFormProps {
   form?: FormInstance
   preSubmit?: () => void
   postSubmit?: () => void
+  editMode?: boolean
 }
 
 export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormProps) => {
   const {
     form: customForm, venueId, onFinish, onCancel,
     onValueChange, isSubmitting, submitButtonLabel,
-    preSubmit, postSubmit
+    preSubmit, postSubmit, editMode
   } = props
 
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm(customForm)
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const [isPropertyEnable, setIsPropertyEnable] = useState<boolean>(false)
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
@@ -196,8 +200,13 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
       onFinish={onFinish || onFormFinish}
       onValuesChange={onValueChange}
       onCancel={onCancel}
-      buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{
+        submit: submitButtonLabel || $t({ defaultMessage: 'Save' }),
+        apply: $t({ defaultMessage: 'Save' })
+      }}
       initialValues={initialValues}
+      editMode={editMode}
+      {...getEnforcedStepsFormProps('StepsForm')}
     >
       <StepsForm.StepForm>
         {isPropertyEnable && <Row>

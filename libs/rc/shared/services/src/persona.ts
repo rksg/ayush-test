@@ -13,8 +13,7 @@ import {
   downloadFile,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TxStatus, IdentityClient,
-  PersonaAssociation
+  TxStatus, IdentityClient
 } from '@acx-ui/rc/utils'
 import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -260,19 +259,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       providesTags: [{ type: 'Persona', id: 'ID' }]
     }),
-    getPersonaIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaIdentities, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewTableResult<PersonaAssociation>) {
-        return transferToTableResult<PersonaAssociation>(result)
-      },
-      providesTags: [{ type: 'Persona', id: 'ID' }]
-    }),
     searchPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
@@ -339,15 +325,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
         return {
           ...req,
           body: JSON.stringify(payload)
-        }
-      },
-      invalidatesTags: [{ type: 'Persona' }]
-    }),
-    deletePersonaAssociation: build.mutation({
-      query: ({ params }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.deletePersonaAssociation, params)
-        return {
-          ...req
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
@@ -445,12 +422,10 @@ export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
   useLazyGetPersonaByIdQuery,
-  useGetPersonaIdentitiesQuery,
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,
   useDeletePersonasMutation,
-  useDeletePersonaAssociationMutation,
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
   useImportPersonasMutation,
