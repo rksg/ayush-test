@@ -51,7 +51,10 @@ export function TopAppsByTraffic ({
   const isRA = Boolean(get('IS_MLISA_SA'))
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { tenantId } = getJwtTokenPayload()
-  const { data: privacySettings } = useGetPrivacySettingsQuery({ params: { tenantId } })
+  const { data: privacySettings } = useGetPrivacySettingsQuery({
+    params: { tenantId },
+    customHeaders: { 'x-rks-tenantid': tenantId },
+    payload: { ignoreDelegation: true } })
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
   const isAppPrivacyFeatureEnabled = useIsSplitOn(
     Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)

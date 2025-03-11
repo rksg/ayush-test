@@ -120,10 +120,6 @@ export const createHttpRequest = (
     method: method,
     url: `${domain}${url}`
   }
-  if (url.includes('tenants/privacySettings')) {
-    console.log('🚀 ~ respoonseJson:', respoonseJson)
-
-  }
   return respoonseJson
 }
 
