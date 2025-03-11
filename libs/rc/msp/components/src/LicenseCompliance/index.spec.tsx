@@ -235,7 +235,11 @@ describe('LicenseCompliance', () => {
   it('should render table correctly for non-msp', async () => {
     render(
       <Provider>
-        <LicenseCompliance isMsp={false}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={false}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -253,7 +257,11 @@ describe('LicenseCompliance', () => {
     })
     render(
       <Provider>
-        <LicenseCompliance isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -269,7 +277,11 @@ describe('LicenseCompliance', () => {
     })
     render(
       <Provider>
-        <LicenseCompliance isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -286,7 +298,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -307,7 +323,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -326,7 +346,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -345,7 +369,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={false}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={false}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }

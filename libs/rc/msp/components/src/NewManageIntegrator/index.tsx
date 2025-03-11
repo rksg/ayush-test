@@ -653,7 +653,7 @@ export function NewManageIntegrator () {
 
 
     const solutionTokenLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
-        p.licenseType === EntitlementDeviceType.MSP_SLTN_TOKEN && p.isTrial === false)
+        p.licenseType === EntitlementDeviceType.SLTN_TOKEN && p.isTrial === false)
     let remainingSltn = 0
     solutionTokenLicenses.forEach( (lic: EntitlementSummaries) => {
       remainingSltn += lic.remainingQuantity
