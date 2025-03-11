@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { Space }   from 'antd'
 import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Table }       from '@acx-ui/components'
+import { Table }                  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   NetworkTunnelActionForm,
@@ -86,7 +87,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
       width: 200,
-      align: 'center' as const,
+      align: 'left' as const,
       render: function (_: ReactNode, row: Network) {
         if (!venueId || !row.activated?.isActivated) return null
 
@@ -105,7 +106,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
         const isPinNetwork = !!pinNetworkIds?.includes(row.id)
 
-        return <StepsForm.FieldLabel width='50px'>
+        return <Space>
           <div><NetworkTunnelSwitchBtn
             tunnelType={tunnelType}
             venueSdLanInfo={venueSdLanInfo}
@@ -140,7 +141,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             venuePin={venuePinInfo}
             venueIpSec={targetIpsec?.[0]}
           />
-        </StepsForm.FieldLabel>
+        </Space>
 
       }
     }]
