@@ -16,7 +16,7 @@ import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { formatter }                        from '@acx-ui/formatter'
 import { useGetPrivacySettingsQuery }       from '@acx-ui/rc/services'
 import { PrivacyFeatureName }               from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { getJwtTokenPayload }               from '@acx-ui/utils'
 import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
@@ -48,26 +48,24 @@ export function TopAppsByTraffic ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const isMlisaSa = Boolean(get('IS_MLISA_SA'))
+  const isRA = Boolean(get('IS_MLISA_SA'))
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
-  const params = useParams()
-  const { data: privacySettings } = useGetPrivacySettingsQuery({ params })
-  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
+
+  const { tenantId } = getJwtTokenPayload()
+  console.log('🚀 ~ tenantId:', tenantId)
+
+  const { data: privacySettings } = useGetPrivacySettingsQuery({ params: { tenantId } })
+  console.log('🚀 ~ data:', privacySettings)
+  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(true)
   const isAppPrivacyFeatureEnabled = useIsSplitOn(
     Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
+  console.log('🚀 ~ isAppPrivacyFeatureEnabled:', isAppPrivacyFeatureEnabled)
 
   useEffect(() => {
-    if(!isAppPrivacyFeatureEnabled || isMlisaSa){
-      setIsAppVisibilityEnabled(true)
-    }
-    else if (privacySettings) {
-      const privacyVisibilitySetting = privacySettings
-        .filter(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)[0]
-      if(privacyVisibilitySetting.isEnabled){
-        setIsAppVisibilityEnabled(true)
-      }
-    }
-  }, [isAppPrivacyFeatureEnabled, isMlisaSa, privacySettings])
+    const isPrivacyEnabled = privacySettings?.some(item =>
+      item.featureName === PrivacyFeatureName.APP_VISIBILITY && !item.isEnabled)
+    setIsAppVisibilityEnabled(!isAppPrivacyFeatureEnabled || isRA || !isPrivacyEnabled)
+  }, [isAppPrivacyFeatureEnabled, isRA, privacySettings])
 
   const queryResults = useTopAppsByTrafficQuery(filters,{
     selectFromResult: ({ data, ...rest }) => ({
@@ -77,7 +75,7 @@ export function TopAppsByTraffic ({
   })
 
   const isDataAvailable = isAppVisibilityEnabled &&
-   queryResults.data && queryResults.data.length > 0
+    queryResults.data && queryResults.data.length > 0
 
   useTrackLoadTime({
     itemName: widgetsMapping.TOP_APPS_BY_TRAFFIC,
