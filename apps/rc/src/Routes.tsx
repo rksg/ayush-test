@@ -46,9 +46,11 @@ import {
   WifiCallingForm,
   WifiOperatorForm,
   DirectoryServerForm,
-  AddSsoSaml,
-  EditSsoSaml,
-  SsoSamlDetail
+  AddSamlIdp,
+  EditSamlIdp,
+  SamlIdpDetail,
+  IdentityGroupForm,
+  IdentityForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -68,12 +70,15 @@ import {
   PolicyType,
   ServiceAuthRoute,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  IdentityProviderTabType,
+  PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
+import { getOpsApi }                                   from '@acx-ui/utils'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -120,8 +125,8 @@ import AddEdgeHqosBandwidth                         from './pages/Policies/HqosB
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
 import EdgeHqosBandwidthTable                       from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
+import IdentityProvider                             from './pages/Policies/IdentityProvider'
 import IdentityProviderDetail                       from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
-import IdentityProviderTable                        from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import IpsecDetail                                  from './pages/Policies/Ipsec/IpsecDetail'
 import IpsecTable                                   from './pages/Policies/Ipsec/IpsecTable'
 import LbsServerProfileDetail                       from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
@@ -140,7 +145,6 @@ import SnmpAgentForm                         from './pages/Policies/SnmpAgent/Sn
 import SnmpAgentTable                        from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                         from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                          from './pages/Policies/SoftGre/SoftGreTable'
-import SsoSaml                               from './pages/Policies/SsoSaml'
 import SyslogTable                           from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                      from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                     from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -894,7 +898,7 @@ function PolicyRoutes () {
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
-
+  const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -1117,7 +1121,7 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })}
-        element={<IdentityProviderTable />}
+        element={<IdentityProvider currentTabType={IdentityProviderTabType.Hotspot20} />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.DETAIL })}
@@ -1593,43 +1597,47 @@ function PolicyRoutes () {
           }
         />
       </>
-      }
-      {<>
+      },
+      {isCaptivePortalSsoSamlEnabled &&<>
         <Route
           path={getPolicyRoutePath({
-            type: PolicyType.SSO_SAML ,
+            type: PolicyType.SAML_IDP,
             oper: PolicyOperation.LIST
           })}
-          element={<SsoSaml/>}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.LIST}>
+              <IdentityProvider currentTabType={IdentityProviderTabType.SAML} />
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
-            type: PolicyType.SSO_SAML ,
+            type: PolicyType.SAML_IDP ,
             oper: PolicyOperation.CREATE
           })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.CREATE}>
-              <AddSsoSaml/>
+            <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.CREATE}>
+              <AddSamlIdp/>
             </PolicyAuthRoute>
           }
         />
         <Route
           path={getPolicyRoutePath({
-            type: PolicyType.SSO_SAML ,
+            type: PolicyType.SAML_IDP ,
             oper: PolicyOperation.EDIT
           })}
           element={
-            <PolicyAuthRoute policyType={PolicyType.SSO_SAML} oper={PolicyOperation.EDIT}>
-              <EditSsoSaml/>
+            <PolicyAuthRoute policyType={PolicyType.SAML_IDP} oper={PolicyOperation.EDIT}>
+              <EditSamlIdp/>
             </PolicyAuthRoute>
           }
         />
         <Route
           path={getPolicyRoutePath({
-            type: PolicyType.SSO_SAML ,
+            type: PolicyType.SAML_IDP ,
             oper: PolicyOperation.DETAIL
           })}
-          element={<SsoSamlDetail/>}
+          element={<SamlIdpDetail/>}
         />
       </>
       }
@@ -1676,13 +1684,48 @@ function UserRoutes () {
             element={<PersonaPortal/>}
           />
           <Route
+            path='users/identity-management/identity-group/create'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.addPersonaGroup)]}>
+                <IdentityGroupForm />
+              </AuthRoute>}
+          />
+          <Route
             path='users/identity-management/identity-group/:personaGroupId'
             element={<PersonaGroupDetails/>}
           />
           <Route
-            path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-            element={<PersonaDetails/>}
+            path='users/identity-management/identity-group/:personaGroupId/edit'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.updatePersonaGroup)]}>
+                <IdentityGroupForm editMode={true}/>
+              </AuthRoute>}
           />
+          <Route
+            path='users/identity-management/identity-group/identity/create'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.addPersona)]}>
+                <IdentityForm />
+              </AuthRoute>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/create'
+            element={
+              <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.addPersona)]}>
+                <IdentityForm />
+              </AuthRoute>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+          >
+            <Route index element={<Navigate replace to='./overview' />} />
+            <Route path='edit'
+              element={
+                <AuthRoute rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}>
+                  <IdentityForm editMode={true} />
+                </AuthRoute>} />
+            <Route path=':activeTab' element={<PersonaDetails />} />
+          </Route>
         </> : <></>}
     </Route>
   )

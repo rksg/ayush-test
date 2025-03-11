@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import {
-  ConfigTemplateType,
   ConfigTemplateUrlsInfo,
   generateConfigTemplateBreadcrumb,
   useConfigTemplate,
@@ -23,8 +22,6 @@ import {
   hasPermission
 } from '@acx-ui/user'
 import { getOpsApi, useDateFilter } from '@acx-ui/utils'
-
-import { EnforcedButton } from '../configTemplates/EnforcedButton'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
@@ -106,9 +103,7 @@ function NetworkPageHeader ({
           />
         ]: []),
         ...((hasUpdateNetworkPermission && !hideConfigureButton()) ? [
-          <EnforcedButton
-            configTemplateType={ConfigTemplateType.NETWORK}
-            instanceId={networkId}
+          <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'
             hidden={disableConfigure}
@@ -123,7 +118,7 @@ function NetworkPageHeader ({
                 }
               })
             }
-          >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>
+          >{$t({ defaultMessage: 'Configure' })}</Button>
         ] : [])
       ]}
       footer={<NetworkTabs />}
