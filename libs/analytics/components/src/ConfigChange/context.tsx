@@ -78,7 +78,7 @@ export function ConfigChangeProvider (props: {
   const paginationContext = {
     pagination, setPagination,
     applyPagination: (params: Partial<ConfigChangePaginationParams>) => {
-      setPagination({ ...pagination, ...params })
+      setPagination(preState => ({ ...preState, ...params }))
     }
   }
 
@@ -94,16 +94,16 @@ export function ConfigChangeProvider (props: {
     setDotSelect(params?.id ?? null)
     if(isPaged) {
       const index = sorter === SORTER_ABBR.DESC ? params.id! : pagination.total - params.id! -1
-      setPagination({
-        ...pagination,
-        current: Math.ceil((index + 1) / pagination.pageSize)
-      })
+      setPagination(preState => ({
+        ...preState,
+        current: Math.ceil((index + 1) / preState.pageSize)
+      }))
     }
     else  {
-      setPagination({
-        ...pagination,
-        current: Math.ceil((params.filterId! + 1) / pagination.pageSize)
-      })
+      setPagination(preState => ({
+        ...preState,
+        current: Math.ceil((params.filterId! + 1) / preState.pageSize)
+      }))
     }
   }
   const onRowClick = (params: ConfigChangeType) => {
