@@ -4,11 +4,11 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
-import { useLazyApListQuery }                     from '@acx-ui/rc/services'
+import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useLazyApListQuery }                              from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,
   redirectPreviousPage,
@@ -64,6 +64,7 @@ export function NetworkingTab () {
   const { venueApCaps } = useContext(VenueUtilityContext)
 
   const [ getApList ] = useLazyApListQuery()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   useEffect(() => {
     if (venueApCaps) {
@@ -243,6 +244,7 @@ export function NetworkingTab () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={60} waitForReady />

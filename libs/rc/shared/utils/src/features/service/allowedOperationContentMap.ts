@@ -81,6 +81,12 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateEdgePin)],
     [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteEdgePin)],
     [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
+  },
+  [ServiceType.WEBAUTH_SWITCH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   }
 }
 
