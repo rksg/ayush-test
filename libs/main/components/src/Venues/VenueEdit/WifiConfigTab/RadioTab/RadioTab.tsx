@@ -2,10 +2,10 @@ import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
@@ -28,6 +28,7 @@ export function RadioTab () {
   const params = useParams()
   const { venueId } = params
   const navigate = useNavigate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const radioSettingsOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueRadioCustomization,
@@ -227,6 +228,7 @@ export function RadioTab () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
