@@ -60,8 +60,7 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           granularity: calculateGranularity(
             payload.startDate,
-            payload.endDate,
-            undefined
+            payload.endDate
           ),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: incidentsToggle(payload),

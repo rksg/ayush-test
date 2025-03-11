@@ -9,8 +9,9 @@ const granularities = [
 ]
 
 export const calculateGranularity = (
-  start: string, end: string, minGranularity?: string
+  start: string, end: string
 ): string => {
+  let minGranularity
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
   let gran = getGranularity(interval)
   if (overlapsRollup(start)) minGranularity = 'PT1H'

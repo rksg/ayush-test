@@ -37,7 +37,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Connection Success' }),
     timeseries: {
       apiMetric: 'connectionSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('connectionSuccessAndAttemptCount'),
     pill: {
@@ -57,7 +57,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Time To Connect' }),
     timeseries: {
       apiMetric: 'ttcCountAndConnectionCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       initialThreshold: 2000,
@@ -88,7 +88,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Association' }),
     timeseries: {
       apiMetric: 'assocSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('assocSuccessAndAttemptCount'),
     pill: {
@@ -109,7 +109,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: '802.11 Authentication' }),
     timeseries: {
       apiMetric: 'authSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('authSuccessAndAttemptCount'),
     pill: {
@@ -130,7 +130,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'EAP' }),
     timeseries: {
       apiMetric: 'eapSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('eapSuccessAndAttemptCount'),
     pill: {
@@ -152,7 +152,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
       apiMetric: 'dhcpSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('dhcpSuccessAndAttemptCount'),
     pill: {
@@ -191,7 +191,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'RADIUS' }),
     timeseries: {
       apiMetric: 'radiusSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('radiusSuccessAndAttemptCount'),
     pill: {
@@ -212,7 +212,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Roaming Success' }),
     timeseries: {
       apiMetric: 'clientRoamingSuccessAndAttemptCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('clientRoamingSuccessAndAttemptCount'),
     pill: {
@@ -232,7 +232,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Client RSS' }),
     timeseries: {
       apiMetric: 'rssCountAndSessionCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -265,7 +265,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Client Throughput' }),
     timeseries: {
       apiMetric: 'throughputCountAndSessionCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: true,
@@ -297,7 +297,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'AP Capacity' }),
     timeseries: {
       apiMetric: 'capacityCountAndAPCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: true,
@@ -330,7 +330,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'AP-{smartZone} Connection Uptime' }),
     timeseries: {
       apiMetric: 'apUptimeCountAndApCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: true,
@@ -363,7 +363,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'AP-to-{smartZone} Latency' }),
     timeseries: {
       apiMetric: 'apSzLatencyCountAndAPCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -397,7 +397,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Cluster Latency' }),
     timeseries: {
       apiMetric: 'szLatencyCountAndSzCount',
-      minGranularity: 'PT3M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('szLatencyCountAndSzCount'),
     histogram: {

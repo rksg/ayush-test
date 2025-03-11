@@ -65,8 +65,7 @@ export const Api = dataApi.injectEndpoints({
             path: payload.incident.path,
             granularity: calculateGranularity(
               payload.incident.startTime,
-              payload.incident.endTime,
-              payload.minGranularity
+              payload.incident.endTime
             )
           }
         }

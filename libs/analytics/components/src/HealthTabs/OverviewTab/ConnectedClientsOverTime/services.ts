@@ -53,7 +53,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
+          granularity: calculateGranularity(payload.startDate, payload.endDate),
           ...getFilterPayload(payload),
           enableSwitchFirmwareFilter: true
         }
