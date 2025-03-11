@@ -74,9 +74,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }        from '../useEdgeActions'
+import { usePathBasedOnConfigTemplate, useEnforcedStatus } from '../configTemplates'
+import { useGetNetwork }                                   from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
@@ -299,6 +299,8 @@ export function NetworkForm (props:{
   const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
+
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     updateSaveState((preState) => {
@@ -1320,6 +1322,7 @@ export function NetworkForm (props:{
                 : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
+              {...getEnforcedStepsFormProps('StepsForm', saveState.isEnforced)}
             >
               {
                 !isRuckusAiMode && <StepsForm.StepForm
