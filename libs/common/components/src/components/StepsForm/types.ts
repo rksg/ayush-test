@@ -27,6 +27,13 @@ export type StepsFormProps <T = any> = Omit<
     apply?: string
   }
 
+  buttonProps?: {
+    apply?: {
+      disabled?: boolean
+      tooltip?: string | React.ReactNode
+    }
+  }
+
   customSubmit?: {
     label: string,
     onCustomFinish: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
