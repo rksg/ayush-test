@@ -72,7 +72,8 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
           }
         }).unwrap()
           .then((result) => {
-            if ((result?.paging?.totalCount ?? 0) <= InitialEmptyStepsCount) {
+            const totalCount = result?.paging?.totalCount ?? 0
+            if (totalCount <= InitialEmptyStepsCount) {
               showActionModal({
                 type: 'warning',
                 // eslint-disable-next-line max-len
@@ -83,7 +84,7 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
               })
             } else {
               if ((stepsData?.paging?.totalCount ?? 0)
-                + (result?.paging?.totalCount - InitialEmptyStepsCount ?? 0) // start and end steps will not be cloned
+                + (totalCount - InitialEmptyStepsCount ?? 0) // start and end steps will not be cloned
                 > MaxTotalSteps) {
                 showActionModal({
                   type: 'warning',
