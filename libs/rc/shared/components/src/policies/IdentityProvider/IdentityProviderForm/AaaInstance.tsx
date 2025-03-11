@@ -6,7 +6,7 @@ import { get, isEmpty }        from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { PasswordInput, Tooltip }                                  from '@acx-ui/components'
+import { PasswordInput }                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { AAAViewModalType, AaaServerOrderEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
@@ -98,16 +98,15 @@ export const AaaInstance = (props: AaaInstanceProps) => {
             ]}
           />}
         />
-        <Tooltip>
-          <AAAPolicyModal updateInstance={(data) => {
-            setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
-            form.setFieldValue(radiusIdName, data.id)
-            form.setFieldValue(props.type, data)
-          }}
-          aaaCount={aaaDropdownItems.length}
-          type={radiusType}
-          />
-        </Tooltip></Space>
+        <AAAPolicyModal updateInstance={(data) => {
+          setAaaDropdownItems([...aaaDropdownItems, { label: data.name, value: data.id }])
+          form.setFieldValue(radiusIdName, data.id)
+          form.setFieldValue(props.type, data)
+        }}
+        aaaCount={aaaDropdownItems.length}
+        type={radiusType}
+        />
+      </Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>

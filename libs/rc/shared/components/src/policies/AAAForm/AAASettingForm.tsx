@@ -21,16 +21,19 @@ import {
   PolicyOperation,
   CertificateStatusType,
   ExtendedKeyUsages,
-  URLRegExp
+  URLRegExp,
+  CertificateUrls
 } from '@acx-ui/rc/utils'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import { ProtectedEnforceTemplateToggle }                         from '../../configTemplates'
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
+import CertificateDrawer                                          from '../CertificateTemplate/Certificate/CertificateDrawer'
 
 import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
 import CertificateAuthorityDrawer      from './CertificateAuthorityDrawer'
-import CertificateDrawer               from './CertificateDrawer'
 import { MessageMapping }              from './messageMapping'
 import * as UI                         from './styledComponents'
 
@@ -364,7 +367,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             children={
               <Switch
                 disabled={
-                  showCertificateAuthorityDrawer || showCertificateDrawer || !!forceDisableRadsec
+                  showCertificateAuthorityDrawer || showCertificateDrawer ||
+                  !!forceDisableRadsec || edit
                 }
                 onChange={handleTlsEnabledOnChange}
               />
@@ -424,12 +428,20 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               ]}
               children={
                 <Select
+                  disabled={!hasAllowedOperations([
+                    getOpsApi(CertificateUrls.activateCertificateAuthorityOnRadius),
+                    getOpsApi(CertificateUrls.deactivateCertificateAuthorityOnRadius)
+                  ])}
                   options={[
                     { label: $t({ defaultMessage: 'Select...' }), value: null },
                     ...caSelectOptions]} />
               } />
             { hasPolicyPermission({
               type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE }) &&
+              hasAllowedOperations([
+                getOpsApi(CertificateUrls.addCA),
+                getOpsApi(CertificateUrls.addSubCA)
+              ]) &&
                 <Button type='link'
                   disabled={caSelectOptions.length >= CERTIFICATE_AUTHORITY_MAX_COUNT
                     || (showCertificateAuthorityDrawer || showCertificateDrawer)
@@ -452,6 +464,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               <div>
                 { hasPolicyPermission({
                   type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) &&
+                  hasAllowedOperations([
+                    getOpsApi(CertificateUrls.generateClientServerCertificate),
+                    getOpsApi(CertificateUrls.uploadCertificate)
+                  ]) &&
                 <Button type='link'
                   disabled={certTotalCount >= CERTIFICATE_MAX_COUNT
                     || (showCertificateAuthorityDrawer || showCertificateDrawer)}
@@ -460,6 +476,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               </div>
             }>
             <Select
+              disabled={!hasAllowedOperations([
+                getOpsApi(CertificateUrls.activateClientCertificateOnRadius),
+                getOpsApi(CertificateUrls.deactivateClientCertificateOnRadius)
+              ])}
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
                 ...clientCertOptions
@@ -485,6 +505,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               <div>
                 { hasPolicyPermission({
                   type: PolicyType.SERVER_CERTIFICATES, oper: PolicyOperation.CREATE }) &&
+                  hasAllowedOperations([
+                    getOpsApi(CertificateUrls.generateClientServerCertificate),
+                    getOpsApi(CertificateUrls.uploadCertificate)
+                  ]) &&
                 <Button type='link'
                   disabled={certTotalCount >= CERTIFICATE_MAX_COUNT
                     || (showCertificateAuthorityDrawer || showCertificateDrawer)
@@ -494,6 +518,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               </div>
             }>
             <Select
+              disabled={!hasAllowedOperations([
+                getOpsApi(CertificateUrls.activateServerCertificateOnRadius),
+                getOpsApi(CertificateUrls.deactivateServerCertificateOnRadius)
+              ])}
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
                 ...serverCertOptions

@@ -290,7 +290,8 @@ function useColumns () {
       align: 'center' as AlignType,
       width: 80,
       render: (data: ReactNode, row: AAAViewModalType) => {
-        return (row.radSecOptions?.tlsEnabled ? <CheckMark /> : null)
+        return (row.radSecOptions?.tlsEnabled ?
+          <CheckMark style={{ width: '18px', paddingTop: '4px' }}/> : null)
       }
     },
     {

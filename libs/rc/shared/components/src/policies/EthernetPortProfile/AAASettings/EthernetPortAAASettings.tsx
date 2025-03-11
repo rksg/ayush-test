@@ -49,6 +49,7 @@ export function EthernetPortAAASettings () {
               <Tooltip.Question
                 title={$t(EthernetPortProfileMessages.USE_RADIUS_PROXY)}
                 placement='bottom'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />
             </Space>
             <Form.Item
@@ -83,6 +84,7 @@ export function EthernetPortAAASettings () {
                 <Tooltip.Question
                   title={$t(EthernetPortProfileMessages.USE_RADIUS_PROXY)}
                   placement='bottom'
+                  iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
                 />
               </Space>
               <Form.Item

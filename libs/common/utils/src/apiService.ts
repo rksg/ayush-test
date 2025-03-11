@@ -82,7 +82,7 @@ export const isShowImprovedErrorSuggestion = (errors: any) => {
 }
 
 export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isIntEnv()
+  return isLocalHost() || isIntEnv() || isDev()
 }
 
 export const createHttpRequest = (

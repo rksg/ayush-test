@@ -110,7 +110,8 @@ export function Summary () {
           label={$t({ defaultMessage: 'VLANs:' })}
           children={(currentData.vlans && currentData.vlans.length > 0 &&
             currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN')
-              .map((item) => { return item.vlanId }).join(', ')) ||
+              .map((item) => { return item.vlanId })
+              .sort((a, b) => Number(a) - Number(b)).join(', ')) ||
             $t({ defaultMessage: 'None' })}
         />
         {isSwitchPortProfileToggle &&

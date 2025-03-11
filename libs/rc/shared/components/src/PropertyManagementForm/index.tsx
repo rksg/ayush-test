@@ -11,8 +11,18 @@ import {
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
-import { EditPropertyConfigMessages, PropertyConfigs, PropertyConfigStatus, ResidentPortalType } from '@acx-ui/rc/utils'
-import { useParams }                                                                             from '@acx-ui/react-router-dom'
+import {
+  EditPropertyConfigMessages,
+  PropertyConfigs,
+  PropertyConfigStatus,
+  PropertyUrlsInfo,
+  ResidentPortalType
+} from '@acx-ui/rc/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
+
+import { useEnforcedStatus } from '../configTemplates'
 
 import { showDeletePropertyManagementModal }                                                  from './DeletePropertyManagementModal'
 import { PropertyManagementForm }                                                             from './PropertyManagementForm'
@@ -30,18 +40,20 @@ interface VenuePropertyManagementFormProps {
   form?: FormInstance
   preSubmit?: () => void
   postSubmit?: () => void
+  editMode?: boolean
 }
 
 export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormProps) => {
   const {
     form: customForm, venueId, onFinish, onCancel,
     onValueChange, isSubmitting, submitButtonLabel,
-    preSubmit, postSubmit
+    preSubmit, postSubmit, editMode
   } = props
 
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm(customForm)
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const [isPropertyEnable, setIsPropertyEnable] = useState<boolean>(false)
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
@@ -56,6 +68,19 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
     (propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404,
   [propertyConfigsQuery.error]
   )
+  // Create -> PUT, Update -> Put + PATCH, Delete -> PATCH
+  const hasActivatePropertyPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.updatePropertyConfigs)])
+  const hasDeactivatePropertyPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)])
+  const hasManagePermission = propertyNotFound
+    ? hasActivatePropertyPermission
+    : hasDeactivatePropertyPermission
+  // Two cases can modify the PropertyConfig.
+  // 1. Has PUT permission means user can modify the PropertyConfig
+  // 2. If only has PATCH permission, user can only disable the Property
+  const hasSavePermission
+    = hasActivatePropertyPermission || (!propertyNotFound && !isPropertyEnable)
   const { data: propertyConfigs } = propertyConfigsQuery
 
   // set initial values
@@ -157,6 +182,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
         <Switch
           data-testid={'property-enable-switch'}
           checked={isPropertyEnable}
+          disabled={!hasManagePermission}
           onChange={handlePropertyEnable}
           style={{ marginLeft: '20px' }}
         />
@@ -169,12 +195,18 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
     </Row>
 
     <StepsForm
+      disabled={!hasSavePermission}
       form={form}
       onFinish={onFinish || onFormFinish}
       onValuesChange={onValueChange}
       onCancel={onCancel}
-      buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{
+        submit: submitButtonLabel || $t({ defaultMessage: 'Save' }),
+        apply: $t({ defaultMessage: 'Save' })
+      }}
       initialValues={initialValues}
+      editMode={editMode}
+      {...getEnforcedStepsFormProps('StepsForm')}
     >
       <StepsForm.StepForm>
         {isPropertyEnable && <Row>

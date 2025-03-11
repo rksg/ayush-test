@@ -89,6 +89,7 @@ export interface Administrator {
   roleDsc?: string;
   fullName?: string;
   authenticationId?: string;
+  phoneNumber?: string;
 }
 
 export interface TenantMspEc {
@@ -101,7 +102,7 @@ export interface NotificationPreference {
   DEVICE_AP_FIRMWARE?: boolean;
   DEVICE_SWITCH_FIRMWARE?: boolean;
   DEVICE_EDGE_FIRMWARE?: boolean;
-  DEVICE_API_CHANGES?: boolean;
+  API_CHANGES?: boolean;
 }
 
 export interface TenantDetails {
