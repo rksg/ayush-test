@@ -21,7 +21,7 @@ const leftStyle = css`
     div.ant-drawer-content-wrapper {
       border-radius: 0px;
       .ant-drawer-content {
-        background: var(--acx-neutrals-15);
+        background: var(--acx-neutrals-10);
         .ant-drawer-header {
           border: 0px;
         }

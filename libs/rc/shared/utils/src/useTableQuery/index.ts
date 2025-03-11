@@ -57,6 +57,7 @@ export interface TABLE_QUERY <
   rowKey?: string
   option?: UseQueryOptions
   enableSelectAllPagesData?: string[] // query fields for all data
+  enableSelectAllExtraArg?: Record<string,unknown>
   enableRbac?: boolean
   customHeaders?: Record<string,unknown> // api versioning
 }
@@ -194,7 +195,8 @@ export function useTableQuery <
       pageSize: TABLE_MAX_PAGE_SIZE
     },
     customHeaders: option?.customHeaders,
-    enableRbac: option?.enableRbac
+    enableRbac: option?.enableRbac,
+    ...(option.enableSelectAllExtraArg ?? {})
   }, option.option)
 
   useEffect(() => {
