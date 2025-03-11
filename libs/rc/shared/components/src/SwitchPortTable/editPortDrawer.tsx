@@ -371,7 +371,6 @@ export function EditPortDrawer ({
       key: 'macAddress',
       title: $t({ defaultMessage: 'Sticky MAC Allow List (Learned MAC Address)' }),
       dataIndex: '0',
-      sorter: true,
       render: (macAddress: ReactNode) => macAddress?.toString()
     }
   ]
@@ -384,6 +383,7 @@ export function EditPortDrawer ({
     },
     enableRbac: isSwitchRbacEnabled,
     apiParams: { venueId: (switchDetail?.venueId || '') as string },
+    sorter: { sortField: 'id', sortOrder: 'ASC' },
     option: { skip: !isSwitchMacAclEnabled || !portSecurity || !switchDetail?.venueId }
   })
 
