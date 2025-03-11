@@ -3,9 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { softGreApi }      from '@acx-ui/rc/services'
-import { SoftGreUrls }     from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { softGreApi }             from '@acx-ui/rc/services'
+import { IpsecUrls, SoftGreUrls } from '@acx-ui/rc/utils'
+import { Provider, store }        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -25,6 +26,9 @@ describe('SoftGRETunnelSettings', () => {
     mockServer.use(
       rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftgreViewModel))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json([]))
       })
     )
   })
@@ -94,7 +98,28 @@ describe('SoftGRETunnelSettings', () => {
     const dropdown = await screen.findByRole('combobox')
     expect(dropdown).toBeDisabled()
   })
-
+  it('Should display ipsec settings', async () => {
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff => ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+    render(
+      <Provider>
+        <Form>
+          <SoftGRETunnelSettings
+            index={1}
+            readonly={false}
+          />
+        </Form>
+      </Provider>
+    )
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
+    expect(await screen.findByTestId('enable-softgre-tunnel-banner')).toBeInTheDocument()
+    expect(screen.getByText(/Enable IPsec/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('ipsec-profile-select')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('ipsec-switch'))
+    expect(await screen.findByTestId('enable-ipsec-banner')).toBeInTheDocument()
+    expect(await screen.findByTestId('ipsec-profile-select')).toBeInTheDocument()
+  })
 })
 
 describe('useSoftGreProfileLimitedSelection', () => {

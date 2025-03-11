@@ -131,12 +131,12 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
       }
 
       payload.email = formValues.newEmail
+      payload.phoneNumber =
+        notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
       if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
         payload.authenticationId = authenticationData.id
         payload.lastName = formValues.lastName ?? ''
         payload.name = formValues.firstName ?? ''
-        payload.phoneNumber =
-          notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
       }
 
       await addAdmin({ params, payload }).unwrap()
@@ -255,17 +255,18 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
                 placeholder={$t({ defaultMessage: 'Enter family name' })}
               />
             </Form.Item>
-            {notificationAdminContextualEnabled && <Form.Item
-              label={$t({ defaultMessage: 'Phone' })}
-              name='mobile'
-              rules={[
-                { validator: (_, value) => generalPhoneRegExp(value) }
-              ]}
-              initialValue=''
-              validateFirst >
-              <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
-            </Form.Item>}
           </div>}
+
+        {notificationAdminContextualEnabled && <Form.Item
+          label={$t({ defaultMessage: 'Phone' })}
+          name='mobile'
+          rules={[
+            { validator: (_, value) => generalPhoneRegExp(value) }
+          ]}
+          initialValue=''
+          validateFirst >
+          <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
+        </Form.Item>}
 
         {isAbacToggleEnabled
           ? <PrivilegeGroupSelector

@@ -37,13 +37,35 @@ export function NetworkDetails () {
 
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   const [selectedVenues, setSelectedVenues] = useState<string[]>([])
-  return activeTab === 'overview'
-    ? <>
-      <NetworkPageHeader selectedVenues={selectedVenues} setSelectedVenues={setSelectedVenues} />
-      { <NetworkOverviewTab selectedVenues={selectedVenues} /> }
-    </>
-    : <>
-      <NetworkPageHeader />
-      { Tab && <Tab /> }
-    </>
+
+  switch(activeTab) {
+    case 'overview':
+      return (
+        <>
+          <NetworkPageHeader
+            selectedVenues={selectedVenues}
+            setSelectedVenues={setSelectedVenues}
+          />
+          { <NetworkOverviewTab selectedVenues={selectedVenues} /> }
+        </>
+      )
+    case 'overview-no-config':
+      return (
+        <>
+          <NetworkPageHeader
+            selectedVenues={selectedVenues}
+            setSelectedVenues={setSelectedVenues}
+            noConfig={true}
+          />
+          { <NetworkOverviewTab selectedVenues={selectedVenues} /> }
+        </>
+      )
+    default:
+      return (
+        <>
+          <NetworkPageHeader />
+          { Tab && <Tab /> }
+        </>
+      )
+  }
 }

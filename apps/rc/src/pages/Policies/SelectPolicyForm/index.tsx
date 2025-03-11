@@ -48,6 +48,7 @@ export default function SelectPolicyForm () {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
@@ -172,6 +173,11 @@ export default function SelectPolicyForm () {
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
       disabled: !(isSwitchPortProfileEnabled &&
         hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE] }))
+    },
+    {
+      type: PolicyType.IPSEC,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !(isIpsecEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
     }
   ]
 

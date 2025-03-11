@@ -91,7 +91,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Workflow' }]
+      invalidatesTags: [{ type: 'Workflow' }, { type: 'Step' }]
     }),
     deleteWorkflow: build.mutation({
       query: ({ params }) => {
@@ -421,7 +421,8 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CREATE_STEP',
-            'DELETE_STEP'
+            'DELETE_STEP',
+            'IMPORT_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([

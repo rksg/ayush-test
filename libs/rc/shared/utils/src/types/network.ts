@@ -109,7 +109,7 @@ export interface NetworkDetail {
 
 export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
 
-export interface NetworkSaveData {
+export interface NetworkSaveData extends EnforceableFields {
   id?: string
   name?: string
   tenantId?: string
@@ -178,7 +178,8 @@ export interface NetworkSaveData {
   certificateTemplateId?: string
   accountingInterimUpdates?: number
   sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
-  softGreAssociationUpdate?: NetworkTunnelSoftGreAction,
+  softGreAssociationUpdate?: NetworkTunnelSoftGreAction
+  ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
   identityGroupId?: string,
   identityId?: string
 }
@@ -278,5 +279,15 @@ export interface NetworkTunnelSoftGreAction {
     newProfileId: string,
     newProfileName: string,
     oldProfileId: string
+  }
+}
+
+export interface NetworkTunnelIpsecAction {
+  [name:string]: {
+    softGreProfileId: string,
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string,
+    enableIpsec: boolean
   }
 }

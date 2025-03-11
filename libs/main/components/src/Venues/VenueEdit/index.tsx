@@ -3,12 +3,17 @@ import { createContext, useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
+import { ConfigTemplateEnforcementContext }                    from '@acx-ui/rc/components'
+import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings,
-  CommonUrlsInfo } from '@acx-ui/rc/utils'
+  CommonUrlsInfo,
+  useConfigTemplate,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
 import {
@@ -108,7 +113,7 @@ export function VenueEdit () {
   const basePath = useTenantLink('')
 
   const { rbacOpsApiEnabled } = getUserProfile()
-  const { activeTab } = useParams()
+  const { venueId, activeTab } = useParams()
   const enablePropertyManagement = usePropertyManagementEnabled()
 
   const Tab = tabs[activeTab as keyof typeof tabs]
@@ -142,7 +147,10 @@ export function VenueEdit () {
     if (!activeTab) {
       const navigateTo =
       hasDetailsPermission ? 'details' :
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
+        hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+        }) ? 'wifi' :
           hasPermission({
             scopes: [SwitchScopes.UPDATE],
             rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
@@ -158,7 +166,10 @@ export function VenueEdit () {
     }
 
     const hasNoPermissions
-    = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
+    = (!hasPermission({
+      scopes: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+    }) && activeTab === 'wifi')
     || (!hasPermission({
       scopes: [SwitchScopes.UPDATE],
       rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
@@ -170,6 +181,11 @@ export function VenueEdit () {
       navigate(notPermissions, { replace: true })
     }
   }, [activeTab, basePath, enablePropertyManagement, navigate])
+
+  const { isTemplate } = useConfigTemplate()
+  const { data: venueInstance } = useGetVenueQuery(
+    { params: { venueId } }, { skip: !venueId || isTemplate }
+  )
 
   return (
     <VenueEditContext.Provider value={{
@@ -188,8 +204,10 @@ export function VenueEdit () {
       previousPath,
       setPreviousPath
     }}>
-      <VenueEditPageHeader />
-      { Tab && <Tab /> }
+      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced: venueInstance?.isEnforced }}>
+        <VenueEditPageHeader />
+        { Tab && <Tab /> }
+      </ConfigTemplateEnforcementContext.Provider>
     </VenueEditContext.Provider>
   )
 }
