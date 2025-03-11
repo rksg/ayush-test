@@ -103,6 +103,10 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       dataIndex: 'email',
       searchable: true
     },{
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      dataIndex: 'phoneNumber'
+    },{
       key: 'revoked',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'revoked',
@@ -110,10 +114,11 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       render: (_, row) => row.revoked ? $t({ defaultMessage: 'Blocked' })
         : $t({ defaultMessage: 'Active' })
     },{
-      key: 'deviceCount',
-      title: $t({ defaultMessage: 'Devices' }),
-      dataIndex: 'deviceCount',
-      align: 'center'
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      searchable: true,
+      width: 200
     },{
       key: 'unit',
       title: $t({ defaultMessage: 'unit' }),
