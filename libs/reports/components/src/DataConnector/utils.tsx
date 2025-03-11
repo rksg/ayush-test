@@ -69,5 +69,5 @@ export const MLISA_DATASET_NAME_MAPPING = {
   'sessionsSummary': defineMessage({ defaultMessage: 'Client Sessions' }),
   'switchInventory': defineMessage({ defaultMessage: 'Switch Inventory' }),
   'switchNetwork': defineMessage({ defaultMessage: 'Switch Network' }),
-  'wifiCalling': defineMessage({ defaultMessage: 'AP WiFi Calling' }),
+  'wifiCalling': defineMessage({ defaultMessage: 'AP WiFi Calling' })
 }

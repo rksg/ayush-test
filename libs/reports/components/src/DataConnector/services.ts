@@ -2,7 +2,6 @@ import { TableResult }     from '@acx-ui/rc/utils'
 import { notificationApi } from '@acx-ui/store'
 import { RequestPayload }  from '@acx-ui/types'
 
-import { MLISA_DATASET_NAME_MAPPING } from './utils'
 import {
   Response,
   AuditDto,
@@ -13,10 +12,10 @@ import {
   StorageData,
   StoragePayload,
   ConnectorPayload,
-  DataSetResult,
-  DataSets
+  DataSourceResult,
+  DataSources
 } from './types'
-import { MessageDescriptor } from 'react-intl'
+import { MLISA_DATASET_NAME_MAPPING } from './utils'
 
 export const dataConnectorApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -152,29 +151,29 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'DataConnector', id: 'GET_AUDIT_LIST' }]
     }),
-    getDataSets: build.query<DataSets, {}>({
+    getDataSources: build.query<DataSources, {}>({
       query: () => {
         return {
-          url: '/dataConnector/dataSets',
+          url: '/dataConnector/dataSources',
           method: 'get',
           credentials: 'include'
         }
       },
       providesTags: [{ type: 'DataConnector', id: 'GET_DATASETS' }],
-      transformResponse: (response: DataSetResult[]) => {
-        const data = response?.reduce((dataSets, item) => {
+      transformResponse: (response: DataSourceResult[]) => {
+        const data = response?.reduce((dataSources, item) => {
           const name = MLISA_DATASET_NAME_MAPPING[
-            item.dataSet as keyof typeof MLISA_DATASET_NAME_MAPPING
+            item.dataSource as keyof typeof MLISA_DATASET_NAME_MAPPING
           ]
           // ensure the name exists else filter the data set
           if (name) {
-            dataSets.push({
-              dataSet: { name, value: item.dataSet },
+            dataSources.push({
+              dataSource: { name, value: item.dataSource },
               cols: item.columns
             })
           }
-          return dataSets
-        }, [] as DataSets)
+          return dataSources
+        }, [] as DataSources)
         return data
       }
     })
@@ -193,5 +192,5 @@ export const {
   useGetDataConnectorByIdQuery,
   useGetAuditsQuery,
   useRetryAuditMutation,
-  useGetDataSetsQuery
+  useGetDataSourcesQuery
 } = dataConnectorApis

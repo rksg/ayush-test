@@ -6,9 +6,9 @@ import { useIntl }     from 'react-intl'
 import { GridRow, GridCol, PageHeader, Select, Button, ActionsContainer, showToast, Loader } from '@acx-ui/components'
 import { useNavigate, useParams }                                                            from '@acx-ui/react-router-dom'
 
-import { useGetConnectorQuery, useSaveConnectorMutation, useGetDataSetsQuery } from './services'
-import { DataSets, Frequency }                                      from './types'
-import { frequencyMap, getUserName, generateBreadcrumb }  from './utils'
+import { useGetConnectorQuery, useSaveConnectorMutation, useGetDataSourcesQuery } from './services'
+import { DataSources, Frequency }                                                 from './types'
+import { frequencyMap, getUserName, generateBreadcrumb }                          from './utils'
 
 type DataConnectorFormProps = {
   editMode?: boolean
@@ -21,20 +21,20 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
   const params = useParams()
   const connectorId = params.settingId
   const selectedConnector = useGetConnectorQuery({ id: connectorId }, { skip: !editMode })
-  const { data, isLoading: isDataSetsLoading } = useGetDataSetsQuery({})
-  const dataSets = (data as unknown as DataSets)?.map(({ dataSet }) => ({
-    label: $t(dataSet.name),
-    value: dataSet.value
-  }))
+  const { data, isLoading: isDataSourcesLoading } = useGetDataSourcesQuery({})
+  const dataSources = (data as unknown as DataSources)?.map(({ dataSource }) => ({
+    label: $t(dataSource.name),
+    value: dataSource.value
+  })).sort((a, b) => a.label.localeCompare(b.label))
   const [form] = Form.useForm()
 
-  const selectedDataSet = Form.useWatch('dataSource', form) || selectedConnector.data?.dataSource
-  const dataSetColumns = (data as unknown as DataSets)?.reduce((acc, { dataSet, cols }) => {
-    return {
+  const selectedDataSource =
+    Form.useWatch('dataSource', form) || selectedConnector.data?.dataSource
+  const dataSourceColumns = (data as unknown as DataSources)?.reduce(
+    (acc, { dataSource, cols }) => ({
       ...acc,
-      [dataSet.value]: cols.map(col => ({ label: col, value: col }))
-    }
-  }, {})
+      [dataSource.value]: cols.map(col => ({ label: col, value: col }))
+    }), {})
   const [updateConnector, { isLoading }] = useSaveConnectorMutation()
   const saveConnector = useCallback(() => {
     const data = form.getFieldsValue()
@@ -66,7 +66,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
       breadcrumb={generateBreadcrumb()}
     />
     <Loader states={[
-      { isLoading: isDataSetsLoading || isLoading || selectedConnector.isLoading }
+      { isLoading: isDataSourcesLoading || isLoading || selectedConnector.isLoading }
     ]}>
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
@@ -96,7 +96,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
               <Select
                 data-testid='dataSourceSelect'
                 onSelect={() => form.setFieldValue('columns', undefined)}
-                options={dataSets}
+                options={dataSources}
               />
             </Form.Item>
             <Form.Item
@@ -111,7 +111,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
                 data-testid='columnsSelect'
                 showSearch
                 mode='multiple'
-                options={dataSetColumns?.[selectedDataSet as keyof typeof dataSetColumns]}
+                options={dataSourceColumns?.[selectedDataSource as keyof typeof dataSourceColumns]}
               />
             </Form.Item>
             <Form.Item

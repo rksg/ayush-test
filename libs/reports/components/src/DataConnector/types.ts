@@ -1,4 +1,4 @@
-import { MessageDescriptor } from "react-intl"
+import { MessageDescriptor } from 'react-intl'
 
 export type Response <T> = { data: T }
 
@@ -52,14 +52,14 @@ export type StorageData = {
   id: string
 }
 
-type DataSet = { name: MessageDescriptor; value: string }
-export type DataSets = {
-  dataSet: DataSet,
+type DataSource = { name: MessageDescriptor; value: string }
+export type DataSources = {
+  dataSource: DataSource,
   cols: string[]
 } []
 
-export type DataSetResult = {
-  dataSet: string,
+export type DataSourceResult = {
+  dataSource: string,
   columns: string[]
 }
 export type DataConnector = Omit<ConnectorPayload, 'id'> & {
