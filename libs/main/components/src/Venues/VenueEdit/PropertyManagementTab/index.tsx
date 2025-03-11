@@ -51,6 +51,7 @@ export function PropertyManagementTab () {
       onValueChange={handleFormChange}
       preSubmit={preSubmit}
       postSubmit={postSubmit}
+      editMode={true}
     />
   )
 }
