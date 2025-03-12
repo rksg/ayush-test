@@ -6,6 +6,7 @@ export enum Features {
   ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
   ALARM_WITH_PRODUCT_FILTER_TOGGLE = 'alarm-with-product-filter-toggle',
   ALARM_CLEAR_ALARM_TOGGLE = 'alarm-clear-alarm-toggle',
+  ALARM_CLEAR_ALL_ALARMS_TOGGLE = 'alarm-clear-all-alarms-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
@@ -19,6 +20,7 @@ export enum Features {
   BULK_VLAN_PROVISIONING = 'acx-ui-bulk-vlan-provisioning-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
   CLOUDPATH_BETA = 'BETA-CP',
+  IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
@@ -302,6 +304,7 @@ export enum Features {
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
+  RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
   WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
   SWITCH_SUPPORT_ICX8100X_TOGGLE = 'switch-support-icx8100x-toggle'
 }

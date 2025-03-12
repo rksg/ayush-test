@@ -1,16 +1,16 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { EnforcedButton, usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
-import { useVenueDetailsHeaderQuery }                       from '@acx-ui/rc/services'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }                             from '@acx-ui/rc/components'
+import { useVenueDetailsHeaderQuery }                               from '@acx-ui/rc/services'
 import {
-  ConfigTemplateType,
   CommonUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
-  VenueDetailHeader
+  VenueDetailHeader,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -68,12 +68,11 @@ function VenuePageHeader () {
       breadcrumb={breadcrumb}
       extra={[
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
-        ...filterByAccess([<EnforcedButton
-          configTemplateType={ConfigTemplateType.VENUE}
-          instanceId={venueId}
+        ...filterByAccess([<Button
           type='primary'
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
             getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
           ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
@@ -84,7 +83,7 @@ function VenuePageHeader () {
               }
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>])
+        >{$t({ defaultMessage: 'Configure' })}</Button>])
       ]}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />

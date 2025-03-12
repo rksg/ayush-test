@@ -83,6 +83,12 @@ jest.mock('@acx-ui/rc/services', () => {
               role: 'USER',
               text: 'what can you do?',
               created: '2025-02-10T11:05:26.365+00:00'
+            },
+            {
+              id: 'd259dc3cb138478c9c4bcc48f9270602',
+              role: 'SYSTEM',
+              text: 'Some older messages have been removed due to the 30-day retention policy',
+              created: '2025-03-06T02:10:46.264+00:00'
             }
           ] })
       }))
@@ -187,6 +193,9 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
+    expect(await screen.findByText(
+      'Older chat conversations have been deleted due to the 30-day retention policy.'))
+      .toBeVisible()
     expect(await screen.findByText('what can you do?')).toBeVisible()
     const newChatBtn = await screen.findByTestId('newChatIcon')
     expect(newChatBtn).toBeVisible()
