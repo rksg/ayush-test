@@ -35,15 +35,20 @@ export const RadioSelect = memo((props: RadioSelectProps) => {
 
       if (shouldInclude6G && !updatedValues.has(RadioTypeEnum._6_GHz)) {
         updatedValues.add(RadioTypeEnum._6_GHz)
-        return Array.from(updatedValues)
       }
 
       if (!shouldInclude6G && updatedValues.has(RadioTypeEnum._6_GHz)) {
         updatedValues.delete(RadioTypeEnum._6_GHz)
-        return Array.from(updatedValues)
       }
 
-      return prev
+      const updatedValuesArray = Array.from(updatedValues)
+      if (updatedValuesArray.length === prev.length
+        && updatedValuesArray.every((v) => prev.includes(v))) {
+        return prev
+      }
+
+      onChange?.(updatedValuesArray, [])
+      return updatedValuesArray
     })
   }, [isSupport6G, default6gEnablementToggle])
 

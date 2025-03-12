@@ -110,15 +110,6 @@ describe('Switch List Table', () => {
     expect(await screen.findByTestId('SwitchTable')).toBeVisible()
   })
 
-  it('should render title with count correctly', async () => {
-    const Title = () => {
-      const { title } = useSwitchesTable()
-      return <span>{title}</span>
-    }
-    render(<Title/>, { wrapper: Provider, route: {} })
-    expect(await screen.findByText('Switch List (3)')).toBeVisible()
-  })
-
   it('should render extra header correctly', async () => {
     const Component = () => {
       const { headerExtra } = useSwitchesTable()

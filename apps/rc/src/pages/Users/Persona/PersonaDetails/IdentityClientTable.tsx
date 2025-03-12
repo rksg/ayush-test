@@ -47,13 +47,17 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const tableQuery = useTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
+    sorter: {
+      sortField: 'username',
+      sortOrder: 'ASC'
+    },
     defaultPayload: { identityIds: [personaId] },
     option: { skip: !personaId || !personaGroupId }
   })
 
   // ClientMac format should be: 11:22:33:44:55:66
   const toClientMacFormat = (macAddress: string) => {
-    return macAddress.replaceAll('-', ':').toUpperCase()
+    return macAddress.replaceAll('-', ':').toLowerCase()
   }
 
   useEffect(() => {
@@ -99,7 +103,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     getClientList({
       payload: {
         ...defaultClientPayload,
-        filters: { macAddress: [...clientMacs] }
+        filters: { macAddress: [...clientMacs] }  // should be lowered case
       }
     })
       .then(result => {
