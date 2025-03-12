@@ -141,6 +141,7 @@ function getAggregatedActivations (
 
   const aggregated: Record<string, VenueTableIpsecActivation> = {}
   const createVenueTableIpsecActivation = (): VenueTableIpsecActivation => ({
+    softGreProfileId: '',
     wifiNetworkIds: new Set<string>(),
     apSerialNumbers: new Set<string>()
   })
@@ -149,11 +150,11 @@ function getAggregatedActivations (
     activations.forEach(activation => {
       if (!aggregated[activation.venueId]) {
         aggregated[activation.venueId] = createVenueTableIpsecActivation()
+        aggregated[activation.venueId].softGreProfileId = activation.softGreProfileId
       }
       activation.wifiNetworkIds.forEach(id =>
         aggregated[activation.venueId].wifiNetworkIds.add(id)
       )
-      aggregated[activation.venueId].softGreProfileId = activation.softGreProfileId
     })
   }
 
@@ -161,6 +162,7 @@ function getAggregatedActivations (
     venueActivations.forEach(activation => {
       if (!aggregated[activation.venueId]) {
         aggregated[activation.venueId] = createVenueTableIpsecActivation()
+        aggregated[activation.venueId].softGreProfileId = activation.softGreProfileId
       }
       activation.apSerialNumbers?.forEach(serial =>
         aggregated[activation.venueId].apSerialNumbers.add(serial)
@@ -172,6 +174,7 @@ function getAggregatedActivations (
     apActivations.forEach(activation => {
       if (!aggregated[activation.venueId]) {
         aggregated[activation.venueId] = createVenueTableIpsecActivation()
+        aggregated[activation.venueId].softGreProfileId = activation.softGreProfileId
       }
 
       aggregated[activation.venueId].apSerialNumbers.add(activation.apSerialNumber)
