@@ -5,57 +5,12 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Tabs } from '@acx-ui/components'
 
-import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
-import { AiFeatures }           from '../../config'
 import { useIntentContext }     from '../../IntentContext'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
-import * as UI        from './styledComponents'
-
-export const SliderBefore = (props: { image: string }) => {
-  const { $t } = useIntl()
-  return (
-    <UI.SliderBefore>
-      <UI.LabelStyleBefore>{($t({ defaultMessage: 'Current' }))}</UI.LabelStyleBefore>
-      <img
-        src={props.image}
-        alt='imageBefore'
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%'
-        }}
-      />
-    </UI.SliderBefore>
-  )
-}
-
-export const SliderAfter = (props: { image: string }) => {
-  const { $t } = useIntl()
-  return (
-    <UI.SliderAfter>
-      <UI.LabelStyleAfter>
-        <span>{($t({ defaultMessage: 'Forecast' }))}</span>
-        <span>{($t({ defaultMessage: 'with' }))}</span>
-        <Icon feature={AiFeatures.RRM} size='xs' />
-      </UI.LabelStyleAfter>
-      <img
-        src={props.image}
-        alt='imageAfter'
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%'
-        }}
-      />
-    </UI.SliderAfter>
-  )
-}
 
 export function Introduction () {
   const { $t } = useIntl()
