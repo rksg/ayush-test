@@ -26,6 +26,7 @@ import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
 import { DownloadOutlined }                    from '@acx-ui/icons'
 import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { hasPermission }                       from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay } from '@acx-ui/utils'
 
 import { ConfigChangeContext }  from '../context'
@@ -74,9 +75,11 @@ export function Table () {
       dataIndex: 'timestamp',
       render: (_, row) => {
         const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
-        if (showIntentAI && row.type === 'intentAI') {
+        const isMLISA = get('IS_MLISA_SA')
+        if (showIntentAI && row.type === 'intentAI' &&
+          (isMLISA ? hasPermission({ permission: 'READ_INTENT_AI' }) : true)) {
           const code = row.key.substring(row.key.lastIndexOf('.') + 1)
-          const linkPath = get('IS_MLISA_SA')
+          const linkPath = isMLISA
             ? `/intentAI/${row.root}/${row.sliceId}/${code}`
             : `/analytics/intentAI/${row.sliceId}/${code}`
           return (

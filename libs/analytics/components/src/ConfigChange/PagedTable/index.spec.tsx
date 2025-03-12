@@ -6,6 +6,7 @@ import { get }                                                                  
 import { useAnySplitsOn }                                                                 from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }                                              from '@acx-ui/user'
 import { DateRange }                                                                      from '@acx-ui/utils'
 
 import { pagedConfigChanges }                         from '../__tests__/fixtures'
@@ -102,6 +103,7 @@ describe('Table', () => {
     })
     it('should render correct hyperlink for SA', async () => {
       mockGet.mockReturnValue(true)
+      setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
       render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
         <PagedTable/>
       </ConfigChangeProvider>, { wrapper: Provider, route: {} })
@@ -109,6 +111,15 @@ describe('Table', () => {
       expect(await screen.findByRole('link')).toHaveAttribute(
         // eslint-disable-next-line max-len
         'href', '/intentAI/30b11d8b-ce40-4344-81ef-84b47753b4a6/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+    })
+    it('should not render hyperlink for SA but not have permission', async () => {
+      mockGet.mockReturnValue(true)
+      setRaiPermissions({ READ_INTENT_AI: false } as RaiPermissions)
+      render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+        <PagedTable/>
+      </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+      expect(screen.queryByText('link')).not.toBeInTheDocument()
     })
   })
   it('should handle row click correctly', async () => {
