@@ -302,7 +302,7 @@ describe('NetworkForm', () => {
 
     await userEvent.click((await screen.findAllByRole('button', {
       name: /add/i
-    }))[1])
+    }))[0])
 
     await screen.findByText(/add mac registration list/i)
 
