@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Divider, Spin } from 'antd'
-import { debounce }      from 'lodash'
-import moment            from 'moment'
-import { DndProvider }   from 'react-dnd'
-import { HTML5Backend }  from 'react-dnd-html5-backend'
-import { useIntl }       from 'react-intl'
-import { v4 as uuidv4 }  from 'uuid'
+import { Divider, Form, Spin } from 'antd'
+import { debounce }            from 'lodash'
+import moment                  from 'moment'
+import { DndProvider }         from 'react-dnd'
+import { HTML5Backend }        from 'react-dnd-html5-backend'
+import { useIntl }             from 'react-intl'
+import { v4 as uuidv4 }        from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
@@ -26,10 +26,10 @@ export default function AICanvas () {
   const scrollRef = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
+  const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
-  const [sendFeedback] = useSendFeedbackMutation()
-
   const [getChats] = useGetChatsMutation()
+  const [sendFeedback] = useSendFeedbackMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
@@ -50,8 +50,8 @@ export default function AICanvas () {
     'Older chat conversations have been deleted due to the 30-day retention policy.' })
   const questions = [
     'What can you do?',
-    'Show me the top-consuming clients.',
-    'Generate a graph of my APs usage over the past 24 hours.',
+    'Show me the top-consuming clients',
+    'Generate a graph of my APs usage over the past 24 hours',
     'Can you give me the trending network traffic from last week?'
   ] // Only support english default questions in phase 1
 
@@ -62,7 +62,10 @@ export default function AICanvas () {
     if(page === 1 || aiBotLoading) {
       setTimeout(()=>{
         // @ts-ignore
-        scrollRef?.current?.scrollTo({ top: scrollRef.current.scrollHeight })
+        if(scrollRef?.current?.scrollTo){
+          // @ts-ignore
+          scrollRef?.current?.scrollTo({ top: scrollRef.current.scrollHeight })
+        }
       }, 100)
     }
   }, [chats])
@@ -132,14 +135,15 @@ export default function AICanvas () {
   }
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    if(event.key === 'Enter'){
+    if(event.key === 'Enter' && !event.shiftKey){
       event.preventDefault()
       handleSearch()
     }
   }
   const handleSearch = async (suggestion?: string) => {
     if ((!suggestion && searchText.length <= 1) || aiBotLoading) return
-    const question = suggestion || searchText
+    let question = suggestion || searchText
+    question = question.replaceAll('\n', '<br/>')
     const newMessage = {
       id: uuidv4(),
       role: 'USER',
@@ -148,6 +152,7 @@ export default function AICanvas () {
     setChats([...chats, newMessage])
     setAiBotLoading(true)
     setSearchText('')
+    form.setFieldValue('searchInput', '')
     await chatAi({
       payload: {
         question,
@@ -391,15 +396,19 @@ export default function AICanvas () {
                     </div>
                   }
                   <div className='input'>
-                    <UI.Input
-                      autoFocus
-                      data-testid='search-input'
-                      onKeyDown={debounce(onKeyDown, 500)}
-                      value={searchText}
-                      onChange={({ target: { value } }) => setSearchText(value)}
-                      style={{ height: 90, resize: 'none' }}
-                      placeholder={placeholder}
-                    />
+                    <Form form={form} >
+                      <Form.Item
+                        name='searchInput'
+                        children={<UI.Input
+                          autoFocus
+                          data-testid='search-input'
+                          onKeyDown={onKeyDown}
+                          onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
+                          style={{ height: 90, resize: 'none' }}
+                          placeholder={placeholder}
+                        />}
+                      />
+                    </Form>
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}

@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { RuckusAiChatUrlInfo } from '@acx-ui/rc/utils'
 import { Provider }            from '@acx-ui/store'
@@ -209,9 +210,8 @@ describe('AICanvas', () => {
     fireEvent.click(historyBtn)
     expect(await screen.findByText('History Drawer')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
-    fireEvent.change(searchInput, { target: { value: 'hello' } })
-    const searchBtn = await screen.findByTestId('search-button')
-    fireEvent.click(searchBtn)
+    await userEvent.type(searchInput, 'hello')
+    fireEvent.keyDown(searchInput, { key: 'Enter' })
     expect(await screen.findByText('hello')).toBeVisible()
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
   })
@@ -232,7 +232,7 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
-    const suggestQuestion = await screen.findByText('Show me the top-consuming clients.')
+    const suggestQuestion = await screen.findByText('Show me the top-consuming clients')
     expect(suggestQuestion).toBeVisible()
     fireEvent.click(suggestQuestion)
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
@@ -248,6 +248,12 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
+    const searchInput = await screen.findByTestId('search-input')
+    await userEvent.type(searchInput, 'hello')
+    const searchBtn = await screen.findByTestId('search-button')
+    fireEvent.click(searchBtn)
+    expect(await screen.findByText('hello')).toBeVisible()
+    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
     fireEvent.click(closeBtn)
     expect(mockedNavigate).toBeCalled()
