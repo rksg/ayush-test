@@ -48,7 +48,7 @@ export const frequencyMap = {
   [Frequency.Daily]: defineMessage({ defaultMessage: 'Daily' })
 }
 
-export const MLISA_DATASET_NAME_MAPPING = {
+export const dataSetMapping = {
   'apAlarms': defineMessage({ defaultMessage: 'AP Alarms' }),
   'apInventory': defineMessage({ defaultMessage: 'AP Inventory' }),
   'apEvents': defineMessage({ defaultMessage: 'AP Events' }),

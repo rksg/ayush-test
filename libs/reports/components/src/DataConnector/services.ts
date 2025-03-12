@@ -15,7 +15,7 @@ import {
   DataSourceResult,
   DataSources
 } from './types'
-import { MLISA_DATASET_NAME_MAPPING } from './utils'
+import { dataSetMapping } from './utils'
 
 export const dataConnectorApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -162,8 +162,8 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
       providesTags: [{ type: 'DataConnector', id: 'GET_DATASETS' }],
       transformResponse: (response: DataSourceResult[]) => {
         const data = response?.reduce((dataSources, item) => {
-          const name = MLISA_DATASET_NAME_MAPPING[
-            item.dataSource as keyof typeof MLISA_DATASET_NAME_MAPPING
+          const name = dataSetMapping[
+            item.dataSource as keyof typeof dataSetMapping
           ]
           // ensure the name exists else filter the data set
           if (name) {
