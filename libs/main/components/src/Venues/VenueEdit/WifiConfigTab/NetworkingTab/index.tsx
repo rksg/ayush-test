@@ -4,11 +4,11 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
-import { useLazyApListQuery }                     from '@acx-ui/rc/services'
+import { AnchorLayout, StepsFormLegacy, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useLazyApListQuery }                              from '@acx-ui/rc/services'
 import {
   VenueApModelCellular,
   redirectPreviousPage,
@@ -56,13 +56,15 @@ export function NetworkingTab () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
   const isLegacyLanPortEnabled = useIsSplitOn(Features.LEGACY_ETHERNET_PORT_TOGGLE)
-  const isLegacyTemplateLanPortEnabled = !isTemplate || isLegacyLanPortEnabled
+  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+  const isShowLanPortSettings = !isTemplate || isEthernetPortTemplate || isLegacyLanPortEnabled
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
   const { venueApCaps } = useContext(VenueUtilityContext)
 
   const [ getApList ] = useLazyApListQuery()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   useEffect(() => {
     if (venueApCaps) {
@@ -94,6 +96,10 @@ export function NetworkingTab () {
     }
   }, [venueApCaps])
 
+  const lanPortOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueLanPorts,
+    VenueConfigTemplateUrlsInfo.updateVenueLanPortsRbac
+  )
   const meshOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueMesh,
     VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
@@ -106,7 +112,6 @@ export function NetworkingTab () {
     WifiRbacUrlsInfo.updateVenueSmartMonitor,
     VenueConfigTemplateUrlsInfo.updateVenueApSmartMonitorSettings
   )
-
   const radiusOptionsOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueRadiusOptions,
     VenueConfigTemplateUrlsInfo.updateVenueRadiusOptionsRbac
@@ -120,7 +125,7 @@ export function NetworkingTab () {
     isAllowEditSmartMonitor,
     isAllowEditRADIUSOptions
   ] = [
-    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueLanPorts)]),
+    hasAllowedOperations([lanPortOpsApi]),
     hasAllowedOperations([meshOpsApi]),
     hasAllowedOperations([dMulticastOpsApi]),
     hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.updateVenueCellularSettings)]),
@@ -136,7 +141,7 @@ export function NetworkingTab () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
-  const items = [...(isLegacyTemplateLanPortEnabled ? [{
+  const items = [...(isShowLanPortSettings ? [{
     title: $t({ defaultMessage: 'LAN Ports' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='lan-ports'>
@@ -239,6 +244,7 @@ export function NetworkingTab () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={60} waitForReady />

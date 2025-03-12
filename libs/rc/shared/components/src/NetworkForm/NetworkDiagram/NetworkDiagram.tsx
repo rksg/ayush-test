@@ -163,7 +163,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const wlanSecurity = props.wlanSecurity as WlanSecurityEnum
   const wisprWithPsk=Object.keys(PskWlanSecurityEnum)
     .includes(wlanSecurity as keyof typeof PskWlanSecurityEnum)
-  const wisprWithOwe=wlanSecurity === WlanSecurityEnum.OWE
+  const wisprWithOwe=
+    (wlanSecurity === WlanSecurityEnum.OWE) || (wlanSecurity === WlanSecurityEnum.OWETransition)
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]: wisprWithPsk ? ClickThroughWithPskDiagram :

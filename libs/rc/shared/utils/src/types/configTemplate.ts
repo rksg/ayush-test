@@ -17,7 +17,8 @@ export enum ConfigTemplateType {
   ROGUE_AP_DETECTION = 'ROGUE_AP',
   SWITCH_REGULAR = 'SWITCH_REGULAR',
   SWITCH_CLI = 'SWITCH_CLI',
-  AP_GROUP = 'AP_GROUP'
+  AP_GROUP = 'AP_GROUP',
+  ETHERNET_PORT_PROFILE = 'ETHERNET_PORT'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {
@@ -40,7 +41,7 @@ export interface ConfigTemplate {
   appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
-  lastApplied: number,
+  lastApplied?: number,
   driftStatus?: ConfigTemplateDriftType
   isEnforced?: boolean
 }
@@ -110,5 +111,13 @@ export type ConfigTemplateDriftsResponse = ConfigTemplateDriftSet[]
 
 export interface EnforceableFields {
   isEnforced?: boolean // It indicates whether the network template/instance is enforced
-  isManagedByTemplate?: boolean // It indicates whether the venue is derived from a template
 }
+
+export type AllowedCloneTemplateTypes =
+  ConfigTemplateType.NETWORK |
+  ConfigTemplateType.VENUE
+
+export const allowedCloneTemplateTypesSet = new Set<ConfigTemplateType>([
+  ConfigTemplateType.NETWORK,
+  ConfigTemplateType.VENUE
+])

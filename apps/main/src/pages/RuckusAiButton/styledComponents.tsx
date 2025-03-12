@@ -38,6 +38,20 @@ export const ButtonSolid = styled(Button)`
     }
   }
 `
+export const AiButton = styled.div`
+height: 36px;
+margin: -4px;
+cursor: pointer;
+svg {
+  opacity: 0.95;
+  width: 38px;
+  height: 38px;
+}
+&:hover {
+  > svg {
+    opacity: 1;
+}
+`
 
 export const GptModal = styled(Modal)<{ titleType: string, needBackground: boolean }>`
   .ant-modal-content {
@@ -268,6 +282,26 @@ export const PageTitle = styled.div`
   font-family: var(--acx-accent-brand-font);
   margin-bottom: 15px;
 `
+export const WelcomeCards = styled.div`
+display: flex;
+align-items: center;
+.ant-card{
+  width: 360px;
+  margin: 20px 15px 30px 15px;
+  height: 200px;
+  background: #FFFFFFCC;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px;
+  cursor: pointer;
+  &:hover{
+    background: var(--acx-accents-orange-10);
+    border: 1px solid var(--acx-accents-orange-50);
+  }
+}
+  .ant-card-body {
+    padding: 30px 40px;
+  }
+`
+
 export const WelcomeMeta = styled(Meta)`
   .ant-card-meta-avatar{
     width: 400px;
@@ -285,5 +319,14 @@ export const WelcomeMeta = styled(Meta)`
     font-size: var(--acx-headline-4-font-size);
     color: var(--acx-neutrals-60);
     line-height: 20px;
+  }
+
+  .card-title{
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    svg{
+      margin-right: 10px;
+    }
   }
 `

@@ -7,13 +7,13 @@ import { hasAllowedOperations } from '@acx-ui/user'
 export const withTemplateFeatureGuard = <P extends object>(
   props: {
     WrappedComponent: React.FC<P>,
-    featureId?: string,
+    featureId: string,
     rbacOpsIds?: RbacOpsIds
   }
 ): React.FC<P> => {
   const { WrappedComponent, featureId, rbacOpsIds } = props
   return (props: P) => {
-    const isFFEnabled = featureId ? useIsSplitOn(featureId) : true
+    const isFFEnabled = useIsSplitOn(featureId)
     const { isTemplate } = useConfigTemplate()
     const hasRbacOps = !rbacOpsIds || hasAllowedOperations(rbacOpsIds)
 

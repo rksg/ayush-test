@@ -79,5 +79,14 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeDhcpServices/edgeCompatibilities/query',
     newApi: true
+  },
+  getDhcpEdgeCompatibilitiesV1_1: {
+    method: 'post',
+    url: '/edgeDhcpServices/edgeCompatibilities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   }
 }

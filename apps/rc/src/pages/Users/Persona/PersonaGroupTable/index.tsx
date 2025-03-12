@@ -32,9 +32,10 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }                 from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }                          from '@acx-ui/utils'
+import { FILTER, PersonaGroup, PersonaUrls, SEARCH, useTableQuery }          from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission }                          from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -215,6 +216,9 @@ const defaultVenueListPayload = {
 export function PersonaGroupTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const basePath = useTenantLink('users/identity-management/identity-group')
+  const navigate = useNavigate()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
@@ -247,6 +251,7 @@ export function PersonaGroupTable () {
   })
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
   useEffect(() => {
     if (tableQuery.isLoading) return
@@ -356,7 +361,14 @@ export function PersonaGroupTable () {
         label: $t({ defaultMessage: 'Add Identity Group' }),
         rbacOpsIds: [getOpsApi(PersonaUrls.addPersonaGroup)],
         onClick: () => {
-          setDrawerState({ isEdit: false, visible: true, data: undefined })
+          if (isIdentityRefactorEnabled) {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/create`
+            })
+          } else {
+            setDrawerState({ isEdit: false, visible: true, data: undefined })
+          }
         }
       }] : []
 
@@ -367,7 +379,14 @@ export function PersonaGroupTable () {
           label: $t({ defaultMessage: 'Edit' }),
           rbacOpsIds: [getOpsApi(PersonaUrls.updatePersonaGroup)],
           onClick: ([data], clearSelection) => {
-            setDrawerState({ data, isEdit: true, visible: true })
+            if (isIdentityRefactorEnabled) {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/${data.id}/edit`
+              })
+            } else {
+              setDrawerState({ data, isEdit: true, visible: true })
+            }
             clearSelection()
           }
         },
@@ -405,6 +424,13 @@ export function PersonaGroupTable () {
   }
 
   setIdentityGroupCount?.(tableQuery.data?.totalCount || 0)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.IDENTITY_GUOUP_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader
       states={[

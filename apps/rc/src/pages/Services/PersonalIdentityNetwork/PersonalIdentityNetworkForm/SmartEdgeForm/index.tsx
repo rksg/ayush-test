@@ -1,14 +1,24 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 
-import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
-import { FormattedMessage, useIntl }                  from 'react-intl'
-import { useNavigate, useParams }                     from 'react-router-dom'
+import { Col, Form, InputNumber, Row, Select, Space, Typography } from 'antd'
+import { FormattedMessage, useIntl }                              from 'react-intl'
+import { useNavigate, useParams }                                 from 'react-router-dom'
 
-import { Alert, Button, StepsForm, useStepFormContext }                                                                                         from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                                                                                                              from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }                                                                                     from '@acx-ui/rc/services'
-import { MAX_DEVICE_PER_SEGMENT, MAX_SEGMENT_PER_VENUE, PersonalIdentityNetworkFormData, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                        from '@acx-ui/react-router-dom'
+import { Alert, Button, StepsForm, useStepFormContext }     from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                          from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
+import {
+  EdgeDhcpUrls,
+  MAX_DEVICE_PER_SEGMENT,
+  MAX_SEGMENT_PER_VENUE,
+  PersonalIdentityNetworkFormData,
+  ServiceOperation,
+  ServiceType,
+  getServiceDetailsLink
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
@@ -18,6 +28,7 @@ import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 export const SmartEdgeForm = () => {
 
   const { $t } = useIntl()
+
   const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath = useTenantLink('')
@@ -102,6 +113,14 @@ export const SmartEdgeForm = () => {
   const getDhcpPoolName = useCallback(() => {
     return poolList?.find(item => item.id === poolId)?.poolName
   }, [poolList, poolId])
+
+  const hasCreateDhcpPermission = hasPermission({
+    rbacOpsIds: [
+      [
+        getOpsApi(EdgeDhcpUrls.addDhcpService)
+      ]
+    ]
+  })
 
   useEffect(() => {
     form.setFieldValue('poolName', getDhcpPoolName())
@@ -204,7 +223,7 @@ export const SmartEdgeForm = () => {
           </Row>
         </Col>
       </Row>
-      <Row gutter={20}>
+      <Row gutter={0} style={{ marginBottom: '10px' }}>
         <Col span={12}>
           <Form.Item
             name='segments'
@@ -219,22 +238,14 @@ export const SmartEdgeForm = () => {
             children={<InputNumber />}
           />
         </Col>
-      </Row>
-      <Row gutter={20}>
-        <Col span={12}>
-          <Form.Item
-            name='devices'
-            label={$t({ defaultMessage: 'Number of devices per Segment' })}
-            rules={[
-              { required: true },
-              { type: 'integer', transform: Number, min: 1, max: MAX_DEVICE_PER_SEGMENT,
-                message: $t({
-                  // eslint-disable-next-line max-len
-                  defaultMessage: 'Number of devices per Segment must be an integer between 1 and {max}'
-                }, { max: MAX_DEVICE_PER_SEGMENT }) }
-            ]}
-            children={<InputNumber />}
-          />
+        <Col span={24} style={{ fontSize: '12px', marginTop: '-10px' }}>
+          <Typography.Text type='secondary'>
+            {
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Please note that the maximum number of User Equipment (UE) supported per personal area network is {maxPanSize}.' },
+                { maxPanSize: MAX_DEVICE_PER_SEGMENT })
+            }
+          </Typography.Text>
         </Col>
       </Row>
       <Row gutter={20} align='middle'>
@@ -257,7 +268,7 @@ export const SmartEdgeForm = () => {
           />
         </Col>
         {
-          !shouldDhcpDisabled && (
+          !shouldDhcpDisabled && hasCreateDhcpPermission && (
             <Col ><AddEdgeDhcpServiceModal /></Col>
           )
         }

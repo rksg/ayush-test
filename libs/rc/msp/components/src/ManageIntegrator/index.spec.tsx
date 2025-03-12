@@ -214,6 +214,19 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const settings = {
+  privacyFeatures: [
+    {
+      featureName: 'APP_VISIBILITY',
+      isEnabled: false
+    },
+    {
+      featureName: 'ARC',
+      isEnabled: true
+    }
+  ]
+}
+
 
 describe('ManageIntegrator', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string, type?: string }
@@ -240,7 +253,9 @@ describe('ManageIntegrator', () => {
       rest.put(
         MspUrlsInfo.updateMspEcAccount.url,
         (_req, res, ctx) => res(ctx.json({ requestId: 'update' }))
-      )
+      ),
+      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
+        (req, res, ctx) => res(ctx.json(settings)))
     )
 
     jest.spyOn(services, 'useAddCustomerMutation')

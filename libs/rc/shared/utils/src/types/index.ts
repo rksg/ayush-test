@@ -105,6 +105,7 @@ export interface Venue extends EnforceableFields {
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
+  addressLine?: string
 }
 
 export interface AlarmBase {

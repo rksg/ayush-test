@@ -24,7 +24,7 @@ import {
 import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import { AccountType, noDataDisplay }                           from '@acx-ui/utils'
 
 
 import * as UI from '../../Administrators/styledComponents'
@@ -60,6 +60,8 @@ const UsersTable = (props: UsersTableProps) => {
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const notificationAdminContextualEnabled =
+    useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -127,15 +129,33 @@ const UsersTable = (props: UsersTableProps) => {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
+      searchable: true,
       dataIndex: 'fullName',
       sorter: { compare: sortProp('fullName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
+      searchable: true,
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) }
     },
+    ...(notificationAdminContextualEnabled ?
+      [
+        {
+          title: $t({ defaultMessage: 'Phone Number' }),
+          key: 'phoneNumber',
+          dataIndex: 'phoneNumber',
+          show: false,
+          sorter: { compare: sortProp('phoneNumber', defaultSort) },
+          render: function (_: unknown, row: Administrator) {
+            return row.phoneNumber ?? noDataDisplay
+          }
+        }
+      ]
+      :
+      []
+    ),
     ...(idmDecouplngFF ?
       [
         {
@@ -259,7 +279,7 @@ const UsersTable = (props: UsersTableProps) => {
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
       </UI.TableTitleWrapper>}
-      <Table
+      <Table settingsId='users-table-column-settings'
         columns={columns}
         dataSource={adminList}
         rowKey='id'

@@ -68,6 +68,7 @@ import {
   DateFilter,
   DateRange,
   getDatePickerValues,
+  LoadTimeContext,
   getDateRangeFilter,
   getOpsApi,
   useDashboardFilter
@@ -170,6 +171,8 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
+  const { onPageFilterChange } = useContext(LoadTimeContext)
+
   const { startDate , endDate, range } = dashboardFilters
   const { rbacOpsApiEnabled } = getUserProfile()
   const { $t } = useIntl()
@@ -252,6 +255,14 @@ function DashboardPageHeader () {
       }] : [])
     ]}
   />
+
+  useEffect(() => {
+    onPageFilterChange?.(dashboardFilters, true)
+  }, [])
+
+  useEffect(() => {
+    onPageFilterChange?.(dashboardFilters)
+  }, [dashboardFilters])
 
   return (
     <PageHeader

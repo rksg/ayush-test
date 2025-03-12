@@ -60,10 +60,10 @@ import {
   CompatibilitySelectedApInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
-import { exportMessageMapping, getOpsApi }                                from '@acx-ui/utils'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes, RolesEnum }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                     from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
@@ -122,6 +122,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apTxPowerFlag = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const operationRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
 
   // old API
@@ -744,6 +745,12 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       }
     }
   }
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.AP_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   const allowedRowActions = rowActions?.filter((item) => {
     const { scopeKey: scopes, rbacOpsIds, roles } = item

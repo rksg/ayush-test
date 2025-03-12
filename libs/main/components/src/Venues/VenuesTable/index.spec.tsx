@@ -30,7 +30,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
+const { mockEdgeCompatibilitiesVenue, mockEdgeCompatibilitiesVenueV1_1 } = EdgeCompatibilityFixtures
 
 describe('Venues Table', () => {
   let params: { tenantId: string }
@@ -228,6 +228,39 @@ describe('Venues Table', () => {
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenue))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Test-Edge-Compatibility/i })
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
+    expect(icon).toBeVisible()
+  })
+
+  it('should have edge compatibilies correct - V1_1', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE,
+        Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE].includes(ff as Features))
+    const mockVenuelist = cloneDeep(venuelist)
+    mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenueV1_1.compatibilities![0].id
+    mockVenuelist.data[0].name = 'Test-Edge-Compatibility'
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockVenuelist))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getVenueEdgeCompatibilitiesV1_1.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCompatibilitiesVenueV1_1))
       )
     )
 

@@ -26,7 +26,8 @@ import {
   useLocaleContext,
   LangKey,
   DEFAULT_SYS_LANG,
-  initializeSockets
+  initializeSockets,
+  LoadTimeProvider
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -167,7 +168,9 @@ export async function init (root: Root) {
               <PreferredLangConfigProvider>
                 <DataGuardLoader>
                   <React.Suspense fallback={null}>
-                    <AllRoutes />
+                    <LoadTimeProvider>
+                      <AllRoutes />
+                    </LoadTimeProvider>
                   </React.Suspense>
                 </DataGuardLoader>
               </PreferredLangConfigProvider>

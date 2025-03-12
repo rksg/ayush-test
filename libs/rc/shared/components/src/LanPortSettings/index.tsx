@@ -102,9 +102,11 @@ export function LanPortSettings (props: {
   const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
+
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isR370UnsupportFeatureEnabled = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isModelSupportSoftGRE =
     (isR370UnsupportFeatureEnabled && selectedModelCaps?.supportSoftGre) ||
@@ -112,6 +114,13 @@ export function LanPortSettings (props: {
 
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
+
+  // template
+  const isEthernetPortTemplate = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+
+  const isShowEthPortProfile = (isTemplate)
+    ? isEthernetPortTemplate : isEthernetPortProfileEnabled
+
 
   const isUnderAPNetworking = !!serialNumber
 
@@ -149,6 +158,10 @@ export function LanPortSettings (props: {
       if (currentEthernetPortData.authType === EthernetPortAuthType.SUPPLICANT) {
         form.setFieldValue(['lan', index, 'softGreEnabled'], false)
         onChangedByCustom('softGreEnabled')
+        if (isIpSecOverNetworkEnabled) {
+          form.setFieldValue(['lan', index, 'ipsecEnabled'], false)
+          onChangedByCustom('ipsecEnabled')
+        }
       }
     }
   }, [currentEthernetPortData])
@@ -217,7 +230,7 @@ export function LanPortSettings (props: {
       name={['lan', index, 'portId']}
       children={<Input />}
     />
-    {!isTemplate && isEthernetPortProfileEnabled ?
+    {isShowEthPortProfile ?
       (isEthernetPortEnable && <>
         <EthernetPortProfileFields
           index={index}
@@ -233,7 +246,7 @@ export function LanPortSettings (props: {
           selectedModelCaps={selectedModelCaps}
           onEthernetPortProfileChanged={onEthernetPortProfileChange}
         />
-        {isEthernetSoftgreEnabled && isModelSupportSoftGRE && <>
+        {!isTemplate && isEthernetSoftgreEnabled && isModelSupportSoftGRE && <>
           <SoftGRETunnelSettings
             readonly={
               !isEthernetPortEnable ||
@@ -271,7 +284,7 @@ export function LanPortSettings (props: {
           }
         </>
         }
-        {isEthernetClientIsolationEnabled &&
+        {!isTemplate && isEthernetClientIsolationEnabled &&
           <ClientIsolationSettingsFields
             index={index}
             onGUIChanged={onGUIChanged}

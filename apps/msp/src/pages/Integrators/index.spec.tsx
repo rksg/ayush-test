@@ -6,6 +6,7 @@ import { useIsSplitOn }                                           from '@acx-ui/
 import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, within, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                         from '@acx-ui/user'
 import { isDelegationMode }                                       from '@acx-ui/utils'
 
 import { Integrators } from '.'
@@ -267,5 +268,27 @@ describe('Integrators', () => {
     const row = await screen.findByRole('row', { name: /integrator 168/i })
     expect(within(row).queryByRole('link', { name: 'integrator 168' })).toBeNull()
     expect(within(row).queryByRole('link', { name: 'installer 888' })).toBeNull()
+  })
+  it('should render correctly when rbacOpsApiEnabled nabled', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <Integrators />
+      </Provider>, { route: { params, path: '/:tenantId/v/integrators' } })
+    expect(screen.getByText('Tech Partners')).toBeVisible()
+    expect(screen.getByText('Manage My Account')).toBeVisible()
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
   })
 })

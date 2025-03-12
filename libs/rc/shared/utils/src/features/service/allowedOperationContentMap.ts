@@ -14,6 +14,7 @@ import {
   EthernetPortProfileUrls,
   IdentityProviderUrls,
   LbsServerProfileUrls,
+  MacRegListUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -80,6 +81,12 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateEdgePin)],
     [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteEdgePin)],
     [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
+  },
+  [ServiceType.WEBAUTH_SWITCH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   }
 }
 
@@ -215,5 +222,11 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(DirectoryServerUrls.updateDirectoryServer)],
     [PolicyOperation.DELETE]: [getOpsApi(DirectoryServerUrls.deleteDirectoryServer)],
     [PolicyOperation.LIST]: [getOpsApi(DirectoryServerUrls.getDirectoryServerViewDataList)]
+  },
+  [PolicyType.MAC_REGISTRATION_LIST]: {
+    [PolicyOperation.CREATE]: [getOpsApi(MacRegListUrlsInfo.createMacRegistrationPool)],
+    [PolicyOperation.EDIT]: [getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)],
+    [PolicyOperation.DELETE]: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
+    [PolicyOperation.LIST]: [getOpsApi(MacRegListUrlsInfo.getMacRegistrationPools)]
   }
 }

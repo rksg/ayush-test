@@ -4,8 +4,9 @@ import { useEffect } from 'react'
 import { Col, Form, FormInstance, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                                  from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { ApCompatibilityToolTip }                         from '@acx-ui/rc/components'
+import { getTitleWithBetaIndicator, Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { TierFeatures, useIsBetaEnabled }                                            from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip }                                                    from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterArpTerminationSettingsQuery,
   useGetEdgeFeatureSetsQuery,
@@ -16,7 +17,7 @@ import { ClusterArpTerminationSettings, EdgeClusterStatus, EdgeUrlsInfo, Incompa
 import { hasPermission }                                                                           from '@acx-ui/user'
 import { compareVersions, getOpsApi }                                                              from '@acx-ui/utils'
 
-import { StyledFormItem, tooltipIconStyle } from '../styledComponents'
+import { tooltipIconStyle } from '../styledComponents'
 
 const checkArpByVenueFirmware = (requiredFw?: string, venueEdgeFw?: string) => {
   return !!requiredFw && !!venueEdgeFw && compareVersions(venueEdgeFw, requiredFw) >= 0
@@ -72,7 +73,6 @@ export const ArpTerminationFormItem = (props: {
     form.setFieldValue('originalArpSettings', arpTerminationSettings)
     form.setFieldsValue({
       arpTerminationSwitch: arpTerminationSettings?.enabled,
-      arpAgingTimerSwitch: arpTerminationSettings?.agingTimerEnabled,
       agingTimeSec: arpTerminationSettings?.agingTimeSec
     })
   }, [arpTerminationSettings])
@@ -92,6 +92,7 @@ export const ArpTerminationFormItem = (props: {
           <StepsForm.FieldLabel width='90%'>
             <Space>
               {$t({ defaultMessage: 'ARP Termination' })}
+              { useIsBetaEnabled(TierFeatures.EDGE_ARPT) ? getTitleWithBetaIndicator('') : null }
               <ApCompatibilityToolTip
                 title={$t({ defaultMessage: 'Reply to ARP requests using local IP to MAC cache. Reduces broadcast traffic but cache can be stale if IPs are reassigned between hosts.' })}
                 showDetailButton
@@ -113,39 +114,25 @@ export const ArpTerminationFormItem = (props: {
         <Form.Item noStyle dependencies={['arpTerminationSwitch']} >
           {({ getFieldValue }) => {
             return getFieldValue('arpTerminationSwitch') &&
-            <StepsForm.FieldLabel width='90%'>
+            <StepsForm.FieldLabel width='75%'>
               <Space style={{ alignItems: 'flex-start' }}>
                 {$t({ defaultMessage: 'ARP Termination Aging Timer' })}
                 <Tooltip.Question
-                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries. Disabling the aging timer will make cached entries permanent.' })}
+                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries.' })}
                   placement='right'
                   iconStyle={tooltipIconStyle}
                 />
               </Space>
               <Form.Item
-                name='arpAgingTimerSwitch'
-                valuePropName='checked'
-              >
-                <Switch />
-              </Form.Item>
-            </StepsForm.FieldLabel>
-          }}
-        </Form.Item>
-      </Col>
-      <Col flex='auto'>
-        <Form.Item dependencies={['arpTerminationSwitch', 'arpAgingTimerSwitch']}>
-          {({ getFieldValue }) => {
-            return getFieldValue('arpTerminationSwitch') && getFieldValue('arpAgingTimerSwitch') &&
-              <StyledFormItem
                 name='agingTimeSec'
-                label=''
                 initialValue={600}
                 rules={[{
                   required: true, message: $t({ defaultMessage: 'Please enter ARP Aging Timer' })
                 },
-                { type: 'number', min: 600, max: 2147483647 }]}
+                { type: 'number', min: 10, max: 86400 }]}
                 children={<AgingTimerFormItem />}
               />
+            </StepsForm.FieldLabel>
           }}
         </Form.Item>
       </Col>
@@ -170,20 +157,15 @@ export const useHandleApplyArpTermination = (form: FormInstance, venueId?: strin
 
     const currentArpSettings: ClusterArpTerminationSettings = {
       enabled: form.getFieldValue('arpTerminationSwitch'),
-      agingTimerEnabled: form.getFieldValue('arpAgingTimerSwitch'),
       agingTimeSec: form.getFieldValue('agingTimeSec')
     }
 
     const needUpdate =
         originalArpSettings.enabled !== currentArpSettings.enabled ||
-        originalArpSettings.agingTimerEnabled !== currentArpSettings.agingTimerEnabled ||
         originalArpSettings.agingTimeSec !== currentArpSettings.agingTimeSec
 
     if (needUpdate) {
       if (!currentArpSettings.enabled) {
-        currentArpSettings.agingTimerEnabled = originalArpSettings.agingTimerEnabled
-        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
-      } else if (!currentArpSettings.agingTimerEnabled) {
         currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
       }
     }

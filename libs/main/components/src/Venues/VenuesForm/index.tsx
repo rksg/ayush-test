@@ -11,10 +11,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                                                            from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
 import {
-  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes
+  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes,
+  useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
@@ -194,6 +195,7 @@ export function VenuesForm (props: VenuesFormProps) {
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
   const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   useEffect(() => {
     if (data) {
@@ -391,6 +393,7 @@ export function VenuesForm (props: VenuesFormProps) {
           buttonLabel={{ submit: action === 'edit' ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Add' }) }}
+          {...getEnforcedStepsFormProps('StepsFormLegacy')}
         >
           <StepsFormLegacy.StepForm>
             <Row gutter={20}>
@@ -401,7 +404,7 @@ export function VenuesForm (props: VenuesFormProps) {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
+                    { max: 63, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)

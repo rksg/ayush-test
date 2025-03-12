@@ -263,6 +263,10 @@ jest.mock('@acx-ui/rc/components', () => ({
   WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
   WifiOperatorForm: () => <div data-testid='WifiOperatorForm' />,
   DirectoryServerForm: () => <div data-testid='DirectoryServerForm' />,
+  AddSsoSaml: () => <div data-testid='AddSsoSaml' />,
+  EditSsoSaml: () => <div data-testid='EditSsoSaml' />,
+  SsoSamlDetail: () => <div data-testid='SsoSamlDetail' />,
+  IpsecForm: () => <div data-testid='IpsecForm' />,
   ConnectionMeteringFormMode: {},
   useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
 }))
@@ -323,10 +327,19 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () =
   return <div data-testid='ConnectionMeteringPageForm' />
 })
 
-jest.mock('./pages/Services/EdgeSdLan/index', () => ({
-  AddEdgeSdLan: () => <div data-testid='AddEdgeSdLan' />,
-  EditEdgeSdLan: () => <div data-testid='EditEdgeSdLan' />,
-  EdgeSdLanTable: () => <div data-testid='EdgeSdLanTable' />,
+jest.mock('./pages/Services/EdgeSdLan/AddEdgeSdLan', () => ({
+  AddEdgeSdLan: () => <div data-testid='AddEdgeSdLan' />
+}))
+
+jest.mock('./pages/Services/EdgeSdLan/EditEdgeSdLan', () => ({
+  EditEdgeSdLan: () => <div data-testid='EditEdgeSdLan' />
+}))
+
+jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanTable', () => ({
+  EdgeSdLanTable: () => <div data-testid='EdgeSdLanTable' />
+}))
+
+jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanDetail', () => ({
   EdgeSdLanDetail: () => <div data-testid='EdgeSdLanDetail' />
 }))
 
@@ -345,9 +358,6 @@ jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable
 })
 jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced', () => () => {
   return <div data-testid='PersonalIdentityNetworkDetailEnhanced' />
-})
-jest.mock('./pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetworkEnhanced', () => () => {
-  return <div data-testid='AddPersonalIdentityNetworkEnhanced' />
 })
 
 // Edge mDNS Proxy service
@@ -850,12 +860,6 @@ describe('RcRoutes: Devices', () => {
           render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
           expect(screen.getByTestId('PersonalIdentityNetworkDetailEnhanced')).toBeVisible()
           expect(screen.queryByTestId('PersonalIdentityNetworkDetail')).toBeNull()
-        })
-
-        test('should navigate to Edge enhanced PIN create service page', async () => {
-          render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
-          expect(screen.getByTestId('AddPersonalIdentityNetworkEnhanced')).toBeVisible()
-          expect(screen.queryByTestId('AddPersonalIdentityNetwork')).toBeNull()
         })
       })
     })

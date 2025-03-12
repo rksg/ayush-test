@@ -8,7 +8,7 @@ import { screen, render, within, mockServer, waitForElementToBeRemoved, waitFor 
 
 import { EdgeNokiaCageTable } from './'
 
-const { mockOlt, mockOfflineOlt, mockOltCageList } = EdgeOltFixtures
+const { mockOlt, mockOltCageList } = EdgeOltFixtures
 
 jest.mock( './CageDetailsDrawer', () => ({
   // eslint-disable-next-line max-len
@@ -21,20 +21,12 @@ describe('EdgeNokiaCageTable', () => {
   const params = { tenantId: 'mock-tenant-id', oltId: 'mock-olt-id' }
   const mockPath = '/:tenantId/devices/optical/:oltId/details'
   const mockToggleCageReq = jest.fn()
-  const mockGetCagesReq = jest.fn()
 
   beforeEach(() => {
     store.dispatch(edgeTnmServiceApi.util.resetApiState())
     mockToggleCageReq.mockClear()
-    mockGetCagesReq.mockClear()
 
     mockServer.use(
-      rest.get(
-        EdgeTnmServiceUrls.getEdgeCageList.url,
-        (_, res, ctx) => {
-          mockGetCagesReq()
-          return res(ctx.json(mockOltCageList))
-        }),
       rest.put(
         EdgeTnmServiceUrls.toggleEdgeCageState.url,
         (req, res, ctx) => {
@@ -46,9 +38,12 @@ describe('EdgeNokiaCageTable', () => {
 
   it('should correctly render', async () => {
     render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
+      <EdgeNokiaCageTable oltData={mockOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={false}
+        isFetching={false}
+      />
     </Provider>, { route: { params, path: mockPath } })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = screen.getByRole('row', { name: /S1\/2 UP/ })
     expect(row).toBeVisible()
 
@@ -57,11 +52,27 @@ describe('EdgeNokiaCageTable', () => {
     expect(within(downCageRow).queryByRole('button', { name: 'S1/1' })).toBeNull()
   })
 
+  it('should correctly render loading icon', async () => {
+    render(<Provider>
+      <EdgeNokiaCageTable oltData={mockOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={true}
+        isFetching={true}
+      />
+    </Provider>, { route: { params, path: mockPath } })
+
+    screen.getByRole('img', { name: 'loader' })
+  })
+
   it('should show cage details drawer', async () => {
     render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
+      <EdgeNokiaCageTable oltData={mockOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={false}
+        isFetching={false}
+      />
     </Provider>, { route: { params, path: mockPath } })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const row = screen.getByRole('row', { name: /S1\/2 UP/ })
     await userEvent.click(within(row).getByRole('button', { name: 'S1/2' }))
     const drawer = await screen.findByTestId('CageDetailsDrawer')
@@ -70,9 +81,13 @@ describe('EdgeNokiaCageTable', () => {
 
   it('should change cage status from ON to OFF', async () => {
     render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
+      <EdgeNokiaCageTable oltData={mockOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={false}
+        isFetching={false}
+      />
     </Provider>, { route: { params, path: mockPath } })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const upRow = screen.getByRole('row', { name: /S1\/2 UP/ })
     await userEvent.click(within(upRow).getByRole('switch'))
     expect(mockToggleCageReq).toBeCalledWith({
@@ -89,9 +104,12 @@ describe('EdgeNokiaCageTable', () => {
 
   it('should change cage status from OFF to ON', async () => {
     render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
+      <EdgeNokiaCageTable oltData={mockOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={false}
+        isFetching={false}
+      />
     </Provider>, { route: { params, path: mockPath } })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const downRow = screen.getByRole('row', { name: /S1\/1 DOWN/ })
     await userEvent.click(within(downRow).getByRole('switch'))
@@ -118,20 +136,15 @@ describe('EdgeNokiaCageTable', () => {
     )
 
     render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOlt} />
+      <EdgeNokiaCageTable oltData={mockOlt}
+        cagesList={mockOltCageList as EdgeNokiaCageData[]}
+        isLoading={false}
+        isFetching={false}
+      />
     </Provider>, { route: { params, path: mockPath } })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const row = screen.getByRole('row', { name: /S1\/2 UP/ })
     await userEvent.click(within(row).getByRole('switch'))
     await waitFor(() => expect(spyOnConsole).toHaveBeenCalled())
-  })
-
-  it('should not trigger getCages API when OLT is offline', async () => {
-    render(<Provider>
-      <EdgeNokiaCageTable oltData={mockOfflineOlt} />
-    </Provider>, { route: { params, path: mockPath } })
-    expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    expect(screen.queryAllByRole('row', { name: /S.* (UP|DOWN)/ })).toHaveLength(0)
-    expect(mockGetCagesReq).not.toBeCalled()
   })
 })

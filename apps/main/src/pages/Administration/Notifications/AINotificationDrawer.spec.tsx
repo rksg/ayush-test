@@ -74,7 +74,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   })
 }))
 // eslint-disable-next-line max-len
-const tenantDetails = { subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":false,\"DEVICE_API_CHANGES\":true,\"DEVICE_AP_FIRMWARE\":true}' }
+const tenantDetails = { subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":false,\"API_CHANGES\":true,\"DEVICE_AP_FIRMWARE\":true}' }
 
 describe('IncidentNotificationDrawer', () => {
   beforeEach(() => {
@@ -374,7 +374,7 @@ describe('IncidentNotificationDrawer', () => {
       expect(mockedSelfMutation).toHaveBeenLastCalledWith({
         params: {},
         // eslint-disable-next-line max-len
-        payload: { id: 'test-tenant',subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":true,\"DEVICE_API_CHANGES\":false,\"DEVICE_AP_FIRMWARE\":false}' }
+        payload: { id: 'test-tenant',subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":true,\"API_CHANGES\":false,\"DEVICE_AP_FIRMWARE\":false}' }
       })
     })
     await waitFor(() => {
@@ -438,7 +438,7 @@ describe('IncidentNotificationDrawer', () => {
       expect(mockedSelfMutation).toHaveBeenLastCalledWith({
         params: {},
         // eslint-disable-next-line max-len
-        payload: { id: 'test-tenant',subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":true,\"DEVICE_API_CHANGES\":false,\"DEVICE_AP_FIRMWARE\":false}' }
+        payload: { id: 'test-tenant',subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":true,\"API_CHANGES\":false,\"DEVICE_AP_FIRMWARE\":false}' }
       })
     })
     await waitFor(() => {

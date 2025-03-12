@@ -225,6 +225,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -270,6 +271,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -315,6 +317,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -360,6 +363,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -405,6 +409,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c6"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -705,6 +710,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -750,6 +756,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -795,6 +802,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -840,6 +848,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"
@@ -885,6 +894,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     >
                       <div
                         class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c8"
+                        gradientmode="completion"
                       >
                         <div
                           class="ant-progress-outer"

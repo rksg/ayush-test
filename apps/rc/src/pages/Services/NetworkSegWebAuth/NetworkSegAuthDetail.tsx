@@ -14,6 +14,7 @@ import {
   WebAuthTemplate,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -137,6 +138,8 @@ export default function NetworkSegAuthDetail () {
               serviceId: params.serviceId as string
             })}
             scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
           >
             <Button key='configure'
               disabled={isDefaultWebAuth(params.serviceId as string)}

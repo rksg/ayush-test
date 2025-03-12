@@ -34,9 +34,9 @@ import {
   hasCrossVenuesPermission,
   hasPermission
 } from '@acx-ui/user'
-import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { useEnforcedStatus } from '../configTemplates/EnforcedButton'
+import { useEnforcedStatus } from '../configTemplates'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -95,7 +95,11 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
             ? <span>
               {row.name}
             </span>
-            : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+            : <TenantLink to={
+              (row?.isOweMaster === false && row?.owePairNetworkId !== undefined) ?
+                `/networks/wireless/${row.id}/network-details/overview-no-config` :
+                `/networks/wireless/${row.id}/network-details/overview`}
+            >
               {row.name}
               {row.name !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
@@ -171,6 +175,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
                   })}
                   placement='right'
                   iconStyle={{
+                    position: 'absolute',
                     height: '16px',
                     width: '16px',
                     marginBottom: '-3px',
@@ -301,8 +306,7 @@ export const defaultRbacNetworkPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'tunnelWlanEnable',
-    'isEnforced',
-    'isManagedByTemplate'
+    'isEnforced'
   ],
   page: 1,
   pageSize: 2048
@@ -332,6 +336,7 @@ export function NetworkTable ({
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
@@ -385,16 +390,16 @@ export function NetworkTable ({
     return list
   }
 
-  const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>) => {
+  // eslint-disable-next-line max-len
+  const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>, actionType: 'edit' | 'delete' | 'clone') => {
     // eslint-disable-next-line max-len
     const isDsaeEnabled = (isBetaDPSK3FeatureEnabled && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
-    const isEnforced = hasEnforcedItem(selectedRows)
 
-    return isDsaeEnabled || isEnforced
-  }
+    if (['edit', 'clone'].includes(actionType)) {
+      return isDsaeEnabled
+    }
 
-  const getRowActionTooltip = (selectedRows: Array<Network|WifiNetwork>) => {
-    return getEnforcedActionMsg(selectedRows)
+    return isDsaeEnabled || hasEnforcedItem(selectedRows)
   }
 
   const rowActions: TableProps<Network|WifiNetwork>['rowActions'] = [
@@ -405,8 +410,7 @@ export function NetworkTable ({
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: isActionDisabled,
-      tooltip: getRowActionTooltip
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'edit')
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
@@ -415,8 +419,7 @@ export function NetworkTable ({
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'clone')
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -457,8 +460,8 @@ export function NetworkTable ({
           }).then(clearSelection)
         })
       },
-      disabled: isActionDisabled,
-      tooltip: getRowActionTooltip
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'delete'),
+      tooltip: getEnforcedActionMsg
     }
   ]
 
@@ -476,6 +479,12 @@ export function NetworkTable ({
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
   const showRowSelection = (selectable && hasAddNetworkPermission)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.NETWORK_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[

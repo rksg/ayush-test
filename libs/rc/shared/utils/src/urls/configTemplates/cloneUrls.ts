@@ -1,13 +1,6 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-import { ConfigTemplateType } from '../../types'
-
-export type AllowedCloneTemplateTypes = ConfigTemplateType.NETWORK | ConfigTemplateType.VENUE
-
-export const allowedCloneTemplateTypesSet = new Set<ConfigTemplateType>([
-  ConfigTemplateType.NETWORK,
-  ConfigTemplateType.VENUE
-])
+import { AllowedCloneTemplateTypes, ConfigTemplateType } from '../../types'
 
 export const ConfigTemplateCloneUrlsInfo: Record<AllowedCloneTemplateTypes, ApiInfo> = {
   [ConfigTemplateType.NETWORK]: {

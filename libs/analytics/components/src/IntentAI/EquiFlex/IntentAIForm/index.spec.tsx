@@ -4,6 +4,7 @@ import { message } from 'antd'
 import moment      from 'moment-timezone'
 
 import { get }                                                                                      from '@acx-ui/config'
+import { useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
 import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -74,6 +75,11 @@ jest.mock('@acx-ui/rc/services', () => ({
     id: 'i6',
     name: 'n6',
     ssid: 's6'
+  }] }),
+  useVenueWifiRadioActiveNetworksQuery: jest.fn().mockReturnValue({ data: [{
+    id: 'i7',
+    name: 'n7',
+    ssid: 's7'
   }] })
 }))
 beforeEach(() => {
@@ -207,6 +213,38 @@ describe('IntentAIForm', () => {
     })
     it('should use all wlans when no saved wlans', async () => {
       mockGet.mockReturnValue('true') // RAI
+      const data = { ...mocked, metadata: { wlans: [] } } as IntentDetail
+      const { params } = mockIntentContextWith(data)
+      render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+      const form = within(await screen.findByTestId('steps-form'))
+      const actions = within(form.getByTestId('steps-form-actions'))
+
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      const date = await screen.findByPlaceholderText('Select date')
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+      expect(date).toHaveValue('08/09/2024')
+      const time = await screen.findByPlaceholderText('Select time')
+      await selectOptions(time, '12:30 (UTC+08)')
+      expect(time).toHaveValue('12.5')
+      await click(actions.getByRole('button', { name: 'Next' }))
+
+      expect((await screen.findAllByText('Summary')).length).toEqual(2)
+      expect(await screen.findByText('2 networks selected')).toBeVisible()
+      await click(actions.getByRole('button', { name: 'Apply' }))
+
+      expect(await screen.findByText(/has been updated/)).toBeVisible()
+      await click(await screen.findByText(/View/))
+      expect(mockNavigate).toBeCalled()
+    })
+    it('should use all wlans when no saved wlans with FF', async () => {
+      mockGet.mockReturnValue('true') // RAI
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
       const data = { ...mocked, metadata: { wlans: [] } } as IntentDetail
       const { params } = mockIntentContextWith(data)
       render(<IntentAIForm />, { route: { params }, wrapper: Provider })

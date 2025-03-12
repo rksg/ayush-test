@@ -1,13 +1,15 @@
+/* eslint-disable max-len */
 import { useReducer } from 'react'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { policyApi }                              from '@acx-ui/rc/services'
-import { IdentityProviderUrls }                   from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { policyApi }                                      from '@acx-ui/rc/services'
+import { IdentityProviderUrls }                           from '@acx-ui/rc/utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { dummyIdenetityPrividerData1, dummyTableResult, newEmptyData } from '../__tests__/fixtures'
 
@@ -61,6 +63,15 @@ describe('Identity Provider Form - NetworkIdentifierForm', () => {
       rest.post(
         IdentityProviderUrls.getIdentityProviderList.url,
         (_, res, ctx) => res(ctx.json(dummyTableResult))
+      ),
+      rest.get(
+        IdentityProviderUrls.getPreconfiguredIdentityProvider.url,
+        (_, res, ctx) => res(ctx.json([{
+          name: 'Preconfigured Provider1'
+
+        }, {
+          name: 'Preconfigured Provider2'
+        }]))
       )
     )
   })
@@ -79,6 +90,23 @@ describe('Identity Provider Form - NetworkIdentifierForm', () => {
     expect(screen.getByTestId('realm-table')).toBeInTheDocument()
     expect(screen.getByTestId('plmn-table')).toBeInTheDocument()
     expect(screen.getByTestId('roi-table')).toBeInTheDocument()
+  })
+
+  it('Render PreconfiguredIdpsDropdown component successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.PRECONFIGURED_HS20_IDP_TOGGLE)
+    const { renderElement } = renderInitState(
+      (<NetworkIdentifierForm />), dummyIdenetityPrividerData1
+    )
+    render(renderElement)
+
+    expect(await screen.findByText('Provider Settings')).toBeVisible()
+    const btn = await screen.findByRole('button', { name: /Import from a Known Identity Provider/ })
+    expect(btn).toBeVisible()
+    await userEvent.click(btn)
+
+    const menu = await screen.findByRole('menu')
+    expect(await within(menu).findByRole('menuitem',{ name: /Preconfigured Provider1/ })).toBeInTheDocument()
+    expect(await within(menu).findByRole('menuitem',{ name: /Preconfigured Provider2/ })).toBeInTheDocument()
   })
 })
 
