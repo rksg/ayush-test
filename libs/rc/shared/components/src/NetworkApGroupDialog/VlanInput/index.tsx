@@ -1,14 +1,19 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  ReloadOutlined,
+  CheckOutlined,
+  CloseOutlined
+} from '@ant-design/icons'
 import {
   InputNumber,
   Space,
   Select
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { cloneDeep, isEqual } from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import {
   Button
@@ -38,10 +43,8 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange, sel
   const [isDirty, setDirty] = useState(false)
 
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
-  const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
-  const apGroupVlanPool = apGroupVlanType === VlanType.Pool
-    ? getVlanPool(apgroup, wlan, vlanPoolSelectOptions)
-    : null
+  const apGroupVlanPool = getVlanPool(apgroup, wlan, vlanPoolSelectOptions)
+  const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
 
   const initVlanData = {
     vlanId: apGroupVlanId,
@@ -54,8 +57,8 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange, sel
   const [disabledApply, setDisabledApply] = useState(false)
 
   useEffect(() => {
-    setSelectedVlan(_.cloneDeep(initVlanData))
-    setEditingVlan(_.cloneDeep(initVlanData))
+    setSelectedVlan(cloneDeep(initVlanData))
+    setEditingVlan(cloneDeep(initVlanData))
   }, [apgroup, wlan])
 
   useEffect(() => {
@@ -78,7 +81,7 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange, sel
     }
 
     setVlanLabel(label)
-    setDirty(!_.isEqual(selectedVlan, initVlanData))
+    setDirty(!isEqual(selectedVlan, initVlanData))
   }, [selectedVlan])
 
   useEffect(() => {
