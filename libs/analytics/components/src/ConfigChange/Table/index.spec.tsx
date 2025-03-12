@@ -20,7 +20,7 @@ import { downloadConfigChangeList } from './download'
 
 import { Table } from '.'
 
-const mockGet = jest.mocked(get)
+const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
@@ -109,7 +109,7 @@ describe('Table', () => {
         'href', '/test/t/analytics/intentAI/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
     })
     it('should render correct hyperlink for SA', async () => {
-      mockGet.mockReturnValue('true') // RAI
+      mockGet.mockReturnValue(true)
       setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
       render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
         <Table/>
@@ -120,7 +120,7 @@ describe('Table', () => {
         'href', '/intentAI/30b11d8b-ce40-4344-81ef-84b47753b4a6/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
     })
     it('should not render hyperlink for SA but not have permission', async () => {
-      mockGet.mockReturnValue('true') // RAI
+      mockGet.mockReturnValue(true)
       setRaiPermissions({ READ_INTENT_AI: false } as RaiPermissions)
       render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
         <PagedTable/>
