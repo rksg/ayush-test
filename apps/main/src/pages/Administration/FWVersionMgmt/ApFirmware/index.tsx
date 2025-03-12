@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsAlphaEnabled }      from '@acx-ui/feature-toggle'
+import { useIsAlphaUser }         from '@acx-ui/feature-toggle'
 import { getJwtTokenPayload }     from '@acx-ui/utils'
 
 import { VenueFirmwareList }           from './VenueFirmwareList'
@@ -17,7 +17,7 @@ const ApFirmwareProvider = ({ children }) => {
   return (
     <ApFirmwareContext.Provider value={{
       // eslint-disable-next-line max-len
-      isAlphaFlag: useIsAlphaEnabled(),
+      isAlphaFlag: useIsAlphaUser(),
       isBetaFlag: !!jwtPayload.isBetaFlag
     }}>
       {children}

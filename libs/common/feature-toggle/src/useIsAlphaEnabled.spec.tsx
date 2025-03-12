@@ -1,4 +1,4 @@
-import { useIsAlphaEnabled } from './useIsAlphaEnabled'
+import { useIsAlphaUser } from './useIsAlphaUser'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
@@ -9,9 +9,9 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtTokenPayload: () => ({ isAlphaFlag: 'false' })
 }))
 
-describe('Test useIsAlphaEnabled function', () => {
+describe('Test useIsAlphaUser function', () => {
   it('should be true for beta enabled and dogfood true', async () => {
-    const enabled = useIsAlphaEnabled()
+    const enabled = useIsAlphaUser()
     expect(enabled).toBeTruthy()
   })
 })
