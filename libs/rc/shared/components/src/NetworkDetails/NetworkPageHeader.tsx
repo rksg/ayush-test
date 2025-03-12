@@ -29,10 +29,12 @@ import { useGetNetwork }     from './services'
 
 function NetworkPageHeader ({
   setSelectedVenues,
-  selectedVenues
+  selectedVenues,
+  noConfig
 }: {
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
+  noConfig?: boolean
 }) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
@@ -101,7 +103,7 @@ function NetworkPageHeader ({
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]: []),
-        ...(hasUpdateNetworkPermission ? [
+        ...((hasUpdateNetworkPermission && !noConfig) ? [
           <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'
