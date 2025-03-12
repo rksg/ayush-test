@@ -121,6 +121,17 @@ export function ConfigChangeProvider (props: {
   }
 
   const timeRanges = defaultRanges()[props.dateRange]!
+
+  useEffect(() => {
+    if (initialZoom !== undefined && chartZoom !== undefined) {
+      const startDiff = initialZoom.start - chartZoom.start
+      const endDiff = initialZoom.end - chartZoom.end
+      if (startDiff !== 0 && startDiff === endDiff) {
+        setChartZoom(initialZoom)
+      }
+    }
+  }, [timeRanges])
+
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([
     [timeRanges[0].valueOf(), timeRanges[0].clone().add(brushPeriod, 'ms').valueOf()],
     [timeRanges[1].clone().subtract(brushPeriod, 'ms').valueOf(), timeRanges[1].valueOf()]
