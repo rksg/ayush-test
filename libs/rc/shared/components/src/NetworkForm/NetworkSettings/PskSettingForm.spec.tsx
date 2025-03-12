@@ -26,8 +26,7 @@ import {
   mockSoftGreTable, mockedMacRegistrationPools,
   mockIdentityGroupQuery
 } from '../__tests__/fixtures'
-import { NetworkForm }    from '../NetworkForm'
-import NetworkFormContext from '../NetworkFormContext'
+import { NetworkForm } from '../NetworkForm'
 
 
 jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
