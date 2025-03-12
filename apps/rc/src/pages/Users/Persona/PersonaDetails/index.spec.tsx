@@ -59,6 +59,7 @@ describe('Identity Details', () => {
   const getPersonaGroupByIdFn = jest.fn()
   const getIdentityCertFn = jest.fn()
   const getDpskFn = jest.fn()
+  const getIdentityClientFn = jest.fn()
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   let params: { tenantId: string, personaGroupId: string, personaId: string }
@@ -68,6 +69,7 @@ describe('Identity Details', () => {
     getPersonaGroupByIdFn.mockClear()
     getIdentityCertFn.mockClear()
     getDpskFn.mockClear()
+    getIdentityClientFn.mockClear()
     jest.spyOn(navigator.clipboard, 'writeText')
 
     mockServer.use(
@@ -128,6 +130,13 @@ describe('Identity Details', () => {
       rest.get(
         DpskUrls.getDpsk.url,
         (_, res, ctx) => res(ctx.json(mockDpskPool))
+      ),
+      rest.post(
+        PersonaUrls.searchIdentityClients.url.split('?')[0],
+        (_, res, ctx) => {
+          getIdentityClientFn()
+          return res(ctx.json({ data: [], totalCount: 10 }))
+        }
       ),
       rest.post(
         ClientUrlsInfo.getClients.url,
