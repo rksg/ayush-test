@@ -55,12 +55,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         setForceNATTEnabled(initIpSecData.advancedOption?.enforceNatt)
       }
       if (initIpSecData.advancedOption?.retryLimit
-          && initIpSecData.advancedOption?.retryLimit !== 5) {
+          && initIpSecData.advancedOption?.retryLimit !== 0) {
         setRetryLimitEnabled(true)
         form.setFieldValue('retryLimitEnabledCheckbox', true)
       }
       if (initIpSecData.advancedOption?.replayWindow
-        && initIpSecData.advancedOption?.replayWindow !== 32) {
+        && initIpSecData.advancedOption?.replayWindow !== 0) {
         setEspReplayWindowEnabled(true)
         form.setFieldValue('espReplayWindowEnabledCheckbox', true)
       }
@@ -70,7 +70,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
       }
       if (initIpSecData.advancedOption?.keepAliveInterval
-        && initIpSecData.advancedOption?.keepAliveInterval !== 20) {
+        && initIpSecData.advancedOption?.keepAliveInterval !== 0) {
         setNattKeepAliveIntervalEnabled(true)
         form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', true)
       }
@@ -140,7 +140,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     setRetryLimitEnabled(e.target.checked)
                     form.setFieldValue('retryLimitEnabledCheckbox', e.target.checked)
                   }}
-                  children={$t({ defaultMessage: 'Retry Limit' })} />
+                  children={
+                    <label htmlFor='retryLimitEnabledCheckbox'>
+                      {$t({ defaultMessage: 'Retry Limit' })}
+                    </label>
+                  } />
                 <Tooltip.Question
                   title={$t(messageMapping.gateway_retry_tooltip)}
                   placement='bottom' />
