@@ -20,7 +20,7 @@ export const IconWrapper = styled(Space)`
   overflow: hidden;
   .name {
     display: inline-block;
-    max-width: 120px;    
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -32,10 +32,7 @@ export const IconWrapper = styled(Space)`
 `
 
 const excludedIcons = [
-  'R1Cloud',
-  'MelissaHeaderIcon',
-  'MelissaIcon',
-  'SearchResultNoData'
+  'R1Cloud'
 ]
 
 export function Basic () {

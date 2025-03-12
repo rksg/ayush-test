@@ -51,7 +51,8 @@ export enum EdgeServiceTypeEnum {
   PIN = 'PIN',
   SD_LAN = 'SDLAN',
   SD_LAN_P2 = 'SDLAN_P2',
-  MV_SD_LAN = 'MV_SDLAN'
+  MV_SD_LAN = 'MV_SDLAN',
+  MDNS_PROXY = 'MDNS_PROXY'
 }
 
 export enum EdgeServiceStatusEnum {
@@ -109,14 +110,6 @@ export enum ClusterHaFallbackScheduleTypeEnum {
 export enum ClusterHaLoadDistributionEnum {
   RANDOM = 'RANDOM',
   AP_GROUP = 'AP_GROUP'
-}
-
-export enum EdgeFeatureEnum {
-  SD_LAN = 'SD-LAN',
-  TUNNEL_PROFILE = 'Tunnel Profile',
-  HA_AA = 'HA-AA',
-  HQOS = 'HQoS',
-  DHCP = 'DHCP'
 }
 
 export enum CompatibilityEntityTypeEnum {

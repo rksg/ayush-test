@@ -222,7 +222,8 @@ describe('tunnelProfileUtils', () => {
         keepAliveRetry: 5,
         mtuRequestRetry: 5,
         mtuRequestTimeout: 2,
-        mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.SECONDS
+        mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.SECONDS,
+        natTraversalEnabled: false
       })
     })
 
@@ -253,7 +254,8 @@ describe('tunnelProfileUtils', () => {
           keepAliveRetry: 6,
           mtuRequestRetry: 6,
           mtuRequestTimeout: 6,
-          mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS
+          mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS,
+          natTraversalEnabled: false
         })
     })
   })

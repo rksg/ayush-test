@@ -1,10 +1,11 @@
-import { get, isEmpty, partition } from 'lodash'
-import { defineMessage }           from 'react-intl'
+import { get, isEmpty }  from 'lodash'
+import { defineMessage } from 'react-intl'
 
-import { Tenant }                            from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { TableResult }                       from '@acx-ui/rc/utils'
 import { smartZoneApi as basedSmartZoneApi } from '@acx-ui/store'
-import { getIntl }                           from '@acx-ui/utils'
+import { RequestPayload }                    from '@acx-ui/types'
+import { createHttpRequest, getIntl }        from '@acx-ui/utils'
 
 export type OnboardedSystem = {
   device_id: string
@@ -44,20 +45,27 @@ export type OnboardedSystem = {
   }>
   sz_updated_at: string
   can_delete: boolean
+  account_name: string
+  status_type: string
 }
 
 export type FormattedOnboardedSystem = {
   status: string
-  statusType: string
   errors: string[]
-  name: string
   id: string
-  addedTime:string
-  formattedAddedTime: string
   lastUpdateTime: string
   canDelete: boolean,
-  accountName: string
+} & SortingFieldsForSnakeCaseApiResponse
+
+// This is for Ruby
+type SortingFieldsForSnakeCaseApiResponse = {
+  account_name: string,
+  device_name: string,
+  created_at: string,
+  status_type: string
 }
+
+export type SmartZoneStatus = 'error' | 'offboarded' | 'onboarded' | 'ongoing'
 
 const smartZoneStateMap = {
   onboarded:
@@ -94,27 +102,8 @@ const apiServiceMap = {
   sz_api_error: defineMessage({ defaultMessage: 'SmartZone API' })
 }
 
-const sortOnboardedSystems = (
-  smartzones: OnboardedSystem[],
-  tenantId: string,
-  tenantsMap: Record<string, Tenant>
-) => {
-  const [currentTenantSzs, otherSzs] = partition(smartzones, (sz) => sz.account_id === tenantId)
-  otherSzs.sort((a, b) => (tenantsMap[a.account_id].name)
-    .localeCompare(tenantsMap[b.account_id].name))
-  return currentTenantSzs.concat(otherSzs)
-}
-
 const formatSmartZoneName = (name: string) => {
   return isEmpty(name) ? getIntl().$t({ defaultMessage: '[retrieving from SmartZone]' }) : name
-}
-
-const getStatusType = (state: keyof typeof smartZoneStateMap, errors: string[]) => {
-  const ongoingWordings = ['onboarding', 'updating']
-  if (!isEmpty(errors)) return 'error'
-  if (ongoingWordings.some(word => state.startsWith(word))) return 'ongoing'
-  if (state === 'onboarded') return 'onboarded'
-  return 'offboarded'
 }
 
 const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
@@ -158,52 +147,86 @@ const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
     })
 }
 
+const tenantIdsHeaderWithWildcard = {
+  'x-mlisa-tenant-ids': '[*]'
+}
+
 export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
   endpoints: (build) => ({
-    fetchSmartZoneList: build.query<
-      FormattedOnboardedSystem[], {
-        tenants: Tenant[],
-        tenantId: string
-      }
+    getSmartZoneList: build.query<
+      TableResult<FormattedOnboardedSystem>,
+      RequestPayload
     >({
-      query: () => {
+      query: ({ payload }) => {
+        const extraCustomHeaders: Record<string, unknown> = {
+          ...tenantIdsHeaderWithWildcard
+        }
+        const req = createHttpRequest(
+          {
+            url: '/analytics/api/rsa-mlisa-smartzone/v1/smartzones/query',
+            method: 'post'
+          },
+          undefined, extraCustomHeaders)
         return {
-          url: '/smartzones',
-          method: 'get',
+          ...req,
           credentials: 'include',
-          headers: { 'x-mlisa-tenant-ids': '[*]' }
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'SmartZone', id: 'list' }],
-      transformResponse: (response: OnboardedSystem[], _, { tenants, tenantId }) => {
+      transformResponse: (response: TableResult<OnboardedSystem>) => {
         const { $t } = getIntl()
-        const tenantsMap = tenants.reduce((acc, tenant) => {
-          acc[tenant.id] = tenant
-          return acc
-        }, {} as Record<string, Tenant>)
-        return sortOnboardedSystems(response, tenantId, tenantsMap).map((data) => {
-          const stateErrors = data.state_errors
-          return {
-            status: $t(smartZoneStateMap[data.state as keyof typeof smartZoneStateMap]),
-            statusType: getStatusType(data.state as keyof typeof smartZoneStateMap, stateErrors),
-            errors: getStatusErrors(data, stateErrors),
-            name: formatSmartZoneName(data.device_name),
-            id: data.device_id,
-            addedTime: data.created_at,
-            formattedAddedTime: formatter(DateFormatEnum.DateTimeFormat)(data.created_at),
-            lastUpdateTime: data.sz_updated_at,
-            canDelete: data.can_delete,
-            accountName: tenantsMap[data.account_id].name
-          }
-        })
+        const viewDataList = response.data
+          .map((data) => {
+            const stateErrors = data.state_errors
+            return {
+              status: $t(smartZoneStateMap[data.state as keyof typeof smartZoneStateMap]),
+              errors: getStatusErrors(data, stateErrors),
+              id: data.device_id,
+              lastUpdateTime: data.sz_updated_at,
+              canDelete: data.can_delete,
+              // Sorting fields
+              created_at: formatter(DateFormatEnum.DateTimeFormat)(data.created_at),
+              device_name: formatSmartZoneName(data.device_name),
+              account_name: data.account_name,
+              status_type: data.status_type
+            }
+          })
+        return {
+          data: viewDataList,
+          page: response.page,
+          totalCount: response.totalCount
+        }
       }
+    }),
+    getDistinctSmartZoneStatus: build.query<
+      { data: SmartZoneStatus[] },
+      RequestPayload
+    >({
+      query: ({ payload }) => {
+        const extraCustomHeaders: Record<string, unknown> = {
+          ...tenantIdsHeaderWithWildcard
+        }
+        const req = createHttpRequest(
+          {
+            url: '/analytics/api/rsa-mlisa-smartzone/v1/smartzones/status/query',
+            method: 'post'
+          },
+          undefined, extraCustomHeaders)
+        return {
+          ...req,
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SmartZone', id: 'list' }]
     }),
     deleteSmartZone: build.mutation<string, { id: string }>({
       query: ({ id }) => ({
         url: `/smartzones/${id}/delete`,
         method: 'delete',
         credentials: 'include',
-        headers: { 'x-mlisa-tenant-ids': '[*]' }
+        headers: { ...tenantIdsHeaderWithWildcard }
       }),
       invalidatesTags: [{ type: 'SmartZone', id: 'list' }]
     })
@@ -211,7 +234,8 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
 })
 
 export const {
-  useFetchSmartZoneListQuery
+  useGetSmartZoneListQuery,
+  useGetDistinctSmartZoneStatusQuery
 } = smartZoneApi
 
 export function useDeleteSmartZone () {

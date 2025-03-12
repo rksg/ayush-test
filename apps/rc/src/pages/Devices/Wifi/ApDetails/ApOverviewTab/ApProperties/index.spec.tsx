@@ -2,11 +2,18 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { apApi }                                                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchRbacUrlsInfo, SwitchUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen }                                              from '@acx-ui/test-utils'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi }        from '@acx-ui/rc/services'
+import {
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store  }                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities } from '../../__tests__/fixtures'
 
@@ -197,6 +204,14 @@ describe('ApProperties', () => {
         }))
       ),
       rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({
+          serialNumber: '422039000034',
+          apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+          name: 'fake_AP'
+        }))
+      ),
+      rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
         (_, res, ctx) => res(ctx.json({
           totalCount: 0, page: 1, data: []
@@ -254,6 +269,13 @@ describe('ApProperties', () => {
       ),
       rest.get(SwitchRbacUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json(lagList))
+      ),
+      rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

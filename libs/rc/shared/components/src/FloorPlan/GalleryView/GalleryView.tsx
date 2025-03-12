@@ -20,12 +20,14 @@ export default function GalleryView (props: {
   networkDevices: {
     [key: string]: TypeWiseNetworkDevices
   },
+  showRogueAp: boolean,
   networkDevicesVisibility: NetworkDeviceType[] }) {
   const {
     setCoordinates,
     floorPlans,
     onFloorPlanClick,
     networkDevices,
+    showRogueAp,
     networkDevicesVisibility
   } = { ...props }
   const [span, setSpan] = useState(12)
@@ -46,6 +48,7 @@ export default function GalleryView (props: {
           floorPlan={floorPlan}
           networkDevicesVisibility={networkDevicesVisibility}
           networkDevices={networkDevices}
+          showRogueAp={showRogueAp}
           onFloorPlanClick={onFloorplanImageClick}
         />
       </Col>) }
@@ -59,6 +62,7 @@ function GalleryCard (props: {
   networkDevices: {
     [key: string]: TypeWiseNetworkDevices
   },
+  showRogueAp: boolean,
   onFloorPlanClick: Function,
   }) {
   const {
@@ -66,6 +70,7 @@ function GalleryCard (props: {
     floorPlan,
     networkDevicesVisibility,
     networkDevices,
+    showRogueAp,
     onFloorPlanClick
   } = { ...props }
 
@@ -135,6 +140,7 @@ function GalleryCard (props: {
       y: imageRef?.current?.offsetHeight || 0
     }
     if (placementCoords.x <= imageCoords.x && placementCoords.y <= imageCoords.y) {
+      // @ts-ignore
       Object.assign(device.position, {
         floorplanId: device?.floorplanId,
         x: placementCoords.x,
@@ -172,6 +178,7 @@ function GalleryCard (props: {
       <div ref={drop}
         data-testid='dropContainer'
         style={{
+          backgroundColor: showRogueAp ? 'rgba(0, 0, 0, 0.4)' : '',
           position: 'absolute',
           width: '100%',
           height: '100%'
@@ -181,6 +188,7 @@ function GalleryCard (props: {
         selectedFloorPlan={floorPlan}
         networkDevices={networkDevices}
         contextAlbum={false}
+        showRogueAp={showRogueAp}
         galleryMode={true}/>
       <img alt='img'
         ref={imageRef}

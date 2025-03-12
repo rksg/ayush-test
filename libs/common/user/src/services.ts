@@ -1,6 +1,6 @@
-import { userApi }           from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { userApi }                             from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   CloudVersion,
@@ -13,7 +13,10 @@ import {
   UserSettings,
   UserProfile,
   UserSettingsUIModel,
-  BetaStatus
+  BetaStatus,
+  // FeatureAPIResults,
+  BetaFeatures,
+  AllowedOperationsResponse
 } from './types'
 
 const getUserUrls = (enableRbac?: boolean | unknown) => {
@@ -177,6 +180,7 @@ export const UserRbacUrlsInfo = {
     method: 'PATCH',
     url: '/tenants/self',
     oldUrl: '/tenants/betaStatus/:enable',
+    opsApi: 'PATCH:/tenants/self',
     newApi: true
   },
   getPrivilegeGroups: {
@@ -193,6 +197,21 @@ export const UserRbacUrlsInfo = {
     method: 'put',
     url: '/mfa/setupTenant/:enable',
     newApi: true
+  },
+  getBetaFeatureList: {
+    method: 'get',
+    url: '/tenants/betaFeatures',
+    newApi: true
+  },
+  updateBetaFeatureList: {
+    method: 'put',
+    url: '/tenants/betaFeatures',
+    newApi: true
+  },
+  getAllowedOperations: {
+    method: 'get',
+    url: '/allowedOperations',
+    newApi: false // TODO: Awaiting backend support
   }
 }
 
@@ -222,7 +241,10 @@ export const {
   useToggleBetaStatusMutation,
   useFeatureFlagStatesQuery,
   useGetPrivilegeGroupsQuery,
-  useGetVenuesListQuery
+  useGetVenuesListQuery,
+  useGetBetaFeatureListQuery,
+  useUpdateBetaFeatureListMutation,
+  useGetAllowedOperationsQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -286,6 +308,11 @@ export const {
     getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudMessageBanner, params)
     }),
+
+    getAllowedOperations: build.query<AllowedOperationsResponse, void>({
+      query: () => createHttpRequest(UserRbacUrlsInfo.getAllowedOperations)
+    }),
+
     getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const userUrlsInfo = getUserUrls(enableRbac)
@@ -337,10 +364,15 @@ export const {
       query: ({ params }) => createHttpRequest(UserUrlsInfo.mfaRegisterPhone, params)
     }),
     setupMFAAccount: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(UserUrlsInfo.setupMFAAccount, params),
-        body: payload
-      }),
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.setupMFAAccount, params, {
+          ...ignoreErrorModal
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     mfaResendOTP: build.mutation<CommonResult, RequestPayload>({
@@ -407,6 +439,25 @@ export const {
         }
       },
       providesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    getBetaFeatureList: build.query<BetaFeatures, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.getBetaFeatureList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    updateBetaFeatureList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserRbacUrlsInfo.updateBetaFeatureList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
     })
   })
 })

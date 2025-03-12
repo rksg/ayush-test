@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }        from '@acx-ui/rc/components'
 import { edgeApi, edgeHqosProfilesApi } from '@acx-ui/rc/services'
 import {
   EdgeCompatibilityFixtures,
@@ -35,10 +36,21 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
-}))
+jest.mock('@acx-ui/rc/components', () => {
+  const rcComponents = jest.requireActual('@acx-ui/rc/components')
+  return {
+    SimpleListTooltip: rcComponents.SimpleListTooltip,
+    TrafficClassSettingsTable: rcComponents.TrafficClassSettingsTable,
+    ToolTipTableStyle: rcComponents.ToolTipTableStyle,
+    useEdgeHqosCompatibilityData: () => ({
+      compatibilities: mockEdgeHqosCompatibilities,
+      isLoading: false
+    }),
+    // eslint-disable-next-line max-len
+    EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />,
+    useIsEdgeFeatureReady: jest.fn()
+  }
+})
 
 const modifiedMockEdgeHqosProfileStatusList = {
   ...mockEdgeHqosCompatibilities,
@@ -46,7 +58,7 @@ const modifiedMockEdgeHqosProfileStatusList = {
     if(index === 1) {
       return {
         ...item,
-        id: mockEdgeHqosCompatibilities.compatibilities[0].serviceId
+        id: mockEdgeHqosCompatibilities!.compatibilities![0].serviceId
       }
     }
     return item
@@ -61,6 +73,7 @@ describe('HqosBandwidthTable', () => {
   })
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -97,7 +110,7 @@ describe('HqosBandwidthTable', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /Test-QoS-/i })
     expect(row.length).toBe(2)
-    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    await screen.findAllByTestId('EdgeTableCompatibilityWarningTooltip')
   })
 
   it('should render breadcrumb correctly', async () => {

@@ -15,8 +15,9 @@ import {
   SWITCH_TYPE,
   SWITCH_SERIAL_PATTERN
 } from '../../types'
+import { FlexibleAuthentication } from '../../types'
 
-import { compareSwitchVersion } from './switch.firmware.utils'
+import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -723,7 +724,7 @@ export const getAdminPassword = (
     )
 }
 
-export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20, title: string = '') => {
   const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
   let ranges = []
 
@@ -739,7 +740,7 @@ export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => 
   if (ranges.length > maxRangesToShow) {
     const remainingCount = ranges.length - maxRangesToShow
     ranges = ranges.slice(0, maxRangesToShow)
-    return `${ranges.join(', ')}, and ${remainingCount} more...`
+    return `${ranges.join(', ')}, and ${remainingCount} ${title} more...`
   }
 
   return ranges.join(', ')
@@ -749,6 +750,47 @@ export const isFirmwareVersionAbove10 = (
   firmwareVersion: string
 ) => {
   return firmwareVersion.slice(3,6) === '100'
+}
+
+export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10010f < 10020
+  2. > 10020b
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10010f', false) &&
+    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
+  } else {
+    return false
+  }
+}
+
+
+export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10020a
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10020b', false)
+  } else {
+    return false
+  }
+}
+
+export const isFirmwareVersionAbove10010g2Or10020b = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10010g < 10020
+  2. > 10020b
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10010g', false) &&
+    (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
+  } else {
+    return false
+  }
 }
 
 export const isFirmwareSupportAdminPassword = (
@@ -765,11 +807,14 @@ export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) =>
 }
 
 export const checkSwitchUpdateFields = function (
-  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+  values: Switch,
+  switchDetail?: SwitchViewModel,
+  switchData?: Switch,
+  switchAuth?: FlexibleAuthentication
 ) {
   const fields = Object.keys(values ?? {})
   const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+  const originalValues = _.pick({ ...switchDetail, ...switchData, ...switchAuth }, fields) as Switch
 
   return Object.keys(values ?? {}).reduce((result: string[], key) => {
     if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {

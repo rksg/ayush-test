@@ -13,13 +13,14 @@ import {
 } from '@acx-ui/rc/services'
 import { ApManagementVlan } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function ApManagementVlanForm () {
+export function ApManagementVlanForm (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const VLAN_ID_MIN = 1
   const VLAN_ID_MAX = 4096
   const form = Form.useFormInstance()
@@ -158,6 +159,7 @@ export function ApManagementVlanForm () {
       isFetching: isUpdatingVenueManagementVlan
     }]}>
       <VenueSettingsHeader venue={venueData}
+        disabled={!isAllowEdit}
         isUseVenueSettings={isUseVenueSettings}
         handleVenueSetting={handleVenueSetting} />
       <Space align='start'>
@@ -186,6 +188,7 @@ export function ApManagementVlanForm () {
                     ]}
                     children={
                       <InputNumber
+                        disabled={!isAllowEdit}
                         onChange={onApMgmtVlanChange}
                         min={VLAN_ID_MIN}
                         max={VLAN_ID_MAX}

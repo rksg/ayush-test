@@ -68,6 +68,10 @@ describe('Firmware Venues Table Per AP Model', () => {
       rest.post(
         FirmwareUrlsInfo.startFirmwareBatchOperation.url,
         (req, res, ctx) => res(ctx.json({ requestId: '12345', response: { batchId: 'BAT12345' } }))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareSchedulesList.url,
+        (_, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel.data))
       )
     )
   })
@@ -348,7 +352,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     // Check if R350 is up-to-date
     const targetElement = await within(dialog).findByText(/The AP is up-to-date/i)
-    expect(within(targetElement).getByText('7.0.0.104.1242')).toBeVisible()
+    expect(within(targetElement).getByText(new RegExp('7.0.0.104.1242'))).toBeVisible()
 
     // Check if R550 can be updated
     await userEvent.selectOptions(

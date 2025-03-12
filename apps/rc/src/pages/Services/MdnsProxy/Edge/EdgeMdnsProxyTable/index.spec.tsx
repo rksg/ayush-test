@@ -2,7 +2,7 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { edgeApi } from '@acx-ui/rc/services'
+import { edgeApi }            from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -11,7 +11,9 @@ import {
   CountAndNames,
   EdgeMdnsFixtures,
   EdgeMdnsProxyUrls,
-  VenueFixtures
+  VenueFixtures,
+  EdgeUrlsInfo,
+  EdgeCompatibilityFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -20,6 +22,8 @@ import { EdgeMdnsProxyTable } from '.'
 
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockVenueOptions } = VenueFixtures
+const { mockEdgeMdnsCompatibilities } = EdgeCompatibilityFixtures
+
 const mockPath = '/:tenantId/services/edgeMdnsProxy/list'
 
 const mockMdns1 = mockEdgeMdnsViewDataList[0]
@@ -32,13 +36,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  CountAndNamesTooltip: ({ data }:{ data:CountAndNames }) => <>
-    <div data-testid='venue-count'>count:{data.count}</div>
-    <div data-testid='venue-names'>names:{data.names.join(',')}</div>
-  </>
-}))
+jest.mock('@acx-ui/rc/components', () => {
+  const rcComponents = jest.requireActual('@acx-ui/rc/components')
+  return {
+    ToolTipTableStyle: rcComponents.ToolTipTableStyle,
+    useEdgeMdnssCompatibilityData: rcComponents.useEdgeMdnssCompatibilityData,
+    MdnsProxyForwardingRulesTable: rcComponents.MdnsProxyForwardingRulesTable,
+    EdgeTableCompatibilityWarningTooltip: rcComponents.EdgeTableCompatibilityWarningTooltip,
+    CountAndNamesTooltip: ({ data }:{ data:CountAndNames }) => <>
+      <div data-testid='venue-count'>count:{data.count}</div>
+      <div data-testid='venue-names'>names:{data.names.join(',')}</div>
+    </> }
+})
 
 const { click } = userEvent
 
@@ -70,8 +79,10 @@ describe('Edge mDNS Proxy Table', () => {
         (_, res, ctx) => {
           mockedDeleteReq()
           return res(ctx.status(202))
-        }
-      )
+        }),
+      rest.post(
+        EdgeUrlsInfo.getMdnsEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeMdnsCompatibilities)))
     )
   })
 
@@ -189,6 +200,7 @@ describe('Edge mDNS Proxy Table', () => {
     // eslint-disable-next-line max-len
     expect(within(rows[1]).getByRole('cell', { name: new RegExp(`${mockMdns2.name}`) })).toBeVisible()
     await click(within(rows[1]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "2 Edge mDNS Proxy"?')
     await click(screen.getByRole('button', { name: 'Delete Edge mDNS Proxy' }))
@@ -223,6 +235,33 @@ describe('Edge mDNS Proxy Table', () => {
     const row = screen.getByRole('row', { name: new RegExp(`${mockList[1].name}`) })
     // eslint-disable-next-line max-len
     expect(row).toHaveTextContent(new RegExp(`${mockList[1].name}\\s*0\\s*0`))
+  })
+
+  it('should have compatible warning', async () => {
+    const mockList = cloneDeep(mockEdgeMdnsViewDataList)
+    mockList[1].id = mockEdgeMdnsCompatibilities.compatibilities[0].serviceId
+    mockList[1].name = 'compatible test'
+
+    mockServer.use(
+      rest.post(
+        EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockList })))
+    )
+
+    render(
+      <Provider>
+        <EdgeMdnsProxyTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await basicCheck()
+    const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
+    const fwWarningIcon = await within(row1).findByTestId('WarningTriangleSolid')
+    await userEvent.hover(fwWarningIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('RUCKUS Edges')
   })
 })
 

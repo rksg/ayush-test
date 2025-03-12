@@ -22,7 +22,8 @@ import {
   MdnsProxyViewModel,
   getScopeKeyByService,
   filterByAccessForServicePolicyMutation,
-  MdnsProxyFeatureTypeEnum
+  MdnsProxyFeatureTypeEnum,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -48,6 +49,7 @@ export default function MdnsProxyTable () {
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
@@ -62,6 +64,7 @@ export default function MdnsProxyTable () {
       scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
     },
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
@@ -98,6 +101,7 @@ export default function MdnsProxyTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
           >

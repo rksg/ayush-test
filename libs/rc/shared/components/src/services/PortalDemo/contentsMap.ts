@@ -15,6 +15,8 @@ export const portalViewTypes: Record<PortalViewEnum, MessageDescriptor> = {
     defineMessage({ defaultMessage: 'Self Sign In - Register/Confirm' }),
   [PortalViewEnum.HostApproval]:
     defineMessage({ defaultMessage: 'Host Approval - Register/Confirm' }),
+  [PortalViewEnum.Directory]:
+    defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
   [PortalViewEnum.ConnectionConfirmed]: defineMessage({ defaultMessage: 'Connection confirmed' }),
   [PortalViewEnum.TermCondition]: defineMessage({ defaultMessage: 'Terms & Conditions' })
 }
@@ -54,6 +56,10 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   [GuestNetworkTypeEnum.WISPr]: defineMessage({
     defaultMessage: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
     description: 'Description for 3rd Party Captive Portal(WISPr)'
+  }),
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
+    defaultMessage: 'Users are required to enter an organizational username and password to gain access to the network',
+    description: 'Description for Active Directory/ LDAP Server'
   })
 }
 

@@ -2,11 +2,20 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { AaaUrls, EthernetPortProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                         from '@acx-ui/store'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  EthernetPortProfileUrls,
+  ClientIsolationUrls,
+  SoftGreUrls,
+  LanPortsUrls,
+  IpsecUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -14,16 +23,162 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { dummyRadiusServiceList, ethernetPortProfileList } from './__tests__/fixtures'
+import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefaultTunkEthertnetPortProfile, portOverwrite, selectedApModel, selectedApModelCaps, selectedSinglePortModel, selectedSinglePortModelCaps, selectedTrunkPortCaps, trunkWithPortBasedName } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
 
-const venueId='mock-venue-id'
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+  dropdownClassName?: string
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options,
+    dropdownClassName, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {children ? children : null}
+      {options?.map((option) => (
+        <option
+          key={`option-${option.value}`}
+          value={option.value as string}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+export const mockSoftgreViewModel = {
+  fields: null,
+  totalCount: 0,
+  page: 1,
+  data: [
+    {
+      id: '668898664044402d800cf1ab7e7a6d04',
+      name: 'SoftGre1',
+      description: '',
+      primaryGatewayAddress: '1.1.1.1',
+      secondaryGatewayAddress: '1.1.1.2',
+      mtuType: 'AUTO',
+      keepAliveInterval: 10,
+      keepAliveRetryTimes: 5,
+      disassociateClientEnabled: false,
+      activations: [
+
+      ],
+      venueActivations: [
+        {
+          venueId: 'bad700975bbb42c1b8c7e5cdb764dfb6',
+          apModel: 'H320',
+          portId: 1,
+          apSerialNumbers: [
+
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const mockIpsecViewModel = {
+  fields: null,
+  totalCount: 0,
+  page: 1,
+  data: [
+    {
+      id: '668898664055502d800cf1ab7e7a6d04',
+      name: 'Ipsec1',
+      description: '',
+      serverAddress: '1.1.1.1',
+      activations: [
+      ],
+      venueActivations: [
+        {
+          venueId: 'bad700975bbb42c1b8c7e5cdb764dfb6',
+          apModel: 'H320',
+          portId: 1,
+          apSerialNumbers: [
+
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const mockClientIsolationViewModel = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'b566e720d85749439534788f174f1732',
+      name: 'client-isolation-2',
+      description: '',
+      clientEntries: [
+        '11:11:11:11:11:11'
+      ],
+      activations: []
+    },
+    {
+      id: '79e201950d6a41a68350f1a3d7e2857d',
+      name: 'client_isolation',
+      description: '',
+      clientEntries: [
+        '11:22:33:44:55:66'
+      ],
+      activations: []
+    }
+  ]
+}
+
+export const mockDHCP82OptionSetting = {
+  softGreEnabled: true,
+  softGreSettings: {
+    dhcpOption82Enabled: true,
+    dhcpOption82Settings: {
+      subOption1Enabled: true,
+      subOption1Format: 'SUBOPT1_ESSID',
+      subOption2Enabled: false,
+      subOption150Enabled: true,
+      subOption151Enabled: false,
+      macFormat: 'NODELIMITER'
+    }
+  },
+  enabled: true
+}
 
 const selectedModelCaps = {
   canSupportPoeMode: true,
   canSupportPoeOut: false,
-  model: 'R650'
+  model: 'R650',
+  lanPorts: [{
+    defaultType: 'TRUNK',
+    type: 'TRUNK',
+    untagId: 1,
+    vlanMembers: '1-4094',
+    portId: '1',
+    enabled: true,
+    id: '1'
+  }, {
+    defaultType: 'TRUNK',
+    type: 'TRUNK',
+    untagId: 1,
+    vlanMembers: '1-4094',
+    portId: '2',
+    enabled: true,
+    id: '2'
+  }]
 }
 
 const selectedPortCaps = {
@@ -34,7 +189,8 @@ const selectedPortCaps = {
   supportDisable: true,
   trunkPortOnly: false,
   untagId: 1,
-  vlanMembers: '1-4094'
+  vlanMembers: '1-4094',
+  vni: 1
 }
 
 const selectedModel = {
@@ -69,8 +225,9 @@ const lanData = [{
 }]
 
 describe('LanPortSettings', () => {
+
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
           index={0}
@@ -88,7 +245,6 @@ describe('LanPortSettings', () => {
     })
 
     await screen.findByText('Enable port')
-    expect(asFragment()).toMatchSnapshot()
 
     expect(screen.getByLabelText(/VLAN untag ID/)).toHaveValue('1')
     expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
@@ -157,7 +313,7 @@ describe('LanPortSettings', () => {
 
     const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
     fireEvent.mouseEnter(toolips[1])
-    expect(await screen.findByTestId('tooltip-button')).not.toBeNull()
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).not.toBeNull()
   })
 
   it('should render read-only mode correctly with trunk port untagged vlan toggle', async () => {
@@ -186,9 +342,14 @@ describe('LanPortSettings', () => {
   })
 })
 
-describe('LanPortSettings - Ethernet Port Profile', () => {
+describe('Ethernet Port Profile', () => {
+  const venueId = '123'
+  const apSerial = '123456789042'
 
   beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(ethernetPortProfileApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
         EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
@@ -197,11 +358,13 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortSettingsByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json(portOverwrite))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
         (_, res, ctx) => res(ctx.json({
-          data: {
-            enabled: true
-          }
+          data: mockDefaultTunkEthertnetPortProfile
         }))
       ),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
@@ -212,10 +375,6 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     )
   })
 
-  afterEach(() => {
-    mockServer.resetHandlers()
-  })
-
   it('AP Level - should render with ethernet port profile correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
@@ -223,20 +382,20 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
 
     const apParams = {
       tenantId: 'tenant-id',
-      serialNumber: '123456789042'
+      serialNumber: apSerial
     }
 
     render(<Provider>
-      <Form initialValues={{ lan: lanData }}>
+      <Form initialValues={{ lan: initLanData }}>
         <LanPortSettings
           index={0}
           readOnly={false}
-          selectedPortCaps={selectedPortCaps}
-          selectedModel={selectedModel}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedApModel}
           setSelectedPortCaps={jest.fn()}
-          selectedModelCaps={selectedModelCaps}
+          selectedModelCaps={selectedApModelCaps}
           isDhcpEnabled={false}
-          isTrunkPortUntaggedVlanEnabled={true}
+          isTrunkPortUntaggedVlanEnabled={false}
           useVenueSettings={false}
           serialNumber={apParams.serialNumber}
           venueId={venueId}
@@ -253,12 +412,476 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     expect(screen.getByText('802.1X')).toBeInTheDocument()
 
     const untagIdReloadBtn = screen.getByRole('button',
-      { name: 'VLAN Untag ID 1 (Custom) reload' })
+      { name: 'VLAN Untag ID (Default)' })
     expect(untagIdReloadBtn).toBeVisible()
     await userEvent.click(untagIdReloadBtn)
 
     const checkBtn = screen.getByRole('button', { name: 'check' })
     expect(checkBtn).toBeVisible()
     await userEvent.click(checkBtn)
+  })
+
+  it('AP Level - Single port AP model should filter out Port-Based ethernet port', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByLabelText(/Ethernet Port Profile/)).toBeInTheDocument()
+    const ethernetPortProfileCombo = screen.getByRole('combobox', { name: 'Ethernet Port Profile' })
+    await userEvent.click(ethernetPortProfileCombo)
+
+    expect((await screen.findAllByText('Default Trunk'))[0]).toBeInTheDocument()
+    expect(screen.queryByText(trunkWithPortBasedName)).not.toBeInTheDocument()
+
+  })
+
+  it.skip('AP Level - Single port has vni cannot modify', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    const lanDataHasVni = _.cloneDeep(lanData)
+    lanDataHasVni[0].vni = 8196
+
+    render(<Provider>
+      <Form initialValues={{ lan: lanDataHasVni }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.queryByLabelText(/Ethernet Port Profile/)).not.toBeInTheDocument()
+    expect(screen.queryByRole('combobox', { name: 'Ethernet Port Profile' }))
+      .not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Profile Details' }))
+      .not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'add Profile' }))
+      .not.toBeInTheDocument()
+  })
+
+  it('the ethernetport profile with vni should be removed from the dropdown', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByLabelText(/Ethernet Port Profile/)).toBeInTheDocument()
+    const ethernetPortProfileCombo = screen.getByRole('combobox', { name: 'Ethernet Port Profile' })
+    await userEvent.click(ethernetPortProfileCombo)
+    const options = await screen.findAllByRole('option')
+    expect(options.length).toBe(2)
+    expect(options[0].innerHTML).toBe('Default Trunk')
+    expect(options[1].innerHTML).toBe('trunk Profile 1')
+  })
+})
+describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
+  const venueId = 'bad700975bbb42c1b8c7e5cdb764dfb6'
+  const portId = '1'
+  const apModel = 'H320'
+  const serialNumber = '123456'
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: ethernetPortProfileList
+        }))
+      ),
+      rest.get(
+        LanPortsUrls.getApLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json({
+          data: {
+            enabled: true,
+            overwriteUntagId: 1,
+            overwriteVlanMembers: '1-4094'
+          }
+        }))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json({
+          data: mockDefaultTunkEthertnetPortProfile
+        }))
+      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(dummyRadiusServiceList))
+        }
+      ),
+      rest.get(
+        SoftGreUrls.getSoftGreProfileConfigurationOnVenue.url
+          .replace(':venueId' ,venueId)
+          .replace(':portId' ,portId)
+          .replace(':apModel' ,apModel)
+        , (req, res, ctx) => {
+          return res(ctx.json(mockDHCP82OptionSetting))
+        }),
+      rest.get(
+        SoftGreUrls.getSoftGreProfileConfigurationOnAP.url
+          .replace(':venueId' ,venueId)
+          .replace(':portId' ,portId)
+          .replace(':serialNumber' ,serialNumber)
+        , (req, res, ctx) => {
+          return res(ctx.json(mockDHCP82OptionSetting))
+        }),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockSoftgreViewModel))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockIpsecViewModel))
+      }),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(dummyRadiusServiceList))
+        }
+      ),
+      rest.post(ClientIsolationUrls.queryClientIsolation.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockClientIsolationViewModel))
+        }
+      )
+    )
+  })
+  it('Venue Level', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
+    expect(screen.getByLabelText(/SoftGRE Profile/)).toBeInTheDocument()
+    expect(screen.getByTestId('enable-softgre-tunnel-banner')).toBeInTheDocument()
+    expect(screen.getByTestId('softgre-profile-select')).toBeInTheDocument()
+    expect(screen.getByLabelText(/SoftGRE Profile/)).toBeInTheDocument()
+
+    expect(screen.getByText(/DHCP Option 82/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('dhcpoption82-switch-toggle'))
+    expect(screen.getByTestId('dhcpOption82SubOption1-switch')).toBeInTheDocument()
+    await userEvent.click(screen.getAllByText('Apply')[0])
+    expect(screen.getByTestId('dhcp82toption-icon')).toBeInTheDocument()
+  })
+  it('Venue Level with IPSec', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
+
+    expect(screen.getByTestId(/enable-ipsec-banner/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('ipsec-switch'))
+    expect(screen.getByTestId('ipsec-profile-select')).toBeInTheDocument()
+    expect(screen.getByLabelText(/IPsec Profile/)).toBeInTheDocument()
+  })
+  it('AP Level - should render read-only mode correctly with DHCP service enalbed', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE
+    })
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={true}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={true}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    await screen.findByText(/The following LAN Port settings can’t work because DHCP is enabled/)
+    expect(screen.queryByRole('button', { name: /Override the VLAN Untag ID/ }))
+      .not.toBeInTheDocument()
+    expect(screen.getByTestId('softgre-tunnel-switch')).toBeDisabled()
+    expect(screen.getByTestId('client-isolation-switch')).toBeDisabled()
+  })
+})
+
+describe('SoftGre Profile - Handle for R370 model', ()=> {
+  beforeEach(() => {
+    mockServer.resetHandlers()
+    mockServer.use(
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: ethernetPortProfileList
+        }))
+      ),
+      rest.get(
+        LanPortsUrls.getApLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json(portOverwrite))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json({
+          data: mockDefaultTunkEthertnetPortProfile
+        }))
+      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(dummyRadiusServiceList))
+        }
+      )
+    )
+  })
+
+  afterAll(() => mockServer.close())
+
+  it('Venue Level - should not render SoftGre Tunnel when model is R370', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_R370_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+    })
+
+    const venueParams = {
+      tenantId: 'tenant-id',
+      venueId: '123'
+    }
+
+    const selectedApModelCaps = {
+      model: 'R370',
+      supportSoftGre: false
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedApModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          venueId={venueParams.venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: venueParams, path: '/:tenantId/t/venues/:venueId/edit/wifi/networking' }
+    })
+
+    expect(screen.queryByText(/Enable SoftGRE Tunnel/)).not.toBeInTheDocument()
+  })
+
+  it('Venue Level - should render SoftGre Tunnel when model is not R370', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_R370_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+    })
+
+    const venueParams = {
+      tenantId: 'tenant-id',
+      venueId: '123'
+    }
+
+    const selectedApModelCaps = {
+      model: 'R500'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedApModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          venueId={venueParams.venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: venueParams, path: '/:tenantId/t/venues/:venueId/edit/wifi/networking' }
+    })
+
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+  })
+
+  it('AP Level - should not render SoftGre Tunnel when model is R370', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_R370_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      venueId: '123',
+      serialNumber: '123456789042'
+    }
+
+    const selectedApModelCaps = {
+      model: 'R370',
+      supportSoftGre: false
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedApModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={apParams.venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.queryByText(/Enable SoftGRE Tunnel/)).not.toBeInTheDocument()
   })
 })

@@ -1,4 +1,5 @@
-import { RadiusServer } from './RadiusServer'
+import { RadiusServer }  from './RadiusServer'
+import { RadSecOptions } from './RadSecOptions'
 
 export class Radius {
   primary?: RadiusServer
@@ -8,4 +9,6 @@ export class Radius {
   id?: string
   name?: string
   type?: string
+
+  radSecOptions?: RadSecOptions
 }

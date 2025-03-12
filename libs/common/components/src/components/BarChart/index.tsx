@@ -5,7 +5,8 @@ import { TooltipComponentFormatterCallbackParams }                  from 'echart
 import ReactECharts                                                 from 'echarts-for-react'
 import { CallbackDataParams, GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
 
-import type { BarChartData } from '@acx-ui/analytics/utils'
+import type { BarChartData }         from '@acx-ui/analytics/utils'
+import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 
 import {
   gridOptions,
@@ -25,14 +26,15 @@ import type { EChartsReactProps } from 'echarts-for-react'
 export interface BarChartProps
   <TChartData extends BarChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
-  data: TChartData,
-  grid?: GridOption,
+  data: TChartData
+  grid?: GridOption
   barColors?: string[]
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
-  labelRichStyle?: object,
+  labelRichStyle?: object
   onClick?: (params: EventParams) => void
+  yAxisType?: 'time' & 'category'
 }
 
 const getSeries = (
@@ -72,14 +74,33 @@ export function BarChart<TChartData extends BarChartData>
   labelFormatter,
   tooltipFormatter,
   labelRichStyle,
-  barColors = qualitativeColorSet(),
+  barColors,
   barWidth,
   onClick,
   ...props
 }: BarChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
   useLegendSelectChanged(eChartsRef)
-
+  const getBarColors = () => {
+    const defaultColors = qualitativeColorSet()
+    const multiSeries = data.seriesEncode.length > 1
+    const dataCount = multiSeries ? data.seriesEncode.length : data.source.length
+    if (!barColors) {
+      let colors
+      if(dataCount <= defaultColors.length && dataCount >= 1) {
+        colors = defaultColors.slice(0, dataCount)
+      } else {
+        colors = defaultColors
+      }
+      if(multiSeries) {
+        return colors
+      } else {
+        return colors.reverse()
+      }
+    } else {
+      return barColors
+    }
+  }
   const option: EChartsOption = {
     animation: false,
     grid: { ...gridOptions(), ...gridProps },
@@ -89,7 +110,7 @@ export function BarChart<TChartData extends BarChartData>
     },
     barWidth: barWidth || 12,
     barGap: '50%',
-    color: barColors,
+    color: getBarColors(),
     tooltip: {
       show: tooltipFormatter !== undefined,
       ...tooltipOptions(),
@@ -115,7 +136,7 @@ export function BarChart<TChartData extends BarChartData>
       }
     },
     yAxis: {
-      type: 'category',
+      type: props.yAxisType || 'category',
       axisLine: {
         show: false
       },
@@ -125,11 +146,12 @@ export function BarChart<TChartData extends BarChartData>
       axisLabel: {
         ...barChartAxisLabelOptions(),
         formatter: function (value: string) {
-          return value.trim()
+          return props.yAxisType === 'time' ?
+            formatter(DateFormatEnum.DateTimeFormat)(value) : value.trim()
         }
       }
     },
-    series: getSeries(data, barColors, labelFormatter, labelRichStyle, !!onClick)
+    series: getSeries(data, barColors as string[], labelFormatter, labelRichStyle, !!onClick)
   }
 
   return (

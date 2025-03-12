@@ -14,8 +14,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
-import { RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
@@ -32,18 +32,23 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ConfigTemplateType,
+  PoliciesConfigTemplateUrlsInfo,
   redirectPreviousPage,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
+  VenueConfigTemplateUrlsInfo,
   VenueDosProtection,
-  VenueMessages
+  VenueMessages,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }   from '@acx-ui/user'
 
 import { VenueEditContext }               from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateOpsApiSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../venueConfigTemplateApiSwitcher'
 
@@ -98,6 +103,25 @@ export function SecurityTab () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
   const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+
+  const venueDosProtectionOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateDenialOfServiceProtection,
+    VenueConfigTemplateUrlsInfo.updateDenialOfServiceProtectionRbac
+  )
+
+  const venueRogueApOpsApi = useVenueConfigTemplateOpsApiSwitcher(
+    WifiRbacUrlsInfo.updateVenueRogueAp,
+    PoliciesConfigTemplateUrlsInfo.updateVenueRogueApRbac
+  )
+
+  const [
+    isAllowEditDosProtection,
+    isAllowEditRogueAp
+  ] = [
+    hasAllowedOperations([venueDosProtectionOpsApi]),
+    hasAllowedOperations([venueRogueApOpsApi])
+  ]
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -237,15 +261,30 @@ export function SecurityTab () {
       }
 
       if(triggerRogueAPDetection){
+        const { rogueApEnabled, roguePolicyId, reportThreshold } = data ?? {}
+        const {
+          roguePolicyId: currentRoguePolicyId,
+          reportThreshold: currentReportThreshold
+        } = venueRogueApData ?? {}
+
         const rogueApPayload = {
-          enabled: data?.rogueApEnabled,
-          reportThreshold: data?.reportThreshold,
-          roguePolicyId: data?.roguePolicyId,
-          currentRoguePolicyId: venueRogueApData?.roguePolicyId,
-          currentReportThreshold: venueRogueApData?.reportThreshold
+          enabled: rogueApEnabled,
+          reportThreshold,
+          roguePolicyId,
+          currentRoguePolicyId,
+          currentReportThreshold
         }
+
+        /**
+         * Avoid the API error when calling the updateVenueRogueAp API
+         * When rogueAP is enabld, the roguePolicyId must have value
+         * When rogueAP is disabld, the currentRoguePolicyId must have value
+         */
+        const isCorrectPaylod = rogueApEnabled? !!roguePolicyId : !!currentRoguePolicyId
+        if (isCorrectPaylod) {
         // eslint-disable-next-line max-len
-        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: resolvedServicePolicyRbacEnabled })
+          await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: resolvedServicePolicyRbacEnabled })
+        }
         setTriggerRogueAPDetection(false)
       }
 
@@ -324,11 +363,13 @@ export function SecurityTab () {
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
+        {...getEnforcedStepsFormProps('StepsFormLegacy')}
       >
         <StepsFormLegacy.StepForm>
           <FieldsetItem
             name='dosProtectionEnabled'
             label={$t({ defaultMessage: 'DoS Protection:' })}
+            disabled={!isAllowEditDosProtection}
             initialValue={false}
             switchStyle={{ marginLeft: '78.5px' }}
             triggerDirtyFunc={setTriggerDoSProtection}>
@@ -354,6 +395,7 @@ export function SecurityTab () {
                       ]}
                       initialValue={60}
                       children={<InputNumber
+                        disabled={!isAllowEditDosProtection}
                         onChange={() => setTriggerDoSProtection(true)}
                         min={30}
                         max={600}
@@ -373,6 +415,7 @@ export function SecurityTab () {
                       name='failThreshold'
                       initialValue={5}
                       children={<InputNumber
+                        disabled={!isAllowEditDosProtection}
                         onChange={() => setTriggerDoSProtection(true)}
                         min={2}
                         max={25}
@@ -390,6 +433,7 @@ export function SecurityTab () {
                       name='checkPeriod'
                       initialValue={30}
                       children={<InputNumber
+                        disabled={!isAllowEditDosProtection}
                         onChange={() => setTriggerDoSProtection(true)}
                         min={30}
                         max={600}
@@ -403,6 +447,7 @@ export function SecurityTab () {
           <FieldsetItem
             name='rogueApEnabled'
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
+            disabled={!isAllowEditRogueAp}
             initialValue={false}
             switchStyle={{}}
             triggerDirtyFunc={setTriggerRogueAPDetection}
@@ -422,6 +467,7 @@ export function SecurityTab () {
                   name='reportThreshold'
                   initialValue={0}
                   children={<InputNumber
+                    disabled={!isAllowEditRogueAp}
                     onChange={() => setTriggerRogueAPDetection(true)}
                     min={0}
                     max={100}
@@ -437,6 +483,7 @@ export function SecurityTab () {
                   initialValue={roguePolicyIdValue}
                   name='roguePolicyId'>
                   <Select
+                    disabled={!isAllowEditRogueAp}
                     children={selectOptions}
                     value={roguePolicyIdValue}
                     onChange={(value => setRogueApPolicyId(value))}
@@ -453,9 +500,10 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                <RogueApModal
+                { isAllowEditRogueAp && <RogueApModal
                   setPolicyId={setRogueApPolicyId}
                 />
+                }
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}
@@ -508,11 +556,13 @@ const CustomFieldSet = styled(Fieldset)`
 const FieldsetItem = ({
   children,
   label,
+  disabled,
   switchStyle,
   triggerDirtyFunc,
   ...props
 }: FormItemProps &
   { label: string,
+    disabled?: boolean,
     children: ReactNode,
     switchStyle: CSSProperties,
     triggerDirtyFunc: (checked: boolean) => void
@@ -521,7 +571,7 @@ const FieldsetItem = ({
   valuePropName='checked'
 >
   <CustomFieldSet
-    {...{ label, children }}
+    {...{ label, children, disabled }}
     switchStyle={switchStyle}
     onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>

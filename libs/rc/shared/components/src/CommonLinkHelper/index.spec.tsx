@@ -1,14 +1,19 @@
+import { waitFor } from '@testing-library/react'
+import { rest }    from 'msw'
+
 import {
   DpskDetailsTabKey,
   getPolicyDetailsLink,
   getServiceDetailsLink,
   MacRegistrationDetailsTabKey,
+  PersonaUrls,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { render,screen } from '@acx-ui/test-utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   ConnectionMeteringLink,
@@ -52,13 +57,45 @@ describe('Common Link Helper', () => {
 
   it('should render IdentityGroupLink correctly', async () => {
     render(
-      <IdentityGroupLink
-        personaGroupId={'group-id'}
-        name={'group-name'}
-      />,
+      <Provider>
+        <IdentityGroupLink
+          personaGroupId={'group-id'}
+          name={'group-name'}
+        />
+      </Provider>,
       { route: { params } }
     )
 
+    const link = await screen.findByRole('link', { name: 'group-name' })
+    expect(link).toBeVisible()
+    expect(link).toHaveAttribute(
+      'href',
+      `${tenantPrefix}/users/identity-management/identity-group/group-id`
+    )
+  })
+
+  it('should render IdentityGroupLink enableFetchName correctly', async () => {
+    const mockedApiFn = jest.fn()
+    mockServer.use(
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (_, res, ctx) => {
+          mockedApiFn()
+          return res(ctx.json({ name: 'group-name' }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <IdentityGroupLink
+          personaGroupId={'group-id'}
+          enableFetchName
+        />
+      </Provider>,
+      { route: { params } }
+    )
+
+    await waitFor(() => expect(mockedApiFn).toBeCalledTimes(1))
     const link = await screen.findByRole('link', { name: 'group-name' })
     expect(link).toBeVisible()
     expect(link).toHaveAttribute(

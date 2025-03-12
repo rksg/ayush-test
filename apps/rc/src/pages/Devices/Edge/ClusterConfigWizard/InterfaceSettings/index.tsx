@@ -11,8 +11,10 @@ import { CompatibilityStatusBar, CompatibilityStatusEnum, EdgeHaSettingsForm, Ty
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
-import { ClusterHighAvailabilityModeEnum, convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                     from '@acx-ui/react-router-dom'
+import { ClusterHighAvailabilityModeEnum, convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                                                   from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                                                                                   from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                       from '@acx-ui/utils'
 
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
@@ -275,7 +277,7 @@ export const InterfaceSettings = () => {
                 venueId: clusterInfo?.venueId,
                 clusterId
               },
-              payload: transformFromFormToApiData(value)
+              payload: transformFromFormToApiData(value, clusterInfo?.highAvailabilityMode)
             }).unwrap()
             callback()
           }
@@ -286,7 +288,7 @@ export const InterfaceSettings = () => {
             venueId: clusterInfo?.venueId,
             clusterId
           },
-          payload: transformFromFormToApiData(value)
+          payload: transformFromFormToApiData(value, clusterInfo?.highAvailabilityMode)
         }).unwrap()
         callback()
       }
@@ -317,6 +319,10 @@ export const InterfaceSettings = () => {
     navigate(clusterListPage)
   }
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [getOpsApi(EdgeUrlsInfo.patchEdgeClusterNetworkSettings)] }
+  )
+
   return (
     <StepsForm<InterfaceSettingsFormType>
       form={configWizardForm}
@@ -325,12 +331,12 @@ export const InterfaceSettings = () => {
       onCancel={handleCancel}
       initialValues={clusterNetworkSettingsFormData}
       buttonLabel={{
-        submit: $t({ defaultMessage: 'Apply & Finish' })
+        submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply & Finish' }) : ''
       }}
-      customSubmit={{
+      customSubmit={hasUpdatePermission ? {
         label: $t({ defaultMessage: 'Apply & Continue' }),
         onCustomFinish: applyAndContinue
-      }}
+      } : undefined}
     >
       {
         steps.map((item, index) =>

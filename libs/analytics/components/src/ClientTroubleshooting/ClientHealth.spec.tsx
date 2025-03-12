@@ -79,7 +79,7 @@ describe('ClientHealth', () => {
 
   it('should render warning icon for max event error', async () => {
     mockGraphqlQuery(dataApiURL, 'ClientConnectionQualities', { error: {
-      message: 'CTP:MAX_EVENTS_EXCEEDED'
+      message: 'RDA-413'
     } })
 
     render(<Provider>

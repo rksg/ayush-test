@@ -96,7 +96,7 @@ const venueConfigList = {
       numberOfNotifySuccess: 0,
       numberOfSuccess: 2,
       numberOfSwitches: 2,
-      startTime: '1/13/23, 11:34 AM',
+      startTime: '2023-01-13T07:46:18.605+00:00',
       transactionId: '626c8b67-77b3-4b3d-9592-d1458da0f8a6'
     }, {
       configType: ['PORT_CONFIGURATION'],
@@ -104,7 +104,7 @@ const venueConfigList = {
       numberOfNotifySuccess: 0,
       numberOfSuccess: 1,
       numberOfSwitches: 2,
-      startTime: '1/13/23, 10:55 AM',
+      startTime: '2023-01-13T06:46:18.605+00:00',
       transactionId: '4dfa2a49-d266-415b-86bc-661671e2260e'
     }, {
       configType: ['VLAN', 'PORT_CONFIGURATION'],
@@ -112,7 +112,7 @@ const venueConfigList = {
       numberOfNotifySuccess: 0,
       numberOfSuccess: 1,
       numberOfSwitches: 2,
-      startTime: '1/13/23, 7:51 AM',
+      startTime: '2023-01-13T03:16:18.605+00:00',
       transactionId: 'b8ae27fd-8f42-4dd5-9e0f-b24373775731'
     }]
   }
@@ -285,7 +285,7 @@ describe('SwitchConfigHistoryTable', () => {
             list: [{
               configType: ['PORT_CONFIGURATION'],
               numberOfSwitches: 1,
-              startTime: '1/13/23, 11:34 AM',
+              startTime: '2023-01-13T07:46:18.605+00:00',
               transactionId: '626c8b67-77b3-4b3d-9592-d1458da0f8a6'
             }]
           }

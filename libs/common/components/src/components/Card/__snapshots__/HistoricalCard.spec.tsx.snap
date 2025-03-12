@@ -84,6 +84,9 @@ exports[`HistoricalCard should render HistoricalCard 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c3 {

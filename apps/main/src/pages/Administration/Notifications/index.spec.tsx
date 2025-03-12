@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }        from '@acx-ui/store'
@@ -14,8 +14,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { fakeNotificationList } from './__tests__/fixtures'
-import { RecipientDialogProps } from './RecipientDialog'
+import { fakeNotificationList, privilegeGroupList } from './__tests__/fixtures'
+import { RecipientDialogProps }                     from './RecipientDialog'
 
 import NotificationList from './index'
 
@@ -41,6 +41,7 @@ jest.mock('./RecipientDialog', () => ({
 }))
 const services = require('@acx-ui/msp/services')
 const mspUtils = require('@acx-ui/msp/utils')
+const rcServices = require('@acx-ui/rc/services')
 
 jest.mock('./AINotificationDrawer', () => ({
   AINotificationDrawer: () => <div data-testid='AIDrawer'>AI Notification Drawer</div>
@@ -55,7 +56,9 @@ describe('Notification List', () => {
     }
     services.useGetMspProfileQuery = jest.fn().mockReturnValue({ data: {} })
     services.useGetMspAggregationsQuery = jest.fn().mockReturnValue({ data: {} })
-
+    rcServices.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: privilegeGroupList }
+    })
     store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
@@ -181,7 +184,7 @@ describe('Notification List', () => {
 
   it('should show preferences button if feature flag on', async () => {
     jest.spyOn(mspUtils, 'MSPUtils').mockReturnValue({ isOnboardedMsp: () => true })
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE)
     render(
       <Provider>
         <NotificationList />
@@ -197,7 +200,7 @@ describe('Notification List', () => {
   })
 
   it('should show ai notification button if feature flag on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
     render(
       <Provider>
         <NotificationList />

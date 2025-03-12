@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Form }                                from 'antd'
+import { Form, Typography }                    from 'antd'
 import { useIntl }                             from 'react-intl'
 import { resolvePath, useNavigate, useParams } from 'react-router-dom'
 
@@ -12,7 +12,7 @@ import {
 import {
   WorkflowForm
 } from '@acx-ui/rc/components'
-import { CommonAsyncResponse, useAddWorkflowMutation } from '@acx-ui/rc/services'
+import { CommonAsyncResponse, useAddWorkflowMutation, useSearchInProgressWorkflowListQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -34,6 +34,21 @@ export default function WorkflowPageForm () {
   const linkToPolicies = useTenantLink(tablePath)
   const [isCreating, setIsCreating] = useState(false)
   const [addWorkflow] = useAddWorkflowMutation()
+
+  const { data: existingWorkflowData, isLoading, isFetching } =
+    useSearchInProgressWorkflowListQuery(
+      { params: { excludeContent: 'true' }, payload: { page: 1, pageSize: 1 } })
+
+  const [isMaxWorkflowsExceeded, setIsMaxWorkflowsExceeded] = useState(true)
+
+  useEffect(() => {
+    if(!existingWorkflowData || existingWorkflowData?.totalCount >= 500) {
+      setIsMaxWorkflowsExceeded(true)
+    } else {
+      setIsMaxWorkflowsExceeded(false)
+    }
+  }, [existingWorkflowData])
+
   const handleAddWorkflow = async (data: Workflow, callback?: (v: CommonAsyncResponse)=>void) => {
     return addWorkflow({ payload: {
       ...data
@@ -78,13 +93,18 @@ export default function WorkflowPageForm () {
         breadcrumb={usePolicyListBreadcrumb(PolicyType.WORKFLOW)}
         title={$t({ defaultMessage: 'Add Workflow' })}
       />
-      <Loader states={[{ isLoading: isCreating }]}>
+      <Loader states={[{ isLoading: isCreating || isLoading, isFetching: isFetching }]}>
+        {isMaxWorkflowsExceeded && <p><Typography.Text type='danger' strong>
+          {$t({ defaultMessage: 'No more workflows may be created. ' +
+            'The maximum number of workflows has been reached.' })}
+        </Typography.Text></p>}
         <StepsForm<WorkflowFormField>
           form={form}
           editMode={false}
           buttonLabel={buttonLabel}
           onCancel={()=>onCancel()}
-          onFinish={onSubmit}>
+          onFinish={onSubmit}
+          disabled={isMaxWorkflowsExceeded}>
           <StepsForm.StepForm<WorkflowFormField>
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}

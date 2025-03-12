@@ -1,5 +1,10 @@
-import { transformNetwork, transVenuesForNetwork } from './networkUtils'
-import { BaseNetwork, Network, WifiNetwork }       from './types'
+import { WlanSecurityEnum } from './constants'
+import {
+  IsSecuritySupport6g,
+  transformNetwork,
+  transVenuesForNetwork
+} from './networkUtils'
+import { BaseNetwork, Network, WifiNetwork } from './types'
 
 const baseNetwork: BaseNetwork = {
   name: 'Test Network',
@@ -78,6 +83,26 @@ describe('networkUtils', () => {
           }
         ]
       })
+    })
+  })
+
+  describe('IsSecuritySupport6g', () => {
+    it('test the IsSecuritySupport6g function', () => {
+      const undefinedSupport6g = IsSecuritySupport6g(undefined)
+      expect(undefinedSupport6g).toBeFalsy()
+
+      const wpa3Support6g = IsSecuritySupport6g(WlanSecurityEnum.WPA3)
+      expect(wpa3Support6g).toBeTruthy()
+
+      const oweTransitionSupport6g = IsSecuritySupport6g(WlanSecurityEnum.OWETransition)
+      expect(oweTransitionSupport6g).toBeFalsy()
+
+    })
+
+    it('test the IsSecuritySupport6g function with options', () => {
+      const options = { isSupport6gOWETransition: true }
+      const oweTransitionSupport6g = IsSecuritySupport6g(WlanSecurityEnum.OWETransition, options)
+      expect(oweTransitionSupport6g).toBeTruthy()
     })
   })
 })

@@ -4,16 +4,23 @@ import { InputNumber, Form, Space, Row, Col } from 'antd'
 import { useIntl }                            from 'react-intl'
 import { useParams }                          from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, cssStr, showActionModal }                         from '@acx-ui/components'
+import {
+  Loader,
+  StepsFormLegacy,
+  cssStr,
+  showActionModal,
+  AnchorContext
+}                         from '@acx-ui/components'
 import { InformationSolid }                                                         from '@acx-ui/icons'
 import { useGetVenueApManagementVlanQuery, useUpdateVenueApManagementVlanMutation } from '@acx-ui/rc/services'
 import { validateVlanId }                                                           from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
-export function ApManagementVlan () {
+export function ApManagementVlan (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isAllowEdit=true } = props
   const form = Form.useFormInstance()
 
   const {
@@ -22,6 +29,7 @@ export function ApManagementVlan () {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const { data: venueApMgmtData, isLoading: isVenueApMgmtLoading } =
     useGetVenueApManagementVlanQuery({ params: { venueId } })
@@ -32,9 +40,11 @@ export function ApManagementVlan () {
     if (!isVenueApMgmtLoading && venueApMgmtData) {
       const { vlanId } = venueApMgmtData
       form.setFieldValue('vlanId', vlanId)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Access-Point-Management-VLAN')))])
     }
 
-  }, [form, venueApMgmtData, isVenueApMgmtLoading])
+  }, [form, venueApMgmtData, isVenueApMgmtLoading, setReadyToScroll])
 
   const onFormDataChanged = () => {
 
@@ -121,6 +131,7 @@ export function ApManagementVlan () {
                   children={
                     <InputNumber
                       data-testid='venue-ap-mgmt-vlan'
+                      disabled={!isAllowEdit}
                       onChange={onFormDataChanged}
                       style={{ width: '86px' }}
                     />

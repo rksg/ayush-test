@@ -8,13 +8,15 @@ import {
   CompatibilityDeviceEnum,
   CompatibilitySelectedApInfo,
   CompatibilityType,
+  EdgeIncompatibleFeatureV1_1,
   IncompatibilityFeatures,
   IncompatibleFeature,
   getCompatibilityDeviceTypeDisplayName
 } from '@acx-ui/rc/utils'
 
-import { ApCompatibilityDetailTable }   from '../ApCompatibilityDetailTable'
-import { EdgeCompatibilityDetailTable } from '../EdgeCompatibilityDetailTable'
+import { useIsEdgeFeatureReady }        from '../../useEdgeActions'
+import { ApCompatibilityDetailTable }   from '../Ap/ApCompatibilityDetailTable'
+import { EdgeCompatibilityDetailTable } from '../Edge/EdgeCompatibilityDetailTable'
 
 import { CompatibilityItem } from './CompatibilityItem'
 import { useDescription }    from './utils'
@@ -35,6 +37,8 @@ interface SameDeviceTypeCompatibilityProps {
 const tabOrder = [CompatibilityDeviceEnum.AP, CompatibilityDeviceEnum.EDGE]
 export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityProps) => {
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  // eslint-disable-next-line max-len
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const { types, data, ...others } = props
   const description = useDescription(omit(props, 'data'))
 
@@ -74,13 +78,15 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
         </Tabs>)
       : <EdgeCompatibilityDetailTable
         requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
-        data={(data[CompatibilityDeviceEnum.EDGE] as ApIncompatibleFeature[]).map(i => ({
-          featureRequirement: {
-            featureName: i.featureName,
-            requiredFw: i.requiredFw!
-          },
-          incompatibleDevices: i.incompatibleDevices ?? []
-        }))}
+        data={isEdgeCompatibilityEnhancementEnabled
+          ? data[CompatibilityDeviceEnum.EDGE] as EdgeIncompatibleFeatureV1_1[]
+          : (data[CompatibilityDeviceEnum.EDGE] as ApIncompatibleFeature[]).map(i => ({
+            featureRequirement: {
+              featureName: i.featureName,
+              requiredFw: i.requiredFw!
+            },
+            incompatibleDevices: i.incompatibleDevices ?? []
+          }))}
         venueId={props.venueId}
       />}
   </>

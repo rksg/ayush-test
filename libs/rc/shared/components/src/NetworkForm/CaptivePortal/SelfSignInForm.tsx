@@ -1,4 +1,4 @@
-
+/* eslint-disable max-len */
 import { useState, useContext, useEffect } from 'react'
 
 import {
@@ -38,16 +38,18 @@ import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { SMSTokenCheckbox, isSMSTokenAvailable } from './SharedComponent/SMSToken/SMSTokenCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WhatsAppTokenCheckbox }                 from './SharedComponent/WhatsAppToken/WhatsAppTokenCheckbox'
 import { WlanSecurityFormItems }                 from './SharedComponent/WlanSecurity/WlanSecuritySettings'
 import TwitterSetting                            from './TwitterSetting'
 
-const SelfSignInAppStyle = { marginBottom: '0' }
+export const SelfSignInAppStyle = { marginBottom: '0' }
 
 
 export function SelfSignInForm () {
   const {
     data,
     editMode,
+    isRuckusAiMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const { useWatch } = Form
@@ -57,6 +59,7 @@ export function SelfSignInForm () {
     socialDomains,
     enableSmsLogin,
     enableEmailLogin,
+    enableWhatsappLogin,
     facebook,
     google,
     twitter,
@@ -66,6 +69,7 @@ export function SelfSignInForm () {
     useWatch(['guestPortal', 'socialDomains']),
     useWatch(['guestPortal', 'enableSmsLogin']),
     useWatch(['guestPortal', 'enableEmailLogin']),
+    useWatch(['guestPortal', 'enableWhatsappLogin']),
     useWatch(['guestPortal', 'socialIdentities', 'facebook']),
     useWatch(['guestPortal', 'socialIdentities', 'google']),
     useWatch(['guestPortal', 'socialIdentities', 'twitter']),
@@ -169,6 +173,9 @@ export function SelfSignInForm () {
       if (data.guestPortal?.enableEmailLogin) {
         allowedSignValueTemp.push('enableEmailLogin')
       }
+      if (data.guestPortal?.enableWhatsappLogin) {
+        allowedSignValueTemp.push('enableWhatsappLogin')
+      }
       if (data.guestPortal?.socialIdentities?.facebook) {
         allowedSignValueTemp.push('facebook')
       }
@@ -196,6 +203,7 @@ export function SelfSignInForm () {
       setRedirectURL(globalValues)
     }
   }, [globalValues])
+
   return (<>
     <GridRow>
       <GridCol col={{ span: 12 }}>
@@ -230,8 +238,8 @@ export function SelfSignInForm () {
                 </Tooltip>
               </>
             </Form.Item>
-
             }
+            <WhatsAppTokenCheckbox SMSUsage={smsUsage.data} onChange={updateAllowSign} />
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
               initialValue={false}
               style={SelfSignInAppStyle}>
@@ -387,7 +395,7 @@ export function SelfSignInForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip></>
         </Form.Item>
-        {(enableSmsLogin || enableEmailLogin) &&
+        {(enableSmsLogin || enableEmailLogin || enableWhatsappLogin) &&
         <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
           <Space align='start'>
             <Form.Item
@@ -418,7 +426,7 @@ export function SelfSignInForm () {
           wlanSecurity={data?.wlan?.wlanSecurity} />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

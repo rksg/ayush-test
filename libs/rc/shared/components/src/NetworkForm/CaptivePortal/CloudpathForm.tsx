@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl'
 
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -17,7 +18,8 @@ import {
   NetworkSaveData,
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  URLProtocolRegExp
+  URLProtocolRegExp,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -34,25 +36,46 @@ export function CloudpathForm () {
   const {
     data,
     editMode,
+    isRuckusAiMode,
     cloneMode
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
+  // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if((editMode || cloneMode) && data){
-      form.setFieldsValue({ ...data })
-      form.setFieldValue('enableAccountingService', data.enableAccountingService)
-      if(data.accountingRadius){
-        form.setFieldValue('accountingRadiusId',
-          data.accountingRadius.id)
-      }
-      if(data.authRadius){
-        form.setFieldValue('authRadiusId',
-          data.authRadius.id)
-      }
+    if(!supportRadsec && (editMode || cloneMode) && data){
+      setFieldsValue()
     }
   },[data])
+
+  useEffect(()=>{
+    if(supportRadsec && (editMode || cloneMode) && data){
+      setFieldsValue()
+    }
+  },[data?.id, data?.wlan?.wlanSecurity])
+
+  const setFieldsValue = () => {
+    if (!data) {
+      return
+    }
+
+    form.setFieldsValue({ ...data,
+      enableAccountingService: data.enableAccountingService
+    })
+    if(data.accountingRadius){
+      form.setFieldValue('accountingRadiusId',
+        data.accountingRadius.id)
+    }
+    if(data.authRadius){
+      form.setFieldValue('authRadiusId',
+        data.authRadius.id)
+    }
+  }
+
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
@@ -107,7 +130,7 @@ export function CloudpathForm () {
         />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />
       </GridCol>

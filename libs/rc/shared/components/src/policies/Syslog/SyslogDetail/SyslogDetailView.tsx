@@ -11,7 +11,8 @@ import {
   PolicyType,
   SyslogConstant,
   SyslogDetailContextType,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -28,6 +29,10 @@ export const SyslogDetailView = () => {
   const [policyName, setPolicyName] = useState('' as string)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SYSLOG)
 
+  const allowedOperationForEdit = useTemplateAwarePolicyAllowedOperation(
+    PolicyType.SYSLOG, PolicyOperation.EDIT
+  )
+
   return (
     <SyslogDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
@@ -36,6 +41,7 @@ export const SyslogDetailView = () => {
         extra={policyName !== SyslogConstant.DefaultProfile
           ? filterByAccessForServicePolicyMutation([
             <PolicyConfigTemplateLinkSwitcher
+              rbacOpsIds={allowedOperationForEdit}
               scopeKey={getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.EDIT)}
               type={PolicyType.SYSLOG}
               oper={PolicyOperation.EDIT}

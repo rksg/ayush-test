@@ -1,18 +1,20 @@
 import { useState } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }                                                                  from '@acx-ui/components'
-import { RadioCardCategory }                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { Typography }             from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                    from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
+  IncompatibilityFeatures,
+  ServiceOperation,
   ServiceType,
   isServiceCardEnabled,
-  ServiceOperation,
   isServiceCardSetEnabled,
-  IncompatibilityFeatures
+  serviceTypeLabelMapping,
+  serviceTypeDescMapping
 } from '@acx-ui/rc/utils'
 
 import { ServiceCard } from '../ServiceCard'
@@ -27,6 +29,7 @@ interface ServiceCardItem {
     categories: RadioCardCategory[]
     disabled?: boolean
     helpIcon?: React.ReactNode
+    isBetaFeature?: boolean
   }[]
 }
 
@@ -41,7 +44,9 @@ export default function ServiceCatalog () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -56,8 +61,8 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
-            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+            showDetailButton
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
           />,
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
@@ -67,7 +72,7 @@ export default function ServiceCatalog () {
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           helpIcon: <ApCompatibilityToolTip
             title=''
-            visible
+            showDetailButton
             onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
           />,
           disabled: !isEdgePinReady
@@ -78,11 +83,16 @@ export default function ServiceCatalog () {
           helpIcon: isEdgeCompatibilityEnabled
             ? <ApCompatibilityToolTip
               title={''}
-              visible={true}
+              showDetailButton
               onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
             />
             : undefined,
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        },
+        {
+          type: ServiceType.EDGE_OLT,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeOltEnabled
         }
       ]
     },
@@ -102,7 +112,18 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_MDNS_PROXY,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeMdnsReady
+          disabled: !isEdgeMdnsReady,
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            showDetailButton
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+          />,
+          isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
+        },
+        {
+          type: ServiceType.EDGE_TNM_SERVICE,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeTnmServiceReady
         },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
@@ -138,16 +159,30 @@ export default function ServiceCatalog () {
           </Typography.Title>
           <GridRow>
             {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
-              return <GridCol key={item.type} col={{ span: 6 }}>
-                <ServiceCard
-                  key={item.type}
-                  serviceType={item.type}
-                  categories={item.categories}
-                  type={'button'}
-                  helpIcon={item.helpIcon}
-                />
-              </GridCol>
+              return item.type === ServiceType.EDGE_OLT
+                ? <UI.OltCardWrapper key={item.type} col={{ span: 6 }}>
+                  <RadioCard
+                    type={'button'}
+                    buttonText={defineMessage({ defaultMessage: 'Add' })}
+                    key={item.type}
+                    value={item.type}
+                    title={$t(serviceTypeLabelMapping[item.type])}
+                    description={$t(serviceTypeDescMapping[item.type])}
+                    categories={item.categories}
+                  />
+                </UI.OltCardWrapper>
+                : <GridCol key={item.type} col={{ span: 6 }}>
+                  <ServiceCard
+                    key={item.type}
+                    serviceType={item.type}
+                    categories={item.categories}
+                    type={'button'}
+                    helpIcon={item.helpIcon}
+                    isBetaFeature={item.isBetaFeature}
+                  />
+                </GridCol>
             })}
+
           </GridRow>
         </UI.CategoryContainer>
       })}

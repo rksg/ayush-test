@@ -1,8 +1,5 @@
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
-
-import { ServiceOperation } from './serviceRouteUtils'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 export type SvcPcyAllowedScope = Array<'wifi' | 'edge' | 'switch'>
 export type SvcPcyAllowedType = ServiceType | PolicyType
@@ -20,6 +17,7 @@ export const serviceTypeScopeMap: SvcPcyScopeMap<ServiceType> = {
   [ServiceType.WIFI_CALLING]: ['wifi'],
   [ServiceType.MDNS_PROXY]: ['wifi'],
   [ServiceType.EDGE_MDNS_PROXY]: ['edge'],
+  [ServiceType.EDGE_TNM_SERVICE]: ['edge'],
   [ServiceType.DPSK]: ['wifi'],
   [ServiceType.PIN]: ['wifi', 'switch', 'edge'],
   [ServiceType.WEBAUTH_SWITCH]: ['switch'],
@@ -53,7 +51,9 @@ export const policyTypeScopeMap: SvcPcyScopeMap<PolicyType>= {
   [PolicyType.CLIENT_ISOLATION]: ['wifi'],
   [PolicyType.SNMP_AGENT]: ['wifi'],
   [PolicyType.WIFI_OPERATOR]: ['wifi'],
-  [PolicyType.IDENTITY_PROVIDER]: ['wifi']
+  [PolicyType.IDENTITY_PROVIDER]: ['wifi'],
+  [PolicyType.FLEX_AUTH]: ['switch'],
+  [PolicyType.SWITCH_PORT_PROFILE]: ['switch']
 }
 
 export const policyOperScopeMap: SvcPcyOperMap<PolicyOperation> = {

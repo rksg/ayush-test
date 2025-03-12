@@ -1,6 +1,7 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Typography } from 'antd'
+import _              from 'lodash'
 import { useIntl }    from 'react-intl'
 
 import { useBrand360Config } from '@acx-ui/analytics/services'
@@ -8,6 +9,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
+import { baseUrlFor }                               from '@acx-ui/config'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { AdminSolid, HomeSolid }                    from '@acx-ui/icons'
 import {
@@ -17,13 +19,14 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  Logo,
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
 import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
+import { AssignedEntitlementListPayload }                                               from '@acx-ui/msp/utils'
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
-import { ConfigTemplateContext }                                                        from '@acx-ui/rc/utils'
+import { useRbacEntitlementListQuery }                                                  from '@acx-ui/rc/services'
+import { ConfigTemplateContext, SaveEnforcementConfigFnType }                           from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
@@ -56,12 +59,17 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
-  const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const { data: mspEntitlement } = useMspEntitlementListQuery({ params },
+    { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacMspEntitlement } = useRbacEntitlementListQuery(
+    { params: useParams(), payload: AssignedEntitlementListPayload },
+    { skip: !isEntitlementRbacApiEnabled })
 
   const {
     state
@@ -116,14 +124,22 @@ function Layout () {
       }
       setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
     }
-    if (mspEntitlement?.length && mspEntitlement?.length > 0) {
+    if (_.isEmpty(mspEntitlement) || _.isEmpty(rbacMspEntitlement?.data)) {
       setHasLicense(true)
     }
   }, [data, userProfile, mspEntitlement])
 
   return (
     <LayoutComponent
-      logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
+      logo={<TenantNavLink
+        to={indexPath}
+        tenantType={'v'}
+        children={<img
+          src={baseUrlFor('/assets/Logo.svg')}
+          alt='logo'
+          width={180}
+          height={60}
+        />} />}
       menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
       content={
         <>
@@ -177,7 +193,20 @@ function Layout () {
 export default Layout
 
 export function LayoutWithConfigTemplateContext () {
-  return <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+  const saveEnforcementConfigFnRef = useRef<SaveEnforcementConfigFnType>()
+
+  const setSaveEnforcementConfigFn = (fn: SaveEnforcementConfigFnType) => {
+    saveEnforcementConfigFnRef.current = fn
+  }
+
+  const saveEnforcementConfig = async (templateId: string) => {
+    if (templateId && saveEnforcementConfigFnRef.current) {
+      await saveEnforcementConfigFnRef.current(templateId)
+    }
+  }
+
+  return <ConfigTemplateContext.Provider
+    value={{ isTemplate: true, setSaveEnforcementConfigFn, saveEnforcementConfig }}>
     <Outlet />
   </ConfigTemplateContext.Provider>
 }

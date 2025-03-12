@@ -52,14 +52,14 @@ export const WanthroughputTable: React.FC<ChartProps> = (props) => {
       filterable: true
     },
     {
-      title: $t(defineMessage({ defaultMessage: 'WAN Link Capability' })),
+      title: $t(defineMessage({ defaultMessage: 'AP Port Capability' })),
       dataIndex: 'capability',
       key: 'capability',
       sorter: { compare: sortProp('capability', defaultSort) },
       filterable: true
     },
     {
-      title: $t(defineMessage({ defaultMessage: 'WAN Link' })),
+      title: $t(defineMessage({ defaultMessage: 'Upstream Port Capability' })),
       dataIndex: 'link',
       key: 'link',
       sorter: { compare: sortProp('link', defaultSort) },
@@ -78,7 +78,7 @@ export const WanthroughputTable: React.FC<ChartProps> = (props) => {
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Impacted APs' })} type='no-border'>
+      <Card title={$t({ defaultMessage: 'Impacted AP Details' })} type='no-border'>
         <Table
           type='tall'
           dataSource={queryResults.data}

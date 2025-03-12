@@ -24,9 +24,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { SearchOutlined }                           from '@acx-ui/icons'
+import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -57,8 +57,8 @@ import {
   MspEcTierEnum,
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                       from '@acx-ui/rc/services'
+import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete }                   from '@acx-ui/rc/components'
+import { useGetPrivacySettingsQuery, useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -67,23 +67,26 @@ import {
   useTableQuery,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  PrivilegeGroup,
+  PrivacyFeatureName
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }             from '@acx-ui/types'
-import { useUserProfileContext } from '@acx-ui/user'
-import { AccountType }           from '@acx-ui/utils'
+import { RolesEnum }                  from '@acx-ui/types'
+import { useUserProfileContext }      from '@acx-ui/user'
+import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
-import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
-import { StartSubscriptionModal } from '../StartSubscriptionModal'
-import * as UI                    from '../styledComponents'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
+import { StartSubscriptionModal }    from '../StartSubscriptionModal'
+import * as UI                       from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -181,13 +184,15 @@ export function ManageCustomer () {
   const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -199,7 +204,9 @@ export function ManageCustomer () {
   const [serviceTypeSelected, setServiceType] = useState(ServiceType.PAID)
   const [trialSelected, setTrialSelected] = useState(true)
   const [ecSupportEnabled, setEcSupport] = useState(false)
+  const [arcEnabled, setArcEnabled] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
@@ -252,14 +259,16 @@ export function ManageCustomer () {
   })
   const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
-      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
         { skip: action !== 'edit' })
   const { data: ecAdministrators } =
-      useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useMspEcAdminListQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecSupport } =
       useGetMspEcSupportQuery({
         params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: action !== 'edit' })
@@ -280,6 +289,10 @@ export function ManageCustomer () {
     },
     option: { skip: action !== 'edit' }
   })
+  const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params },
+    { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   const showExtendedTrial = tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled
   const [
@@ -289,6 +302,17 @@ export function ManageCustomer () {
   const [
     disableMspEcSupport
   ] = useDisableMspEcSupportMutation()
+
+  const { data: privacySettingsData } =
+   useGetPrivacySettingsQuery({ params }, { skip: isEditMode || !isAppMonitoringEnabled })
+
+  useEffect(() => {
+    if (privacySettingsData) {
+      const privacyMonitoringSetting =
+         privacySettingsData.filter(item => item.featureName === PrivacyFeatureName.ARC)[0]
+      setArcEnabled(privacyMonitoringSetting.isEnabled)
+    }
+  }, [privacySettingsData])
 
   useEffect(() => {
     if (ecSupport && ecSupport.length > 0 ) {
@@ -356,6 +380,10 @@ export function ManageCustomer () {
           setSwitchLicense(sLic)
         }
         setServiceType(isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL : ServiceType.PAID)
+        if (isAppMonitoringEnabled) {
+          setArcEnabled(data.privacyFeatures?.find(f =>
+            f.featureName === 'ARC')?.isEnabled ? true : false)
+        }
       }
     }
 
@@ -363,21 +391,30 @@ export function ManageCustomer () {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
       if (userProfile) {
-        const administrator = [] as MspAdministrator[]
-        administrator.push ({
-          id: userProfile.adminId,
-          lastName: userProfile.lastName,
-          name: userProfile.firstName,
-          email: userProfile.email,
-          role: userProfile.role as RolesEnum,
-          detailLevel: userProfile.detailLevel
-        })
-        setAdministrator(administrator)
+        if (isSystemAdmin) {
+          const administrator = [] as MspAdministrator[]
+          administrator.push ({
+            id: userProfile.adminId,
+            lastName: userProfile.lastName,
+            name: userProfile.firstName,
+            email: userProfile.email,
+            role: userProfile.role as RolesEnum,
+            detailLevel: userProfile.detailLevel
+          })
+          setAdministrator(administrator)
+        } else {
+          const pg = privilegeGroupList?.find(pg => pg.name === userProfile?.role)
+          if (pg) {
+            const pgList = [] as PrivilegeGroup[]
+            pgList.push({ id: pg.id, name: userProfile.role as RolesEnum })
+            setPrivilegeGroups(pgList)
+          }
+        }
       }
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -531,7 +568,10 @@ export function ManageCustomer () {
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
         licenses: assignLicense,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined,
+        privacyFeatures: isAppMonitoringEnabled
+          ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
+          : undefined
       }
       if (ecFormData.admin_email) {
         customer.admin_email = ecFormData.admin_email
@@ -554,6 +594,10 @@ export function ManageCustomer () {
       })
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
+      }
+      if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
+        const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
+        customer.privilege_group_ids = pgIds
       }
 
       const result =
@@ -667,7 +711,10 @@ export function ManageCustomer () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined,
+        privacyFeatures: isAppMonitoringEnabled
+          ? [{ featureName: 'ARC', status: arcEnabled ? 'enabled' : 'disabled' }]
+          : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -706,7 +753,7 @@ export function ManageCustomer () {
 
   const displayMspAdmins = () => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
@@ -717,9 +764,21 @@ export function ManageCustomer () {
     </>
   }
 
+  const displayPrivilegeGroups = () => {
+    if (!privilegeGroups || privilegeGroups.length === 0)
+      return noDataDisplay
+    return <>
+      {privilegeGroups.map(pg =>
+        <UI.AdminList key={pg.id}>
+          {pg.name}
+        </UI.AdminList>
+      )}
+    </>
+  }
+
   const displayIntegrator = () => {
     if (!mspIntegrator || mspIntegrator.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspIntegrator.map(integrator =>
         <UI.AdminList key={integrator.id}>
@@ -731,7 +790,7 @@ export function ManageCustomer () {
 
   const displayInstaller = () => {
     if (!mspInstaller || mspInstaller.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspInstaller.map(installer =>
         <UI.AdminList key={installer.id}>
@@ -843,17 +902,36 @@ export function ManageCustomer () {
 
   const MspAdminsForm = () => {
     return <>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-        <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        {!isEditMode && <Form.Item
-          children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
-            {intl.$t({ defaultMessage: 'Manage' })}
-          </UI.FieldTextLink>
-          }
-        />}
-      </UI.FieldLabelAdmins>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+      {(isAbacToggleEnabled && isRbacPhase2Enabled && !isEditMode)
+        ? <div>
+          <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
+            <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>
+            <Form.Item
+              children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>
+              }
+            />
+          </UI.FieldLabelAdmins2>
+          <UI.FieldLabelDelegations width='260px' style={{ marginLeft: '15px', marginTop: '5px' }}>
+            <label>{intl.$t({ defaultMessage: 'Users' })}</label>
+            <Form.Item children={<div>{displayMspAdmins()}</div>} />
+            <label>{intl.$t({ defaultMessage: 'Privilege Groups' })}</label>
+            <Form.Item children={<div>{displayPrivilegeGroups()}</div>} />
+          </UI.FieldLabelDelegations>
+        </div>
+        : <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+          <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+          {!isEditMode && <Form.Item
+            children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+              {intl.$t({ defaultMessage: 'Manage' })}
+            </UI.FieldTextLink>
+            }
+          />}
+        </UI.FieldLabelAdmins>}
+
+      <UI.FieldLabelAdmins width='275px'>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
         {!isEditMode && <Form.Item
@@ -1141,12 +1219,28 @@ export function ManageCustomer () {
         <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
           {intl.$t({ defaultMessage: 'Enable access to Ruckus Support' })}</h4>
         <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
-      <div><label>
+      <UI.SwitchDescription><label>
         {intl.$t({ defaultMessage: 'If checked, Ruckus Support team is granted a temporary' +
   ' administrator-level access for 21 days.' })}</label>
-      </div>
-      <label>
-        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
+      </UI.SwitchDescription>
+      <UI.SwitchDescription>
+        <label>
+          {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
+      </UI.SwitchDescription>
+    </>
+  }
+
+  const EnableArcForm = () => {
+    return <>
+      <div>
+        <h4 style={{ display: 'inline-block', marginTop: '10px', marginRight: '25px' }}>
+          {intl.$t({ defaultMessage: 'Enable application-recognition and control' })}</h4>
+        <Switch defaultChecked={arcEnabled} onChange={setArcEnabled}/></div>
+      <UI.SwitchDescription style={{ width: '500px' }}><label>
+        {intl.$t({ defaultMessage: 'This setting determines the default behavior for new MSP ' +
+          'customers. It specifies whether Application Recognition and Control (ARC) is enabled ' +
+          'or disabled by default for the WLAN networks of newly added MSP customers.' })}</label>
+      </UI.SwitchDescription>
     </>
   }
 
@@ -1628,12 +1722,26 @@ export function ManageCustomer () {
         >
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
-
-        <Form.Item
+        {!isRbacPhase2Enabled && <Form.Item
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
-        </Form.Item>
+        </Form.Item>}
+        {isRbacPhase2Enabled && <div>
+          <Form.Item style={{ height: '20px', margin: '0' }}
+            label={intl.$t({ defaultMessage: 'MSP Delegations' })}
+          />
+          <Form.Item style={{ margin: '0' }}
+            label={intl.$t({ defaultMessage: 'Users' })}
+          >
+            <Paragraph>{displayMspAdmins()}</Paragraph>
+          </Form.Item>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+          >
+            <Paragraph>{displayPrivilegeGroups()}</Paragraph>
+          </Form.Item></div>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Integrator' })}
         >
@@ -1698,7 +1806,15 @@ export function ManageCustomer () {
           <Paragraph>
             {formatter(DateFormatEnum.DateFormat)(formData.service_expiration_date)}
           </Paragraph>
-        </Form.Item></>
+        </Form.Item>
+
+        {isAppMonitoringEnabled && <Form.Item
+          label={intl.$t({ defaultMessage:
+            'Application-recognition and control, application-monitoring' })}
+        >
+          <Paragraph>{arcEnabled ? 'Enabled' : 'Disabled'}</Paragraph>
+        </Form.Item>}
+      </>
     )
   }
   const TrialBanner = () => {
@@ -1796,6 +1912,7 @@ export function ManageCustomer () {
           <Form.Item children={displayCustomerAdmins()} />
           {showExtendedTrial ? <EditCustomerSubscriptionFormExtendedTrial />
             : <EditCustomerSubscriptionForm />}
+          {isAppMonitoringEnabled && <div style={{ marginTop: '38px' }}><EnableArcForm /></div>}
           <EnableSupportForm></EnableSupportForm>
         </StepsFormLegacy.StepForm>}
 
@@ -1867,6 +1984,12 @@ export function ManageCustomer () {
             {showExtendedTrial ? <CustomerSubscriptionExtendedTrial /> : <CustomerSubscription />}
           </StepsFormLegacy.StepForm>
 
+          {isAppMonitoringEnabled && <StepsFormLegacy.StepForm name='privacy'
+            title={intl.$t({ defaultMessage: 'Privacy' })}>
+            <Subtitle level={3}>{intl.$t({ defaultMessage: 'Privacy' })}</Subtitle>
+            <EnableArcForm />
+          </StepsFormLegacy.StepForm>}
+
           <StepsFormLegacy.StepForm name='summary'
             title={intl.$t({ defaultMessage: 'Summary' })}>
             <CustomerSummary />
@@ -1876,11 +1999,20 @@ export function ManageCustomer () {
       </StepsFormLegacy>
 
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={selectedMspAdmins}
-          tenantId={mspEcTenantId}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={selectedMspAdmins}
+            selectedUsers={mspAdmins}
+            setSelectedPrivilegeGroups={setPrivilegeGroups}
+            selectedPrivilegeGroups={privilegeGroups}
+            tenantIds={mspEcTenantId ? [mspEcTenantId] : undefined}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}

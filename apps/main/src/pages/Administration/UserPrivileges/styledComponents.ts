@@ -1,5 +1,5 @@
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import { Checkbox, Space } from 'antd'
+import styled              from 'styled-components/macro'
 
 export const Wrapper = styled(Space)`
   .ant-pro-table-list-toolbar-title {
@@ -35,7 +35,7 @@ export const FieldLabelPermission = styled.div<{ width: string }>`
 export const FieldLabelAttributes = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 465px 48px 48px 48px 48px 48px;
+  grid-template-columns: 465px 48px 48px 48px 48px;
   grid-template-rows: 40px;
   grid-column-gap: 2px;
   align-items: center;
@@ -107,4 +107,31 @@ export const SelectedCount = styled.div`
   background-color: var(--acx-accents-blue-10);
   margin-bottom: -36px;
   z-index: 10000;
+`
+export const PermissionCheckbox = styled(Checkbox)`
+  .ant-checkbox {
+    background-color: var(--acx-primary-white);
+  }
+`
+export const PermissionTableWrapper = styled.div`
+  padding-bottom: 80px;
+  .grid-item.ant-form-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .ant-table-thead > tr > th {
+    text-align: center;
+  }
+  .ant-table-tbody > tr.ant-table-row:hover > td,
+  .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    background-color: transparent;
+  }
+`
+export const PermissionSummaryWrapper = styled.div`
+  .ant-descriptions-item .ant-descriptions-item-label {
+    color: var(--acx-primary-black);
+  }
 `

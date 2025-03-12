@@ -55,6 +55,10 @@ jest.mock('./StaticRouteModal', () => ({
   StaticRouteModal: () => <div data-testid='static-route-modal' />
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
 describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
 

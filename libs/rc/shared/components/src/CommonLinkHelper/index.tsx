@@ -1,3 +1,4 @@
+import { useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import {
   DpskDetailsTabKey,
   getPolicyDetailsLink,
@@ -23,12 +24,32 @@ export function VenueLink (props: { venueId?: string, name?: string, showNoData?
   )
 }
 
-export function IdentityGroupLink (props: { personaGroupId?: string, name?: string }) {
-  const { personaGroupId, name } = props
+// eslint-disable-next-line max-len
+export function IdentityGroupLink (props: {
+  personaGroupId?: string,
+  name?: string,
+  enableFetchName?: boolean,
+  showNoData?: boolean,
+  disableLink?: boolean
+}) {
+  // eslint-disable-next-line max-len
+  const { personaGroupId, name, enableFetchName = false, showNoData = false, disableLink = false } = props
+  const { data: groupData, isLoading } = useGetPersonaGroupByIdQuery(
+    { params: { groupId: personaGroupId } },
+    { skip: !personaGroupId || !enableFetchName })
+  // eslint-disable-next-line max-len
+  const displayString = name ?? (enableFetchName ? groupData?.name ?? personaGroupId : personaGroupId)
+
   return (
-    <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
-      {name ?? personaGroupId}
-    </TenantLink>
+    personaGroupId
+      ? (enableFetchName && isLoading)
+        ? <></>
+        : disableLink
+          ? <>{displayString}</>
+          : <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
+            {displayString}
+          </TenantLink>
+      : <>{showNoData && noDataDisplay}</>
   )
 }
 
@@ -96,6 +117,25 @@ export function CertTemplateLink (props: {
         policyId: id,
         oper: PolicyOperation.DETAIL,
         type: PolicyType.CERTIFICATE_TEMPLATE
+      })}>
+        {name ?? id}
+      </TenantLink>
+      : <>{showNoData && noDataDisplay}</>
+  )
+}
+
+export function PolicySetLink (props: {
+  id?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { id, name, showNoData } = props
+  return (
+    id
+      ? <TenantLink to={getPolicyDetailsLink({
+        policyId: id,
+        oper: PolicyOperation.DETAIL,
+        type: PolicyType.ADAPTIVE_POLICY_SET
       })}>
         {name ?? id}
       </TenantLink>

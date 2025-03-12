@@ -22,6 +22,10 @@ jest.mock('./ApLed', () => ({
   ApLed: () => <div data-testid={'apLed'}></div>
 }))
 
+jest.mock('./ApUsb', () => ({
+  ApUsb: () => <div data-testid={'apUsb'}></div>
+}))
+
 jest.mock('./BssColoring', () => ({
   BssColoring: () => <div data-testid={'bssColoring'}></div>
 }))
@@ -50,6 +54,7 @@ describe('AP advanced Tab', () => {
 
     expect(await screen.findByTestId('apLed')).toBeVisible()
     expect(await screen.findByTestId('bssColoring')).toBeVisible()
+    expect(screen.queryByTestId('apUsb')).not.toBeInTheDocument()
   })
 
   it ('Save data after config changed', async () => {
@@ -64,6 +69,8 @@ describe('AP advanced Tab', () => {
     const newEditAdvancedContextData = {
       updateApLed: mockUpdateApLed,
       discardApLedChanges: jest.fn(),
+      updateApUsb: jest.fn(),
+      discardApUsbChanges: jest.fn(),
       updateBssColoring: jest.fn(),
       discardBssColoringChanges: jest.fn(),
       updateApManagementVlan: jest.fn(),
@@ -107,6 +114,8 @@ describe('AP advanced Tab', () => {
     const newEditAdvancedContextData = {
       updateApLed: jest.fn(),
       discardApLedChanges: mockDiscardApLedChanges,
+      updateApUsb: jest.fn(),
+      discardApUsbChanges: jest.fn(),
       updateBssColoring: jest.fn(),
       discardBssColoringChanges: jest.fn()
     }
@@ -133,5 +142,26 @@ describe('AP advanced Tab', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockDiscardApLedChanges).toBeCalled()
+  })
+  it('should show AP Usb config if the AP model support',async () => {
+    const supportUsb = {
+      ...ApCap_T750SE,
+      usbPowerEnable: true
+    }
+    render(
+      <Provider>
+        <ApDataContext.Provider value={{
+          apData: ApData_T750SE,
+          apCapabilities: supportUsb }} >
+          <AdvancedTab />
+        </ApDataContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/advanced' }
+      }
+    )
+
+    expect(await screen.findByTestId('apLed')).toBeVisible()
+    expect(await screen.findByTestId('apUsb')).toBeVisible()
+    expect(await screen.findByTestId('bssColoring')).toBeVisible()
   })
 })

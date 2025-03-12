@@ -14,6 +14,7 @@ import {
   WebAuthTemplate,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -137,6 +138,8 @@ export default function NetworkSegAuthDetail () {
               serviceId: params.serviceId as string
             })}
             scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
           >
             <Button key='configure'
               disabled={isDefaultWebAuth(params.serviceId as string)}
@@ -148,10 +151,10 @@ export default function NetworkSegAuthDetail () {
       <br /><br />
 
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: switches?.switchVenueInfos?.length || 0 })}>
+        { count: switches?.length || 0 })}>
         <Table
           columns={columns}
-          dataSource={switches?.switchVenueInfos as unknown as WebAuthSwitchType[]}
+          dataSource={switches as unknown as WebAuthSwitchType[]}
           type='form'
           rowKey='switchId' />
       </Card>

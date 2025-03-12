@@ -20,7 +20,7 @@ import {
 } from '../__tests__/fixtures'
 import { api } from '../services'
 
-import { IntentAIWidget } from '.'
+import IntentAIWidget from '.'
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)

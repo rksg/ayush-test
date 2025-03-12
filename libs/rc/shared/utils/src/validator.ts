@@ -9,15 +9,15 @@ import {
   isEmpty,
   uniq,
   isInteger
-}                from 'lodash'
+} from 'lodash'
 
 import { RolesEnum }                                from '@acx-ui/types'
 import { roleStringMap }                            from '@acx-ui/user'
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }                from './constants'
-import { IpUtilsService }             from './ipUtilsService'
-import { Acl, AclExtendedRule, Vlan } from './types'
+import { AclTypeEnum }                                                       from './constants'
+import { IpUtilsService }                                                    from './ipUtilsService'
+import { Acl, AclExtendedRule, LldpTlvs, MacOuis, SwitchPortProfiles, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
 const basicPhoneNumberRegExp = new RegExp (/^\+[1-9]\d{1,14}$/)
@@ -90,6 +90,15 @@ export function URLRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
+  }
+  return Promise.resolve()
+}
+export function HttpURLRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
@@ -776,8 +785,9 @@ export function cliVariableNameRegExp (value: string) {
 }
 
 export function cliIpAddressRegExp (value: string) {
+  /* {1-223}.{0-255}.{0-255}.{1–255} */
   const { $t } = getIntl()
-  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-2][0-3]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+  const re = new RegExp(/^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\.)((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){2}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|[1-9])$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
@@ -957,6 +967,9 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
 }
 
 export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
+  if(!ipAddress){
+    return Promise.resolve()
+  }
   const { $t } = getIntl()
   const adRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
   if (!adRegexp.test(ipAddress)) {
@@ -1031,11 +1044,20 @@ export function validateVlanId (vlanId: string){
   return Promise.resolve()
 }
 
-export function validateVlanName (vlanName: string){
+export function validateVlanExcludingReserved (vlanName: string){
   const { $t } = getIntl()
-  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4095)$')
+  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4093|4095)$')
   if (!vlanRegexp.test(vlanName)) {
-    return Promise.reject($t(validationMessages.vlanNameInvalid))
+    return Promise.reject($t(validationMessages.vlanInvalidExclReserved))
+  }
+  return Promise.resolve()
+}
+
+export const validateVlanRangeFormat = (value: string) => {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(\d+(-\d+)?)(,\s?\d+(-\d+)?)*$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.invalidVlanRangeRegExp))
   }
   return Promise.resolve()
 }
@@ -1160,10 +1182,11 @@ export function ipv6RegExp (value: string) {
   return Promise.resolve()
 }
 
-export function servicePolicyNameRegExp (value: string) {
+export function servicePolicyNameRegExp (value: string, maxLength: number=32) {
   const { $t } = getIntl()
+
   // regex from service and policy backend
-  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+  const re = new RegExp(`(?=^((?!(\`|\\$\\()).){2,${maxLength}}$)^(\\S.*\\S)$`)
 
   // make sure there is no special character in value
   if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
@@ -1211,3 +1234,85 @@ export function guestPasswordValidator (value: string) {
 
 }
 
+export function validateDuplicatePortProfile (selectedPortProfiles: string[] = [], portProfilesList: SwitchPortProfiles[] = []) {
+  const selectedProfiles = portProfilesList.filter(profile =>
+    profile.id && selectedPortProfiles.includes(profile.id)
+  )
+
+  // Track duplicates
+  const lldpTlvDuplicates: { [tlvId: string]: string[] } = {}
+  const macOuiDuplicates: { [ouiId: string]: string[] } = {}
+
+  // Check LLDP TLVs
+  selectedProfiles.forEach(profile => {
+    profile.lldpTlvs?.forEach((tlv: LldpTlvs) => {
+      // Find profiles in this TLV that are in our selected list
+      const matchingProfiles = tlv.portProfiles?.filter(
+        (p: string) => selectedPortProfiles.includes(p)
+      ) || []
+
+      if (matchingProfiles.length > 1 && tlv.id) {
+        lldpTlvDuplicates[tlv.id] = matchingProfiles
+      }
+    })
+  })
+
+  // Check MAC OUIs
+  selectedProfiles.forEach(profile => {
+    profile.macOuis?.forEach((macOui: MacOuis) => {
+      // Find profiles in this MAC OUI that are in our selected list
+      const matchingProfiles = macOui.portProfiles?.filter(
+        (p: string) => selectedPortProfiles.includes(p)
+      ) || []
+
+      if (matchingProfiles.length > 1 && macOui.id) {
+        macOuiDuplicates[macOui.id] = matchingProfiles
+      }
+    })
+  })
+
+  return Object.keys(lldpTlvDuplicates).length > 0 || Object.keys(macOuiDuplicates).length > 0
+}
+
+export function radiusIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function checkTaggedVlan (value: string) {
+  const { $t } = getIntl()
+
+  const validFormat = /^[0-9]+(,[0-9]+)*$/.test(value)
+  if (!validFormat) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  const items = value.toString().split(',')
+
+  if(items.some((num, index) => items.indexOf(num) !== index)){
+    return Promise.reject($t(validationMessages.duplication, {
+      entityName: $t({ defaultMessage: 'Tagged VLAN' }),
+      key: $t({ defaultMessage: 'taggedVlan' }),
+      extra: ''
+    }))
+  }
+
+  const isValid = items.every((item: string) => {
+    const num = Number(item.trim())
+    const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4093|4095)$')
+    if (!vlanRegexp.test(item)) {
+      return false
+    }
+    return !isNaN(num) && num > 0 && num <= 4095
+  })
+
+  if (isValid) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t(validationMessages.vlanInvalidExclReserved))
+}

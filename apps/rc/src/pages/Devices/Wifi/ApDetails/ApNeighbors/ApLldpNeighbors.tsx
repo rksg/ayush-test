@@ -8,14 +8,14 @@ import { Features, useIsSplitOn }                                     from '@acx
 import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
-  CatchErrorResponse,
   defaultSort,
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink }         from '@acx-ui/react-router-dom'
+import { WifiScopes }         from '@acx-ui/types'
+import { filterByAccess }     from '@acx-ui/user'
+import { CatchErrorResponse } from '@acx-ui/utils'
 
 import { NewApNeighborTypes, defaultPagination } from './constants'
 import { lldpNeighborsFieldLabelMapping }        from './contents'

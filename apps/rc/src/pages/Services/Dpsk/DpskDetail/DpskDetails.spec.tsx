@@ -10,15 +10,13 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { To, useTenantLink }  from '@acx-ui/react-router-dom'
-import { Provider, store }    from '@acx-ui/store'
+import { To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider, store }   from '@acx-ui/store'
 import {
   mockServer,
   render,
   renderHook,
-  screen,
-  within,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import {
@@ -38,9 +36,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  DpskOverview: () => <div>DPSK Overview</div>
+  DpskOverview: () => <div>DPSK Overview</div>,
+  DpskPassphraseManagement: () => <div data-testid='DpskPassphraseManagement'></div>
 }))
+
 
 describe('DpskDetails', () => {
   const paramsForOverviewTab = {
@@ -82,34 +81,11 @@ describe('DpskDetails', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const table = await screen.findByRole('table')
-    expect(await within(table).findByRole('row', { name: /DPSK_USER_1/ })).toBeVisible()
+    expect(await screen.findByTestId('DpskPassphraseManagement')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('tab', { name: 'Passphrases (4 Active)' })).toBeInTheDocument()
-  })
 
-  it('should render breadcrumb correctly', async () => {
-    const passphraseTabParams = {
-      ...paramsForOverviewTab,
-      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
-    }
-
-    render(
-      <Provider>
-        <DpskDetails />
-      </Provider>, {
-        route: {
-          params: passphraseTabParams,
-          path: detailPath
-        }
-      }
-    )
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const table = await screen.findByRole('table')
-    expect(await within(table).findByRole('row', { name: /DPSK_USER_1/ })).toBeVisible()
-
+    // render breadcrumb correctly
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'My Services' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'DPSK' })).toBeVisible()

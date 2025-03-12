@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 import { createContext, useEffect, useState } from 'react'
 
-import _             from 'lodash'
-import { useParams } from 'react-router-dom'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
+import { showActionModal }                                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useSwitchDetailHeaderQuery, useGetSwitchQuery, useGetSwitchListQuery } from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
@@ -46,6 +48,9 @@ export const SwitchDetailsContext = createContext({} as {
 
 export default function SwitchDetails () {
   const { tenantId, switchId, serialNumber, activeTab } = useParams()
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [switchDetailsContextData, setSwitchDetailsContextData] = useState({} as SwitchDetails)
@@ -78,7 +83,17 @@ export default function SwitchDetails () {
 
   useEffect(() => {
     if(getSwitchList.data) {
-      setVenueId(getSwitchList.data.data[0].venueId)
+      if(getSwitchList.data.data.length === 0){
+        showActionModal({
+          type: 'info',
+          title: $t({ defaultMessage: 'Switch No Longer Available' }),
+          content: $t({ defaultMessage: 'The switch is no longer available. It may have been deleted by you. Click "OK" to return to the previous page.' }),
+          okText: $t({ defaultMessage: 'OK' }),
+          onOk: async () => { navigate(-1) }
+        })
+      } else {
+        setVenueId(getSwitchList.data.data[0]?.venueId)
+      }
     }
   }, [getSwitchList])
 

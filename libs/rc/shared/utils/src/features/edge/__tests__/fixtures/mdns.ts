@@ -94,9 +94,35 @@ export const mockEdgeMdnsViewDataList = [
       {
         venueId: 'mock_venue_1',
         venueName: 'Mock Venue 1',
-        edgeClusterId: 'clusterId_1',
-        edgeClusterName: 'Edge Cluster 3'
+        edgeClusterId: 'clusterId_2',
+        edgeClusterName: 'Edge Cluster 2'
       }
     ]
   }
 ]
+
+export const mockEdgeMdnsStatsList = [{
+  clusterId: 'clusterId_1',
+  rxPackets: 493,
+  rxBytes: 159,
+  txPackets: 233,
+  txBytes: 234,
+  numRequest: 124,
+  numResponse: 544,
+  discoveredMdnsServices: [
+    { mdnsStr: 'AppleTV' }
+  ]
+},
+{
+  clusterId: 'clusterId_1',
+  rxPackets: 435,
+  rxBytes: 211,
+  txPackets: 111,
+  txBytes: 234,
+  numRequest: 66,
+  numResponse: 234,
+  discoveredMdnsServices: [
+    { mdnsStr: 'AppleTV' },
+    { mdnsStr: 'AirDrop' }
+  ]
+}]

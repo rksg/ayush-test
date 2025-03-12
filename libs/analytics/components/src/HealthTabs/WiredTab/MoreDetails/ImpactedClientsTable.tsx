@@ -6,9 +6,10 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { get }                  from '@acx-ui/config'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult,
@@ -31,6 +32,7 @@ export const ImpactedClientsTable = ({
   queryType: WidgetType;
 }) => {
   const { $t } = useIntl()
+  const isMlisaVersion4110 = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
 
   const payload = {
     filter: filters.filter,
@@ -65,6 +67,7 @@ export const ImpactedClientsTable = ({
   const impactedClients = useImpactedClientsDataQuery({
     ...payload,
     type: queryType,
+    isMlisaVersion4110,
     switchIds: impactedSwitches.data?.map(s => s.mac)
   }, {
     skip: impactedSwitches.data?.length === 0,
@@ -76,19 +79,25 @@ export const ImpactedClientsTable = ({
     }
   })
 
+  const isMLISA = get('IS_MLISA_SA')
   const columns: TableProps<ImpactedClients>['columns'] = [
     {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-      render: (_, row: ImpactedClients) => (
-        <TenantLink
-          to={`/devices/switch/${row.switchId?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
-            ? 'reports': 'overview'}`
-          }>
-          {row.switchName}
-        </TenantLink>
-      ),
+      render: (_, row: ImpactedClients) => {
+        const switchId = isMLISA ? row.switchId : row.switchId?.toLowerCase()
+        const detailsPath = isMLISA ? 'reports' : 'overview'
+        const serial = isMLISA || !isMlisaVersion4110 ? 'serial' : row.switchSerial
+
+        return (
+          <TenantLink
+            to={`/devices/switch/${switchId}/${serial}/details/${detailsPath}`}
+          >
+            {row.switchName}
+          </TenantLink>
+        )
+      },
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
@@ -104,31 +113,31 @@ export const ImpactedClientsTable = ({
       sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Name' }),
+      title: $t({ defaultMessage: 'Peer Device Name' }),
       dataIndex: 'deviceName',
       key: 'deviceName',
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device MAC' }),
+      title: $t({ defaultMessage: 'Peer Device MAC' }),
       dataIndex: 'deviceMac',
       key: 'deviceMac',
       sorter: { compare: sortProp('deviceMac', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Port' }),
+      title: $t({ defaultMessage: 'Peer Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Port MAC' }),
+      title: $t({ defaultMessage: 'Peer Device Port MAC' }),
       dataIndex: 'devicePortMac',
       key: 'devicePortMac',
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Device Port Type' }),
+      title: $t({ defaultMessage: 'Peer Device Port Type' }),
       dataIndex: 'devicePortType',
       key: 'devicePortType',
       sorter: { compare: sortProp('devicePortType', defaultSort) }

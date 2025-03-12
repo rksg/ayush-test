@@ -17,7 +17,7 @@ const MockModal = (props: ModalProps) => <Modal {...props} />
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/rc/components', () => {
-  const oriCompoents = jest.requireActual('@acx-ui/rc/components')
+  const oriComponents = jest.requireActual('@acx-ui/rc/components')
   const EdgeChangeScheduleDialog = (props: EdgeChangeScheduleDialogProps) => <MockModal
     okText='Save'
     onOk={() => {
@@ -27,7 +27,7 @@ jest.mock('@acx-ui/rc/components', () => {
     onCancel={props.onCancel}
     visible={props.visible}
   />
-  return { ...oriCompoents, EdgeChangeScheduleDialog }
+  return { ...oriComponents, EdgeChangeScheduleDialog }
 })
 
 const mockedUpdateNow = jest.fn()
@@ -337,6 +337,10 @@ describe('Edge venue firmware list with batch operation', () => {
           mockedSkipUpdateBatchOperation()
           return res(ctx.status(202))
         }
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getEdgeUpgradePreferences.url,
+        (req, res, ctx) => res(ctx.json(preferenceData))
       )
     )
     params = {

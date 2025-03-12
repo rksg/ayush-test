@@ -2,11 +2,11 @@
 
 import { useContext, useState } from 'react'
 
+import { baseUrlFor }                   from '@acx-ui/config'
 import { Demo, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import PortalFormContext from '../PortalForm/PortalFormContext'
 
-import Wifi4eu                                 from './assets/images/portal-demo/WiFi4euBanner.svg'
 import { PortalDemoDefaultSize, hoverOutline } from './commonUtils'
 import PortalPhotoContent                      from './PortalContent/PortalPhotoContent'
 import PortalPoweredByContent                  from './PortalContent/PortalPoweredByContent'
@@ -15,6 +15,7 @@ import PortalWelcomeContent                    from './PortalContent/PortalWelco
 import PortalImageTools                        from './PortalImageTools'
 import PortalPopover                           from './PortalPopover'
 import PortalViewConfirm                       from './PortalViewConfirm'
+import PortalViewDirectoryLogin                from './PortalViewDirectoryLogin'
 import PortalViewGoThrough                     from './PortalViewGoThrough'
 import PortalViewGuestConnect                  from './PortalViewGuestConnect'
 import PortalViewGuestForget                   from './PortalViewGuestForget'
@@ -83,9 +84,12 @@ export default function PortalViewContent (props:{
     !componentDisplay.wifi4eu
   return (
     <UI.LayoutViewContent isbg={isbg} style={isLogoPhotoHide?{ paddingTop: 150 }:{}}>
-      {componentDisplay.wifi4eu && <UI.Img src={Wifi4eu}
-        alt={'Wifi4eu'}
-        height={120} />}
+      {componentDisplay.wifi4eu && <UI.Img
+        src={baseUrlFor('/assets/images/portal/WiFi4euBanner.png')}
+        alt='Wifi4eu'
+        width={420}
+        height={120}
+      />}
       {componentDisplay.logo &&<PortalPopover
         content={logoTools}
         visible={clicked}
@@ -162,6 +166,13 @@ export default function PortalViewContent (props:{
       />}
       {view === PortalViewEnum.HostApproval &&
       <PortalViewHostApproval
+        portalLang={portalLang}
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
+      />}
+      {view === PortalViewEnum.Directory &&
+      <PortalViewDirectoryLogin
         portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{

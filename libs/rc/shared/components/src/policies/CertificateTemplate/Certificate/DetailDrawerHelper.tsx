@@ -14,6 +14,8 @@ export const getCertificateStatus = (certificate: Certificate): CertificateStatu
     return CertificateStatusType.REVOKED
   } else if (moment(certificate?.notAfterDate).isSameOrBefore(new Date())) {
     return CertificateStatusType.EXPIRED
+  } else if (moment(certificate?.notBeforeDate).isAfter(new Date())) {
+    return CertificateStatusType.INVALID
   }
   return CertificateStatusType.VALID
 }
@@ -109,7 +111,7 @@ export const getCertificateDetails =
           {
             type: RenderType.CONTENT,
             title: $t({ defaultMessage: 'Key Usage' }),
-            content: getDisplayedItems(certificateData?.keyUsage || [], 'keyUsages')
+            content: getDisplayedItems(certificateData?.keyUsages || [], 'keyUsages')
           },
           {
             type: RenderType.CONTENT,

@@ -2,10 +2,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { ApSelector, MdnsProxySelector } from '@acx-ui/rc/components'
-import { useAddMdnsProxyApsMutation }    from '@acx-ui/rc/services'
+import { Drawer }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { ApSelector, ApMdnsProxySelector } from '@acx-ui/rc/components'
+import { useAddMdnsProxyApsMutation }      from '@acx-ui/rc/services'
 
 
 export interface AddMdnsProxyInstanceDrawerProps {
@@ -64,7 +64,7 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
             }}
             venueId={venueId}
           />
-          <MdnsProxySelector
+          <ApMdnsProxySelector
             formItemProps={{
               name: 'serviceId',
               rules: [{ required: true }]

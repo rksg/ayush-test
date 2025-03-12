@@ -1,4 +1,4 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { groupBy }             from 'lodash'
 
 import {

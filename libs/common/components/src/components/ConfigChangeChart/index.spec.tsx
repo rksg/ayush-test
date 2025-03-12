@@ -28,16 +28,5 @@ describe('ConfigChangeChart',() => {
       expect(asFragment().querySelector('canvas')).not.toBeNull()
       expect(screen.queryByRole('button', { name: 'Reset Zoom' })).toBeNull()
     })
-    it('should render with zoom enabled', () => {
-      (helper.useDataZoom as unknown as jest.Mock<ReturnType<typeof helper.useDataZoom>>)
-        .mockReturnValue({ canResetZoom: true, resetZoomCallback: jest.fn() })
-      render(<ConfigChangeChart
-        style={{ width: 1000 }}
-        data={sampleData}
-        chartBoundary={sampleChartBoundary}
-        onDotClick={jest.fn()}
-      />, { wrapper: Provider })
-      expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
-    })
   })
 })

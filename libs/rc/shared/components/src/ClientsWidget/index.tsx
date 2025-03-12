@@ -1,49 +1,23 @@
 import { Space }              from 'antd'
-import { countBy, isEmpty }   from 'lodash'
+import { countBy }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader, Card , GridRow, GridCol,
   getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
-import type { DonutChartData }                      from '@acx-ui/components'
-import { useDashboardV2OverviewQuery }              from '@acx-ui/rc/services'
-import { ChartData, Dashboard }                     from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { useDashboardFilter }                       from '@acx-ui/utils'
+import type { DonutChartData }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useClientSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
+import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
 
-export const getAPClientChartData = (
-  overviewData: Dashboard | undefined,
-  { $t }: IntlShape
-): DonutChartData[] => {
-  const seriesMapping = [
-    { name: $t({ defaultMessage: 'Poor' }), color: cssStr('--acx-semantics-red-50') },
-    { name: $t({ defaultMessage: 'Average' }), color: cssStr('--acx-semantics-yellow-40') },
-    { name: $t({ defaultMessage: 'Good' }), color: cssStr('--acx-semantics-green-50') },
-    { name: $t({ defaultMessage: 'Unknown' }), color: cssStr('--acx-neutrals-50') }
-  ] as Array<{ name: string, color: string }>
-
-  const clientDto = overviewData?.summary?.clients?.clientDto
-  if (isEmpty(clientDto)) return []
-
-  const counts = countBy(clientDto, client => client.healthCheckStatus)
-  const chartData: DonutChartData[] = []
-  seriesMapping.forEach(({ name, color }) => {
-    if(counts[name] && counts[name] > 0) {
-      chartData.push({
-        name,
-        value: counts[name],
-        color
-      })
-    }
-  })
-  return chartData
-}
-
 export const getAPClientStackedBarChartData = (
   overviewData: Dashboard | undefined,
-  { $t }: IntlShape
+  { $t }: IntlShape,
+  isNewDashboardQueryEnabled: boolean
 ): ChartData[] => {
   const seriesMapping = [
     { name: $t({ defaultMessage: 'Unknown' }) },
@@ -51,8 +25,7 @@ export const getAPClientStackedBarChartData = (
     { name: $t({ defaultMessage: 'Average' }) },
     { name: $t({ defaultMessage: 'Good' }) }
   ] as Array<{ name: string, color: string }>
-
-  const clientDto = overviewData?.summary?.clients?.clientDto.map(item=>{
+  const clientDto = overviewData?.summary?.clients?.clientDto?.map(item=>{
     if(item.healthCheckStatus === undefined){
       return {
         ...item,
@@ -61,12 +34,13 @@ export const getAPClientStackedBarChartData = (
     }
     return item
   })
-  const counts = countBy(clientDto, client => client.healthCheckStatus)
+  const counts = isNewDashboardQueryEnabled ?
+    overviewData?.summary?.clients?.summary : countBy(clientDto, client => client.healthCheckStatus)
   const series: ChartData['series'] = []
   seriesMapping.forEach(({ name }, index) => {
     series.push({
       name: `<${index}>${name}`, // We need to add weightage to maintain the color order on stackbar chart
-      value: counts[name] || 0
+      value: counts?.[name] || counts?.[name.toLowerCase()] || 0
     })
   })
   return [{
@@ -112,7 +86,11 @@ export function ClientsWidgetV2 () {
   const intl = useIntl()
   const { venueIds } = useDashboardFilter()
 
-  const queryResults = useDashboardV2OverviewQuery({
+  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery
+
+  const queryResults = query({
     params: useParams(),
     payload: {
       filters: {
@@ -123,7 +101,7 @@ export function ClientsWidgetV2 () {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: {
-        apData: getAPClientStackedBarChartData(data, intl),
+        apData: getAPClientStackedBarChartData(data, intl, isNewDashboardQueryEnabled),
         switchData: getSwitchClientStackedBarChartData(data, intl),
         apClientCount: data?.summary?.clients?.totalCount || 0,
         switchClientCount: data?.summary?.switchClients?.totalCount || 0
@@ -132,6 +110,13 @@ export function ClientsWidgetV2 () {
   })
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.CLIENTS_WIDGET,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>

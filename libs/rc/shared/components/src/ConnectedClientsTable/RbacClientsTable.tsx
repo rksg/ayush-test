@@ -23,12 +23,18 @@ import {
   usePollingTableQuery,
   networkTypes,
   ClientInfo,
-  getClientHealthClass
+  getClientHealthClass,
+  ClientUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -77,7 +83,10 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
     sortOrder: 'ASC'
   } }, {
     selectFromResult: ({ data }) => ({
-      networkFilterOptions: data?.data?.map(v=>({ key: v.ssid, value: v.name })) || true
+      networkFilterOptions: data?.data?.map(v=>({
+        key: v.ssid,
+        value: v.name === v.ssid ? v.name : `${v.name} (SSID: ${v.ssid})`
+      })) || true
     })
   })
   return networkFilterOptions
@@ -105,8 +114,11 @@ const AsyncLoadingInColumn = (
 export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const disconnectRevokeClientOpsApi = getOpsApi(ClientUrlsInfo.disconnectClient)
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -363,7 +375,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         filterable: networkId ? false : GetNetworkFilterOptions(tenantId),
         render: (_: React.ReactNode, row: ClientInfo) => {
           return AsyncLoadingInColumn(row, () => {
-            if (!row.signalStatus?.health) {
+            if (!row.networkInformation?.id) {
               return row.networkInformation.ssid
             } else {
               const { networkInformation } = row
@@ -598,7 +610,10 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         show: !!showAllColumns,
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
-            return row.radioStatus?.channel || noDataDisplay
+            if (!row.radioStatus) return noDataDisplay
+            const channel = row.radioStatus.channel || noDataDisplay
+            const band = row.band ? ` (${row.band})` : ''
+            return channel + band
           })
         }
       }
@@ -638,6 +653,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     {
       label: $t({ defaultMessage: 'Disconnect' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [disconnectRevokeClientOpsApi],
       onClick: async (selectedRows, clearRowSelections) => {
         const selectedVenues = selectedRows.map((row) => row.venueInformation.id)
         const allAps = (await getApList({ params,
@@ -663,6 +679,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     {
       label: $t({ defaultMessage: 'Revoke' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [disconnectRevokeClientOpsApi],
       tooltip: (tableSelected.actionButton.revoke.disable ?
         $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' })
         :''
@@ -701,8 +718,15 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     }
   ]
 
-  const showRowSelection = (wifiEDAClientRevokeToggle &&
-    hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+  const showRowSelection = (wifiEDAClientRevokeToggle && (rbacOpsApiEnabled
+    ? hasAllowedOperations([disconnectRevokeClientOpsApi])
+    : hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] })))
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.WIRELESS_CLIENTS_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <UI.ClientTableDiv>

@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showActionModal, showToast, Table, TableProps }                 from '@acx-ui/components'
+import { showActionModal, showToast, Table, TableProps, Tooltip }        from '@acx-ui/components'
 import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,
@@ -13,19 +13,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { useEnforcedStatus }          from '../../../configTemplates'
 import { VENUE_IN_PROFILE_MAX_COUNT } from '../contentsMap'
 import RogueAPDetectionContext        from '../RogueAPDetectionContext'
 
 const defaultPayload = {
   fields: [
-    'id',
-    'name',
-    'city',
-    'country',
-    'switches',
-    'aggregatedApStatus',
-    'rogueDetection',
-    'status'
+    'id', 'name', 'city', 'country', 'switches', 'aggregatedApStatus',
+    'rogueDetection', 'status', 'isEnforced'
   ],
   sortField: 'name',
   sortOrder: 'ASC',
@@ -39,6 +34,7 @@ export const RogueVenueTable = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
     if (selectRows.filter(row =>
@@ -152,21 +148,29 @@ export const RogueVenueTable = () => {
       key: 'activate',
       align: 'center',
       render: (_, row) => {
-        return <Switch
-          data-testid={`switchBtn_${row.id}`}
-          checked={
-            state.venues
-              ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
-              : false
-          }
-          onClick={(_, e) => {
-            e.stopPropagation()
-            state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
-              ? deactivateVenue([row])
-              : activateVenue([row])
-          }
-          }
-        />
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
+
+        return <Tooltip
+          title={enforcedActionMsg}
+          placement='bottom'>
+          <Switch
+            data-testid={`switchBtn_${row.id}`}
+            disabled={isEnforcedByTemplate}
+            checked={
+              state.venues
+                ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+                : false
+            }
+            onClick={(_, e) => {
+              e.stopPropagation()
+              state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+                ? deactivateVenue([row])
+                : activateVenue([row])
+            }
+            }
+          />
+        </Tooltip>
       }
     }
   ]
@@ -182,12 +186,15 @@ export const RogueVenueTable = () => {
       name: venue.name,
       aggregatedApStatus: venue.aggregatedApStatus,
       rogueDetection: venue.rogueDetection,
-      activate: false
+      activate: false,
+      isEnforced: venue.isEnforced
     }
   })
 
   const rowActions: TableProps<VenueRoguePolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
+    disabled: (selectedRows: VenueRoguePolicyType[]) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows: VenueRoguePolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
       if (state.venues.length + selectRows.length >= VENUE_IN_PROFILE_MAX_COUNT) {
         showToast({
@@ -203,12 +210,14 @@ export const RogueVenueTable = () => {
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
+    disabled: (selectedRows: VenueRoguePolicyType[]) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows: VenueRoguePolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
       deactivateVenue(selectRows)
 
       clearSelection()
     }
-  }] as { label: string, onClick: () => void }[]
+  }]
 
   return (
     <Table

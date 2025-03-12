@@ -1,12 +1,26 @@
-import { PageNotFound }                               from '@acx-ui/components'
-import { get }                                        from '@acx-ui/config'
-import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router-dom'
-import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
-import { Provider }                                   from '@acx-ui/store'
+import { PageNotFound }                       from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { rootRoutes, Route, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import {
+  ReportType,
+  Report,
+  ReportList,
+  DataStudio,
+  DataConnectorContent,
+  ConnectorForm,
+  DataConnectorAuditLog,
+  CloudStorageForm
+} from '@acx-ui/reports/components'
+import { Provider }                   from '@acx-ui/store'
+import { RolesEnum }                  from '@acx-ui/types'
+import { hasRaiPermission, hasRoles } from '@acx-ui/user'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
   const basePath = isRa ? MLISA_BASE_PATH : ':tenantId/t'
+  const hasDCStoragePermission = isRa
+    ? hasRaiPermission('WRITE_DATA_CONNECTOR_STORAGE')
+    : hasRoles(RolesEnum.PRIME_ADMIN)
   const reports = {
     overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
     wireless: <Report type={ReportType.WIRELESS}/>,
@@ -15,6 +29,7 @@ export default function ReportsRoutes () {
     switches: <Report type={ReportType.SWITCH} />,
     clients: <Report type={ReportType.CLIENT} />,
     applications: <Report type={ReportType.APPLICATION} />,
+    edgeApplications: <Report type={ReportType.EDGE_APPLICATION} />,
     wlans: <Report type={ReportType.WLAN} />,
     airtime: <Report type={ReportType.AIRTIME_UTILIZATION} />
   }
@@ -30,9 +45,22 @@ export default function ReportsRoutes () {
       <Route path='reports/switches' element={reports.switches} />
       <Route path='reports/clients' element={reports.clients}/>
       <Route path='reports/applications' element={reports.applications} />
+      <Route path='reports/edgeApplications' element={reports.edgeApplications} />
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
+      <Route path='dataConnector' element={<DataConnectorContent />} />
+      <Route path='dataConnector/create' element={<ConnectorForm />} />
+      <Route path='dataConnector/edit/:settingId'
+        element={<ConnectorForm editMode />} />
+      <Route path='dataConnector/auditLog/:settingId'
+        element={<DataConnectorAuditLog />} />
+      {hasDCStoragePermission ? (<>
+        <Route path='dataConnector/cloudStorage/create'
+          element={<CloudStorageForm />} />
+        <Route path='dataConnector/cloudStorage/edit/:csId'
+          element={<CloudStorageForm editMode />} />
+      </>): []}
     </Route>
   )
   return (

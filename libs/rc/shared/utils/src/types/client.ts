@@ -121,7 +121,8 @@ export type DelieverType = 'PRINT' | 'SMS' | 'MAIL'
 export enum GuestTypesEnum {
     MANAGED = 'GuestPass',
     SELF_SIGN_IN = 'SelfSign',
-    HOST_GUEST = 'HostGuest'
+    HOST_GUEST = 'HostGuest',
+    DIRECTORY = 'Directory'
 }
 
 export enum GuestStatusEnum {
@@ -153,6 +154,7 @@ export interface ClientInfo {
   trafficStatus: TrafficStatus
   mldMacAddress: string
   cpeMacAddress: string
+  band: string
   switchInformation?: SwitchInformation // form GUI
   connectedTimeString: string // form GUI
   connectedTimeParssed: boolean // form GUI

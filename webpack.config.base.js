@@ -36,6 +36,7 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       return rule
     })
 
+
     config.module.rules.push({
       test: /\.less$/,
       use: ['style-loader', 'css-loader', {

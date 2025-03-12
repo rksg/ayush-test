@@ -140,7 +140,8 @@ describe('Add Stack Member Form', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     expect(
-      await screen.findByText('Serial number is invalid since it\'s not support stacking')
+      // eslint-disable-next-line max-len
+      await screen.findByText('This switch model does not support stacking. Add it as a standalone switch.')
     ).toBeVisible()
   })
   it('should render invalid serial number correctly', async () => {

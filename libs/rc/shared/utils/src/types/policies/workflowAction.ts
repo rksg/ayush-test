@@ -11,7 +11,8 @@ export enum ActionType {
   DATA_PROMPT = 'DATA_PROMPT',
   DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
   DPSK = 'DPSK',
-  MAC_REG = 'MAC_REG'
+  MAC_REG = 'MAC_REG',
+  CERT_TEMPLATE = 'CERT_TEMPLATE'
 }
 
 export interface ActionBase {
@@ -82,12 +83,17 @@ export interface MacRegAction extends ActionBase {
   identityId?: string,
   clientEnterMacAddress?: boolean
 }
-
+export interface CertTempAction extends ActionBase {
+  identityGroupId?: string,
+  certTemplateId: string,
+  identityId?: string
+}
 export type AupActionContext = Omit<AupAction, keyof ActionBase>
 export type DataPromptActionContext = Omit<DataPromptAction, keyof ActionBase>
 export type DisplayMessageActionContext = Omit<DisplayMessageAction, keyof ActionBase>
 export type DpskActionContext = Omit<DpskAction, keyof ActionBase>
 export type MacRegActionContext = Omit<MacRegAction, keyof ActionBase>
+export type CertTempActionContext = Omit<CertTempAction, keyof ActionBase>
 
 export type GenericActionData =
   ActionBase &
@@ -95,7 +101,8 @@ export type GenericActionData =
   DataPromptActionContext &
   DisplayMessageActionContext &
   DpskActionContext &
-  MacRegActionContext
+  MacRegActionContext &
+  CertTempActionContext
 
 export enum FileType {
   AUP_FILE = 'AUP_FILE'

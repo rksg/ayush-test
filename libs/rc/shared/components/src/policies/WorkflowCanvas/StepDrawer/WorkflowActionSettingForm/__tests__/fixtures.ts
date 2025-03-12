@@ -1,4 +1,5 @@
 import {
+  AlgorithmType,
   DpskSaveData,
   MacRegistrationPool,
   NewTablePageable,
@@ -57,6 +58,17 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     macRegistrationPoolId: 'mac-id-1',
     dpskPoolId: 'dpsk-pool-1'
   }]
+}
+
+export const mockPersonaGroupById: PersonaGroup = {
+  id: 'identity-group-id-for-testing',
+  name: 'PersonaGroup_4885',
+  dpskPoolId: '1567726a-1046-41bf-ab06-c56fceb20a3b',
+  description: 'Description 45',
+  personalIdentityNetworkId: '856ae0a2-49eb-45be-bb2c-e72634fcac4f',
+  createdAt: '2024-08-02T08:48:33.158904',
+  identities: [],
+  identityCount: 7
 }
 
 export const mockPersonaTableResult: NewTableResult<Persona> = {
@@ -149,5 +161,33 @@ export const mockedNetworkList = {
       vlan: 1
     }
   ]
+}
+
+export const mockCertificateTemplates = {
+  fields: null,
+  totalCount: 2,
+  totalPages: 1,
+  page: 1,
+  data: [
+    {
+      id: 'cert-template-id-for-testing',
+      description: 'cert-template-id-for-testing',
+      name: 'cert-template-id-for-testing',
+      networkIds: ['65d2f63d-b773-45f6-b81d-a2cb832e3841', '65d2f63d-b773-45f6-b81d-a2cb832e3811'],
+      identityGroupId: 'identity-group-id-for-testing',
+      caType: '',
+      keyLength: 0,
+      algorithm: AlgorithmType.SHA_256
+    },
+    {
+      id: 'cert-template-id-for-testing1',
+      description: 'cert-template-id-for-testing1',
+      name: 'cert-template-id-for-testing1',
+      networkIds: ['65d2f63d-b773-45f6-b81d-a2cb832e3843', '65d2f63d-b773-45f6-b81d-a2cb832e3818'],
+      identityGroupId: 'identity-group-id-for-testing1',
+      caType: '',
+      keyLength: 0,
+      algorithm: AlgorithmType.SHA_256
+    }]
 }
 

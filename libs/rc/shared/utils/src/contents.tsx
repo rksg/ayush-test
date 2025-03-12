@@ -1,4 +1,4 @@
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { defineMessage, FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import {
   DHCPConfigTypeEnum
@@ -18,29 +18,10 @@ export enum AAAWlanSecurityEnum {
   WPA3 = 'WPA3'
 }
 
-export enum SecurityOptionsDescription {
-  /* eslint-disable max-len */
-  WPA2Personal = 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
-  WPA3 = 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.',
-  WPA23Mixed = 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
-  WPAPersonal = 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.',
-  WEP = 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.',
-  WPA2_DESCRIPTION_WARNING = '6GHz radios are only supported with WPA3.'
-  /* eslint-enable */
-}
-
 export enum WisprSecurityEnum {
   NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
-}
-
-export enum WisprSecurityOptionsDescription {
-  /* eslint-disable max-len */
-  NONE = '',
-  PSK = 'Require users to enter a passphrase to connect',
-  OWE = 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network'
-  /* eslint-enable */
 }
 
 export enum SecurityOptionsPassphraseLabel {
@@ -147,7 +128,7 @@ export const WifiNetworkMessages = {
     defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
   }),
   ENABLE_OWE_TOOLTIP: defineMessage({
-    defaultMessage: 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network.'
+    defaultMessage: 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
   }),
   ENABLE_OWE_TRANSITION_TOOLTIP: defineMessage({
     defaultMessage: 'For STAs that do not support OWE authentication, the OWE transition mode is available so that such STAs can access the network in open authentication mode.'
@@ -186,6 +167,30 @@ export const WifiNetworkMessages = {
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
+  })
+}
+
+export const WisprSecurityOptionsDescription = {
+  PSK: defineMessage({
+    defaultMessage: 'Require users to enter a passphrase to connect'
+  }),
+  OWE: WifiNetworkMessages.ENABLE_OWE_TOOLTIP
+}
+
+export const SecurityOptionsDescription = {
+  WPA2Personal: WifiNetworkMessages.WPA2_DESCRIPTION,
+  WPA3: WifiNetworkMessages.WPA3_DESCRIPTION,
+  WPA23Mixed: defineMessage({
+    defaultMessage: 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.'
+  }),
+  WPAPersonal: defineMessage({
+    defaultMessage: 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.'
+  }),
+  WEP: defineMessage({
+    defaultMessage: 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.'
+  }),
+  WPA2_DESCRIPTION_WARNING: defineMessage({
+    defaultMessage: '6GHz radios are only supported with WPA3.'
   })
 }
 
@@ -271,6 +276,9 @@ export const EditPortMessages = {
   USE_VENUE_SETTINGS_DISABLE: defineMessage({
     defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
+  USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'When authentication is enabled, <venueSingular></venueSingular> settings cannot be applied.'
+  }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
   }),
@@ -289,6 +297,42 @@ export const EditPortMessages = {
   RESET_PORT_WARNING: defineMessage({
     defaultMessage: `Changing the port settings may result in loss of connectivity and
       communication issues to your APs. Do you want to continue with these changes?`
+  }),
+  MODIFYING_UPLINK_PORT: defineMessage({
+    defaultMessage: 'Modifying the uplink port may result in connectivity issues. Are you sure you want to apply these changes?'
+  }),
+  NEED_CONFIGURE_AAA_RADIUS_SETTINGS: defineMessage({
+    defaultMessage: 'Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Authentication automatically. If no, please set them to make Authentication work.'
+  }),
+  ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
+    defaultMessage: 'The firmware version on the selected switches must be FI 10.0.10f or higher.'
+  }),
+  UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
+    defaultMessage: 'This port is Untagged port. So can not enable Authentication.'
+  }),
+  CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled if IPSG is turned ON.'
+  }),
+  CANNOT_ENABLE_IPSG_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'IPSG cannot be enabled if Authentication is turned ON.'
+  }),
+  CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
+  }),
+  SWITCH_LEVEL_AUTH_NOT_ENABLED: defineMessage({
+    defaultMessage: 'Before enable Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
+  }),
+  GUIDE_TO_AUTHENTICATION: defineMessage({
+    defaultMessage: 'Go to "Network Control --> Policies and profiles --> Authentication"'
+  }),
+  SWITCH_PORT_PROFILE_NOT_ENABLED: defineMessage({
+    defaultMessage: 'The firmware version on the selected switches must be FI 10.0.20b or higher.'
+  }),
+  CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE: defineMessage({
+    defaultMessage: 'Port Profile cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
+  }),
+  STP_BPDU_GUARD: defineMessage({
+    defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level : Applicable to firmware versions FI 10.0.10g and later (or) FI 10.0.20b and later'
   })
 }
 
@@ -298,6 +342,44 @@ export const MultipleEditPortMessages = {
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  })
+}
+
+export const FlexAuthVlanLabel = {
+  AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Auth Default VLAN' }),
+  CRITICAL_VLAN: defineMessage({ defaultMessage: 'Critical VLAN' }),
+  DEFAULT_VLAN: defineMessage({ defaultMessage: 'Default VLAN' }),
+  GUEST_VLAN: defineMessage({ defaultMessage: 'Guest VLAN' }),
+  RESTRICTED_VLAN: defineMessage({ defaultMessage: 'Restricted VLAN' }),
+  SWITCH_AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Switch Level Auth Default VLAN' }),
+  TAGGED_VLANS: defineMessage({ defaultMessage: 'Tagged VLANs' }),
+  VLAN_ID: defineMessage({ defaultMessage: 'VLAN ID' })
+}
+
+export const FlexAuthMessages = {
+  CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'Another Auth-Default VLAN is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}.'
+  }),
+  CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE: defineMessage({
+    defaultMessage: 'Guest VLAN is already defined on the switch(es). Select a different profile that has a matching Guest VLAN.'
+  }),
+  CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
+    defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have authentication enabled.'
+  }),
+  CANNOT_SET_FORCE_CONTROL_TYPE: defineMessage({
+    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. If the Auth Default VLAN is needed, please change the 802.1x Port Control to ‘Auto’.'
+  }),
+  CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE: defineMessage({
+    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
+  }),
+  VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
+    defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
+  }),
+  CANNOT_APPLIED_DIFF_PROFILES: defineMessage({
+    defaultMessage: 'The selected ports have different profiles or some of them have no profile selected previously. Apply a common profile to all the selected ports.'
+  }),
+  CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'The selected ports have different or no Auth Default VLAN set previously. Define a common Auth Default VLAN for the selected ports.'
   })
 }
 
@@ -317,6 +399,9 @@ export const PortStatusMessages = {
   USED_BY_OTHERS: defineMessage({
     defaultMessage: 'Port used by other VLAN setting'
   }),
+  USED_BY_AUTH: defineMessage({
+    defaultMessage: 'This port has authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
+  }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
   })
@@ -329,13 +414,6 @@ export const LbsServerProfileMessages = {
 }
 
 /* eslint-enable */
-
-export enum IsolatePacketsTypeEnum {
-  UNICAST = 'UNICAST',
-  MULTICAST = 'MULTICAST',
-  UNICAST_MULTICAST = 'UNICAST_MULTICAST',
-}
-
 export enum RfBandUsageEnum {
   _2_4GHZ = '2.4GHZ',
   _5_0GHZ = '5.0GHZ',
@@ -468,6 +546,68 @@ export const EthernetPortProfileMessages = {
   }),
   GUEST_VLAN: defineMessage({
     defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  }),
+  USE_RADIUS_PROXY: defineMessage({
+    defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
+}
+
+export const SwitchPortProfileMessages = {
+  MAC_OUI: <FormattedMessage
+    defaultMessage={'Click here to lookup MAC OUI at IEEE ({link})'}
+    values={{
+      link: <a
+        className='link'
+        target='_blank'
+        href={'https://standards-oui.ieee.org'}
+        rel='noreferrer'>
+        {'https://standards-oui.ieee.org'}
+      </a>
+    }}
+  />,
+  LLDP_TLV: defineMessage({
+    defaultMessage: 'Define LLDP match criterion - like the System Name and/or Description.'
+  }),
+  // eslint-disable-next-line max-len
+  POE_ENABLED: defineMessage({ defaultMessage: 'When MAC OUI or LLDP TLV is selected for this port profile, PoE cannot be turned off.' }),
+  // eslint-disable-next-line max-len
+  POE_LABEL: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign MAC OUI and LLDP TLV to this profile.' }),
+  // eslint-disable-next-line max-len
+  MACOUI_POE_DISABLED: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign MAC OUI to this profile. ' }),
+  // eslint-disable-next-line max-len
+  LLDPTLV_POE_DISABLED: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign LLDP TLV to this profile. ' }),
+  // eslint-disable-next-line max-len
+  APPLY_PORT_PROFILE_CHANGE: defineMessage({ defaultMessage: 'Changes to the port profile will get automatically applied to the associated ports.' }),
+  // eslint-disable-next-line max-len
+  IPSG_ENABLED: defineMessage({ defaultMessage: 'IPSG needs to be disabled in order to enable Ingress ACL, 802.1x and MAC Auth to this profile.' }),
+  // eslint-disable-next-line max-len
+  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'Ingress ACL cannot be configured if IPSG is turned ON.' }),
+  // eslint-disable-next-line max-len
+  DOT1X_DISABLED: defineMessage({ defaultMessage: '802.1x cannot be selected if IPSG is turned ON.' }),
+  // eslint-disable-next-line max-len
+  MAC_AUTH_DISABLED: defineMessage({ defaultMessage: 'MAC Auth cannot be selected if IPSG is turned ON.' })
+}
+
+export const ClientIsolationMessages = {
+  /* eslint-disable max-len */
+  ENABLE_TOGGLE: defineMessage({
+    defaultMessage: 'Switching client isolation requires a manual device reboot to take effect. You can select the specific AP devices from the AP list and click the ‘Reboot’ button to restart them.'
+  })
+}
+
+export const SamlIdpMessages = {
+  /* eslint-disable max-len */
+  METADATA_TEXTAREA: defineMessage({
+    defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
+                    'Note: Importing metadata from a file will overwrite any existing configuration.'
+  }),
+  /* eslint-disable max-len */
+  AUTHN_REQUEST_TOGGLE: defineMessage({
+    defaultMessage: 'If this option is enabled, the public certificate for IDP needs to be configured with adding the R1 SAML metadata, which can be found on the SSO/SAML list page.'
+  }),
+  /* eslint-disable max-len */
+  RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
+    defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
+  })
 }

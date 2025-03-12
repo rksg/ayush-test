@@ -20,13 +20,34 @@ import {
   useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
 import {
   APMeshRole,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
-  NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices
+  NetworkDevicePosition,
+  NetworkDeviceType,
+  SwitchRbacUrlsInfo,
+  TypeWiseNetworkDevices,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink }                                     from '@acx-ui/react-router-dom'
-import { RolesEnum, SwitchScopes, WifiScopes }            from '@acx-ui/types'
-import { hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { TABLE_QUERY_POLLING_INTERVAL }                   from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import {
+  RolesEnum,
+  SwitchScopes,
+  WifiScopes
+}            from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission,
+  hasRoles,
+  useUserProfileContext
+} from '@acx-ui/user'
+import {
+  getOpsApi,
+  TABLE_QUERY_POLLING_INTERVAL,
+  useTrackLoadTime,
+  widgetsMapping
+}                   from '@acx-ui/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -51,6 +72,7 @@ export const NetworkDeviceContext = createContext<Function | null>(null)
 export function FloorPlan () {
   const params = useParams()
   const location: Location = useLocation()
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const floorPlanQuery = useFloorPlanListQuery({ params })
   const { $t } = useIntl()
@@ -100,6 +122,7 @@ export function FloorPlan () {
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
   const { isCustomRole } = useUserProfileContext()
   const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
@@ -175,6 +198,11 @@ export function FloorPlan () {
 
   }, [selectedFloorPlan, getNetworkDevices?.data])
 
+  useTrackLoadTime({
+    itemName: widgetsMapping.FLOOR_PLAN,
+    states: [floorPlanQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   const [
     deleteFloorPlan,
@@ -428,15 +456,17 @@ export function FloorPlan () {
               showIcon
               action={
                 <Space direction='horizontal'>
-                  { hasPermission({ scopes: [WifiScopes.CREATE] }) &&
-                  <TenantLink to='devices/wifi/add'>
+                  { hasPermission({ scopes: [WifiScopes.CREATE],
+                    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)]
+                  }) && <TenantLink to='devices/wifi/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add AP' })}
                     </Button>
                   </TenantLink>
                   }
-                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) &&
-                  <TenantLink to='devices/switch/add'>
+                  { hasPermission({ scopes: [SwitchScopes.CREATE],
+                    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitch)]
+                  }) && <TenantLink to='devices/switch/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </Button>
@@ -456,6 +486,7 @@ export function FloorPlan () {
                   floorPlans={floorPlans ?? []}
                   onFloorPlanClick={onFloorPlanClick}
                   networkDevices={devicesByFlooplanId}
+                  showRogueAp={showRogueAp}
                   networkDevicesVisibility={networkDevicesVisibility}/>
                 : <PlainView
                   setCoordinates={setCoordinates}
@@ -477,15 +508,24 @@ export function FloorPlan () {
                   {showRogueAp ? $t({ defaultMessage: 'Hide Rogue APs' })
                     : $t({ defaultMessage: 'View Rogue APs' })}
                 </UI.RogueApButton> }
-                {
-                  hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                {(
+                  rbacOpsApiEnabled?
+                    hasAllowedOperations([getOpsApi(CommonUrlsInfo.addFloorplan)])
+                    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+                ) &&
                   <AddEditFloorplanModal
                     buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
                     onAddEditFloorPlan={onAddEditFloorPlan}
                     isEditMode={false}/>
                 }
                 {
-                  hasPermission({ scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE] }) &&
+                  hasPermission({
+                    scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
+                    rbacOpsIds: [
+                      getOpsApi(CommonRbacUrlsInfo.UpdateSwitchPosition),
+                      getOpsApi(CommonRbacUrlsInfo.UpdateApPosition)
+                    ]
+                  }) &&
                   <Dropdown trigger={['click']}
                     onVisibleChange={onVisibleChange}
                     visible={closeOverlay}
@@ -517,7 +557,11 @@ export function FloorPlan () {
               })}
             </Space>}>
           </Empty>
-          { hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && <AddEditFloorplanModal
+          {(
+            rbacOpsApiEnabled?
+              hasAllowedOperations([ getOpsApi(CommonUrlsInfo.addFloorplan) ]) :
+              hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+          ) && <AddEditFloorplanModal
             buttonTitle={$t({ defaultMessage: 'Add Floor Plan' })}
             onAddEditFloorPlan={onAddEditFloorPlan}
             isEditMode={false}/>

@@ -2,6 +2,8 @@ import { DefaultOptionType } from 'antd/lib/select'
 
 import { MtuTypeEnum } from '../../models'
 
+import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
+
 export interface SoftGre {
   id: string
   name: string
@@ -28,6 +30,8 @@ export interface SoftGreViewData {
   keepAliveRetryTimes: number
   disassociateClientEnabled: boolean
   activations: SoftGreActivation[]
+  venueActivations: ProfileLanVenueActivations[]
+  apActivations: ProfileLanApActivations[]
 }
 
 export interface VenueTableUsageBySoftGre extends SoftGreActivation {
@@ -35,8 +39,14 @@ export interface VenueTableUsageBySoftGre extends SoftGreActivation {
     id: string
     addressLine: string
     wifiNetworkNames: string[]
+    apSerialNumbers: string[]
+    apNames: string[]
 }
 
+export interface VenueTableSoftGreActivation {
+  wifiNetworkIds: Set<string>
+  apSerialNumbers: Set<string>
+}
 
 export interface SoftGreActivation {
   venueId: string

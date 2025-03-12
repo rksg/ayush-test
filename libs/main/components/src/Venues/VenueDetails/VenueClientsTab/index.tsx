@@ -113,6 +113,7 @@ export function VenueClientsTab () {
       defaultActiveKey={activeSubTab || tabs[0]?.value}
       onChange={onTabChange}
       type='card'
+      destroyInactiveTabPane
     >
       {tabs.map((tab) => (
         <Tabs.TabPane

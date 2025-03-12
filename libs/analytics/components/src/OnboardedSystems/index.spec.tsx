@@ -5,9 +5,10 @@ import { rest }    from 'msw'
 import { UserProfile, setUserProfile }                                                      from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
+import { decodeTenantId }                                                                   from '@acx-ui/utils'
 
-import { mockSmartZoneList, tenants } from './__tests__/fixtures'
-import { FormattedOnboardedSystem }   from './services'
+import { mockSmartZoneList, mockSmartZoneStatusList, tenants, tenantsWithNoPermission, tenantsWithPermission } from './__tests__/fixtures'
+import { FormattedOnboardedSystem }                                                                            from './services'
 
 import { useOnboardedSystems, TooltipContent } from '.'
 
@@ -16,13 +17,21 @@ jest.mock('./services', () => ({
   ...jest.requireActual('./services')
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  decodeTenantId: jest.fn()
+}))
+
 describe('OnboardedSystems', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(decodeTenantId).mockReturnValue(tenants[0].id)
     setUserProfile({ accountId: tenants[0].id, tenants } as UserProfile)
     mockServer.use(
-      rest.get(`${smartZoneURL}/smartzones`,
-        (_req, res, ctx) => res(ctx.json(mockSmartZoneList)))
+      rest.post(`${smartZoneURL}/smartzones/query`,
+        (_req, res, ctx) => res(ctx.json(mockSmartZoneList))),
+      rest.post(`${smartZoneURL}/smartzones/status/query`,
+        (_req, res, ctx) => res(ctx.json(mockSmartZoneStatusList)))
     )
   })
   afterEach((done) => {
@@ -51,18 +60,9 @@ describe('OnboardedSystems', () => {
     expect(await screen.findByText('sz1')).toBeVisible()
     expect(await screen.findAllByText('02/16/2019 05:32')).toHaveLength(10)
   })
-  it('should sort by selected account', async () => {
-    setUserProfile({ accountId: tenants[1].id, tenants } as UserProfile)
-    const Component = () => {
-      const { component } = useOnboardedSystems()
-      return component
-    }
-    render(<Component/>, { wrapper: Provider, route: {} })
-    expect(await screen.findAllByText('account2')).toHaveLength(2)
-  })
   it('should handle delete submit', async () => {
     mockRestApiQuery(
-      `${smartZoneURL}/smartzones/${mockSmartZoneList[2].device_id}/delete`,
+      `${smartZoneURL}/smartzones/${mockSmartZoneList.data[1].device_id}/delete`,
       'delete',
       { status: 204 }
     )
@@ -117,7 +117,7 @@ describe('OnboardedSystems', () => {
   })
   it('should handle delete fail with error', async () => {
     mockRestApiQuery(
-      `${smartZoneURL}/smartzones/${mockSmartZoneList[2].device_id}/delete`,
+      `${smartZoneURL}/smartzones/${mockSmartZoneList.data[1].device_id}/delete`,
       'delete',
       { error: 'CANNOT_DELETE' }
     )
@@ -144,7 +144,7 @@ describe('OnboardedSystems', () => {
   })
   it('should handle other delete fail', async () => {
     mockRestApiQuery(
-      `${smartZoneURL}/smartzones/${mockSmartZoneList[2].device_id}/delete`,
+      `${smartZoneURL}/smartzones/${mockSmartZoneList.data[1].device_id}/delete`,
       'delete',
       { error: 'UNKNOWN' }
     )
@@ -170,17 +170,34 @@ describe('OnboardedSystems', () => {
       .toHaveTextContent('Failed to delete sz3')
   })
   it('should query only Roles.PRIME_ADMINISTRATOR tenants', () => {
-    setUserProfile({ accountId: tenants[0].id, tenants: [
-      ...tenants,
-      { id: 'id3', name: 'account3', permissions: { READ_ONBOARDED_SYSTEMS: false } }
-    ] } as UserProfile)
-    jest.spyOn(services, 'useFetchSmartZoneListQuery')
+    setUserProfile({ accountId: tenants[0].id, tenants: tenantsWithNoPermission } as UserProfile)
+    jest.spyOn(services, 'useGetSmartZoneListQuery')
     const Component = () => {
       const { component } = useOnboardedSystems()
       return component
     }
     render(<Component/>, { wrapper: Provider, route: {} })
-    expect(services.useFetchSmartZoneListQuery).toBeCalledWith({ tenantId: 'id1', tenants })
+    expect(services.useGetSmartZoneListQuery).toBeCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          filters: expect.objectContaining({
+            tenantIds: ['id1', 'id2']
+          })
+        })
+      }), { skip: false }
+    )
+
+    setUserProfile({ accountId: tenants[0].id, tenants: tenantsWithPermission } as UserProfile)
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(services.useGetSmartZoneListQuery).toBeCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          filters: expect.objectContaining({
+            tenantIds: ['id1', 'id2', 'id3']
+          })
+        })
+      }), { skip: false }
+    )
   })
 })
 

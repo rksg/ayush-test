@@ -72,6 +72,9 @@ export const clientMeta = {
 
 describe('ClientIsolationForm', () => {
   beforeEach(async () => {
+
+    mockedUseNavigate.mockClear()
+
     mockServer.use(
       rest.get(
         ClientIsolationUrls.getClientIsolationList.url,
@@ -286,5 +289,39 @@ describe('ClientIsolationForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
     expect(mockedUseNavigate).toHaveBeenCalledWith(policyListPath.current)
+  })
+
+  it('Embedded case should not render breadcrumb correctly', async () => {
+    render(
+      <Provider>
+        <ClientIsolationForm isEmbedded={true} />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+    expect(await screen.findByText('Policy Name')).toBeVisible()
+    // Expect breadcrumb to not be visible
+    expect(screen.queryByRole('link', { name: 'Policies & Profiles' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Client Isolation' })).not.toBeInTheDocument()
+  })
+
+  // eslint-disable-next-line max-len
+  it('Embedded case should not navigate to the list page when clicking Cancel button', async () => {
+    const { result: policyListPath } = renderHook(() => {
+      // eslint-disable-next-line max-len
+      return useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
+    })
+
+    render(
+      <Provider>
+        <ClientIsolationForm isEmbedded={true} />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUseNavigate).not.toHaveBeenCalledWith(policyListPath.current)
   })
 })

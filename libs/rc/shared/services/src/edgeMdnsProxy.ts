@@ -5,7 +5,8 @@ import {
   onActivityMessageReceived,
   EdgeMdnsProxyUrls,
   EdgeMdnsProxySetting,
-  EdgeMdnsProxyViewData
+  EdgeMdnsProxyViewData,
+  EdgeMdnsProxyStatsData
 } from '@acx-ui/rc/utils'
 import { baseEdgeMdnsProxyApi } from '@acx-ui/store'
 import { RequestPayload }       from '@acx-ui/types'
@@ -129,7 +130,18 @@ export const edgeMdnsProxyApi = baseEdgeMdnsProxyApi.injectEndpoints({
           })
         })
       }
-    })
+    }),
+    getEdgeMdnsProxyStatsList:
+      build.query<TableResult<EdgeMdnsProxyStatsData>, RequestPayload>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeMdnsProxyUrls.getEdgeMdnsProxyStatsList)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        },
+        extraOptions: { maxRetries: 5 }
+      })
   })
 })
 
@@ -140,5 +152,6 @@ export const {
   useUpdateEdgeMdnsProxyMutation,
   useDeleteEdgeMdnsProxyMutation,
   useActivateEdgeMdnsProxyClusterMutation,
-  useDeactivateEdgeMdnsProxyClusterMutation
+  useDeactivateEdgeMdnsProxyClusterMutation,
+  useGetEdgeMdnsProxyStatsListQuery
 } = edgeMdnsProxyApi

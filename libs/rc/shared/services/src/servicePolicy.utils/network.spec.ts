@@ -1,4 +1,4 @@
-import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/react'
+import { BaseQueryApi } from '@reduxjs/toolkit/query/react'
 
 import { ConfigTemplateUrlsInfo, NetworkVenue, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { createHttpRequest }                                  from '@acx-ui/utils'

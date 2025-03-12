@@ -1,6 +1,7 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { EdgePermissions }           from '@acx-ui/edge/components'
 import { Features }                  from '@acx-ui/feature-toggle'
 import {
   EdgeStatusLight,
@@ -22,11 +23,14 @@ import {
   genUrl,
   CommonCategory,
   EdgeStatusEnum,
-  isOtpEnrollmentRequired
+  isOtpEnrollmentRequired,
+  ClusterHighAvailabilityModeEnum,
+  EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 
@@ -40,7 +44,8 @@ const defaultPayload = {
     'venueName',
     'clusterStatus',
     'haStatus',
-    'edgeList'
+    'edgeList',
+    'highAvailabilityMode'
   ]
 }
 
@@ -113,6 +118,14 @@ export const EdgeClusterTable = () => {
           clusterStatus={row.clusterStatus}
           edgeList={row.edgeList}
         />
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'HA Mode' }),
+      key: 'highAvailabilityMode',
+      dataIndex: 'highAvailabilityMode',
+      render: (_, row) => {
+        return row.isFirstLevel && $t(getHaModeDisplayString(row.highAvailabilityMode))
       }
     },
     {
@@ -195,6 +208,7 @@ export const EdgeClusterTable = () => {
   const rowActions: TableProps<EdgeClusterTableDataType>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: EdgePermissions.editEdgeCluster,
       visible: (selectedRows) => (selectedRows.length === 1),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -229,6 +243,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteEdgeCluster), getOpsApi(EdgeUrlsInfo.deleteEdge)],
       visible: (selectedRows) =>
         (selectedRows.filter(row =>
           row.isFirstLevel && (row.children?.length ?? 0) > 0).length === 0),
@@ -239,6 +254,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.sendOtp)],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
           selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0 &&
@@ -251,6 +267,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
           selectedRows.filter(row => {
@@ -263,6 +280,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.reboot)],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
@@ -273,6 +291,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
       visible: (selectedRows) => (isGracefulShutdownReady &&
         selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
@@ -283,6 +302,7 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: EdgePermissions.editEdgeClusterConfigWizard,
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & RUCKUS Edge configuration wizard' }),
@@ -312,7 +332,17 @@ export const EdgeClusterTable = () => {
   ]
 
   const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE],
+    rbacOpsIds: [
+      ...EdgePermissions.editEdgeCluster,
+      ...EdgePermissions.editEdgeClusterConfigWizard,
+      getOpsApi(EdgeUrlsInfo.deleteEdgeCluster),
+      getOpsApi(EdgeUrlsInfo.deleteEdge),
+      getOpsApi(EdgeUrlsInfo.sendOtp),
+      getOpsApi(EdgeUrlsInfo.factoryReset),
+      getOpsApi(EdgeUrlsInfo.reboot),
+      getOpsApi(EdgeUrlsInfo.shutdown)
+    ]
   })
 
   return (
@@ -331,4 +361,15 @@ export const EdgeClusterTable = () => {
       />
     </Loader>
   )
+}
+
+const getHaModeDisplayString = (highAvailabilityMode?: ClusterHighAvailabilityModeEnum) => {
+  switch(highAvailabilityMode) {
+    case ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE:
+      return defineMessage({ defaultMessage: 'Active-Active' })
+    case ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY:
+      return defineMessage({ defaultMessage: 'Active-Standby' })
+    default:
+      return defineMessage({ defaultMessage: 'N/A' })
+  }
 }

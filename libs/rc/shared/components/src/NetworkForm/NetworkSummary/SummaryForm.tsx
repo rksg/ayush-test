@@ -1,15 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
+import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormLegacy, Subtitle }               from '@acx-ui/components'
-import { Features, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { StepsFormLegacy, Subtitle }                from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }  from '@acx-ui/rc/services'
 import {
   Demo,
+  GuestNetworkTypeEnum,
   NetworkSaveData,
+  NetworkSummaryExtracData,
   NetworkTypeEnum,
   networkTypes,
   transformDisplayText,
@@ -19,11 +22,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { captiveTypes } from '../contentsMap'
+import { captiveTypes }   from '../contentsMap'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { AaaSummaryForm }       from './AaaSummaryForm'
 import { DpskSummaryForm }      from './DpskSummaryForm'
 import { Hotspot20SummaryForm } from './Hotspot20SummaryForm'
+import { OpenSummaryForm }      from './OpenSummaryForm'
 import { PortalSummaryForm }    from './PortalSummaryForm'
 import { PskSummaryForm }       from './PskSummaryForm'
 
@@ -38,11 +43,18 @@ const defaultPayload = {
 
 export function SummaryForm (props: {
   summaryData: NetworkSaveData,
-  portalData?: Demo
+  portalData?: Demo,
+  extraData?: NetworkSummaryExtracData,
+  isRuckusAiMode?: boolean,
+  ruckusAiSummaryTitle?: string
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { summaryData, portalData } = props
+  // eslint-disable-next-line max-len
+  const isRuckusAiMode = (useContext(NetworkFormContext)?.isRuckusAiMode || props.isRuckusAiMode === true)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const { summaryData, portalData, extraData, ruckusAiSummaryTitle } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
     params: { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' },
@@ -84,20 +96,32 @@ export function SummaryForm (props: {
   // @ts-ignore
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsFormLegacy.Title>
-      <Row gutter={20}>
+      {_.isEmpty(ruckusAiSummaryTitle) &&
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>}
+
+      <Row gutter={20}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isRuckusAiMode ? undefined : '1fr auto 1fr'
+        }}>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({ defaultMessage: 'Network Info' }) }
+            {ruckusAiSummaryTitle || $t({ defaultMessage: 'Network Info' })}
           </Subtitle>
-          <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
-          {summaryData.name !== summaryData?.wlan?.ssid &&
-            <Form.Item label={$t({ defaultMessage: 'SSID:' })} children={summaryData?.wlan?.ssid} />
+          {!isRuckusAiMode && <>
+            <Form.Item label={$t({ defaultMessage: 'Network Name:' })}
+              children={summaryData.name} />
+            {summaryData.name !== summaryData?.wlan?.ssid &&
+              <Form.Item label={$t({ defaultMessage: 'SSID:' })}
+                children={summaryData?.wlan?.ssid} />
+            }
+            <Form.Item
+              label={$t({ defaultMessage: 'Description:' })}
+              style={{ wordBreak: 'break-word' }}
+              children={transformDisplayText(summaryData.description)}
+            />
+          </>
           }
-          <Form.Item
-            label={$t({ defaultMessage: 'Description:' })}
-            children={transformDisplayText(summaryData.description)}
-          />
           {summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL && <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
             children={summaryData.type && $t(networkTypes[summaryData.type])}
@@ -108,8 +132,16 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal &&
+            summaryData.guestPortal.guestNetworkType === GuestNetworkTypeEnum.Directory &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Directory Server:' })}
+              children={extraData?.directoryServer?.name ?? ''}
+            />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
-            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.DPSK &&
             summaryData.type !== NetworkTypeEnum.HOTSPOT20
             && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
           && <Form.Item
@@ -121,36 +153,26 @@ export function SummaryForm (props: {
             }
           />
           }
-          {summaryData.type === NetworkTypeEnum.DPSK
-          && summaryData.isCloudpathEnabled
-            && <>
-              <Form.Item
-                label={$t({ defaultMessage: 'Proxy Service' })}
-                children={summaryData?.enableAuthProxy
-                  ? $t({ defaultMessage: 'Enabled' })
-                  : $t({ defaultMessage: 'Disabled' })
-                }
-              />
-              {summaryData.accountingRadius &&
-                <Form.Item
-                  label={$t({ defaultMessage: 'Accounting Service' })}
-                  children={`${summaryData.accountingRadius?.name}`}
-                />
-              }
-            </>
-          }
-          {summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
+          {!supportRadsec && summaryData.isCloudpathEnabled &&
             <>
-              <Form.Item
-                label={$t({ defaultMessage: 'Authentication Server' })}
-                children={`${summaryData.authRadius?.name}`}
-              />
-              {summaryData.accountingRadius &&
+              {summaryData.type === NetworkTypeEnum.DPSK &&
+                <Form.Item
+                  label={$t({ defaultMessage: 'Proxy Service' })}
+                  children={summaryData?.enableAuthProxy
+                    ? $t({ defaultMessage: 'Enabled' })
+                    : $t({ defaultMessage: 'Disabled' })
+                  }
+                />}
+              {!summaryData.wlan?.macRegistrationListId &&
+                <Form.Item
+                  label={$t({ defaultMessage: 'Authentication Server' })}
+                  children={`${summaryData.authRadius?.name}`}
+                />}
+              {!summaryData.wlan?.macRegistrationListId && summaryData.accountingRadius &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Accounting Service' })}
                   children={`${summaryData.accountingRadius?.name}`}
-                />
-              }
+                />}
             </>
           }
           {summaryData.type === NetworkTypeEnum.AAA
@@ -178,14 +200,22 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
             <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
           }
+          {supportRadsec && summaryData.type === NetworkTypeEnum.OPEN &&
+            (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
+              !summaryData.wlan?.macRegistrationListId) &&
+            <OpenSummaryForm summaryData={summaryData} />
+          }
         </Col>
-        <Divider type='vertical' style={{ height: '300px' }}/>
-        <Col flex={1}>
-          <Subtitle level={4}>
-            { $t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' }) }
-          </Subtitle>
-          <Form.Item children={getVenues()} />
-        </Col>
+        {!isRuckusAiMode && <>
+          <Divider type='vertical' style={{ height: '300px' }} />
+          <Col flex={1}>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' })}
+            </Subtitle>
+            <Form.Item children={getVenues()} />
+          </Col>
+        </>}
+
       </Row>
     </>
   )

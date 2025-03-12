@@ -1,18 +1,27 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { isEmpty }   from 'lodash'
-import { IntlShape } from 'react-intl'
+import { isEmpty } from 'lodash'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
-import { VenueLed,
+import { ConfigTemplateEnforcementContext }                    from '@acx-ui/rc/components'
+import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
+import {
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
-  VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+  VeuneApAntennaTypeSettings,
+  CommonUrlsInfo,
+  useConfigTemplate,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
-import { hasPermission, hasRoles }               from '@acx-ui/user'
-import { getIntl }                               from '@acx-ui/utils'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission,
+  hasRoles }               from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { PropertyManagementTab }        from './PropertyManagementTab'
 import { SwitchConfigTab }              from './SwitchConfigTab'
@@ -33,6 +42,10 @@ const tabs = {
   property: PropertyManagementTab
 }
 
+export type VenueWifiConfigItemProps = {
+  isAllowEdit?: boolean
+}
+
 export interface EditContext {
   tabTitle: string,
   tabKey?: string,
@@ -42,11 +55,10 @@ export interface EditContext {
   oldData: unknown,
   newData: unknown,
   previousPath?: string,
-  updateChanges: () => void,
+  updateChanges?: () => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setData: (data: any) => void,
   tempData?: {
-    settings?: VenueLed[],
     general?: VenueSwitchConfiguration
   }
 }
@@ -69,7 +81,7 @@ export interface RadioContext {
   updateClientAdmissionControl?: ((callback?: () => void) => void)
 }
 
-export const VenueEditContext = createContext({} as {
+export type VenueEditContextProps = {
   editContextData: EditContext,
   setEditContextData: (data: EditContext) => void
 
@@ -87,16 +99,21 @@ export const VenueEditContext = createContext({} as {
 
   editAdvancedContextData: AdvanceSettingContext,
   setEditAdvancedContextData: (data: AdvanceSettingContext) => void
+}
 
+export type VenueEditContextExtendedProps = VenueEditContextProps & {
   previousPath: string
   setPreviousPath: (data: string) => void
-})
+}
+
+export const VenueEditContext = createContext({} as VenueEditContextExtendedProps)
 
 export function VenueEdit () {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
 
-  const { activeTab } = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const { venueId, activeTab } = useParams()
   const enablePropertyManagement = usePropertyManagementEnabled()
 
   const Tab = tabs[activeTab as keyof typeof tabs]
@@ -120,14 +137,24 @@ export function VenueEdit () {
     editAdvancedContextData, setEditAdvancedContextData
   ] = useState({} as AdvanceSettingContext)
 
+  const hasDetailsPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateVenue)]) :
+    hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   useEffect(() => {
     const notFound = { ...basePath, pathname: `${basePath.pathname}/not-found` }
     const notPermissions = { ...basePath, pathname: `${basePath.pathname}/no-permissions` }
     if (!activeTab) {
       const navigateTo =
-      hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? 'details' :
-        hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
-          hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? 'switch' :
+      hasDetailsPermission ? 'details' :
+        hasPermission({
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+        }) ? 'wifi' :
+          hasPermission({
+            scopes: [SwitchScopes.UPDATE],
+            rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+          }) ? 'switch' :
             enablePropertyManagement ? 'property' : notFound
       navigate(navigateTo, { replace: true })
       return
@@ -139,15 +166,26 @@ export function VenueEdit () {
     }
 
     const hasNoPermissions
-    = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
-    || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
-    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'details')
+    = (!hasPermission({
+      scopes: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization)]
+    }) && activeTab === 'wifi')
+    || (!hasPermission({
+      scopes: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
+    }) && activeTab === 'switch')
+    || (!hasDetailsPermission && activeTab === 'details')
     || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'property')
 
     if (hasNoPermissions) {
       navigate(notPermissions, { replace: true })
     }
   }, [activeTab, basePath, enablePropertyManagement, navigate])
+
+  const { isTemplate } = useConfigTemplate()
+  const { data: venueInstance } = useGetVenueQuery(
+    { params: { venueId } }, { skip: !venueId || isTemplate }
+  )
 
   return (
     <VenueEditContext.Provider value={{
@@ -161,13 +199,15 @@ export function VenueEdit () {
       setEditSecurityContextData,
       editServerContextData,
       setEditServerContextData,
-      editAdvancedContextData: editAdvancedContextData,
-      setEditAdvancedContextData: setEditAdvancedContextData,
+      editAdvancedContextData,
+      setEditAdvancedContextData,
       previousPath,
       setPreviousPath
     }}>
-      <VenueEditPageHeader />
-      { Tab && <Tab /> }
+      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced: venueInstance?.isEnforced }}>
+        <VenueEditPageHeader />
+        { Tab && <Tab /> }
+      </ConfigTemplateEnforcementContext.Provider>
     </VenueEditContext.Provider>
   )
 }
@@ -197,19 +237,23 @@ export function getAntennaTypePayload (antTypeModels: { [index: string]: VeuneAp
   return isEmpty(antTypeModels)? [] : Object.values(antTypeModels)
 }
 
-function processWifiTab (
-  editContextData: EditContext,
-  editNetworkingContextData: NetworkingSettingContext,
-  editSecurityContextData: SecuritySettingContext,
-  editServerContextData: ServerSettingContext,
-  editRadioContextData: RadioContext,
-  editAdvancedContextData: AdvanceSettingContext
-){
+function processWifiTab (props: VenueEditContextProps) {
+  const {
+    editContextData,
+    editNetworkingContextData,
+    editSecurityContextData,
+    editServerContextData,
+    editRadioContextData,
+    editAdvancedContextData
+  } = props
+
   switch(editContextData?.unsavedTabKey){
     case 'settings':
       editAdvancedContextData?.updateAccessPointLED?.()
+      editAdvancedContextData?.updateAccessPointUSB?.()
       editAdvancedContextData?.updateBssColoring?.()
       editAdvancedContextData?.updateApManagementVlan?.()
+      editAdvancedContextData?.updateRebootTimeout?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
@@ -217,6 +261,7 @@ function processWifiTab (
       editNetworkingContextData?.updateMesh?.()
       editNetworkingContextData?.updateDirectedMulticast?.()
       editNetworkingContextData?.updateRadiusOptions?.()
+      editNetworkingContextData?.updateSmartMonitor?.()
       break
     case 'radio':
 
@@ -257,22 +302,61 @@ function processWifiTab (
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateMdnsFencing?.()
       editServerContextData?.updateVenueApSnmp?.()
+      editServerContextData?.updateVenueIot?.()
       break
   }
 }
 
-export function showUnsavedModal (
-  editContextData: EditContext,
-  setEditContextData: (data: EditContext) => void,
-  editNetworkingContextData: NetworkingSettingContext,
-  editRadioContextData: RadioContext,
-  editSecurityContextData: SecuritySettingContext,
-  editServerContextData: ServerSettingContext,
-  editAdvancedContextData: AdvanceSettingContext,
-  intl: IntlShape,
+const resetVenueEditContextData = (props: VenueEditContextProps) => {
+  const { editContextData,
+    setEditContextData,
+    setEditRadioContextData,
+    setEditNetworkingContextData,
+    setEditSecurityContextData,
+    setEditServerContextData,
+    setEditAdvancedContextData
+  } = props
+
+  const newEditContextData = {
+    ...editContextData,
+    isDirty: false,
+    hasError: false
+  }
+  delete newEditContextData.updateChanges
+
+  setEditContextData(newEditContextData)
+
+  switch(editContextData?.unsavedTabKey){
+    case 'radio':
+      setEditRadioContextData({} as RadioContext)
+      break
+    case 'networking':
+      setEditNetworkingContextData({} as NetworkingSettingContext)
+      break
+    case 'servers':
+      setEditServerContextData({} as ServerSettingContext)
+      break
+    case 'security':
+      setEditSecurityContextData({} as SecuritySettingContext)
+      break
+    case 'settings':
+      setEditAdvancedContextData({} as AdvanceSettingContext)
+      break
+  }
+}
+
+export function showUnsavedModal (props: VenueEditContextProps & {
   callback?: () => void
-) {
+}) {
   const { $t } = getIntl()
+  const { callback, ...venueEditContextProps } = props
+  const {
+    editContextData, setEditContextData,
+    editRadioContextData,
+    editNetworkingContextData,
+    editServerContextData
+  } = venueEditContextProps
+
   const title = editContextData?.tabTitle ?? ''
   const hasError = editContextData?.hasError ?? false
   const btns = [{
@@ -309,6 +393,7 @@ export function showUnsavedModal (
         editServerContextData?.discardSyslog?.()
         editServerContextData?.discardVenueLbs?.()
         editServerContextData?.discardMdnsFencing?.()
+        editServerContextData?.discardVenueIot?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,
@@ -327,6 +412,7 @@ export function showUnsavedModal (
         })
         setData && oldData && setData(oldData)
       }
+      resetVenueEditContextData(venueEditContextProps)
       callback?.()
     }
   }, {
@@ -338,17 +424,11 @@ export function showUnsavedModal (
       const wifiTab = ['radio', 'networking', 'security', 'servers', 'settings']
 
       if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
-        processWifiTab(
-          editContextData,
-          editNetworkingContextData,
-          editSecurityContextData,
-          editServerContextData,
-          editRadioContextData,
-          editAdvancedContextData
-        )
-      }else{
+        processWifiTab(venueEditContextProps)
+      } else {
         editContextData?.updateChanges?.()
       }
+      resetVenueEditContextData(venueEditContextProps)
       callback?.()
     }
   }]

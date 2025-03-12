@@ -18,8 +18,9 @@ import { ConfigTemplateOverrideModal }                                          
 import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
 import { OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateOverride } from '../Overrides/utils'
 
-import * as UI          from './styledComponents'
-import { useEcFilters } from './templateUtils'
+import { CustomerFirmwareReminder } from './CustomerFirmwareReminder'
+import * as UI                      from './styledComponents'
+import { useEcFilters }             from './templateUtils'
 
 
 const mspUtils = MSPUtils()
@@ -244,7 +245,7 @@ interface ApplyTemplateConfirmationDrawerProps {
   onCancel: () => void
 }
 
-function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
+export function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
   const { targetMspEcs, selectedTemplate, onBack, onApply, onCancel } = props
   const { $t } = useIntl()
   const [loading, setLoading ] = useState(false)
@@ -253,6 +254,7 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
     <Space direction='vertical'>
       {/* eslint-disable-next-line max-len */}
       <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated <venuePlural></venuePlural>.' }) }</p>
+      { selectedTemplate.type === ConfigTemplateType.VENUE && <CustomerFirmwareReminder /> }
       <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
       <AppliedMspEcListView
         targetMspEcs={targetMspEcs}

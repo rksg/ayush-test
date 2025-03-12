@@ -6,7 +6,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 function SwitchTabs () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/devices/switch/${params.switchId}/serial/details/`)
+  const basePath = useTenantLink(`/devices/switch/${params.switchId}/${params.serial}/details/`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({

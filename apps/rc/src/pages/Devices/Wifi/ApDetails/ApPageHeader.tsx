@@ -6,11 +6,11 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
-import { useApActions }                                                  from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                                                                    from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { APStatus, LowPowerBannerAndModal }                                                       from '@acx-ui/rc/components'
+import { useApActions }                                                                           from '@acx-ui/rc/components'
 import {
   useApDetailHeaderQuery,
   isAPLowPower,
@@ -21,7 +21,8 @@ import {
   ApDeviceStatusEnum,
   useApContext,
   ApStatus,
-  PowerSavingStatusEnum
+  PowerSavingStatusEnum,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -31,7 +32,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum, WifiScopes }                   from '@acx-ui/types'
 import { hasRoles, hasPermission, filterByAccess } from '@acx-ui/user'
-import { useDateFilter }                           from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }                from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -39,10 +40,13 @@ import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
   const { data } = useApDetailHeaderQuery({ params })
@@ -114,6 +118,7 @@ function ApPageHeader () {
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot',
         scopeKey: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.updateAp)],
         roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Download Log' }),
@@ -132,11 +137,14 @@ function ApPageHeader () {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete',
         scopeKey: [WifiScopes.DELETE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.deleteAp)],
         roles: operationRoles
       }]).filter(item => {
+        const { scopeKey: scopes, rbacOpsIds, roles } = item
+        const isHasPermission = hasPermission({ scopes, rbacOpsIds, roles })
         return (
-          (currentApOperational && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
-          (item.key === 'delete' && hasPermission({ scopes: item.scopeKey, roles: item.roles })) ||
+          (currentApOperational && isHasPermission) ||
+          (item.key === 'delete' && isHasPermission) ||
           (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
         )
       })}
@@ -179,6 +187,7 @@ function ApPageHeader () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
           : <></>,
         ...((isReadOnly) ? dropdown : filterByAccess(dropdown)),
@@ -186,6 +195,7 @@ function ApPageHeader () {
           <Button
             type='primary'
             scopeKey={[WifiScopes.UPDATE]}
+            rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.updateAp)]}
             onClick={() => {
               navigate({
                 ...basePath,

@@ -9,8 +9,11 @@ import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggl
 import { useApListQuery, useGetApValidChannelQuery } from '@acx-ui/rc/services'
 import { ApContext }                                 from '@acx-ui/rc/utils'
 
+import { useGetApCapabilities } from '../hooks'
+
 export function ApContextProvider (props: { children: ReactNode }) {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const params = useParams()
   const { $t } = useIntl()
   const fields = [
@@ -41,8 +44,21 @@ export function ApContextProvider (props: { children: ReactNode }) {
     }, {
       skip: !apData.serialNumber
     })
+
+  const { data: capabilities } = useGetApCapabilities({
+    params,
+    modelName: apData?.model,
+    skip: !supportR370,
+    enableRbac: isWifiRbacEnabled
+  })
+
   //eslint-disable-next-line
-  const values: Params<string> = { ...params, ...apData as Params<string>, ...apValidChannels as unknown as Params<string> }
+  const values: Params<string> = {
+    ...params,
+    ...apData as Params<string>,
+    ...apValidChannels as unknown as Params<string>,
+    ...capabilities as unknown as Params<string>
+  }
 
   return <ApContext.Provider value={values}>
     <Loader states={[results]}>{

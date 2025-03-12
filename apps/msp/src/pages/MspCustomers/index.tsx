@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Space }              from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -11,13 +11,14 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
   ResendInviteModal,
-  SelectIntegratorDrawer
+  SelectIntegratorDrawer,
+  ManageMspDelegationDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeactivateMspEcMutation,
@@ -36,19 +37,22 @@ import {
   MspEc,
   MSPUtils,
   MspEcTierEnum,
-  MspEcAccountType
+  MspEcAccountType,
+  MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementUtil,
+  FILTER,
+  SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
-import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                        from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { AccountType, getOpsApi, isDelegationMode, noDataDisplay }                                          from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 import * as UI    from '../Subscriptions/styledComponent'
@@ -77,13 +81,15 @@ export function MspCustomers () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
   const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
   const isMspSortOnTpEnabled = useIsSplitOn(Features.MSP_SORT_ON_TP_COUNT_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isCustomFilterEnabled = useIsSplitOn(Features.VIEWMODEL_MSPEC_QUERY_TWO_FILTERS_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -112,11 +118,19 @@ export function MspCustomers () {
     (tenantType === AccountType.MSP_INSTALLER ||
      tenantType === AccountType.MSP_INTEGRATOR)
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  const isExtendedTrialEnabled = tenantDetailsData.data?.extendedTrial ?? false
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspEcAccount)]) : isAdmin
+  const hasAssignAdminPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations)]) : isAdmin
+  const hasAssignTechPartnerPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.assignMspEcToMultiIntegrators)]) : isAdmin
 
   const allowManageAdmin =
-      ((isPrimeAdmin || isAdmin) && !userProfile?.support) || isSupportToMspDashboardAllowed
+      (hasAssignAdminPermission && !userProfile?.support) || isSupportToMspDashboardAllowed
   const allowSelectTechPartner =
-      ((isPrimeAdmin || isAdmin) && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
+      (hasAssignTechPartnerPermission && !drawerIntegratorVisible) || isSupportToMspDashboardAllowed
   const hideTechPartner = (isIntegrator || userProfile?.support) && !isSupportToMspDashboardAllowed
 
   const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
@@ -139,6 +153,9 @@ export function MspCustomers () {
       ],
       sortField: 'name',
       sortOrder: 'ASC'
+    },
+    option: {
+      skip: techPartnerAssignEcsEanbled
     }
   })
 
@@ -223,11 +240,69 @@ export function MspCustomers () {
     }
   }
 
-  function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
+  function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean,
+    isFilterEnable?: boolean) {
     const mspAdminCountIndex = isvViewModelTpLoginEnabled ?
       (tenantType === AccountType.MSP_INTEGRATOR ? 'mspIntegratorAdminCount'
         : (tenantType === AccountType.MSP_INSTALLER ? 'mspInstallerAdminCount'
           : 'mspAdminCount' )) : 'mspAdminCount'
+
+    const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+      { key: '', value: $t({ defaultMessage: 'All' }) },
+      {
+        key: 'Active',
+        value: $t({ defaultMessage: 'Active' })
+      },
+      {
+        key: 'Inactive',
+        value: $t({ defaultMessage: 'Inactive' })
+      },
+      {
+        key: 'Trial',
+        value: $t({ defaultMessage: 'Trial' })
+      },
+      ...(isExtendedTrialEnabled ? [{
+        key: 'Extended Trial',
+        value: $t({ defaultMessage: 'Extended Trial' })
+      }
+      ] : [])
+    ]
+
+    const expirationDateFilterOpts = ($t: IntlShape['$t']) => [
+      { key: '', value: $t({ defaultMessage: 'All' }) },
+      {
+        key: 'Non-Expired',
+        value: $t({ defaultMessage: 'Non-Expired' })
+      },
+      {
+        key: '+30',
+        value: $t({ defaultMessage: 'Expiring within 30 days' })
+      },
+      {
+        key: '+60',
+        value: $t({ defaultMessage: 'Expiring within 60 days' })
+      },
+      {
+        key: '+90',
+        value: $t({ defaultMessage: 'Expiring within 90 days' })
+      },
+      {
+        key: 'Expired',
+        value: $t({ defaultMessage: 'Expired' })
+      },
+      {
+        key: '-30',
+        value: $t({ defaultMessage: 'Expired in last 30 days' })
+      },
+      {
+        key: '-60',
+        value: $t({ defaultMessage: 'Expired in last 60 days' })
+      },
+      {
+        key: '-90',
+        value: $t({ defaultMessage: 'Expired in last 90 days' })
+      }
+    ]
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -258,6 +333,9 @@ export function MspCustomers () {
         dataIndex: 'status',
         key: 'status',
         sorter: true,
+        filterMultiple: false,
+        filterPlaceholder: $t({ defaultMessage: 'Service Status' }),
+        filterable: isFilterEnable ? statusTypeFilterOpts($t) : false,
         width: 120,
         render: function (_, row) {
           return $t(mspUtils.getStatus(row))
@@ -362,7 +440,7 @@ export function MspCustomers () {
             : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
               : noDataDisplay
           return (
-            allowSelectTechPartner
+            (allowSelectTechPartner)
               ? <Link to=''><div style={{ textAlign: 'center' }}>{val}</div></Link> : val
           )
         }
@@ -428,6 +506,9 @@ export function MspCustomers () {
         dataIndex: 'expirationDate',
         key: 'expirationDate',
         sorter: true,
+        filterMultiple: false,
+        filterPlaceholder: $t({ defaultMessage: 'Service Date' }),
+        filterable: isFilterEnable ? expirationDateFilterOpts($t) : false,
         render: function (_, row) {
           const nextExpirationDate = mspUtils.transformExpirationDate(row)
           if (nextExpirationDate === noDataDisplay)
@@ -487,11 +568,12 @@ export function MspCustomers () {
       }
     }, [tableQuery?.data?.data, alarmList?.data])
 
-    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled)
+    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled, isCustomFilterEnabled)
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.updateMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -507,6 +589,8 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        rbacOpsIds: [[getOpsApi(MspRbacUrlsInfo.updateMspEcDelegations),
+          getOpsApi(MspRbacUrlsInfo.updateMspMultipleEcDelegations)]],
         visible: (selectedRows) => {
           const len = selectedRows.length
           return (isAssignMultipleEcEnabled && len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
@@ -519,6 +603,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Schedule Firmware Update' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.mspEcFirmwareUpgradeSchedules)],
         visible: (selectedRows) => {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
@@ -533,6 +618,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.resendEcInvitation)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -546,8 +632,7 @@ export function MspCustomers () {
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' &&
-              selectedRows[0].accountType !== MspEcAccountType.TRIAL &&
-              selectedRows[0].accountType !== MspEcAccountType.EXTENDED_TRIAL)) {
+              selectedRows[0].accountType !== MspEcAccountType.TRIAL)) {
             return true
           }
           return false
@@ -578,8 +663,7 @@ export function MspCustomers () {
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
             (selectedRows[0].status === 'Active' ||
-              selectedRows[0].accountType === MspEcAccountType.TRIAL ||
-              selectedRows[0].accountType === MspEcAccountType.EXTENDED_TRIAL))) {
+              selectedRows[0].accountType === MspEcAccountType.TRIAL))) {
             return false
           }
           return true
@@ -605,6 +689,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deleteMspEcAccount)],
         visible: (selectedRows) => {
           return (selectedRows.length === 1)
         },
@@ -623,6 +708,17 @@ export function MspCustomers () {
         }
       }]
 
+    const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+      let _customFilters = {}
+      _customFilters = {
+        ...customFilters,
+        ...(customFilters?.status ? { status: [customFilters.status[0]] } : {}),
+        ...(customFilters?.expirationDate ?
+          { expirationDate: [customFilters.expirationDate[0]] } : {})
+      }
+      tableQuery.handleFilterChange(_customFilters, customSearch)
+    }
+
     return (
       <Loader states={[
         tableQuery,
@@ -633,28 +729,36 @@ export function MspCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
+          enableApiFilter={true}
         />
         {modalVisible && <ResendInviteModal
           visible={modalVisible}
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && ((isAbacToggleEnabled && selEcTenantIds.length === 1)
-          ? <ManageDelegateAdminDrawer
-            visible={drawerAssignEcMspAdminsVisible}
-            setVisible={setDrawerAssignEcMspAdminsVisible}
-            setSelected={() => {}}
-            tenantId={selEcTenantIds[0]}
-            tenantType={AccountType.MSP_EC}/>
-          : <AssignEcMspAdminsDrawer
+        {drawerAssignEcMspAdminsVisible && (isAbacToggleEnabled && isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
             visible={drawerAssignEcMspAdminsVisible}
             tenantIds={selEcTenantIds}
             setVisible={setDrawerAssignEcMspAdminsVisible}
-            setSelected={() => {}}/>)
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}/>
+          : (isAbacToggleEnabled && selEcTenantIds.length === 1)
+            ? <ManageDelegateAdminDrawer
+              visible={drawerAssignEcMspAdminsVisible}
+              setVisible={setDrawerAssignEcMspAdminsVisible}
+              setSelected={() => {}}
+              tenantId={selEcTenantIds[0]}
+              tenantType={AccountType.MSP_EC}/>
+            : <AssignEcMspAdminsDrawer
+              visible={drawerAssignEcMspAdminsVisible}
+              tenantIds={selEcTenantIds}
+              setVisible={setDrawerAssignEcMspAdminsVisible}
+              setSelected={() => {}}/>)
         }
         {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
           visible={drawerScheduleFirmwareVisible}
@@ -795,7 +899,8 @@ export function MspCustomers () {
             </TenantLink> : null,
             <MspTenantLink to='/dashboard/mspcustomers/create'>
               <Button
-                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed) || !onBoard}
+                hidden={(userProfile?.support && !isSupportToMspDashboardAllowed)
+                  || !onBoard || !hasAddPermission}
                 type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]
@@ -810,12 +915,20 @@ export function MspCustomers () {
         && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
       {drawerAdminVisible && (isAbacToggleEnabled
-        ? <ManageDelegateAdminDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={() => {}}
-          tenantId={ecTenantId}
-          tenantType={tenantType}/>
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={() => {}}
+            setSelectedPrivilegeGroups={() => {}}
+            tenantIds={[ecTenantId]}
+            tenantType={tenantType}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={ecTenantId}
+            tenantType={tenantType}/>)
         : <ManageAdminsDrawer
           visible={drawerAdminVisible}
           setVisible={setDrawerAdminVisible}

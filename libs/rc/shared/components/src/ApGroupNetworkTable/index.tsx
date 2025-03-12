@@ -7,7 +7,8 @@ import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListV2Query,
-  useNewApGroupNetworkListQuery
+  useNewApGroupNetworkListQuery,
+  useNewApGroupNetworkListV2Query
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -15,7 +16,9 @@ import {
   NetworkExtended,
   NetworkType,
   NetworkTypeEnum,
-  useTableQuery, useConfigTemplate, ConfigTemplateType
+  useTableQuery,
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -134,6 +137,7 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
   const { isTemplate } = useConfigTemplate()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
   const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -149,7 +153,7 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
   })
 
   const rbacTableQuery = useTableQuery({
-    useQuery: useNewApGroupNetworkListQuery,
+    useQuery: isUseNewRbacNetworkVenueApi ? useNewApGroupNetworkListV2Query : useNewApGroupNetworkListQuery,
     apiParams: { venueId: venueId! },
     defaultPayload: {
       ...defaultNewApGroupNetworkPayload,

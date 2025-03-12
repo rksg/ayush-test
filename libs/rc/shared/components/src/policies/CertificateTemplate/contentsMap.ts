@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyUsages, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyType, KeyUsages, KeyUsageType, ServerClientCertAlgorithmType, ServerClientCertType, UsageType } from '@acx-ui/rc/utils'
 
 
 export const caTypeShortLabel: Record<CertificateAuthorityType, MessageDescriptor> = {
@@ -23,10 +23,16 @@ export const certificateExpirationLabel: Record<ExpirationType, string> = {
 }
 
 export const algorithmLabel: Record<AlgorithmType, MessageDescriptor> = {
-  [AlgorithmType.SHA_1]: defineMessage({ defaultMessage: 'SHA-1' }),
   [AlgorithmType.SHA_256]: defineMessage({ defaultMessage: 'SHA-256' }),
   [AlgorithmType.SHA_384]: defineMessage({ defaultMessage: 'SHA-384' }),
   [AlgorithmType.SHA_512]: defineMessage({ defaultMessage: 'SHA-512' })
+}
+
+export const serverAlgorithmLabel: Record<ServerClientCertAlgorithmType, MessageDescriptor> = {
+  [ServerClientCertAlgorithmType.SHA_1]: defineMessage({ defaultMessage: 'SHA-1' }),
+  [ServerClientCertAlgorithmType.SHA_256]: defineMessage({ defaultMessage: 'SHA-256' }),
+  [ServerClientCertAlgorithmType.SHA_384]: defineMessage({ defaultMessage: 'SHA-384' }),
+  [ServerClientCertAlgorithmType.SHA_512]: defineMessage({ defaultMessage: 'SHA-512' })
 }
 
 export const enrollmentTypeLabel: Record<ChromebookEnrollmentType, MessageDescriptor> = {
@@ -57,7 +63,19 @@ export const certDetailTitle: Record<CertificateCategoryType, MessageDescriptor>
 
 export const usagesLabel: Record<UsageType, MessageDescriptor> = {
   [UsageType.CLIENT_AUTH]: defineMessage({ defaultMessage: 'Client Authentication' }),
-  [UsageType.SERVER_AUTH]: defineMessage({ defaultMessage: 'Server Authentication' })
+  [UsageType.SERVER_AUTH]: defineMessage({ defaultMessage: 'Server Authentication' }),
+  [UsageType.CODE_SIGNING]: defineMessage({ defaultMessage: 'Code Signing' }),
+  [UsageType.DOCUMENT_SIGNING]: defineMessage({ defaultMessage: 'Document Signing' }),
+  [UsageType.EMAIL_PROTECTION]: defineMessage({ defaultMessage: 'Email Protection' }),
+  [UsageType.HOTSPOT_AUTH]: defineMessage({ defaultMessage: 'Hotspot Authentication' }),
+  [UsageType.IPSEC_END_SYSTEM]: defineMessage({ defaultMessage: 'IPSec End System' }),
+  [UsageType.IPSEC_TUNNEL]: defineMessage({ defaultMessage: 'IPSec Tunnel' }),
+  [UsageType.IPSEC_USER]: defineMessage({ defaultMessage: 'IPSec User' }),
+  [UsageType.MICROSOFT_SGC]: defineMessage({ defaultMessage: 'Microsoft Server Gated Cryptography' }),
+  [UsageType.NETSCAPE_SGC]: defineMessage({ defaultMessage: 'Netscape Server Gated Cryptography' }),
+  [UsageType.OCSP_SIGNING]: defineMessage({ defaultMessage: 'OCSP Signing' }),
+  [UsageType.SMART_CARD_LOGON]: defineMessage({ defaultMessage: 'Smart Card Logon' }),
+  [UsageType.TIME_STAMPING]: defineMessage({ defaultMessage: 'Time Stamping' })
 }
 
 export const keyUsagesLabel: Record<KeyUsageType, MessageDescriptor> = {
@@ -162,6 +180,9 @@ export const certificateStatusTypeLabel: Record<CertificateStatusType, MessageDe
   [CertificateStatusType.VALID]: defineMessage({
     defaultMessage: 'Valid'
   }),
+  [CertificateStatusType.INVALID]: defineMessage({
+    defaultMessage: 'Invalid'
+  }),
   [CertificateStatusType.REVOKED]: defineMessage({
     defaultMessage: 'Revoked'
   }),
@@ -179,6 +200,27 @@ export const generateCertificateTitle: Record<CertificateGenerationType, Message
   }),
   [CertificateGenerationType.UPLOAD]: defineMessage({
     defaultMessage: 'Upload Certificate'
+  })
+}
+
+export const generateCertificateDescription: Record<CertificateGenerationType, MessageDescriptor> = {
+  [CertificateGenerationType.NEW]: defineMessage({
+    defaultMessage: 'Creates a new server, client certificate signed by CA'
+  }),
+  [CertificateGenerationType.WITH_CSR]: defineMessage({
+    defaultMessage: 'Creates a new server certificate signed by CA'
+  }),
+  [CertificateGenerationType.UPLOAD]: defineMessage({
+    defaultMessage: 'Upload server, client sertificate'
+  })
+}
+
+export const serverClientCertSupportdFiles: Record<ServerClientCertType, MessageDescriptor> = {
+  [KeyType.PUBLIC]: defineMessage({
+    defaultMessage: 'Public Key certificate with PKCS #12 (.p12) format is collection of Public and Private keys. If Private key (in Public key) is password then please provide password below. Supported Public key file types: .p12, .der, .cert and .pem'
+  }),
+  [KeyType.PRIVATE]: defineMessage({
+    defaultMessage: 'Supported Private key file types: .pem, .key and .cert'
   })
 }
 

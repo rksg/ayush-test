@@ -1,7 +1,10 @@
 
+import { useMemo } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Collapse, Drawer, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { useGetWorkflowActionDefinitionListQuery }    from '@acx-ui/rc/services'
 import { ActionType }                                 from '@acx-ui/rc/utils'
 
@@ -44,6 +47,18 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
     onClose,
     onClickAction
   } = props
+
+
+  const isCertActionEnabled = useIsSplitOn(Features.WORKFLOW_CERTIFICATE_TEMPLATE_ACTION)
+  const dynamicDeviceOnboardingActions = useMemo(() => {
+    const actions = [...deviceOnboardingActions]
+
+    if (isCertActionEnabled) {
+      actions.push(ActionType.CERT_TEMPLATE)
+    }
+
+    return actions
+  }, [deviceOnboardingActions, isCertActionEnabled])
 
   const { defMap, isDefLoading } = useGetWorkflowActionDefinitionListQuery({
     params: {
@@ -108,7 +123,7 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
             </Panel>
             <Panel header={$t({ defaultMessage: 'Device Onboarding' })} key={2}>
               <GridRow>
-                {deviceOnboardingActions.map(actionType =>
+                {dynamicDeviceOnboardingActions.map(actionType =>
                   <GridCol key={actionType.toString()} col={{ span: 12 }}>
                     <ActionCard
                       actionType={actionType}

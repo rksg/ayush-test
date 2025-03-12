@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 
 import { Space }                  from 'antd'
-import { isNil, merge, find }     from 'lodash'
+import { find, isNil, merge }     from 'lodash'
 import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -11,15 +11,17 @@ import { Features }                                               from '@acx-ui/
 import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
 import {
   defaultSort,
-  sortProp,
   isOweTransitionNetwork,
-  NetworkTypeEnum,
-  useTableQuery,
   Network,
-  NetworkType } from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+  NetworkType,
+  NetworkTypeEnum,
+  sortProp,
+  useTableQuery,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { WifiScopes }         from '@acx-ui/types'
+import { filterByAccess }     from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
 import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
@@ -113,13 +115,16 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     defaultPayload: {
       sortField: 'name',
       sortOrder: 'ASC',
-      venueId,
       fields: [
         'id',
         'name',
-        'type',
-        'vlanPool'
-      ]
+        'nwSubType',
+        'vlanPool', // for GUI trigger vlan pooling API in RBAC version
+        'dsaeOnboardNetwork'
+      ],
+      filters: {
+        'venueApGroups.venueId': [venueId]
+      }
     },
     option: {
       skip: !Boolean(venueId)
@@ -227,11 +232,15 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
   const actions: TableProps<Network>['actions'] = [{
     scopeKey: [WifiScopes.CREATE],
+    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)],
     label: $t({ defaultMessage: 'Add Wi-Fi Network' }),
     onClick: () => {
       setNetworkModalVisible(true)
     }
   }]
+
+  const networkFormDefaultVals = useMemo(() => (venueId ? { defaultActiveVenues: [venueId] } : undefined),
+    [venueId])
 
   return (
     <>
@@ -252,7 +261,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
       <AddNetworkModal
         visible={networkModalVisible}
         setVisible={setNetworkModalVisible}
-        defaultActiveVenues={[venueId]}
+        defaultValues={networkFormDefaultVals}
       />
       <MoreDetailsDrawer
         visible={detailDrawerVisible}

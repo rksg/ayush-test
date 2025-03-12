@@ -13,6 +13,7 @@ import {
   ApRadioParams6G,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  FirmwareUrlsInfo,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -68,6 +69,33 @@ const defaultApEditCxtData = {
   setEditContextData: jest.fn()
 }
 
+const mockedApModelFamilies = [
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: ['R560',' R760']
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: ['R770', 'R670', 'T670', 'T670SN', 'H670']
+  }
+]
+
+const venueData = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  floorPlans: [],
+  id: '908c47ee1cd445838c3bf71d4addccdf',
+  name: 'Test-Venue'
+}
+
 describe('RadioSettingsTab', ()=> {
   describe('RadioSettingsTab with R560 AP', () => {
     const defaultR560ApDataCxtData = {
@@ -81,9 +109,6 @@ describe('RadioSettingsTab', ()=> {
       store.dispatch(venueApi.util.resetApiState())
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
-        rest.get(
-          CommonUrlsInfo.getDashboardOverview.url,
-          (_, res, ctx) => res(ctx.json({}))),
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
@@ -102,6 +127,11 @@ describe('RadioSettingsTab', ()=> {
         rest.put(
           WifiUrlsInfo.updateApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({}))),
+        rest.post(
+          FirmwareUrlsInfo.getApModelFamilies.url,
+          (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
+        rest.get(CommonUrlsInfo.getVenue.url,
+          (_, res, ctx) => res(ctx.json(venueData))),
         // rbac
         rest.get(
           WifiRbacUrlsInfo.getApRadioCustomization.url,
@@ -394,9 +424,6 @@ describe('RadioSettingsTab', ()=> {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
         rest.get(
-          CommonUrlsInfo.getDashboardOverview.url,
-          (_, res, ctx) => res(ctx.json({}))),
-        rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
         rest.get(CommonUrlsInfo.getVenue.url,
@@ -422,6 +449,9 @@ describe('RadioSettingsTab', ()=> {
         rest.put(
           WifiUrlsInfo.updateApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({}))),
+        rest.post(
+          FirmwareUrlsInfo.getApModelFamilies.url,
+          (_, res, ctx) => res(ctx.json(mockedApModelFamilies))),
         // rbac
         rest.get(
           WifiRbacUrlsInfo.getApRadioCustomization.url,
@@ -557,9 +587,6 @@ describe('RadioSettingsTab', ()=> {
       store.dispatch(venueApi.util.resetApiState())
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
-        rest.get(
-          CommonUrlsInfo.getDashboardOverview.url,
-          (_, res, ctx) => res(ctx.json({}))),
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),

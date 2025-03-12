@@ -9,11 +9,11 @@ import { getIntl }                                from '@acx-ui/utils'
 
 import { LocationExtended }                                                               from '../../common'
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
-import { ServiceType }                                                                    from '../../constants'
+import { ServiceType, ServiceOperation }                                                  from '../../constants'
 import { generatePageHeaderTitle }                                                        from '../../pages'
 
-import { serviceTypeLabelMapping }                                        from './contentsMap'
-import { ServiceOperation, getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
+import { serviceTypeLabelMapping }                      from './contentsMap'
+import { getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
 
 
 export function useServicePageHeaderTitle (isEdit: boolean, serviceType: ServiceType) {

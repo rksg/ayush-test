@@ -1,14 +1,14 @@
 import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { showActionModal }        from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { showActionModal }                                        from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
   useRebootEdgeMutation,
-  useShutdownEdgeMutation,
-  useSendOtpMutation
+  useSendOtpMutation,
+  useShutdownEdgeMutation
 } from '@acx-ui/rc/services'
 import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 import { getIntl }                    from '@acx-ui/utils'
@@ -23,7 +23,31 @@ export const useIsEdgeReady = () => {
 export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeEnabled = useIsEdgeReady()
   const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
-  return isEdgeEnabled && isEdgeFeatureReady
+  const isEdgeAdvEnabled = useIsTierAllowed(TierFeatures.EDGE_ADV)
+  const isEdgeAvReportEnabled = useIsTierAllowed(TierFeatures.EDGE_AV_REPORT)
+  const isEdgeNatTEnabled = useIsTierAllowed(TierFeatures.EDGE_NAT_T)
+  const isEdgeArpTerminationEnabled = useIsTierAllowed(TierFeatures.EDGE_ARPT)
+  const isEdgeMdnsProxyEnabled = useIsTierAllowed(TierFeatures.EDGE_MDNS_PROXY)
+  const isEdgeHqosEnabled = useIsTierAllowed(TierFeatures.EDGE_HQOS)
+
+  const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
+  switch(featureFlagKey) {
+    case Features.EDGE_PIN_HA_TOGGLE:
+    case Features.EDGE_PIN_ENHANCE_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeAdvEnabled
+    case Features.EDGE_AV_REPORT_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeAvReportEnabled
+    case Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeNatTEnabled
+    case Features.EDGE_ARPT_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeArpTerminationEnabled
+    case Features.EDGE_MDNS_PROXY_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeMdnsProxyEnabled
+    case Features.EDGE_QOS_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeHqosEnabled
+    default:
+      return isEnabledWithBooleanFlag
+  }
 }
 
 export const useEdgeActions = () => {

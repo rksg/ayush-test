@@ -32,6 +32,8 @@ import ClientIsolationSettingsForm from './ClientIsolationSettingsForm'
 
 interface ClientIsolationFormProps {
   editMode?: boolean
+  isEmbedded?: boolean
+  updateInstance?: (createId?:string) => void
 }
 
 export function ClientIsolationForm (props: ClientIsolationFormProps) {
@@ -43,7 +45,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
   const params = useParams()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const { editMode = false } = props
+  const { editMode = false , isEmbedded = false, updateInstance } = props
 
   const [ addClientIsolation ] = useAddClientIsolationMutation()
   const [ updateClientIsolation ] = useUpdateClientIsolationMutation()
@@ -76,10 +78,17 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
         // eslint-disable-next-line max-len
         await updateClientIsolation({ params, payload: _.omit(transformData(data), 'id'), enableRbac }).unwrap()
       } else {
-        await addClientIsolation({ params, payload: transformData(data), enableRbac }).unwrap()
+        const createResult = await addClientIsolation(
+          { params, payload: transformData(data), enableRbac }
+        ).unwrap()
+
+        updateInstance?.(createResult.response?.id)
       }
 
-      navigate(linkToPolicies, { replace: true })
+      if(!isEmbedded) {
+        navigate(linkToPolicies, { replace: true })
+      }
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -87,7 +96,7 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
 
   return (
     <>
-      <PageHeader
+      {!isEmbedded && <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Edit Client Isolation Profile' })
           : $t({ defaultMessage: 'Add Client Isolation Profile' })
@@ -101,9 +110,17 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
           { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
         ]}
       />
+      }
       <StepsFormLegacy<ClientIsolationSaveData>
         formRef={formRef}
-        onCancel={() => navigate(linkToPolicies)}
+        onCancel={() => {
+          if(isEmbedded) {
+            formRef.current?.resetFields()
+            updateInstance?.()
+          } else {
+            navigate(linkToPolicies)
+          }
+        }}
         onFinish={saveData}
         buttonLabel={{
           submit: editMode

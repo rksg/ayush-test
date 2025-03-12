@@ -40,6 +40,14 @@ jest.mock('react-router-dom', () => ({
 
 const rcUtils = require('@acx-ui/rc/utils')
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+jest.mock('../Compatibility', () => ({
+  ApGeneralCompatibilityDrawer: () => <div data-testid={'ApGeneralCompatibilityDrawer'} />
+}))
+
 const FormComponent = ({ children }: React.PropsWithChildren) => {
   return <Form>{children}</Form>
 }
@@ -244,8 +252,8 @@ describe('Aps', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.delete(

@@ -12,12 +12,16 @@ export const userLogout = () => {
     ?.forEach(s => localStorage.removeItem(s))
 
   Object.keys(sessionStorage)
-    ?.filter(s => s.includes('pagesize'))
+    ?.filter(s => s.includes('pagesize') || s.includes('-filter'))
     ?.forEach(s => sessionStorage.removeItem(s))
 
   if (Boolean(get('IS_MLISA_SA'))) {
+    const search = new URLSearchParams(window.location.search)
+    if (token) { search.append('token', token) }
+    const queryParams = decodeURIComponent(search.toString())
     const form = document.createElement('form')
-    form.action = `${get('MLISA_LOGOUT_URL')}${window.location.search}`
+    form.action = get('MLISA_LOGOUT_URL')
+    if (queryParams) { form.action += `?${queryParams}` }
     form.method = 'POST'
     document.body.appendChild(form)
     form.submit()

@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import { find, isEqual, omit } from 'lodash'
 
 import {
   CommonResult,
@@ -7,12 +7,11 @@ import {
   TxStatus,
   onSocketActivityChanged,
   NetworkVenue,
-  NetworkApGroup
+  NetworkApGroup,
+  EventBase
 } from '@acx-ui/rc/utils'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, DateRangeFilter, computeRangeFilter } from '@acx-ui/utils'
-
-import { ActionItem, comparePayload } from './servicePolicy.utils'
 
 
 type MetaBase = { id: string }
@@ -24,14 +23,31 @@ export function getMetaList<T extends MetaBase> (
   const httpRequest = metaListInfo.urlInfo
   const body = {
     fields: metaListInfo.fields,
-    filters: metaListInfo.filters ? {
+    filters: {
       id: list.data.map((item: { id: string }) => item.id),
-      fromTime: metaListInfo.filters['fromTime'],
-      toTime: metaListInfo.filters['toTime']
-    } :
-      {
-        id: list.data.map((item: { id: string }) => item.id)
-      }
+      fromTime: metaListInfo.filters?.['fromTime'],
+      toTime: metaListInfo.filters?.['toTime'],
+      alarmType: metaListInfo.filters?.['alarmType']
+    }
+  }
+  return {
+    ...httpRequest, body
+  }
+}
+
+export function getMetaDetailsList<T extends EventBase> (
+  list: TableResult<T>,
+  metaListInfo: { urlInfo: ApiInfo, fields: string[], filters?: { [key: string]: unknown; } }
+) {
+  const httpRequest = metaListInfo.urlInfo
+  const body = {
+    fields: metaListInfo.fields,
+    filters: {
+      idIndex: list.data.map((item) => ({
+        index: item.indexName,
+        id: item.id
+      }))
+    }
   }
   return {
     ...httpRequest, body
@@ -68,7 +84,7 @@ export async function handleCallbackWhenActivitySuccess (
 
     if (
       activityData.useCase === targetUseCase &&
-      activityData.steps?.find(step => step.id === targetUseCase)?.status !== 'IN_PROGRESS'
+      activityData.steps?.find(step => step.id === targetUseCase)?.status !== TxStatus.IN_PROGRESS
     ) {
       callback()
     }
@@ -127,14 +143,18 @@ type ApGroupVlanPoolParams = {
   profileId: string
 }
 
-export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkVenue) => {
-  // eslint-disable-next-line max-len
-  const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
-    return {
-      [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
-    } as ActionItem
-  }
+export const compareApGroupPayload = (
+  currentPayload: NetworkApGroup,
+  oldPayload: NetworkApGroup
+) => {
+  const skipCompareFieldName = ['vlanPoolId', 'vlanPoolName']
+  const newApGroup = omit(currentPayload, skipCompareFieldName)
+  const oldApGroup = omit(oldPayload, skipCompareFieldName)
 
+  return isEqual(newApGroup, oldApGroup)
+}
+
+export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkVenue) => {
   const newApGroups = newPayload.apGroups as NetworkApGroup[]
   const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
 
@@ -160,13 +180,8 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
         })
       }
     } else {
-      const comparisonResult = comparePayload(
-        newApGroup as unknown as Record<string, unknown>,
-        oldApGroup as unknown as Record<string, unknown> || {},
-        apGroupId,
-        itemProcessFn
-      )
-      if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+      const isTheSame = compareApGroupPayload(newApGroup, oldApGroup)
+      if (!isTheSame) updateApGroups.push(newApGroup)
 
       if (!newApGroup.vlanPoolId && oldApGroup.vlanPoolId) {
         deactivatedVlanPoolParamsList.push({

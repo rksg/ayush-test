@@ -84,6 +84,43 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  activateClientIsolationOnVenue: {
+    method: 'put',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/clientIsolationProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateClientIsolationOnVenue: {
+    method: 'delete',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/clientIsolationProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+
+  activateClientIsolationOnAp: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/clientIsolationProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateClientIsolationOnAp: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/clientIsolationProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   queryClientIsolation: {
     method: 'post',
     url: '/clientIsolationProfiles/query',

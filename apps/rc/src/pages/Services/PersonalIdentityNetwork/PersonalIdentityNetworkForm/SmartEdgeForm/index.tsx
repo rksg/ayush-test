@@ -1,31 +1,38 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 
-import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
-import { FormattedMessage, useIntl }                  from 'react-intl'
-import { useNavigate, useParams }                     from 'react-router-dom'
+import { Col, Form, InputNumber, Row, Select, Space, Typography } from 'antd'
+import { FormattedMessage, useIntl }                              from 'react-intl'
+import { useNavigate, useParams }                                 from 'react-router-dom'
 
-import { Alert, Button, StepsForm, useStepFormContext }                                          from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                                                               from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }                                      from '@acx-ui/rc/services'
-import { PersonalIdentityNetworkFormData, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
+import { Alert, Button, StepsForm, useStepFormContext }     from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                          from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
+import {
+  EdgeDhcpUrls,
+  MAX_DEVICE_PER_SEGMENT,
+  MAX_SEGMENT_PER_VENUE,
+  PersonalIdentityNetworkFormData,
+  ServiceOperation,
+  ServiceType,
+  getServiceDetailsLink
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
-interface SmartEdgeFormProps {
-  editMode?: boolean
-}
-
-export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
+export const SmartEdgeForm = () => {
 
   const { $t } = useIntl()
+
   const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath = useTenantLink('')
-  const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
+  const { form, editMode } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     clusterOptions,
     isClusterOptionsLoading,
@@ -107,6 +114,14 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     return poolList?.find(item => item.id === poolId)?.poolName
   }, [poolList, poolId])
 
+  const hasCreateDhcpPermission = hasPermission({
+    rbacOpsIds: [
+      [
+        getOpsApi(EdgeDhcpUrls.addDhcpService)
+      ]
+    ]
+  })
+
   useEffect(() => {
     form.setFieldValue('poolName', getDhcpPoolName())
   }, [getDhcpPoolName])
@@ -156,7 +171,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     }
 
     values={{
-      detailPage: props.editMode ?
+      detailPage: editMode ?
         <Button
           type='link'
           size='small'
@@ -183,51 +198,54 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'RUCKUS Edge Settings' })}</StepsForm.Title>
-          <Form.Item
-            name='edgeClusterId'
-            label={$t({ defaultMessage: 'Cluster' })}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select Cluster' })
-            }]}
-            children={
-              <Select
-                loading={isClusterOptionsLoading}
-                disabled={props.editMode}
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                onChange={onEdgeChange}
-                options={[
-                  ...(clusterOptions || [])
-                ]}
+          <Row>
+            <Col span={24}>
+              <Form.Item
+                name='edgeClusterId'
+                label={$t({ defaultMessage: 'Cluster' })}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select Cluster' })
+                }]}
+                children={
+                  <Select
+                    loading={isClusterOptionsLoading}
+                    disabled={editMode}
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    onChange={onEdgeChange}
+                    options={[
+                      ...(clusterOptions || [])
+                    ]}
+                  />
+                }
               />
-            }
-          />
+            </Col>
+          </Row>
         </Col>
       </Row>
-      <Row gutter={20}>
-        <Col span={8}>
+      <Row gutter={0} style={{ marginBottom: '10px' }}>
+        <Col span={12}>
           <Form.Item
             name='segments'
             label={$t({ defaultMessage: 'Number of Segments' })}
             rules={[
               { required: true },
-              { type: 'number' }
+              { type: 'integer', transform: Number, min: 1, max: MAX_SEGMENT_PER_VENUE,
+                message: $t({
+                  defaultMessage: 'Number of Segments must be an integer between 1 and {max}'
+                }, { max: MAX_SEGMENT_PER_VENUE }) }
             ]}
             children={<InputNumber />}
           />
         </Col>
-      </Row>
-      <Row gutter={20}>
-        <Col span={8}>
-          <Form.Item
-            name='devices'
-            label={$t({ defaultMessage: 'Number of devices per Segment' })}
-            rules={[
-              { required: true },
-              { type: 'number' }
-            ]}
-            children={<InputNumber />}
-          />
+        <Col span={24} style={{ fontSize: '12px', marginTop: '-10px' }}>
+          <Typography.Text type='secondary'>
+            {
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Please note that the maximum number of User Equipment (UE) supported per personal area network is {maxPanSize}.' },
+                { maxPanSize: MAX_DEVICE_PER_SEGMENT })
+            }
+          </Typography.Text>
         </Col>
       </Row>
       <Row gutter={20} align='middle'>
@@ -250,7 +268,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
           />
         </Col>
         {
-          !shouldDhcpDisabled && (
+          !shouldDhcpDisabled && hasCreateDhcpPermission && (
             <Col ><AddEdgeDhcpServiceModal /></Col>
           )
         }
@@ -277,7 +295,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                       : $t({ defaultMessage: 'No Pool selected' })
                   }
                   {
-                    !props.editMode &&
+                    !editMode &&
                   <Button
                     type='link'
                     onClick={openDrawer}

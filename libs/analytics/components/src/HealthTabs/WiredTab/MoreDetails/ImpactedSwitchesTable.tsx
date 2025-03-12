@@ -62,19 +62,22 @@ export const ImpactedSwitchesTable = ({
     }
 
   const metricField = fieldsMap[queryType as keyof typeof fieldsMap]
+  const isMLISA = get('IS_MLISA_SA')
   const columns: TableProps<SwitchDetails>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      render: (_, row: SwitchDetails) => (
-        <TenantLink
-          to={`/devices/switch/${row.mac?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
-            ? 'reports': 'overview'}`
-          }>
-          {row.name}
-        </TenantLink>
-      ),
+      render: (_, row: SwitchDetails) => {
+        const macAddress = isMLISA ? row.mac : row.mac?.toLowerCase()
+        const detailsPath = isMLISA ? 'reports' : 'overview'
+        const serial = isMLISA ? 'serial' : row.serial
+        return (
+          <TenantLink to={`/devices/switch/${macAddress}/${serial}/details/${detailsPath}`}>
+            {row.name}
+          </TenantLink>
+        )
+      },
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {

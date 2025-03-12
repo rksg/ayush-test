@@ -1,6 +1,6 @@
 
-import { Card, GridCol, GridRow, SummaryCard } from '@acx-ui/components'
-import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
+import { Card, GridCol, GridRow, SummaryCard }      from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
@@ -14,6 +14,8 @@ import { RolesEnum } from '@acx-ui/types'
 import { hasRoles }  from '@acx-ui/user'
 import { getIntl }   from '@acx-ui/utils'
 
+import { IdentityGroupLink } from '../../CommonLinkHelper'
+
 import DpskInstancesTable from './DpskInstancesTable'
 
 interface DpskOverviewProps {
@@ -26,6 +28,8 @@ export function DpskOverview (props: DpskOverviewProps) {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
   const isTableBlocked = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   const { data } = props
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP) && !isTemplate
+  const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const dpskInfo = [
     {
@@ -56,7 +60,16 @@ export function DpskOverview (props: DpskOverviewProps) {
       title: intl.$t({ defaultMessage: 'Default Access' }),
       content: data && displayDefaultAccess(data.policyDefaultAccess),
       visible: isCloudpathEnabled
-    }
+    },
+    ...(isIdentityGroupRequired ? [{
+      title: intl.$t({ defaultMessage: 'Identity Group' }),
+      content: <IdentityGroupLink
+        enableFetchName
+        disableLink={isDpskRole}
+        personaGroupId={data?.identityId}
+      />,
+      colSpan: 5
+    }] : [])
   ]
 
   return (

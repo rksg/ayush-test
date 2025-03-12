@@ -1,6 +1,7 @@
 import { Form } from 'antd'
 
 import { StepsForm }                  from '@acx-ui/components'
+import { EdgePortConfigFixtures }     from '@acx-ui/rc/utils'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { defaultCxtData, mockClusterConfigWizardData } from '../__tests__/fixtures'
@@ -8,10 +9,19 @@ import { ClusterConfigWizardContext }                  from '../ClusterConfigWiz
 
 import { VirtualIpForm } from './VirtualIpForm'
 
+const { mockLanInterfaces } = EdgePortConfigFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeClusterVirtualIpSettingForm: () => <div data-testid='virtual-ip-seeting-form' />
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetAllInterfacesByTypeQuery: () => ({
+    data: mockLanInterfaces,
+    isLoading: false
+  })
 }))
 
 describe('InterfaceSettings - VirtualIpForm', () => {

@@ -1,11 +1,11 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button,  GridCol, GridRow, Loader, PageHeader }                                                                                                         from '@acx-ui/components'
-import { useGetSoftGreViewDataListQuery }                                                                                                                        from '@acx-ui/rc/services'
-import { filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, PolicyOperation, PolicyType, SoftGreActivation, SoftGreViewData, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink }                                                                                                                                  from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                            from '@acx-ui/react-router-dom'
+import { Button,  GridCol, GridRow, Loader, PageHeader }                                                                                                                 from '@acx-ui/components'
+import { useGetSoftGreViewDataListQuery }                                                                                                                                from '@acx-ui/rc/services'
+import { filterByAccessForServicePolicyMutation, getPolicyAllowedOperation, getScopeKeyByPolicy, PolicyOperation, PolicyType, SoftGreViewData, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink }                                                                                                                                          from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                    from '@acx-ui/react-router-dom'
 
 import SoftGreDetailContent from './SoftGreDetailContent'
 import SoftGreVenueDetail   from './SoftGreVenueDetail'
@@ -35,6 +35,7 @@ export default function SoftGreDetail () {
           params.policyId && filterByAccessForServicePolicyMutation([
             <TenantLink
               scopeKey={getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.EDIT)}
+              rbacOpsIds={getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.EDIT)}
               to={getPolicyDetailsLink({
                 type: PolicyType.SOFTGRE,
                 oper: PolicyOperation.EDIT,
@@ -53,9 +54,7 @@ export default function SoftGreDetail () {
           <SoftGreDetailContent data={softGreDetail}/>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <SoftGreVenueDetail activations={
-            (softGreDetail?.activations ?? []) as SoftGreActivation[]}
-          />
+          <SoftGreVenueDetail data={softGreDetail} />
         </GridCol>
       </GridRow>
     </Loader>

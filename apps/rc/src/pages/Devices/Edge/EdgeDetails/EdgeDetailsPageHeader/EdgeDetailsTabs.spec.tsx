@@ -183,7 +183,7 @@ describe('Edge Details Tabs', () => {
         route: { params }
       })
 
-    expect(await screen.findByText('Services (4)')).toBeVisible()
+    expect(await screen.findByText('Services (5)')).toBeVisible()
     expect(await screen.findByRole('tab', { name: 'Troubleshooting' })).toBeVisible()
   })
 })

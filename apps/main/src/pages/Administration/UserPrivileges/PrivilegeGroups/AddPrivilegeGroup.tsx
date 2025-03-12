@@ -158,6 +158,9 @@ export function AddPrivilegeGroup () {
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
+          if (privilegeGroupData.roleName === RolesEnum.PRIME_ADMIN) {
+            ec.allVenues = true
+          }
           const venueIds = ec.allVenues ? []
             : ec.children.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
@@ -170,8 +173,8 @@ export function AddPrivilegeGroup () {
         })
         privilegeGroupData.delegation = displayMspScope
         privilegeGroupData.policyEntityDTOS =
-        (selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
-          ? policyEntities : undefined
+        (displayMspScope && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+         policyEntities.length > 0) ? policyEntities : undefined
       }
 
       await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
@@ -372,7 +375,8 @@ export function AddPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
     </>
   }
@@ -430,7 +434,8 @@ export function AddPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
     </>
   }

@@ -51,10 +51,8 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
       >
         <Select
           style={{ width: '200px' }}
-          options={[
-            { label: $t({ defaultMessage: 'Select...' }), value: null },
-            ...(edgeDhcpOptions || [])
-          ]}
+          placeholder={$t({ defaultMessage: 'Select...' })}
+          options={edgeDhcpOptions || []}
           loading={isEdgeDhcpOptionsLoading}
           disabled={hasPin}
         />

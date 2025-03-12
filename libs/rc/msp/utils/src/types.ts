@@ -41,10 +41,16 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
-  wifiDeviceCount?: number;
-  switchDeviceCount?: number;
-  rwgDeviceCount?: number;
-  edgeDeviceCount?: number
+  wifiDeviceCount?: string;
+  switchDeviceCount?: string;
+  rwgDeviceCount?: string;
+  edgeDeviceCount?: string;
+  availableLicenses?: number;
+  adaptivePolicyCount?: number;
+  piNetworkCount?: number;
+  sisIntegrationCount?: number;
+  pmsIntegrationCount?: number;
+  hybridCloudSecCount?: number;
 }
 
 export interface MspEc {
@@ -100,9 +106,15 @@ export interface MspEcData {
   licenses?: {};
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+  privilege_group_ids?: string[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
   tier?: MspEcTierEnum;
+  privacyFeatures?: [{
+    featureName?: string,
+    status?: string,
+    isEnabled?: boolean
+  }]
 }
 
 export interface VarCustomer {
@@ -442,6 +454,7 @@ export interface MspRecData {
   name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+  privilege_group_ids?: string[];
 }
 
 export interface MspMultiRecData {
@@ -499,7 +512,33 @@ export enum DeviceComplianceType {
   SWITCH = 'SWITCH',
   EDGE = 'EDGE',
   VIRTUAL_EDGE = 'VIRTUAL_EDGE',
-  RWG = 'RWG'
+  RWG = 'RWG',
+  SLTN_ADAPT_POLICY = 'SLTN_ADAPT_POLICY',
+  SLTN_PI_NET = 'SLTN_PI_NET',
+  SLTN_PMS_INT = 'SLTN_PMS_INT',
+  SLTN_SIS_INT = 'SLTN_SIS_INT',
+  SLTN_HYBRID_CLOUD_SEC = 'SLTN_HYBRID_CLOUD_SEC'
+}
+
+export interface SlnTableRow {
+  deviceType: DeviceComplianceType,
+  installedDeviceCount: number,
+  usedLicenseCount: number
+}
+
+export const DeviceComplianceTypeLabels = {
+  [DeviceComplianceType.WIFI]: defineMessage({ defaultMessage: 'Wifi' }),
+  [DeviceComplianceType.SWITCH]: defineMessage({ defaultMessage: 'Switch' }),
+  [DeviceComplianceType.EDGE]: defineMessage({ defaultMessage: 'Edge' }),
+  [DeviceComplianceType.VIRTUAL_EDGE]: defineMessage({ defaultMessage: 'Virtual Edge' }),
+  [DeviceComplianceType.RWG]: defineMessage({ defaultMessage: 'RWG' }),
+  [DeviceComplianceType.SLTN_ADAPT_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy' }),
+  [DeviceComplianceType.SLTN_PI_NET]:
+    defineMessage({ defaultMessage: 'Personal Identity Network' }),
+  [DeviceComplianceType.SLTN_PMS_INT]: defineMessage({ defaultMessage: 'PMS Integration' }),
+  [DeviceComplianceType.SLTN_SIS_INT]: defineMessage({ defaultMessage: 'SIS Integration' }),
+  [DeviceComplianceType.SLTN_HYBRID_CLOUD_SEC]:
+    defineMessage({ defaultMessage: 'Hybrid Cloud Security' })
 }
 
 export interface DeviceCompliance {
@@ -541,16 +580,25 @@ export enum MspEcAccountType {
 
 export interface LicenseCardProps {
   title: string
-  subTitle: string
+  subTitle?: string
   data: ComplianceData
-  isMsp: boolean
+  isMsp?: boolean
   trialType?: string,
   footerContent?: React.ReactElement
 }
 
+export interface MspLicenseCardProps {
+  title: string
+  subTitle?: string
+  selfData: ComplianceData
+  mspData: ComplianceData
+  footerContent?: React.ReactElement,
+  isExtendedTrial?: boolean
+}
+
 export interface LicenseCalculatorCardProps {
   title: string
-  subTitle: string
+  subTitle?: string
   footerContent?: React.ReactElement
 }
 
@@ -558,7 +606,12 @@ export enum ComplianceMspCustomersDevicesTypes {
   AP='AP',
   SWITCH='SWITCH',
   EDGE='EDGE',
-  RWG='RWG'
+  RWG='RWG',
+  SLTN_ADAPT_POLICY='SLTN_ADAPT_POLICY',
+  SLTN_PI_NET='SLTN_PI_NET',
+  SLTN_PMS_INT='SLTN_PMS_INT',
+  SLTN_SIS_INT='SLTN_SIS_INT',
+  SLTN_HYBRID_CLOUD_SEC='SLTN_HYBRID_CLOUD_SEC'
 }
 
 export interface LicenseAttentionNotes {
@@ -582,6 +635,18 @@ export const MspAttentionNotesPayload = {
   }
 }
 
+export const GeneralAttentionNotesPayload = {
+  page: 1,
+  pageSize: 3,
+  fields: ['summary', 'details'],
+  sortField: 'endDate',
+  sortOrder: 'DESC',
+  filters: {
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}
+
 export interface LicenseCalculatorData {
     effectiveDate: string,
     expirationDate: string,
@@ -594,4 +659,86 @@ export interface LicenseCalculatorData {
 export interface LicenseCalculatorDataResponse {
   data: LicenseCalculatorData,
   message: string
+}
+export interface SelectedMspMspAdmins {
+  mspAdminId: string
+  mspAdminRole: RolesEnum
+}
+
+export interface AssignedMultiEcMspAdmins {
+  operation: string
+  mspEcId: string
+  mspAdminRoles: SelectedMspMspAdmins[]
+  privilege_group_ids?: string[]
+}
+
+export interface MileageReportsResponse {
+  data: MileageData[],
+  pageSize: number,
+  page: number,
+  totalCount: number
+}
+
+export interface MileageData {
+  licenseType: EntitlementDeviceType,
+  lastDate: string,
+  device: number,
+  usedQuantity: number,
+  quantity: number,
+  availableBreakUp: MileageBreakUp[]
+}
+
+export interface MileageBreakUp {
+  quantity: number,
+  expirationDate: string
+}
+
+export interface MileageReportsRequestPayload {
+  page: number,
+  pageSize: number,
+  filters: {
+      usageType: string,
+      licenseType: EntitlementDeviceType
+  }
+}
+
+export interface MileageSeriesData {
+  value: number;
+  extraData: MileageBreakUp[];
+  isZeroQuantity?: boolean;
+}
+
+export const AssignedEntitlementListPayload = {
+  fields: [
+    'externalId',
+    'licenseType',
+    'effectiveDate',
+    'expirationDate',
+    'quantity',
+    'sku',
+    'licenseDesc',
+    'isR1SKU',
+    'status',
+    'isTrial',
+    'graceEndDate',
+    'usageType'
+  ],
+  page: 1,
+  pageSize: 1000,
+  sortField: 'expirationDate',
+  sortOrder: 'DESC',
+  filters: {
+    usageType: 'ASSIGNED'
+  }
+}
+
+export interface SolutionTokenSettings {
+  featureType: DeviceComplianceType,
+  featureName: string,
+  maxQuantity: number,
+  enabled: boolean,
+  capped: boolean,
+  licenseToken: number,
+  featureCostUnit: string,
+  featureUnit: string
 }

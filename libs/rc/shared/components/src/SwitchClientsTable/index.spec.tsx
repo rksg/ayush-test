@@ -186,7 +186,10 @@ describe('SwitchClientsTable - Port link', () => {
         return res(ctx.json({
           data: [{ id: '58:fb:96:0e:c0:c4', name: 'ICX7150-C12 Router' }]
         }))
-      })
+      }),
+      rest.post(SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 
@@ -208,9 +211,7 @@ describe('SwitchClientsTable - Port link', () => {
         }
       }
     )
-    await waitFor(() => {
-      expect(mockGetSwitchList).toBeCalledTimes(2)
-    })
+    await waitFor(() => expect(mockGetSwitchList).toBeCalledTimes(1))
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
     expect(await screen.findByText('ICX7150-C12 Router')).toBeVisible()
     expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
@@ -234,9 +235,7 @@ describe('SwitchClientsTable - Port link', () => {
         }
       }
     )
-    await waitFor(() => {
-      expect(mockGetSwitchList).toBeCalledTimes(2)
-    })
+    await waitFor(() => expect(mockGetSwitchList).toBeCalledTimes(1))
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
     expect(await screen.findByText('ICX7150-C12 Router')).toBeVisible()
     expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
@@ -274,6 +273,9 @@ describe('SwitchClientsTable', () => {
       ),
       rest.post(SwitchUrlsInfo.getSwitchClientDetail.url, (_, res, ctx) =>
         res(ctx.json(clientDetail))
+      ),
+      rest.post(SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -565,4 +567,97 @@ describe('SwitchClientsTable', () => {
 
     expect(mockExportCsv).toBeCalled()
   })
+
+  it('should render correctly when feature flag SWITCH_FLEXIBLE_AUTHENTICATION is on', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switch-id',
+      serialNumber: 'serialNumber'
+    }
+
+    const clientListWithEmpty = {
+      ...clientList,
+      data: [{
+        ...clientList.data?.[0],
+        clientIpv4Addr: '1.1.1.1',
+        clientAuthType: 'MAC_AUTH'
+      }]
+    }
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
+        res(ctx.json(clientListWithEmpty))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API
+    )
+
+    render(
+      <Provider>
+        <SwitchClientsTable />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/clients'
+        }
+      }
+    )
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('img', { name: 'loader' })
+    )
+    await screen.findByText('34:20:E3:2C:B5:B0')
+    await screen.findByText('1.1.1.1')
+
+    expect(await screen.findByText('Authentication Type')).toBeVisible()
+    expect(await screen.findByText('MAC-AUTH')).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render switch client detail page correctly when feature flag SWITCH_FLEXIBLE_AUTHENTICATION is on', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switch-id',
+      serialNumber: 'serialNumber',
+      clientId: 'client-id'
+    }
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchClientDetail.url, (_, res, ctx) =>
+        res(ctx.json({
+          ...clientDetail,
+          dhcpClientOsVendorName: 'windows',
+          clientAuthType: 'MAC_AUTH'
+        }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API
+    )
+
+    render(
+      <Provider>
+        <SwitchClientDetails />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/switch/clients/:clientId'
+        }
+      }
+    )
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('img', { name: 'loader' })
+    )
+    await screen.findByRole('heading', { level: 1, name: 'RuckusAP' })
+    expect(await screen.findByText('Authentication Type')).toBeVisible()
+    expect(await screen.findByText('MAC-AUTH')).toBeVisible()
+
+  })
+
 })

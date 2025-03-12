@@ -12,6 +12,8 @@ export const getEdgeServiceTypeString = ($t: IntlShape['$t'], type: EdgeServiceT
       return $t({ defaultMessage: 'Personal Identity Network' })
     case EdgeServiceTypeEnum.SD_LAN:
       return $t({ defaultMessage: 'SD-LAN' })
+    case EdgeServiceTypeEnum.MDNS_PROXY:
+      return $t({ defaultMessage: 'mDNS Proxy' })
     default:
       return ''
   }

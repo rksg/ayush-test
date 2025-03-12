@@ -1,10 +1,19 @@
 import { Row, Col, Divider, Typography, Checkbox, Modal, Form, Input } from 'antd'
 import { MessageDescriptor, defineMessage, useIntl }                   from 'react-intl'
 
-import { Button, ModalRef }                                                                                                                                                                                                                                                                    from '@acx-ui/components'
-import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery, useLazyDownloadServerCertificateChainsQuery, useLazyDownloadServerCertificateQuery } from '@acx-ui/rc/services'
-import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType, PolicyOperation, PolicyType, hasPolicyPermission }                                                                                                                                                 from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                                                                                                                                                                                                                         from '@acx-ui/utils'
+import { Button, ModalRef }               from '@acx-ui/components'
+import {
+  useDeleteCaPrivateKeyMutation,
+  useLazyDownloadCertificateAuthorityChainsQuery,
+  useLazyDownloadCertificateAuthorityQuery,
+  useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateInP12Query,
+  useLazyDownloadCertificateQuery,
+  useLazyDownloadPrivateKeyCertificateQuery,
+  useLazyDownloadServerCertificateChainsQuery,
+  useLazyDownloadServerCertificateQuery
+} from '@acx-ui/rc/services'
+import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType, PolicyOperation, PolicyType, hasPolicyPermission } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                         from '@acx-ui/utils'
 
 import { deleteDescription }                                         from '../contentsMap'
 import { ButtonWrapper, CollapseTitle, Description, DescriptionRow } from '../styledComponents'
@@ -30,7 +39,8 @@ enum CertDownloadType {
   PKCS7,
   PKCS8,
   PKCS12,
-  PKCS12_CHAIN
+  PKCS12_CHAIN,
+  PKCS1
 }
 
 export default function DownloadSection (props: DownloadDrawerProps) {
@@ -43,6 +53,8 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   const [downloadServerCertificate] = useLazyDownloadServerCertificateQuery()
   const [downloadServerCertificateChains] = useLazyDownloadServerCertificateChainsQuery()
   const [deletePrivateKeys] = useDeleteCaPrivateKeyMutation()
+  const [downloadPrivateKeyCertificate] = useLazyDownloadPrivateKeyCertificateQuery()
+  const [downloadCertificateInP12] = useLazyDownloadCertificateInP12Query()
   const { Text } = Typography
 
   const downloadButtonLabel: Record<CertDownloadType, MessageDescriptor> = {
@@ -63,6 +75,9 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     }),
     [CertDownloadType.PKCS12_CHAIN]: defineMessage({
       defaultMessage: 'Download With Chain'
+    }),
+    [CertDownloadType.PKCS1]: defineMessage({
+      defaultMessage: 'Download'
     })
   }
 
@@ -87,7 +102,8 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     [CertDownloadType.PKCS7]: CertificateAcceptType.PKCS7,
     [CertDownloadType.PKCS8]: CertificateAcceptType.PKCS8,
     [CertDownloadType.PKCS12]: CertificateAcceptType.PKCS12,
-    [CertDownloadType.PKCS12_CHAIN]: CertificateAcceptType.PKCS12
+    [CertDownloadType.PKCS12_CHAIN]: CertificateAcceptType.PKCS12,
+    [CertDownloadType.PKCS1]: CertificateAcceptType.PKCS1
   }
 
   const handleDownloadClick = (
@@ -169,15 +185,36 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     }
   }
 
+  function getDownloadPrivateKeyAction (certType: CertificateCategoryType) {
+    if(certType === CertificateCategoryType.CERTIFICATE) {
+      return downloadPrivateKeyCertificate
+    }
+    return downloadCA
+  }
+
+  function getDownloadP12Action (certType: CertificateCategoryType) {
+    if(certType === CertificateCategoryType.CERTIFICATE) {
+      return downloadCertificateInP12
+    }
+    return downloadCA
+  }
+
   const doDownload = (format: CertDownloadType, downloadType: SectionType, password = '') => {
     const customHeaders = { Accept: certificateAcceptValue[format] }
     const downloadAction = getDownloadAction(type)
     const downloadChainsAction = getDownloadChainsAction(type)
-    const downloadTypes = [SectionType.PUBLIC_KEY, SectionType.PRIVATE_KEY, SectionType.P12]
+    const downloadPrivateKeyAction = getDownloadPrivateKeyAction(type)
+    const downloadP12Action = getDownloadP12Action(type)
     const params = getParams(format, type, password)
 
-    if (downloadTypes.includes(downloadType)) {
+    if (downloadType === SectionType.PUBLIC_KEY) {
       downloadAction({ params, customHeaders })
+    } else if (downloadType === SectionType.PRIVATE_KEY) {
+      downloadPrivateKeyAction({ params, customHeaders, payload: { password } })
+    } else if (downloadType === SectionType.P12) {
+      downloadP12Action({ params, customHeaders,
+        // eslint-disable-next-line max-len
+        payload: { password, includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString() } })
     } else if (downloadType === SectionType.CHAINS) {
       downloadChainsAction({ params, customHeaders })
     }
@@ -262,8 +299,8 @@ export default function DownloadSection (props: DownloadDrawerProps) {
           }
         </Col>
       </Row>
-      {data?.privateKeyBase64 && renderDownloadButton(CertDownloadType.PKCS8,
-        () => handleDownloadClick(downloadType, CertDownloadType.PKCS8))}
+      {data?.privateKeyBase64 && renderDownloadButton(CertDownloadType.PKCS1,
+        () => handleDownloadClick(downloadType, CertDownloadType.PKCS1))}
       {type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !data?.privateKeyBase64 && (
         hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) ? (
           <ButtonWrapper>

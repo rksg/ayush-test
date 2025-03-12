@@ -143,6 +143,7 @@ const entitlement =
   ]
 
 const services = require('@acx-ui/msp/services')
+const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
@@ -201,6 +202,9 @@ describe('Layout', () => {
       return { data: mspEcProfile }
     })
     services.useMspEntitlementListQuery = jest.fn().mockImplementation(() => {
+      return { data: entitlement }
+    })
+    rcServices.useRbacEntitlementListQuery = jest.fn().mockImplementation(() => {
       return { data: entitlement }
     })
     services.useGetAlarmCountQuery = jest.fn().mockImplementation(() => {

@@ -135,7 +135,8 @@ export const tunnelProfileFormDefaultValues = {
   mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS,
   mtuRequestRetry: DEFAULT_RETRY,
   keepAliveInterval: DEFAULT_KEEP_ALIVE_INTERVAL,
-  keepAliveRetry: DEFAULT_RETRY
+  keepAliveRetry: DEFAULT_RETRY,
+  natTraversalEnabled: false
 }
 
 export const getTunnelProfileFormDefaultValues

@@ -68,7 +68,16 @@ export enum FirmwareCategory {
   CRITICAL = 'CRITICAL',
   BETA = 'BETA',
   REGULAR = 'REGULAR',
-  LATEST = 'LATEST'
+  LATEST = 'LATEST',
+  EARLY_ACCESS = 'EARLY_ACCESS'
+}
+
+export enum FirmwareLabel {
+  ALPHA = 'alpha',
+  BETA = 'beta',
+  GA = 'ga',
+  LEGACYALPHA = 'legacyAlpha',
+  LEGACYBETA = 'legacyBeta',
 }
 
 export enum UpdateAdvice {
@@ -437,6 +446,9 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
     }, {
       type: $t({ defaultMessage: 'Latest' }),
       value: FirmwareCategory.LATEST
+    }, {
+      type: $t({ defaultMessage: 'Early Access' }),
+      value: FirmwareCategory.EARLY_ACCESS
     }
   ]
 
@@ -465,7 +477,8 @@ export interface FirmwareVenuePerApModel {
   id: string;
   name: string;
   isApFirmwareUpToDate?: boolean;
-  currentApFirmwares?: { apModel: string, firmware: string }[];
+  isFirmwareUpToDate?: boolean;
+  currentApFirmwares?: { apModel: string, firmware: string, labels?: FirmwareLabel[] }[];
   lastApFirmwareUpdate?: string;
   nextApFirmwareSchedules?: Schedule[];
 }
@@ -477,6 +490,7 @@ export interface ApModelFirmware {
   releaseDate: string;
   onboardDate: string;
   supportedApModels?: string[];
+  labels?: FirmwareLabel[];
 }
 
 export interface UpdateFirmwarePerApModelPayload {

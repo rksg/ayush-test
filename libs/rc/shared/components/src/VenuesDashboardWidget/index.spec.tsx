@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, Dashboard } from '@acx-ui/rc/utils'
 import { Provider  }                 from '@acx-ui/store'
 import { render,
@@ -42,9 +43,9 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('Venues widget v2', () => {
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DASHBOARD_NEW_API_TOGGLE)
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post', { data })
+    mockRestApiQuery(CommonUrlsInfo.getVenueSummaries.url, 'post', { data })
   })
 
   it('should render loader and then chart', async () => {

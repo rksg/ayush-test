@@ -36,7 +36,7 @@ describe('EdgeDetails - EdgeDetailsDataProvider', () => {
         </EdgeDetailsDataProvider>
       </Provider>
     })
-    await waitFor(() => expect(result.current.currentEdgeStatus?.name).toBe('Smart Edge 1'))
-    await waitFor(() => expect(result.current.currentCluster?.name).toBe('Edge Cluster 1'))
+    await waitFor(() => expect(result.current?.currentEdgeStatus?.name).toBe('Smart Edge 1'))
+    await waitFor(() => expect(result.current?.currentCluster?.name).toBe('Edge Cluster 1'))
   })
 })

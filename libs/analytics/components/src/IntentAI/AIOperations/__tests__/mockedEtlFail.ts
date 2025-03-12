@@ -64,6 +64,10 @@ export const mockedEtlFail = {
     ],
     kpi_client_ratio: null,
     currentValue: true,
-    recommendedValue: true
+    recommendedValue: true,
+    dataCheck: {
+      isDataRetained: true,
+      isHotTierDate: true
+    }
   }
 }

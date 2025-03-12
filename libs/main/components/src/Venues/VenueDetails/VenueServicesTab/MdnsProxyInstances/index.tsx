@@ -14,6 +14,7 @@ import {
   getScopeKeyByService,
   getServiceDetailsLink,
   MdnsProxyAp,
+  MdnsProxyUrls,
   ServiceOperation,
   ServiceType,
   useTableQuery
@@ -21,6 +22,7 @@ import {
 import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
@@ -155,6 +157,7 @@ export default function MdnsProxyInstances () {
           actions={filterByAccessForServicePolicyMutation([{
             label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction,
+            rbacOpsIds: [getOpsApi(MdnsProxyUrls.addMdnsProxyApsRbac)],
             scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
           }])}
           onChange={tableQuery.handleTableChange}

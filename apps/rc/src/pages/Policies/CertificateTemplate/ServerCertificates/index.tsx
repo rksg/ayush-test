@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Modal as AntModal, Badge } from 'antd'
-import { RawIntlProvider, useIntl } from 'react-intl'
+import { Badge }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Loader, TableProps, Table }                                                                                                                                                                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                                                                                                                                                    from '@acx-ui/formatter'
-import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                          from '@acx-ui/rc/components'
-import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                                                            from '@acx-ui/rc/services'
+import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, issuedByLabel, ServerCertificateDetailDrawer }                                                                                                                            from '@acx-ui/rc/components'
+import { useGetServerCertificatesQuery }                                                                                                                                                                                                from '@acx-ui/rc/services'
 import { CertificateStatusType, EnrollmentType, ExtendedKeyUsages, FILTER, PolicyOperation, PolicyType, SEARCH, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, serverCertStatusColors, useTableQuery } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                       from '@acx-ui/utils'
+import { noDataDisplay }                                                                                                                                                                                                                from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {
@@ -29,9 +29,6 @@ export default function ServerCertificatesTable () {
     apiParams: {},
     pagination: { settingsId }
   })
-
-  const [editCertificate] = useUpdateServerCertificateMutation()
-
 
   useEffect(() => {
     tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
@@ -100,74 +97,23 @@ export default function ServerCertificatesTable () {
       render: (_, row) => {
         return row.extendedKeyUsages?.length ?
           row.extendedKeyUsages
-            .map((extendeKey) => $t(ExtendedKeyUsagesLabels[extendeKey])).join(', ')
+            .map((extendeKey) => ExtendedKeyUsagesLabels[extendeKey]
+            && $t(ExtendedKeyUsagesLabels[extendeKey])).join(', ')
           : noDataDisplay
       }
     }
   ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-
     let _customFilters = {}
-    if(customFilters?.status) {
-      _customFilters = {
-        ...customFilters,
-        status: customFilters.status[0]
-      }
+    _customFilters = {
+      ...customFilters,
+      ...(customFilters?.status ? { status: customFilters.status[0] } : {})
     }
-
     tableQuery.handleFilterChange(_customFilters, customSearch)
   }
 
-  const showRevokeModal = (entityValue: string,
-    onFinish: (revocationReason: string) => Promise<void>) => {
-    const modal = AntModal.confirm({})
-
-    const content = <RevokeForm modal={modal} onFinish={onFinish} />
-
-    modal.update({
-      title: $t({ defaultMessage: 'Revoke "{entityValue}"?' }, { entityValue: entityValue }),
-      okText: $t({ defaultMessage: 'OK' }),
-      cancelText: $t({ defaultMessage: 'Cancel' }),
-      maskClosable: false,
-      keyboard: false,
-      content: <RawIntlProvider value={getIntl()} children={content} />,
-      icon: <> </>
-    })
-  }
-
-
   const rowActions: TableProps<ServerCertificate>['rowActions'] = [
-    {
-      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
-      label: $t({ defaultMessage: 'Revoke' }),
-      disabled: ([selectedRow]) =>
-        getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
-      onClick: ([selectedRow], clearSelection) => {
-        showRevokeModal(selectedRow.commonName, async (revocationReason) => {
-          editCertificate({
-            params: {
-              certId: selectedRow.id
-            },
-            payload: { revocationReason }
-          }).then(clearSelection)
-        })
-      }
-    },
-    {
-      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
-      label: $t({ defaultMessage: 'Unrevoke' }),
-      disabled: ([selectedRow]) =>
-        getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
-      onClick: ([selectedRow], clearSelection) => {
-        editCertificate({
-          params: {
-            certId: selectedRow.id
-          },
-          payload: { revocationReason: null }
-        }).then(clearSelection)
-      }
-    },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DETAIL),
       label: $t({ defaultMessage: 'Download' }),

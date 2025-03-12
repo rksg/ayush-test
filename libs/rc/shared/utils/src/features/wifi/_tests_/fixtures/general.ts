@@ -440,3 +440,53 @@ export const mockGroupedApList = {
     }
   ]
 }
+
+export const mockedApLanPortSettings_T750SE = {
+  poeMode: 'Auto',
+  poeOut: false,
+  lanPorts: [
+    {
+      type: 'TRUNK' as 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '1',
+      enabled: true,
+      defaultType: 'TRUNK',
+      id: '1',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      vni: 1
+    },
+    {
+      type: 'TRUNK' as 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '2',
+      enabled: true,
+      defaultType: 'TRUNK',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      vni: 1
+    },
+    {
+      type: 'ACCESS' as 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      portId: '3',
+      enabled: true,
+      defaultType: 'ACCESS',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      vni: 1
+    }
+  ],
+  useVenueSettings: true
+}

@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                                   from '@acx-ui/rc/services'
-import { LAG_TYPE, SwitchUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider, store  }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { switchApi }                                    from '@acx-ui/rc/services'
+import { LAG_TYPE, SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }  from '@acx-ui/test-utils'
 
 import {
   defaultVlan,
@@ -108,7 +109,7 @@ const mockServerQuery = () => {
       (_, res, ctx) => res(ctx.json(switchDetailHeader))
     ),
     rest.post(
-      SwitchUrlsInfo.getSwitchPortlist.url,
+      SwitchRbacUrlsInfo.getSwitchPortlist.url,
       (req, res, ctx) => res(ctx.json(portlist))
     ),
     rest.get(SwitchUrlsInfo.getSwitchConfigurationProfileByVenue.url,
@@ -171,6 +172,37 @@ describe('SwitchLagModal', () => {
     })
     expect(await screen.findByRole('button', { name: 'Apply' })).toBeVisible()
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
+  it('should render correctly if port is AuthPort', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+    mockServerQuery()
+    render(<Provider>
+      <SwitchLagModal
+        visible={true}
+        setVisible={mockedSetVisible}
+        isEditMode={false}
+        editData={[]} />
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber'
+      }
+    })
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+
+    await screen.findByText(/Add LAG/i)
+
+    await userEvent.type(await screen.findByLabelText(/LAG Name/i), 'test lag')
+
+    const selector = await screen.findByRole('combobox')
+    await userEvent.click(selector)
+    await userEvent.selectOptions(selector, '1 Gbits per second copper')
+
+    expect(await screen.findByText('1/1/1')).toBeVisible()
+    expect(() => screen.getByText('1/1/10')).toThrow()
   })
 
   it('should add lag correctly', async () => {

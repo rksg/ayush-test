@@ -97,6 +97,24 @@ Object {
     ],
     "id": "6qiMN5",
   },
+  "EVENT_CLIENT_BTM_REQ_SENT": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "BTM request",
+      },
+    ],
+    "id": "nVQrzJ",
+  },
+  "EVENT_CLIENT_BTM_RESP_RECEIVED": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "BTM response",
+      },
+    ],
+    "id": "bV0YJu",
+  },
   "EVENT_CLIENT_DISCONNECT": Object {
     "defaultMessage": Array [
       Object {

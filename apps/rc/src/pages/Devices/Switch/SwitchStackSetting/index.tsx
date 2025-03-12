@@ -1,18 +1,27 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Radio, Space, RadioChangeEvent, Input, Switch } from 'antd'
-import { DefaultOptionType }                                           from 'antd/lib/select'
-import { FormattedMessage, useIntl }                                   from 'react-intl'
+import { Form, Select, Space, Typography, Radio, RadioChangeEvent, Input, Switch } from 'antd'
+import { DefaultOptionType }                                                       from 'antd/lib/select'
+import { FormattedMessage, useIntl }                                               from 'react-intl'
 
 import { showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
+  checkVlanDiffFromTargetVlan
+} from '@acx-ui/rc/components'
+import {
+  FlexAuthMessages,
+  FlexAuthVlanLabel,
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
   isL3FunctionSupported,
+  isFirmwareVersionAbove10010f,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress,
-  SwitchViewModel
+  validateVlanExcludingReserved,
+  SwitchViewModel,
+  SWITCH_DEFAULT_VLAN_NAME
 } from '@acx-ui/rc/utils'
 
 import StaticRoutes      from './StaticRoutes'
@@ -48,6 +57,19 @@ export function SwitchStackSetting (props: {
   const { $t } = useIntl()
   const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
   const form = Form.useFormInstance()
+
+  const vlanMapping = JSON.parse(switchDetail?.vlanMapping ?? '{}')
+  const defaultVlan
+    = Object.keys(vlanMapping).find(key => vlanMapping[key] === SWITCH_DEFAULT_VLAN_NAME) ?? ''
+
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchFirmwareAbove10010f = isFirmwareVersionAbove10010f(switchDetail?.firmware)
+
+  const { useWatch } = Form
+  const [authEnable, authDefaultVlan] = [
+    useWatch<string>('authEnable', form),
+    useWatch<string>('authDefaultVlan', form)
+  ]
 
   const [enableDhcp, setEnableDhcp] = useState(false)
   const [isL3ConfigAllowed, setIsL3ConfigAllowed] = useState(false)
@@ -283,6 +305,79 @@ export function SwitchStackSetting (props: {
       }
       { switchDetail && isL3ConfigAllowed &&
         <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
+      {
+        isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f && <>
+          <Space size={8} style={{ display: 'flex', margin: '40px 0 30px' }}>
+            <Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
+              {$t({ defaultMessage: 'Authentication' })}
+            </Typography.Text>
+            <Form.Item
+              noStyle
+              name='authEnable'
+              valuePropName='checked'
+              children={<Switch disabled={readOnly} style={{ display: 'flex' }} />}
+            />
+          </Space>
+          { authEnable && <>
+            <Form.Item
+              name='authDefaultVlan'
+              label={$t({ defaultMessage: 'Auth Default VLAN' })}
+              validateFirst
+              rules={[
+                { required: true },
+                { validator: (_, value) => validateVlanExcludingReserved(value) },
+                { validator: (_, value) =>
+                  checkVlanDiffFromTargetVlan(
+                    value, defaultVlan,
+                    $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                      sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                      targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
+                    })
+                  )
+                }
+              ]}
+              children={
+                <Input disabled={readOnly} />
+              }
+            />
+            <Form.Item
+              name='guestVlan'
+              label={$t({ defaultMessage: 'Guest VLAN' })}
+              validateFirst
+              rules={[
+                { validator: (_, value) => {
+                  if (!value) {
+                    return Promise.resolve()
+                  }
+                  return validateVlanExcludingReserved(value)
+                }
+                },
+                { validator: (_, value) =>
+                  checkVlanDiffFromTargetVlan(
+                    value, defaultVlan,
+                    $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                      sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                      targetVlan: $t(FlexAuthVlanLabel.DEFAULT_VLAN)
+                    })
+                  )
+                },
+                { validator: (_, value) =>
+                  checkVlanDiffFromTargetVlan(
+                    value, authDefaultVlan,
+                    $t(FlexAuthMessages.VLAN_CANNOT_SAME_AS_TARGET_VLAN, {
+                      sourceVlan: $t(FlexAuthVlanLabel.VLAN_ID),
+                      targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
+                    })
+                  )
+                }
+              ]}
+              children={
+                <Input disabled={readOnly} />
+              }
+            />
+          </>}
+        </>
+      }
     </>
   )
 }

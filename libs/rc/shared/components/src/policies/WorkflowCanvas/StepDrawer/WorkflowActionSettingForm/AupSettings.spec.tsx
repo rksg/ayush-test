@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ActionType, AupActionContext, WorkflowUrls }      from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { ActionType, AupActionContext, WorkflowUrls }                 from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { AupSettings } from './AupSettings'
 
@@ -22,8 +22,6 @@ describe('AupSettings', () => {
   })
 
   afterEach(() => mockServer.resetHandlers())
-
-
   afterAll(() => mockServer.close())
 
   it('should render the form with default values', async () => {
@@ -101,7 +99,7 @@ describe('AupSettings', () => {
 
   })
 
-  it('should render the from the aupAction config in edit mode with policy text', async () => {
+  it('should render the aupAction config in edit mode with policy text', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm<AupActionContext>()
       form.setFieldsValue({
@@ -148,7 +146,6 @@ describe('AupSettings', () => {
 
   })
 
-
   it('should validate user input length', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
@@ -170,9 +167,9 @@ describe('AupSettings', () => {
     const generatedName = formRef.current.getFieldValue('name')
     expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
 
-    await userEvent.type(pageTitleInput, 'Longer Than 100 Characters ###########################' +
-      '###################################################')
-    await userEvent.type(pageBodyInput, 'Longer Than 1000 Characters ############################' +
+    fireEvent.change(pageTitleInput, { target: { value: 'Longer Than 100 Characters #############' +
+      '#################################################################' } })
+    fireEvent.change(pageBodyInput, { target: { value: 'Longer Than 1000 Characters ############' +
       '##################################################Longer Than 1000 Characters ##########' +
       '####################################################################Longer Than 1000 ' +
       'Characters ##############################################################################' +
@@ -184,9 +181,7 @@ describe('AupSettings', () => {
       'ers ##############################################################################Longer ' +
       'Than 1000 Characters ####################################################################' +
       '##########Longer Than 1000 Characters ###################################################' +
-      '###########################')
-
-    formRef.current.submit()
+      '###########################################' } })
 
     expect(await screen.findByText('Title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('Message must be up to 1000 characters')).toBeVisible()
@@ -222,7 +217,7 @@ describe('AupSettings', () => {
     expect(await screen.findByText('Message')).toBeVisible()
   })
 
-  it('should validate no leading or trailing whitespace allowed', async () => {
+  it('should validate bodyInput, no leading or trailing whitespace allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -245,16 +240,35 @@ describe('AupSettings', () => {
     const generatedName = formRef.current.getFieldValue('name')
     expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
 
-    await userEvent.type(pageTitleInput, '  ')
-
-    formRef.current.submit()
+    fireEvent.change(pageBodyInput, { target: { value: '  ' } })
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
+  })
 
-    await userEvent.type(pageTitleInput, 'a real value')
-    await userEvent.type(pageBodyInput, '  ')
+  it('should validate pageTitle, no leading or trailing whitespace allowed', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
 
-    formRef.current.submit()
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <AupSettings />
+        </Form>
+      </Provider>
+    )
+
+    const pageTitleInput = await screen.findByRole('textbox', { name: /Title/ })
+    expect(pageTitleInput).toHaveValue('')
+
+    const pageBodyInput = await screen.findByRole('textbox', { name: /Message/ })
+    expect(pageBodyInput).toHaveValue('')
+
+    const generatedName = formRef.current.getFieldValue('name')
+    expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
+
+    fireEvent.change(pageTitleInput, { target: { value: '  ' } })
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
@@ -273,7 +287,8 @@ describe('AupSettings', () => {
     </Provider>)
 
     const uploadFileMessage = screen.getByText('Upload file instead')
-    await userEvent.click(uploadFileMessage)
+    fireEvent.click(uploadFileMessage)
+    // await userEvent.click(uploadFileMessage)
     expect(await screen.findByText('Paste text instead')).toBeVisible()
 
     const fileContent = screen.getByText('Paste text instead')
@@ -299,7 +314,7 @@ describe('AupSettings', () => {
     const uploadFileMessage = screen.getByText('Upload file instead')
     expect(uploadFileMessage).toBeInTheDocument()
     const policyContent = await screen.findByTestId('policy-text')
-    await userEvent.type(policyContent, 'all is well')
+    fireEvent.change(policyContent, { target: { value: 'all is well' } })
     const message = screen.getByText('all is well')
     expect (message).toBeInTheDocument()
   })
@@ -326,6 +341,28 @@ describe('AupSettings', () => {
     const testfile = screen.getByTestId('aupPolicy')
     await userEvent.upload(testfile, file)
     expect(await screen.findByText('File size should be upto 2MB')).toBeVisible()
+  })
+
+  it('Validate file type', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<AupActionContext>()
+      form.setFieldsValue({
+        useAupFile: true,
+        aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.pdf',
+        aupFileName: 'hello.jpeg'
+      })
+      return form
+    })
+
+    render(<Provider>
+      <Form form={formRef.current}>
+        <AupSettings/>
+      </Form>
+    </Provider>)
+    const file = new File(['hello'], 'hello.jpeg', { type: 'jpeg' })
+    Object.defineProperty(file, 'size', { value: 1024 * 1024 * 10 })
+    const testfile = screen.getByTestId('aupPolicy')
+    await userEvent.upload(testfile, file)
   })
 
   it('Should be able to upload file', async () => {

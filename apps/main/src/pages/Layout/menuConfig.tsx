@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps, ItemType }                    from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps, ItemType }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -53,13 +53,18 @@ export function useMenuConfig () {
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
+  const isEdgeOltMgmtEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -75,8 +80,7 @@ export function useMenuConfig () {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/analytics/intentAI',
-      label: $t({ defaultMessage: 'IntentAI' }),
-      superscript: $t({ defaultMessage: 'beta' })
+      label: $t({ defaultMessage: 'IntentAI' })
     })
   } else {
     aiAnalyticsMenu
@@ -132,12 +136,12 @@ export function useMenuConfig () {
         }
       ]
     },
-    {
+    ...(!showGatewaysMenu ? [{
       uri: '/venues',
       label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       inactiveIcon: LocationOutlined,
       activeIcon: LocationSolid
-    },
+    }] : []),
     {
       label: $t({ defaultMessage: 'Clients' }),
       inactiveIcon: AccountCircleOutlined,
@@ -188,6 +192,12 @@ export function useMenuConfig () {
         }] : [])
       ]
     },
+    ...(showGatewaysMenu ? [{
+      uri: '/venues',
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
+      inactiveIcon: LocationOutlined,
+      activeIcon: LocationSolid
+    }] : []),
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       inactiveIcon: WiFi,
@@ -240,7 +250,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(showRwgUI ? [{
+    ...(!showGatewaysMenu && showRwgUI ? [{
       uri: '/ruckus-wan-gateway',
       label: $t({ defaultMessage: 'RWG' }),
       inactiveIcon: DevicesOutlined,
@@ -260,6 +270,11 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Switch List' }),
               isActiveCheck: new RegExp('^/devices/switch(?!(/reports))')
             },
+            ...(isEdgeOltMgmtEnabled ? [{
+              uri: '/devices/optical',
+              isActiveCheck: new RegExp('^/devices/optical'),
+              label: $t({ defaultMessage: 'Optical' })
+            }] : []),
             {
               uri: '/devices/switch/reports/wired',
               label: $t({ defaultMessage: 'Wired Report' })
@@ -282,13 +297,30 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(isEdgeEnabled ? [{
+    ...(!showGatewaysMenu && isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'RUCKUS Edge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
+    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
+      label: $t({ defaultMessage: 'Gateway' }),
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid,
+      children: [
+        ...(isEdgeEnabled ? [{
+          uri: '/devices/edge',
+          isActiveCheck: new RegExp('^/devices/edge'),
+          label: $t({ defaultMessage: 'RUCKUS Edge' })
+        }] : []),
+        ...(showRwgUI ? [{
+          uri: '/ruckus-wan-gateway',
+          label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
+        }] : [])
+      ]
+    }] : []
+    ),
     {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
@@ -314,6 +346,10 @@ export function useMenuConfig () {
       activeIcon: BulbSolid,
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
+        ...(isDataConnectorEnabled && isAdmin ? [{
+          uri: '/dataConnector',
+          label: $t({ defaultMessage: 'Data Connector' })
+        }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     },
@@ -360,6 +396,12 @@ export function useMenuConfig () {
               } : {
                 uri: '/administration/administrators',
                 label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
+            ...(isMspAppMonitoringEnabled && !isCustomRole ? [
+              {
+                uri: '/administration/privacy',
+                label: $t({ defaultMessage: 'Privacy' })
               }
             ] : []),
             ...(

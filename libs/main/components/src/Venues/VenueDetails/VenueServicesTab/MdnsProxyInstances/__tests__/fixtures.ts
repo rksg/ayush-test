@@ -83,6 +83,7 @@ export const mockedMdnsProxyQueryResultWithoutActivation = {
       rules: [
         {
           id: 'rule1',
+          ruleIndex: 'rule1',
           enabled: true,
           service: 'AIRDISK',
           fromVlan: 1,
@@ -90,6 +91,7 @@ export const mockedMdnsProxyQueryResultWithoutActivation = {
         },
         {
           id: 'rule2',
+          ruleIndex: 'rule2',
           enabled: true,
           service: 'AIRPLAY',
           fromVlan: 3,
@@ -97,6 +99,7 @@ export const mockedMdnsProxyQueryResultWithoutActivation = {
         },
         {
           id: 'rule3',
+          ruleIndex: 'rule3',
           enabled: true,
           service: 'AIRPORT_MANAGEMENT',
           fromVlan: 5,

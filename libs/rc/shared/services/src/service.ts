@@ -61,8 +61,16 @@ import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, getDhcpProfileFn, createWifiCallingFn, getWifiCallingFn, queryWifiCallingFn, updateWifiCallingFn } from './servicePolicy.utils'
-import { addDpskFn, updateDpskFn }                                                                                         from './servicePolicy.utils'
+import {
+  commonQueryFn,
+  getDhcpProfileFn,
+  createWifiCallingFn,
+  getWifiCallingFn,
+  queryWifiCallingFn,
+  updateWifiCallingFn,
+  addDpskWithIdentityGroupFn
+} from './servicePolicy.utils'
+import { addDpskFn, updateDpskFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -489,7 +497,22 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             }
           }
         } else {
-          const result = (res.data ?? []) as MdnsProxyAp[]
+          const result = ((res.data ?? []) as MdnsProxyAp[])
+            .map(data => {
+              const rules = (data.rules ?? []).map((rule) => {
+                return {
+                  ...rule,
+                  id: uuidv4(),
+                  ruleIndex: uuidv4()
+                }
+              })
+
+              return {
+                ...data,
+                rules
+              }
+            })
+
           return {
             data: {
               data: result,
@@ -570,6 +593,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       queryFn: addDpskFn(),
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
+    }),
+    createDpskWithIdentityGroup: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
+      queryFn: addDpskWithIdentityGroupFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
@@ -691,6 +718,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'CREATE_DPSK_PASSPHRASE',
             'CREATE_DPSK_PASSPHRASES',
             'UPDATE_DPSK_PASSPHRASE',
+            'BULK_CREATE_PERSONAS',
             'DELETE_DPSK_PASSPHRASE',
             'UPDATE_DPSK_PASSPHRASES',
             'IMPORT_DPSK_PASSPHRASES',
@@ -960,6 +988,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'Add Portal Service Profile',
             'Update Portal Service Profile',
+            'Update Portal Service Profile V1_1',
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles'
           ], () => {
@@ -1068,6 +1097,7 @@ export const {
   useActivateWifiCallingServiceMutation,
   useDeactivateWifiCallingServiceMutation,
   useCreateDpskMutation,
+  useCreateDpskWithIdentityGroupMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
   useLazyGetDpskQuery,

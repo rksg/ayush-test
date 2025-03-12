@@ -3,10 +3,10 @@ import { IncompatibilityFeatures, CompatibilityDeviceEnum } from '@acx-ui/rc/uti
 import { Provider }                                         from '@acx-ui/store'
 import { render, screen, within }                           from '@acx-ui/test-utils'
 
-import { mockApCompatibilitiesVenue }              from '../ApCompatibilityDrawer/__test__/fixtures'
+import { mockApCompatibilitiesVenue }              from '../Ap/ApCompatibilityDrawer/__test__/fixtures'
 import { CompatibilityItemProps }                  from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }                        from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
-import { transformedMockEdgeCompatibilitiesVenue } from '../EdgeCompatibilityDrawer/__test__/fixtures'
+import { transformedMockEdgeCompatibilitiesVenue } from '../Edge/EdgeCompatibilityDrawer/__test__/fixtures'
 
 import { FeatureCrossDeviceTypeCompatibility } from './FeatureCrossDeviceTypeCompatibility'
 

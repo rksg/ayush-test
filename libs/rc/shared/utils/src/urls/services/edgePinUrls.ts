@@ -10,22 +10,26 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
   createEdgePin: {
     method: 'post',
     newApi: true,
-    url: '/personalIdentityNetworks'
+    url: '/personalIdentityNetworks',
+    opsApi: 'POST:/personalIdentityNetworks'
   },
   getEdgePinStatsList: {
     method: 'post',
     newApi: true,
-    url: '/personalIdentityNetworks/query'
+    url: '/personalIdentityNetworks/query',
+    opsApi: 'POST:/personalIdentityNetworks/query'
   },
   deleteEdgePin: {
     method: 'delete',
     newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId',
+    opsApi: 'DELETE:/personalIdentityNetworks/{id}'
   },
   updateEdgePin: {
     method: 'put',
     newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId',
+    opsApi: 'PUT:/personalIdentityNetworks/{id}'
   },
   activateEdgePinNetwork: {
     method: 'put',
@@ -37,10 +41,15 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
   },
-  validateEdgePinNetwork: {
+  validateSwitchConfig: {
     method: 'post',
     newApi: true,
     url: '/personalIdentityNetworks/validateSwitchConfig'
+  },
+  validateEdgeClusterConfig: {
+    method: 'post',
+    url: '/personalIdentityNetworks/validateEdgeClusterConfig',
+    newApi: true
   },
   getWebAuthTemplate: {
     method: 'get',
@@ -55,22 +64,26 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
   getWebAuthTemplateList: {
     method: 'post',
     newApi: true,
-    url: '/webAuthPageTemplates/query'
+    url: '/webAuthPageTemplates/query',
+    opsApi: 'POST:/webAuthPageTemplates/query'
   },
   addWebAuthTemplate: {
     method: 'post',
     newApi: true,
-    url: '/webAuthPageTemplates'
+    url: '/webAuthPageTemplates',
+    opsApi: 'POST:/webAuthPageTemplates'
   },
   updateWebAuthTemplate: {
     method: 'put',
     newApi: true,
-    url: '/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId',
+    opsApi: 'PUT:/webAuthPageTemplates/{id}'
   },
   deleteWebAuthTemplate: {
     method: 'delete',
     newApi: true,
-    url: '/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId',
+    opsApi: 'DELETE:/webAuthPageTemplates/{id}'
   },
 
   getAvailableSwitches: {

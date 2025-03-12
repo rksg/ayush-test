@@ -7,7 +7,7 @@ import { useParams }             from 'react-router-dom'
 import { PasswordInput, StepsForm, Subtitle } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useAaaPolicyQuery }                  from '@acx-ui/rc/services'
-import { AAAPolicyType }                      from '@acx-ui/rc/utils'
+import { AAAPolicyType, useConfigTemplate }   from '@acx-ui/rc/utils'
 
 import IdentityProviderFormContext from './IdentityProviderFormContext'
 
@@ -89,6 +89,10 @@ type RadiusServerFieldsProps = {
 
 const RadiusServerFields = (props: RadiusServerFieldsProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
   const { aaaPolicy, isSecondary=false } = props
   const radiusServer = aaaPolicy && aaaPolicy[!isSecondary? 'primary': 'secondary' ]
   const { ip, port, sharedSecret } = radiusServer || {}
@@ -102,14 +106,21 @@ const RadiusServerFields = (props: RadiusServerFieldsProps) => {
     <Form.Item
       label={title}
       children={`${ip}: ${port}`} />
-    <Form.Item
+    {sharedSecret && <Form.Item
       label={$t({ defaultMessage: 'Shared Secret:' })}
       children={<PasswordInput
         readOnly
         bordered={false}
         value={sharedSecret}
       />}
-    />
+    />}
+    {supportRadsec &&
+      <Form.Item
+        label={$t({ defaultMessage: 'RadSec' })}
+        children={$t({ defaultMessage: '{tlsEnabled}' }, {
+          tlsEnabled: aaaPolicy?.radSecOptions?.tlsEnabled ? 'On' : 'Off'
+        })}
+      />}
   </> : null)
 }
 

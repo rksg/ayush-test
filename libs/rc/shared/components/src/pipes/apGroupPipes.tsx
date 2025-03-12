@@ -103,15 +103,19 @@ export const transformVLAN = (
       const firstApGroup = currentVenue.apGroups[0]
       const isVlanPool = firstApGroup?.vlanPoolId !== undefined
       if (isVlanPool) {
+        const vlanPoolId = firstApGroup.vlanPoolId
+        const defaultValue = network?.wlan?.advancedCustomization?.vlanPool?.id || ''
         const vlanPoolName = (vlanPoolingNameMap?.find(pool => pool.key === firstApGroup.vlanPoolId)?.value) || ''
         displayText = $t(vlanContents.vlanPool, {
           poolName: vlanPoolName,
-          isCustom: true
+          isCustom: vlanPoolId && (vlanPoolId !== defaultValue)
         })
       } else if (firstApGroup?.vlanId !== undefined) {
+        const vlanId = firstApGroup.vlanId
+        const defaultValue = network?.wlan?.vlanId || 1
         displayText = $t(vlanContents.vlan, {
-          id: firstApGroup.vlanId.toString(),
-          isCustom: true
+          id: vlanId.toString(),
+          isCustom: vlanId && (vlanId !== defaultValue)
         })
       } else {
         const vlan = getVlanString(currentVenue.vlanPoolId ? {
@@ -171,10 +175,18 @@ export const transformAps = (
     <>
       <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
       {incompatible && incompatible > 0 ?
-        <Tooltip.Info isFilled
+        <Tooltip.Warning isFilled
+          isTriangle
           title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this <venueSingular></venueSingular>.' })}
           placement='right'
-          iconStyle={{ height: '16px', width: '16px', marginBottom: '-2px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
+          iconStyle={{
+            height: '16px',
+            width: '16px',
+            marginBottom: '-2px',
+            marginLeft: '6px',
+            color: cssStr('--acx-semantics-yellow-50'),
+            borderColor: cssStr('--acx-accents-orange-30')
+          }}
         /> :[]
       }
     </>

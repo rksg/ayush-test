@@ -1,12 +1,16 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { CustomButtonProps, Loader, showActionModal }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { useApViewModelQuery, useGetApQuery, useGetVenueQuery }    from '@acx-ui/rc/services'
-import { ApDeep, ApViewModel, CapabilitiesApModel, VenueExtended } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
-import { goToNotFound }                                            from '@acx-ui/user'
-import { getIntl }                                                 from '@acx-ui/utils'
+import { CustomButtonProps, Loader, showActionModal }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
+import { ApDeep,
+  ApViewModel,
+  CapabilitiesApModel,
+  VenueExtended
+} from '@acx-ui/rc/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
+import { getIntl }      from '@acx-ui/utils'
 
 import { useGetApCapabilities } from '../hooks'
 
@@ -23,6 +27,10 @@ const tabs = {
   networking: NetworkingTab,
   networkControl: NetworkControlTab,
   advanced: AdvancedTab
+}
+
+export type ApEditItemProps = {
+  isAllowEdit?: boolean
 }
 
 export const ApDataContext = createContext({} as {
@@ -137,7 +145,6 @@ export function ApEdit () {
       venueId: targetVenueId
     } }, { skip: !targetVenueId } )
 
-
   useEffect(() => {
     if (!isGetApLoading && !isGetApCapsLoading) {
       const modelName = getedApData?.model
@@ -148,6 +155,7 @@ export function ApEdit () {
         setIsLoaded(true)
       }
     }
+  // eslint-disable-next-line max-len
   }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
   useEffect(() => {
@@ -224,6 +232,7 @@ const processApEditSettings = (props: ApEditSettingsProps) => {
       break
     case 'advanced':
       editAdvancedContextData.updateApLed?.()
+      editAdvancedContextData.updateApUsb?.()
       editAdvancedContextData.updateBssColoring?.()
       editAdvancedContextData.updateApManagementVlan?.()
       break
@@ -261,6 +270,7 @@ const discardApEditSettings = (props: ApEditSettingsProps) => {
       break
     case 'advanced':
       editAdvancedContextData.discardApLedChanges?.()
+      editAdvancedContextData.discardApUsbChanges?.()
       editAdvancedContextData.discardBssColoringChanges?.()
       editAdvancedContextData.discardApManagementVlan?.()
       break
@@ -334,6 +344,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       const newAdvancedContextData = { ...editAdvancedContextData }
       delete newAdvancedContextData.updateApLed
       delete newAdvancedContextData.discardApLedChanges
+      delete newAdvancedContextData.updateApUsb
+      delete newAdvancedContextData.discardApUsbChanges
       delete newAdvancedContextData.updateBssColoring
       delete newAdvancedContextData.discardBssColoringChanges
       delete newAdvancedContextData.updateApManagementVlan

@@ -21,6 +21,29 @@ describe('Utils test', () => {
       const result = transformFromApiToFormData(mockClusterSubInterfaceSettings)
       expect(result).toEqual(mockSubInterfaceSettingsFormType)
     })
+
+    it('transformFromApiToFormData should include node structure given empty port/lag list', () => {
+      const mockData = {
+        nodes: [
+          {
+            serialNumber: '96000076DCCAA42E87785B549A64997E72',
+            ports: [],
+            lags: []
+          }
+        ]
+      }
+
+      const result = transformFromApiToFormData(mockData)
+
+      expect(result).toEqual({
+        portSubInterfaces: {
+          '96000076DCCAA42E87785B549A64997E72': {}
+        },
+        lagSubInterfaces: {
+          '96000076DCCAA42E87785B549A64997E72': {}
+        }
+      })
+    })
   })
 
   describe('Sub-interface Compatibility', () => {
@@ -44,7 +67,7 @@ describe('Utils test', () => {
         }
       )
 
-      expect(Object.fromEntries(result)).toEqual({
+      expect(result).toEqual({
         '1e7f81ab-9bb7-4db7-ae20-000000000000': 'port1',
         '1e7f81ab-9bb7-4db7-ae20-000000000002': 'port1',
         '1e7f81ab-9bb7-4db7-ae20-000000000003': 'port2',

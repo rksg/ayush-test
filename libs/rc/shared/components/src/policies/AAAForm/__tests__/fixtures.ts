@@ -1,3 +1,5 @@
+import { ExtendedKeyUsages } from '@acx-ui/rc/utils'
+
 export const aaaData = {
   id: 'policy-id',
   name: 'test2',
@@ -68,6 +70,84 @@ export const aaaTemplateList = {
       primary: '2.3.3.4:101',
       secondary: '2.3.3.4:1187',
       id: '2'
+    }
+  ]
+}
+
+export const caList = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      id: '1',
+      name: 'CA-1',
+      status: ['VALID']
+    },
+    {
+      id: '2',
+      name: 'CA-2',
+      status: ['VALID']
+    }
+  ]
+}
+
+export const certList = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      id: '1',
+      name: 'Server-Cert-1',
+      commonName: 'Server-Cert-1',
+      extendedKeyUsages: [ExtendedKeyUsages.SERVER_AUTH],
+      status: ['VALID']
+    },
+    {
+      id: '2',
+      name: 'Client-Cert-1',
+      commonName: 'Client-Cert-1',
+      extendedKeyUsages: [ExtendedKeyUsages.CLIENT_AUTH],
+      status: ['VALID']
+    }
+  ]
+}
+
+export const radiusCaRef = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      id: '1',
+      name: 'CA-1',
+      status: ['VALID']
+    }
+  ]
+}
+
+export const radiusClientCertRef = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      id: '2',
+      name: 'Client-Cert-1',
+      commonName: 'Client-Cert-1',
+      extendedKeyUsages: [ExtendedKeyUsages.CLIENT_AUTH],
+      status: ['VALID']
+    }
+  ]
+}
+
+export const radiusServerCertRef = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      id: '1',
+      name: 'Server-Cert-1',
+      commonName: 'Server-Cert-1',
+      extendedKeyUsages: [ExtendedKeyUsages.SERVER_AUTH],
+      status: ['VALID']
     }
   ]
 }

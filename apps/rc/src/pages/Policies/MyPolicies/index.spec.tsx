@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
+import { Features, useIsBetaEnabled, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   connectionMeteringApi,
   policyApi
@@ -15,7 +15,13 @@ import {
   EdgeHqosProfilesUrls,
   WorkflowUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
+  RogueApUrls,
+  SoftGreUrls,
+  SyslogUrls,
+  SwitchUrlsInfo,
+  VlanPoolRbacUrls,
+  WifiUrlsInfo,
+  EthernetPortProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -51,6 +57,12 @@ const mockNewTableResult = {
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('MyPolicies', () => {
@@ -123,7 +135,18 @@ describe('MyPolicies', () => {
       ),
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.get(
+        SwitchUrlsInfo.getSwitchPortProfilesCount.url,
+        (req, res, ctx) => res(ctx.json(1))
+      ),
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: 1,
+          data: []
+        }))
+      )
     )
   })
 
@@ -215,6 +238,7 @@ describe('MyPolicies', () => {
   it('should render edge hqos bandwidth correctly', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+    jest.mocked(useIsBetaEnabled).mockReturnValue(true)
 
     mockServer.use(
       rest.post(
@@ -244,5 +268,59 @@ describe('MyPolicies', () => {
 
     const edgeQosBandwidthTitle = 'HQoS Bandwidth (1)'
     expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
+    expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
+  })
+
+  it('should render Authentication correctly', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
+    )
+
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [{
+            id: '7de28fc02c0245648dfd58590884bad2',
+            profileName: 'Profile01--auth10-guest5',
+            authenticationType: '802.1x',
+            dot1xPortControl: 'auto',
+            authDefaultVlan: 10,
+            restrictedVlan: 3,
+            criticalVlan: 4,
+            guestVlan: 5,
+            authFailAction: 'restricted_vlan',
+            authTimeoutAction: 'critical_vlan'
+          }],
+          totalCount: 1
+        }))
+      )
+    )
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Authentication (1)')).toBeVisible()
+  })
+  it('should render Port Profile correctly', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+      ff === Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE
+    )
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Port Profiles (2)')).toBeVisible()
   })
 })

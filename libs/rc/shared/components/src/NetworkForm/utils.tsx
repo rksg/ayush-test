@@ -25,7 +25,6 @@ import {
   useGetEnhancedWifiCallingServiceListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
-  useGetVLANPoolPolicyViewModelListQuery,
   useActivateVlanPoolTemplateOnWifiNetworkMutation,
   useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useUnbindClientIsolationMutation,
@@ -57,9 +56,10 @@ import {
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useDectivateSoftGreMutation,
+  useActivateIpsecMutation,
+  useDectivateIpsecMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -81,8 +81,8 @@ import {
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
-  VLANPoolViewModelType,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  NetworkTunnelIpsecAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -102,7 +102,8 @@ export interface NetworkVxLanTunnelProfileInfo {
   vxLanTunnels: TunnelProfileViewData[] | undefined
 }
 
-export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
+export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any,
+  options?: Record<string, boolean>) => {
   if (!data) return false
 
   const { type } = data
@@ -111,6 +112,8 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
   switch (type) {
     case NetworkTypeEnum.AAA:
       return true
+    case NetworkTypeEnum.HOTSPOT20:
+      return options?.isSupportHotspot20NasId
 
     case NetworkTypeEnum.OPEN:
     case NetworkTypeEnum.PSK:
@@ -165,6 +168,24 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
   }
 
   return enableAccountingService === true
+}
+
+export const isShowDynamicVlan = (data: NetworkSaveData | null, options?: Record<string, boolean>) => {
+  const { type, wlan } = data || {}
+
+  if (!type || !wlan) return false
+  if (type === NetworkTypeEnum.AAA || type === NetworkTypeEnum.DPSK) return true
+  if (type === NetworkTypeEnum.OPEN && wlan?.macAddressAuthentication ) return true
+
+  if (data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      data?.wlan?.bypassCPUsingMacAddressAuthentication) return true
+
+  if (options?.isSupportDVlanWithPskMacAuth &&
+    data?.type === NetworkTypeEnum.PSK &&
+    data.wlan?.macAddressAuthentication) return true
+
+  return false
+
 }
 
 export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
@@ -227,6 +248,19 @@ export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): Networ
   }
 }
 
+export function deriveWISPrFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+  if (!isWISPrNetwork(data)) return data
+
+  if (data.guestPortal?.wisprPage?.customExternalProvider) {
+    return _.merge({}, data, {
+      guestPortal: { wisprPage: { providerName: data.guestPortal.wisprPage.externalProviderName } }
+    })
+  }
+
+  return data
+}
+
+type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
 export function useRadiusServer () {
   const { isTemplate } = useConfigTemplate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -300,16 +334,18 @@ export function useRadiusServer () {
   }, [radiusServerProfiles, radiusServerSettings])
 
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
+    if (!shouldSaveRadiusServerProfile(saveData)) return Promise.resolve()
+
     const mutations: Promise<CommonResult>[] = []
 
-    const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
+    const radiusServerIdKeys: RadiusIdKey[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
-      const newRadiusId = (radiusKey === 'authRadiusId' || saveData.enableAccountingService) ? saveData[radiusKey] : undefined
+      const newRadiusId = getRadiusIdFromFormData(radiusKey, saveData)
       const oldRadiusId = radiusServerConfigurations?.[radiusKey]
 
       if (!newRadiusId && !oldRadiusId) return
 
-      const isRadiusIdChanged = newRadiusId !== oldRadiusId
+      const isRadiusIdChanged = isRadiusKeyChanged(radiusKey, saveData, radiusServerConfigurations)
       const isDifferentNetwork = saveData.id !== networkId
 
       if (isRadiusIdChanged || isDifferentNetwork) {
@@ -340,10 +376,8 @@ export function useRadiusServer () {
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
-    return Promise.all([
-      updateProfile(saveData, networkId),
-      updateSettings(saveData, networkId)
-    ])
+    await updateSettings(saveData, networkId) // It is necessary to ensure that updateSettings is completed before updateProfile.
+    await updateProfile(saveData, networkId)
   }
 
   return {
@@ -358,7 +392,42 @@ function resolveMacAuthFormat (newSettings: NetworkSaveData): string | undefined
     : newSettings.wlan?.macAuthMacFormat
 }
 
-function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
+export function hasRadiusProfileInFormData (key: RadiusIdKey, formData: NetworkSaveData): boolean {
+  return _.has(formData, isWISPrNetwork(formData)
+    ? key === 'authRadiusId' ? 'guestPortal.wisprPage.authRadius' : 'guestPortal.wisprPage.accountingRadius'
+    : key
+  )
+}
+
+function isRadiusKeyChanged (key: RadiusIdKey, formData: NetworkSaveData, serverData?: NetworkSaveData): boolean {
+  if (!hasRadiusProfileInFormData(key, formData)) return false
+
+  const keyFromForm = getRadiusIdFromFormData(key, formData)
+  const keyFromServer = serverData?.[key]
+
+  return keyFromForm !== keyFromServer
+}
+
+function isWISPrNetwork (formData: NetworkSaveData) {
+  return formData.type === NetworkTypeEnum.CAPTIVEPORTAL
+    && formData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+}
+
+export function getRadiusIdFromFormData (key: RadiusIdKey, formData: NetworkSaveData): string | undefined | null {
+  const { guestPortal, enableAccountingService } = formData
+  const wisprPage = guestPortal?.wisprPage
+
+  if (isWISPrNetwork(formData)) {
+    if (wisprPage?.customExternalProvider) {
+      return key === 'authRadiusId' ? wisprPage.authRadius?.id : wisprPage.accountingRadius?.id
+    }
+    return undefined
+  }
+
+  return (key === 'authRadiusId' || enableAccountingService) ? formData[key] : undefined
+}
+
+export function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
   switch (saveData.type) {
     case NetworkTypeEnum.PSK:
     case NetworkTypeEnum.OPEN:
@@ -372,6 +441,16 @@ function shouldSaveRadiusServerSettings (saveData: NetworkSaveData): boolean {
   }
 
   return false
+}
+
+export function shouldSaveRadiusServerProfile (saveData: NetworkSaveData): boolean {
+  if (saveData.type === NetworkTypeEnum.CAPTIVEPORTAL
+    && saveData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+    && saveData.guestPortal?.wisprPage?.customExternalProvider
+  ) {
+    return true
+  }
+  return shouldSaveRadiusServerSettings(saveData)
 }
 
 export function useClientIsolationActivations (shouldSkipMode: boolean,
@@ -391,11 +470,10 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 
     const venueClientIsolationMap = new Map<string, string>()
     _.forEach(clientIsolationBindingData?.data, item => {
-      const activation = _.find(item.activations, { wifiNetworkId: networkId })
-      if (activation) {
-        venueClientIsolationMap.set(activation.venueId, item.id)
-      }
+      const activations = _.filter(item.activations, { wifiNetworkId: networkId })
+      activations.forEach(activation => venueClientIsolationMap.set(activation.venueId, item.id))
     })
+
     const venueData = saveState?.venues?.map(v => ({ ...v,
       clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
     const fullNetworkSaveData = { ...saveState, venues: venueData }
@@ -438,46 +516,8 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
   return { updateClientIsolationActivations }
 }
 
-function useVlanPoolId (networkId: string | undefined): string | undefined {
-  const { isTemplate } = useConfigTemplate()
-  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-
-  const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => {
-    return { vlanPoolId: data?.data[0]?.id }
-  }
-
-  const vlanPoolPayload = {
-    fields: ['name', 'id'],
-    filters: { wifiNetworkIds: [networkId] },
-    sortField: 'name',
-    sortOrder: 'ASC',
-    page: 1,
-    pageSize: 10000
-  }
-
-  const vlanPool: { vlanPoolId?: string } = useGetVLANPoolPolicyViewModelListQuery({
-    payload: vlanPoolPayload,
-    enableRbac: true
-  }, {
-    skip: isTemplate || !isPolicyRbacEnabled || !networkId,
-    selectFromResult: transformVlanPoolData
-  })
-
-  const vlanPoolTemplate: { vlanPoolId?: string } = useGetEnhancedVlanPoolPolicyTemplateListQuery({
-    payload: vlanPoolPayload,
-    enableRbac: true
-  }, {
-    skip: !isTemplate || !enableTemplateRbac || !networkId,
-    selectFromResult: transformVlanPoolData
-  })
-
-  return isTemplate ? vlanPoolTemplate.vlanPoolId : vlanPool.vlanPoolId
-}
-
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const { networkId } = useParams()
   const [activate] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useActivateVlanPoolMutation,
     useTemplateMutationFn: useActivateVlanPoolTemplateOnWifiNetworkMutation
@@ -487,8 +527,6 @@ export function useVlanPool () {
     useMutationFn: useDeactivateVlanPoolMutation,
     useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
   })
-
-  const vlanPoolId = useVlanPoolId(networkId)
 
   // eslint-disable-next-line max-len
   const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {
@@ -514,7 +552,7 @@ export function useVlanPool () {
   }
 
   return {
-    vlanPoolId,
+    //vlanPoolId,
     updateVlanPoolActivation
   }
 }
@@ -878,6 +916,30 @@ export const useUpdateSoftGreActivations = () => {
   return updateSoftGreActivations
 }
 
+export const useUpdateIpsecActivations = () => {
+  const [ activateIpsec ] = useActivateIpsecMutation()
+  const [ dectivateIpsec ] = useDectivateIpsecMutation()
+
+  // eslint-disable-next-line max-len
+  const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
+        return dectivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
+        return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
+      }
+      return Promise.resolve()
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateIpsecActivations
+}
 
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,

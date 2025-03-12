@@ -1,16 +1,27 @@
-import { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Button, Form, Input, Space } from 'antd'
+import { useIntl }                    from 'react-intl'
 
-import { GridCol, GridRow, Select, SelectionControl }                                                         from '@acx-ui/components'
+import { GridCol, GridRow, Modal, ModalType, Select, SelectionControl }                                       from '@acx-ui/components'
 import { useAdaptivePolicySetListQuery, useLazyGetCertificateTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, trailingNorLeadingSpaces }                                                     from '@acx-ui/rc/utils'
-import { useParams }                                                                                          from '@acx-ui/react-router-dom'
+import {
+  CertificateUrls,
+  checkObjectNotExists,
+  PersonaGroup,
+  trailingNorLeadingSpaces
+} from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                      from '@acx-ui/utils'
 
-import { MAX_CERTIFICATE_PER_TENANT } from '../constants'
-import { onboardSettingsDescription } from '../contentsMap'
-import { Section, Title }             from '../styledComponents'
+import { AdaptivePolicySetForm }            from '../../../AdaptivePolicySetForm'
+import { hasCreateIdentityGroupPermission } from '../../../useIdentityGroupUtils'
+import { PersonaGroupDrawer }               from '../../../users'
+import { MAX_CERTIFICATE_PER_TENANT }       from '../constants'
+import { onboardSettingsDescription }       from '../contentsMap'
+import { Section, Title }                   from '../styledComponents'
 
 export default function OnboardForm ({ editMode = false }) {
   const { $t } = useIntl()
@@ -23,6 +34,17 @@ export default function OnboardForm ({ editMode = false }) {
     { payload: { page: 1, pageSize: '2147483647' } })
   const { data: identityGroupList } = useSearchPersonaGroupListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' } })
+
+  const [identityGroupDrawerState, setIdentityGroupDrawerState] = useState({
+    visible: false,
+    data: {} as PersonaGroup | undefined
+  })
+
+  /* eslint-disable max-len */
+  const allowUpdatePolicySetting = (!editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet)])) ||
+  /* eslint-disable max-len */
+  (editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet), getOpsApi(CertificateUrls.unbindCertificateTemplateWithPolicySet)]))
+  const [policyModalVisible, setPolicyModalVisible] = useState(false)
 
   useEffect(() => {
     if (policySetId) {
@@ -46,12 +68,12 @@ export default function OnboardForm ({ editMode = false }) {
     try {
       const list = (await getCertificateTemplateList({
         payload:
-        {
-          page: 1,
-          pageSize: MAX_CERTIFICATE_PER_TENANT,
-          searchTargetFields: ['name'],
-          searchString: value
-        }
+          {
+            page: 1,
+            pageSize: MAX_CERTIFICATE_PER_TENANT,
+            searchTargetFields: ['name'],
+            searchString: value
+          }
       }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value },
         $t({ defaultMessage: 'Certificate Template' }))
@@ -119,6 +141,31 @@ export default function OnboardForm ({ editMode = false }) {
               }
             />
           </GridCol>
+          {
+            (!editMode && hasCreateIdentityGroupPermission()) &&
+            <>
+              <Space align='center'>
+                <Button
+                  type='link'
+                  onClick={async () => {
+                    setIdentityGroupDrawerState({ visible: true, data: undefined })
+                  }}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </Button>
+              </Space >
+              <PersonaGroupDrawer
+                data={identityGroupDrawerState.data}
+                isEdit={false}
+                visible={identityGroupDrawerState.visible}
+                onClose={(result) => {
+                  if (result) {
+                    form.setFieldValue('identityGroupId', result?.id)
+                  }
+                  setIdentityGroupDrawerState({ visible: false, data: undefined })
+                }} />
+            </>
+          }
         </GridRow>
         <GridRow>
           <GridCol col={{ span: 10 }}>
@@ -129,6 +176,7 @@ export default function OnboardForm ({ editMode = false }) {
               ]}
               children={
                 <Select
+                  disabled={!allowUpdatePolicySetting}
                   allowClear
                   placeholder={$t({ defaultMessage: 'Select ...' })}
                   options={
@@ -136,18 +184,54 @@ export default function OnboardForm ({ editMode = false }) {
                 />
               }
             />
-            {policySetId &&
-              <Form.Item name='defaultAccess'
-                label={$t({ defaultMessage: 'Default Access' })}
-                initialValue={'true'}>
-                <SelectionControl
-                  options={[
-                    { value: 'true', label: $t({ defaultMessage: 'ACCEPT' }) },
-                    { value: 'false', label: $t({ defaultMessage: 'REJECT' }) }]}
-                />
-              </Form.Item>
-            }
           </GridCol>
+          {
+            hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+            <>
+              <Space align='center'>
+                <Button
+                  type='link'
+                  onClick={async () => {
+                    setPolicyModalVisible(true)
+                  }}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </Button>
+              </Space >
+              <Modal
+                title={$t({ defaultMessage: 'Add Adaptive Policy Set' })}
+                visible={policyModalVisible}
+                type={ModalType.ModalStepsForm}
+                children={<AdaptivePolicySetForm
+                  modalMode
+                  modalCallBack={(addedPolicySetId?: string) => {
+                    if (addedPolicySetId) {
+                      form.setFieldValue('policySetId', addedPolicySetId)
+                    }
+                    setPolicyModalVisible(false)
+                  }}
+                />}
+                onCancel={() => setPolicyModalVisible(false)}
+                width={1200}
+                destroyOnClose={true}
+              />
+            </>
+          }
+        </GridRow>
+        <GridCol col={{ span: 10 }}>
+          {policySetId &&
+            <Form.Item name='defaultAccess'
+              label={$t({ defaultMessage: 'Default Access' })}
+              initialValue={'true'}>
+              <SelectionControl
+                options={[
+                  { value: 'true', label: $t({ defaultMessage: 'ACCEPT' }) },
+                  { value: 'false', label: $t({ defaultMessage: 'REJECT' }) }]}
+              />
+            </Form.Item>
+          }
+        </GridCol>
+        <GridRow>
         </GridRow>
       </Section>
     </>

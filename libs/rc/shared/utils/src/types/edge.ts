@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                                   from '..'
+import { ApCompatibility, Compatibility, FirmwareCategory, IncompatibleFeatureTypeEnum, SkippedVersion }                                                                                                                                                                                                                       from '..'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -13,6 +13,7 @@ export interface EdgeGeneralSetting {
   serialNumber?: string
   venueId?: string
   clusterId?: string
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
   tags: string[] // TODO when tags component is ready need to change type to array
 }
 
@@ -66,6 +67,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   hasCorePort?: boolean
   incompatible?: number // UI only
   isHqosEnabled?: boolean
+  isArpTerminationEnabled?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -369,7 +371,7 @@ export interface EdgeCluster {
   }
 }
 
-interface EdgeFeatureRequirement {
+export interface EdgeFeatureRequirement {
   featureName: string
   requiredFw: string
 }
@@ -377,52 +379,91 @@ export interface EdgeFeatureSets {
   featureSets: EdgeFeatureRequirement[]
 }
 
+export interface EdgeIncompatibleFeature {
+  featureRequirement: EdgeFeatureRequirement,
+  incompatibleDevices: EdgeIncompatibleDevice[]
+}
+
 export interface EntityCompatibility {
   identityType: CompatibilityEntityTypeEnum
   id: string
-  incompatibleFeatures: {
-    featureRequirement: EdgeFeatureRequirement,
-    incompatibleDevices: {
-        firmware: string
-        count: number
-      }[]
-  }[],
+  incompatibleFeatures: EdgeIncompatibleFeature[],
   total: number
   incompatible: number
 }
 export interface VenueEdgeCompatibilitiesResponse {
-  compatibilities: EntityCompatibility[]
+  compatibilities?: EntityCompatibility[]
 }
 
 export interface EdgeServiceCompatibility {
-  serviceId: string
-  clusterEdgeCompatibilities: EntityCompatibility[]
+  serviceId?: string
+  clusterEdgeCompatibilities?: EntityCompatibility[]
 }
 export interface EdgeServiceCompatibilitiesResponse {
-  compatibilities: EdgeServiceCompatibility[]
+  compatibilities?: EdgeServiceCompatibility[]
 }
 
 export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
   venueId: string
 }
 export interface EdgeSdLanApCompatibility {
-  serviceId: string
-  venueSdLanApCompatibilities: VenueSdLanApCompatibility[]
+  serviceId?: string
+  venueSdLanApCompatibilities?: VenueSdLanApCompatibility[]
 }
 export interface EdgeSdLanApCompatibilitiesResponse {
-  compatibilities: EdgeSdLanApCompatibility[]
+  compatibilities?: EdgeSdLanApCompatibility[]
+}
+
+// Content-Type: application/vnd.ruckus.v1.1+json
+interface EdgeFeatureRequirementV1_1 {
+  firmware: string
+}
+export interface EdgeFeatureSetsV1_1 {
+  featureSets: EdgeFeatureDetailsV1_1[]
+}
+export interface EdgeFeatureDetailsV1_1 {
+    featureName: string
+    featureGroup?: string
+    featureType?: IncompatibleFeatureTypeEnum,
+    featureLevel?: string
+    requirements?: EdgeFeatureRequirementV1_1[]
+}
+export interface EdgeIncompatibleDevice {
+  firmware: string,
+  count: number
+}
+export interface EdgeIncompatibleFeatureV1_1 extends EdgeFeatureDetailsV1_1{
+  incompatibleDevices?: EdgeIncompatibleDevice[]  // undefined when fullyCompatible
+  children?: EdgeIncompatibleFeatureV1_1[]
+}
+export interface EntityCompatibilityV1_1 {
+  identityType: CompatibilityEntityTypeEnum
+  id: string
+  incompatibleFeatures: EdgeIncompatibleFeatureV1_1[],
+  total: number
+  incompatible: number
+}
+export interface VenueEdgeCompatibilitiesResponseV1_1 {
+  compatibilities?: EntityCompatibilityV1_1[]
+}
+export interface EdgeServiceCompatibilityV1_1 {
+  serviceId?: string
+  clusterEdgeCompatibilities?: EntityCompatibilityV1_1[]
+}
+export interface EdgeServiceCompatibilitiesResponseV1_1 {
+  compatibilities?: EdgeServiceCompatibilityV1_1[]
 }
 
 // ap incompatibility by model
-export type VenueEdgeServiceApCompatibility = Omit<ApCompatibility, 'id'> & {
+export type VenueEdgeServiceApCompatibility = Omit<Compatibility, 'id'> & {
   venueId: string
 }
 export interface EdgeServiceApCompatibility {
-  serviceId: string
-  venueEdgeServiceApCompatibilities: VenueEdgeServiceApCompatibility[]
+  serviceId?: string
+  venueEdgeServiceApCompatibilities?: VenueEdgeServiceApCompatibility[]
 }
 export interface EdgeServicesApCompatibilitiesResponse {
-  compatibilities: EdgeServiceApCompatibility[]
+  compatibilities?: EdgeServiceApCompatibility[]
 }
 // ap incompatibility by model
 
@@ -527,4 +568,10 @@ export interface SubInterface {
   ipMode: EdgeIpModeEnum
   ip?: string
   subnet?: string
+  interfaceName?: string
+}
+
+export interface ClusterArpTerminationSettings {
+  enabled: boolean
+  agingTimeSec: number
 }

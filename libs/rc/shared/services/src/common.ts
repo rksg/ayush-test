@@ -27,3 +27,8 @@ export interface CommonAsyncResponse {
   id: string,
   requestId: string
 }
+
+export interface CommonAsyncCallback {
+  onSuccess?: (response: CommonAsyncResponse) => void,
+  onError?: (response?: CommonAsyncResponse) => void
+}

@@ -23,7 +23,7 @@ import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
 import { ConfigurationHistory, CliTemplateVariable } from './switch'
 
-import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, RWGStatusEnum, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, EnforceableFields, RWGStatusEnum, SwitchStatusEnum } from './index'
 
 
 
@@ -250,6 +250,11 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export type VenueApUsbStatus = {
+	model: string,
+	usbPortEnable: boolean
+}
+
 export interface VenueApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
@@ -272,7 +277,8 @@ export interface VenueLanPorts {
 	model: string,
 	lanPorts: LanPort[],
 	poeMode?: string,
-	poeOut?: boolean
+	poeOut?: boolean,
+	isSettingsLoaded?: boolean
 }
 
 export interface Address {
@@ -301,7 +307,7 @@ enum DhcpModeEnum {
   DHCPMODE_HIERARCHICAL_AP = 'DHCPMODE_HIERARCHICAL_AP'
 }
 
-export interface VenueExtended {
+export interface VenueExtended extends EnforceableFields {
   name: string
   description?: string
   notes?: string
@@ -422,13 +428,15 @@ export interface Vlan {
 	vlanId: number,
 	vlanName?: string,
 	vlanConfigName?: string
-  untaggedPorts?: string,
-  taggedPorts?: string,
-  title?: string,
-  key?: number
+	untaggedPorts?: string,
+	taggedPorts?: string,
+	title?: string,
+	key?: number
 	inactiveRow?: boolean //ignore
-  inactiveTooltip?: string //ignore
+    inactiveTooltip?: string //ignore
 	isDeletable?: boolean //ignore
+	isAuthDefaultVlan?: boolean
+	isAuthVlan?: boolean
 }
 
 export interface ConfigurationProfile {
@@ -774,6 +782,16 @@ export interface VenueApSmartMonitor {
 	threshold: number
 }
 
+export interface VenueApRebootTimeout {
+	gatewayLossTimeout: number,
+	serverLossTimeout: number
+}
+
+export interface VenueIot {
+	enabled: boolean,
+	mqttBrokerAddress: string
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
@@ -889,7 +907,8 @@ export type FeatureSetResponse = {
 }
 
 export type IncompatibleFeature = FeatureSet & {
-  incompatibleDevices?: ApIncompatibleDevice[],
+  incompatibleDevices?: ApIncompatibleDevice[]
+  children?: IncompatibleFeature[]
 }
 
 export type Compatibility = {

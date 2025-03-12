@@ -20,12 +20,23 @@ import {
   GuestNetworkTypeEnum,
   checkVenuesNotInSetup,
   WlanSecurityEnum,
-  WifiNetwork
+  WifiNetwork,
+  WifiRbacUrlsInfo,
+  useConfigTemplate,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
+import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import { getIntl, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+
+import { useEnforcedStatus } from '../configTemplates'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -48,7 +59,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
         break
       case WlanSecurityEnum.OWETransition:
         _securityProtocol = oweMaster === false ?
-          intl.$t({ defaultMessage: 'OWE' }) : ''
+          intl.$t({ defaultMessage: 'OWE' }) : intl.$t({ defaultMessage: 'Open' })
         break
       case WlanSecurityEnum.WPA3:
         _securityProtocol = intl.$t({ defaultMessage: 'WPA3' })
@@ -84,7 +95,11 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
             ? <span>
               {row.name}
             </span>
-            : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+            : <TenantLink to={
+              (row?.isOweMaster === false && row?.owePairNetworkId !== undefined) ?
+                `/networks/wireless/${row.id}/network-details/overview-no-config` :
+                `/networks/wireless/${row.id}/network-details/overview`}
+            >
               {row.name}
               {row.name !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
@@ -152,18 +167,22 @@ function getCols (intl: ReturnType<typeof useIntl>, isUseWifiRbacApi: boolean) {
                   {apCount}
                 </TenantLink>}
               {row?.incompatible && row.incompatible > 0 ?
-                <Tooltip.Info isFilled
+                <Tooltip.Warning isFilled
+                  isTriangle
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
                     'certain features on this network.'
                   })}
                   placement='right'
                   iconStyle={{
+                    position: 'absolute',
                     height: '16px',
                     width: '16px',
                     marginBottom: '-3px',
                     marginLeft: '4px',
-                    color: cssStr('--acx-semantics-yellow-50') }}
+                    color: cssStr('--acx-semantics-yellow-50'),
+                    borderColor: cssStr('--acx-accents-orange-30')
+                  }}
                 /> : []
               }
             </>
@@ -286,7 +305,8 @@ export const defaultRbacNetworkPayload = {
     'dsaeOnboardNetwork',
     'isOweMaster',
     'owePairNetworkId',
-    'tunnelWlanEnable'
+    'tunnelWlanEnable',
+    'isEnforced'
   ],
   page: 1,
   pageSize: 2048
@@ -316,14 +336,30 @@ export function NetworkTable ({
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
   const intl = useIntl()
   const { $t } = intl
+  const { isTemplate } = useConfigTemplate()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+
+  const addNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkDeep)
+
+  const updateNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkDeep)
+
+  const deleteNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetwork)
 
 
   useEffect(() => {
@@ -354,28 +390,41 @@ export function NetworkTable ({
     return list
   }
 
+  // eslint-disable-next-line max-len
+  const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>, actionType: 'edit' | 'delete' | 'clone') => {
+    // eslint-disable-next-line max-len
+    const isDsaeEnabled = (isBetaDPSK3FeatureEnabled && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+
+    if (['edit', 'clone'].includes(actionType)) {
+      return isDsaeEnabled
+    }
+
+    return isDsaeEnabled || hasEnforcedItem(selectedRows)
+  }
+
   const rowActions: TableProps<Network|WifiNetwork>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [updateNetworkOpsApi],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'edit')
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
       scopeKey: [WifiScopes.CREATE],
+      rbacOpsIds: [addNetworkOpsApi],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'clone')
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
+      rbacOpsIds: [deleteNetworkOpsApi],
       onClick: async ([selected], clearSelection) => {
         const isDeletingDPSK = isSelectedDpskNetwork([selected])
         const isDeletingGuestPass = isSelectedGuestNetwork([selected])
@@ -411,8 +460,8 @@ export function NetworkTable ({
           }).then(clearSelection)
         })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => isActionDisabled(selectedRows, 'delete'),
+      tooltip: getEnforcedActionMsg
     }
   ]
 
@@ -424,9 +473,18 @@ export function NetworkTable ({
     expandedRowKeys
   }
 
-  const showRowSelection = (selectable
-    && hasCrossVenuesPermission()
+  const hasAddNetworkPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([ addNetworkOpsApi, updateNetworkOpsApi, deleteNetworkOpsApi ])
+    : (hasCrossVenuesPermission()
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+
+  const showRowSelection = (selectable && hasAddNetworkPermission)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.NETWORK_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[

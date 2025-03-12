@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showToast, Table, TableProps }                                        from '@acx-ui/components'
+import { showToast, Table, TableProps, Tooltip }                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
@@ -16,20 +16,14 @@ import {
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
-import SyslogContext from '../SyslogContext'
+import { useEnforcedStatus } from '../../../configTemplates'
+import SyslogContext         from '../SyslogContext'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
   fields: [
-    'id',
-    'name',
-    'city',
-    'country',
-    'switches',
-    'aggregatedApStatus',
-    'rogueDetection',
-    'syslogServer',
-    'status'
+    'id', 'name', 'city', 'country', 'switches', 'aggregatedApStatus', 'rogueDetection',
+    'syslogServer', 'status', 'isEnforced'
   ],
   sortField: 'name',
   sortOrder: 'ASC',
@@ -46,6 +40,7 @@ const SyslogVenueTable = () => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const activateVenue = (selectRows: VenueSyslogPolicyType[]) => {
     dispatch({
@@ -114,21 +109,29 @@ const SyslogVenueTable = () => {
       key: 'activate',
       align: 'center',
       render: (_, row) => {
-        return <Switch
-          data-testid={`switchBtn_${row.id}`}
-          checked={
-            state.venues
-              ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
-              : false
-          }
-          onClick={(_, e) => {
-            e.stopPropagation()
-            state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
-              ? deactivateVenue([row])
-              : activateVenue([row])
-          }
-          }
-        />
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
+
+        return <Tooltip
+          title={enforcedActionMsg}
+          placement='bottom'>
+          <Switch
+            data-testid={`switchBtn_${row.id}`}
+            disabled={isEnforcedByTemplate}
+            checked={
+              state.venues
+                ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+                : false
+            }
+            onClick={(_, e) => {
+              e.stopPropagation()
+              state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+                ? deactivateVenue([row])
+                : activateVenue([row])
+            }
+            }
+          />
+        </Tooltip>
       }
     }
   ]
@@ -145,12 +148,15 @@ const SyslogVenueTable = () => {
       name: venue.name,
       aggregatedApStatus: venue.aggregatedApStatus,
       syslogServer: venue.syslogServer,
-      activate: false
+      activate: false,
+      isEnforced: venue.isEnforced
     }
   })
 
   const rowActions: TableProps<VenueSyslogPolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
+    disabled: (selectedRows: VenueSyslogPolicyType[]) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows: VenueSyslogPolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueSyslogPolicyType[], clearSelection: () => void) => {
       if (state.venues.length + selectRows.length >= 64) {
         showToast({
@@ -167,12 +173,14 @@ const SyslogVenueTable = () => {
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
+    disabled: (selectedRows: VenueSyslogPolicyType[]) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows: VenueSyslogPolicyType[]) => getEnforcedActionMsg(selectedRows),
     onClick: (selectRows: VenueSyslogPolicyType[], clearSelection: () => void) => {
       deactivateVenue(selectRows)
 
       clearSelection()
     }
-  }] as { label: string, onClick: () => void }[]
+  }]
 
   return (
     <Table

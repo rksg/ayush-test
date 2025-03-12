@@ -1,5 +1,6 @@
-import { screen } from '@testing-library/react'
-import { rest }   from 'msw'
+import { screen }  from '@testing-library/react'
+import { rest }    from 'msw'
+import { useIntl } from 'react-intl'
 
 import { FirmwareUrlsInfo }                    from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
@@ -22,6 +23,13 @@ import {
   useUpgradePerferences
 } from './venueFirmwareListPerApModelUtils'
 
+jest.mock('react-intl', () => ({
+  ...jest.requireActual('react-intl'),
+  useIntl: () => ({
+    formatMessage: () => '',
+    $t: jest.fn()
+  })
+}))
 
 describe('venueFirmwareListPerApModelUtils parser', () => {
 
@@ -132,7 +140,7 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
     const data = mockedFirmwareVenuesPerApModel.data[0].currentApFirmwares
     render(
       <Provider>
-        {renderCurrentFirmwaresColumn(data)}
+        {renderCurrentFirmwaresColumn(data, useIntl())}
       </Provider>
     )
 
@@ -208,7 +216,8 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
         apModel: 'R550',
         versionOptions: [ {
           key: '7.0.0.104.1242',
-          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024'
+          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:27:53.405+00:00'
         }],
         extremeFirmware: '7.0.0.104.1242',
         defaultVersion: '7.0.0.104.1242'
@@ -217,10 +226,12 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
         apModel: 'R770',
         versionOptions: [{
           key: '7.0.0.104.1242',
-          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024'
+          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:27:53.405+00:00'
         }, {
           key: '7.0.0.104.1240',
-          label: '7.0.0.104.1240 (Release - Recommended) - 02/27/2024'
+          label: '7.0.0.104.1240 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:55:30.500+00:00'
         }],
         extremeFirmware: '7.0.0.103.1240',
         defaultVersion: '7.0.0.104.1242'
@@ -229,10 +240,12 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
         apModel: 'R750',
         versionOptions: [{
           key: '7.0.0.104.1242',
-          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024'
+          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:27:53.405+00:00'
         }, {
           key: '7.0.0.104.1240',
-          label: '7.0.0.104.1240 (Release - Recommended) - 02/27/2024'
+          label: '7.0.0.104.1240 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:55:30.500+00:00'
         }],
         extremeFirmware: '7.0.0.103.1240',
         defaultVersion: '7.0.0.104.1242'
@@ -241,7 +254,8 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
         apModel: 'R350',
         versionOptions: [{
           key: '7.0.0.104.1242',
-          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024'
+          label: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:27:53.405+00:00'
         }],
         extremeFirmware: '7.0.0.104.1242',
         defaultVersion: '7.0.0.104.1242'
@@ -250,7 +264,8 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
         apModel: 'R720',
         versionOptions: [{
           key: '6.2.4.103.244',
-          label: '6.2.4.103.244 (Release - Recommended) - 12/25/2023'
+          label: '6.2.4.103.244 (Release - Recommended) - 12/25/2023',
+          releaseDate: '2023-12-25T07:19:26.919+00:00'
         }],
         extremeFirmware: '6.2.3.103.800',
         defaultVersion: '6.2.4.103.244'
@@ -259,10 +274,12 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
         apModel: 'R500',
         versionOptions: [{
           key: '6.2.0.103.554',
-          label: '6.2.0.103.554 (Release - Recommended) - 02/27/2024'
+          label: '6.2.0.103.554 (Release - Recommended) - 02/27/2024',
+          releaseDate: '2024-02-27T07:29:28.160+00:00'
         }, {
           key: '6.2.0.103.548',
-          label: '6.2.0.103.548 (Release - Recommended) - 11/01/2023'
+          label: '6.2.0.103.548 (Release - Recommended) - 11/01/2023',
+          releaseDate: '2023-11-01T08:59:36.189+00:00'
         }],
         extremeFirmware: '6.2.0.103.533',
         defaultVersion: '6.2.0.103.554'

@@ -1,5 +1,6 @@
 import { Space }          from 'antd'
 import ReactECharts       from 'echarts-for-react'
+import { ZRColor }        from 'echarts/types/dist/shared'
 import { find }           from 'lodash'
 import { renderToString } from 'react-dom/server'
 import {
@@ -17,7 +18,8 @@ import {
   TooltipFormatterParams,
   tooltipOptions,
   defaultRichTextFormatValues,
-  EventParams
+  EventParams,
+  qualitativeColorSet
 } from '../Chart/helper'
 import * as ChartUI from '../Chart/styledComponents'
 
@@ -29,7 +31,7 @@ import type { EChartsReactProps } from 'echarts-for-react'
 export type DonutChartData = {
   value: number,
   name: string,
-  color: string
+  color?: string
 }
 
 interface DonutChartOptionalProps {
@@ -73,8 +75,10 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
+  onLegendClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
-  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none', width?: number }
+  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
+  singleSelect?: boolean
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
   isShowTooltip?: boolean
@@ -138,7 +142,7 @@ export function DonutChart ({
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
 
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
-  const colors = data.map(series => series.color)
+  const colors = data.map(series => series.color) as ZRColor[]
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
@@ -281,7 +285,7 @@ export function DonutChart ({
       left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
-      selectedMode: false,
+      selectedMode: !!props.onLegendClick,
       itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
@@ -303,7 +307,7 @@ export function DonutChart ({
         }
       }
     },
-    color: colors,
+    color: colors[0] ? colors : qualitativeColorSet(),
     series: [
       {
         animation: false,
@@ -326,7 +330,9 @@ export function DonutChart ({
             props.tooltipFormat
           )
         },
+        selectedMode: props.singleSelect ? 'single' : false,
         emphasis: {
+          scale: true,
           disabled: !isShowTooltip || isEmpty,
           scaleSize: 5
         },
@@ -356,7 +362,11 @@ export function DonutChart ({
         }}
         opts={{ renderer: 'svg' }}
         option={option}
-        onEvents={{ click: onChartClick(props.onClick) }} />
+        onEvents={{
+          click: props.onClick || (() => {}),
+          legendselectchanged: props.onLegendClick || (() => {})
+        }}
+      />
       { props.subTitle && <SubTitle width={props.style.width}>{props.subTitle}</SubTitle> }
     </Space>
   )

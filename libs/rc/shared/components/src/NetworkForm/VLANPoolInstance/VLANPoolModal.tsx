@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType }                                                                from '@acx-ui/components'
-import { VLANPoolPolicyType, VLAN_LIMIT_NUMBER, hasPolicyPermission, PolicyType, PolicyOperation } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }                                                                             from '@acx-ui/components'
+import { VLANPoolPolicyType, VLAN_LIMIT_NUMBER, PolicyType, PolicyOperation, useTemplateAwarePolicyPermission } from '@acx-ui/rc/utils'
 
 import { VLANPoolForm } from '../../policies/VLANPoolForm'
 import * as UI          from '../styledComponents'
@@ -26,7 +26,7 @@ export default function VLANPoolModal (props:{
     }}/>
 
   // eslint-disable-next-line max-len
-  if (!hasPolicyPermission({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })) return null
+  if (!useTemplateAwarePolicyPermission(PolicyType.VLAN_POOL, PolicyOperation.CREATE)) return null
 
   return (
     <UI.ButtonContainer>

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
-import { SwitchFirmwareModelGroup } from '../../types'
+import { FirmwareSwitchVenueVersionsV1002,
+  SwitchFirmwareModelGroup } from '../../types'
 const MAJOR = 'major'
 const MINOR = 'minor'
 const BUILD = 'build'
@@ -34,6 +35,9 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
 }
 
 export const invalidVersionFor82Av = (version: string): boolean => {
+  if (_.isEmpty(version)) {
+    return false
+  }
   if (_.isString(version) && version.startsWith('10010')) {
     return !isVerGEVer(version, '10010f', false)
   } else if (_.isString(version) && version.startsWith('10020')) {
@@ -41,6 +45,10 @@ export const invalidVersionFor82Av = (version: string): boolean => {
   } else {
     return true
   }
+}
+
+export const versionAbove10020a = (version: string): boolean => {
+  return !!version && _.isString(version) && isVerGEVer(version, '10020a', false)
 }
 
 export const getStackUnitsMinLimitation = (
@@ -161,8 +169,7 @@ const firmwarePatternForRelease = /(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*
 
 function parseFirmwareVersion (fwString: string): VersionMap {
   // sanitize
-  fwString = fwString.replace('.bin', '')
-  fwString = fwString.replace('ufi', '')
+  fwString = fwString.replace(/\.bin|ufi|\./g, '')
 
   const matcher = fwString.match(firmwarePattern)?.groups
   const matcherForRelease = fwString.match(firmwarePatternForRelease)?.groups
@@ -239,4 +246,9 @@ export function isVerGEVer (currentVer: string, targetVer: string, considerBeta:
   } else {
     return cMajor > tMajor
   }
+}
+
+export function getSwitchFwGroupVersionV1002 (
+  fwV1002: FirmwareSwitchVenueVersionsV1002[], modelGroup: SwitchFirmwareModelGroup): string {
+  return fwV1002?.find((fw) => fw.modelGroup === modelGroup)?.version ?? ''
 }

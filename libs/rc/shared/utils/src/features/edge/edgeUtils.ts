@@ -1,6 +1,6 @@
-import { DefaultOptionType }             from 'antd/lib/select'
-import _, { difference, flatMap, sumBy } from 'lodash'
-import { IntlShape }                     from 'react-intl'
+import { DefaultOptionType }                    from 'antd/lib/select'
+import _, { difference, flatMap, isNil, sumBy } from 'lodash'
+import { IntlShape }                            from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -11,19 +11,23 @@ import {
   ApIncompatibleDevice,
   ClusterNetworkSettings,
   EdgeAlarmSummary,
+  EdgeIncompatibleFeature,
+  EdgeIncompatibleFeatureV1_1,
   EdgeLag,
   EdgeLagStatus,
   EdgePort,
   EdgePortStatus,
   EdgePortWithStatus,
-  EdgeServiceApCompatibility,
+  EdgeSdLanApCompatibility,
   EdgeSerialNumber,
+  EdgeServiceApCompatibility,
   EdgeServiceCompatibility,
+  EdgeServiceCompatibilityV1_1,
   EdgeStatus,
   EdgeSubInterface,
   EntityCompatibility,
-  VenueSdLanApCompatibility,
-  EdgeSdLanApCompatibility
+  EntityCompatibilityV1_1,
+  VenueSdLanApCompatibility
 } from '../../types'
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
@@ -148,12 +152,20 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
   }
 }
 
-export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
+// eslint-disable-next-line max-len
+export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag | EdgeSubInterface) => {
   const payload = _.cloneDeep(formData)
 
   if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
     payload.gateway = ''
   }
+
+  // prevent DHCP mode from having IP and subnet
+  if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+    if (payload.ip) payload.ip = ''
+    if (payload.subnet) payload.subnet = ''
+  }
+
 
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
@@ -184,8 +196,8 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
 export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
   const payload = { ...formData }
   if (payload.ipMode === EdgeIpModeEnum.DHCP) {
-    payload.ip = ''
-    payload.subnet = ''
+    if (payload.ip) payload.ip = ''
+    if (payload.subnet) payload.subnet = ''
   }
 
   return payload
@@ -430,51 +442,74 @@ export const isInterfaceInVRRPSetting = (
 }
 
 // eslint-disable-next-line max-len
-const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
+const getTotalScopedCount = (clusterCompatibilities: EntityCompatibilityV1_1[] | EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
   return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
 }
 
 // eslint-disable-next-line max-len
-export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility) => {
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeServiceCompatibilityV1_1 | EdgeServiceCompatibility | EdgeSdLanApCompatibility | EdgeServiceApCompatibility | undefined) => {
+  const resultMapping : Record<string, ApCompatibility> = {}
+  if (isNil(compatibleData)) return resultMapping
+
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
-  const resultMapping : Record<string, ApCompatibility> = {}
-
   if (isEdgePerspective) {
-    const data = (compatibleData as EdgeServiceCompatibility).clusterEdgeCompatibilities
+    // eslint-disable-next-line max-len
+    const data = (compatibleData as EdgeServiceCompatibilityV1_1 | EdgeServiceCompatibility).clusterEdgeCompatibilities ?? []
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(clusterCompatibilities => {
       clusterCompatibilities.incompatibleFeatures?.forEach(feature => {
-        const featureName = feature.featureRequirement.featureName
+        if (feature.hasOwnProperty('featureType') && feature.hasOwnProperty('featureLevel')) {
+          feature = feature as EdgeIncompatibleFeatureV1_1
+          const featureName = feature.featureName
 
-        if (!resultMapping[featureName]) {
-          resultMapping[featureName] = {
-            id: `edge_incompatible_details_${featureName}`,
-            incompatibleFeatures: [{
-              featureName,
-              requiredFw: feature.featureRequirement.requiredFw
-            }],
-            incompatible: 0,
-            // `total` should beyound features
-            total: totalScoped
-          } as ApCompatibility
+          if (!resultMapping[featureName]) {
+            resultMapping[featureName] = {
+              id: `ap_incompatible_details_${featureName}`,
+              incompatibleFeatures: [{
+                ...feature,
+                featureName
+              }],
+              incompatible: 0,
+              total: totalScoped
+            } as ApCompatibility
+          }
+          // eslint-disable-next-line max-len
+          resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+          resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+            { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice
+          ]
+        } else {
+          feature = feature as EdgeIncompatibleFeature
+          const featureName = feature.featureRequirement.featureName
+
+          if (!resultMapping[featureName]) {
+            resultMapping[featureName] = {
+              id: `edge_incompatible_details_${featureName}`,
+              incompatibleFeatures: [{
+                featureName,
+                requiredFw: feature.featureRequirement.requiredFw
+              }],
+              incompatible: 0,
+              // `total` should beyound features
+              total: totalScoped
+            } as ApCompatibility
+          }
+          // eslint-disable-next-line max-len
+          resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+          resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+            { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice
+          ]
         }
-
-        // eslint-disable-next-line max-len
-        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
-
-
-        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
-          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
       })
     })
   } else {
     const isNewDataModel = compatibleData.hasOwnProperty('venueEdgeServiceApCompatibilities')
 
-    const data = isNewDataModel
+    const data = (isNewDataModel
       ? (compatibleData as EdgeServiceApCompatibility).venueEdgeServiceApCompatibilities
-      : (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+      : (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities) ?? []
     const totalScoped = getTotalScopedCount(data)
 
     data.forEach(item => {

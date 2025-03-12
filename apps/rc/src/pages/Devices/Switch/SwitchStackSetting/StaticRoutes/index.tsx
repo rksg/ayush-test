@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
-import { defaultSort, sortProp, StaticRoute, SwitchViewModel }                from '@acx-ui/rc/utils'
-import { SwitchScopes }                                                       from '@acx-ui/types'
-import { filterByAccess }                                                     from '@acx-ui/user'
+import { Loader, Table, TableProps, Button }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation }      from '@acx-ui/rc/services'
+import { defaultSort, sortProp, StaticRoute, SwitchRbacUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { SwitchScopes }                                                            from '@acx-ui/types'
+import { filterByAccess }                                                          from '@acx-ui/user'
+import { getOpsApi }                                                               from '@acx-ui/utils'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -18,6 +19,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
   const params = useParams()
   const { readOnly, switchDetail } = props
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<StaticRoute>()
@@ -62,6 +64,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addStaticRoute)],
       onClick: (selectedRows) => {
         openDrawer(selectedRows[0])
       }
@@ -69,6 +72,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteStaticRoutes)],
       onClick: (selectedRows, clearSelection) => {
         deleteSwitchStaticRoutes({
           params: { ...params, venueId: switchDetail?.venueId || '' },
@@ -86,9 +90,11 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
   }
 
   const toolBarRender = () => [
-    <Button type='link' onClick={() => openDrawer()} data-testid='addRouteButton'>
-      {$t({ defaultMessage: 'Add Route' })}
-    </Button>
+    isSupport8100 && switchDetail?.model?.startsWith('ICX8100')
+      ? []
+      : <Button type='link' onClick={() => openDrawer()} data-testid='addRouteButton'>
+        {$t({ defaultMessage: 'Add Route' })}
+      </Button>
   ]
 
   return (

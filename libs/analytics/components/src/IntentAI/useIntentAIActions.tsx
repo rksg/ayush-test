@@ -4,13 +4,17 @@ import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
-import { DateTimePicker, showToast }     from '@acx-ui/components'
-import { get }                           from '@acx-ui/config'
-import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
+import { getUserName as getRAIUserName }     from '@acx-ui/analytics/utils'
+import { DateTimePicker, showToast }         from '@acx-ui/components'
+import { get }                               from '@acx-ui/config'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import {
-  useLazyVenueRadioActiveNetworksQuery
+  useLazyVenueRadioActiveNetworksQuery,
+  useLazyVenueWifiRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
+import { getUserName as getR1UserName }          from '@acx-ui/user'
 import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import { IntentListItem, stateToGroupedStates } from './config'
@@ -28,6 +32,7 @@ import {
   getDefaultTime,
   getTransitionStatus
 } from './utils'
+
 interface IntentAIDateTimePickerProps {
   id: string
   title: string
@@ -107,23 +112,15 @@ const aggregateFeaturesZones = (rows:IntentListItem[]) => {
   return { feature, zone, getOptimizeMessage }
 }
 
-const getR1WlanPayload = (venueId:string, code:string) => ({
-  params: { venueId },
-  radio: codeToRadio[code],
-  payload: {
-    venueId,
-    fields: ['id', 'name', 'ssid'],
-    page: 1,
-    sortField: 'name',
-    sortOrder: 'ASC',
-    pageSize: 10_000
-  }
-})
+export const getUserName = () => get('IS_MLISA_SA') ? getRAIUserName() : getR1UserName()
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
+  const [venueWifiRadioActiveNetworks] = useLazyVenueWifiRadioActiveNetworksQuery()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const [transitionIntent] = useTransitionIntentMutation()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
@@ -184,13 +181,34 @@ export function useIntentAIActions () {
     }
   }
 
+  const getR1WlanPayload = (venueId: string, code: string) => ({
+    params: { venueId },
+    radio: codeToRadio[code],
+    payload: {
+      ...(isWifiRbacEnabled
+        ? {
+          filters: {
+            'venueApGroups.venueId': [venueId]
+          }
+        }
+        : { venueId }
+      ),
+      fields: isWifiRbacEnabled ? ['id', 'name', 'venueApGroups', 'ssid'] : ['id', 'name', 'ssid'],
+      page: 1,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      pageSize: 10_000
+    }
+  })
+
   const fetchWlans = async (row: IntentListItem) => {
     if (isMlisa) {
       const wlans = await recommendationWlans(row).unwrap()
       return wlans
     }
     const venueId = row.idPath.filter(({ type }) => type === 'zone')?.[0].name
-    const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()
+    const networkQuery = isWifiRbacEnabled ? venueWifiRadioActiveNetworks : venueRadioActiveNetworks
+    const wlans = await networkQuery(getR1WlanPayload(venueId, row.code)).unwrap()
     return wlans.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
   }
 
@@ -204,6 +222,7 @@ export function useIntentAIActions () {
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
+      metadata.changedByName = getUserName()
       return { id: row.id, displayStatus, status, metadata } as TransitionIntentItem
     }))
 
@@ -283,7 +302,7 @@ export function useIntentAIActions () {
           id: item.id,
           displayStatus: item.displayStatus,
           status: item.status,
-          metadata: { scheduledAt }
+          metadata: { scheduledAt, changedByName: getUserName() }
         } as TransitionIntentItem))
       const response = await transitionIntent({
         action: Actions.Revert,
@@ -312,7 +331,7 @@ export function useIntentAIActions () {
         displayStatus: item.displayStatus,
         status: item.status,
         statusTrail: item.statusTrail,
-        metadata: item.metadata
+        metadata: { ...item.metadata, changedByName: getUserName() }
       } as TransitionIntentItem))
     const response = await transitionIntent({
       action,

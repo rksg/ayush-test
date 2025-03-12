@@ -29,6 +29,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aaaServers/:aaaServerId',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
+    opsApi: 'PUT:/venues/{id}/aaaServers/{id}',
     newApi: true
   },
   deleteAaaServer: {
@@ -304,12 +305,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchProfiles/:profileId/acls',
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/acl',
+    opsApi: 'POST:/switchProfiles/{id}/acls',
     newApi: true
   },
   addVlan: {
     method: 'post',
     url: '/switchProfiles/:profileId/vlans',
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/vlan',
+    opsApi: 'POST:/switchProfiles/{id}/vlans',
     newApi: true
   },
   addVePort: {
@@ -437,6 +440,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   blinkLeds: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
+    opsApi: 'POST:/venues/{id}/switches/{id}/debugRequests',
     newApi: true
   },
   ping: {
@@ -516,12 +520,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchProfiles',
     oldUrl: '/api/switch/tenant/:tenantId/profile',
+    opsApi: 'POST:/switchProfiles',
     newApi: true
   },
   updateSwitchConfigProfile: {
     method: 'put',
     url: '/switchProfiles/:profileId',
     oldUrl: '/api/switch/tenant/:tenantId/profile',
+    opsApi: 'PUT:/switchProfiles/{id}',
     newApi: true
   },
   getSwitchFrontView: {
@@ -540,6 +546,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/cliTemplates',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    opsApi: 'POST:/cliTemplates',
     newApi: true
   },
   getCliConfigExamples: {
@@ -570,6 +577,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/switchProfiles',
     oldUrl: '/api/switch/tenant/:tenantId/profiles',
+    opsApi: 'DELETE:/switchProfiles',
     newApi: true
   },
   getCliTemplates: {
@@ -582,6 +590,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/cliTemplates',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    opsApi: 'DELETE:/cliTemplates',
     newApi: true
   },
   getCliTemplate: {
@@ -594,6 +603,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/cliTemplates/:templateId',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    opsApi: 'PUT:/cliTemplates/{id}',
     newApi: true
   },
   getLagList: {
@@ -632,9 +642,160 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/switches/query/csvFiles',
     newApi: true
   },
-  getSwitchFeatureSets: {
+  addFlexAuthenticationProfile: {
+    method: 'post',
+    url: '/switchAuthProfiles',
+    opsApi: 'POST:/switchAuthProfiles',
+    newApi: true
+  },
+  getFlexAuthenticationProfiles: {
+    method: 'post',
+    url: '/switchAuthProfiles/query',
+    opsApi: 'POST:/switchAuthProfiles/query',
+    newApi: true
+  },
+  getFlexAuthenticationProfileAppliedTargets: {
+    method: 'post',
+    url: '/switchAuthProfiles/:profileId/appliedTargets/query',
+    newApi: true
+  },
+  updateFlexAuthenticationProfile: {
+    method: 'put',
+    url: '/switchAuthProfiles/:profileId',
+    opsApi: 'PUT:/switchAuthProfiles/{id}',
+    newApi: true
+  },
+  deleteFlexAuthenticationProfile: {
+    method: 'delete',
+    url: '/switchAuthProfiles/:profileId',
+    opsApi: 'DELETE:/switchAuthProfiles/{id}',
+    newApi: true
+  },
+  getSwitchAuthentication: {
     method: 'get',
-    url: '/switchFeatureSets/:featureName',
+    url: '/venues/:venueId/switches/:switchId/authentications',
+    newApi: true
+  },
+  getSwitchesAuthentication: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/authentication',
+    newApi: true
+  },
+  updateSwitchAuthentication: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/authentications',
+    newApi: true
+  },
+  getSwitchFeatureSets: {
+    method: 'post',
+    url: '/switchFeatureSets/query',
+    newApi: true
+  },
+  getSwitchPortProfilesList: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles/query',
+    opsApi: 'POST:/switchPortProfiles/portProfiles/query',
+    newApi: true
+  },
+  getSwitchPortProfilesCount: {
+    method: 'get',
+    url: '/switchPortProfiles/portProfiles/totalAmounts',
+    newApi: true
+  },
+  addSwitchPortProfile: {
+    method: 'post',
+    opsApi: 'POST:/switchPortProfiles/portProfiles',
+    url: '/switchPortProfiles/portProfiles',
+    newApi: true
+  },
+  editSwitchPortProfile: {
+    method: 'put',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    opsApi: 'PUT:/switchPortProfiles/portProfiles/{id}',
+    newApi: true
+  },
+  deleteSwitchPortProfile: {
+    method: 'delete',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    opsApi: 'DELETE:/switchPortProfiles/portProfiles/{id}',
+    newApi: true
+  },
+  getSwitchPortProfileDetail: {
+    method: 'get',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    newApi: true
+  },
+  getSwitchPortProfileAppliedList: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles/:portProfileId/appliedSwitches/query',
+    newApi: true
+  },
+  getSwitchPortProfileMacOuisList: {
+    method: 'post',
+    url: '/switchPortProfiles/macOuis/query',
+    opsApi: 'POST:/switchPortProfiles/macOuis/query',
+    newApi: true
+  },
+  addSwitchPortProfileMacOui: {
+    method: 'post',
+    url: '/switchPortProfiles/macOuis',
+    opsApi: 'POST:/switchPortProfiles/macOuis',
+    newApi: true
+  },
+  editSwitchPortProfileMacOui: {
+    method: 'put',
+    url: '/switchPortProfiles/macOuis/:macOuiId',
+    opsApi: 'PUT:/switchPortProfiles/macOuis/{id}',
+    newApi: true
+  },
+  deleteSwitchPortProfileMacOui: {
+    method: 'delete',
+    url: '/switchPortProfiles/macOuis/:macOuiId',
+    opsApi: 'DELETE:/switchPortProfiles/macOuis/{id}',
+    newApi: true
+  },
+  getSwitchPortProfileLldpTlvsList: {
+    method: 'post',
+    url: '/switchPortProfiles/lldpTlvs/query',
+    opsApi: 'POST:/switchPortProfiles/lldpTlvs/query',
+    newApi: true
+  },
+  addSwitchPortProfileLldpTlv: {
+    method: 'post',
+    url: '/switchPortProfiles/lldpTlvs',
+    opsApi: 'POST:/switchPortProfiles/lldpTlvs',
+    newApi: true
+  },
+  editSwitchPortProfileLldpTlv: {
+    method: 'put',
+    url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
+    opsApi: 'PUT:/switchPortProfiles/lldpTlvs/{id}',
+    newApi: true
+  },
+  deleteSwitchPortProfileLldpTlv: {
+    method: 'delete',
+    url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
+    opsApi: 'DELETE:/switchPortProfiles/lldpTlvs/{id}',
+    newApi: true
+  },
+  getPortProfileOptionsForMultiSwitches: {
+    method: 'post',
+    url: '/venues/:venueId/switches/availablePortProfiles',
+    newApi: true
+  },
+  getPortProfilesListBySwitchId: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchPortProfiles/query',
+    newApi: true
+  },
+  getPortDisableRecovery: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    newApi: true
+  },
+  updatePortDisableRecovery: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
     newApi: true
   }
 }

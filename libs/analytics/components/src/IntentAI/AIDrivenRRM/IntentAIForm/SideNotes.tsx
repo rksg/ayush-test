@@ -9,7 +9,7 @@ import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { SideNotes }            from '../../common/SideNotes'
 import { useIntentContext }     from '../../IntentContext'
-import { Intent }               from '../../useIntentDetailsQuery'
+import { IntentDetail }         from '../../useIntentDetailsQuery'
 import { useDownloadData }      from '../RRMGraph/DownloadRRMComparison'
 
 import {
@@ -71,7 +71,7 @@ export const Priority: React.FC = () => {
 
 export const Summary: React.FC = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const { intent, state } = useIntentContext()
   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
   const priority = isFullOptimization ? priorities.full : priorities.partial

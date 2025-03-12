@@ -168,6 +168,7 @@ export function ConnectionMeteringSettingForm (
           <Col span={3}>{
             hasCrossVenuesPermission({ needGlobalPermission: true }) &&[
               <Button
+                key={'addMetering'}
                 style={{ marginLeft: '5px', height: '100%' }}
                 type={'link'}
                 onClick={()=>setModalVisible(true)}

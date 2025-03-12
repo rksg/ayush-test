@@ -1,54 +1,40 @@
+
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader }                                                                  from '@acx-ui/components'
-import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
+import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useEdgePinActions, useIsEdgeFeatureReady }                                    from '@acx-ui/rc/components'
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkForm }             from '../PersonalIdentityNetworkForm'
-import { AccessSwitchForm }                        from '../PersonalIdentityNetworkForm/AccessSwitchForm'
-import { DistributionSwitchForm }                  from '../PersonalIdentityNetworkForm/DistributionSwitchForm'
-import { GeneralSettingsForm }                     from '../PersonalIdentityNetworkForm/GeneralSettingsForm'
+import {
+  AccessSwitchStep,
+  DistributionSwitchStep,
+  GeneralSettingsStep,
+  PersonalIdentityNetworkForm,
+  SmartEdgeStep,
+  SummaryStep,
+  WirelessNetworkStep,
+  PrerequisiteStep
+} from '../PersonalIdentityNetworkForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
-import { SmartEdgeForm }                           from '../PersonalIdentityNetworkForm/SmartEdgeForm'
-import { SummaryForm }                             from '../PersonalIdentityNetworkForm/SummaryForm'
-import { WirelessNetworkForm }                     from '../PersonalIdentityNetworkForm/WirelessNetworkForm'
+
+// eslint-disable-next-line max-len
+const pinSteps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep, SummaryStep]
+const pinEnhancedSteps = [PrerequisiteStep].concat(pinSteps)
 
 const AddPersonalIdentityNetwork = () => {
+  const isEdgePinEnhancementReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
 
   const { tenantId } = useParams()
   const { $t } = useIntl()
+  const [form] = Form.useForm()
   const { addPin } = useEdgePinActions()
 
   const tablePath = getServiceRoutePath(
     { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
-  const steps = [
-    {
-      title: $t({ defaultMessage: 'General Settings' }),
-      content: <GeneralSettingsForm />
-    },
-    {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
-      content: <SmartEdgeForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Wireless Network' }),
-      content: <WirelessNetworkForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Dist. Switch' }),
-      content: <DistributionSwitchForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Access Switch' }),
-      content: <AccessSwitchForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Summary' }),
-      content: <SummaryForm />
-    }
-  ]
 
   return (
     <>
@@ -62,7 +48,9 @@ const AddPersonalIdentityNetwork = () => {
       />
       <PersonalIdentityNetworkFormDataProvider>
         <PersonalIdentityNetworkForm
-          steps={steps}
+          form={form}
+          hasPrerequisite={isEdgePinEnhancementReady}
+          steps={isEdgePinEnhancementReady ? pinEnhancedSteps : pinSteps}
           initialValues={{
             vxlanTunnelProfileId: tenantId
           }}

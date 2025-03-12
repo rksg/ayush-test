@@ -1,14 +1,14 @@
 import { Card, Col, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 
-import { Button, Loader, PageHeader, SummaryCard, Tooltip, cssStr }                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                          from '@acx-ui/feature-toggle'
-import { TrafficClassSettingsTable, ToolTipTableStyle }                                                                    from '@acx-ui/rc/components'
-import { useGetEdgeHqosProfileViewDataListQuery }                                                                          from '@acx-ui/rc/services'
-import { EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                           from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                                                                                      from '@acx-ui/types'
-import { filterByAccess }                                                                                                  from '@acx-ui/user'
+import { Button, Loader, PageHeader, SummaryCard, Tooltip, cssStr }                                                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                     from '@acx-ui/feature-toggle'
+import { TrafficClassSettingsTable, ToolTipTableStyle }                                                                                               from '@acx-ui/rc/components'
+import { useGetEdgeHqosProfileViewDataListQuery }                                                                                                     from '@acx-ui/rc/services'
+import { EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyAllowedOperation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                                                      from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                                                                                 from '@acx-ui/types'
+import { filterByAccess }                                                                                                                             from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -75,7 +75,9 @@ const EdgeHqosBandwidthDetail = () => {
       ]}
       extra={filterByAccess([
         // eslint-disable-next-line max-len
-        <TenantLink scopeKey={[EdgeScopes.UPDATE]}
+        <TenantLink
+          scopeKey={[EdgeScopes.UPDATE]}
+          rbacOpsIds={getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT)}
           to={getPolicyDetailsLink({
             type: PolicyType.HQOS_BANDWIDTH,
             oper: PolicyOperation.EDIT,

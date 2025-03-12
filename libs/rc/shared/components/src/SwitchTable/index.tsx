@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
-import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/query'
 import { Badge, Divider, Form }   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
@@ -46,7 +46,9 @@ import {
   SEARCH,
   GROUPBY,
   getSwitchModel,
-  getAdminPassword
+  getAdminPassword,
+  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, SwitchScopes }           from '@acx-ui/types'
@@ -56,7 +58,10 @@ import {
   getIntl,
   noDataDisplay,
   getJwtTokenPayload,
-  AccountVertical
+  AccountVertical,
+  useTrackLoadTime,
+  widgetsMapping,
+  getOpsApi
 } from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
@@ -134,6 +139,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const params = useParams()
   const navigate = useNavigate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -159,11 +165,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       ...defaultSwitchPayload
     },
     search: {
+      searchString: '',
       searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
       'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
+    enableSelectAllExtraArg: {
+      enableAggregateStackMember: false
+    },
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
@@ -172,10 +182,17 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
+  useTrackLoadTime({
+    itemName: widgetsMapping.SWITCH_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -405,14 +422,21 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const isReadOnlyRole = hasRoles([RolesEnum.READ_ONLY]) ?? false
   const isSelectionVisible = searchable !== false
-    && (hasPermission({ scopes: [SwitchScopes.READ, SwitchScopes.UPDATE, SwitchScopes.DELETE] })
-      || (isReadOnlyRole && enableSwitchBlinkLed)
+    && (hasPermission({
+      scopes: [SwitchScopes.READ, SwitchScopes.UPDATE, SwitchScopes.DELETE],
+      rbacOpsIds: [
+        getOpsApi(SwitchRbacUrlsInfo.updateSwitch),
+        getOpsApi(SwitchRbacUrlsInfo.deleteSwitches),
+        getOpsApi(SwitchRbacUrlsInfo.addSwitch)
+      ]
+    }) || (isReadOnlyRole && enableSwitchBlinkLed)
     )
 
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)],
     onClick: (selectedRows) => {
       const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
       const serialNumber = selectedRows[0].serialNumber
@@ -428,6 +452,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)],
     disabled: (rows) => {
       const row = rows[0]
       const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
@@ -454,6 +479,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     label: $t({ defaultMessage: 'Stack Switches' }),
     tooltip: stackTooltip,
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitch)],
     disabled: (rows) => {
       const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(rows)
       return !!notOperational || !!invalid || !!hasStack
@@ -465,6 +491,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   {
     label: $t({ defaultMessage: 'Match Admin Password to <VenueSingular></VenueSingular>' }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.syncSwitchesData)],
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
@@ -479,6 +506,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   {
     label: $t({ defaultMessage: 'Retry firmware update' }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.retryFirmwareUpdate)],
     visible: (rows) => {
       const isFirmwareUpdateFailed = rows[0]?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
       return isActionVisible(rows, { selectOne: true }) && isFirmwareUpdateFailed
@@ -502,6 +530,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   ...(enableSwitchBlinkLed ? [{
     label: $t({ defaultMessage: 'Blink LEDs' }),
     key: 'SHOW_WITHOUT_RBAC_CHECK_BLINK_LEDs',
+    rbacOpsIds: [getOpsApi(SwitchUrlsInfo.blinkLeds)],
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row: SwitchRow) => {
         const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
@@ -514,6 +543,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [SwitchScopes.DELETE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitches)],
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }
@@ -600,18 +630,21 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         actions={filterByAccess(props.enableActions ? [{
           label: $t({ defaultMessage: 'Add Switch' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitch)],
           onClick: () => {
             navigate(`${linkToEditSwitch.pathname}/add`)
           }
         }, {
           label: $t({ defaultMessage: 'Add Stack' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitch)],
           onClick: () => {
             navigate(`${linkToEditSwitch.pathname}/stack/add`)
           }
         }, {
           label: $t({ defaultMessage: 'Import from file' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.importSwitches)],
           onClick: () => {
             setImportVisible(true)
           }
@@ -623,6 +656,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: exportCsv
         } : undefined}
+        filterPersistence={enabledUXOptFeature}
       />
       <SwitchCliSession
         modalState={cliModalState}
@@ -671,7 +705,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{ required: true }]}
             initialValue={params.venueId}
-            children={<VenueSelector defaultValue={params.venueId} />} />
+            children={<VenueSelector />} />
         </div>
         }
       </ImportFileDrawer>

@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
@@ -61,6 +62,19 @@ describe('HealthConnectedClientsOverTimeWidget', () => {
         <ConnectedClientsOverTime filters={filters}/>
       </Provider>)
     await screen.findByText('Wireless Clients Count')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render chart when FF is enabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { asFragment } = render(
+      <Provider>
+        <ConnectedClientsOverTime filters={filters}/>
+      </Provider>)
+    await screen.findByText('Wired Clients')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })

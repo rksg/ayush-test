@@ -8,6 +8,7 @@ import { NetworkSaveData, WlanSecurityEnum }        from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { fireEvent, render, screen, within }        from '@acx-ui/test-utils'
 
+import { MLOContext }                                 from '../../../NetworkForm'
 import NetworkFormContext, { NetworkFormContextType } from '../../../NetworkFormContext'
 
 import {
@@ -20,6 +21,12 @@ import {
 } from './utils'
 
 import WiFi7 from '.'
+
+jest.mock('../../../../ApCompatibility', () => ({
+  ...jest.requireActual('../../../../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
 
 describe('test WiFi7', () => {
   it('should render correctly when FF true when creating a network', function () {
@@ -236,6 +243,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: mockAddNetworkEnabled6GHz
           } as NetworkFormContextType}>
             <Form>
@@ -272,6 +280,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               name: 'test',
               type: 'open',
@@ -484,6 +493,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: mockAddNetworkEnabled6GHz
           } as NetworkFormContextType}>
             <Form>
@@ -518,6 +528,7 @@ describe('test MLO_3LINK FF functions and components', () => {
           <NetworkFormContext.Provider value={{
             editMode: false,
             cloneMode: false,
+            isRuckusAiMode: false,
             data: {
               name: 'test',
               type: 'open',
@@ -562,6 +573,48 @@ describe('test MLO_3LINK FF functions and components', () => {
       expect(checkboxElement[1]).toBeChecked()
       expect(checkboxElement[2]).not.toBeChecked()
       expect(checkboxElement[2]).not.toBeDisabled()
+    })
+
+    it('should show R370 comopatibility tooltip when FF is on', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      const mockAddNetworkEnabled6GHz = {
+        name: 'mockAddNetworkEnabled6GHz',
+        type: 'psk',
+        isCloudpathEnabled: false,
+        venues: [],
+        enableAccountingProxy: false,
+        enableAuthProxy: false,
+        enableAccountingService: false,
+        wlan: {
+          ssid: 'mockAddNetworkEnabled6GHz',
+          wlanSecurity: 'WPA3',
+          managementFrameProtection: 'Required'
+        }
+      }
+
+      render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            isRuckusAiMode: false,
+            data: mockAddNetworkEnabled6GHz
+          } as NetworkFormContextType}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: { params }
+        }
+      )
+
+      const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(toolTips.length).toBe(1)
+      toolTips.forEach(t => expect(t).toBeVisible())
+      expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
     })
 
     describe('test getInitMloOptions func', () => {
@@ -710,5 +763,157 @@ describe('test wlanSecurity', () => {
       const actual = getIsOwe(mockWlanData)
       expect(actual).toBe(true)
     })
+  })
+
+  it('should disable Multi-Link toggle button on OWE transaction network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.OWETransition
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-1')
+    expect(switchElement).toBeDisabled()
+  })
+
+  it('should disable Multi-Link toggle button on DPSK network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'dpsk',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.WPA2Personal
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-1')
+    expect(switchElement).toBeDisabled()
+  })
+
+  it('should disable Multi-Link toggle button on OPEN network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.Open
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-1')
+    expect(switchElement).toBeDisabled()
+  })
+
+  it('should not disable Multi-Link toggle button on OWE network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.OWE
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-2')
+    expect(switchElement).not.toBeDisabled()
   })
 })

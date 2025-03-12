@@ -1,13 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
-import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Radio, Row, Space } from 'antd'
-import TextArea                                                                                    from 'antd/lib/input/TextArea'
-import { useIntl }                                                                                 from 'react-intl'
-import { useParams }                                                                               from 'react-router-dom'
+import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
+import TextArea                                                                      from 'antd/lib/input/TextArea'
+import { useIntl }                                                                   from 'react-intl'
+import { useParams }                                                                 from 'react-router-dom'
 
-import { Alert, Button, Select, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
-import { Features }                                                       from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon }                                             from '@acx-ui/icons'
+import { Alert, Button, Select, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { Features }                                            from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon }                                  from '@acx-ui/icons'
 import {
   useGetEdgeFeatureSetsQuery,
   useGetVenueEdgeFirmwareListQuery,
@@ -16,21 +16,22 @@ import {
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
-  EdgeFeatureEnum,
   EdgeStatusEnum,
+  EdgeUrlsInfo,
   IncompatibilityFeatures,
   deriveEdgeModel,
   edgeSerialNumberValidator,
   isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
-import { compareVersions } from '@acx-ui/utils'
+import { hasPermission }              from '@acx-ui/user'
+import { compareVersions, getOpsApi } from '@acx-ui/utils'
 
-
-import { ApCompatibilityToolTip }                         from '../../ApCompatibility/ApCompatibilityToolTip'
-import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/EdgeCompatibilityDrawer'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { showDeleteModal, useIsEdgeFeatureReady }         from '../../useEdgeActions'
 
-import { FwDescription, FwVersion, RadioDescription } from './styledComponents'
+import { HaModeRadioGroupFormItem } from './HaModeRadioGroupFormItem'
+import { messageMapping }           from './messageMapping'
+import { FwDescription, FwVersion } from './styledComponents'
 
 interface EdgeClusterSettingFormProps {
   editData?: EdgeClusterStatus
@@ -66,11 +67,18 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   const { editData } = props
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
+
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
+
   const { form } = useStepFormContext()
   const formListRef = useRef<NodeListRef>()
   const smartEdges = Form.useWatch('smartEdges', form) as EdgeClusterSettingFormType['smartEdges']
   const haMode = Form.useWatch('highAvailabilityMode', form) as ClusterHighAvailabilityModeEnum
   const venueId = Form.useWatch('venueId', form) as string
+  const editMode = !!editData
+
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({
     params: { tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -85,7 +93,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     selectFromResult: ({ data, isLoading }) => {
       return {
         requiredFw: data?.featureSets
-          ?.find(item => item.featureName === EdgeFeatureEnum.HA_AA)?.requiredFw,
+          ?.find(item => item.featureName === IncompatibilityFeatures.HA_AA)?.requiredFw,
         isLoading
       }
     }
@@ -95,15 +103,9 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     isLoading: isVenueFirmwareListLoading
   } = useGetVenueEdgeFirmwareListQuery({})
 
-
   const getVenueFirmware = (venueId: string) => {
     return venueFirmwareList?.find(item => item.id === venueId)?.versions?.[0]?.id
   }
-
-  const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
-
-  // eslint-disable-next-line max-len
-  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   useEffect(() => {
     if(editData) {
@@ -127,31 +129,12 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     }
   }, [editData, venueId])
 
-  const editMode = !!editData
-
-  const clusterWarningMsg = $t({ defaultMessage: `The cluster function will operate
-  when there are at least two nodes present. Please add more nodes to establish
-  a complete cluster.` })
-
-  const otpWarningMsg = $t({ defaultMessage: `The one-time-password (OTP) will be
-  automatically sent to your email address or via SMS for verification when you add
-  a virtual RUCKUS Edge node. The password will expire in 10 minutes and you must
-  complete the authentication process before using it.` })
-
   const showClusterWarning = (editData?.edgeList?.filter(item =>
     item.deviceStatus === EdgeStatusEnum.OPERATIONAL).length ?? 0) < 2
 
   const showOtpMessage = smartEdges?.some(item =>
     !item?.isEdit &&
     isOtpEnrollmentRequired(item?.serialNumber ?? ''))
-
-  const activeActiveMessage = $t({ defaultMessage: `All RUCKUS Edges work together and
-  balance the load, enhancing redundancy and performance. If one RUCKUS Edge fails, the
-  rest take over the tasks.` })
-
-  const activeStandbyMessage = $t({ defaultMessage: `Active-standby high availability
-  has one active RUCKUS Edge handling tasks while a standby RUCKUS Edge waits to take over
-  if the active RUCKUS Edge fails.` })
 
   const deleteNode = (fieldName: number, serialNumber?: string) => {
     if(!smartEdges?.[fieldName]?.isEdit) {
@@ -173,7 +156,8 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     return isAaSelected() ? maxActiveActiveNodes : maxActiveStandbyNodes
   }
   const isDisableAddEdgeButton = () => {
-    return (smartEdges?.length ?? 0) >= getMaxNodes()
+    return (smartEdges?.length ?? 0) >= getMaxNodes() ||
+    !hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addEdge)] })
   }
   const isAaNotSuportedByFirmware = () => {
     let venueVersion = getVenueFirmware(venueId)
@@ -230,57 +214,18 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
           />
         </Col>
       </Row>
-      {isEdgeHaAaReady &&
-        <Row style={{ marginTop: 8 }}>
-          <Col span={12}>
-            <Form.Item
-              name='highAvailabilityMode'
-              label={$t({ defaultMessage: 'High-Availability Mode' })}
-              initialValue={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
-              children={editMode ? (
-                form.getFieldValue('highAvailabilityMode') ===
-                  ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
-                  <div style={{ marginTop: 4 }}>
-                    <StepsForm.FieldLabel width='100%'>
-                      {$t({ defaultMessage: 'Active-Active' })}
-                    </StepsForm.FieldLabel>
-                    <RadioDescription>{activeActiveMessage}</RadioDescription>
-                  </div> :
-                  <div style={{ marginTop: 4 }}>
-                    <StepsForm.FieldLabel width='100%'>
-                      {$t({ defaultMessage: 'Active-Standby' })}
-                    </StepsForm.FieldLabel>
-                    <RadioDescription>{activeStandbyMessage}</RadioDescription>
-                  </div>
-              ) : (
-                <Radio.Group disabled={isDisableHaModeRadio()}>
-                  <Space direction='vertical'>
-                    <Radio
-                      key={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
-                      value={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
-                      id={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}>
-                      {$t({ defaultMessage: 'Active-Active' })}
-                      <ApCompatibilityToolTip
-                        title={''}
-                        visible={true}
-                        onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.HA_AA)}
-                      />
-                      <RadioDescription>{activeActiveMessage}</RadioDescription>
-                    </Radio>
-                    <Radio
-                      key={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}
-                      value={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}
-                      id={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}>
-                      {$t({ defaultMessage: 'Active-Standby' })}
-                      <RadioDescription>{activeStandbyMessage}</RadioDescription>
-                    </Radio>
-                  </Space>
-                </Radio.Group>
-              )}
-            />
-          </Col>
-        </Row>
-      }
+
+      {isEdgeHaAaReady && <Row style={{ marginTop: 8 }}>
+        <Col span={12}>
+          <HaModeRadioGroupFormItem
+            initialValue={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
+            editMode={editMode}
+            disabled={isDisableHaModeRadio()}
+            setEdgeCompatibilityModalFeature={setEdgeCompatibilityFeature}
+          />
+        </Col>
+      </Row>}
+
       <Row style={{ marginTop: 30 }}>
         <Col span={14}>
           <Row>
@@ -295,7 +240,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
             {
               showClusterWarning &&
               <Col span={21}>
-                <Alert message={clusterWarningMsg} type='info' showIcon />
+                <Alert message={$t(messageMapping.clusterWarningMsg)} type='info' showIcon />
               </Col>
             }
           </Row>
@@ -332,7 +277,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
             showOtpMessage &&
             <Row>
               <Col span={21}>
-                <Alert message={otpWarningMsg} type='info' showIcon />
+                <Alert message={$t(messageMapping.otpWarningMsg)} type='info' showIcon />
               </Col>
             </Row>
           }

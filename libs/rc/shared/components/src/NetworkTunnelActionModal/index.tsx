@@ -2,12 +2,16 @@
 export {
   NetworkTunnelActionModal
 } from './NetworkTunnelActionModal'
+export {
+  NetworkTunnelActionDrawer
+} from './NetworkTunnelActionDrawer'
 export { NetworkTunnelInfoButton }                        from './TunnelInfo/NetworkTunnelInfoButton'
 export { NetworkTunnelInfoLabel }                         from './TunnelInfo/NetworkTunnelInfoLabel'
 export { NetworkTunnelSwitchBtn }                         from './TunnelInfo/NetworkTunnelSwitchBtn'
 export {
   useEdgePinByVenue,
-  useEdgePinScopedNetworkVenueMap
+  useEdgePinScopedNetworkVenueMap,
+  useEdgeAllPinData
 } from './useEdgePinData'
 export {
   useGetSoftGreScopeVenueMap,

@@ -4,16 +4,16 @@ import { Col, List, Row, Space, Typography } from 'antd'
 import { QRCodeSVG }                         from 'qrcode.react'
 import { useIntl }                           from 'react-intl'
 
-import { GridCol, GridRow }                         from '@acx-ui/components'
-import { QrCodeSmallIcon }                          from '@acx-ui/icons'
-import { useGetDpskQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
-import { DpskActionContext }                        from '@acx-ui/rc/utils'
+import { GridCol, GridRow }                             from '@acx-ui/components'
+import { QrCodeSmallIcon }                              from '@acx-ui/icons'
+import { useGetDpskQuery, useLazyNetworkListQuery }     from '@acx-ui/rc/services'
+import { DpskActionContext, GenericActionPreviewProps } from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
 
-export function DpskActionPreview (props: { data?: DpskActionContext }) {
+export function DpskActionPreview (props: GenericActionPreviewProps<DpskActionContext>) {
   const { $t } = useIntl()
-  const { data } = props
+  const { data, ...rest } = props
   const [selectedSsid, setSelectedSsid] = useState<string>('')
 
   const { data: dpskService } = useGetDpskQuery({
@@ -119,5 +119,7 @@ export function DpskActionPreview (props: { data?: DpskActionContext }) {
           </Space>
         </GridCol>
       </GridRow>
-  }/>
+  }
+  {...rest}
+  />
 }

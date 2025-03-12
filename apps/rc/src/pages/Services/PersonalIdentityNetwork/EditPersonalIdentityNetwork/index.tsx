@@ -7,15 +7,20 @@ import { useParams } from 'react-router-dom'
 import { Loader, PageHeader }                                                          from '@acx-ui/components'
 import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery }                                                      from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkForm }             from '../PersonalIdentityNetworkForm'
-import { AccessSwitchForm }                        from '../PersonalIdentityNetworkForm/AccessSwitchForm'
-import { DistributionSwitchForm }                  from '../PersonalIdentityNetworkForm/DistributionSwitchForm'
-import { GeneralSettingsForm }                     from '../PersonalIdentityNetworkForm/GeneralSettingsForm'
+import {
+  AccessSwitchStep,
+  DistributionSwitchStep,
+  GeneralSettingsStep,
+  PersonalIdentityNetworkForm,
+  SmartEdgeStep,
+  WirelessNetworkStep
+} from '../PersonalIdentityNetworkForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
-import { SmartEdgeForm }                           from '../PersonalIdentityNetworkForm/SmartEdgeForm'
-import { WirelessNetworkForm }                     from '../PersonalIdentityNetworkForm/WirelessNetworkForm'
+
+// eslint-disable-next-line max-len
+const pinWizardSteps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep]
 
 const EditPersonalIdentityNetwork = () => {
 
@@ -40,7 +45,6 @@ const EditPersonalIdentityNetwork = () => {
       venueId: pinData?.venueId,
       edgeClusterId: pinData?.edgeClusterInfo?.edgeClusterId,
       segments: pinData?.edgeClusterInfo?.segments,
-      devices: pinData?.edgeClusterInfo?.devices,
       dhcpId: pinData?.edgeClusterInfo?.dhcpInfoId,
       poolId: pinData?.edgeClusterInfo?.dhcpPoolId,
       vxlanTunnelProfileId: pinData?.vxlanTunnelProfileId,
@@ -52,29 +56,6 @@ const EditPersonalIdentityNetwork = () => {
       originalAccessSwitchInfos: pinData?.accessSwitchInfos
     }
   }, [pinData])
-
-  const steps = [
-    {
-      title: $t({ defaultMessage: 'General Settings' }),
-      content: <GeneralSettingsForm editMode />
-    },
-    {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
-      content: <SmartEdgeForm editMode />
-    },
-    {
-      title: $t({ defaultMessage: 'Wireless Network' }),
-      content: <WirelessNetworkForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Dist. Switch' }),
-      content: <DistributionSwitchForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Access Switch' }),
-      content: <AccessSwitchForm />
-    }
-  ]
 
   return (
     <>
@@ -92,7 +73,7 @@ const EditPersonalIdentityNetwork = () => {
         <Loader states={[{ isLoading: isPinDataLoading || isPinDataFetching }]}>
           <PersonalIdentityNetworkForm
             form={form}
-            steps={steps}
+            steps={pinWizardSteps}
             onFinish={editPin}
             editMode
             initialValues={initFormValues}

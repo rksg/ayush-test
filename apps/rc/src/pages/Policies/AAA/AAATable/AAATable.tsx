@@ -1,15 +1,21 @@
-import { useIntl } from 'react-intl'
+import { ReactNode } from 'react'
+
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { CheckMark }                                     from '@acx-ui/icons'
+import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery,
-  useGetIdentityProviderListQuery
+  useGetIdentityProviderListQuery,
+  useGetCertificateListQuery,
+  useGetCertificateAuthoritiesQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -22,7 +28,9 @@ import {
   AAAPurposeEnum,
   AAA_LIMIT_NUMBER,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  CertificateStatusType,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -72,15 +80,17 @@ export default function AAATable () {
 
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => doDelete(selectedRows, clearSelection)
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
-      onClick: ([{ id }]) => {
+      onClick: ([{ id, networkIds }]) => {
         navigate({
           ...tenantBasePath,
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
@@ -88,7 +98,9 @@ export default function AAATable () {
             oper: PolicyOperation.EDIT,
             policyId: id!
           })
-        })
+        }, { state: {
+          networkIds: networkIds
+        } })
       }
     }
   ]
@@ -112,6 +124,7 @@ export default function AAATable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.CREATE)}
           >
             <Button type='primary'
@@ -142,10 +155,13 @@ export default function AAATable () {
 function useColumns () {
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const supportRadsec = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
 
   const { $t } = useIntl()
   const params = useParams()
   const emptyResult: { key: string, value: string }[] = []
+  const emptyCertificateResult:
+    { key: string, value: string, status: CertificateStatusType[] }[] = []
 
   const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
 
@@ -165,6 +181,7 @@ function useColumns () {
         : emptyResult
     })
   })
+
   const { identityProviderNameMap } = useGetIdentityProviderListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -181,6 +198,41 @@ function useColumns () {
         : emptyResult
     })
   })
+
+  const { certificateAuthorityNameMap } = useGetCertificateAuthoritiesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      certificateAuthorityNameMap: data?.data
+        ? data.data.map(ca => ({ key: ca.id, value: ca.name }))
+        : emptyResult
+    })
+  })
+
+  const { certificateMap } = useGetCertificateListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      certificateMap: data?.data
+        ? data.data.map(cc => ({ key: cc.id, value: cc.name, status: cc.status }))
+        : emptyCertificateResult
+    })
+  })
+
   const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
@@ -208,8 +260,11 @@ function useColumns () {
       title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
+      width: 160,
       render: (_, { type }) =>{
-        return type ? AAAPurposeEnum[type] : ''
+        return type ?
+          (supportRadsec ?
+            AAAPurposeEnum[type].replace(' RADIUS Server', '') : AAAPurposeEnum[type]) : ''
       }
     },
     {
@@ -224,6 +279,89 @@ function useColumns () {
       dataIndex: 'secondary',
       sorter: true
     },
+    ...(supportRadsec ? [{
+      key: 'radSecOptions.tlsEnabled',
+      title: $t({ defaultMessage: 'RadSec' }),
+      dataIndex: 'radSecOptions.tlsEnabled',
+      sorter: false,
+      align: 'center' as AlignType,
+      width: 80,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (row.radSecOptions?.tlsEnabled ?
+          <CheckMark style={{ width: '18px', paddingTop: '4px' }}/> : null)
+      }
+    },
+    {
+      key: 'radSecOptions.certificateAuthorityId',
+      title: $t({ defaultMessage: 'CA' }),
+      dataIndex: 'radSecOptions.certificateAuthorityId',
+      filterable: certificateAuthorityNameMap,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (!row.radSecOptions?.certificateAuthorityId)
+          ? ''
+          : (<TenantLink to={getPolicyRoutePath({
+            type: PolicyType.CERTIFICATE_AUTHORITY,
+            oper: PolicyOperation.LIST
+          })}>
+            {certificateAuthorityNameMap.find(
+              c => c.key === row?.radSecOptions?.certificateAuthorityId)?.value || ''}
+          </TenantLink>)
+      }
+    },
+    {
+      key: 'radSecOptions.clientCertificateId',
+      title: $t({ defaultMessage: 'Client Certificate' }),
+      dataIndex: 'radSecOptions.clientCertificateId',
+      filterable: certificateMap,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (!row.radSecOptions?.clientCertificateId)
+          ? ''
+          : (<>
+            <TenantLink to={getPolicyRoutePath({
+              type: PolicyType.SERVER_CERTIFICATES,
+              oper: PolicyOperation.LIST })}>
+              {certificateMap.find(
+                c => c.key === row.radSecOptions?.clientCertificateId)?.value || ''}
+            </TenantLink>
+            {certificateMap.find(
+              c => c.key === row.radSecOptions?.clientCertificateId)?.status?.find(
+              (s) => s === CertificateStatusType.EXPIRED || s === CertificateStatusType.REVOKED) ?
+              <CertificateToolTip
+                placement='bottom'
+                status={certificateMap.find(
+                  c => c.key === row.radSecOptions?.clientCertificateId)?.status}
+              /> : []}
+          </> )
+      }
+    },
+    {
+      key: 'radSecOptions.serverCertificateId',
+      title: $t({ defaultMessage: 'Server Certificate' }),
+      dataIndex: 'radSecOptions.serverCertificateId',
+      filterable: certificateMap,
+      sorter: false,
+      render: (_: ReactNode, row: AAAViewModalType) => {
+        const serverCert = certificateMap.find(
+          cert => cert.key === row.radSecOptions?.serverCertificateId)
+        return (!row.radSecOptions?.serverCertificateId)
+          ? ''
+          : (<>
+            <TenantLink
+              to={getPolicyRoutePath({
+                type: PolicyType.SERVER_CERTIFICATES,
+                oper: PolicyOperation.LIST
+              })}>
+              {serverCert?.value || ''}
+            </TenantLink>
+            {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
+              <CertificateToolTip
+                placement='bottom'
+                policyType={PolicyType.SERVER_CERTIFICATES}
+                status={serverCert.status} /> : []}
+          </>
+          )
+      }
+    }] : []),
     {
       key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),

@@ -12,7 +12,8 @@ import {
   getServiceRoutePath,
   getServiceListRoutePath,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByService
+  getScopeKeyByService,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -48,6 +49,7 @@ export default function MdnsProxyDetail () {
         ]}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.MDNS_PROXY,

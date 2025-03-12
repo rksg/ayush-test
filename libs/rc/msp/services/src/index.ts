@@ -36,7 +36,9 @@ import {
   MspCompliances,
   LicenseAttentionNotes,
   RecommendFirmwareUpgradeByApModel,
-  LicenseCalculatorDataResponse
+  LicenseCalculatorDataResponse,
+  MileageReportsResponse,
+  SolutionTokenSettings
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -425,9 +427,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const mspEcAdminListReq =
-          createHttpRequest(MspUrlsInfo.getMspEcAdminList, params)
+          createHttpRequest(mspUrlsInfo.getMspEcAdminList, params)
         return {
           ...mspEcAdminListReq
         }
@@ -489,8 +492,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     updateMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspEcDelegatedAdmins, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.updateMspEcDelegatedAdmins, params)
         return {
           ...req,
           body: payload
@@ -520,9 +524,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getAssignedMspEcToIntegrator: build.query<AssignedEc, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const mspAssignedEcListReq =
-          createHttpRequest(MspUrlsInfo.getAssignedMspEcToIntegrator, params)
+          createHttpRequest(mspUrlsInfo.getAssignedMspEcToIntegrator, params)
         return {
           ...mspAssignedEcListReq
         }
@@ -540,8 +545,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     assignMspEcToIntegrator_v1: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.assignMspEcToIntegrator, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -602,10 +608,12 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     refreshMspEntitlement: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.refreshMspEntitlement, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.refreshMspEntitlement, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -888,8 +896,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getAvailableMspRecCustomers: build.query<AvailableMspRecCustomers, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.getAvailableMspRecCustomers, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.getAvailableMspRecCustomers, params)
         return {
           ...req,
           body: payload
@@ -907,8 +916,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     assignMspEcToMultiIntegrators: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.assignMspEcToMultiIntegrators, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.assignMspEcToMultiIntegrators, params)
         return {
           ...req,
           body: payload
@@ -1001,6 +1011,25 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getSolutionTokenSettings: build.query<SolutionTokenSettings[], RequestPayload>({
+      query: ({ params }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getSolutionTokenSettings, params)
+        return {
+          ...request
+        }
+      },
+      providesTags: [{ type: 'SolutionTokenSettings', id: 'LIST' }]
+    }),
+    updateSolutionTokenSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateSolutionTokenSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SolutionTokenSettings', id: 'LIST' }]
+    }),
     getEntitlementsAttentionNotes: build.query<LicenseAttentionNotes, RequestPayload>({
       query: ({ params, payload }) => {
         const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsAttentionNotes, params)
@@ -1018,6 +1047,77 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    updateMspEcDelegations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateMspEcDelegations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspMultipleEcDelegations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspRbacUrlsInfo.updateMspMultipleEcDelegations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getLicenseMileageReports: build.query<MileageReportsResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getLicenseMileageReports)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
+    customerNamesFilterList: build.query<{
+      data: string[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customerListReq =
+          createHttpRequest(MspUrlsInfo.getCustomerNamesFilter, params)
+        return {
+          ...customerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    venueNamesFilterList: build.query<{
+      data: string[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venuesListReq =
+          createHttpRequest(MspUrlsInfo.getVenuesFilter, params)
+        return {
+          ...venuesListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    deviceModelFilterList: build.query<{
+      data: string[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const deviceModelsListReq =
+          createHttpRequest(MspUrlsInfo.getdeviceModelsFilter, params)
+        return {
+          ...deviceModelsListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -1134,8 +1234,16 @@ export const {
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
   useGetEntitlementsCompliancesQuery,
+  useGetSolutionTokenSettingsQuery,
+  useUpdateSolutionTokenSettingsMutation,
   useGetEntitlementsAttentionNotesQuery,
-  useGetCalculatedLicencesMutation
+  useGetCalculatedLicencesMutation,
+  useUpdateMspEcDelegationsMutation,
+  useUpdateMspMultipleEcDelegationsMutation,
+  useGetLicenseMileageReportsQuery,
+  useCustomerNamesFilterListQuery,
+  useDeviceModelFilterListQuery,
+  useVenueNamesFilterListQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

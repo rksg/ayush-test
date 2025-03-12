@@ -10,7 +10,7 @@ import { alarmList, alarmListMeta } from '../__tests__/fixtures'
 
 import { EdgeAlarmWidget, getAlarmChartData } from '.'
 
-jest.mock('./EdgeOverviewDonutWidget', () => ({
+jest.mock('@acx-ui/edge/components', () => ({
   EdgeOverviewDonutWidget: (props: { onClick: () => void }) =>
     <div data-testid='rc-EdgeOverviewDonutWidget' onClick={props.onClick} />
 }))

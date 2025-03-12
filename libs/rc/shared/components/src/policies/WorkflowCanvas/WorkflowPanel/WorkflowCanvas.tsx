@@ -22,6 +22,7 @@ import { ActionType, WorkflowPanelMode } from '@acx-ui/rc/utils'
 
 import {
   AupNode,
+  CertTemplateNode,
   DataPromptNode,
   DisplayMessageNode,
   DpskNode,
@@ -37,7 +38,8 @@ const nodeTypes: NodeTypes = {
   [ActionType.DATA_PROMPT]: DataPromptNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
   [ActionType.DPSK]: DpskNode,
-  [ActionType.MAC_REG]: MacRegistrationNode
+  [ActionType.MAC_REG]: MacRegistrationNode,
+  [ActionType.CERT_TEMPLATE]: CertTemplateNode
 }
 
 interface WorkflowProps {

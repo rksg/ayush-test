@@ -7,8 +7,8 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { HomeSolid }              from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { HomeSolid }                                from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -31,8 +31,10 @@ import { useTableQuery, dpskAdminRoutePathKeeper }                              
 import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }   from '@acx-ui/react-router-dom'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                                 from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
+
+import RuckusAiButton from '../RuckusAiButton'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -47,6 +49,9 @@ function Layout () {
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isOnboardingAssistantEnabled = useIsSplitOn(Features.RUCKUS_ONBOARDING_ASSISTANT_TOGGLE)
+  const isInCanvasPlmList = useIsTierAllowed(Features.CANVAS)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS) || isInCanvasPlmList
 
   const logo = useLogo(tenantId)
 
@@ -88,6 +93,11 @@ function Layout () {
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
+  const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+
+  const hasOnboardingAssistantAccess = (isOnboardingAssistantEnabled || isCanvasEnabled) &&
+  isSystemAdmin && hasCrossVenuesPermission()
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -194,6 +204,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
+        {hasOnboardingAssistantAccess && <RuckusAiButton />}
         {!(isGuestManager || isDPSKAdmin || isReportsAdmin) &&
           <>
             <AlarmsButton/>

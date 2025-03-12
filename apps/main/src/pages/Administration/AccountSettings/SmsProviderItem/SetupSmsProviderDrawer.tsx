@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
-import { useIntl }                                             from 'react-intl'
-import { useParams }                                           from 'react-router-dom'
+import { Checkbox, Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
+import { useIntl }                                                       from 'react-intl'
+import { useParams }                                                     from 'react-router-dom'
 
 import { Drawer, PasswordInput, Tooltip }    from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useLazyGetTwiliosMessagingServicesQuery,
+  useLazyGetTwiliosWhatsappServicesQuery,
   useUpdateNotificationSmsProviderMutation
 } from '@acx-ui/rc/services'
 import {
@@ -16,7 +17,8 @@ import {
   NotificationSmsConfig,
   URLRegExp,
   ErrorsResult,
-  ErrorDetails
+  ErrorDetails,
+  TwiliosWhatsappServices
 } from '@acx-ui/rc/utils'
 
 import { SmsProviderData, getProviderQueryParam, isTwilioFromNumber } from '.'
@@ -41,6 +43,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const { visible, isEditMode, setVisible, editData, setSelected } = props
   const [providerType, setProviderType] = useState<SmsProviderType>()
   const [form] = Form.useForm()
+  const { useWatch } = Form
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
   const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
   const [isValidAccountSID, setIsValidAccountSID] = useState<boolean>()
@@ -54,10 +57,17 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>()
   const [messagingServiceErrorMessage, setMessagingServiceErrorMessage] = useState<string>()
   const isSmsMessagingServiceEnabled = useIsSplitOn(Features.NUVO_SMS_MESSAGING_SERVICE_TOGGLE)
+  const isEnabledWhatsApp = useIsSplitOn(Features.WHATSAPP_SELF_SIGN_IN_TOGGLE)
 
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
   const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
   const [getTwiliosIncomingServices] = useLazyGetTwiliosMessagingServicesQuery()
+  const [getTwiliosWhatsappServices] = useLazyGetTwiliosWhatsappServicesQuery()
+
+  const enableWhatsapp = useWatch<string>('enableWhatsapp', form)
+
+  // eslint-disable-next-line max-len
+  const twilioUrl = <a href='https://console.twilio.com/' target='_blank' rel='noreferrer' >Twilio</a>
 
   useEffect(() => {
     if(isEditMode && editData?.providerType ) {
@@ -72,12 +82,19 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         if(isEditMode) {
           form.validateFields(['accountSid','authToken'])
           const fromNumber = editData?.providerData.fromNumber ?? ''
+          const enableWhatsapp = editData?.providerData.enableWhatsapp ?? false
           const messageMethod = isTwilioFromNumber(fromNumber)
             ? MessageMethod.PhoneNumber
             : MessageMethod.MessagingService
           setMessageMethod(messageMethod)
           setTwilioEditMethod(messageMethod)
-          form.setFieldValue('messageMethod', messageMethod)
+          form.setFieldsValue({
+            messageMethod,
+            ...(isEnabledWhatsApp && {
+              enableWhatsapp,
+              authTemplateSid: editData?.providerData.authTemplateSid ?? ''
+            })
+          })
         }
         else if (isValidAccountSID === false && isValidAuthToken === false) {
           // If add twilio form was touched and provider was changed, validate sid and token again
@@ -168,6 +185,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const onSubmit = async () => {
     try {
       await form.validateFields()
+      const whatsappConfig = enableWhatsapp ? {
+        enableWhatsapp: form.getFieldValue('enableWhatsapp'),
+        authTemplateSid: form.getFieldValue('authTemplateSid')
+      } : {}
       const providerData: NotificationSmsConfig =
         providerType === SmsProviderType.TWILIO
           ? isSmsMessagingServiceEnabled && messageMethod === MessageMethod.MessagingService ?
@@ -175,14 +196,16 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
               // twilio with messaging service
               accountSid: form.getFieldValue('accountSid'),
               authToken: form.getFieldValue('authToken'),
-              fromNumber: form.getFieldValue('messagingService')
+              fromNumber: form.getFieldValue('messagingService'),
+              ...whatsappConfig
             }
             :
             {
             // twilio with phone number
               accountSid: form.getFieldValue('accountSid'),
               authToken: form.getFieldValue('authToken'),
-              fromNumber: form.getFieldValue('phoneNumber')
+              fromNumber: form.getFieldValue('phoneNumber'),
+              ...whatsappConfig
             }
           : {
             // esendex, other
@@ -351,6 +374,91 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
              disabled={!isValidTwiliosNumber}
            />}
          />}
+    </>}
+    {/* eslint-disable-next-line max-len */}
+    {isEnabledWhatsApp && providerType === SmsProviderType.TWILIO && messageMethod !== undefined && <>
+      <Form.Item
+        name='enableWhatsapp'
+        valuePropName='checked'
+        children={
+          <Checkbox
+            children={<div style={{ display: 'flex', gap: '5px' }}>
+              <div>{$t({ defaultMessage: 'Enabled WhatsApp' })}</div>
+              <Tooltip.Question
+                title={$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'WhatsApp is used to enable WhatsApp functionalities for the Captive Portal Self Sign-In network. Ensure that your selected messaging service or phone number is configured to support WhatsApp through {twilioUrl}.'
+                }, { twilioUrl: twilioUrl }
+                )}
+                placement='right'
+                iconStyle={{
+                  width: 16,
+                  height: 16
+                }}
+              />
+            </div>}
+          />
+        }
+      />
+      {enableWhatsapp && (<Form.Item
+        name='authTemplateSid'
+        label={<>
+          {$t({ defaultMessage: 'WhatsApp Authentication Template SID' })}
+          <Tooltip.Question
+            title={$t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'The template SID is available in your {twilioUrl} Content Template Builder.'
+            }, { twilioUrl: twilioUrl }
+            )}
+            placement='right'
+            iconStyle={{
+              width: 16,
+              height: 16
+            }}
+          />
+        </>}
+        initialValue={isEditMode ? editData?.providerData.authTemplateSid ?? '' : ''}
+        rules={[
+          { required: true },
+          { validator: async (_, value) => {
+            try {
+              const payload = {
+                accountSid: form.getFieldValue('accountSid'),
+                authToken: form.getFieldValue('authToken'),
+                authTemplateSid: value
+              }
+              const templateStatus = await getTwiliosWhatsappServices({
+                params: params, payload: payload
+              })
+
+              if (templateStatus.error) {
+                const error = templateStatus.error as ErrorsResult<ErrorDetails>
+                console.log(error) // eslint-disable-line no-console
+                // eslint-disable-next-line max-len
+                return Promise.reject(
+                  $t({ defaultMessage: 'There is an error when fetching authTemplateSid status.' })
+                )
+              }
+
+              if ((templateStatus.data as TwiliosWhatsappServices).approvalFetch?.sid === value
+                // eslint-disable-next-line max-len
+                && (templateStatus.data as TwiliosWhatsappServices).approvalFetch?.accountSid === form.getFieldValue('accountSid')
+                // eslint-disable-next-line max-len
+                && (templateStatus.data as TwiliosWhatsappServices).approvalFetch?.whatsapp.status === 'approved') {
+                return Promise.resolve()
+              } else {
+                return Promise.reject(
+                  $t({ defaultMessage: 'This authTemplateSid is not approved.' })
+                )
+              }
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            }
+            return Promise.resolve()}
+          }
+        ]}
+        children={<Input />}
+      />)}
     </>}
     {providerType === SmsProviderType.ESENDEX &&
       <Form.Item

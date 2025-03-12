@@ -90,4 +90,31 @@ describe('ServerClientCertificateForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
+
+  it('should submit upload form correctly', async () => {
+    mockServer.use(
+      rest.post(
+        CertificateUrls.uploadCertificate.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
+    render(<Provider><ServerClientCertificateForm /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/serverCertificates/create'
+      }
+    })
+
+    const uploadRadio = screen.getByDisplayValue('UPLOAD')
+    await userEvent.click(uploadRadio)
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await fireEvent.change(screen.getByRole('textbox', { name: 'Name' }),
+      { target: { value: 'test name' } })
+    const publicFileInput = screen.getByTestId('public-key-upload')
+    const file = new File([''], 'public.pem')
+    await userEvent.upload(publicFileInput, file)
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
+  })
 })

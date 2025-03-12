@@ -70,7 +70,7 @@ export function NetworkList ({
       }
     },
     {
-      title: $t({ defaultMessage: 'AP Count' }),
+      title: $t({ defaultMessage: 'APs With Connected Clients' }),
       dataIndex: 'apCount',
       key: 'apCount',
       width: 130,

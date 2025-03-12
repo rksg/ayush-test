@@ -10,10 +10,11 @@ import { Button,
   Tabs, Tooltip } from '@acx-ui/components'
 import { usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
 import { ConfigurationProfile, ProfileTypeEnum,
+  SwitchUrlsInfo,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { useNavigate }                   from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getIntl }                       from '@acx-ui/utils'
+import { useNavigate }                                         from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAllowedOperations, hasPermission } from '@acx-ui/user'
+import { getIntl, getOpsApi }                                  from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 
@@ -148,7 +149,10 @@ export function ConfigProfileModal (props: {
             </Radio>
           </Radio.Group>
         </Picker>
-        <Button type='link' size='small' onClick={() => { navigate(addRegularProfilePath) }}>
+        <Button type='link'
+          size='small'
+          onClick={() => { navigate(addRegularProfilePath) }}
+          disabled={!hasAllowedOperations([getOpsApi(SwitchUrlsInfo.addSwitchConfigProfile)])}>
           {$t({ defaultMessage: 'Add Configuration Profile' })}
         </Button>
       </Tabs.TabPane>
@@ -176,6 +180,7 @@ export function ConfigProfileModal (props: {
             }}
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add CLI Profile' }),
+              rbacOpsIds: [getOpsApi(SwitchUrlsInfo.addSwitchConfigProfile)],
               onClick: () => {
                 navigate(addCliProfilePath)
               }

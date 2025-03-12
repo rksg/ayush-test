@@ -34,6 +34,7 @@ export const FieldTextLink = styled.div`
   ${linkStyle}
 `
 export const AdminList = styled.div`
+  font-size: var(--acx-body-4-font-size);
   padding-right: 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -50,6 +51,25 @@ export const FieldLabelAdmins = styled.div<{ width: string }>`
   display: grid;
   grid-template-columns: 135px 280px 40px;
   align-items: baseline;
+`
+export const FieldLabelAdmins2 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 415px 40px;
+  grid-template-rows: 20px;
+  align-items: baseline;
+`
+export const FieldLabelDelegations = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 120px 275px;
+  align-items: flex-start;
+  .ant-form-item {
+    margin-bottom: 0px;
+  }
+  .ant-form-item-control-input {
+    align-items: flex-start;
+  }
 `
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
@@ -98,3 +118,6 @@ export const ImagePreviewLight = styled.div<{ width: string, height: string }>`
   width: ${props => props.width};
   height: ${props => props.height}
 `
+export const SwitchDescription = styled.div`
+  color: var(--acx-neutrals-50);
+ `

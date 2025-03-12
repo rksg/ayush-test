@@ -501,26 +501,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/clientConnectionDiagnosis',
     newApi: true
   },
-  getVenueApManagementVlan: {
-    method: 'get',
-    url: '/venues/:venueId/apManagementTrafficVlanSettings',
-    newApi: true
-  },
-  updateVenueApManagementVlan: {
-    method: 'put',
-    url: '/venues/:venueId/apManagementTrafficVlanSettings',
-    newApi: true
-  },
-  getApManagementVlan: {
-    method: 'get',
-    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
-  updateApManagementVlan: {
-    method: 'put',
-    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
   getApFeatureSets: {
     method: 'get',
     url: '/wifiFeatureSets/:featureName',
@@ -539,7 +519,8 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   activateCertificateTemplate: {
     method: 'PUT',
     newApi: true,
-    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId',
+    opsApi: 'PUT:/wifiNetworks/{id}/certificateTemplates/{id}'
   },
   bindClientIsolation: {
     method: 'PUT',
@@ -583,6 +564,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    opsApi: 'PUT:/wifiNetworks/{id}/dpskServices/{id}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'

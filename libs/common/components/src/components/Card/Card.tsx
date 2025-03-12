@@ -40,10 +40,12 @@ function Card ({
         bordered={false}
         title={<>
           {props.cardIcon ? <div style={{ display: 'block' }}>{props.cardIcon}</div> : null}
-          <Space size={4}>
-            <UI.Title children={title} />
-            {title && icon}
-          </Space>
+          {
+            icon ? <Space size={4}>
+              <UI.Title children={title} />
+              {title && icon}
+            </Space> :　<UI.Title children={title} />
+          }
           {subTitle ? (
             <UI.SubTitle children={subTitle} />
           ) : null}

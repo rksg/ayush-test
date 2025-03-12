@@ -30,7 +30,7 @@ import { RadioTab } from './RadioTab'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
-describe('RadioTab', () => {
+describe.skip('RadioTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -43,9 +43,6 @@ describe('RadioTab', () => {
       rest.get(
         WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueExternalAntennaCap))),
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),

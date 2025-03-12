@@ -117,6 +117,7 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
   bindVenueSyslog: {
     method: 'PUT',
     url: '/venues/:venueId/syslogServerProfiles/:policyId',
+    opsApi: 'PUT:/venues/{id}/syslogServerProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -126,6 +127,7 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
   unbindVenueSyslog: {
     method: 'delete',
     url: '/venues/:venueId/syslogServerProfiles/:policyId',
+    opsApi: 'DELETE:/venues/{id}/syslogServerProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

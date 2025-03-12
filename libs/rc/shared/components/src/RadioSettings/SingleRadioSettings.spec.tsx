@@ -1,12 +1,13 @@
 /* eslint-disable testing-library/no-node-access */
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
-import { cleanup, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { CapabilitiesApModel, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }               from '@acx-ui/react-router-dom'
+import { Provider }                              from '@acx-ui/store'
+import { cleanup, mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -1238,9 +1239,23 @@ const support6gSeparationChannels = {
   [ApRadioTypeEnum.RadioUpper5G]: validRadioChannels['5GUpperChannels']
 }
 
+const mockedApModelFamilies = [
+  {
+    name: 'WIFI_6E',
+    displayName: 'Wi-Fi 6e',
+    apModels: ['R560',' R760']
+  },
+  {
+    name: 'WIFI_7',
+    displayName: 'Wi-Fi 7',
+    apModels: ['R770', 'R670', 'T670', 'T670SN', 'H670']
+  }
+]
+
 jest.mock('./RadioSettingsContents', () => ({
   ...jest.requireActual('./RadioSettingsContents'),
   txPowerAdjustmentOptions: [
+    { label: 'Auto', value: 'Auto' },
     { label: 'Full', value: 'MAX' },
     { label: 'txPowerOption', value: 'txPowerOption' }
   ],
@@ -1257,6 +1272,11 @@ const resetToDefaultSpy = jest.fn()
 describe('SignaleRadioSettings component', () => {
   beforeEach(() => {
     resetToDefaultSpy.mockClear()
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => res(ctx.json(mockedApModelFamilies)))
+    )
   })
   afterEach(() => cleanup())
 
@@ -1363,6 +1383,8 @@ describe('SignaleRadioSettings component', () => {
   })
 
   it('should render Venue Radio 6G singleRadioSettings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
     const radioType = ApRadioTypeEnum.Radio6G
 
     const { asFragment } = render (
@@ -1410,6 +1432,8 @@ describe('SignaleRadioSettings component', () => {
   })
 
   it('should render Venue Radio 6G indoor outdoor separation singleRadioSettings', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
     const radioType = ApRadioTypeEnum.Radio6G
 
     const { asFragment } = render (
@@ -1586,7 +1610,7 @@ describe('SignaleRadioSettings component', () => {
 
   // eslint-disable-next-line max-len
   it('should show tx power extended options when AP version is larger than 7.1.1', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.AP_TX_POWER_TOGGLE)
     const radioType = ApRadioTypeEnum.Radio24G
 
     render (
@@ -1622,7 +1646,7 @@ describe('SignaleRadioSettings component', () => {
   })
 
   it('should not show tx power extended options when AP version is small than 7.1', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.AP_TX_POWER_TOGGLE)
     const radioType = ApRadioTypeEnum.Radio24G
 
     render (
@@ -1655,5 +1679,85 @@ describe('SignaleRadioSettings component', () => {
     expect(screen.getByTitle('txPowerOption')).not.toBeNull()
     expect(screen.queryByTitle('txPower6gOption')).toBeNull()
     expect(screen.queryByTitle('txPowerExtendedOption')).toBeNull()
+  })
+
+  it('No tx power extended options when supportAggressiveTxPower is false at AP', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const radioType = ApRadioTypeEnum.Radio24G
+
+    render (
+      <Provider>
+        <Router>
+          <Form>
+            <SupportRadioChannelsContext.Provider value={{
+              bandwidthRadioOptions,
+              supportRadioChannels
+            }}>
+              <SingleRadioSettings
+                context='ap'
+                radioType={radioType}
+                isUseVenueSettings={false}
+                firmwareProps={{ firmware: '7.1.1.103.2' }}
+                apCapabilities={
+                  { supportTriRadio: false,
+                    supportAutoCellSizing: true,
+                    supportAggressiveTxPower: false
+                  } as CapabilitiesApModel}
+              />
+            </SupportRadioChannelsContext.Provider>
+          </Form>
+        </Router>
+      </Provider>
+    )
+
+    await screen.findByText('Channel selection method')
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect)
+    expect(screen.getByTitle('Auto')).not.toBeNull()
+    expect(screen.getByTitle('txPowerOption')).not.toBeNull()
+    expect(screen.queryByTitle('txPower6gOption')).toBeNull()
+    expect(screen.queryByTitle('txPowerExtendedOption')).toBeNull()
+  })
+
+  it('No tx power auto options when supportAutoCellSizing is false at AP', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const radioType = ApRadioTypeEnum.Radio24G
+
+    render (
+      <Provider>
+        <Router>
+          <Form>
+            <SupportRadioChannelsContext.Provider value={{
+              bandwidthRadioOptions,
+              supportRadioChannels
+            }}>
+              <SingleRadioSettings
+                context='ap'
+                radioType={radioType}
+                isUseVenueSettings={false}
+                firmwareProps={{ firmware: '7.1.1.103.2' }}
+                apCapabilities={
+                  { supportTriRadio: false,
+                    supportAutoCellSizing: false
+                  } as CapabilitiesApModel}
+              />
+            </SupportRadioChannelsContext.Provider>
+          </Form>
+        </Router>
+      </Provider>
+    )
+
+    await screen.findByText('Channel selection method')
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect)
+    expect(screen.queryByTitle('Auto')).toBeNull()
   })
 })

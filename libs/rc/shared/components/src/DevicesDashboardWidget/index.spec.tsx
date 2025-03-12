@@ -1,8 +1,9 @@
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import { render,
-  screen, mockRestApiQuery,
-  waitForElementToBeRemoved
+  screen,
+  mockRestApiQuery
 } from '@acx-ui/test-utils'
 
 import { DevicesDashboardWidgetV2 } from '.'
@@ -10,6 +11,10 @@ import { DevicesDashboardWidgetV2 } from '.'
 const params = {
   tenantId: 'tenant-id'
 }
+
+jest.mock('../DevicesWidget/index', () => ({
+  DevicesWidgetv2: () => <div>Mock DevicesWidget</div>
+}))
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -34,17 +39,14 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('Dashboard Devices Widget V2', () => {
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DASHBOARD_NEW_API_TOGGLE)
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post',{})
+    mockRestApiQuery(CommonUrlsInfo.getDeviceSummaries.url, 'post',{})
   })
 
   it('should render loader and then chart', async () => {
-    const { asFragment } = render(<Provider><DevicesDashboardWidgetV2 /></Provider>,
+    render(<Provider><DevicesDashboardWidgetV2 /></Provider>,
       { route: { params } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Devices')
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(await screen.findByText('Mock DevicesWidget')).toBeInTheDocument()
   })
 })

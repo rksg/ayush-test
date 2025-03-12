@@ -9,14 +9,14 @@ import { System, SystemMap, useSystems }                          from '@acx-ui/
 import { defaultNetworkPath, meetVersionRequirements, nodeTypes } from '@acx-ui/analytics/utils'
 import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
-import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
+import { FilterListNode, DateRange, PathNode, NetworkNode }       from '@acx-ui/utils'
 
-import { APsSelectionInput }                                                                           from '../../../../APsSelectionInput'
-import { isAPListNodes, isNetworkNodes }                                                               from '../../../../APsSelectionInput/types'
-import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
-import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { ClientType as ClientTypeEnum }                                                                from '../../../types'
-import { ClientType }                                                                                  from '../ClientType'
+import { APsSelectionInput }                                                              from '../../../../APsSelectionInput'
+import { isAPListNodes, isNetworkNodes }                                                  from '../../../../APsSelectionInput/types'
+import { getNetworkFilterData }                                                           from '../../../../NetworkFilter'
+import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery } from '../../../../NetworkFilter/services'
+import { ClientType as ClientTypeEnum }                                                   from '../../../types'
+import { ClientType }                                                                     from '../ClientType'
 
 
 import { DeviceRequirementsType, deviceRequirements } from './deviceRequirements'
@@ -51,15 +51,21 @@ function checkAP (
     ? { type: 'AP', name: node.name, mac: node.mac } : false
 }
 
-function transformSANetworkHierarchy (
+export function transformSANetworkHierarchy (
   nodes: NetworkNode[], parentPath: PathNode[]
 ) : CascaderOption[] {
   return nodes.map(node => {
     const path = [
       ...parentPath, { type: node.type, name: node.mac ?? node.name }
     ] as PathNode[]
+    let label
+    if (node.type === 'AP') {
+      label = `${node.name} (${node.mac}) (${nodeTypes(node.type)})`
+    } else {
+      label = `${node.name} (${nodeTypes(node.type)})`
+    }
     return{
-      label: `${node.name} (${nodeTypes(node.type)})` as string,
+      label: label,
       value: JSON.stringify(path),
       ...(node.children && {
         children: transformSANetworkHierarchy(node.children, path)

@@ -6,15 +6,14 @@ import { APStatus }                                                 from '@acx-u
 import { useLazyGetApNeighborsQuery, useLazyGetApRfNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
-  CatchErrorResponse,
   SortResult,
   defaultSort,
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { WifiScopes }                  from '@acx-ui/types'
+import { filterByAccess }              from '@acx-ui/user'
+import { getIntl, CatchErrorResponse } from '@acx-ui/utils'
 
 import { NewApNeighborTypes, defaultPagination } from './constants'
 import { useApNeighbors }                        from './useApNeighbors'

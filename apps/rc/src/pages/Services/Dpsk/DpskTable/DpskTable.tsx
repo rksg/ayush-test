@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
@@ -33,12 +35,13 @@ import {
   PassphraseFormatEnum,
   displayDeviceCountLimit,
   displayDefaultAccess,
-  hasDpskAccess,
-  getScopeKeyByService
+  getScopeKeyByService,
+  filterDpskOperationsByPermission,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
-import { filterByAccess, hasRoles }                                from '@acx-ui/user'
+import { hasRoles }                                                from '@acx-ui/user'
 
 const defaultPayload = {
   filters: {}
@@ -53,6 +56,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
@@ -63,15 +67,23 @@ export default function DpskTable () {
     pagination: { settingsId }
   })
 
+  const readOnlyRows: { fieldName: keyof DpskSaveData, fieldText: string }[] = useMemo(() => {
+    if (isIdentityGroupRequired) {
+      return [{ fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }]
+    } else {
+      return [
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) },
+        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
+      ]
+    }
+  }, [isIdentityGroupRequired])
+
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
     doProfileDelete(
       [selectedRow],
       intl.$t({ defaultMessage: 'DPSK Service' }),
       selectedRow.name,
-      [
-        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) },
-        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
-      ],
+      readOnlyRows,
       async () => deleteDpsk({
         params: { serviceId: selectedRow.id }
       }).then(callback)
@@ -80,11 +92,13 @@ export default function DpskTable () {
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT),
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -119,14 +133,16 @@ export default function DpskTable () {
       </span>
     </Space>
 
-  const allowedRowActions = (hasDpskAccess() && filterByAccess(rowActions)) || []
+  const allowedRowActions = filterDpskOperationsByPermission(rowActions)
+
   return (
     <>
       <PageHeader
         title={title}
         breadcrumb={breadCrumb}
-        extra={hasDpskAccess() && filterByAccess([
+        extra={filterDpskOperationsByPermission([
           <TenantLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.DPSK, ServiceOperation.CREATE)}
           >

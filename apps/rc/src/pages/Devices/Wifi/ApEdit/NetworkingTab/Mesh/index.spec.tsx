@@ -112,7 +112,7 @@ describe('ApMeshTab', () => {
     const mockVenueMeshReq = jest.fn()
     mockServer.use(
       rest.get(
-        CommonRbacUrlsInfo.getVenueMesh.url,
+        WifiRbacUrlsInfo.getVenueMesh.url,
         (_, res, ctx) => {
           mockVenueMeshReq()
           return res(ctx.json({}))
@@ -264,7 +264,7 @@ describe('ApMeshTab', () => {
       const mockApMeshReq = jest.fn()
       mockServer.use(
         rest.get(
-          CommonRbacUrlsInfo.getVenueMesh.url,
+          WifiRbacUrlsInfo.getVenueMesh.url,
           (_, res, ctx) => {
             mockVenueMeshReq()
             return res(ctx.json(mockEnabledVenueMeshSetting))
@@ -303,7 +303,7 @@ describe('ApMeshTab', () => {
       const mockApMeshReq = jest.fn()
       mockServer.use(
         rest.get(
-          CommonRbacUrlsInfo.getVenueMesh.url,
+          WifiRbacUrlsInfo.getVenueMesh.url,
           (_, res, ctx) => {
             mockVenueMeshReq()
             return res(ctx.json(mockDisabledVenueMeshSetting))

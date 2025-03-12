@@ -1,4 +1,4 @@
-export const expectedResult = {
+export const expectedFactsResult = {
   network: {
     hierarchyNode: {
       facts: [
@@ -73,7 +73,14 @@ export const expectedResult = {
             'windows_update'
           ]
         }
-      ],
+      ]
+    }
+  }
+}
+
+export const expectedAvailableFactsResult = {
+  network: {
+    hierarchyNode: {
       availableFacts: ['topApplicationsByClients', 'airtimeUtilization']
     }
   }

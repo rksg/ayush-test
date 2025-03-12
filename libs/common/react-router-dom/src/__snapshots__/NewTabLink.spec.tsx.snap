@@ -8,6 +8,14 @@ exports[`NewTabLink should render a Link with correct props 1`] = `
 </DocumentFragment>
 `;
 
+exports[`NewTabLink should render a Link with correct props with custom rel 1`] = `
+<DocumentFragment>
+  <div>
+    {"to":"/some/url","target":"_blank","rel":"opener","children":"link text"}
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NewTabLink should render an anchor with correct attributes 1`] = `
 <DocumentFragment>
   <a

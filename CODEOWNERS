@@ -48,10 +48,21 @@
 # Defining local groups in this file for this repo
 # restriction will be at bitbucket level per group enforcement
 
+# Fallback to allow other users to approve pull requests in case Code Owners are not available (eg. holidays)
+#  1. Define a group with the special name `FallbackOwners` and add the people which can approve PRs for other Code Owners.
+#  2. In case a Code Owner is absent and the PR can not be merged because of a missing Code Owner approval, add extra reviewers from the FallbackOwners group to the PR. Any approval of such an extra reviewer counts towards any Code Owners merge check.
+@@@FallbackOwners @"GCHIU" @"JDENG1" @"yw1046" @"JSYU" @"PLIN" @"cl1092" @"rl1093" @"STAN2" @"MDEHEZ" @"VKANDHVAR" @"CBOKIL" @"jc1318"
+
 # @@@group1   	@user1 @user2
+@@@UI   @"KYEH" @"YGUO1" @"TLIN4" @"JCHIU1" @"JKAO1" @"ac1236" @"ELEU" @"sb1212" @"JCHEOW"
+
 # @@@group2   	@user1 @user2
 
 # Start adding the rules from here
+* @@UI
+
+# For every group at least somebody must approve
+AllGroupsCheck(1)
 
 # Update CODEOWNERS accordingly
 # CODEOWNERS              @user1 @user2
@@ -62,4 +73,6 @@ CODEOWNERS.destination_branch_pattern release/*
 
 # Suppress info comment on pull request creation about added code owners. Info comment will be added by default.
 # CODEOWNERS.toplevel.create_pull_request_comment disable
+
+@@@api-docs-team   	@SCLARK @DYANG1 @BCHANG1 @"rk1117"
 /api-docs/*     @@"api-docs-review-team"

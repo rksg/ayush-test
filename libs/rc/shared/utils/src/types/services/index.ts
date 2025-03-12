@@ -8,6 +8,7 @@ export * from './mdnsProxyService'
 export * from './portalService'
 export * from './edgeSdLanService'
 export * from './edgeMdnsProxyService'
+export * from './edgeTnmService'
 
 export enum AccessEnum {
   ALLOW = 'Allow',
@@ -18,6 +19,7 @@ export interface L2AclPolicy {
   access?: AccessEnum,
   description?: string,
   macAddress?: string[],
+  wifiNetworkIds?: string[],
   networkIds?: string[],
   networksCount?: number,
   rulesCount?: number,
@@ -30,6 +32,7 @@ export interface L3AclPolicy {
   rulesCount?: number,
   description?: string,
   rules?: number,
+  wifiNetworkIds?: string[],
   networkIds?: string[],
   name: string,
   id: string
@@ -39,6 +42,7 @@ export interface DevicePolicy {
   defaultAcces?: AccessEnum,
   description?: string,
   rules?: number,
+  wifiNetworkIds?: string[],
   networkIds?: string[],
   id: string,
   name: string,
@@ -51,6 +55,7 @@ export interface ApplicationPolicy {
   rulesCount?: number,
   description?: string,
   rules?: number,
+  wifiNetworkIds?: string[],
   networkIds?: string[],
   name: string,
   id: string

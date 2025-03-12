@@ -5,11 +5,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                      from '@acx-ui/rc/services'
-import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, WifiUrlsInfo }            from '@acx-ui/rc/utils'
-import { Provider, store }                                                                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                               from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                                                                             from '@acx-ui/rc/services'
+import { AaaUrls, ClientIsolationUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, LanPortsUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook }                                                        from '@acx-ui/test-utils'
 
 import { NetworkingSettingContext } from '..'
 import { VenueUtilityContext }      from '../..'
@@ -18,7 +18,15 @@ import {
   venueData,
   venueCaps,
   venueLanPorts,
-  mockEthProfiles
+  mockEthProfiles,
+  mockDefaultTunkEthertnetPortProfile,
+  mockSoftGreTable,
+  mockedClientIsolationQueryData,
+  mockedVenueLanPortSettings1,
+  mockedVenueLanPortSettings2,
+  mockedVenueLanPortSettings3,
+  radiusList,
+  mockedClientIsolation2
 } from '../../../../__tests__/fixtures'
 
 import { LanPorts } from './index'
@@ -50,12 +58,19 @@ describe('LanPortsForm', () => {
   const mockedActivateEthernetPortProfileApiFn = jest.fn()
   const mockedUpdateEthernetPortSettingApiFn = jest.fn()
   const mockedUpdateVenueLanPortsFn = jest.fn()
+  const mockedUpdateVenueLanPortSpecificSettingsApiFn = jest.fn()
+  const mockedActivateClientIsolationProfileApiFn = jest.fn()
+  const mockedDeactivateClientIsolationProfileApiFn = jest.fn()
 
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockedActivateEthernetPortProfileApiFn.mockClear()
     mockedUpdateEthernetPortSettingApiFn.mockClear()
+    mockedUpdateVenueLanPortSpecificSettingsApiFn.mockClear()
+
+    mockedActivateClientIsolationProfileApiFn.mockClear()
+    mockedDeactivateClientIsolationProfileApiFn.mockClear()
 
     mockServer.use(
       rest.get(
@@ -71,17 +86,29 @@ describe('LanPortsForm', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))
       ),
       rest.get(
-        CommonRbacUrlsInfo.getVenueLanPorts.url,
+        WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))
       ),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json({ mockDefaultTunkEthertnetPortProfile }))
+      ),
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,
         (_, res, ctx) => {
           mockedUpdateVenueLanPortsFn()
+          return res(ctx.json({}))
+        }
+      ),
+
+      rest.put(
+        CommonRbacUrlsInfo.updateVenueLanPortSpecificSettings.url,
+        (_, res, ctx) => {
+          mockedUpdateVenueLanPortSpecificSettingsApiFn()
           return res(ctx.json({}))
         }
       ),
@@ -110,6 +137,52 @@ describe('LanPortsForm', () => {
           mockedUpdateEthernetPortSettingApiFn()
           return res(ctx.status(202))
         }
+      ),
+      rest.get(
+        LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedVenueLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedVenueLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedVenueLanPortSettings3))
+          }
+
+          return res(ctx.json({}))
+        }
+      ),
+
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))
+      ),
+
+      rest.post(ClientIsolationUrls.queryClientIsolation.url,
+        (_, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(radiusList))
+      ),
+      rest.put(ClientIsolationUrls.activateClientIsolationOnVenue.url,
+        (_, res, ctx) => {
+          mockedActivateClientIsolationProfileApiFn()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(ClientIsolationUrls.deactivateClientIsolationOnVenue.url,
+        (_, res, ctx) => {
+          mockedDeactivateClientIsolationProfileApiFn()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.get(
+        ClientIsolationUrls.getClientIsolationRbac.url,
+        (_, res, ctx) => res(ctx.json({ mockedClientIsolation2 }))
       )
     )
   })
@@ -407,7 +480,11 @@ describe('LanPortsForm', () => {
       })
 
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE)
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+      ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
+      ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+      ff === Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE
+    )
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
@@ -427,10 +504,17 @@ describe('LanPortsForm', () => {
     expect(enablePort).toHaveAttribute('aria-checked', 'true')
     await userEvent.click(enablePort)
 
+    const poeModeSelector = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
+    expect(poeModeSelector).toBeInTheDocument()
+    await userEvent.click(poeModeSelector)
+    await userEvent.click(
+      (await screen.findAllByText('802.3at'))[1]
+    )
+
     // The renderHook will call editNetworkingContextData.updateLanPorts?.() by useEffect()
 
     await waitFor(() => expect(mockedActivateEthernetPortProfileApiFn).toBeCalled())
     await waitFor(() => expect(mockedUpdateEthernetPortSettingApiFn).toBeCalled())
+    await waitFor(() => expect(mockedUpdateVenueLanPortSpecificSettingsApiFn).toBeCalled())
   })
-
 })

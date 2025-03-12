@@ -1,7 +1,8 @@
 import { Divider as AntDivider, Form as AntdForm, Space } from 'antd'
 import styled                                             from 'styled-components/macro'
 
-import { TagsOutline, TagsSolid } from '@acx-ui/icons'
+import { Card as AcxCard, Descriptions as AcxDescriptions } from '@acx-ui/components'
+import { TagsOutline, TagsSolid }                           from '@acx-ui/icons'
 
 export const TagsOutlineIcon = styled(TagsOutline)`
   width: 14px;
@@ -17,8 +18,10 @@ export const TagsSolidIcon = styled(TagsSolid)`
 `
 
 export const Form = styled(AntdForm)`
-  &.ant-form.ant-form-horizontal > .ant-form-item {
-    margin-bottom: 20px !important;
+  &.ant-form.ant-form-horizontal {
+    > .ant-form-item {
+      margin-bottom: 20px !important;
+    }
     label {
       color: var(--acx-primary-black);
       &::after {
@@ -174,5 +177,45 @@ export const DrawerFooterDivider = styled.div`
   .ant-divider-vertical {
     height: 30px;
     border-color: var(--acx-primary-black);
+  }
+`
+
+export const Card = styled(AcxCard)`
+  border-radius: 4px !important;
+  padding: 18px 20px 0 20px !important;
+`
+
+export const Descriptions = styled(AcxDescriptions)`
+  padding: 0;
+  tbody {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    height: 300px;
+    .ant-descriptions-row {
+      .ant-descriptions-item {
+        padding-bottom: 4px;
+      }
+      &:nth-child(even){
+        .ant-descriptions-item {
+          padding-bottom: 20px;
+        }
+      }
+      .ant-descriptions-item-label  {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+      }
+      .ant-descriptions-item-content {
+        font-size: var(--acx-body-3-font-size);
+        line-height: var(--acx-body-3-line-height);
+      }
+    }
+  }
+`
+export const FieldTemplateTooltip = styled.div`
+  svg {
+    margin-left: 5px;
+    margin-top: -5px;
+    width: 16px;
   }
 `

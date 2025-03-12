@@ -1,16 +1,19 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { get }                                             from '@acx-ui/config'
-import { dataApi, dataApiURL, rbacApi, rbacApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery, mockServer, screen, within }    from '@acx-ui/test-utils'
+import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
+import { get }                                                   from '@acx-ui/config'
+import { dataApi, dataApiURL, rbacApi, rbacApiURL, store }       from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, screen, waitFor, within } from '@acx-ui/test-utils'
+import { NetworkNode }                                           from '@acx-ui/utils'
 
-import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems } from '../../../__tests__/fixtures'
-import { ClientType }                                                                    from '../../../types'
+import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems, mockNetworkNodes } from '../../../__tests__/fixtures'
+import { ClientType }                                                                                      from '../../../types'
 
-import { APsSelection } from './APsSelection'
+import { APsSelection, transformSANetworkHierarchy } from './APsSelection'
 
-const { click, type } = userEvent
+
+const { click, type, clear } = userEvent
 
 jest.mock('@acx-ui/config', () => ({
   ...jest.requireActual('@acx-ui/config'),
@@ -195,11 +198,12 @@ describe('RA', () => {
 
       expect(await screen.findByRole('menu')).toBeInTheDocument()
 
-      const combobox = await screen.findByRole('combobox')
-
-      await type(combobox, 'ap 1')
-      await click(await screen.findByRole('menuitemcheckbox', { name: /ap 1/ }))
-
+      await waitFor(async () => { // seems combobox is being replaced
+        const combobox = await screen.findByRole('combobox')
+        await clear(combobox)
+        await type(combobox, 'ap 1')
+        await click(await screen.findByRole('menuitemcheckbox', { name: /ap 1/ }))
+      }, { timeout: 10000 })
       await click(screen.getByRole('button', { name: 'Submit' }))
 
       expect(await screen.findByTestId('form-values'))
@@ -290,5 +294,16 @@ describe('RA', () => {
         .toBeVisible()
       expect(await field.findByText(/system 1 \(SZ Cluster\) — 1 AP/)).toBeVisible()
     })
+  })
+})
+
+describe('transformSANetworkHierarchy', () => {
+  it('transform label correctly', () => {
+    const data = mockNetworkNodes as NetworkNode[]
+    const expectLabels = data[0]['children']?.map(ap => `${ap.name} (${ap.mac}) (Access Point)`)
+    const result = transformSANetworkHierarchy(data, defaultNetworkPath)
+    const labels = result[0]['children']?.map(node => node.label)
+    expect(result[0].label).toEqual(`${data[0].name} (AP Group)`)
+    expect(labels).toEqual(expectLabels)
   })
 })

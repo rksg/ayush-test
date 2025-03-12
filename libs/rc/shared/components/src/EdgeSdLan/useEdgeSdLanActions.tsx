@@ -20,7 +20,6 @@ import {
   useUpdateEdgeSdLanPartialP2Mutation
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorDetails,
   CommonErrorsResult,
   CommonResult,
   EdgeMvSdLanExtended,
@@ -29,7 +28,7 @@ import {
   EdgeSdLanSettingP2,
   EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { getIntl, CatchErrorDetails } from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 

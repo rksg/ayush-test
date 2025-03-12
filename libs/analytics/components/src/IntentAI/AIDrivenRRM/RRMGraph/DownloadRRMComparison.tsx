@@ -13,7 +13,7 @@ import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
 import { useIntentContext } from '../../IntentContext'
-import { Intent }           from '../../useIntentDetailsQuery'
+import { IntentDetail }     from '../../useIntentDetailsQuery'
 
 import { intentBandMapping, useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }                         from './styledComponents'
@@ -50,7 +50,7 @@ export function DownloadRRMComparison (props: { title?: string }) {
   </DownloadWrapper>
 }
 
-export const useDownloadData = (intent: Intent) => {
+export const useDownloadData = (intent: IntentDetail) => {
   const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAICRRMQuery()
   const url = useDownloadUrl(queryResult.csv, 'text/csv')

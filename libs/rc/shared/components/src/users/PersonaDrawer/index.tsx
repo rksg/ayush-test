@@ -4,30 +4,29 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Drawer }                                          from '@acx-ui/components'
-import { useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
-import { Persona }                                         from '@acx-ui/rc/utils'
+import { Drawer }                                                               from '@acx-ui/components'
+import { CommonAsyncResponse, useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
+import { Persona }                                                              from '@acx-ui/rc/utils'
 
-import { PersonaForm }            from '../PersonaForm'
-import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
+import { PersonaForm } from '../PersonaForm'
 
 
 interface PersonaDrawerProps {
   isEdit: boolean,
   visible: boolean,
-  onClose: () => void,
-  data?: Partial<Persona>
+  onClose: (result?: CommonAsyncResponse) => void,
+  data?: Partial<Persona>,
+  disableAddDevices?: boolean
 }
 
 
 export function PersonaDrawer (props: PersonaDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { isEdit, data, visible, onClose } = props
+  const { isEdit, data, visible, onClose, disableAddDevices } = props
   // FIXME: Add loading status on creating and updating
   const [addPersona] = useAddPersonaMutation()
   const [updatePersona] = useUpdatePersonaMutation()
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(()=> {
     // make sure that reset the form fields while close the Drawer
@@ -38,11 +37,11 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
 
   const onFinish = async (contextData: Persona) => {
     try {
-      isEdit
+      const result = isEdit
         ? await handleEditPersona(contextData)
         : await handleAddPersona(contextData)
 
-      onClose()
+      onClose(result)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -51,15 +50,14 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
   const handleAddPersona = async (submittedData: Persona) => {
     return addPersona({
       params: { groupId: submittedData.groupId },
-      payload: { ...submittedData },
-      customHeaders
+      payload: { ...submittedData }
     }).unwrap()
   }
 
   const handleEditPersona = async (submittedData: Persona) => {
     if (!data) return
 
-    const personaKeys = ['name', 'email', 'description', 'vlan'] as const
+    const personaKeys = ['name', 'email', 'description', 'vlan', 'phoneNumber'] as const
     const patchData = {}
 
     personaKeys.forEach(key => {
@@ -72,8 +70,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
 
     return updatePersona({
       params: { groupId: submittedData.groupId, id: data?.id },
-      payload: patchData,
-      customHeaders
+      payload: patchData
     }).unwrap()
   }
 
@@ -108,11 +105,12 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       }
       width={'400px'}
       visible={visible}
-      onClose={onClose}
+      onClose={() => onClose()}
       children={
         <PersonaForm
           form={form}
           defaultValue={data}
+          disableAddDevices={disableAddDevices}
         />
       }
       footer={footer}

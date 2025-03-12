@@ -1,24 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isEqual, isEmpty } from 'lodash'
-import { useIntl }          from 'react-intl'
-import AutoSizer            from 'react-virtualized-auto-sizer'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { factsConfig, getFactsData } from './facts'
 import {
+  useAvailableFactsQuery,
   useFactsQuery
 } from './services'
-
 
 export { DidYouKnowWidget as DidYouKnow }
 
 type DidYouKnowWidgetProps = {
   filters: PathFilter | DashboardFilter
-  maxFactPerSlide?: number
-  maxSlideChar?: number
 }
 export const getCarouselFactsMap = (facts: string[]) => {
   let map: Record<number, { facts: string[] }> = {}
@@ -28,59 +27,32 @@ export const getCarouselFactsMap = (facts: string[]) => {
   return map
 }
 
-function DidYouKnowWidget ({
-  filters,
-  maxFactPerSlide,
-  maxSlideChar
-}: DidYouKnowWidgetProps) {
+function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   const intl = useIntl()
   const [offset, setOffset] = useState(0)
-  const [content, setContent] = useState<string[][]>(Array.from({ length: 5 }, () => []))
-  const [carouselFactsMap, setCarouselFactsMap] = useState<Record<number, { facts: string[] }>>({})
-  const { data, isFetching, refetch, isSuccess, isLoading, initialLoadedFacts, availableFacts } =
-    useFactsQuery(
-      { ...filters, requestedList: carouselFactsMap?.[offset]?.facts },
-      {
-        selectFromResult: ({ data, ...rest }) => ({
-          data: getFactsData(data?.facts!, { maxFactPerSlide, maxSlideChar }),
-          availableFacts: data?.availableFacts,
-          initialLoadedFacts: data?.facts.map((fact) => fact.key),
-          ...rest
-        }),
-        skip: !Boolean(content[offset]?.length === 0 )
-      }
-    )
+  const [loaded, setLoaded] = useState<string[]>([])
+  const [content, setContent] = useState<Record<string, string>>({})
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const factListQuery = useAvailableFactsQuery(filters)
+  const factsList = factListQuery.data
+  const factsQuery = useFactsQuery(factsList, loaded, offset, filters)
+
   useEffect(() => {
-    if (data && isSuccess && !isFetching) {
-      const updatedContent = [...content]
-      updatedContent[offset] = data?.[0] ?? []
-      setContent(updatedContent)
+    if (factsQuery.isUninitialized || factsQuery.isFetching) return
+    if (factsQuery.data) {
+      setContent((content) => ({ ...content, ...factsQuery.data }))
+      setLoaded((loaded) => Array.from(new Set([...loaded, ...factsList![offset]!])))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset, isSuccess, isFetching])
-  useEffect(() => {
-    if (content[offset]?.length === 0) {
-      refetch()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset])
+  }, [offset, factsList, factsQuery])
+
   useEffect(() => {
     if (filters) {
-      setContent(Array.from({ length: 5 }, () => []))
+      setLoaded([])
+      setContent({})
       setOffset(0)
     }
   }, [filters])
-  useEffect(() => {
-    if (initialLoadedFacts && availableFacts && isEmpty(carouselFactsMap)) {
-      const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
-        !initialLoadedFacts.includes(item as keyof typeof factsConfig)))
-      newMap[0] = { facts: initialLoadedFacts }
-      if (!isEqual(carouselFactsMap, newMap)) {
-        setCarouselFactsMap(newMap)
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialLoadedFacts])
+
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
   const subTitle = $t({ defaultMessage: 'No data to report' })
@@ -92,22 +64,37 @@ function DidYouKnowWidget ({
     autoplay: false
   }), [])
 
+  const page = factsList && (factsList[offset] ?? [])
+  const dataLoaded = page?.every(key => loaded.includes(key))
+  const hasData = dataLoaded && page?.map(key => content[key]).filter(Boolean).length
+
+  const contentList = !_.isEmpty(factsList)
+    ? factsList!.map((facts) => facts.map(key => content[key]).filter(Boolean))
+    : [[]]
+
   const onChange = useCallback((_: number, nextSlide: number) => {
     setOffset(nextSlide)
   }, [])
 
+  useTrackLoadTime({
+    itemName: widgetsMapping.DID_YOU_KNOW,
+    states: [factsQuery, factListQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
-    <Loader states={[{ isLoading: isFetching || isLoading }]}>
+    <Loader states={[factsQuery, factListQuery]}>
       <AutoSizer>
         {({ height, width }) => (
-          <Carousel contentList={content}
+          <Carousel contentList={contentList}
             title={title}
-            subTitle={!content[offset]?.length ? subTitle : undefined}
+            subTitle={!hasData && dataLoaded ? subTitle : undefined}
             {...carouselProps}
             classList={'carousel-card'}
             beforeChange={onChange}
             offset={offset}
-            style={{ height, width }} ></Carousel>
+            style={{ height, width }}
+          />
         )}
       </AutoSizer>
     </Loader>

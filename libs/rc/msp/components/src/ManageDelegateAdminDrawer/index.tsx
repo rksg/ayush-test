@@ -126,8 +126,13 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
     } else {
       return
     }
+    const rbacPayload = {
+      delegation_type: 'MSP',
+      mspec_list: payload
+    }
     if (tenantId) {
-      saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
+      saveMspAdmins({ payload: isRbacEnabled ? rbacPayload : payload,
+        params: { mspEcTenantId: tenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           setSelected(selectedRows)
           setVisible(false)

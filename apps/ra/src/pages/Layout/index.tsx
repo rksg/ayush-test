@@ -14,7 +14,7 @@ import {
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                 from '@acx-ui/user'
 
-import { ReactComponent as Logo } from '../../assets/Logo.svg'
+import Logo from '../../assets/Logo.png'
 
 import { AccountsDrawer } from './AccountsDrawer'
 import { useMenuConfig }  from './menuConfig'
@@ -28,7 +28,8 @@ function Layout () {
   const canSearch = hasRaiPermission('READ_REPORTS') || hasRaiPermission('READ_HEALTH')
   return (
     <LayoutComponent
-      logo={<TenantNavLink to={''} children={<Logo />} />}
+      logo={<TenantNavLink to={''}
+        children={<img src={Logo} width='180' height='60' alt='Logo' />} />}
       menuConfig={useMenuConfig()}
       content={<Outlet />}
       rightHeaderContent={<>

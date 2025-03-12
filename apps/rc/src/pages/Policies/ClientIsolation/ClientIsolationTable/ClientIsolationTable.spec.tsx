@@ -21,7 +21,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedClientIsolationQueryWithoutActivationData, mockedVenueData } from '../ClientIsolationDetail/__tests__/fixtures'
+import { mockedClientIsolationQueryWithoutActivationData, mockedVenueData, mockedClientIsolationQueryData } from '../ClientIsolationDetail/__tests__/fixtures'
 
 import ClientIsolationTable from './ClientIsolationTable'
 
@@ -209,7 +209,7 @@ describe('ClientIsolationTable', () => {
     })
   })
 
-  it('should render table with rbac api', async () => {
+  it('should render client isolation table with rbac api without activation', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     const mockDeleteFn = jest.fn()
     mockServer.use(
@@ -244,5 +244,36 @@ describe('ClientIsolationTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/ }))
     expect(mockDeleteFn).toBeCalledTimes(1)
+  })
+
+  it('should render client isolation table with rbac api with activation', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    mockServer.use(
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueData))
+      )
+    )
+
+    render(
+      <Provider>
+        <ClientIsolationTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /clientIsolation1/ })
+    expect(row).toBeVisible()
+    // eslint-disable-next-line max-len
+    const colHeaders = (await screen.findAllByRole('columnheader')).map(header => header.textContent)
+    const tableCells = within(row).getAllByRole('cell').map(cell => cell.textContent)
+    expect(tableCells[colHeaders.indexOf('Client Entries')]).toBe('2')
+    expect(tableCells[colHeaders.indexOf('Venues')]).toBe('2')
   })
 })

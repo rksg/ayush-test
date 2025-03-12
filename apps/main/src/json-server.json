@@ -1,31 +1,266 @@
 {
-  "enhancedHotspot20IdentityProviders-query": {
-    "totalCount": 3,
+  "venues-apCompatibilities-query": {
+    "compatibilities": [
+      {
+        "id": "969c2c75335a4a74a13dea76ff3cad8a",
+        "incompatibleFeatures": [
+          {
+            "featureName": "Tunnel Profile",
+            "requirements": [
+              {
+                "firmware": "7.0.0.200.6407",
+                "models": [
+                  "R750",
+                  "T750SE",
+                  "H670",
+                  "H350",
+                  "R850",
+                  "H550",
+                  "R350:R350E",
+                  "T350SE",
+                  "R550",
+                  "R770",
+                  "R650",
+                  "T750",
+                  "R760",
+                  "R350",
+                  "R560",
+                  "R670",
+                  "R370",
+                  "T670",
+                  "T350D",
+                  "T350C",
+                  "T670SN"
+                ]
+              }
+            ],
+            "wifiNetworkIds": [
+              "9d0d0fae42c840df802cf1021fab3538",
+              "de65909787d74b489b44df163a2221a1"
+            ],
+            "featureGroup": "TUNNEL_PROFILE",
+            "featureType": "EDGE",
+            "featureLevel": "VENUE",
+            "incompatibleDevices": [
+              {
+                "firmware": "7.0.0.400.6554",
+                "model": "R550",
+                "count": 1
+              },
+              {
+                "firmware": "7.0.0.200.6407",
+                "model": "R650",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "featureName": "NAT Traversal",
+            "requirements": [
+              {
+                "firmware": "7.1.0.510.849",
+                "models": [
+                  "R750",
+                  "T750SE",
+                  "H670",
+                  "H350",
+                  "R850",
+                  "H550",
+                  "R350:R350E",
+                  "T350SE",
+                  "R550",
+                  "R770",
+                  "R650",
+                  "T750",
+                  "R760",
+                  "R350",
+                  "R560",
+                  "R670",
+                  "R370",
+                  "T670",
+                  "T350D",
+                  "T350C",
+                  "T670SN"
+                ]
+              }
+            ],
+            "wifiNetworkIds": [
+              "9d0d0fae42c840df802cf1021fab3538",
+              "de65909787d74b489b44df163a2221a1"
+            ],
+            "featureGroup": "TUNNEL_PROFILE",
+            "featureType": "EDGE",
+            "featureLevel": "VENUE",
+            "incompatibleDevices": [
+              {
+                "firmware": "7.0.0.400.6554",
+                "model": "R550",
+                "count": 1
+              },
+              {
+                "firmware": "7.0.0.200.6407",
+                "model": "R650",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "featureName": "AFC",
+            "requirements": [
+              {
+                "firmware": "7.0.0.104.1304",
+                "models": [
+                  "R770",
+                  "R760",
+                  "R560"
+                ]
+              },
+              {
+                "firmware": "7.0.0.200.0",
+                "models": [
+                  "T670",
+                  "R670"
+                ]
+              }
+            ],
+            "wifiNetworkIds": [
+              "9d0d0fae42c840df802cf1021fab3538",
+              "de65909787d74b489b44df163a2221a1"
+            ],
+            "featureType": "WIFI",
+            "featureLevel": "VENUE",
+            "incompatibleDevices": [
+              {
+                "firmware": "7.0.0.400.6554",
+                "model": "R550",
+                "count": 1
+              },
+              {
+                "firmware": "7.0.0.200.6407",
+                "model": "R650",
+                "count": 1
+              }
+            ]
+          }
+        ],
+        "total": 2,
+        "incompatible": 2
+      }
+    ],
     "page": 1,
-    "data": [{
-      "id": "6dc2b568c41a4a4581ab9c81d1c9b554",
-      "name": "Identity-1",
-      "naiRealms": [{ "name": "abc.com" }, { "name": "abc_abc.com" }],
-      "authRadiusId": "b6257d19e269495e9f60f3e2fda62af3",
-      "tenantId": "a4c2fc6a9dff40e7a745901921e83477"
-    }, {
-      "id": "a5e7669eec82418cacc0939fc4bcd39f",
-      "name": "Identity-2",
-      "naiRealms": [{ "name": "123.com" }],
-      "roamingConsortiumOIs": [{ "name": "ABC", "organizationId": "112233" }],
-      "authRadiusId": "b6257d19e269495e9f60f3e2fda62af3",
-      "accountingRadiusId": "4e96a5c738bf4fdb85e95a57a2ef2093",
-      "tenantId": "a4c2fc6a9dff40e7a745901921e83477"
-    }, {
-      "id": "f0d4232b695544bdbea160a0f50122e5",
-      "name": "Identity-3",
-      "naiRealms": [{ "name": "xyz.com" }],
-      "plmns": [{ "mcc": 625, "mnc": 12 }],
-      "authRadiusId": "b6257d19e269495e9f60f3e2fda62af3",
-      "accountingRadiusId": "4e96a5c738bf4fdb85e95a57a2ef2093",
-      "networkIds": ["d98c87d16a3342ef8b52d4cb1451d7dd"],
-      "venueIds": ["5c31226d73c242c7bac6a7caa566b0a1"],
-      "tenantId": "a4c2fc6a9dff40e7a745901921e83477"
-    }]
+    "totalCount": 1
+  },
+  "venues-aps-apCompatibilities-query": {
+    "compatibilities": [
+      {
+        "id": "302002015185",
+        "incompatibleFeatures": [
+          {
+            "featureName": "Tunnel Profile",
+            "requirements": [
+              {
+                "firmware": "7.0.0.200.6407",
+                "models": [
+                  "R750",
+                  "T750SE",
+                  "H670",
+                  "H350",
+                  "R850",
+                  "H550",
+                  "R350:R350E",
+                  "T350SE",
+                  "R550",
+                  "R770",
+                  "R650",
+                  "T750",
+                  "R760",
+                  "R350",
+                  "R560",
+                  "R670",
+                  "R370",
+                  "T670",
+                  "T350D",
+                  "T350C",
+                  "T670SN"
+                ]
+              }
+            ],
+            "wifiNetworkIds": [
+              "9d0d0fae42c840df802cf1021fab3538",
+              "de65909787d74b489b44df163a2221a1"
+            ],
+            "featureGroup": "TUNNEL_PROFILE",
+            "featureType": "EDGE",
+            "featureLevel": "VENUE"
+          },
+          {
+            "featureName": "NAT Traversal",
+            "requirements": [
+              {
+                "firmware": "7.1.0.510.849",
+                "models": [
+                  "R750",
+                  "T750SE",
+                  "H670",
+                  "H350",
+                  "R850",
+                  "H550",
+                  "R350:R350E",
+                  "T350SE",
+                  "R550",
+                  "R770",
+                  "R650",
+                  "T750",
+                  "R760",
+                  "R350",
+                  "R560",
+                  "R670",
+                  "R370",
+                  "T670",
+                  "T350D",
+                  "T350C",
+                  "T670SN"
+                ]
+              }
+            ],
+            "wifiNetworkIds": [
+              "9d0d0fae42c840df802cf1021fab3538",
+              "de65909787d74b489b44df163a2221a1"
+            ],
+            "featureGroup": "TUNNEL_PROFILE",
+            "featureType": "EDGE",
+            "featureLevel": "VENUE"
+          },
+          {
+            "featureName": "AFC",
+            "requirements": [
+              {
+                "firmware": "7.0.0.104.1304",
+                "models": [
+                  "R770",
+                  "R760",
+                  "R560"
+                ]
+              },
+              {
+                "firmware": "7.0.0.200.0",
+                "models": [
+                  "T670",
+                  "R670"
+                ]
+              }
+            ],
+            "wifiNetworkIds": [
+              "9d0d0fae42c840df802cf1021fab3538",
+              "de65909787d74b489b44df163a2221a1"
+            ],
+            "featureType": "WIFI",
+            "featureLevel": "VENUE"
+          }
+        ]
+      }
+    ],
+    "page": 1,
+    "totalCount": 1
   }
 }

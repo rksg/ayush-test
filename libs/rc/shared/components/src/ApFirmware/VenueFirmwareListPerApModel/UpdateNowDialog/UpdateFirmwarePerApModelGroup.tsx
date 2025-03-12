@@ -17,7 +17,6 @@ interface UpdateFirmwarePerApModelGroupProps {
 export function UpdateFirmwarePerApModelGroup (props: UpdateFirmwarePerApModelGroupProps) {
   const { $t } = useIntl()
   const { apModels, versionOptions, update, defaultVersion } = props
-  // eslint-disable-next-line max-len
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
 
   const onSelectedVersionChange = (e: RadioChangeEvent) => {

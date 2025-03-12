@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const excludedHours= {
   sun: [],
@@ -35,6 +35,27 @@ export const excludedHours= {
   sat: []
 }
 
+export const mockedIntentEcoFlexStatusTrail = {
+  statusTrail: [
+    {
+      displayStatus: 'applyscheduled',
+      createdAt: '2023-06-26T06:04:52.740Z'
+    },
+    {
+      displayStatus: 'active',
+      createdAt: '2023-06-25T00:00:25.772Z'
+    },
+    {
+      displayStatus: 'applyscheduleinprogress',
+      createdAt: '2023-06-25T00:00:03.058Z'
+    },
+    {
+      displayStatus: 'new',
+      createdAt: '2023-05-17T07:04:11.663Z'
+    }
+  ]
+}
+
 export const mockedIntentEcoFlex = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
@@ -66,23 +87,10 @@ export const mockedIntentEcoFlex = {
       name: '21_US_Beta_Samsung'
     }
   ],
-  statusTrail: [
-    {
-      displayStatus: 'applyscheduled',
-      createdAt: '2023-06-26T06:04:52.740Z'
-    },
-    {
-      displayStatus: 'active',
-      createdAt: '2023-06-25T00:00:25.772Z'
-    },
-    {
-      displayStatus: 'applyscheduleinprogress',
-      createdAt: '2023-06-25T00:00:03.058Z'
-    },
-    {
-      displayStatus: 'new',
-      createdAt: '2023-05-17T07:04:11.663Z'
-    }
-  ],
-  preferences: null
-} as unknown as Intent
+  ...mockedIntentEcoFlexStatusTrail,
+  preferences: null,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
+  }
+} as unknown as IntentDetail

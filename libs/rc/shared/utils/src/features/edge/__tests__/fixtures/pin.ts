@@ -23,14 +23,13 @@ export const mockPinListForMutullyExclusive = {
         { networkId: 'wlan-1' }
       ],
       venueId: 'mock_venue_5',
-      venueName: 'MockVenue1',
+      venueName: 'MockVenue5',
       personaGroupId: 'per-444',
       edgeClusterInfo: {
         id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
         edgeClusterId: '0000000001',
         edgeClusterName: 'Edge1',
         segments: 1,
-        devices: 1,
         dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
         dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
         vniRange: ''
@@ -77,7 +76,6 @@ export const mockPinStatsList = {
         edgeClusterId: '0000000001',
         edgeClusterName: 'Edge1',
         segments: 1,
-        devices: 1,
         dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
         dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
         vniRange: ''
@@ -107,7 +105,6 @@ export const mockPinStatsList = {
         edgeClusterId: '0000000002',
         edgeClusterName: 'Edge2',
         segments: 10,
-        devices: 10,
         dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
         dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
         vniRange: ''
@@ -125,7 +122,6 @@ export const mockPinData = {
   edgeClusterInfo: {
     edgeClusterId: '0000000001',
     segments: 10,
-    devices: 10,
     dhcpInfoId: '1',
     dhcpPoolId: '1'
   },

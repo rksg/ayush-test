@@ -4,9 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, ExpirationType,
-  MacRegListUrlsInfo, RulesManagementUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
+import {
+  AaaUrls, AccessControlUrls, CommonUrlsInfo, ExpirationType,
+  MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
+  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                              from '@acx-ui/user'
@@ -17,7 +20,10 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList, mockAAAPolicyListResponse
+  mockMacRegistrationPoolList,
+  mockUpdatedMacRegistrationPoolList,
+  mockAAAPolicyListResponse,
+  mockSoftGreTable, mockedMacRegistrationPools
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -34,6 +40,17 @@ jest.mock('../utils', () => ({
     vxLanTunnels: undefined
   }),
   useUpdateEdgeSdLanActivations: jest.fn().mockReturnValue(() => {})
+}))
+
+jest.mock('../Venues/TunnelColumn/useTunnelColumn', () => ({
+  ...jest.requireActual('../Venues/TunnelColumn/useTunnelColumn'),
+  useTunnelColumn: jest.fn().mockReturnValue([])
+}))
+
+jest.mock('../../ApCompatibility', () => ({
+  ...jest.requireActual('../../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
 async function fillInBeforeSettings (networkName: string) {
@@ -122,6 +139,14 @@ const policySetList = {
   ]
 }
 
+const mockedAclPolicyResponse = {
+  data: [],
+  fields: ['name', 'id'],
+  totalCount: 0,
+  totalPages: 0,
+  page: 1
+}
+
 describe('NetworkForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'PSK network test'
@@ -140,29 +165,24 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(
-        MacRegListUrlsInfo.createMacRegistrationPool.url,
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
+      rest.post(MacRegListUrlsInfo.createMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(
-        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(macList))
-      ),
-      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
-        .split('?')[0],
-      (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(policySetList))
-      ),
-      rest.post(
-        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        WifiUrlsInfo.getVlanPools.url,
+      rest.post(MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macList))),
+      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
+      rest.get(RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))),
+      rest.post(RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json([{
           tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
           name: 'pool1',
@@ -170,10 +190,40 @@ describe('NetworkForm', () => {
           id: '1c061cf2649344adaf1e79a9d624a451'
         }]))
       ),
-      rest.post(
-        WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
-      )
+      rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getL3AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getApplicationPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
+        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.get(
+        AaaUrls.getAAAPolicyRbac.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            primary: {
+              ip: '1.1.1.1',
+              port: '1812',
+              sharedSecret: '124124124214'
+            }
+          }))
+        }
+      ),
+      rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_, res, ctx) => res(ctx.json({ page: 1, totalCount: 0, data: [] }))),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.post(WifiCallingUrls.queryWifiCalling.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.get(WifiRbacUrlsInfo.getRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.queryMacRegistrationPool.url,
+        (_, res, ctx) => res(ctx.json(mockedMacRegistrationPools)))
     )
   })
 
@@ -234,19 +284,15 @@ describe('NetworkForm', () => {
 
     await screen.findByText(/select mac registration list/i)
 
-    await userEvent.click(await screen.findByRole('button', {
+    await userEvent.click((await screen.findAllByRole('button', {
       name: /add/i
-    }))
+    }))[1])
 
     await screen.findByText(/add mac registration list/i)
 
     const buttons = await screen.findAllByRole('button', {
       name: /cancel/i
     })
-
-    await userEvent.click(await screen.findByRole('button', {
-      name: /add/i
-    }))
 
     await screen.findByText(/add mac registration list/i)
 
@@ -351,5 +397,18 @@ describe('NetworkForm', () => {
     expect(option).toHaveClass('ant-select-item-option-disabled')
     await userEvent.click(option)
     expect(screen.queryAllByTitle('Generate').length).toBe(0)
+  })
+
+  it('should render PSK network with R370 compatibility tooltip', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_R370_TOGGLE)
+
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
+
+    await fillInBeforeSettings('PSK network test')
+
+    const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+    expect(toolTips.length).toBe(1)
+    toolTips.forEach(t => expect(t).toBeVisible())
+    expect(await screen.findByTestId('ApCompatibilityDrawer')).toBeVisible()
   })
 })

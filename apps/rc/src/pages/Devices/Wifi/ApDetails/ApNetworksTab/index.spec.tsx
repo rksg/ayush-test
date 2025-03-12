@@ -7,8 +7,7 @@ import { Provider }                                 from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import { ApNetworksTab } from '.'
@@ -53,6 +52,7 @@ const list = {
 
 const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  venueId: '__mock_venue_id__',
   serialNumber: '302002015736'
 }
 
@@ -89,20 +89,10 @@ describe('Networks Table', () => {
       scopedGuestNetworkIds: []
     }
 
-    const mockApListReq = jest.fn()
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockImplementation(ff =>
         ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
-      mockServer.use(
-        rest.post(
-          CommonUrlsInfo.getApsList.url,
-          (_, res, ctx) => {
-            mockApListReq()
-            return res(ctx.json({ data: [] }))
-          }
-        )
-      )
     })
 
     it('should render table', async () => {
@@ -118,7 +108,6 @@ describe('Networks Table', () => {
       const row = await screen.findByRole('row', { name: /network-01/ })
       expect(row).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Tunnel' })).toBeVisible()
-      await waitFor(() => expect(mockApListReq).toBeCalled())
       expect(row).toHaveTextContent('Tunneled (SE_Cluster 0)')
     })
   })

@@ -42,3 +42,7 @@ export type UseQueryResult<ResultType> = {
 
   refetch: () => void // A function to force refetch the query
 }
+
+// types for 1.9 => 2.3 migration
+
+export type MaybePromise<T> = T | PromiseLike<T>

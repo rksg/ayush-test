@@ -1,0 +1,282 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Intent services should return intentHighlight 1`] = `
+"
+        query IntentHighlight(
+          $path: [HierarchyNodeInput]
+        ) {
+          highlights(path: $path) {
+            rrm {
+              new
+              active
+            }
+            probeflex {
+              new
+              active
+            }
+            ops {
+              new
+              active
+            }
+          }
+        }
+        "
+`;
+
+exports[`Intent services should return intentHighlight 2`] = `
+Object {
+  "path": Array [
+    Object {
+      "name": "Network",
+      "type": "network",
+    },
+  ],
+}
+`;
+
+exports[`formatValues renders elements 1`] = `
+<DocumentFragment>
+  <p>
+    paragraph
+  </p>
+   
+  <ul>
+     
+    <li>
+      item 1
+    </li>
+     
+    <li>
+      item 2
+    </li>
+     
+  </ul>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for active 1`] = `
+<DocumentFragment>
+  <p>
+    IntentAI is active on Venue zone-1.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for applyscheduled 1`] = `
+<DocumentFragment>
+  <p>
+    The change recommendation has been automatically scheduled for 06/17/2023 00:00, by IntentAI.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for applyscheduleinprogress 1`] = `
+<DocumentFragment>
+  <p>
+    IntentAI recommended changes are getting applied to Venue zone-1.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-conflicting-configuration 1`] = `
+<DocumentFragment>
+  <p>
+    No recommendation was generated. Reason:
+  </p>
+   
+  <ul>
+    <li>
+      The network has active Mesh APs, which are currently not supported.
+    </li>
+  </ul>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-no-aps 1`] = `
+<DocumentFragment>
+  <p>
+    No recommendation was generated. Reason:
+  </p>
+   
+  <ul>
+     
+    <li>
+       No APs are detected in the network.
+    </li>
+     
+  </ul>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-not-defined 1`] = `
+<DocumentFragment>
+  Unknown
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-not-enough-data 1`] = `
+<DocumentFragment>
+  <p>
+    No recommendation was generated. Reason:
+  </p>
+   
+  <ul>
+    <li>
+      Insufficient data on neighbour APs.
+    </li>
+  </ul>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-not-enough-license 1`] = `
+<DocumentFragment>
+  <p>
+    No recommendation was generated because IntentAI did not find sufficient licenses for Venue zone-1.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-verified 1`] = `
+<DocumentFragment>
+  <p>
+    IntentAI has validated Venue zone-1 configurations. No new changes have been recommended.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for na-waiting-for-etl 1`] = `
+<DocumentFragment>
+  <p>
+    No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for new 1`] = `
+<DocumentFragment>
+  <p>
+    IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-apply-failed 1`] = `
+<DocumentFragment>
+  <p>
+    IntentAI recommended changes failed to apply to Venue zone-1 due to:
+  </p>
+   
+  <ul>
+    <li>
+      errMsg from the notification service
+    </li>
+  </ul>
+   
+  <p>
+    The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-by-default 1`] = `
+<DocumentFragment>
+  <p>
+    The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-from-active 1`] = `
+<DocumentFragment>
+  <p>
+    The Intent is paused by the user action "Pause" initiated by the user. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-from-inactive 1`] = `
+<DocumentFragment>
+  <p>
+    The Intent is paused by the user action "Pause" initiated by the user. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-revert-failed 1`] = `
+<DocumentFragment>
+  <p>
+    The Revert action on the IntentAI recommended change, failed due to the following reason:
+  </p>
+   
+  <ul>
+    <li>
+      errMsg from the notification service
+    </li>
+  </ul>
+   
+  <p>
+    The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-revert-failed 2`] = `
+<DocumentFragment>
+  <p>
+    The Revert action on the IntentAI recommended change, failed due to the following reason:
+  </p>
+   
+  <ul>
+    <li>
+      R750_181_74 (80:F0:CF:0A:11:D0): AP removed
+    </li>
+    <li>
+      H350_116_189 (B4:79:C8:3E:BE:10): AP removed
+    </li>
+  </ul>
+   
+  <p>
+    The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for paused-reverted 1`] = `
+<DocumentFragment>
+  <p>
+    The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for revertscheduled 1`] = `
+<DocumentFragment>
+  <p>
+    The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert" initiated by the user fakeUserWithRevert lastName5566.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for revertscheduleinprogress 1`] = `
+<DocumentFragment>
+  <p>
+    IntentAI recommended changes are getting reverted, to the earlier configuration, on Venue zone-1.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for scheduled 1`] = `
+<DocumentFragment>
+  <p>
+    The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize" initiated by the user fakeUserWithOptimize lastName5566.
+  </p>
+</DocumentFragment>
+`;
+
+exports[`getStatusTooltip returns correct tooltip for scheduled-one-click 1`] = `
+<DocumentFragment>
+  <p>
+    The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize" initiated by the user fakeUserWithOneClickOptimize lastName5566.
+  </p>
+</DocumentFragment>
+`;

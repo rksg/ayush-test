@@ -9,15 +9,15 @@ import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, Table, TableProps, Button, showToast, Filter }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
-import { DownloadOutlined }                                               from '@acx-ui/icons'
-import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
-import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                 from '@acx-ui/types'
-import { hasCrossVenuesPermission, useUserProfileContext }                from '@acx-ui/user'
-import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button, showToast, Filter }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
+import { DownloadOutlined }                                                                                                      from '@acx-ui/icons'
+import { useAddExportSchedulesMutation }                                                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, Event, EventExportSchedule, EventScheduleFrequency, TableQuery }                                        from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                        from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, useUserProfileContext }                                 from '@acx-ui/user'
+import { computeRangeFilter, DateRangeFilter, exportMessageMapping, getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 import { useIsEdgeReady } from '../useEdgeActions'
@@ -79,8 +79,11 @@ export const EventTable = ({
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
@@ -133,7 +136,7 @@ export const EventTable = ({
 
     showToast({
       type: 'info',
-      duration: 10,
+      duration: 5,
       closable: false,
       extraContent: <div style={{ width: '60px' }}>
         <Loading3QuartersOutlined spin
@@ -269,11 +272,17 @@ export const EventTable = ({
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
     },
-    {
+    ...(getDetail(data) ? [{
       title: defineMessage({ defaultMessage: 'Detail' }),
-      value: getDetail(data)
-    }
+      value: getDetail(data) || noDataDisplay
+    }] : [])
   ]
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.EVENT_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return <Loader states={[tableQuery]}>
     <Table
@@ -286,8 +295,16 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={!isCustomRole && hasCrossVenuesPermission()
+      iconButton={!isCustomRole && (rbacOpsApiEnabled ?
+        hasAllowedOperations([
+          getOpsApi(CommonUrlsInfo.getEventList),
+          getOpsApi(CommonUrlsInfo.getEventListMeta),
+          getOpsApi(CommonUrlsInfo.addExportSchedules),
+          getOpsApi(CommonUrlsInfo.updateExportSchedules)
+        ])
+        : hasCrossVenuesPermission())
         ? tableIconButtonConfig : {} as IconButtonProps}
+      filterPersistence={enabledUXOptFeature}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

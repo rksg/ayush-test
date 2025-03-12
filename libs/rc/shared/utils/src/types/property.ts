@@ -82,6 +82,7 @@ export interface PropertyUnit {
   id: string,
   name: string,
   status: PropertyUnitStatus,
+  identityCount?: number,
   resident?: {
     name?: string,
     email?: string,
@@ -111,6 +112,13 @@ export interface PropertyUnit {
     meteringProfileId: string,
     profileExpiry: string
   }
+}
+
+export interface UnitLinkedPersona {
+  unitId: string,
+  personaType: string,
+  personaId: string,
+  requestId: string
 }
 
 export interface UnitPersonaConfig {

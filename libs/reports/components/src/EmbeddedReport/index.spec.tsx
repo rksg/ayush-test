@@ -62,7 +62,8 @@ const get = jest.mocked(config.get)
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  showActionModal: jest.fn()
+  showActionModal: jest.fn(),
+  getDefaultEarliestStart: jest.fn()
 }))
 const actionModal = jest.mocked(showActionModal)
 
@@ -251,54 +252,56 @@ describe('EmbeddedDashboard', () => {
     await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
   })
 
-  it('should render OVERVIEW dashboard for ALTO wihout scopes and custom system role', async () => {
-    userProfileR1.mockReturnValue({
-      profile: {
-        scopes: undefined,
-        customRoleType: CustomRoleType.SYSTEM,
-        customRoleName: RolesEnumR1.ADMINISTRATOR,
-        roles: ['custom-system-role']
-      }
+  it('should render OVERVIEW dashboard for ALTO without scopes and custom system role',
+    async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: undefined,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: RolesEnumR1.ADMINISTRATOR,
+          roles: ['custom-system-role']
+        }
+      })
+      get.mockReturnValue('')
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      localeContext.mockReturnValue({
+        messages: { locale: null as unknown as string },
+        lang: 'en-US',
+        setLang: () => {}
+      })
+
+      render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.OVERVIEW} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
     })
-    get.mockReturnValue('')
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    localeContext.mockReturnValue({
-      messages: { locale: null as unknown as string },
-      lang: 'en-US',
-      setLang: () => {}
+
+  it('should call getScroll and set height on mount and cleanup state on unmount',
+    async () => {
+      mockGetScrollSize.mockResolvedValue({ height: 100 })
+
+      // Create a mock iframe element
+      const mockIframeElement = document.createElement('embedded-iframe')
+      const mockQuerySelector = jest.spyOn(document, 'querySelector') as jest.Mock
+      mockQuerySelector.mockReturnValue(mockIframeElement)
+
+      const { unmount } = render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(mockGetScrollSize).toHaveBeenCalledTimes(1))
+
+      expect(mockIframeElement.style.height).toBe('100px')
+
+      unmount()
+
+      await waitFor(() => expect(mockUnmount).toHaveBeenCalledTimes(1))
+      mockQuerySelector.mockRestore()
     })
-
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.OVERVIEW} />
-    </Provider>, { route: { params } })
-
-    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
-  })
-
-  it('should call getScroll and set height on mount and cleanup state on unmount', async () => {
-    mockGetScrollSize.mockResolvedValue({ height: 100 })
-
-    // Create a mock iframe element
-    const mockIframeElement = document.createElement('embedded-iframe')
-    const mockQuerySelector = jest.spyOn(document, 'querySelector') as jest.Mock
-    mockQuerySelector.mockReturnValue(mockIframeElement)
-
-    const { unmount } = render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.AP_DETAIL} />
-    </Provider>, { route: { params } })
-
-    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockGetScrollSize).toHaveBeenCalledTimes(1))
-
-    expect(mockIframeElement.style.height).toBe('100px')
-
-    unmount()
-
-    await waitFor(() => expect(mockUnmount).toHaveBeenCalledTimes(1))
-    mockQuerySelector.mockRestore()
-  })
 
   it('should set the Host name to devalto for dev', () => {
     process.env = { NODE_ENV: 'development' }
@@ -411,11 +414,14 @@ describe('getSupersetRlsClause',() => {
       paths as NetworkPath[], radioBands as RadioBand[])
     const rlsClauseOverviewReport = getSupersetRlsClause(ReportType.OVERVIEW,
         paths as NetworkPath[], radioBands as RadioBand[])
+    const emptyRlsClauseOverviewReport = getSupersetRlsClause(ReportType.OVERVIEW,
+          [] as NetworkPath[], [] as RadioBand[])
 
     expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
     expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
     expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
     expect(rlsClauseOverviewReport).toMatchSnapshot('rlsClauseOverviewReport')
+    expect(emptyRlsClauseOverviewReport).toMatchSnapshot('emptyRlsClauseOverviewReport')
   })
 })
 

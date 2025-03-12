@@ -8,12 +8,13 @@ import {
   PortalInstancesTable,
   ServiceConfigTemplateDetailsLink
 } from '@acx-ui/rc/components'
-import { useGetPortalTemplateQuery } from '@acx-ui/rc/services'
+import { useGetPortalTemplateQuery }        from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
   generateConfigTemplateBreadcrumb,
-  Demo
+  Demo,
+  useTemplateAwareServiceAllowedOperation
 }  from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -34,6 +35,8 @@ export default function PortalServiceDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateDetailsLink
+            // eslint-disable-next-line max-len
+            rbacOpsIds={useTemplateAwareServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT)}
             type={ServiceType.PORTAL}
             oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}

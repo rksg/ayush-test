@@ -38,7 +38,13 @@ export function ApGroupVlanRadioTable () {
       dataSource={tableData}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={{ type: 'radio' ,
+        getCheckboxProps: (record) => {
+          return {
+            disabled: record.isOweMaster === false && record.owePairNetworkId !== undefined
+          }
+        }
+      }}
     />
   )
 }

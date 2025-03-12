@@ -9,10 +9,11 @@ import { TenantLink }    from '@acx-ui/react-router-dom'
 export function VenueSettingsHeader (props: {
   venue: VenueExtended | undefined,
   isUseVenueSettings: boolean,
-  handleVenueSetting: () => void
+  handleVenueSetting: () => void,
+  disabled?: boolean
 }) {
   const { $t } = useIntl()
-  const { venue, isUseVenueSettings, handleVenueSetting } = props
+  const { venue, isUseVenueSettings, handleVenueSetting, disabled } = props
 
   return (
     <Row gutter={20}>
@@ -39,7 +40,7 @@ export function VenueSettingsHeader (props: {
         </Space>
       </Col>
       <Col span={8}>
-        <Button type='link' onClick={handleVenueSetting}>
+        <Button type='link' disabled={disabled} onClick={handleVenueSetting}>
           {isUseVenueSettings ?
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })

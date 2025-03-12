@@ -131,6 +131,9 @@ exports[`Brand360 resets SLAs 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c5 .ant-picker-input .ant-picker-clear span[role=img] svg {
@@ -738,17 +741,9 @@ exports[`Brand360 resets SLAs 1`] = `
                         class="ant-card-head-title"
                       >
                         <div
-                          class="ant-space ant-space-horizontal ant-space-align-center"
+                          class="c11"
                         >
-                          <div
-                            class="ant-space-item"
-                          >
-                            <div
-                              class="c11"
-                            >
-                              Service Level Agreements
-                            </div>
-                          </div>
+                          Service Level Agreements
                         </div>
                       </div>
                       <div

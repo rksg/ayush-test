@@ -3,17 +3,15 @@ import { forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState } fro
 import { Form, Switch }                              from 'antd'
 import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
-import { validate }                                  from 'uuid'
 
 import { Alert, Loader }                                                                                                                                        from '@acx-ui/components'
+import { baseUrlFor }                                                                                                                                           from '@acx-ui/config'
 import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
-import { DefaultUIConfiguration, UIConfiguration }                                                                                                              from '@acx-ui/rc/utils'
-
+import { DefaultUIConfiguration, UIConfiguration, validateWifi4EuNetworkId }                                                                                    from '@acx-ui/rc/utils'
 
 import { BackgroundContent } from './BackgroundContent'
 import { BodyContent }       from './BodyContent'
 import { ButtonContent }     from './ButtonContent'
-import Wifi4eu               from './images/WiFi4euBanner.svg'
 import { LogoContent }       from './LogoContent'
 import { PopOver }           from './PopOver'
 import { PoweredByContent }  from './PoweredByContent'
@@ -45,6 +43,7 @@ function PortalComponentList (props: {
 }) {
   const { display, onDisplayChange, value, onValueChange } = props
   const valueKeys = Object.keys(PortalComponentEnum) as Array<keyof typeof PortalComponentEnum>
+  const [wifi4euVisible, setWifi4euVisible] = useState(false)
   const { $t } = useIntl()
   return (
     <Form layout='vertical'>
@@ -61,13 +60,23 @@ function PortalComponentList (props: {
               checked={display.get(key)}
               onClick={(v) => {
                 onDisplayChange(new Map(display).set(key, v))
+                if (key === 'wifi4eu') {
+                  setWifi4euVisible(v)
+                }
               }}
             />
             {PortalComponentEnum[key] ===PortalComponentEnum.wifi4eu &&
                <WiFi4euModal wifi4eu={value.uiStyleSchema.wifi4EuNetworkId}
-                 onChange={(v) => onValueChange({ ...value,
-                   uiStyleSchema: { ...value.uiStyleSchema, wifi4EuNetworkId: v }
-                 })}/>
+                 visible={wifi4euVisible}
+                 onChange={(v) => {
+                   onValueChange({ ...value,
+                     uiStyleSchema: { ...value.uiStyleSchema, wifi4EuNetworkId: v }
+                   })
+                   setWifi4euVisible(false)
+                 }
+                 }
+                 onCancel={()=>setWifi4euVisible(false)}
+               />
             }
           </UI.CommonLabel>
           ))}
@@ -150,11 +159,6 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     }
   }, [configurationQuery])
 
-  const validateWifi4EuNetworkId = (id?: string) => {
-    if (!id || !validate(id))
-      return false
-    return true
-  }
 
   const handleSubmit = async () => {
     if (!value) return true
@@ -333,12 +337,17 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 !validateWifi4EuNetworkId(value.uiStyleSchema.wifi4EuNetworkId) &&
                 <Alert style={{ width: 400 }}
                   message={$t(defineMessage(
-                    { defaultMessage: 'Invalid Wifi4EU Configuration' }))
+                    { defaultMessage: 'Please provide a valid UUID for Wifi4EU Configuration' }))
                   }
                   type='error'
                   showIcon/>
                 }
-                {display.get('wifi4eu') && <UI.Img src={Wifi4eu} alt={'Wifi4eu'} height={120}/> }
+                {display.get('wifi4eu') && <UI.Img
+                  src={baseUrlFor('/assets/images/portal/WiFi4euBanner.png')}
+                  alt='Wifi4eu'
+                  width={420}
+                  height={120}
+                />}
                 {display.get('logo') && <LogoContent
                   value={value}
                   onDisabled={()=> {

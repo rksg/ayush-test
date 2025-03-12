@@ -50,10 +50,10 @@ COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
 
 RUN echo NX_GIT_SHA=$CIRCLE_SHA1 >> .env
 RUN echo NX_GIT_DATE=$(date -R) >> .env
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra
+RUN node ./node_modules/.bin/nx run ra:build
 
 ###############################################################
-FROM nginx:1.21.6-alpine
+FROM nginx:1.27.4-alpine
 
 WORKDIR /usr/share/nginx/html
 
@@ -64,19 +64,19 @@ COPY tools/docker/nginx/ra.conf /etc/nginx/conf.d/default.conf
 COPY tools/docker/nginx/conf.d/gzip.conf /etc/nginx/conf.d/gzip.conf
 COPY tools/docker/nginx/globalValues-ra.json.template /etc/nginx/globalValues.json.template
 COPY tools/docker/nginx/nginx.conf \
-  tools/docker/nginx/start-nginx.sh \
+  tools/docker/nginx/start-nginx-ra.sh \
   /etc/nginx/
 
 COPY --from=build /app/dist/apps ./
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p ai && \
   # Move all files into it
-  cp -a ra/* tenant/t && \
+  cp -a ra/* ai && \
   # Remove the ra folder
   rm -rf ra
 
 EXPOSE 8080
 
-CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]
+CMD ["/bin/sh", "/etc/nginx/start-nginx-ra.sh"]

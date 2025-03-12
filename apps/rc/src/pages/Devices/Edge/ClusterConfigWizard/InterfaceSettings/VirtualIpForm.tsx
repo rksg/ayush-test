@@ -7,16 +7,20 @@ import { useStepFormContext }                        from '@acx-ui/components'
 import { EdgeClusterVirtualIpSettingForm, TypeForm } from '@acx-ui/rc/components'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { transformFromApiToFormData } from '../SubInterfaceSettings/utils'
 
-import { getLanInterfaces } from './utils'
+import { getAvailableVipInterfaces } from './utils'
 
 export const VirtualIpForm = () => {
   const { $t } = useIntl()
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const { clusterInfo, clusterSubInterfaceSettings } = useContext(ClusterConfigWizardContext)
   const { form } = useStepFormContext()
-  const lanInterfaces = getLanInterfaces(
+
+  const subInterfaceSettingsFormData = transformFromApiToFormData(clusterSubInterfaceSettings)
+  const lanInterfaces = getAvailableVipInterfaces(
     form.getFieldValue('lagSettings'),
     form.getFieldValue('portSettings'),
+    subInterfaceSettingsFormData,
     clusterInfo
   )
 

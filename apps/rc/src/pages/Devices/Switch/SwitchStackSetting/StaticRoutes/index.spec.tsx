@@ -1,9 +1,8 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import { rest }       from 'msw'
+import { rest } from 'msw'
 
-import { venueApi }        from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { switchApi, venueApi } from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider, store }     from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -25,8 +24,8 @@ jest.mock('react-router-dom', () => ({
 describe('edit switch/stack form', () => {
   const params = { tenantId: 'tenant-id', switchId: 'switch-id', serialNumber: 'serial-number' }
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    initialize()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getStaticRoutes.url,
         (_, res, ctx) => res(ctx.json(staticRoutes))),

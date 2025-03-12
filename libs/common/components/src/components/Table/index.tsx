@@ -59,7 +59,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered' | 'compactWidget'
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<TableAction>
@@ -76,22 +76,25 @@ export interface TableProps <RecordType>
     enableApiFilter?: boolean
     floatRightFilters?: boolean
     alwaysShowFilters? : boolean
-    selectedFilters?: Filter,
+    selectedFilters?: Filter
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
-    iconButton?: IconButtonProps,
-    filterableWidth?: number,
-    searchableWidth?: number,
-    stickyHeaders?: boolean,
-    stickyPagination?: boolean,
-    enableResizableColumn?: boolean,
-    enablePagination?: boolean,
-    onDisplayRowChange?: (displayRows: RecordType[]) => void,
-    getAllPagesData?: () => RecordType[],
+    iconButton?: IconButtonProps
+    filterableWidth?: number
+    searchableWidth?: number
+    stickyHeaders?: boolean
+    stickyPagination?: boolean
+    stickyOffsetY?: number
+    enableResizableColumn?: boolean
+    enablePagination?: boolean
+    onDisplayRowChange?: (displayRows: RecordType[]) => void
+    getAllPagesData?: () => RecordType[]
     filterPersistence?: boolean
+    highLightValue?: string
+    preventRenderHeader?: boolean
   }
 
 export interface TableHighlightFnArgs {
@@ -152,7 +155,8 @@ function useSelectedRowKeys <RecordType> (
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
-  enablePagination = false, selectedFilters = {}, filterPersistence = false, ...props
+  enablePagination = false, selectedFilters = {}, filterPersistence = false,
+  highLightValue, preventRenderHeader, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -205,6 +209,8 @@ function Table <RecordType extends Record<string, any>> ({
     }
     return () => updateSearch.cancel()
   }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => setSearchValue(highLightValue ?? ''), [highLightValue])
 
   useEffect(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
@@ -377,7 +383,7 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasRowActionsOffset = [
+  const hasRowActionsOffset = !preventRenderHeader && [
     props.rowSelection?.type
       && props.tableAlertRender !== false
       && !props.rowSelection?.alwaysShowAlert,
@@ -386,9 +392,9 @@ function Table <RecordType extends Record<string, any>> ({
     groupable.length,
     iconButton
   ].some(Boolean)
-  const shouldRenderHeader = props.alwaysShowFilters
-    || !hasRowSelected || props.tableAlertRender === false
-  const hasHeaderItems = shouldRenderHeader && (
+  const shouldRenderHeader = !preventRenderHeader && (props.alwaysShowFilters
+    || !hasRowSelected || props.tableAlertRender === false)
+  const hasHeaderItems = !preventRenderHeader && (
     Boolean(filterables.length) || Boolean(searchables.length) ||
     Boolean(groupable.length) || Boolean(iconButton)
   )
@@ -508,7 +514,7 @@ function Table <RecordType extends Record<string, any>> ({
                 highlightStyle={{
                   fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
                 searchWords={[searchValue]}
-                textToHighlight={textToHighlight}
+                textToHighlight={textToHighlight.toString()}
                 autoEscape
               />
             : textToHighlight
@@ -529,9 +535,10 @@ function Table <RecordType extends Record<string, any>> ({
   const headerItems = hasHeaderItems ? <>
     <div>
       <Space size={12}>
-        {Boolean(searchables.length) &&
+        {Boolean(searchables.length) && highLightValue === undefined &&
           renderSearch<RecordType>(
-            intl, searchables, searchValue, setSearchValue, searchWidth
+            intl, searchables, searchValue, setSearchValue, searchWidth,
+            type === 'compactWidget' ? $t({ defaultMessage: 'Search...' }) : undefined
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
@@ -551,8 +558,9 @@ function Table <RecordType extends Record<string, any>> ({
     <UI.HeaderComps>
       {(
         Boolean(activeFilters.length) ||
-        (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
-        isGroupByActive)
+        (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH &&
+          highLightValue === undefined) ||
+        isGroupByActive) && type !== 'compactWidget'
         && <Button
           style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
           onClick={() => {
@@ -564,10 +572,16 @@ function Table <RecordType extends Record<string, any>> ({
           {$t({ defaultMessage: 'Clear Filters' })}
         </Button>}
       { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
+      { type === 'compactWidget' && <div>{$t({ defaultMessage: 'Total results:' })}
+        <span style={{ marginLeft: '2px' }}>{getFilteredData<RecordType>(
+          dataSource, filterValues, activeFilters, searchables, searchValue)?.length}</span>
+      </div>
+      }
     </UI.HeaderComps>
   </> : null
 
-  let offsetHeader = layout.pageHeaderY
+  const pageHeaderY = layout.pageHeaderY + (props.stickyOffsetY ?? 0)
+  let offsetHeader = pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
   const sticky = stickyHeaders &&
@@ -581,7 +595,7 @@ function Table <RecordType extends Record<string, any>> ({
   return <UI.Wrapper
     style={{
       ...(style ?? {}),
-      '--sticky-offset': `${layout.pageHeaderY}px`,
+      '--sticky-offset': `${pageHeaderY}px`,
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
       '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}

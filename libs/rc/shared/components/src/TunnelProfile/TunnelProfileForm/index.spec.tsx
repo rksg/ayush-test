@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Features }                          from '@acx-ui/feature-toggle'
-import { getTunnelProfileFormDefaultValues } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }        from '@acx-ui/test-utils'
+import { Features, useIsBetaEnabled }                                 from '@acx-ui/feature-toggle'
+import { getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }                                 from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -29,9 +29,30 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+jest.mock('../../ApCompatibility/ApCompatibilityToolTip', () => ({
+  ApCompatibilityToolTip: (props: { onClick: () => void }) =>
+    <div data-testid='ApCompatibilityToolTip'>
+      <button onClick={props.onClick}>See compatibility</button>
+    </div>
+}))
+
+jest.mock('../../Compatibility/Edge/EdgeCompatibilityDrawer', () => ({
+  ...jest.requireActual('../../Compatibility/Edge/EdgeCompatibilityDrawer'),
+  EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
+    <div data-testid='EdgeCompatibilityDrawer'>
+      <span>Feature:{props.featureName}</span>
+      <button onClick={props.onClose}>Close</button>
+    </div>
+}))
+
 jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('TunnelProfileForm', () => {
@@ -118,6 +139,9 @@ describe('TunnelProfileForm', () => {
   })
 
   it('should correctly lock fields', async () => {
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff =>(ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
+
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
       form.setFieldValue('disabledFields', [
@@ -127,7 +151,8 @@ describe('TunnelProfileForm', () => {
         'forceFragmentation',
         'ageTimeMinutes',
         'ageTimeUnit',
-        'type'
+        'type',
+        'natTraversalEnabled'
       ])
       return form
     })
@@ -141,10 +166,13 @@ describe('TunnelProfileForm', () => {
     expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
-    const fragmentToggle = screen.getByRole('switch')
-    expect(fragmentToggle.id).toBe('forceFragmentation')
-    expect(fragmentToggle).toBeDisabled()
+    const switchBtns = screen.getAllByRole('switch')
+    const fragmentSwitch = switchBtns.find(btn => btn.id === 'forceFragmentation')
+    expect(fragmentSwitch).toBeDisabled()
     expect(screen.getByRole('spinbutton')).toBeDisabled()
+    expect(screen.getByRole('combobox')).toBeDisabled()
+    const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+    expect(natTraversalSwitch).toBeDisabled()
     expect(screen.getByRole('combobox')).toBeDisabled()
   })
 
@@ -292,6 +320,77 @@ describe('TunnelProfileForm', () => {
       await userEvent.type(keepAliveIntervalInput, '0')
       expect(await screen.findByText('Tunnel Keep Alive Interval must be between 1 and 5'))
         .toBeVisible()
+    })
+  })
+
+  describe('when NAT-Traversal Support is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+          || ff === Features.EDGE_PIN_HA_TOGGLE
+          || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+    })
+
+    it('NAT-T switch should be enable when type is vlan_vxlan', async () => {
+      const user = userEvent.setup()
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      await user.click(screen.getByRole('radio', { name: 'VLAN to VNI map' }))
+      const switchBtns = screen.getAllByRole('switch')
+      const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+      expect(natTraversalSwitch).toBeEnabled()
+    })
+
+    it('NAT-T switch should be disabled when type is vxlan', async () => {
+      const user = userEvent.setup()
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      const switchBtns = screen.getAllByRole('switch')
+      const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+      expect(natTraversalSwitch).toBeEnabled()
+      await user.click(switchBtns[0])
+      await user.click(screen.getByRole('radio', { name: 'VNI' }))
+      expect(natTraversalSwitch).not.toBeChecked()
+      expect(natTraversalSwitch).toBeDisabled()
+    })
+
+    it('should show "NAT Traversal" compatibility component', async () => {
+      const user = userEvent.setup()
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const compatibilityToolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(compatibilityToolTips.length).toBe(1)
+      compatibilityToolTips.forEach(t => expect(t).toBeVisible())
+      await user.click(compatibilityToolTips[0])
+      const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
+      expect(compatibilityDrawer).toBeVisible()
+      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.NAT_TRAVERSAL)
+    })
+
+    it('should show BetaIndicator when "NAT Traversal" is beta feature', async () => {
+      jest.mocked(useIsBetaEnabled).mockReturnValue(true)
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
     })
   })
 })

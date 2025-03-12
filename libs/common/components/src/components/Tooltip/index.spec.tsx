@@ -34,4 +34,33 @@ describe('Tooltip', () => {
     const icon = await screen.findByTestId('InformationSolid')
     expect(icon).toBeVisible()
   })
+
+  it('renders Tooltip.Warning', async () => {
+    render(<Tooltip.Warning title='question tooltip' iconStyle={{ width: '16px' }}/>)
+    const icon = await screen.findByTestId('WarningCircleOutlined')
+    expect(icon).toBeVisible()
+  })
+
+  it('renders Tooltip.Warning with filled', async () => {
+    render(<Tooltip.Warning title='question tooltip' isFilled iconStyle={{ width: '16px' }}/>)
+    const icon = await screen.findByTestId('WarningCircleSolid')
+    expect(icon).toBeVisible()
+  })
+
+  it('renders Tooltip.Warning with triangle', async () => {
+    render(<Tooltip.Warning title='question tooltip'
+      isTriangle
+      iconStyle={{ width: '16px' }}/>)
+    const icon = await screen.findByTestId('WarningTriangleOutlined')
+    expect(icon).toBeVisible()
+  })
+
+  it('renders Tooltip.Warning with triangle and filled', async () => {
+    render(<Tooltip.Warning title='question tooltip'
+      isFilled
+      isTriangle
+      iconStyle={{ width: '16px' }}/>)
+    const icon = await screen.findByTestId('WarningTriangleSolid')
+    expect(icon).toBeVisible()
+  })
 })

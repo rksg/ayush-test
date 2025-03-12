@@ -3,13 +3,18 @@ import { rest }  from 'msw'
 
 import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
 import { configTemplateApi }                                                      from '@acx-ui/rc/services'
-import { ConfigTemplateUrlsInfo }                                                 from '@acx-ui/rc/utils'
+import { ConfigTemplateType, ConfigTemplateUrlsInfo }                             from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockedConfigTemplate, mockedDriftTenants, mockedMSPCustomers } from './__tests__/fixtures'
 
 import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
+
+jest.mock('../CustomerFirmwareReminder', () => ({
+  ...jest.requireActual('../CustomerFirmwareReminder'),
+  CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
+}))
 
 describe('ShowDriftsDrawer', () => {
   beforeEach(() => {
@@ -35,8 +40,9 @@ describe('ShowDriftsDrawer', () => {
     const targetInstance = mockedMSPCustomers.data[0]
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('checkbox', { name: /Sync all drifts for all customers/i })).toBeInTheDocument()
+
     expect(await screen.findByRole('combobox')).toBeInTheDocument()
-    expect(await screen.findByText(`Configurations in ${targetInstance.name}`)).toBeInTheDocument()
+    expect(await screen.findByText(`${targetInstance.name}`)).toBeInTheDocument()
   })
 
   it('enables/disable the Sync button when instances are selected/unselected', async () => {
@@ -47,7 +53,7 @@ describe('ShowDriftsDrawer', () => {
     expect(await screen.findByRole('button', { name: /Sync/i })).toBeDisabled()
 
     const targetInstance = mockedMSPCustomers.data[0]
-    const targetInstanceNameReg = new RegExp(`Configurations in ${targetInstance.name}`, 'i')
+    const targetInstanceNameReg = new RegExp(targetInstance.name, 'i')
 
     const instanceElement = await screen.findByRole('button', { name: targetInstanceNameReg })
     await userEvent.click(within(instanceElement).getByRole('checkbox')) // Select
@@ -80,20 +86,18 @@ describe('ShowDriftsDrawer', () => {
     // Check all instances
     await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
     await waitFor(() => {
-      const allInstanceElements = screen.queryAllByRole('button', { name: /Configurations in/i })
-
-      for (const instanceElement of allInstanceElements) {
-        expect(within(instanceElement).getByRole('checkbox')).toBeChecked()
+      for (const instanceElement of screen.queryAllByRole('checkbox')) {
+        expect(instanceElement).toBeChecked()
       }
     })
+
+    expect(screen.getByText(`${mockedMSPCustomers.data.length} selected`)).toBeInTheDocument()
 
     // Uncheck all instances
     await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
     await waitFor(() => {
-      const allInstanceElements = screen.queryAllByRole('button', { name: /Configurations in/i })
-
-      for (const instanceElement of allInstanceElements) {
-        expect(within(instanceElement).getByRole('checkbox')).not.toBeChecked()
+      for (const instanceElement of screen.queryAllByRole('checkbox')) {
+        expect(instanceElement).not.toBeChecked()
       }
     })
   })
@@ -105,20 +109,26 @@ describe('ShowDriftsDrawer', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(
-      screen.queryAllByRole('button', { name: /Configurations in/i }).length
-    ).toBe(mockedMSPCustomers.data.length)
-
     const searchInput = await screen.findByRole('combobox')
 
     const targetInstance = mockedMSPCustomers.data[0]
 
     await userEvent.type(searchInput, targetInstance.name.slice(0, 3))
-    await userEvent.click(await screen.findByText(targetInstance.name))
 
+    // Select the target instance in the dropdown
+    await userEvent.click(
+      await screen.findByText(targetInstance.name, { selector: '.ant-select-item-option-content' })
+    )
+
+    // Check the target instance is displayed after filtering
     expect(
-      screen.queryAllByRole('button', { name: /Configurations in/i }).length
-    ).toBe(1)
+      await screen.findByRole('button', { name: new RegExp(targetInstance.name, 'i') })
+    ).toBeInTheDocument()
+
+    // Check the other instance is not displayed after filtering
+    expect(
+      screen.queryByRole('button', { name: new RegExp(mockedMSPCustomers.data[1].name, 'i') })
+    ).not.toBeInTheDocument()
   })
 
   it('should call the sync API when the sync button is clicked', async () => {
@@ -140,20 +150,39 @@ describe('ShowDriftsDrawer', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
+    // Check all instances
     await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
-    await waitFor(() => {
-      const allInstanceElements = screen.queryAllByRole('button', { name: /Configurations in/i })
 
-      for (const instanceElement of allInstanceElements) {
-        expect(within(instanceElement).getByRole('checkbox')).toBeChecked()
+    await waitFor(() => {
+      for (const instanceElement of screen.queryAllByRole('checkbox')) {
+        expect(instanceElement).toBeChecked()
       }
     })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Sync' }))
+    await userEvent.click(screen.getByRole('button', { name: /Sync/i }))
 
     await waitFor(() => {
       expect(mockPatchDriftReportFn).toHaveBeenCalledTimes(mockedDriftTenants.data.length)
     })
+  })
+
+  it('should render the customer firmware reminder', async () => {
+    const venueTemplate = {
+      id: '1',
+      name: 'Template 1',
+      createdOn: 1690598400000,
+      createdBy: 'Author 1',
+      type: ConfigTemplateType.VENUE,
+      lastModified: 1690598400000,
+      lastApplied: 1690598405000
+    }
+    render(<Provider>
+      <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={venueTemplate} />
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    expect(await screen.findByText('CustomerFirmwareReminder')).toBeInTheDocument()
   })
 
   describe('SelectedCustomersIndicator', () => {

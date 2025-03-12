@@ -16,7 +16,7 @@ import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum } from '@a
 import { TenantLink }                                                   from '@acx-ui/react-router-dom'
 
 
-import { ApDataContext, ApEditContext } from '../..'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 import { MeshUplinkApsTable }                                        from './MeshUplinkApsTable'
 import { NoUplinkAPInfo, RadioDescription, VenueMeshNotEnabledInfo } from './styledComponents'
@@ -94,9 +94,11 @@ function SettingMessage () {
   </VenueMeshNotEnabledInfo>
 }
 
-export function ApMesh () {
+export function ApMesh (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
+
   const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -279,7 +281,7 @@ export function ApMesh () {
               label={$t({ defaultMessage: 'Mesh Role' })}
               rules={[{ required: true }]}
             >
-              <Radio.Group onChange={onMeshModeChanged}>
+              <Radio.Group disabled={!isAllowEdit} onChange={onMeshModeChanged}>
                 <Space direction='vertical'>
                   {meshModes.map(({ value, display, description }) => (
                     <Radio key={value} value={value}>
@@ -297,7 +299,7 @@ export function ApMesh () {
             <Form.Item
               name='uplinkMode'
               label={$t({ defaultMessage: 'Uplink Selection' })}>
-              <Radio.Group onChange={onUplinkModeChanged}>
+              <Radio.Group disabled={!isAllowEdit} onChange={onUplinkModeChanged}>
                 <Space direction='vertical'>
                   {uplinkModes.map(({ value, display }) => (
                     <Radio key={value} value={value}>{$t(display)}</Radio>
@@ -309,6 +311,7 @@ export function ApMesh () {
             <div style={{ width: '455px' }}>
               { meshUplinkAps?.length > 0 ?
                 <MeshUplinkApsTable
+                  disabled={!isAllowEdit}
                   tableData={meshUplinkAps}
                   selected={uplinkMac}
                   onSelectChanged={handleUplinkSelectChanged}

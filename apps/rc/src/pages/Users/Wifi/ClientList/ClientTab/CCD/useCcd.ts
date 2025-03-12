@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { showActionModal }                                   from '@acx-ui/components'
-import { CatchErrorResponse, closeCcdSocket, initCcdSocket } from '@acx-ui/rc/utils'
+import { showActionModal }               from '@acx-ui/components'
+import { closeCcdSocket, initCcdSocket } from '@acx-ui/rc/utils'
+import { CatchErrorResponse }            from '@acx-ui/utils'
 
 
 const socketTimeout = 600000 // 10 mins

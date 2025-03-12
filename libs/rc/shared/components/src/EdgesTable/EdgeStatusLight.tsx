@@ -36,7 +36,7 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
       text: $t({ defaultMessage: 'Operational' })
     },
     [EdgeStatusEnum.APPLYING_FIRMWARE]: {
-      color: 'var(--acx-semantics-green-50)',
+      color: 'var(--acx-semantics-yellow-50)',
       text: $t({ defaultMessage: 'Applying firmware' })
     },
     [EdgeStatusEnum.APPLYING_CONFIGURATION]: {

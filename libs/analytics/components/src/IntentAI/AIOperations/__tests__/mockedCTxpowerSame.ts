@@ -1,4 +1,22 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
+
+export const mockedStatusTrail = {
+  statusTrail: [{
+    status: 'new',
+    statusReason: null,
+    displayStatus: 'new',
+    createdAt: '2024-08-28T06:05:53.608Z'
+  }]
+}
+
+export const mockedKPIs = {
+  statusTrail: [{
+    status: 'new',
+    statusReason: null,
+    displayStatus: 'new',
+    createdAt: '2024-08-28T06:05:53.608Z'
+  }]
+}
 
 export const mocked = {
   id: 'ab853454-ba3b-4ae2-9d2d-b2184c05f3c5',
@@ -16,20 +34,12 @@ export const mocked = {
     { type: 'domain', name: '52-IN-BDC-Analytics-CK' },
     { type: 'zone', name: 'CHETHAN-HOME' }
   ],
-  statusTrail: [{
-    status: 'new',
-    statusReason: null,
-    displayStatus: 'new',
-    createdAt: '2024-08-28T06:05:53.608Z'
-  }],
-  kpi_session_time_on_24_g_hz: {
-    data: { timestamp: '2024-09-02T00:00:00.000Z', result: 0.9059967585089141 },
-    compareData: null
-  },
-  kpi_co_channel_interference_ratio: {
-    data: { timestamp: '2024-09-02T00:00:00.000Z', result: 0.16350931836211163 },
-    compareData: null
-  },
+  ...mockedStatusTrail,
+  ...mockedKPIs,
   currentValue: 'Full',
-  recommendedValue: '-1dB'
-} as unknown as Intent
+  recommendedValue: '-1dB',
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
+} as unknown as IntentDetail

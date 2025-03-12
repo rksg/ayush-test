@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -16,12 +16,14 @@ import {
 import {
   useTableQuery, ApplicationPolicy, AclOptionType, Network,
   WifiNetwork, getScopeKeyByPolicy, PolicyOperation, PolicyType,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 
 import { defaultNetworkPayload }                from '../../../NetworkTable'
 import { AddModeProps }                         from '../../AccessControlForm'
 import { ApplicationDrawer }                    from '../../AccessControlForm/ApplicationDrawer'
+import { getToolTipByNetworkFilterOptions }     from '../AccessControlPolicy'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
 
 const defaultPayload = {
@@ -30,6 +32,7 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -105,6 +108,7 @@ const ApplicationPolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Application Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
@@ -129,6 +133,7 @@ const ApplicationPolicyComponent = () => {
 
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -137,6 +142,7 @@ const ApplicationPolicyComponent = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -217,7 +223,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

@@ -2,11 +2,16 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Loader, Card }                               from '@acx-ui/components'
-import { GoogleMeets, Teams, Webex, Workplace, Zoom } from '@acx-ui/icons'
-import { TenantLink }                                 from '@acx-ui/react-router-dom'
+import { Loader, Card } from '@acx-ui/components'
+import { TenantLink }   from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import GoogleMeets from './GoogleMeets.svg'
+import * as UI     from './styledComponents'
+import Teams       from './Teams.svg'
+import Webex       from './Webex.svg'
+import Workplace   from './Workplace.svg'
+import Zoom        from './Zoom.svg'
+
 
 type InsightType = {
   name: string
@@ -16,7 +21,9 @@ type InsightType = {
   latency: string
 }
 
-export function AppInsights () {
+const icon = (src: string) => <img src={src} width={24} height={24} alt='icon' />
+
+export default function AppInsights () {
   const { $t } = useIntl()
   const title = {
     title: $t({ defaultMessage: 'AppInsights' }),
@@ -30,35 +37,35 @@ export function AppInsights () {
       name: 'Microsoft Teams',
       id: 1,
       metric: 'Overall QoE Score',
-      icon: <Teams />,
+      icon: icon(Teams),
       latency: '10ms'
     },
     {
       name: 'Zoom',
       id: 2,
       metric: 'Overall QoE Score',
-      icon: <Zoom />,
+      icon: icon(Zoom),
       latency: '20ms'
     },
     {
       name: 'Cisco WebEx',
       id: 3,
       metric: 'Overall QoE Score',
-      icon: <Webex />,
+      icon: icon(Webex),
       latency: '30ms'
     },
     {
       name: 'Google Meet',
       id: 4,
       metric: 'Overall QoE Score',
-      icon: <GoogleMeets />,
+      icon: icon(GoogleMeets),
       latency: '40ms'
     },
     {
       name: 'Workplace',
       id: 5,
       metric: 'Overall QoE Score',
-      icon: <Workplace />,
+      icon: icon(Workplace),
       latency: '50ms'
     }
   ]

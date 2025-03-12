@@ -2777,7 +2777,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
                   >
                     <a
                       href="/analytics/dashboard"
-                      rel="noreferrer noopener"
+                      rel="opener"
                       target="_blank"
                     >
                       <span

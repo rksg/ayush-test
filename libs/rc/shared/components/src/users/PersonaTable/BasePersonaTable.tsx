@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }        from 'antd'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
@@ -11,12 +12,13 @@ import {
   useGetPersonaGroupByIdQuery,
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
-  useLazyGetPropertyUnitByIdQuery,
+  useLazyBatchGetPropertyUnitsByIdsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }                    from '@acx-ui/user'
-import { exportMessageMapping }                                        from '@acx-ui/utils'
+import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission }                                 from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -25,7 +27,6 @@ import { usePersonaListQuery }                                      from '../../
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
-import { usePersonaAsyncHeaders }                                   from '../usePersonaAsyncHeaders'
 
 const IdentitiesContext = createContext({} as {
   setIdentitiesCount: (data: number) => void
@@ -79,6 +80,13 @@ function useColumns (
       ...props.email
     },
     {
+      key: 'phoneNumber',
+      dataIndex: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      sorter: true,
+      ...props.phoneNumber
+    },
+    {
       key: 'description',
       dataIndex: 'description',
       title: $t({ defaultMessage: 'Description' }),
@@ -121,46 +129,52 @@ function useColumns (
         ,
         ...props.identityId
       } as TableColumn<Persona>],
-    {
-      key: 'groupId',
-      dataIndex: 'group',
-      title: $t({ defaultMessage: 'Identity Group' }),
-      sorter: true,
-      render: (_, row) => {
-        const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
-        return <IdentityGroupLink personaGroupId={row.groupId} name={name} />
-      },
-      filterMultiple: false,
-      filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
-      ...props.groupId
-    },
-    {
-      key: 'vlan',
-      dataIndex: 'vlan',
-      title: $t({ defaultMessage: 'VLAN' }),
-      sorter: true,
-      ...props.vlan
-    },
-    {
-      key: 'assignedAp',
-      dataIndex: 'assignedAp',
-      title: $t({ defaultMessage: 'Assigned AP' }),
-      render: (_, row) => {
-      // TODO: fetch AP info by MacAddress?
-        return row?.ethernetPorts?.[0]?.name
-      },
-      ...props.ethernetPorts
-    },
-    {
-      key: 'ethernetPorts',
-      dataIndex: 'ethernetPorts',
-      title: $t({ defaultMessage: 'Assigned Port' }),
-      render: (_, row) => {
-        return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
-      },
-      ...props.ethernetPorts
-    },
-    ...(networkSegmentationEnabled ? [{
+    ...(props.groupId?.disable)
+      ? []
+      : [{
+        key: 'groupId',
+        dataIndex: 'group',
+        title: $t({ defaultMessage: 'Identity Group' }),
+        sorter: true,
+        render: (_, row) => {
+          const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
+          return <IdentityGroupLink personaGroupId={row.groupId} name={name} />
+        },
+        filterMultiple: false,
+        filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
+        ...props.groupId
+      } as TableColumn<Persona>],
+    ...(props.vlan?.disable)
+      ? []
+      : [{
+        key: 'vlan',
+        dataIndex: 'vlan',
+        title: $t({ defaultMessage: 'VLAN' }),
+        sorter: true,
+        ...props.vlan
+      }],
+    ...(props.ethernetPorts?.disable)
+      ? []
+      : [{
+        key: 'assignedAp',
+        dataIndex: 'assignedAp',
+        title: $t({ defaultMessage: 'Assigned AP' }),
+        render: (_, row) => {
+          // TODO: fetch AP info by MacAddress?
+          return row?.ethernetPorts?.[0]?.name
+        },
+        ...props.ethernetPorts
+      } as TableColumn<Persona>,
+      {
+        key: 'ethernetPorts',
+        dataIndex: 'ethernetPorts',
+        title: $t({ defaultMessage: 'Assigned Port' }),
+        render: (_, row) => {
+          return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
+        },
+        ...props.ethernetPorts
+      } as TableColumn<Persona>],
+    ...((!props.vni?.disable && networkSegmentationEnabled) ? [{
       key: 'vni',
       dataIndex: 'vni',
       title: $t({ defaultMessage: 'Segment No.' }),
@@ -179,15 +193,29 @@ type PersonaTableColProps = {
   [key in keyof Persona]?: PersonaTableCol
 }
 export interface PersonaTableProps {
+  mode?: 'display' | 'selectable',
+  defaultSelectedPersonaId?: string,
+  onChange?: (persona?: Persona) => void
   personaGroupId?: string,
   colProps: PersonaTableColProps,
-  settingsId?: string
+  settingsId?: string,
+  disableAddDevices?: boolean
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
-  const { personaGroupId, colProps, settingsId = 'base-persona-table' } = props
+  const {
+    mode, personaGroupId,
+    colProps, settingsId = 'base-persona-table', onChange,
+    disableAddDevices
+  } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isIdentityRefactor = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
+
+  const basePath = useTenantLink('/users/identity-management/identity-group')
+  const navigate = useNavigate()
+
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
@@ -203,35 +231,41 @@ export function BasePersonaTable (props: PersonaTableProps) {
     { params: { groupId: personaGroupId } },
     { skip: !personaGroupId }
   )
-  const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
+  const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
-  const { customHeaders } = usePersonaAsyncHeaders()
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
+  const isSelectMode = mode === 'selectable'
 
   const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
 
   useEffect(() => {
-    if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
+    if (!propertyEnabled || personaGroupQuery.isLoading) return
     const venueId = personaGroupQuery.data?.propertyId
     if (!venueId) return
 
-    const pool = new Map()
+    setVenueId(venueId)
+  }, [personaGroupQuery.data])
+
+  useEffect(() => {
+    if (!venueId || !personaListQuery.data?.data) return
+    const unitIds: string[] = []
 
     personaListQuery.data?.data.forEach(persona => {
-      if (persona.identityId) {
-        const unitId = persona.identityId
-        getUnitById({ params: { venueId, unitId } })
-          .then(result => {
-            if (result.data) {
-              pool.set(unitId, result.data.name)
-            }
-          })
+      const unitId = persona.identityId
+      if (unitId && !unitPool.has(unitId)) {
+        unitIds.push(unitId)
       }
     })
-
-    setVenueId(venueId)
-    setUnitPool(pool)
-  }, [personaListQuery.isLoading, personaGroupQuery.data])
+    getUnitsByIds({ payload: { venueId, ids: unitIds } })
+      .then(units => {
+        if (units.data) {
+          units.data.forEach(unit => {
+            unitPool.set(unit.id, unit.name)
+          })
+          setUnitPool(unitPool)
+        }
+      })
+  }, [venueId, personaListQuery.data?.data])
 
   const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
     const hasSubMessages = error.data?.subErrors
@@ -260,8 +294,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     try {
       await uploadCsv({
         params: { groupId: personaGroupId ?? groupId },
-        payload: formData,
-        customHeaders
+        payload: formData
       }).unwrap()
       setUploadCsvDrawerVisible(false)
     } catch (error) {
@@ -281,29 +314,51 @@ export function BasePersonaTable (props: PersonaTableProps) {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersona)],
         onClick: () => {
-        // if user is under PersonaGroup page, props groupId into Drawer
-          setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+          if (isIdentityRefactor) {
+            let pathname = basePath.pathname
+            if (personaGroupId) {
+              pathname = pathname.concat(`/${personaGroupId}`)
+            }
+            navigate({ ...basePath, pathname: `${pathname}/identity/create` })
+          } else {
+            // if user is under PersonaGroup page, props groupId into Drawer
+            setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+          }
         }
       },
-      {
-        label: $t({ defaultMessage: 'Import From File' }),
-        onClick: () => setUploadCsvDrawerVisible(true)
-      }] : []
+      ...isSelectMode
+        ? []
+        : [{
+          label: $t({ defaultMessage: 'Import From File' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.importPersonas)],
+          onClick: () => setUploadCsvDrawerVisible(true)
+        }]] : []
 
   const rowActions: TableProps<Persona>['rowActions'] =
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           onClick: ([data], clearSelection) => {
-            setDrawerState({ data, isEdit: true, visible: true })
+            if (isIdentityRefactor) {
+              let pathname = basePath.pathname
+              if (data.groupId) {
+                pathname = pathname.concat(`/${data.groupId}`)
+                navigate({ ...basePath, pathname: `${pathname}/identity/${data.id}/edit` })
+              }
+            } else {
+              setDrawerState({ data, isEdit: true, visible: true })
+            }
             clearSelection()
           },
           visible: (selectedItems => selectedItems.length === 1)
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonas)],
           // We would not allow the user to delete the persons which was created by the Unit.
           disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
           onClick: (selectedItems, clearSelection) => {
@@ -337,8 +392,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
                 deletePersonas({
                   params: { groupId: personaGroupId ?? selectedItems[0].groupId },
-                  payload: ids,
-                  customHeaders
+                  payload: ids
                 }).unwrap()
                   .then(() => {
                     clearSelection()
@@ -371,6 +425,13 @@ export function BasePersonaTable (props: PersonaTableProps) {
   }
 
   setIdentitiesCount?.(personaListQuery.data?.totalCount || 0)
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.IDENTITY_TABLE,
+    states: [personaListQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader
       states={[
@@ -387,13 +448,19 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onChange={personaListQuery.handleTableChange}
         rowKey='id'
         actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={isSelectMode ? [] : filterByAccess(rowActions)}
         rowSelection={
-          hasCrossVenuesPermission({ needGlobalPermission: true })
-          && { type: personaGroupId ? 'checkbox' : 'radio' }}
+          isSelectMode
+            ? {
+              type: 'radio',
+              onChange: (items) => onChange?.(personaListQuery.data?.data
+                ?.find(p => p.id === items[0]))
+            }
+            : hasCrossVenuesPermission({ needGlobalPermission: true })
+            && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
-        iconButton={{
-          icon: <DownloadOutlined data-testid={'export-persona'} />,
+        iconButton={isSelectMode ? undefined : {
+          icon: <DownloadOutlined data-testid={'export-persona'}/>,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersona
         }}
@@ -404,6 +471,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         data={drawerState.data}
         isEdit={drawerState.isEdit}
         onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
+        disableAddDevices={disableAddDevices}
       />}
       {uploadCsvDrawerVisible && <ImportFileDrawer
         title={$t({ defaultMessage: 'Import from file' })}

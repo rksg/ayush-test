@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }  from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, SimpleListTooltip } from '@acx-ui/rc/components'
+import { Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteIdentityProviderMutation,
@@ -17,13 +18,12 @@ import {
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   IdentityProviderViewModel,
   Network,
   AAAViewModalType,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -70,6 +70,7 @@ export default function IdentityProviderTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.DELETE),
       onClick: (selectedRows: IdentityProviderViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
@@ -77,6 +78,7 @@ export default function IdentityProviderTable () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -94,43 +96,20 @@ export default function IdentityProviderTable () {
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Identity Provider' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
-        extra={filterByAccessForServicePolicyMutation([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}
-            scopeKey={getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)}>
-            <Button
-              type='primary'
-              disabled={tableQuery.data?.totalCount! >= IDENTITY_PROVIDER_MAX_COUNT}>
-              {$t({ defaultMessage: 'Add Identity Provider' })}
-            </Button>
-          </TenantLink>
-        ])}
+    <Loader states={[tableQuery]}>
+      <Table<IdentityProviderViewModel>
+        settingsId={settingsId}
+        columns={useColumns()}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='id'
+        rowActions={allowedRowActions}
+        rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
-      <Loader states={[tableQuery]}>
-        <Table<IdentityProviderViewModel>
-          settingsId={settingsId}
-          columns={useColumns()}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={allowedRowActions}
-          rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-        />
-      </Loader>
-    </>
+    </Loader>
   )
 }
 

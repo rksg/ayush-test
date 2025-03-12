@@ -30,8 +30,12 @@ import {
   PhyTypeConstraintEnum,
   ManagementFrameMinimumPhyRateEnum,
   MtuTypeEnum,
-  SoftGreViewData
+  SoftGreViewData,
+  IsolatePacketsTypeEnum,
+  Persona
 } from '@acx-ui/rc/utils'
+
+export const mockedVenueId = '__MOCKED_VENUE_ID__'
 
 export const successResponse = {
   requestId: 'request-id'
@@ -122,7 +126,7 @@ export const venueData = {
   createdDate: '2022-07-08T04:59:22.351+00:00',
   description: 'My-Venue',
   floorPlans: [],
-  id: '4c778ed630394b76b17bce7fe230cf9f',
+  id: mockedVenueId,
   name: 'My-Venue',
   updatedDate: '2022-07-08T04:59:22.351+00:00'
 }
@@ -369,6 +373,17 @@ export const mockEthProfiles = {
       ]
     }
   ]
+}
+export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
+export const mockDefaultTunkEthertnetPortProfile = {
+  id: mockDefaultTrunkEthertnetPortProfileId,
+  tenantId: 'tenant-id',
+  name: 'Default Trunk',
+  type: 'TRUNK',
+  untagId: 1,
+  vlanMembers: '1-4094',
+  authType: 'DISABLED',
+  isDefault: true
 }
 
 export const venueSetting = {
@@ -3241,6 +3256,7 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       status: PropertyUnitStatus.ENABLED,
       dpsks: [],
       personaId: 'persona-1',
+      identityCount: 2,
       vni: 0
     }, {
       id: 'unit-id-2',
@@ -3248,6 +3264,7 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       status: PropertyUnitStatus.ENABLED,
       dpsks: [],
       personaId: 'persona-2',
+      identityCount: 0,
       vni: 1
     }
   ]
@@ -3261,6 +3278,11 @@ export const mockPropertyUnit: PropertyUnit = {
 
 export const venueSyslog = {
   serviceProfileId: '31846cfe930b49b4802b302f35029589',
+  enabled: true
+}
+
+export const venueIot = {
+  mqttBrokerAddress: '1234.ruckus.com',
   enabled: true
 }
 
@@ -3507,6 +3529,51 @@ export const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
   ]
 }
 
+export const mockPersonaList: NewTableResult<Persona> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'persona-id-1',
+      name: 'persona-name-1',
+      email: 'persona1@mail.com',
+      groupId: 'persona-group-id-1',
+      dpskGuid: 'dpsk-guid-1',
+      dpskPassphrase: 'dpsk-passphrase-1',
+      deviceCount: 12,
+      revoked: false,
+      ethernetPorts: [{
+        portIndex: 1,
+        personaId: 'persona-id-1',
+        macAddress: 'ap-mac-address-1'
+      }]
+    },
+    {
+      id: 'persona-id-2',
+      name: 'persona-name-2',
+      groupId: 'persona-group-id-1',
+      email: 'persona2@mail.com',
+      dpskGuid: 'dpsk-guid-2',
+      dpskPassphrase: 'dpsk-passphrase-2',
+      revoked: true,
+      ethernetPorts: [{
+        portIndex: 1,
+        personaId: 'persona-id-2',
+        macAddress: 'ap-mac-address-2'
+      }]
+    }
+  ]
+}
+
+export const mockedUnitLinkedIdentity = {
+  unitId: '069c06765c9841fcaf35bb5dbd2319eb',
+  personaType: 'Linked',
+  personaId: 'persona-id-1',
+  requestId: 'request-id-1'
+}
+
 export const mockVenueConfigTemplates = {
   fields: [
     'name',
@@ -3564,6 +3631,11 @@ export const mockedRogueApPolicyRbac = {
     }
   ],
   id: '6015cbb1000f419bb08a04bc6c8fe70c'
+}
+
+export const mockedRebootTimeout = {
+  gatewayLossTimeout: 7200,
+  serverLossTimeout: 7200
 }
 
 export const mockSoftGreTable = {
@@ -3637,4 +3709,105 @@ export const mockSoftGreTable = {
       ]
     }
   ] as SoftGreViewData[]
+}
+
+export const mockedClientIsolationProfileId1 = '__ClientIsolationProfileId1__'
+export const mockedClientIsolationProfileId2 = '__ClientIsolationProfileId2__'
+export const mockedClientIsolationProfileName1 = 'clientIsolation1'
+export const mockedClientIsolationProfileName2 = 'clientIsolation2'
+export const mockedClientIsolation2 = {
+  id: mockedClientIsolationProfileId2,
+  name: mockedClientIsolationProfileName2,
+  description: 'Hello Client',
+  allowlist: [
+    {
+      mac: 'AA:BB:CC:DD:EE:11',
+      description: 'Client A'
+    },
+    {
+      mac: 'AA:BB:CC:DD:EE:22',
+      description: 'Client B'
+    },
+    {
+      mac: 'AA:BB:CC:DD:EE:33',
+      description: 'Client C'
+    }
+  ]
+}
+
+
+export const mockedClientIsolationQueryData = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: mockedClientIsolationProfileId1,
+      name: mockedClientIsolationProfileName1,
+      description: '',
+      clientEntries: [
+        'aa:21:92:3e:33:e0',
+        'e6:e2:fd:af:54:49'
+      ],
+      activations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          wifiNetworkId: 'bd789b85931b40fe94d15028dffc6214'
+        },
+        {
+          venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
+          wifiNetworkId: '936ad54680ba4e5bae59ae1eb817ca24'
+        }
+      ],
+      venueActivations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          apModel: 'R610',
+          apSerialNumbers: ['121749001049'],
+          portId: 1
+        },
+        {
+          venueId: mockedVenueId,
+          apModel: 'T750',
+          apSerialNumbers: ['121749001051'],
+          portId: 1
+        }
+      ],
+      apActivations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          apModel: 'R510',
+          apSerialNumber: '121749001050',
+          portId: 2
+        }
+      ]
+    },
+    {
+      id: mockedClientIsolationProfileId2,
+      name: mockedClientIsolationProfileName2,
+      description: '',
+      clientEntries: [
+        'AA:BB:CC:DD:EE:11',
+        'AA:BB:CC:DD:EE:22',
+        'AA:BB:CC:DD:EE:33'
+      ]
+    }
+  ]
+}
+
+export const mockedVenueLanPortSettings1 = {
+  clientIsolationEnabled: true,
+  clientIsolationSettings: {
+    packetsType: IsolatePacketsTypeEnum.UNICAST,
+    autoVrrp: false
+  },
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings2 = {
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings3 = {
+  enabled: true
 }

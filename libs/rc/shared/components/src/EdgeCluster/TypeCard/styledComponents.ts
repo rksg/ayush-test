@@ -32,11 +32,18 @@ export const IconWrapper = styled.div`
 type WrapperProps = {
   hasWarning: boolean
   disabled: boolean
+  width?: string
+  height?: string
 }
 export const Wrapper = styled.div<WrapperProps>`
-  width: 260px;
-  height: 142px;
-  max-height: 142px;
+  ${props => props.width ? `width: ${props.width};` : 'width: 260px;'}
+  ${props => props.height ? `
+    height: ${props.height};
+    max-height: ${props.height};
+    ` : `
+    height: 142px;
+    max-height: 142px;
+    `}
 
   ${(props) => (props.disabled
     ? ''

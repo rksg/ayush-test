@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/query'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 import { cloneDeep, find }                         from 'lodash'
 
@@ -44,7 +44,9 @@ import {
   NewTableResult,
   transferToTableResult,
   MacRegistrationPool,
-  TxStatus
+  TxStatus,
+  NewAPModel,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -52,7 +54,13 @@ import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   aggregatedRbacNetworksVenueData,
-  aggregatedRbacVenueNetworksData, fetchRbacAccessControlPolicyNetwork, fetchRbacAccessControlSubPolicyNetwork,
+  aggregatedRbacVenueNetworksData,
+  fetchEnhanceRbacApGroupNetworkVenueList,
+  fetchEnhanceRbacNetworkVenueList,
+  fetchEnhanceRbacVenueNetworkList,
+  fetchNetworkVlanPoolList,
+  fetchRbacAccessControlPolicyNetwork,
+  fetchRbacAccessControlSubPolicyNetwork,
   fetchRbacApGroupNetworkVenueList,
   fetchRbacNetworkVenueList,
   fetchRbacVenueNetworkList,
@@ -227,14 +235,38 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) || []
+        // vlan pooling
+        const networkIds = networkList?.data?.map(n => n.id) ?? []
+        if (networkIds.length > 0) {
+          const vlanPoolListQuery = await fetchWithBQ({
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
+            body: JSON.stringify({
+              fields: [ 'id' , 'name', 'wifiNetworkIds'],
+              filters: { wifiNetworkIds: networkIds }
+            })
+          })
+          const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+
+          networkList.data.forEach(network => {
+            const networkId = network.id
+            const networkVlanPool = vlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+            if (networkVlanPool) {
+              network.vlanPool = {
+                name: networkVlanPool.name
+              }
+            }
+          })
+        }
+
+        // apCompatibily
+        const apNetworkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) ?? []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           const apCompatibilitiesReq = {
             ...createHttpRequest(WifiRbacUrlsInfo.getNetworkApCompatibilities, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
             body: JSON.stringify({
               filters: {
-                wifiNetworkIds: networkIds,
+                wifiNetworkIds: apNetworkIds,
                 featureLevels: [IncompatibleFeatureLevelEnum.WIFI_NETWORK]
               },
               page: 1,
@@ -246,7 +278,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           const apCompatibilitiesResponse = (apCompatibilitiesQuery.data) as CompatibilityResponse
           const apCompatibilities = apCompatibilitiesResponse?.compatibilities
 
-          networkIds.forEach((id:string, index:number) => {
+          apNetworkIds.forEach((id:string, index:number) => {
             networkIdsToIncompatible[id] = apCompatibilities?.[index]?.incompatible ?? 0
           })
         } catch (e) {
@@ -480,8 +512,13 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         if (networkDeepData) {
           const arg = {
             params,
-            payload: {}
+            payload: { page: 1, pageSize: 10000 }
           }
+
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], false, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
 
           const {
             error: networkVenuesListQueryError,
@@ -509,6 +546,111 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
+          }
+
+          if (!accessControlPolicyNetwork?.data.length && Object.keys(accessControlSubPolicyNetwork).length && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization = {
+              ...networkDeepData.wlan.advancedCustomization,
+              ...accessControlSubPolicyNetwork
+            }
+          }
+        }
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const useCases = [
+            'UpdateNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
+          ]
+
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }),
+    // replace getNetworkDeep
+    getNetworkDeepV2: build.query<NetworkSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(
+            WifiRbacUrlsInfo.getNetwork,
+            params,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          )
+        )
+        const networkDeepData = networkQuery.data as NetworkSaveData
+
+        if (networkDeepData) {
+          const arg = {
+            params,
+            payload: { page: 1, pageSize: 10000 }
+          }
+
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], false, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
+          const {
+            error: networkVenuesListQueryError,
+            networkDeep
+          } = await fetchEnhanceRbacNetworkVenueList(arg, fetchWithBQ)
+
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
+          const {
+            error: accessControlSubPolicyNetworkError,
+            data: accessControlSubPolicyNetwork
+          } = await fetchRbacAccessControlSubPolicyNetwork(arg, fetchWithBQ)
+
+          if (networkVenuesListQueryError)
+            return { error: networkVenuesListQueryError }
+
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
+          if (accessControlSubPolicyNetworkError)
+            return { error: accessControlSubPolicyNetworkError }
+
+          if (networkDeep?.venues) {
+            networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
           }
 
           if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
@@ -589,15 +731,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    getVenueNetworkApGroup: build.query<TableResult<NetworkVenue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
+
     apNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApNetworkList, params)
@@ -609,7 +743,73 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    getRbacApNetworkList: build.query<TableResult<Network | WifiNetwork>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { serialNumber } = arg.params || {}
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
 
+        // get current AP (AP List filter by serial)
+        const apListReq = {
+          ...createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, customHeaders),
+          body: JSON.stringify({
+            entityType: 'aps',
+            fields: ['name', 'serialNumber', 'apGroupId', 'venueId'],
+            filters: { serialNumber: [serialNumber] }
+          })
+        }
+        const apListQuery = await fetchWithBQ(apListReq)
+        const apList = apListQuery.data as TableResult<NewAPModel>
+        const apGroupId = apList?.data?.[0].apGroupId
+
+
+        // get AP's network (filter by apGroup ID)
+        const payload = (arg.payload ?? {}) as {
+          searchString?: string,
+          fields?: string[],
+          page?: number,
+          pageSize?: number }
+
+        const NetworkListReq = {
+          ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, undefined, customHeaders),
+          body: JSON.stringify({
+            ...payload,
+            filters: {
+              'venueApGroups.apGroupIds': [apGroupId]
+            }
+          })
+        }
+
+        const networkListQuery = await fetchWithBQ(NetworkListReq)
+        const networkList = networkListQuery.data as TableResult<WifiNetwork>
+        const networkIds = networkList.data.map(network => network.id)
+
+        // vlan pooling
+        if (networkIds.length > 0) {
+          const vlanPoolListQuery = await fetchWithBQ({
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
+            body: JSON.stringify({
+              fields: [ 'id' , 'name', 'wifiNetworkIds'],
+              filters: { wifiNetworkIds: networkIds }
+            })
+          })
+          const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+
+          networkList.data.forEach(network => {
+            const networkId = network.id
+            const networkVlanPool = vlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+            if (networkVlanPool) {
+              network.vlanPool = {
+                name: networkVlanPool.name
+              }
+            }
+          })
+        }
+
+        return { data: networkList }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     networkVenueListV2: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const {
@@ -746,6 +946,74 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           networkDeep,
           venueIds
         } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
+
+        if (networkVenuesListQueryError)
+          return { error: networkVenuesListQueryError }
+
+        const venueIdsToIncompatible:{ [key:string]: number } = {}
+        if (isPayloadHasField(arg.payload, 'incompatible') && !arg.payload?.isTemplate) {
+          try {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiRbacUrlsInfo.getVenueApCompatibilities, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+              body: JSON.stringify({
+                filters: {
+                  venueIds: venueIds,
+                  wifiNetworkIds: [arg.params!.networkId],
+                  featureLevels: [IncompatibleFeatureLevelEnum.VENUE, IncompatibleFeatureLevelEnum.WIFI_NETWORK]
+                },
+                page: 1,
+                pageSize: 100
+              })
+            }
+
+            const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+            const apCompatibilitiesResponse = (apCompatibilitiesQuery.data) as CompatibilityResponse
+            const apCompatibilities = apCompatibilitiesResponse?.compatibilities
+
+            apCompatibilities.forEach((item: Compatibility) => {
+              venueIdsToIncompatible[item.id] = item.incompatible ?? 0
+            })
+          } catch (e) {
+          // eslint-disable-next-line no-console
+            console.error('networkVenueTable getApCompatibilitiesNetwork error:', e)
+          }
+        }
+
+        const aggregatedList = aggregatedRbacNetworksVenueData(
+          networkVenuesList, networkViewmodel, networkDeep, venueIdsToIncompatible)
+
+        return { data: aggregatedList }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'UpdateNetworkDeep',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
+          ], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+
+    enhanceNetworkVenueTableV2: build.query<TableResult<Venue>, RequestPayload<{ isTemplate?: boolean }>>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const {
+          error: networkVenuesListQueryError,
+          networkVenuesList,
+          networkViewmodel,
+          networkDeep,
+          venueIds
+        } = await fetchEnhanceRbacNetworkVenueList(arg, fetchWithBQ)
 
         if (networkVenuesListQueryError)
           return { error: networkVenuesListQueryError }
@@ -1002,6 +1270,72 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    // method name will be renamed after feature flag is removed
+    enhanceVenueNetworkTableV2: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const {
+          error: networkListQueryError,
+          networkList,
+          networkDeepListList,
+          networkIds } = await fetchEnhanceRbacVenueNetworkList(arg, fetchWithBQ)
+
+        if (networkListQueryError)
+          return { error: networkListQueryError }
+
+        const networkIdsToIncompatible:{ [key:string]: number } = {}
+        if (!(arg.payload as any).isTemplate) {
+          try {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiRbacUrlsInfo.getNetworkApCompatibilities, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+              body: JSON.stringify({
+                filters: {
+                  venueIds: [ arg.params!.venueId],
+                  wifiNetworkIds: networkIds,
+                  featureLevels: [IncompatibleFeatureLevelEnum.VENUE, IncompatibleFeatureLevelEnum.WIFI_NETWORK]
+                },
+                page: 1,
+                pageSize: 100
+              })
+            }
+
+            const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+            const apCompatibilitiesResponse = (apCompatibilitiesQuery.data) as CompatibilityResponse
+            const apCompatibilities = apCompatibilitiesResponse?.compatibilities
+
+            apCompatibilities.forEach((item: Compatibility) => {
+              networkIdsToIncompatible[item.id] = item.incompatible ?? 0
+            })
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('venueNetworkTable getApCompatibilitiesVenue error:', e)
+          }
+        }
+
+        const aggregatedList = aggregatedRbacVenueNetworksData(
+          arg.params?.venueId!, networkList,
+          networkDeepListList, networkIdsToIncompatible)
+
+        return { data: aggregatedList }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'UpdateNetworkDeep',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
+            'UpdateVenueWifiNetworkTemplateSettings'
+          ], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     apGroupNetworkListV2: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const { apGroupNetworkListQuery,
@@ -1026,6 +1360,27 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           networkList,
           networkDeepListList
         } = await fetchRbacApGroupNetworkVenueList(arg, fetchWithBQ)
+
+        if (apGroupNetworkListQueryError)
+          return { error: apGroupNetworkListQueryError as FetchBaseQueryError }
+
+        const aggregatedList = aggregatedRbacVenueNetworksData(
+          arg.params?.venueId!,
+          networkList, networkDeepListList)
+
+        return { data: aggregatedList }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+
+    newApGroupNetworkListV2: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const {
+          error: apGroupNetworkListQueryError,
+          networkList,
+          networkDeepListList
+        } = await fetchEnhanceRbacApGroupNetworkVenueList(arg, fetchWithBQ)
 
         if (apGroupNetworkListQueryError)
           return { error: apGroupNetworkListQueryError as FetchBaseQueryError }
@@ -1092,19 +1447,18 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     venueNetworkActivationsViewModelList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const typedPayload = arg.payload as Record<string, unknown>
+        const networkApiPayload = arg.payload as Record<string, unknown>
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
         const networkListQuery = await fetchWithBQ({
           ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, apiCustomHeader),
-          body: JSON.stringify({
-            filters: { 'venueApGroups.venueId': [typedPayload.venueId] }
-          }) })
+          body: JSON.stringify(networkApiPayload) })
 
         const networksList = networkListQuery.data as TableResult<WifiNetwork>
 
         // fetch vlan pool info
         const networkIds = networksList?.data.map(item => item.id!) || []
-        if (networksList.data.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
+        if (networksList.data.length && (networkApiPayload?.fields as string[])?.includes('vlanPool')) {
           const vlanPoolListQuery = await fetchWithBQ({
             ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
             body: JSON.stringify({
@@ -1139,6 +1493,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    // WARNING: This query is deprecated due to performance issues. Please do not use.
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
@@ -1156,6 +1511,30 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
+    }),
+    venueSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getVenueSummaries, params),
+          body: payload
+        }
+      }
+    }),
+    deviceSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getDeviceSummaries, params),
+          body: payload
+        }
+      }
+    }),
+    clientSummaries: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getClientSummaries, params),
+          body: payload
+        }
+      }
     }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -1344,6 +1723,65 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         WifiRbacUrlsInfo.updateVenueApGroups
       ),
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    venueWifiRadioActiveNetworks: build.query<Network[], RequestPayload & { radio: RadioTypeEnum }>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, arg.params, apiCustomHeader)
+        const wifiNetworksReq = {
+          ...networkListReq,
+          body: JSON.stringify(arg.payload)
+        }
+
+        const wifiNetworksQuery = await fetchWithBQ(wifiNetworksReq) as { data: { data: (Network & { venueApGroups: NetworkVenue[] })[] } }
+        const networkIds = wifiNetworksQuery.data.data.map((network) => network.id)
+        const networksQueryResults = await Promise.all(networkIds.map(async (id) => {
+          if (id) {
+            const networksQuery = await fetchWithBQ({
+              ...createHttpRequest(WifiRbacUrlsInfo.getNetworkVenue, { ...arg.params, networkId: id })
+            }) as { data: { data: NetworkVenue[] } }
+            return {
+              ...networksQuery.data,
+              networkId: id
+            }
+          }
+          return { data: { data: [] }, networkId: '' }
+        })) as { data: { data: NetworkVenue[] }, networkId: string }[]
+        const filteredNetworks = networksQueryResults.filter(network => Object.keys(network).length > 1) as unknown as NetworkVenue[]
+
+        const active = filteredNetworks.reduce(
+          (active: Record<string, boolean>, network: NetworkVenue) => {
+            if (network.allApGroupsRadioTypes?.includes(arg.radio)) {
+              active[network.networkId as string] = true
+            }
+            return active
+          },
+          {} as Record<string, boolean>
+        )
+
+        return {
+          data: wifiNetworksQuery.data.data.filter(network => active[network.id as string])
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    bindingPersonaGroupWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
+    }),
+    bindingSpecificIdentityPersonaGroupWithNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.bindingSpecificIdentityPersonaGroupWithNetwork, params, headers)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -1643,14 +2081,13 @@ export const {
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
   useGetNetworkDeepQuery,
-  useLazyGetNetworkDeepQuery,
-  useGetVenueNetworkApGroupQuery,
-  useLazyGetVenueNetworkApGroupQuery,
+  useGetNetworkDeepV2Query,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListV2Query,
   useNetworkVenueTableV2Query,
   useNewNetworkVenueTableQuery,
   useEnhanceNetworkVenueTableQuery,
+  useEnhanceNetworkVenueTableV2Query,
   useVenueNetworkActivationsDataListQuery,
   useVenueNetworkActivationsViewModelListQuery,
   useAddNetworkMutation,
@@ -1665,9 +2102,11 @@ export const {
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
+  useGetRbacApNetworkListQuery,
   useVenueNetworkListV2Query,
   useNewVenueNetworkTableQuery,
   useEnhanceVenueNetworkTableQuery,
+  useEnhanceVenueNetworkTableV2Query,
   useVenueRadioActiveNetworksQuery,
   useLazyVenueRadioActiveNetworksQuery,
   useVenueNetworkTableV2Query,
@@ -1675,12 +2114,17 @@ export const {
   useLazyApGroupNetworkListV2Query,
   useNewApGroupNetworkListQuery,
   useLazyNewApGroupNetworkListQuery,
+  useNewApGroupNetworkListV2Query,
+  useLazyNewApGroupNetworkListV2Query,
   useGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useGetNetworkApCompatibilitiesQuery,
   useLazyGetNetworkApCompatibilitiesQuery,
   useDashboardV2OverviewQuery,
   useAlarmSummariesQuery,
+  useVenueSummariesQuery,
+  useDeviceSummariesQuery,
+  useClientSummariesQuery,
   useExternalProvidersQuery,
   useGetCertificateTemplateNetworkBindingQuery,
   useGetMacRegistrationPoolNetworkBindingQuery,
@@ -1698,7 +2142,11 @@ export const {
   useUnbindClientIsolationMutation,
   useActivateVenueApGroupMutation,
   useDeactivateVenueApGroupMutation,
-  useUpdateVenueApGroupMutation
+  useUpdateVenueApGroupMutation,
+  useVenueWifiRadioActiveNetworksQuery,
+  useLazyVenueWifiRadioActiveNetworksQuery,
+  useBindingPersonaGroupWithNetworkMutation,
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

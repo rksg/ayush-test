@@ -2,13 +2,21 @@
 import { Col, Row, Space, Switch } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityWarningCircleIcon }                                                                         from '@acx-ui/rc/components'
-import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery }                            from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeFeatureEnum, EdgeHqosViewData, EdgeStatus, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                             from '@acx-ui/react-router-dom'
-import { compareVersions }                                                                                        from '@acx-ui/utils'
+import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { CompatibilityWarningTriangleIcon }                                            from '@acx-ui/rc/components'
+import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
+import {
+  EdgeClusterStatus,
+  IncompatibilityFeatures,
+  EdgeHqosViewData,
+  EdgeStatus,
+  defaultSort,
+  sortProp,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink }      from '@acx-ui/react-router-dom'
+import { compareVersions } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -66,7 +74,7 @@ export const ScopeForm = () => {
     selectFromResult: ({ data }) => {
       return {
         requiredFw: data?.featureSets
-          ?.find(item => item.featureName === EdgeFeatureEnum.HQOS)?.requiredFw
+          ?.find(item => item.featureName === IncompatibilityFeatures.HQOS)?.requiredFw
       }
     }
   })
@@ -111,7 +119,7 @@ export const ScopeForm = () => {
                 })}
               </>
             }>
-            <CompatibilityWarningCircleIcon />
+            <CompatibilityWarningTriangleIcon />
           </Tooltip>
           }
         </Space>
@@ -141,16 +149,18 @@ export const ScopeForm = () => {
         const hqosReadOnly =
           row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
         return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
-          <UI.StyledFormItem
-            name={['activateChangedClusters', row.clusterId??'']}
-            valuePropName='checked'
-            children={
-              <Switch disabled={hqosReadOnly}
-                onChange={() =>
-                // eslint-disable-next-line max-len
-                  setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
-            }
-          />
+          <>
+            <UI.StyledFormItem
+              name={['activateChangedClusters', row.clusterId??'']}
+              valuePropName='checked'
+              children={
+                <Switch disabled={hqosReadOnly}
+                  onChange={() =>
+                  // eslint-disable-next-line max-len
+                    setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+              }
+            />
+          </>
         </Tooltip>
       }
     }

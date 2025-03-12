@@ -7,28 +7,28 @@ import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
-import { Tooltip }                  from '@acx-ui/components'
-import { useDateFilter }            from '@acx-ui/utils'
+import { Incident, overlapsRollup }         from '@acx-ui/analytics/utils'
+import { getDefaultEarliestStart, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useDateFilter }                    from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
-  ClientTroubleShootingConfig,
   TYPES,
   Event,
   TimelineData,
-  EventsCategoryMap,
-  NetworkIncidentCategoryMap,
   RoamingByAP,
   RoamingConfigParam,
   RoamingTimeSeriesData,
   DisplayEvent,
-  ALL
+  ALL,
+  TimelineDataCategoryMap
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart, granularityText }  from './TimelineChart'
+import useClientTroubleshootingConfig      from './useClientTroubleshootingConfig'
 import {
   transformEvents,
   transformConnectionQualities,
@@ -43,7 +43,7 @@ import {
 
 import { Filters } from '.'
 
-type TimeLineProps = {
+type TimelineProps = {
   data?: ClientInfoData;
   filters: Filters;
   setEventState: (event: DisplayEvent) => void,
@@ -64,10 +64,15 @@ export const checkRollup = (value: string, startDate: string) => {
   && (value === 'roaming' || value === 'connectionQuality')
 }
 
-export function TimeLine (props: TimeLineProps) {
+export function Timeline (props: TimelineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const toggles = useIncidentToggles()
+  const {
+    clientTroubleshootingConfigType: { timeline },
+    isBtmEventsOn
+  } = useClientTroubleshootingConfig()
+
   const {
     data, filters, connectChart, sharedChartName, onChartReady,
     popoverRef, setEventState, setVisible
@@ -126,13 +131,16 @@ export function TimeLine (props: TimeLineProps) {
     />
   }
 
-  const TimelineData = getTimelineData(events, incidents, toggles)
-  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
+  const timelineData = getTimelineData(events, incidents, toggles, isBtmEventsOn)
+  const roamingEventsAps = connectionDetailsByAP(
+    data?.connectionDetailsByAp as RoamingByAP[]
+  ) as RoamingConfigParam
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
-
-  const { startDate, endDate } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
 
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
@@ -143,130 +151,142 @@ export function TimeLine (props: TimeLineProps) {
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
-          {ClientTroubleShootingConfig.timeLine
+          {timeline
             .filter(({ isVisible }) => isVisible())
             .map((config, index) => {
-              return <React.Fragment key={index}>
-                <Col span={3}>
-                  {toggleIcon(
-                    expandObj[config?.value as keyof TimelineData],
-                  config?.value as keyof TimelineData,
-                  (config?.value === TYPES.ROAMING)
-                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
-                  checkRollup(config?.value, startDate)
-                  )}
-                </Col>
-                <Col
-                  span={17}
-                  style={expandObj[config?.value as keyof TimelineData]
-                    ? {}
-                    : { marginBottom: 38 }
-                  }>
-                  <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
-                </Col>
-                <Col style={{ lineHeight: '25px' }} span={4}>
-                  {config.showCount ? (
-                    <UI.TimelineCount>
-                      {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
-                    </UI.TimelineCount>
-                  ) : null}
-                </Col>
-                {expandObj[config?.value as keyof TimelineData] &&
-                (config.value === TYPES.ROAMING
-                  ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
+              const subtitles = (
+                config.value === TYPES.ROAMING
+                  ? getRoamingSubtitleConfig(roamingEventsAps)
                   : config?.subtitle
-                )?.map((subtitle, index) => (
-                  <React.Fragment key={subtitle.value + index}>
-                    <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
-                      {config.value === TYPES.ROAMING
-                        ? <UI.RoamingTimelineSubContent>
-                          {
-                            ((subtitle as { noData: boolean }).noData)
-                              ? null
-                              : <Tooltip
-                                placement='top'
-                                title={roamingTooltipCallback(
-                                  (subtitle as { apMac: string }).apMac,
-                                  (subtitle as { apModel: string }).apModel,
-                                  (subtitle as { apFirmware: string }).apFirmware)}
-                              >
-                                {subtitle.title as string}
-                              </Tooltip>
-                          }
-                        </UI.RoamingTimelineSubContent>
-                        : <UI.TimelineSubContent>
-                          {($t(subtitle.title as MessageDescriptor))}
-                        </UI.TimelineSubContent>}
-                    </Col>
-                    <Col span={4}>
-                      {config.showCount ? (
-                        <UI.TimelineCount>
-                          {
-                            TimelineData?.[config.value as keyof TimelineData]?.[
-                              subtitle.value as keyof (
-                                | EventsCategoryMap
-                                | NetworkIncidentCategoryMap
-                              )
-                            ]?.length
-                          }
-                        </UI.TimelineCount>
-                      ) : null}
-                    </Col>
-                  </React.Fragment>
-                ))}
-              </React.Fragment>
+              )?.filter(({ isVisible }) => isVisible())
+
+              return (
+                <React.Fragment key={index}>
+                  <Col span={3}>
+                    {toggleIcon(
+                      expandObj[config?.value as keyof TimelineData],
+                      config?.value as keyof TimelineData,
+                      config?.value === TYPES.ROAMING &&
+                        getRoamingSubtitleConfig(roamingEventsAps)[0].noData,
+                      checkRollup(config?.value, startDate)
+                    )}
+                  </Col>
+                  <Col
+                    span={17}
+                    style={
+                      expandObj[config?.value as keyof TimelineData] ? {} : { marginBottom: 38 }
+                    }
+                  >
+                    <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
+                  </Col>
+                  <Col style={{ lineHeight: '25px' }} span={4}>
+                    {config.showCount ? (
+                      <UI.TimelineCount>
+                        {timelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
+                      </UI.TimelineCount>
+                    ) : null}
+                  </Col>
+                  {expandObj[config?.value as keyof TimelineData] &&
+                    subtitles?.map((subtitle, index) => {
+                      const isLast = index === subtitles.length - 1
+                      return (
+                        <React.Fragment key={subtitle.value + index}>
+                          <Col span={17} offset={3} style={isLast ? { marginBottom: 40 } : {}}>
+                            {config.value === TYPES.ROAMING ? (
+                              <UI.RoamingTimelineSubContent>
+                                {(subtitle as { noData: boolean }).noData ? null : (
+                                  <Tooltip
+                                    placement='top'
+                                    title={roamingTooltipCallback(
+                                      (subtitle as { apMac: string }).apMac,
+                                      (subtitle as { apModel: string }).apModel,
+                                      (subtitle as { apFirmware: string }).apFirmware
+                                    )}
+                                  >
+                                    {subtitle.title as string}
+                                  </Tooltip>
+                                )}
+                              </UI.RoamingTimelineSubContent>
+                            ) : (
+                              <UI.TimelineSubContent>
+                                {$t(subtitle.title as MessageDescriptor)}
+                              </UI.TimelineSubContent>
+                            )}
+                          </Col>
+                          <Col span={4}>
+                            {config.showCount ? (
+                              <UI.TimelineCount>
+                                {
+                                  timelineData?.[config.value as keyof TimelineData]?.[
+                                    subtitle.value as keyof TimelineDataCategoryMap
+                                  ]?.length
+                                }
+                              </UI.TimelineCount>
+                            ) : null}
+                          </Col>
+                        </React.Fragment>
+                      )
+                    })}
+                </React.Fragment>
+              )
             })}
         </Row>
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine
+          {timeline
             .filter(({ isVisible }) => isVisible())
-            .map((config, index) => (
-              <Col span={24} key={config.value}>
-                <TimelineChart
-                  key={index}
-                  index={index}
-                  style={{ width: 'auto', marginBottom: 8 }}
-                  data={getChartData(
-                  config?.value as keyof TimelineData,
-                  TimelineData.connectionEvents.all,
-                  expandObj[config?.value as keyof TimelineData],
-                  !Array.isArray(qualities) ? qualities.all : [],
-                  Array.isArray(incidents) ? incidents : [],
-                  {
-                    ...roamingEventsTimeSeries,
-                    [ALL]: TimelineData.roaming.all
-                  } as RoamingTimeSeriesData[] )}
-                  showResetZoom={config?.showResetZoom}
-                  chartBoundary={chartBoundary}
-                  hasXaxisLabel={config?.hasXaxisLabel}
-                  mapping={
-                    expandObj[config?.value as keyof TimelineData]
-                      ? config.value === TYPES.ROAMING
-                        ? config.chartMapping.concat(
-                          getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
-                        ).reverse()
-                        : config.chartMapping.slice().reverse()
-                      : [config.chartMapping[0]]
-                  }
-                  onDotClick={
-                  /* istanbul ignore next */
-                    (params) => {
+            .map((config, index) => {
+              const chartMapping = config.chartMapping.filter(({ isVisible }) =>
+                isVisible()
+              )
+              return (
+                <Col span={24} key={config.value}>
+                  <TimelineChart
+                    key={index}
+                    index={index}
+                    style={{ width: 'auto', marginBottom: 8 }}
+                    data={getChartData(
+                      config?.value as keyof TimelineData,
+                      timelineData.connectionEvents.all,
+                      expandObj[config?.value as keyof TimelineData],
+                      !Array.isArray(qualities) ? qualities.all : [],
+                      Array.isArray(incidents) ? incidents : [],
+                      {
+                        ...roamingEventsTimeSeries,
+                        [ALL]: timelineData.roaming.all
+                      } as RoamingTimeSeriesData[]
+                    )}
+                    showResetZoom={config?.showResetZoom}
+                    chartBoundary={chartBoundary}
+                    hasXaxisLabel={config?.hasXaxisLabel}
+                    mapping={
+                      expandObj[config?.value as keyof TimelineData]
+                        ? config.value === TYPES.ROAMING
+                          ? chartMapping
+                            .concat(getRoamingChartConfig(roamingEventsAps))
+                            .reverse()
+                          : chartMapping.slice().reverse()
+                        : [chartMapping[0]]
+                    }
+                    onDotClick={
                       /* istanbul ignore next */
-                      setEventState(params as CoordDisplayEvent)
-                      /* istanbul ignore next */
-                      setVisible(true)
-                    }}
-                  chartRef={connectChart}
-                  sharedChartName={sharedChartName}
-                  popoverRef={popoverRef}
-                  onChartReady={onChartReady}
-                  startDate={startDate}
-                  value={config?.value}
-                />
-              </Col>
-            ))}
+                      (params) => {
+                        /* istanbul ignore next */
+                        setEventState(params as CoordDisplayEvent)
+                        /* istanbul ignore next */
+                        setVisible(true)
+                      }}
+                    chartRef={connectChart}
+                    sharedChartName={sharedChartName}
+                    popoverRef={popoverRef}
+                    onChartReady={onChartReady}
+                    startDate={startDate}
+                    value={config?.value}
+                  />
+                </Col>
+              )
+            })}
         </Row>
       </Col>
     </Row>

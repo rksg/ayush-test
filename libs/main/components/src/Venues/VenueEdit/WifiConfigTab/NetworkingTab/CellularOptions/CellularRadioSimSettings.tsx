@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import {
   Select,
@@ -8,8 +8,8 @@ import {
   Button,
   FormItemProps
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { get, isEmpty } from 'lodash'
+import { useIntl }      from 'react-intl'
 
 import { Fieldset }    from '@acx-ui/components'
 import {
@@ -38,13 +38,16 @@ export function CellularRadioSimSettings (props: {
   regionCountriesMap: LteBandLockCountriesJson,
   currentRegion: string,
   formControlName: 'primarySim' | 'secondarySim',
-  editData: VenueApModelCellular
+  editData: VenueApModelCellular,
+  disabled?: boolean
 }) {
   const { $t } = useIntl()
+  const { disabled, formControlName, legend,
+    editData, availableLteBands, simCardNumber } = props
   const [isShowOtherLteBands, setIsShowOtherLteBands] = useState(false)
 
   const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
-    if (!_.isEmpty(props.currentRegion)) {
+    if (!isEmpty(props.currentRegion)) {
       const index = lteBands.findIndex(item => item.region === props.currentRegion)
       lteBands.splice(0, 0, lteBands.splice(index, 1)[0])
     }
@@ -68,36 +71,38 @@ export function CellularRadioSimSettings (props: {
     })
   }
 
-  sortByLteBandRegionEnum(props.availableLteBands)
-  shiftCurrentRegionToFirst(props.availableLteBands)
-  if (props.editData[props.formControlName].lteBands) {
-    shiftCurrentRegionToFirst(_.get(props.editData, [props.formControlName] + '.lteBands'))
-    sortByLteBandRegionEnum(_.get(props.editData, [props.formControlName] + '.lteBands'))
+  sortByLteBandRegionEnum(availableLteBands)
+  shiftCurrentRegionToFirst(availableLteBands)
+  if (props.editData[formControlName].lteBands) {
+    shiftCurrentRegionToFirst(get(editData, [formControlName] + '.lteBands'))
+    sortByLteBandRegionEnum(get(editData, [formControlName] + '.lteBands'))
   }
 
   return (
     <FieldsetItem
-      name={['editData', props.formControlName, 'enabled']}
+      name={['editData', formControlName, 'enabled']}
       label={$t({ defaultMessage: '{simCardNumber} {legend}' },
-        { simCardNumber: props.simCardNumber, legend: props.legend })}
+        { simCardNumber, legend })}
+      //disabled={disabled}
       initialValue={false}>
 
       <Form.Item
-        name={['editData', props.formControlName, 'apn']}
+        name={['editData', formControlName, 'apn']}
         label={$t({ defaultMessage: 'APN:' })}
         initialValue={1}
         rules={[
           { validator: (_, value) => excludeSpaceRegExp(value) }
         ]}
-        children={<Input style={{ width: '150px' }}></Input>}
+        children={<Input disabled={disabled} style={{ width: '150px' }} />}
       />
 
       <Form.Item
-        name={['editData', props.formControlName, 'networkSelection']}
+        name={['editData', formControlName, 'networkSelection']}
         label={$t({ defaultMessage: '3G/4G (LTE) Selection:' })}
         initialValue={CellularNetworkSelectionEnum.AUTO}
         children={
           <Select
+            disabled={disabled}
             style={{ width: '150px' }}>
             <Option value={CellularNetworkSelectionEnum.AUTO}>
               {$t({ defaultMessage: 'Auto' })}
@@ -113,24 +118,25 @@ export function CellularRadioSimSettings (props: {
       />
 
       <Form.Item
-        name={['editData', props.formControlName, 'roaming']}
+        name={['editData', formControlName, 'roaming']}
         label={$t({ defaultMessage: 'Data Roaming' })}
         initialValue={false}
         valuePropName='checked'
-        children={<Switch />}
+        children={<Switch disabled={disabled} />}
       />
 
 
       <Form.Item
         label={$t({ defaultMessage: 'LTE Bank Lock' })}
         children={
-          props.availableLteBands.map((item, index) => (
+          availableLteBands.map((item, index) => (
             <div
-              key={props.formControlName + index}>
+              key={formControlName + index}>
               <LteBandChannels
                 index={index}
+                disabled={disabled}
                 editData={props.editData}
-                formControlName={props.formControlName}
+                formControlName={formControlName}
                 simCardNumber={props.simCardNumber}
                 availableLteBands={item}
                 countryCode={props.countryCode}
@@ -144,6 +150,7 @@ export function CellularRadioSimSettings (props: {
               {index === 0 &&
                 <Button
                   type='link'
+                  disabled={disabled}
                   onClick={() => {
                     setIsShowOtherLteBands(!isShowOtherLteBands)
                   }}
@@ -163,10 +170,11 @@ export function CellularRadioSimSettings (props: {
 const FieldsetItem = ({
   children,
   label,
+  disabled,
   ...props
-}: FormItemProps & { label: string, children: ReactNode }) => <Form.Item
+}: FormItemProps & { label: string, children: ReactNode, disabled?: boolean }) => <Form.Item
   {...props}
   valuePropName='checked'
 >
-  <Fieldset {...{ label, children }} />
+  <Fieldset {...{ label, children, disabled }} />
 </Form.Item>

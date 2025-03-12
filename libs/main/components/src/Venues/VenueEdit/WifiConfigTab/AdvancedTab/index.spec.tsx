@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -22,6 +22,20 @@ import { defaultValue } from '../../../contentsMap'
 
 import { AdvancedTab, AdvanceSettingContext } from '.'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetVenueApModelsQuery: () => ({
+    data: {
+      models: []
+    }
+  })
+}))
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
@@ -34,6 +48,16 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('./AccessPointUSB', () => ({
+  ...jest.requireActual('./AccessPointUSB'),
+  AccessPointUSB: () => <div data-testid='mocked-AP-USB'></div>
+}))
+
+jest.mock('./RebootTimeout', () => ({
+  ...jest.requireActual('./AccessPointUSB'),
+  RebootTimeout: () => <div data-testid='mocked-Reboot-Timeout'></div>
 }))
 
 const mockAdvancedTab = (
@@ -65,14 +89,14 @@ describe('AdvancedTab', () => {
         (_, res, ctx) => res(ctx.json(venueBssColoring))),
       rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
-        (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
-      rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
-        (_, res, ctx) => res(ctx.json({}))),
       // RBAC API
-      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+      rest.get(WifiRbacUrlsInfo.getVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
+      rest.put(WifiRbacUrlsInfo.updateVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiRbacUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),
-      rest.put(CommonRbacUrlsInfo.updateVenueLedOn.url,
+      rest.put(WifiRbacUrlsInfo.updateVenueLedOn.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(venueBssColoring))),

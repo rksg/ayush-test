@@ -5,6 +5,7 @@ import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, fireEvent 
 import type { AnalyticsFilter }                                                   from '@acx-ui/utils'
 import { DateRange }                                                              from '@acx-ui/utils'
 
+import { impactedClientsData, moreDetailsDataFixture } from '../MoreDetails/__tests__/fixtures'
 
 import {
   wiredSummaryDataFixture,
@@ -68,9 +69,10 @@ describe('Wired SummaryBoxes', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  // TODO: this needs to be updated with "show open drawer" case once it is implemented.
   it('should open the drawer on more info click', async () => {
     mockGraphqlQuery(dataApiURL, 'WiredSummaryQuery', { data: wiredSummaryDataFixture })
+    mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixture })
+    mockGraphqlQuery(dataApiURL, 'SwitchClients', { data: impactedClientsData })
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
         filters={filters}

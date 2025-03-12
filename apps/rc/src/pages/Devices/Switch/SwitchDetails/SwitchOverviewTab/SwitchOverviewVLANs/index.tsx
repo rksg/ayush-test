@@ -38,11 +38,13 @@ import {
   SwitchPortViewModelQueryFields,
   SwitchPortViewModel,
   SwitchViewModel,
-  VeViewModel
+  VeViewModel,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { VlanDetail } from './vlanDetail'
 
@@ -70,6 +72,7 @@ export function SwitchOverviewVLANs (props: {
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
+  const [switchFirmware, setSwitchFirmware] = useState('')
   const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[][])
   const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
@@ -289,6 +292,7 @@ export function SwitchOverviewVLANs (props: {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchVlan)],
       onClick: (selectedRows) => {
         const selectedRow = selectedRows?.[0]
         const isSelectDefaultVlan = selectedRow?.vlanName === SWITCH_DEFAULT_VLAN_NAME
@@ -313,6 +317,7 @@ export function SwitchOverviewVLANs (props: {
       visible: (selectedRows) => selectedRows?.[0]?.isDeletable ?? true,
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchVlan)],
       onClick: (rows, clearSelection) => {
         const vlanId = rows[0]?.vlanId?.toString()
         showActionModal({
@@ -340,6 +345,7 @@ export function SwitchOverviewVLANs (props: {
     disabled: cliApplied || !isSwitchOperational,
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     scopeKey: [SwitchScopes.CREATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitchVlans)],
     onClick: () => {
       setEditMode(false)
       setEditVlan({} as Vlan)
@@ -350,13 +356,19 @@ export function SwitchOverviewVLANs (props: {
     disabled: cliApplied || !isSwitchOperational,
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchVlan)],
     onClick: () => {
       setDefaultVlanDrawerVisible(true)
     }
   }]
 
   const isSelectionVisible
-    = hasPermission({ scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE] })
+    = hasPermission({
+      scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE],
+      rbacOpsIds: [
+        getOpsApi(SwitchRbacUrlsInfo.deleteSwitchVlan),
+        getOpsApi(SwitchRbacUrlsInfo.updateSwitchVlan)
+      ] })
   && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational
 
   const getUsedPorts = (vlanList: Vlan[], checkPostsField: 'untaggedPorts' | 'taggedPorts') => {
@@ -412,6 +424,7 @@ export function SwitchOverviewVLANs (props: {
           isDeletable: !hasVlansUsedByVe
             && !hasPortsUsedByLag
             && (vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
+            && !vlan.isAuthDefaultVlan
         }
       })
       const defaultVlan = vlanList?.filter(
@@ -443,6 +456,7 @@ export function SwitchOverviewVLANs (props: {
         , !!switchDetail?.syncedSwitchConfig)
 
       setSwitchFamilyModel(switchDetail?.model || '')
+      setSwitchFirmware(switchDetail?.firmware || '')
       setCliApplied(switchDetail?.cliApplied || false)
       setIsSwitchOperational(isOperational || false)
     }
@@ -490,6 +504,7 @@ export function SwitchOverviewVLANs (props: {
           untagged: _.omit(usedUntaggedPorts, editVlan?.untaggedPorts?.split(',') ?? [])
         }}
         stackMember={stackMember?.data ?? undefined}
+        switchFirmware={switchFirmware}
       />}
 
       { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer
@@ -500,6 +515,7 @@ export function SwitchOverviewVLANs (props: {
         isSwitchLevel={true}
         isAppliedACL={isDefaultVlanAppliedACL}
         vlansList={vlanList}
+        switchFirmware={switchFirmware}
       />}
 
     </Loader>

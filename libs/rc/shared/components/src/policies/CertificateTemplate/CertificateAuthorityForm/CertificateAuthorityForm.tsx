@@ -8,9 +8,12 @@ import CertificateAuthoritySettings from './CertificateAuthoritySettings/Certifi
 import useCertificateAuthorityForm  from './useCertificateAuthorityForm'
 
 
+type CertificateAuthorityFormProps = {
+  modalMode?: boolean,
+  modalCallBack?: (id?: string) => void
+}
 
-
-export function CertificateAuthorityForm () {
+export const CertificateAuthorityForm = (props: CertificateAuthorityFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { createCaForm, handleFinish } = useCertificateAuthorityForm()
@@ -18,10 +21,11 @@ export function CertificateAuthorityForm () {
     type: PolicyType.CERTIFICATE_AUTHORITY,
     oper: PolicyOperation.LIST
   }))
+  const { modalMode=false, modalCallBack } = props
 
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={$t({ defaultMessage: 'Add Certificate Authority' })}
         breadcrumb={[{
           text: $t({ defaultMessage: 'Network Control' })
@@ -35,15 +39,19 @@ export function CertificateAuthorityForm () {
             oper: PolicyOperation.LIST
           })
         }]}
-      />
+      />}
       <StepsForm form={createCaForm}
         onFinish={async () => {
           try {
-            await handleFinish()
+            const id = await handleFinish()
+            if (modalMode) {
+              modalCallBack?.(id)
+              return
+            }
             navigate(linkToList, { replace: true })
           } catch (ignore) {}
         }}
-        onCancel={() => navigate(linkToList)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
       >
         <StepsForm.StepForm>
           <CertificateAuthoritySettings />

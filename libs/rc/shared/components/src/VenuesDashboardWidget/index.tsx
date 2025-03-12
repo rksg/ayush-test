@@ -1,15 +1,16 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart } from '@acx-ui/components'
-import type { DonutChartData }               from '@acx-ui/components'
-import { useDashboardV2OverviewQuery }       from '@acx-ui/rc/services'
+import { cssStr, Loader, Card , DonutChart }                   from '@acx-ui/components'
+import type { DonutChartData }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useDashboardV2OverviewQuery, useVenueSummariesQuery } from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
-import { useDashboardFilter }           from '@acx-ui/utils'
+import { useNavigateToPath, useParams }                         from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -51,10 +52,13 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 export function VenuesDashboardWidgetV2 () {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/venues/')
-
   const { venueIds } = useDashboardFilter()
 
-  const queryResults = useDashboardV2OverviewQuery({
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const query = isNewDashboardQueryEnabled ? useVenueSummariesQuery : useDashboardV2OverviewQuery
+
+  const queryResults = query({
     params: useParams(),
     payload: {
       filters: {
@@ -67,6 +71,13 @@ export function VenuesDashboardWidgetV2 () {
       ...rest
     })
   })
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.VENUES_DASHBOARD_WIDGET,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}

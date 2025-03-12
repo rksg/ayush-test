@@ -13,11 +13,13 @@ import {
   BasicServiceSetPriorityEnum,
   OpenWlanAdvancedCustomization,
   TunnelProfileUrls,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
+import { mockApModelFamilies }                        from '../../ApCompatibility/__test__/fixtures'
 import {
   mockedTunnelProfileViewData,
   devicePolicyListResponse,
@@ -79,12 +81,14 @@ describe('NetworkMoreSettingsForm', () => {
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))),
       rest.post(EdgePinUrls.getEdgePinStatsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
-      )
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => res(ctx.json(mockApModelFamilies)))
     )
   })
 
   it('should render More settings form successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(

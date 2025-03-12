@@ -2,8 +2,13 @@ import { defineMessage } from 'react-intl'
 
 import { configChanges } from '../__tests__/fixtures'
 
-import { MappingType, json2keymap, filterData } from './util'
-
+import {
+  MappingType,
+  json2keymap,
+  filterData,
+  getEntityValue,
+  getConfiguration
+}                        from './util'
 
 describe('json2keymap', () => {
   it('should apply filter and build mapping with keys', () => {
@@ -47,14 +52,54 @@ describe('json2keymap', () => {
 
 describe('filterData', () => {
   it('should return correct data', () => {
-    const legend = ['AP', 'AP Group', 'Venue', 'WLAN', 'WLAN Group']
+    const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup', 'intentAI']
     expect(filterData(configChanges, [], legend).length).toEqual(configChanges.length)
-    expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(3)
+    expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(5)
   })
   it('should filter out legend', () => {
-    const noAPLegend = ['AP Group', 'Venue', 'WLAN', 'WLAN Group']
-    const noVenueLegend = ['AP', 'AP Group', 'WLAN', 'WLAN Group']
-    expect(filterData(configChanges, [], noAPLegend).length).toEqual(6)
-    expect(filterData(configChanges, [], noVenueLegend).length).toEqual(5)
+    const noAPLegend = ['apGroup', 'zone', 'wlan', 'wlanGroup', 'intentAI']
+    const noZoneLegend = ['ap', 'apGroup', 'wlan', 'wlanGroup', 'intentAI']
+    const noIntentAILegend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup']
+    expect(filterData(configChanges, [], noAPLegend).length).toEqual(8)
+    expect(filterData(configChanges, [], noZoneLegend).length).toEqual(7)
+    expect(filterData(configChanges, [], noIntentAILegend).length).toEqual(9)
   })
 })
+
+describe('getEntityValue', () => {
+  it('should return a mapped value if present in enumTextMap', () => {
+    const type = 'ap'
+    const key = 'initialState.ccmAp.ipv4_settings.method'
+    const value = 'KEEP_AP_SETTINGS'
+    expect(getEntityValue(type, key, value)).toEqual({
+      defaultMessage: [{ type: 0, value: 'AP settings' }],
+      id: 'JKWlzi'
+    })
+  })
+
+  it('should return the input value if no mapping is found', () => {
+    const type = 'wlan'
+    const key = 'test-key'
+    const value = 'test-value'
+    expect(getEntityValue(type, key, value)).toEqual(value)
+  })
+})
+
+describe('getConfiguration', () => {
+  it('should return a mapped configuration if present in jsonMapping', () => {
+    const type = 'wlan'
+    const key = 'initialState.CcmWlan.multi_link_operation.mlo_enabled'
+    expect(getConfiguration(type, key)).toEqual({
+      id: 'i/1Vf/',
+      defaultMessage: [{ type: 0, value: 'Multi Link Operation' }]
+    })
+  })
+
+  it('should return the key itself if no mapping is found', () => {
+    const type = 'wlan'
+    const key = 'test-key'
+    expect(getConfiguration(type, key)).toEqual(key)
+  })
+})
+
+

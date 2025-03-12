@@ -28,6 +28,7 @@ export const useCasesToRefreshDpskTemplateList = [
 export const useCasesToRefreshPortalTemplateList = [
   'Add Portal Service Profile by Template',
   'Update Portal Service Profile by Template',
+  'Update Portal Service Profile by Template V1_1',
   'Delete Portal Service Profile by Template',
   'Add Portal Service Profile by Template in CfgTemplate',
   'Update Portal Service Profile by Template in CfgTemplate',
@@ -138,9 +139,17 @@ export const useCasesToRefreshApGroupTemplateList = [
   'DeleteApGroupTemplate'
 ]
 
+export const useCasesToRefreshEthernetPortTemplateList = [
+  'AddEthernetPortProfileTemplate',
+  'UpdateEthernetPortProfileTemplate',
+  'DeleteEthernetPortProfileTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   'SyncTemplate',
+  'EnforceTemplate',
+  'CloneWifiNetworkTemplate',
   ...useCasesToRefreshNetworkTemplateList,
   ...useCasesToRefreshVenueTemplateList,
   ...useCasesToRefreshDpskTemplateList,
@@ -153,5 +162,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshSyslogTemplateList,
   ...useCasesToRefreshRogueAPTemplateList,
   ...useCasesToRefreshSwitchConfigProfileTemplateList,
-  ...useCasesToRefreshApGroupTemplateList
+  ...useCasesToRefreshApGroupTemplateList,
+  ...useCasesToRefreshEthernetPortTemplateList
 ]

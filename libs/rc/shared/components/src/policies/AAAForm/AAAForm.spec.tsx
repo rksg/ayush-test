@@ -2,13 +2,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                           from '@acx-ui/user'
+import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }                  from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                            from '@acx-ui/user'
 
-import { aaaData, successResponse, aaaList, aaaTemplateList } from './__tests__/fixtures'
-import { AAAForm }                                            from './AAAForm'
+import { aaaData, successResponse, aaaList, aaaTemplateList, caList, certList, radiusCaRef, radiusClientCertRef, radiusServerCertRef } from './__tests__/fixtures'
+import { AAAForm }                                                                                                                     from './AAAForm'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -45,9 +46,35 @@ describe('AAAForm', () => {
         (_, res, ctx) => res(ctx.json(aaaList))
       ),
       rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(aaaList))
+      ),
+      rest.post(
         ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
         (_, res, ctx) => res(ctx.json(aaaTemplateList))
-      )
+      ),
+      rest.post(
+        CertificateUrls.getCAs.url,
+        (_, res, ctx) => res(ctx.json(caList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateList.url,
+        (_, res, ctx) => res(ctx.json(certList))
+      ),
+      rest.get(
+        AaaUrls.getCertificateAuthorityOnRadius.url,
+        (_, res, ctx) => res(ctx.json(radiusCaRef))
+      ),
+      rest.get(
+        AaaUrls.getClientCertificateOnRadius.url.replace('?certType=CLIENT', ''),
+        (_, res, ctx) => {
+          return res(ctx.json(radiusClientCertRef))
+        }),
+      rest.get(
+        AaaUrls.getServerCertificateOnRadius.url.replace('?certType=SERVER', ''),
+        (_, res, ctx) => {
+          return res(ctx.json(radiusServerCertRef))
+        })
     )
   })
 
@@ -86,6 +113,45 @@ describe('AAAForm', () => {
     await screen.findByText('Add')
     // FIXME:
     // await userEvent.click(await screen.findByText('Finish'))
+  })
+
+  it('should create RadSec AAA successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><AAAForm edit={false} networkView={true}/></Provider>, {
+      route: { params }
+    })
+
+    await userEvent.click(await screen.findByRole('radio', { name: /Authentication/ }))
+    const name = await screen.findByRole('textbox', { name: /Profile Name/i })
+    await userEvent.type(name, 'RadSec-AAA')
+
+    const primaryIp = (await screen.findAllByRole('textbox', { name: 'IP Address' }))[0]
+    await userEvent.type(primaryIp, '192.168.1.99')
+
+    const primaryPort = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[0]
+    await userEvent.clear(primaryPort)
+    await userEvent.type(primaryPort, '2083')
+
+    const tlsEnabled = await screen.findByRole('switch')
+    await userEvent.click(tlsEnabled)
+
+    const cnSanIdentity = await screen.findByRole('textbox', { name: 'SAN Identity' })
+    await userEvent.type(cnSanIdentity, 'CA SAN')
+
+    const comboboxes = await screen.findAllByRole('combobox')
+    expect(comboboxes.length).toBe(3)
+
+    await userEvent.click(comboboxes[0])
+    await userEvent.click(await screen.findByText('CA-1'))
+
+    await userEvent.click(comboboxes[1])
+    await userEvent.click(await screen.findByText('Client-Cert-1'))
+
+    await userEvent.click(comboboxes[2])
+    await userEvent.click(await screen.findByText('Server-Cert-1'))
+
+    await screen.findByText('Add')
   })
 
   it('should render breadcrumb correctly', async () => {

@@ -191,7 +191,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   updateEdgeFirmware: {
     method: 'PATCH',
     url: '/venues/:venueId/edgeFirmwares',
-    newApi: true
+    newApi: true,
+    opsApi: 'PATCH:/venues/{id}/edgeFirmwares'
   },
   getEdgeUpgradePreferences: {
     method: 'get',
@@ -203,17 +204,20 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/upgrade/tenant/:tenantId/edgePreference',
     oldUrl: '/api/upgrade/tenant/:tenantId/edgePreference',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/api/upgrade/tenant/{id}/edgePreference'
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
     url: '/venues/:venueId/edgeFirmwares/schedules',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/venues/{id}/edgeFirmwares/schedules'
   },
   updateEdgeVenueSchedules: {
     method: 'post',
     url: '/venues/:venueId/edgeFirmwares/schedules',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/venues/{id}/edgeFirmwares/schedules'
   },
   getScheduledFirmware: {
     method: 'get',
@@ -224,6 +228,15 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueApModelFirmwareList: {
     method: 'post',
     url: '/venues/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVenueApModelFirmwareSchedulesList: {
+    method: 'post',
+    url: '/venues/apModelFirmwares/schedules/query',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -241,6 +254,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   patchVenueApModelFirmwares: {
     method: 'put',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -258,6 +272,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSchedulesPerApModel: {
     method: 'put',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    opsApi: 'PUT:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -267,6 +282,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   skipVenueSchedulesPerApModel: {
     method: 'delete',
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    opsApi: 'DELETE:/apModelFirmwares/batchOperations/{id}/venues/{id}',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
@@ -305,7 +321,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'PATCH:/edgeFirmwares/batchOperations/{id}/venues/{id}'
   },
   updateEdgeFirmwareVenueSchedule: {
     method: 'post',
@@ -314,7 +331,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/edgeFirmwares/batchOperations/{id}/venues/{id}'
   },
   skipEdgeFirmwareVenueSchedule: {
     method: 'delete',
@@ -323,6 +341,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/edgeFirmwares/batchOperations/{id}/venues/{id}'
   }
 }

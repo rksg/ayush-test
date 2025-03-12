@@ -190,6 +190,25 @@ describe('TunnelProfileDetail', () => {
       expect(screen.getByText('Keep Alive Reties')).toBeInTheDocument()
     })
   })
+
+  describe('when NAT-Traversal support is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
+    })
+
+    it('should display "NAT-T Support" field', async () => {
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText('NAT-T Support')).toBeInTheDocument()
+    })
+  })
+
 })
 
 const checkNetworkTable = async () => {

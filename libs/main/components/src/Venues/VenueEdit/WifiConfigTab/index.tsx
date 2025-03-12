@@ -10,7 +10,7 @@ import { Capabilities }                                                         
 import { useNavigate, useParams }                                                 from '@acx-ui/react-router-dom'
 
 import { useVenueConfigTemplateQueryFnSwitcher } from '../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext, EditContext }         from '../index'
+import { VenueEditContext }                      from '../index'
 
 import { AdvancedTab }   from './AdvancedTab'
 import { NetworkingTab } from './NetworkingTab'
@@ -29,7 +29,7 @@ export function WifiConfigTab () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/wifi/`)
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData } = useContext(VenueEditContext)
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -41,17 +41,6 @@ export function WifiConfigTab () {
     })
 
   const onTabChange = (tab: string) => {
-    const activeSubTab = params?.activeSubTab as keyof EditContext['tempData']
-    setEditContextData({
-      ...editContextData,
-      tabKey: activeSubTab,
-      newData: undefined,
-      oldData: undefined,
-      tempData: {
-        ...editContextData.tempData,
-        [activeSubTab]: editContextData.newData
-      }
-    })
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`

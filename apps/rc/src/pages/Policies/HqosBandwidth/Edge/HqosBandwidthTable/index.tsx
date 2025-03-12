@@ -3,22 +3,23 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, TrafficClassSettingsTable, ToolTipTableStyle }                 from '@acx-ui/rc/components'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                              from '@acx-ui/feature-toggle'
+import { EdgeTableCompatibilityWarningTooltip, SimpleListTooltip, ToolTipTableStyle, TrafficClassSettingsTable, useEdgeHqosCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
-  useGetEdgeHqosProfileViewDataListQuery,
-  useGetHqosEdgeCompatibilitiesQuery
+  useGetEdgeHqosProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeHqosViewData,
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
+  IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
   useTableQuery
@@ -27,9 +28,6 @@ import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom
 import { EdgeScopes }                             from '@acx-ui/types'
 
 import * as UI from '../styledComponents'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
-
 
 const EdgeHqosBandwidthTable = () => {
   const { $t } = useIntl()
@@ -90,15 +88,10 @@ const EdgeHqosBandwidthTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-  const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
-    payload: { filters: { serviceIds: currentServiceIds } } }, {
-    skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
-    selectFromResult: ({ data }) => {
-      return {
-        hqosCompatibilityData: data?.compatibilities
-      }
-    }
-  })
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+
+  // eslint-disable-next-line max-len
+  const hqosCompatibilityData = useEdgeHqosCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const columns: TableProps<EdgeHqosViewData>['columns'] = [
     {
@@ -120,9 +113,10 @@ const EdgeHqosBandwidthTable = () => {
               })}>
               {row.name}
             </TenantLink>
-            {isEdgeCompatibilityEnabled && <CompatibilityCheck
+            {isEdgeCompatibilityEnabled && <EdgeTableCompatibilityWarningTooltip
               serviceId={row.id!}
-              compatibilityData={hqosCompatibilityData}
+              featureName={IncompatibilityFeatures.HQOS}
+              compatibility={hqosCompatibilityData.compatibilities}
             />}
           </Space>
         )
@@ -177,6 +171,7 @@ const EdgeHqosBandwidthTable = () => {
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1 && selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -193,6 +188,7 @@ const EdgeHqosBandwidthTable = () => {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
       visible: (selectedRows) => selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -231,6 +227,8 @@ const EdgeHqosBandwidthTable = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.HQOS_BANDWIDTH,
               oper: PolicyOperation.CREATE })}>

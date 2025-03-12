@@ -27,12 +27,12 @@ import {
   AccessControlProfile,
   AccessControlProfileTemplate,
   AclEmbeddedObject,
-  hasPolicyPermission,
   PolicyOperation,
   PolicyType,
   transformDisplayText,
   useConfigTemplate,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { WifiScopes }    from '@acx-ui/types'
@@ -307,7 +307,7 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
   ])
 
   // eslint-disable-next-line max-len
-  if (!hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })) return null
+  if (!useTemplateAwarePolicyPermission(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)) return null
 
   const handleOnClick = () => {
     setModalStatus({
@@ -439,6 +439,10 @@ function SelectAccessProfileProfile (props: {
     })
   }
 
+  const hasCreatePermission = useTemplateAwarePolicyPermission(
+    PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE
+  )
+
   return (<>
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Access Control' })}
@@ -474,7 +478,7 @@ function SelectAccessProfileProfile (props: {
           children={accessControlProfileSelectOptions} />
       </Form.Item>
 
-      {hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
+      {hasCreatePermission &&
         <Button type='link'
           onClick={handleOnAddClick}
           children={$t({ defaultMessage: 'Add' })}

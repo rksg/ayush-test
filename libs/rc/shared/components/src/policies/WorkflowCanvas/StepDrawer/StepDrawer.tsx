@@ -4,10 +4,12 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                         from '@acx-ui/components'
-import { EyeOpenSolid }                                                                   from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                     from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
+import { Button, Drawer, Loader }                                                                       from '@acx-ui/components'
+import { EyeOpenSolid }                                                                                 from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery }                                                                   from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                                from '@acx-ui/user'
+import { getOpsApi }                                                                                    from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
@@ -17,7 +19,8 @@ import {
   DataPromptSettings,
   DisplayMessageSetting,
   DpskSettings,
-  MacRegistrationSettings
+  MacRegistrationSettings,
+  CertTemplateSettings
 } from './WorkflowActionSettingForm'
 
 
@@ -38,7 +41,8 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.DATA_PROMPT]: DataPromptSettings,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
   [ActionType.DPSK]: DpskSettings,
-  [ActionType.MAC_REG]: MacRegistrationSettings
+  [ActionType.MAC_REG]: MacRegistrationSettings,
+  [ActionType.CERT_TEMPLATE]: CertTemplateSettings
 }
 
 export default function StepDrawer (props: StepDrawerProps) {
@@ -139,7 +143,9 @@ export default function StepDrawer (props: StepDrawerProps) {
           }}
           onSave={onSave}
           onCancel={onClose}
-          showSaveButton={!isActionError}
+          showSaveButton={!isActionError &&
+            hasPermission({ rbacOpsIds: isEdit? [getOpsApi(WorkflowUrls.patchAction)] :
+              [getOpsApi(WorkflowUrls.createAction)] })}
           extra={
             <Button
               type={'link'}

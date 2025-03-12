@@ -1,62 +1,17 @@
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
-import { renderHook }                                  from '@acx-ui/test-utils'
-import { hasRoles }                                    from '@acx-ui/user'
-import { isDelegationMode }                            from '@acx-ui/utils'
+import userEvent from '@testing-library/user-event'
 
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { ConfigTemplateDriftType, ConfigTemplateType, PolicyType } from '@acx-ui/rc/utils'
+import { screen, render, renderHook }                              from '@acx-ui/test-utils'
+import { hasRoles }                                                from '@acx-ui/user'
+import { isDelegationMode }                                        from '@acx-ui/utils'
 
-const userProfileContextMockValues = {
-  region: '[NA, EU, ASIA]',
-  allowedRegions: [
-    {
-      name: 'US',
-      description: 'United States of America',
-      link: 'https://dev.ruckus.cloud',
-      current: true
-    },
-    {
-      name: 'Asia',
-      description: 'APAC region',
-      link: 'https://int.ruckus.cloud',
-      current: false
-    },
-    {
-      name: 'EU',
-      description: 'European Union',
-      link: 'https://qa.ruckus.cloud',
-      current: false
-    }
-  ],
-  externalId: '003D200000mT4dXIAS',
-  pver: 'ruckus-one',
-  companyName: 'msp.cfgtemp.9',
-  firstName: 'msp',
-  lastName: 'cfgtemp.9',
-  username: 'msp.cfgtemp.9@rwbigdog.com',
-  role: 'PRIME_ADMIN',
-  roles: [
-    'PRIME_ADMIN',
-    'VAR_ADMIN'
-  ],
-  detailLevel: 'debug',
-  dateFormat: 'mm/dd/yyyy',
-  newDateFormat: 'MM/dd/yyyy',
-  email: 'msp.cfgtemp.9@rwbigdog.com',
-  var: true,
-  tenantId: 'dc2146381a874d04a824bdd8c7bb991d',
-  varTenantId: 'dc2146381a874d04a824bdd8c7bb991d',
-  adminId: 'af13900b3d2d45d89708d0147eff774f',
-  support: false,
-  dogfood: false,
-  preferredLanguage: 'en-US',
-  fullName: 'msp cfgtemp.9',
-  initials: 'MC'
-}
+import { mockedUserProfile }                                                                                                                     from './__tests__/fixtures'
+import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useEcFilters, ViewConfigTemplateDetailsLink } from './templateUtils'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: userProfileContextMockValues }),
+  useUserProfileContext: () => ({ data: mockedUserProfile }),
   hasRoles: jest.fn()
 }))
 
@@ -91,7 +46,7 @@ describe('TemplateUtils', () => {
     const { result } = renderHook(() => useEcFilters())
 
     expect(result.current).toEqual({
-      mspAdmins: [userProfileContextMockValues.adminId],
+      mspAdmins: [mockedUserProfile.adminId],
       tenantType: ['MSP_EC', 'MSP_REC']
     })
   })
@@ -115,15 +70,85 @@ describe('TemplateUtils', () => {
     })
   })
 
-  describe('getConfigTemplateDriftStatusLabel', () => {
-    it('should return an empty string when driftStatus is undefined', () => {
-      expect(getConfigTemplateDriftStatusLabel(undefined)).toBe('')
+  describe('ConfigTemplateDriftStatus', () => {
+    const baseData = {
+      id: '1',
+      name: 'Template 1',
+      createdOn: 1690598400000,
+      createdBy: 'Author 1',
+      type: ConfigTemplateType.NETWORK,
+      lastModified: 1690598400000,
+      lastApplied: 1690598405000
+    }
+    it('renders empty when the Drift Status is falsy', () => {
+      const { container } = render(<ConfigTemplateDriftStatus row={baseData} />)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(container.firstChild).toHaveTextContent('--')
     })
 
-    it('should return the corresponding label when driftStatus is defined', () => {
-      // eslint-disable-next-line max-len
-      expect(getConfigTemplateDriftStatusLabel(ConfigTemplateDriftType.DRIFT_DETECTED)).toBe('Drift Detected')
-      expect(getConfigTemplateDriftStatusLabel(ConfigTemplateDriftType.IN_SYNC)).toBe('In Sync')
+    it('renders label and callback when the Drift Status is clickable', async () => {
+      const row = { ...baseData, driftStatus: ConfigTemplateDriftType.DRIFT_DETECTED }
+      const callback = jest.fn()
+      render(<ConfigTemplateDriftStatus
+        row={row}
+        callbackMap={{ [ConfigTemplateDriftType.DRIFT_DETECTED]: callback }}
+      />)
+      const span = screen.getByText('Drift Detected')
+      expect(span).toBeInTheDocument()
+      await userEvent.click(span)
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('getConfigTemplateEnforcementLabel', () => {
+    it('returns empty string when enforced is undefined', () => {
+      expect(getConfigTemplateEnforcementLabel(undefined)).toBe('--')
+    })
+
+    it('returns "Enforced" when enforced is true', () => {
+      expect(getConfigTemplateEnforcementLabel(true)).toBe('Enforced')
+    })
+
+    it('returns "Not enforced" when enforced is false', () => {
+      expect(getConfigTemplateEnforcementLabel(false)).toBe('Not enforced')
+    })
+  })
+
+  describe('ViewConfigTemplateDetailsLink', () => {
+    it('calls setAccessControlSubPolicyVisible when TemplateNameLink is clicked', async () => {
+      const mockedLayer2Template = {
+        id: '4',
+        name: 'Template 4',
+        createdOn: 1690598500000,
+        createdBy: 'Author 4',
+        type: ConfigTemplateType.LAYER_2_POLICY,
+        lastModified: 1690598500000
+      }
+      const mockedSetAccessControlSubPolicyVisible = jest.fn()
+
+      render(<ViewConfigTemplateDetailsLink
+        template={mockedLayer2Template}
+        setAclSubPolicyVisible={mockedSetAccessControlSubPolicyVisible}
+        label={'View Configuration'}
+      />, { route: {
+        params: { tenantId: '__TENANT_ID', activeTab: 'templates' },
+        path: '/:tenantId/v/templates/:activeTab'
+      } })
+
+      const templateNameButton = screen.getByRole('button', { name: 'View Configuration' })
+      expect(templateNameButton).toBeInTheDocument()
+
+      await userEvent.click(templateNameButton)
+
+      expect(mockedSetAccessControlSubPolicyVisible).toHaveBeenCalledWith(
+        expect.objectContaining({
+          [PolicyType.LAYER_2_POLICY]: {
+            id: mockedLayer2Template.id,
+            visible: true,
+            drawerViewMode: true
+          }
+        })
+      )
     })
   })
 })

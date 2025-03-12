@@ -1,34 +1,35 @@
-import React, { createContext, useState, useContext, Dispatch, SetStateAction  } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 
 import { Divider, Menu } from 'antd'
 import moment            from 'moment-timezone'
 import { useIntl }       from 'react-intl'
 
 import {
-  ConnectedClientsOverTime,
-  IncidentsDashboardv2,
   ClientExperience,
+  ConnectedClientsOverTime,
+  DidYouKnow,
+  IncidentsDashboardv2,
+  SwitchesTrafficByVolume,
   SwitchesTrafficByVolumeLegacy,
   TopAppsByTraffic,
+  TopEdgesByResources,
+  TopEdgesByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
-  TrafficByVolume,
-  DidYouKnow,
   TopWiFiNetworks,
-  TopEdgesByTraffic,
-  TopEdgesByResources,
-  SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
+  TrafficByVolume
+} from '@acx-ui/analytics/components'
 import {
   Button,
-  Dropdown,
-  GridRow,
-  GridCol,
-  PageHeader,
-  RangePicker,
   ContentSwitcher,
-  ContentSwitcherProps
+  ContentSwitcherProps,
+  Dropdown,
+  GridCol,
+  GridRow,
+  PageHeader,
+  RangePicker
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { VenueFilter }            from '@acx-ui/main/components'
@@ -37,19 +38,40 @@ import {
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
   MapWidgetV2,
-  VenuesDashboardWidgetV2,
-  useIsEdgeReady
+  useIsEdgeReady,
+  VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                                                                                    from '@acx-ui/react-router-dom'
-import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes }                                               from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, getShowWithoutRbacCheckKey, hasPermission, hasRoles } from '@acx-ui/user'
 import {
-  useDashboardFilter,
+  CommonUrlsInfo,
+  EdgeUrlsInfo,
+  SwitchRbacUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import {
+  EdgeScopes,
+  RolesEnum,
+  SwitchScopes,
+  WifiScopes
+}                                               from '@acx-ui/types'
+import {
+  hasCrossVenuesPermission,
+  filterByAccess,
+  getShowWithoutRbacCheckKey,
+  hasPermission,
+  hasRoles,
+  getUserProfile,
+  hasAllowedOperations
+} from '@acx-ui/user'
+import {
+  AnalyticsFilter,
   DateFilter,
   DateRange,
+  getDatePickerValues,
+  LoadTimeContext,
   getDateRangeFilter,
-  AnalyticsFilter,
-  getDatePickerValues
+  getOpsApi,
+  useDashboardFilter
 } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -139,24 +161,46 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
+  const { onPageFilterChange } = useContext(LoadTimeContext)
+
   const { startDate , endDate, range } = dashboardFilters
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
-  const hasCreatePermission
-    = hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE] })
+  const hasCreatePermission = hasPermission({
+    scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE],
+    rbacOpsIds: [
+      getOpsApi(WifiRbacUrlsInfo.addAp),
+      getOpsApi(SwitchRbacUrlsInfo.addSwitch),
+      [
+        getOpsApi(EdgeUrlsInfo.addEdge),
+        getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+      ]
+    ]
+  })
+
+  const hasAddVenuePermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(CommonUrlsInfo.addVenue)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+  hasCrossVenuesPermission()
+
+  const hasAddNetworkPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(WifiRbacUrlsInfo.addNetworkDeep)])
+    : hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+  hasCrossVenuesPermission()
 
   const addMenu = <Menu
     expandIcon={<UI.MenuExpandArrow />}
     items={[
-      ...(hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
-          hasCrossVenuesPermission() ? [{
-          key: 'add-venue',
-          label: <TenantLink to='venues/add'>
-            {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-          </TenantLink>
-        }]: []),
-      ...((hasPermission({ scopes: [WifiScopes.CREATE] }) && hasCrossVenuesPermission()) ? [{
+      ...(hasAddVenuePermission ? [{
+        key: 'add-venue',
+        label: <TenantLink to='venues/add'>
+          {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+        </TenantLink>
+      }]: []),
+      ...(hasAddNetworkPermission ? [{
         key: 'add-wifi-network',
         label: <TenantLink to='networks/wireless/add'>{
           $t({ defaultMessage: 'Wi-Fi Network' })}
@@ -167,28 +211,48 @@ function DashboardPageHeader () {
         label: $t({ defaultMessage: 'Device' }),
         // type: 'group',
         children: [
-          ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
-            key: 'add-ap',
-            label: <TenantLink to='devices/wifi/add'>
-              {$t({ defaultMessage: 'Wi-Fi AP' })}
-            </TenantLink>
-          }] : []),
-          ...( hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
-            key: 'add-switch',
-            label: <TenantLink to='devices/switch/add'>
-              {$t({ defaultMessage: 'Switch' })}
-            </TenantLink>
-          }] : []),
-          ...(isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
-            key: 'add-edge',
-            label: <TenantLink to='devices/edge/add'>{
-              $t({ defaultMessage: 'RUCKUS Edge' })
-            }</TenantLink>
-          }] : []
+          ...( hasPermission({ scopes: [WifiScopes.CREATE],
+            rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)] }) ? [{
+              key: 'add-ap',
+              label: <TenantLink to='devices/wifi/add'>
+                {$t({ defaultMessage: 'Wi-Fi AP' })}
+              </TenantLink>
+            }] : []),
+          ...( hasPermission({ scopes: [SwitchScopes.CREATE],
+            rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitch)]
+          }) ? [{
+              key: 'add-switch',
+              label: <TenantLink to='devices/switch/add'>
+                {$t({ defaultMessage: 'Switch' })}
+              </TenantLink>
+            }] : []),
+          ...(isEdgeEnabled &&
+            hasPermission({
+              scopes: [EdgeScopes.CREATE],
+              rbacOpsIds: [
+                [
+                  getOpsApi(EdgeUrlsInfo.addEdge),
+                  getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+                ]
+              ]
+            })) ? [{
+              key: 'add-edge',
+              label: <TenantLink to='devices/edge/add'>{
+                $t({ defaultMessage: 'RUCKUS Edge' })
+              }</TenantLink>
+            }] : []
         ]
       }] : [])
     ]}
   />
+
+  useEffect(() => {
+    onPageFilterChange?.(dashboardFilters, true)
+  }, [])
+
+  useEffect(() => {
+    onPageFilterChange?.(dashboardFilters)
+  }, [dashboardFilters])
 
   return (
     <PageHeader
@@ -197,6 +261,16 @@ function DashboardPageHeader () {
         ...filterByAccess([
           <Dropdown overlay={addMenu}
             placement={'bottomRight'}
+            rbacOpsIds={[
+              getOpsApi(WifiRbacUrlsInfo.addAp),
+              getOpsApi(SwitchRbacUrlsInfo.addSwitch),
+              [
+                getOpsApi(EdgeUrlsInfo.addEdge),
+                getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+              ],
+              getOpsApi(WifiRbacUrlsInfo.addNetworkDeep),
+              getOpsApi(CommonUrlsInfo.addVenue)
+            ]}
             scopeKey={[WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE]}>{() =>
               <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
             }</Dropdown>
@@ -209,6 +283,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
           showLast8hours
+          maxMonthRange={isDateRangeLimit ? 1 : 3}
         />
       ]}
     />
@@ -289,6 +364,10 @@ function EdgeWidgets () {
 
 function CommonDashboardWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <GridRow>

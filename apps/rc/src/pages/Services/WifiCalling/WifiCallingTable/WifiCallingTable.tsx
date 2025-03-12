@@ -13,6 +13,7 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
+  getServiceAllowedOperation,
   ServiceType,
   useTableQuery,
   getServiceDetailsLink,
@@ -116,6 +117,7 @@ export default function WifiCallingTable () {
 
   const rowActions: TableProps<WifiCallingSetting>['rowActions'] = [
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -123,6 +125,7 @@ export default function WifiCallingTable () {
       }
     },
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
       scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -145,12 +148,8 @@ export default function WifiCallingTable () {
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'Wi-Fi Calling ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'Wi-Fi Calling ({count})' },
+            { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
@@ -160,6 +159,8 @@ export default function WifiCallingTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
           >
             <Button

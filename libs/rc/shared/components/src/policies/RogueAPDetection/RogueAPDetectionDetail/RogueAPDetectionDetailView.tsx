@@ -11,7 +11,8 @@ import {
   PolicyType,
   RogueApConstant,
   RogueAPDetailContextType,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -28,6 +29,9 @@ export const RogueAPDetectionDetailView = () => {
   const [policyName, setPolicyName] = useState('' as string)
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ROGUE_AP_DETECTION)
+  const allowedOperationForEdit = useTemplateAwarePolicyAllowedOperation(
+    PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT
+  )
 
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
@@ -37,6 +41,7 @@ export const RogueAPDetectionDetailView = () => {
         extra={policyName !== RogueApConstant.DefaultProfile
           ? filterByAccessForServicePolicyMutation([
             <PolicyConfigTemplateLinkSwitcher
+              rbacOpsIds={allowedOperationForEdit}
               scopeKey={getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT)}
               type={PolicyType.ROGUE_AP_DETECTION}
               oper={PolicyOperation.EDIT}

@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
-import '@testing-library/jest-dom'
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import { cloneDeep }                          from 'lodash'
 import { rest }                               from 'msw'
 
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
-import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { NetworkTunnelActionModalProps, useEdgeAllPinData, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksDataV2,
   networkApi,
@@ -60,7 +59,9 @@ const disabledFFs = [
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.RBAC_CONFIG_TEMPLATE_TOGGLE,
   Features.EDGE_SD_LAN_MV_TOGGLE,
-  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
+  Features.EDGE_PIN_ENHANCE_TOGGLE,
+  Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
 ]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
@@ -85,7 +86,13 @@ jest.mock('@acx-ui/rc/components', () => ({
     sdLans: [],
     scopedNetworkIds: []
   }),
-  transformVLAN: jest.fn().mockReturnValue('VLAN-1 (Default)')
+  transformVLAN: jest.fn().mockReturnValue('VLAN-1 (Default)'),
+  useEdgeAllPinData: jest.fn().mockReturnValue([]),
+  NetworkTunnelActionModal: jest.fn().mockImplementation((props: NetworkTunnelActionModalProps) => {
+    return <div data-testid='rc-NetworkTunnelActionModal' >
+      {''+props.isPinNetwork}
+    </div>
+  })
 }))
 
 const mockVenueNetworkData1 = aggregatedVenueNetworksDataV2(venueNetworkList, { data: venueNetworkApGroupData }, networkDeepList)
@@ -193,10 +200,14 @@ describe('VenueNetworksTab - PIN enabled', () => {
 
   describe('Edge and multi-venue SD-LAN FF is on', () => {
     beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
+
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+        && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
+        && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })
 
     const mockedSdLanScopeData = {
@@ -229,13 +240,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       expect(sdlanLink).toHaveAttribute('href', `/${params.tenantId}/t/services/edgeSdLan/mocked-sd-lan-1/detail`)
       const toggleTunnelBtn = within(activatedRow).getAllByRole('switch')[1]
       expect(toggleTunnelBtn).toBeChecked()
-      await userEvent.click(toggleTunnelBtn)
-
-      // should popup last wlan deassociation in current venue
-      const dialog = await screen.findByRole('dialog')
-      within(dialog).getByText('SD-LAN Removal')
-      await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(dialog).not.toBeVisible())
     })
 
     it('should greyout when the WLAN is the last one in SDLAN', async () => {
@@ -300,14 +304,9 @@ describe('VenueNetworksTab - PIN enabled', () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-
-
-      mockServer.use(
-        rest.post(
-          EdgePinUrls.getEdgePinStatsList.url,
-          (_req, res, ctx) => res(ctx.json(mockPinStatsList)))
-      )
+        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+        && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
+        && ff !== Features.EDGE_PIN_ENHANCE_TOGGLE)
     })
 
     const mockedSdLanScopeData = {
@@ -317,6 +316,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
     }
 
     it('should correctly display tunnel column when PIN is running on it', async () => {
+      jest.mocked(useEdgeAllPinData).mockReturnValue(mockPinStatsList.data)
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {
@@ -332,6 +332,27 @@ describe('VenueNetworksTab - PIN enabled', () => {
       expect(toggleTunnelBtn).toBeDisabled()
       expect(toggleTunnelBtn).toBeChecked()
     })
+
+    it('should correctly greyout SD-LAN tunnel column when PIN is running on it', async () => {
+      const mockPinList = cloneDeep(EdgePinFixtures.mockPinStatsList)
+      mockPinList.data[0].tunneledWlans.push({ networkId: targetNetworkId })
+
+      jest.mocked(useEdgeAllPinData).mockReturnValue(mockPinList.data)
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByText('Network Topology')
+      const toggleTunnelBtn = within(activatedRow).getAllByRole('switch')[1]
+      expect(toggleTunnelBtn).not.toBeDisabled()
+      expect(toggleTunnelBtn).not.toBeChecked()
+
+      await userEvent.click(toggleTunnelBtn)
+      await waitFor(() => expect(screen.getByTestId('rc-NetworkTunnelActionModal')).toHaveTextContent('true'))
+    })
   })
 
   describe('SoftGreTunnel', () => {
@@ -344,7 +365,9 @@ describe('VenueNetworksTab - PIN enabled', () => {
         ff !== Features.WIFI_COMPATIBILITY_BY_MODEL &&
         ff !== Features.EDGES_SD_LAN_TOGGLE &&
         ff !== Features.EDGES_SD_LAN_HA_TOGGLE &&
-        ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
+        ff !== Features.EDGE_SD_LAN_MV_TOGGLE &&
+        ff !== Features.EDGE_PIN_ENHANCE_TOGGLE &&
+        ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
     })
 
     it('should correctly display tunnel column when SoftGre is running on it', async () => {
@@ -393,10 +416,6 @@ describe('VenueNetworksTab - PIN enabled', () => {
       const toggleTunnelBtn = within(activatedRow).getAllByRole('switch')[1]
       expect(toggleTunnelBtn).not.toBeDisabled()
       expect(toggleTunnelBtn).not.toBeChecked()
-      await userEvent.click(toggleTunnelBtn)
-      const tunnelNetworkModal = await screen.findByRole('dialog')
-      const softGreRadio = await within(tunnelNetworkModal).findByRole('radio', { name: 'SoftGRE Tunneling' })
-      await waitFor(() => expect(softGreRadio).not.toBeChecked())
     })
   })
 })

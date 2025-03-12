@@ -2,16 +2,17 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                      from '@acx-ui/rc/components'
 import {
-  ServiceType,
   getSelectServiceRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  ServiceType
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }   from '@acx-ui/react-router-dom'
-import { render,renderHook, screen } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }    from '@acx-ui/react-router-dom'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import SelectServiceForm from '.'
 
@@ -28,6 +29,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (to: To): Path => {
     return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
   }
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
 }))
 
 describe('Select Service Form', () => {
@@ -90,10 +103,9 @@ describe('Select Service Form', () => {
 
   it('should not render edge-dhcp with the HA-FF ON and dhcp-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EDGE_HA_TOGGLE
-        || featureFlag !== Features.EDGE_DHCP_HA_TOGGLE
-    })
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
+              || ff !== Features.EDGE_DHCP_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -104,10 +116,9 @@ describe('Select Service Form', () => {
 
   it('should not render edge-pin with the HA-FF ON and pin-HA-FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EDGE_HA_TOGGLE
-        || featureFlag !== Features.EDGE_PIN_HA_TOGGLE
-    })
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
+              || ff !== Features.EDGE_PIN_HA_TOGGLE)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -119,6 +130,7 @@ describe('Select Service Form', () => {
   it('should not render features bound with FF when FF OFF', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(<SelectServiceForm />, {
       route: { params, path }
@@ -126,17 +138,53 @@ describe('Select Service Form', () => {
 
     expect(screen.queryByText('mDNS Proxy for RUCKUS Edge')).toBeNull()
     expect(screen.queryByText('Personal Identity Network')).toBeNull()
+    expect(screen.queryByText('Thirdparty Network Management')).toBeNull()
   })
 
   it('should display Edge mDNS service when its FF ON', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EDGE_MDNS_PROXY_TOGGLE
-        || featureFlag === Features.EDGES_TOGGLE
-    })
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
+              || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsBetaEnabled).mockReturnValue(true)
     render(<SelectServiceForm />, {
       route: { params, path }
     })
 
     expect(screen.getByText('mDNS Proxy for RUCKUS Edge')).toBeVisible()
+    expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
+  })
+
+  it('should display Edge TNM service when its FF ON', async () => {
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE
+        || ff === Features.EDGES_TOGGLE)
+    render(<SelectServiceForm />, {
+      route: { params, path }
+    })
+
+    expect(screen.getByText('Thirdparty Network Management')).toBeVisible()
+  })
+
+  describe('Edge OLT', () => {
+    it('should render Edge OLT when FF is ON', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      await screen.findByText('NOKIA GPON Services')
+    })
+
+    it('should not render Edge OLT when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+      render(<SelectServiceForm />, {
+        route: { params, path }
+      })
+
+      expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
   })
 })

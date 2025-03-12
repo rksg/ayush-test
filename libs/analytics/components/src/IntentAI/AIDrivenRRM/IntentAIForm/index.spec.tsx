@@ -7,9 +7,9 @@ import { get }                                                                  
 import { Provider, intentAIUrl, store, intentAIApi }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockIntentContext }                  from '../../__tests__/fixtures'
-import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
-import { kpis }                               from '../common'
+import { mockIntentContext }                                        from '../../__tests__/fixtures'
+import { mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs } from '../__tests__/fixtures'
+import { kpis }                                                     from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -67,9 +67,7 @@ describe('IntentAIForm', () => {
     mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
       data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
     })
-
-    jest.spyOn(require('../../utils'), 'isDataRetained')
-      .mockImplementation(() => true)
+    mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedIntentCRRMKPIs } })
 
     mockIntentContext({ intent: mockedIntentCRRM, kpis })
   })
@@ -121,6 +119,8 @@ describe('IntentAIForm', () => {
 
     // Step 4
     await screen.findAllByRole('heading', { name: 'Summary' })
+    expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()

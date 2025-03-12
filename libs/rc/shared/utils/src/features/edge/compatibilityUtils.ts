@@ -1,11 +1,21 @@
-import { IncompatibilityFeatures }          from '../../models/CompatibilityEnum'
-import { EdgeFeatureEnum }                  from '../../models/EdgeEnum'
-import { VenueEdgeCompatibilitiesResponse } from '../../types/edge'
+/* eslint-disable max-len */
+import { EdgeCompatibilityFeatureEnum, IncompatibilityFeatures }                                                                        from '../../models/CompatibilityEnum'
+import { EdgeIncompatibleFeature, EdgeIncompatibleFeatureV1_1, VenueEdgeCompatibilitiesResponse, VenueEdgeCompatibilitiesResponseV1_1 } from '../../types/edge'
 
 export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): boolean => {
   switch(featureName) {
     case IncompatibilityFeatures.SD_LAN:
     case IncompatibilityFeatures.TUNNEL_PROFILE:
+    case IncompatibilityFeatures.NAT_TRAVERSAL:
+    case IncompatibilityFeatures.PIN:
+      return true
+    default:
+      return false
+  }
+}
+export const isSwitchRelatedEdgeFeature = (featureName: IncompatibilityFeatures): boolean => {
+  switch(featureName) {
+    case IncompatibilityFeatures.PIN:
       return true
     default:
       return false
@@ -13,13 +23,13 @@ export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): bo
 }
 
 export const isEdgeCompatibilityFeature = (featureName: string) =>
-  Object.values(EdgeFeatureEnum).includes(featureName as EdgeFeatureEnum)
+  Object.values(EdgeCompatibilityFeatureEnum).includes(featureName as EdgeCompatibilityFeatureEnum)
 
-// eslint-disable-next-line max-len
-export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE]
+export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE, IncompatibilityFeatures.NAT_TRAVERSAL]
+export const edgePinRequiredFeatures = [IncompatibilityFeatures.PIN, IncompatibilityFeatures.TUNNEL_PROFILE]
 
 export const retrievedEdgeCompatibilitiesOptions = (
-  response?: VenueEdgeCompatibilitiesResponse
+  response?: VenueEdgeCompatibilitiesResponse | VenueEdgeCompatibilitiesResponseV1_1
 ) => {
   const data = response?.compatibilities
   const compatibilitiesFilterOptions: {
@@ -32,18 +42,34 @@ export const retrievedEdgeCompatibilitiesOptions = (
     const { incompatibleFeatures, incompatible } = data[0]
     if (incompatible > 0) {
       incompatibleFeatures?.forEach((feature) => {
-        const { featureRequirement, incompatibleDevices } = feature
-        const fwVersions: string[] = []
-        incompatibleDevices?.forEach((device) => {
-          if (fwVersions.indexOf(device.firmware) === -1) {
-            fwVersions.push(device.firmware)
-          }
-        })
-        compatibilitiesFilterOptions.push({
-          key: fwVersions.join(','),
-          value: featureRequirement.featureName,
-          label: featureRequirement.featureName
-        })
+        if (feature.hasOwnProperty('featureType')
+          && feature.hasOwnProperty('featureLevel')) {
+          const { featureName, incompatibleDevices } = feature as EdgeIncompatibleFeatureV1_1
+          const fwVersions: string[] = []
+          incompatibleDevices?.forEach((device) => {
+            if (fwVersions.indexOf(device.firmware) === -1) {
+              fwVersions.push(device.firmware)
+            }
+          })
+          compatibilitiesFilterOptions.push({
+            key: featureName + ',' + fwVersions.join(','),
+            value: featureName,
+            label: featureName
+          })
+        } else {
+          const { featureRequirement, incompatibleDevices } = feature as EdgeIncompatibleFeature
+          const fwVersions: string[] = []
+          incompatibleDevices?.forEach((device) => {
+            if (fwVersions.indexOf(device.firmware) === -1) {
+              fwVersions.push(device.firmware)
+            }
+          })
+          compatibilitiesFilterOptions.push({
+            key: featureRequirement.featureName + ',' + fwVersions.join(','),
+            value: featureRequirement.featureName,
+            label: featureRequirement.featureName
+          })
+        }
       })
     }
     return {

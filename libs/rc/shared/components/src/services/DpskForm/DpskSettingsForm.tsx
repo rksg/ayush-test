@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+
 import {
   Form,
   Input,
@@ -9,9 +11,23 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
-import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery, useLazyGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
+import {
+  GridCol,
+  GridRow,
+  Modal,
+  ModalType,
+  SelectionControl,
+  StepsFormLegacy,
+  Subtitle,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  useAdaptivePolicySetListQuery,
+  useLazyGetDpskListQuery,
+  useLazyGetEnhancedDpskTemplateListQuery,
+  useSearchPersonaGroupListQuery
+} from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -29,21 +45,24 @@ import {
   TableResult,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                  from '@acx-ui/types'
-import { hasRoles }                   from '@acx-ui/user'
-import { getIntl }                    from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import { hasRoles }  from '@acx-ui/user'
+import { getIntl }   from '@acx-ui/utils'
 
-import { ExpirationDateSelector } from '../../ExpirationDateSelector'
+import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
+import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
+import { hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
+import { IdentityGroupForm }                from '../../users/IdentityGroupForm'
 
 import { FieldSpace } from './styledComponents'
 
 interface DpskSettingsFormProps {
-  modalMode?: boolean
+  modalMode?: boolean,
+  editMode?: boolean
 }
 
 export default function DpskSettingsForm (props: DpskSettingsFormProps) {
-  const { modalMode = false } = props
+  const { modalMode = false, editMode = false } = props
   const intl = getIntl()
   const form = Form.useFormInstance()
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
@@ -147,19 +166,18 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
         />
       </GridCol>
     </GridRow>
-    {isCloudpathEnabled && <CloudpathFormItems />}
+    {isCloudpathEnabled && <CloudpathFormItems editMode={editMode} />}
   </>)
 }
 
-function CloudpathFormItems () {
+function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const navigate = useNavigate()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
   const policySetId = Form.useWatch<string>('policySetId', form)
   const deviceCountLimit = Form.useWatch<number>('deviceCountLimit', form)
-  const adaptivePolicySetsPath = useTenantLink('/policies/adaptivePolicySet/list')
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
   const MAX_DEVICES_PER_PASSPHRASE = dpskDeviceCountLimitToggle
@@ -177,6 +195,23 @@ function CloudpathFormItems () {
       }
     }
   )
+  const { identityGroupList } = useSearchPersonaGroupListQuery({
+    payload: {
+      page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
+    }
+  }, {
+    skip: !isIdentityGroupRequired,
+    selectFromResult ({ data }) {
+      return {
+        // return empty list if data?.data is undefined
+        // eslint-disable-next-line max-len
+        identityGroupList: data?.data.filter(group => editMode || !group.dpskPoolId).map(group => ({ value: group.id, label: group.name }))
+      }
+    }
+  })
+
+  const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
+  const [policyModalVisible, setPolicyModalVisible] = useState(false)
 
   return (
     <GridRow>
@@ -234,6 +269,60 @@ function CloudpathFormItems () {
             </Radio.Group>
           }
         />
+        {isIdentityGroupRequired &&
+          <div style={{
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <Form.Item
+              name='identityId'
+              label={$t({ defaultMessage: 'Identity Group' })}
+              required
+              rules={[{ required: true }]}
+            >
+              <Select style={{ width: 200 }}
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                allowClear
+                options={identityGroupList}
+                disabled={editMode}
+              />
+            </Form.Item>
+            {
+              (!editMode && hasCreateIdentityGroupPermission()) &&
+              <>
+                <Space align='center'>
+                  <Button
+                    id={'AddIdentityGroupButton'}
+                    type='link'
+                    style={{ marginLeft: '8px', top: '0.25rem' }}
+                    onClick={async () => {
+                      setIdentityGroupModelVisible(true)
+                    }}
+                  >
+                    {$t({ defaultMessage: 'Add' })}
+                  </Button>
+                </Space>
+                <Modal
+                  title={$t({ defaultMessage: 'Add Identity Group' })}
+                  visible={identityGroupModelVisible}
+                  type={ModalType.ModalStepsForm}
+                  children={<IdentityGroupForm
+                    modalMode={true}
+                    callback={(identityGroupId?: string) => {
+                      if (identityGroupId) {
+                        form.setFieldValue('identityId', identityGroupId)
+                      }
+                      setIdentityGroupModelVisible(false)
+                    }}
+                  />}
+                  onCancel={() => setIdentityGroupModelVisible(false)}
+                  width={1200}
+                  destroyOnClose={true}
+                />
+              </>
+            }
+          </div>
+        }
         {isPolicyManagementEnabled &&
           <>
             <div style={{
@@ -252,15 +341,35 @@ function CloudpathFormItems () {
                 />
               </Form.Item>
               {
-                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) && <Button
-                  type='link'
-                  style={{ marginLeft: '8px', top: '0.25rem' }}
-                  onClick={async () => {
-                    navigate(adaptivePolicySetsPath)
-                  }}
-                >
-                  {$t({ defaultMessage: 'Add' })}
-                </Button>
+                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) && <>
+                  <Button
+                    id={'AddPolicySetButton'}
+                    type='link'
+                    style={{ marginLeft: '8px', top: '0.25rem' }}
+                    onClick={async () => {
+                      setPolicyModalVisible(true)
+                    }}
+                  >
+                    {$t({ defaultMessage: 'Add' })}
+                  </Button>
+                  <Modal
+                    title={$t({ defaultMessage: 'Add Adaptive Policy Set' })}
+                    visible={policyModalVisible}
+                    type={ModalType.ModalStepsForm}
+                    children={<AdaptivePolicySetForm
+                      modalMode
+                      modalCallBack={(addedPolicySetId?: string) => {
+                        if (addedPolicySetId) {
+                          form.setFieldValue('policySetId', addedPolicySetId)
+                        }
+                        setPolicyModalVisible(false)
+                      }}
+                    />}
+                    onCancel={() => setPolicyModalVisible(false)}
+                    width={1200}
+                    destroyOnClose={true}
+                  />
+                </>
               }
             </div>
 

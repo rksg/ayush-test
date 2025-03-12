@@ -53,14 +53,12 @@ describe('VlanInput', () => {
       vlanId: 1
     }
 
-    const { asFragment } = render(<Provider><VlanInput
+    render(<Provider><VlanInput
       apgroup={defaultAG}
       wlan={network.wlan}
       onChange={()=>void 0}
+      selected={true}
     /></Provider>, { route: { params } })
-
-
-    expect(asFragment()).toMatchSnapshot()
 
     const editButton = await screen.findByRole('button', { name: 'edit' })
     expect(editButton).toBeVisible()
@@ -82,6 +80,7 @@ describe('VlanInput', () => {
       wlan={network.wlan}
       vlanPoolSelectOptions={vlanPoolList}
       onChange={callbackFn}
+      selected={true}
     /></Provider>, { route: { params } })
 
     const editButton = await screen.findByRole('button', { name: 'edit' })

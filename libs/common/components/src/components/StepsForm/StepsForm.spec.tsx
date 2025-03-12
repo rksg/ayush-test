@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import userEvent              from '@testing-library/user-event'
-import { Form, Input, Radio } from 'antd'
+import userEvent                          from '@testing-library/user-event'
+import { Form, Input, Radio, Typography } from 'antd'
 
 import { cleanup, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -232,6 +232,22 @@ describe('StepsForm', () => {
       submit: ''
     }} />)
     expect(screen.getAllByRole('button').length).toBe(2)
+  })
+
+  it('should not display apply button when label is empty value in editMode', async () => {
+    render(<CustomForm
+      editMode
+      buttonLabel={{
+        pre: 'Before',
+        next: 'After',
+        cancel: 'CacnelAction',
+        apply: ''
+      }} />)
+
+    expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'CacnelAction' })).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'After' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Apply' })).toBeNull()
   })
 
   it.skip('prevent navigate to other steps when field invalid', async () => {
@@ -560,6 +576,75 @@ describe('StepsForm', () => {
     expect(step2OnFinishSpy).toBeCalledWith(false)
     expect(step1OnFinishSpy).toBeCalledTimes(2)
     expect(step2OnFinishSpy).toBeCalledTimes(2)
+  })
+
+  it('supports button props', async () => {
+    const onFinish = jest.fn()
+    render(<CustomForm
+      editMode
+      onFinish={onFinish}
+      buttonProps={{ apply: { disabled: true, tooltip: 'Test Me' } }}
+    />)
+
+    const applyButton = await screen.findByRole('button', { name: 'Apply' })
+    expect(applyButton).toBeDisabled()
+
+    await userEvent.hover(applyButton)
+    expect(await screen.findByText('Test Me')).toBeInTheDocument()
+  })
+
+  describe('hasPrerequisite step', () => {
+    const onFinishSpy = jest.fn()
+    const onStep1FinishSpy = jest.fn()
+
+    const TestComponent = () => <StepsForm
+      hasPrerequisiteStep
+      onFinish={onFinishSpy}
+    >
+      <StepsForm.StepForm title='Prerequisite'>
+        <StepsForm.Title>Prerequisite</StepsForm.Title>
+        <Typography.Text children='Prerequisite content' />
+      </StepsForm.StepForm>
+      <StepsForm.StepForm title='Step 1'
+        onFinish={async () => {
+          onStep1FinishSpy()
+        }}>
+        <StepsForm.Title>Step 1 Title</StepsForm.Title>
+        <Form.Item name='field1' label='Field 1'>
+          <Input />
+        </Form.Item>
+      </StepsForm.StepForm>
+    </StepsForm>
+
+    it('should render start button for go to next step', async () => {
+      render(<TestComponent />)
+
+      const actions = screen.getByTestId('steps-form-actions')
+      expect(await screen.findByRole('heading', { name: 'Prerequisite' })).toBeVisible()
+
+      await userEvent.click(within(actions).getByRole('button', { name: 'Start' }))
+      expect(onStep1FinishSpy).toBeCalledTimes(0)
+
+      expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+      await userEvent.click(within(actions).getByRole('button', { name: 'Back' }))
+
+      expect(onStep1FinishSpy).toBeCalledTimes(1)
+      expect(await screen.findByRole('heading', { name: 'Prerequisite' })).toBeVisible()
+      await userEvent.click(within(actions).getByRole('button', { name: 'Start' }))
+      await screen.findByRole('heading', { name: 'Step 1 Title' })
+      await userEvent.click(within(actions).getByRole('button', { name: 'Add' }))
+      expect(onFinishSpy).toBeCalledTimes(1)
+      expect(onStep1FinishSpy).toBeCalledTimes(2)
+    })
+
+    it('should not render steps button on left side when current step is 0', async () => {
+      render(<TestComponent />)
+
+      const actions = screen.getByTestId('steps-form-actions')
+      expect(await screen.findByRole('heading', { name: 'Prerequisite' })).toBeVisible()
+      within(actions).getByRole('button', { name: 'Start' })
+      expect(screen.queryByRole('button', { name: 'Step 1' })).toBeNull()
+    })
   })
 
   // TODO

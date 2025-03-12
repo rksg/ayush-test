@@ -33,19 +33,16 @@ export const transformFromApiToFormData = (
 
   apiData.nodes.forEach((node) => {
     const { serialNumber, ports, lags } = node
+    result.portSubInterfaces[serialNumber] = {}
+    result.lagSubInterfaces[serialNumber] = {}
+
     ports.forEach((port) => {
       const { portId, subInterfaces } = port
-      if (!result.portSubInterfaces[serialNumber]) {
-        result.portSubInterfaces[serialNumber] = {}
-      }
       result.portSubInterfaces[serialNumber][portId] = subInterfaces
     })
 
     lags.forEach((lag) => {
       const { lagId, subInterfaces } = lag
-      if (!result.lagSubInterfaces[serialNumber]) {
-        result.lagSubInterfaces[serialNumber] = {}
-      }
       result.lagSubInterfaces[serialNumber][lagId] = subInterfaces
     })
   })
@@ -138,16 +135,13 @@ export const getInterfaceNameMap = (
     return acc
   }, { ...lagsStatus })
 
-  return _.reduce(
-    _.flatMap(allPortsAndLags),
-    (map, portInfo) => {
-      if (portInfo.isLagMember !== true) {
-        map.set(portInfo.id, portInfo.portName)
-      }
-      return map
-    },
-    new Map<string, string>()
-  )
+  let resultMap: { [id: string]: string } = {}
+  _.flatMap(allPortsAndLags).forEach((portInfo) => {
+    if (portInfo.isLagMember !== true) {
+      resultMap[portInfo.id] = portInfo.portName
+    }
+  })
+  return resultMap
 }
 
 const initialNodeCompatibleResult = {
@@ -187,22 +181,24 @@ export const subInterfaceCompatibleCheck = (
     result.errors.totalSubInterfaceCount.value = totalPortSubInterfaces + totalLagSubInterfaces
 
     Object.entries(nodePortSubInterfaces)
-      .filter(([portId]) => nameMap.get(portId))
+      .filter(([portId]) => nameMap[portId])
+      .filter(Boolean)
       .forEach(([portId, subInterfaces]) => {
         const vlanIds = subInterfaces
           .map(subInterface => subInterface.vlan)
           .sort((a, b) => a - b)
-        result.errors.portSubInterfaceVlans[nameMap.get(portId) || ''] = {
+        result.errors.portSubInterfaceVlans[nameMap[portId] || ''] = {
           vlanIds: { value: vlanIds }
         }
       })
     Object.entries(nodeLagSubInterfaces)
-      .filter(([lagId]) => nameMap.get(lagId))
+      .filter(([lagId]) => nameMap[lagId])
+      .filter(Boolean)
       .forEach(([lagId, subInterfaces]) => {
         const vlanIds = subInterfaces
           .map(subInterface => subInterface.vlan)
           .sort((a, b) => a - b)
-        result.errors.lagSubInterfaceVlans[nameMap.get(lagId) || ''] = {
+        result.errors.lagSubInterfaceVlans[nameMap[lagId] || ''] = {
           vlanIds: { value: vlanIds }
         }
       })

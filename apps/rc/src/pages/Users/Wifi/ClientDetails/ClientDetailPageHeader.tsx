@@ -2,31 +2,58 @@ import { Menu, MenuProps, Space } from 'antd'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { isEqualCaptivePortal }                                          from '@acx-ui/rc/components'
+import {
+  Dropdown,
+  CaretDownSolidIcon,
+  Button,
+  PageHeader,
+  RangePicker,
+  getDefaultEarliestStart
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { isEqualCaptivePortal }   from '@acx-ui/rc/components'
 import {
   useDisconnectClientMutation,
   useGetClientOrHistoryDetailQuery,
   useRevokeClientMutation,
   useGetClientsQuery
 } from '@acx-ui/rc/services'
-import { Client, ClientStatusEnum }                               from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                             from '@acx-ui/types'
-import { hasPermission }                                          from '@acx-ui/user'
-import { DateFilter, DateRange, encodeParameter, useDateFilter }  from '@acx-ui/utils'
+import { Client, ClientStatusEnum, ClientUrlsInfo } from '@acx-ui/rc/utils'
+import {
+  useNavigate,
+  useParams,
+  useSearchParams,
+  useTenantLink
+} from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import {
+  DateFilter,
+  DateRange,
+  encodeParameter,
+  getOpsApi,
+  useDateFilter
+}  from '@acx-ui/utils'
 
 
 import ClientDetailTabs from './ClientDetailTabs'
 function DatePicker () {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
     onDateApply={setDateFilter as CallableFunction}
     showTimePicker
     selectionType={range}
+    maxMonthRange={isDateRangeLimit ? 1 : 3}
   />
 }
 
@@ -34,6 +61,7 @@ function ClientDetailPageHeader () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { $t } = useIntl()
   const { tenantId, clientId } = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const [searchParams] = useSearchParams()
   const status = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
   const isHisToricalClient = (status === ClientStatusEnum.HISTORICAL)
@@ -147,6 +175,10 @@ function ClientDetailPageHeader () {
     />
   )
 
+  const showMenu = rbacOpsApiEnabled
+    ? hasAllowedOperations([ getOpsApi(ClientUrlsInfo.disconnectClient) ])
+    : hasPermission({ scopes: [WifiScopes.UPDATE] })
+
   return (
     <PageHeader
       title={<Space size={4}>{clientId}
@@ -164,8 +196,7 @@ function ClientDetailPageHeader () {
       ]}
       extra={[
         <DatePicker />,
-        (!isHisToricalClient
-          && hasPermission({ scopes: [WifiScopes.UPDATE] })) &&
+        (!isHisToricalClient && showMenu) &&
           <Dropdown overlay={menu}>{()=>
             <Button type='primary'>
               <Space>

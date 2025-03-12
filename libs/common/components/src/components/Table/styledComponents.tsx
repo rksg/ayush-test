@@ -135,7 +135,7 @@ const rowActionsHeight = '36px'
 const toolbarHeight = '45px'
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
+  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered' | 'compactWidget'
   $stickyHeaders?: boolean
   $stickyPagination?: boolean
   children?: React.ReactNode[]
@@ -422,12 +422,50 @@ const compactBorderedStyle = css`
 
 `
 
+const compactWidgetStyle = css`
+  .ant-input-affix-wrapper {
+    width: 230px !important;
+    margin-right: 5px;
+  }
+  .ant-pro-table {
+    .ant-table {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight-bold);
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--acx-neutrals-30) !important;
+      }
+
+      .ant-table-tbody > tr:last-child > td {
+        border-bottom: 0px !important;
+      }
+
+      .ant-table-tbody > tr:first-child {
+        display: none;
+      }
+    }
+  }
+
+`
+
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
   tooltip: tooltipStyle,
   form: formStyle,
-  compactBordered: compactBorderedStyle
+  compactBordered: compactBorderedStyle,
+  compactWidget: compactWidgetStyle
 }
 
 export const Header = styled.div`

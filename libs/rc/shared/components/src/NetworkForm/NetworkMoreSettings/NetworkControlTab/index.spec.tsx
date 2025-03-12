@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AccessControlUrls,
+  AdministrationUrlsInfo,
   NetworkSaveData,
   TunnelProfileUrls,
   WifiCallingUrls } from '@acx-ui/rc/utils'
@@ -24,6 +25,19 @@ import { NetworkControlTab } from '.'
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 const mockedGetDevicePolicy = jest.fn()
+
+const settings = {
+  privacyFeatures: [
+    {
+      featureName: 'APP_VISIBILITY',
+      isEnabled: false
+    },
+    {
+      featureName: 'ARC',
+      isEnabled: true
+    }
+  ]
+}
 
 describe('Network More settings - Network Control Tab', () => {
   beforeEach(() => {
@@ -66,7 +80,9 @@ describe('Network More settings - Network Control Tab', () => {
       rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
-        (_, res, ctx) => res(ctx.json(policyListResponse)))
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
+        (req, res, ctx) => res(ctx.json(settings)))
     )
   })
   afterEach(() => {
@@ -227,6 +243,7 @@ describe('Network More settings - Network Control Tab', () => {
       </Provider>,
       { route: { params } })
 
+    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
     const view = screen.getByText(/anti\-spoofing/i)
     await userEvent.click(within(view).getByRole('switch'))
 
@@ -297,6 +314,8 @@ describe('Network More settings - Network Control Tab', () => {
         </Form>
       </Provider>,
       { route: { params } })
+
+    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
 
     expect(screen.getByText(/Application Recognition & Control/i)).toBeInTheDocument()
   })

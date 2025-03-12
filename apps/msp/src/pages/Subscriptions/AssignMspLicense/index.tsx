@@ -32,7 +32,6 @@ import {
   MspAssignmentSummary
 } from '@acx-ui/msp/utils'
 import {
-  CatchErrorDetails,
   EntitlementDeviceType,
   EntitlementUtil,
   useTableQuery
@@ -42,6 +41,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 import * as UI from '../styledComponent'
 

@@ -17,7 +17,7 @@ import * as CProbeFlex5g               from './EquiFlex/CProbeFlex5g'
 import * as CProbeFlex6g               from './EquiFlex/CProbeFlex6g'
 import { createIntentContextProvider } from './IntentContext'
 
-export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
+const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-aclb-enable': CAclbEnable,
   'c-bandbalancing-enable-below-61': CBandbalancingEnable,
   'c-bandbalancing-enable': CBandbalancingEnable,
@@ -39,3 +39,5 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
   'i-ecoflex': IEcoFlex
 })
+
+export default IntentAIForm

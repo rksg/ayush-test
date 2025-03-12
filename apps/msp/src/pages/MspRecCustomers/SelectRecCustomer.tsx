@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetAvailableMspRecCustomersQuery
 } from '@acx-ui/msp/services'
@@ -35,8 +36,10 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
   const MAX_ALLOWED_SELECTED_PROPERTIES = 100
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
-  const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams() })
+  const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams(),
+    enableRbac: isRbacEnabled })
 
   const onClose = () => {
     setVisible(false)

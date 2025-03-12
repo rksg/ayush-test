@@ -3,15 +3,18 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { Checkbox, Form, InputNumber, Switch, Space } from 'antd'
 import { useIntl }                                    from 'react-intl'
+import { useParams }                                  from 'react-router-dom'
 
-import { StepsForm, Tooltip }     from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { StepsForm, Tooltip }         from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetPrivacySettingsQuery } from '@acx-ui/rc/services'
 import {
   DnsProxyContextType,
   DnsProxyRule,
   WifiCallingSetting,
   WifiCallingSettingContextType,
-  ConfigTemplateType } from '@acx-ui/rc/utils'
+  ConfigTemplateType,
+  PrivacyFeatureName } from '@acx-ui/rc/utils'
 
 import NetworkFormContext                            from '../../NetworkFormContext'
 import { useServicePolicyEnabledWithConfigTemplate } from '../../utils'
@@ -33,15 +36,19 @@ const { useWatch } = Form
 // move from ServicesForm.tsx
 export function NetworkControlTab () {
   const { $t } = useIntl()
-  const { data } = useContext(NetworkFormContext)
+  const params = useParams()
+  const { data, cloneMode, editMode } = useContext(NetworkFormContext)
 
   const labelWidth = '250px'
 
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
   const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL)
+  const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+
+  const { data: privacySettingsData } = useGetPrivacySettingsQuery({ params }, { skip: !(isMspAppMonitoringEnabled && !(cloneMode || editMode)) })
 
   const applicationRecognitionControlTooltipContent = $t({ defaultMessage:
-    `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities. 
+    `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities.
     Disabling this feature stops the monitoring and reporting of these activities. ` })
 
   const form = Form.useFormInstance()
@@ -72,6 +79,20 @@ export function NetworkControlTab () {
       }
     }
   }, [data])
+
+  useEffect(() => {
+    if (privacySettingsData) {
+      const privacyMonitoringSetting =
+      privacySettingsData.filter(item => item.featureName === PrivacyFeatureName.ARC)[0]
+      form.setFieldsValue({
+        wlan: {
+          advancedCustomization: {
+            applicationVisibilityEnabled: privacyMonitoringSetting.isEnabled
+          }
+        }
+      })
+    }
+  }, [privacySettingsData])
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
   const setEnableDnsProxy = (enable: boolean) => {
@@ -134,8 +155,10 @@ export function NetworkControlTab () {
                 { validator: () => validateWifiCallingSetting() }
               ]}
             >
-              {enableWifiCalling && <WifiCallingSettingModal />}
-              {enableWifiCalling && <WifiCallingSettingTable />}
+              {enableWifiCalling ? <>
+                <WifiCallingSettingModal />
+                <WifiCallingSettingTable />
+              </> : <></>}
             </Form.Item>
           </WifiCallingSettingContext.Provider>
         </UI.FieldLabel>

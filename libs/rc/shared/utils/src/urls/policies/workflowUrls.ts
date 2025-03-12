@@ -16,6 +16,7 @@ type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
   | 'createWorkflow' | 'updateWorkflow' | 'deleteWorkflow'
   | 'searchInProgressWorkflows' | 'getWorkflowUIConfig'
   | 'updateWorkflowUIConfig' | 'resetWorkflowUIConfig' | 'getWorkflowUIConfigImage'
+  | 'cloneWorkflow' | 'nestedCloneWorkflow'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
@@ -60,7 +61,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `POST:${WorkflowBaseUrl}`
   },
   updateWorkflow: {
     method: 'PATCH',
@@ -69,7 +71,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `PATCH:${WorkflowBaseUrl}/{id}`
   },
   deleteWorkflow: {
     method: 'delete',
@@ -78,7 +81,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `DELETE:${WorkflowBaseUrl}/{id}`
   },
   searchWorkflows: {
     method: 'post',
@@ -101,7 +105,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   updateWorkflowUIConfig: {
     method: 'post',
     url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
-    newApi: true
+    newApi: true,
+    opsApi: `POST:${WorkflowBaseUrl}/{id}/uiConfigurations`
   },
   resetWorkflowUIConfig: {
     method: 'delete',
@@ -110,7 +115,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `DELETE:${WorkflowBaseUrl}/{id}/uiConfigurations`
   },
   getWorkflowUIConfigImage: {
     method: 'get',
@@ -155,7 +161,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/workflows/{id}/steps'
   },
   createWorkflowChildStep: {
     method: 'post',
@@ -164,7 +171,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/workflows/{id}/steps/{id}/nextSteps'
   },
   deleteWorkflowStep: {
     method: 'delete',
@@ -173,7 +181,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/workflows/{id}/steps/{id}'
   },
   getWorkflowStepsById: {
     method: 'get',
@@ -202,7 +211,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/workflows/{id}/steps/{id}/splitOptions'
   },
   createWorkflowStepUnderOption: {
     method: 'post',
@@ -211,7 +221,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/workflows/{id}/steps/{id}/splitOptions/{id}/nextSteps'
   },
   getWorkflowOptionById: {
     method: 'get',
@@ -238,7 +249,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/workflows/{id}/steps/{id}/splitOptions/{id}'
   },
 
   /** Workflow Enrollment Actions API endpoints */
@@ -249,7 +261,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `POST:${WorkflowActionBaseUrl}`
   },
   getActionById: {
     method: 'get',
@@ -267,7 +280,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `PATCH:${WorkflowActionBaseUrl}/{id}`
   },
   deleteAction: {
     method: 'delete',
@@ -276,7 +290,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `DELETE:${WorkflowActionBaseUrl}/{id}`
   },
   queryActions: {
     method: 'post',
@@ -305,7 +320,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `POST:${WorkflowActionBaseUrl}/files`
   },
   deleteFile: {
     method: 'delete',
@@ -314,7 +330,8 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: `DELETE:${WorkflowActionBaseUrl}/files/{id}`
   },
   getFile: {
     method: 'get',
@@ -324,5 +341,25 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  cloneWorkflow: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/:id/workflows`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: `POST:${WorkflowBaseUrl}/{id}/workflows`
+  },
+  nestedCloneWorkflow: {
+    method: 'post',
+    url: `${WorkflowBaseUrl}/:id/steps/:stepId/nextSteps/workflows/:referencedWorkflowId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: `POST:${WorkflowBaseUrl}/{id}/steps/{id}/nextSteps/workflows/{id}`
   }
 }

@@ -20,8 +20,13 @@ const CalledStationIdTypeOptions = [
   { label: defineMessage({ defaultMessage: 'None' }), value: CalledStationIdTypeEnum.NONE }
 ]
 
-const DelimiterRadioGroup = (props: { fieldName: string[], onChanged?: (()=> void) }) => {
+const DelimiterRadioGroup = (props: {
+  fieldName: string[],
+  disabled?: boolean,
+  onChanged?: (()=> void)
+}) => {
   const { $t } = useIntl()
+  const { fieldName, disabled, onChanged } = props
 
   const options = [
     { label: defineMessage({ defaultMessage: 'Dash' }), value: NasIdDelimiterEnum.DASH },
@@ -29,15 +34,15 @@ const DelimiterRadioGroup = (props: { fieldName: string[], onChanged?: (()=> voi
   ]
 
   const handleChanged = () => {
-    props.onChanged?.()
+    onChanged?.()
   }
 
   return <Form.Item
     label={$t({ defaultMessage: 'MAC Delimiter' })}
-    name={props.fieldName}
+    name={fieldName}
     initialValue={options[0].value}
     children={
-      <Radio.Group onChange={handleChanged}>
+      <Radio.Group disabled={disabled} onChange={handleChanged}>
         <Space size='large'>
           {
             options.map(o => {
@@ -57,13 +62,14 @@ type RadiusOptionsFormProps = {
   context: string,
   showSingleSessionIdAccounting: boolean,
   isWispr?: boolean,
+  disabled?: boolean
   onDataChanged?: (()=> void)
 }
 
 export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
   const { $t } = useIntl()
 
-  const { context, showSingleSessionIdAccounting, isWispr=false } = props
+  const { context, showSingleSessionIdAccounting, isWispr=false, disabled } = props
 
   const fieldDataKey = (context === 'network')
     ? ['wlan','advancedCustomization', 'radiusOptions']
@@ -110,7 +116,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         style={{ width: '150px' }}
         initialValue={NasIdTypeEnum.BSSID}
       >
-        <Select onChange={handleChanged}>{NasIdTypeOptions.map(option => {
+        <Select disabled={disabled} onChange={handleChanged}>{NasIdTypeOptions.map(option => {
           const { value, label } = option
           return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
         })}
@@ -118,7 +124,10 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
       </Form.Item>
 
       {(nasIdType === NasIdTypeEnum.BSSID || nasIdType === NasIdTypeEnum.AP_MAC) &&
-        <DelimiterRadioGroup fieldName={nasIdDelimiterFieldName} onChanged={handleChanged}/>
+        <DelimiterRadioGroup
+          disabled={disabled}
+          fieldName={nasIdDelimiterFieldName}
+          onChanged={handleChanged}/>
       }
       {nasIdType === NasIdTypeEnum.USER && <Form.Item
         name={userDefinedNasIdFieldName}
@@ -129,7 +138,8 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
           { max: 64 },
           { validator: (_, value) => userDefinedNasIdValidator(value) }
         ]}
-        children={<Input onChange={handleChanged}
+        children={<Input disabled={disabled}
+          onChange={handleChanged}
           style={{ width: '412px' }}
           placeholder={$t({ defaultMessage: 'Maximun is 64 characters' })}/>}
       />
@@ -150,6 +160,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 min={2}
                 max={20}
                 style={{ width: '75px' }}
+                disabled={disabled}
                 onChange={handleChanged} />}
             />
             <div>
@@ -172,6 +183,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 min={2}
                 max={10}
                 style={{ width: '75px' }}
+                disabled={disabled}
                 onChange={handleChanged}/>}
             />
             <div>
@@ -194,6 +206,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 min={1}
                 max={300}
                 style={{ width: '75px' }}
+                disabled={disabled}
                 onChange={handleChanged}/>}
             />
             <div>
@@ -208,7 +221,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         style={{ width: '150px' }}
         initialValue={isWispr? CalledStationIdTypeEnum.AP_MAC : CalledStationIdTypeEnum.BSSID}
       >
-        <Select onChange={handleChanged}>{CalledStationIdTypeOptions.map(o => {
+        <Select disabled={disabled} onChange={handleChanged}>{CalledStationIdTypeOptions.map(o => {
           const { value, label } = o
           return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
         })}
@@ -230,7 +243,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
             valuePropName='checked'
             initialValue={false}
             style={{ marginBottom: 0 }}
-            children={<Switch onChange={handleChanged} />}
+            children={<Switch disabled={disabled} onChange={handleChanged} />}
           />
         </div>
       }

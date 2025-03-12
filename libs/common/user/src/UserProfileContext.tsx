@@ -10,9 +10,11 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useGetVenuesListQuery
+  useGetVenuesListQuery,
+  useGetBetaFeatureListQuery,
+  useGetAllowedOperationsQuery
 } from './services'
-import { UserProfile }                         from './types'
+import { FeatureAPIResults, UserProfile }      from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
 
 export interface UserProfileContextProps {
@@ -25,9 +27,12 @@ export interface UserProfileContextProps {
   accountTier?: string
   betaEnabled?: boolean
   abacEnabled?: boolean
+  rbacOpsApiEnabled?: boolean
   isCustomRole?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
+  selectedBetaListEnabled?: boolean
+  betaFeaturesList?: FeatureAPIResults[]
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -44,15 +49,26 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
 
-  let abacEnabled = false, isCustomRole = false
+  let abacEnabled = false,
+    isCustomRole = false,
+    rbacOpsApiEnabled = false
+
   const abacFF = 'abac-policies-toggle'
+  const betaListFF = 'acx-ui-selective-early-access-toggle'
+  const rbacOpsApiFF = 'acx-ui-rbac-allow-operations-api-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF] },
+      { params: { tenantId }, payload: [
+        abacFF,
+        betaListFF,
+        rbacOpsApiFF
+      ] },
       { skip: !Boolean(profile) }
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false
+  rbacOpsApiEnabled = featureFlagStates?.[rbacOpsApiFF] ?? false
+  const selectedBetaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: abacEnabled },
@@ -63,8 +79,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 
-  // TODO: should remove in future
-  const allowedOperations = [] as string[]
+  const { data: rcgAllowedOperations } = useGetAllowedOperationsQuery(
+    undefined,
+    { skip: !rbacOpsApiEnabled })
+  const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op=>op?.uri) || []
+  const allowedOperations = [...new Set(rcgOpsUri)]
 
   const getHasAllVenues = () => {
     if(abacEnabled && profile?.scopes?.includes('venue' as never)) {
@@ -87,6 +106,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
+  const { data: features } = useGetBetaFeatureListQuery({ params },
+    { skip: !(beta?.enabled === 'true') || !selectedBetaListEnabled })
+
+  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
+    feature is FeatureAPIResults => feature !== undefined)) || []
+
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
     const userProfile = { ...profile } as UserProfile
@@ -103,10 +128,13 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       accountTier,
       betaEnabled,
       abacEnabled,
+      rbacOpsApiEnabled,
       isCustomRole,
       scopes: profile?.scopes,
       hasAllVenues,
-      venuesList
+      venuesList,
+      selectedBetaListEnabled,
+      betaFeaturesList
     })
   }
 
@@ -114,16 +142,19 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     value={{
       data: profile,
       isUserProfileLoading: isUserProfileFetching,
-      allowedOperations: allowedOperations,
+      allowedOperations,
       hasRole,
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
       betaEnabled,
       abacEnabled,
+      rbacOpsApiEnabled,
       isCustomRole,
       hasAllVenues,
-      venuesList
+      venuesList,
+      selectedBetaListEnabled,
+      betaFeaturesList
     }}
     children={props.children}
   />

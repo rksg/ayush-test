@@ -11,12 +11,12 @@ import { Statuses }         from '../states'
 
 import { getIntentStatus } from './getIntentStatus'
 
-import type { Intent } from '../useIntentDetailsQuery'
+import type { IntentDetail } from '../useIntentDetailsQuery'
 
-
-export const useCommonFields = (intent: Intent) => {
+export const useCommonFields = (intent: IntentDetail) => {
   const { $t } = useIntl()
   const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
+
   return [
     {
       label: $t({ defaultMessage: 'Intent' }),

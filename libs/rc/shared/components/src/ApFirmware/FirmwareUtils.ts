@@ -4,19 +4,22 @@ import { IntlShape } from 'react-intl'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  firmwareTypeTrans,
-  FirmwareCategory,
-  FirmwareVersion,
-  FirmwareVenue,
-  FirmwareSwitchVenue,
-  FirmwareVenueVersion,
-  FirmwareType,
-  Schedule,
-  LatestEdgeFirmwareVersion,
   EolApFirmware,
-  FirmwareSwitchVenueV1002
+  FirmwareCategory,
+  FirmwareLabel,
+  FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
+  FirmwareType,
+  firmwareTypeTrans,
+  FirmwareVenue, FirmwareVenuePerApModel,
+  FirmwareVenueVersion,
+  FirmwareVersion,
+  LatestEdgeFirmwareVersion,
+  Schedule
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ApModelIndividualDisplayDataType, UpdateFirmwarePerApModelFirmware } from './VenueFirmwareListPerApModel'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',
@@ -113,13 +116,16 @@ export type VersionLabelType = {
   name: string,
   category: FirmwareCategory,
   onboardDate?: string,
-  releaseDate?: string
+  releaseDate?: string,
+  labels?: FirmwareLabel[]
 }
 // eslint-disable-next-line max-len
 export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
-  const versionType = transform(version?.category)
+  const versionType = transform(
+    isAlphaOrBetaFilter(version?.labels) ? FirmwareCategory.EARLY_ACCESS : version?.category
+  )
   const displayDate = version.releaseDate ?? version.onboardDate
   const versionDate = displayDate
     ? formatter(DateFormatEnum.DateFormat)(displayDate)
@@ -127,6 +133,28 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
+}
+
+export const isAlphaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.ALPHA)
+}
+
+// eslint-disable-next-line max-len
+export const isBetaFilter = (labels: FirmwareLabel[] = [], ignoreAlphaLabel: boolean = false): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (ignoreAlphaLabel || !labels.includes(FirmwareLabel.ALPHA))
+    && labels.includes(FirmwareLabel.BETA)
+}
+
+export const isAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (labels.includes(FirmwareLabel.ALPHA) || labels.includes(FirmwareLabel.BETA))
+}
+
+export const isLegacyAlphaOrBetaFilter = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (labels.includes(FirmwareLabel.LEGACYALPHA) || labels.includes(FirmwareLabel.LEGACYBETA))
+    && !labels.includes(FirmwareLabel.ALPHA) && !labels.includes(FirmwareLabel.BETA)
 }
 
 export const toUserDate = (date: string): string => {
@@ -306,4 +334,49 @@ export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
 
 export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
   return seq1 - seq2
+}
+
+// eslint-disable-next-line max-len
+export function convertToPayloadForApModelFirmware (displayData: ApModelIndividualDisplayDataType[]): UpdateFirmwarePerApModelFirmware {
+  return displayData.map((displayDataItem: ApModelIndividualDisplayDataType) => ({
+    apModel: displayDataItem.apModel,
+    firmware: displayDataItem.defaultVersion
+  }))
+}
+
+export function patchPayloadForApModelFirmware (
+  targetFirmwares: UpdateFirmwarePerApModelFirmware, apModel: string, version: string
+): UpdateFirmwarePerApModelFirmware {
+
+  const result: Array<UpdateFirmwarePerApModelFirmware[number] | null> = [...targetFirmwares]
+
+  const targetFirmware = version ? { apModel, firmware: version } : null
+  const targetIndex = result.findIndex(existing => existing?.apModel === apModel)
+
+  if (targetIndex === -1) {
+    result.push(targetFirmware)
+  } else {
+    result.splice(targetIndex, 1, targetFirmware)
+  }
+
+  return _.compact(result)
+}
+
+// eslint-disable-next-line max-len
+export function isEarlyAccessOrLegacyEarlyAccess (selectedVenuesFirmwares: FirmwareVenuePerApModel[], apModel: string, extremeFirmware: string) {
+  // eslint-disable-next-line max-len
+  const currentApFirmwaresList = selectedVenuesFirmwares.flatMap(selectedVenuesFirmware => selectedVenuesFirmware.currentApFirmwares || [])
+  const earlyAccess = currentApFirmwaresList.find(
+    // eslint-disable-next-line max-len
+    fw => fw.apModel === apModel && fw.firmware === extremeFirmware && !fw.labels?.includes(FirmwareLabel.GA)
+  )
+  const legacyEarlyAccess = currentApFirmwaresList.find(
+    // eslint-disable-next-line max-len
+    fw => fw.apModel === apModel && fw.firmware === extremeFirmware && isLegacyAlphaOrBetaFilter(fw.labels)
+  )
+
+  return {
+    earlyAccess,
+    legacyEarlyAccess
+  }
 }

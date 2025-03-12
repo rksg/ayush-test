@@ -44,6 +44,12 @@ describe('Helper Functions', () => {
       const results = searchTree(rootNode, 'xyz')
       expect(results.length).toBe(0)
     })
+
+    it.each(
+      ['*', '\\', '?']
+    ) ('should not throw any error if search text not a valid regex', (text) => {
+      expect(() => searchTree(rootNode, text)).not.toThrowError()
+    })
   })
 
   describe('findMatchingNode', () => {
@@ -96,6 +102,16 @@ describe('Helper Functions', () => {
     it('should capitalize and format the node name and type correctly', () => {
       const node: Node = { name: 'example', type: 'system' }
       expect(customCapitalize(node)).toBe('Example (SZ Cluster)')
+    })
+
+    it('should capitalize and format the node name and type correctly for AP', () => {
+      const ap: Node = { name: 'example', type: 'ap', mac: '00:11:22:33:44:55' }
+      expect(customCapitalize(ap)).toBe('Example (00:11:22:33:44:55) (Access Point)')
+    })
+
+    it('should capitalize and format the node name and type correctly for Switch', () => {
+      const switchNode: Node = { name: 'example', type: 'switch', mac: '00:11:22:33:44:55' }
+      expect(customCapitalize(switchNode)).toBe('Example (00:11:22:33:44:55) (Switch)')
     })
   })
 })

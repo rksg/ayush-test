@@ -385,6 +385,12 @@ export function FilteredTable () {
       columns={columnsSearchOnly}
       dataSource={data}
     />
+    with highlight only (no search):
+    <Table<RecordType>
+      columns={columnsSearchOnly}
+      dataSource={data}
+      highLightValue='John Doe'
+    />
     with Checkbox only:
     <Table<RecordType>
       columns={columnsCheckboxOnly}

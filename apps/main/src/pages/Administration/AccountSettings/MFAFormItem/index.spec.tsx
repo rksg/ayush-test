@@ -18,6 +18,11 @@ import { fakeMFATenantDetail, fakeTenantDetails } from '../__tests__/fixtures'
 import  { MFAFormItem } from './'
 
 const mockedNavigatorWriteText = jest.fn()
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 describe('Enable MFA Checkbox', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
@@ -29,7 +34,7 @@ describe('Enable MFA Checkbox', () => {
       ),
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
-        (req, res, ctx) => res(ctx.json(fakeTenantDetails))
+        (_req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
 
@@ -49,7 +54,7 @@ describe('Enable MFA Checkbox', () => {
           isMspEc={false}
         />
       </Provider>, {
-        route: { params }
+        route: { path: '/:tenantId/t', params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
@@ -62,6 +67,11 @@ describe('Enable MFA Checkbox', () => {
     fireEvent.click(okBtn)
     await waitFor(() => {
       expect(okBtn).not.toBeVisible()
+    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/userprofile/security`,
+      hash: '',
+      search: ''
     })
   })
 
@@ -77,7 +87,7 @@ describe('Enable MFA Checkbox', () => {
           isMspEc={false}
         />
       </Provider>, {
-        route: { params }
+        route: { path: '/:tenantId/t', params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
@@ -100,7 +110,7 @@ describe('Enable MFA Checkbox', () => {
           isMspEc={false}
         />
       </Provider>, {
-        route: { params }
+        route: { path: '/:tenantId/t', params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
@@ -137,7 +147,7 @@ describe('Enable MFA Checkbox', () => {
           isMspEc={false}
         />
       </Provider>, {
-        route: { params }
+        route: { path: '/:tenantId/t', params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
@@ -165,7 +175,7 @@ describe('Enable MFA Checkbox', () => {
           isMspEc={false}
         />
       </Provider>, {
-        route: { params }
+        route: { path: '/:tenantId/t', params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
@@ -181,7 +191,7 @@ describe('Enable MFA Checkbox', () => {
           isMspEc={false}
         />
       </Provider>, {
-        route: { params }
+        route: { path: '/:tenantId/t', params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })

@@ -1,31 +1,55 @@
 import React, { useState } from 'react'
 
-import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
-import { useIntl }                                      from 'react-intl'
+import { Form, Input, Select, Switch, Space, Button } from 'antd'
+import { useIntl }                                    from 'react-intl'
 
-import { Modal, ModalType, SelectionControl } from '@acx-ui/components'
-import { Features, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { GridRow, GridCol, Modal, ModalType, SelectionControl }   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
-  useAdaptivePolicySetListByQueryQuery,
-  useLazySearchMacRegListsQuery
+  useAdaptivePolicySetListByQueryQuery, useGetPersonaGroupByIdQuery,
+  useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { useParams }                                      from '@acx-ui/react-router-dom'
+import { checkObjectNotExists, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { RolesEnum }                                               from '@acx-ui/types'
+import {  hasRoles }                                               from '@acx-ui/user'
 
-import { AdaptivePolicySetForm }  from '../../AdaptivePolicySetForm'
-import { ExpirationDateSelector } from '../../ExpirationDateSelector'
+import { AdaptivePolicySetForm }                                         from '../../AdaptivePolicySetForm'
+import { ExpirationDateSelector }                                        from '../../ExpirationDateSelector'
+import { hasCreateIdentityPermission, hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
+import { PersonaDrawer }                                                 from '../../users'
+import { IdentityGroupForm }                                             from '../../users/IdentityGroupForm'
 
-export function MacRegistrationListSettingForm () {
+export function MacRegistrationListSettingForm ({ editMode = false }) {
   const { $t } = useIntl()
   const [ macRegList ] = useLazySearchMacRegListsQuery()
   const { policyId } = useParams()
   const policySetId = Form.useWatch('policySetId')
+  const identityGroupId = Form.useWatch('identityGroupId')
+  const isUseSingleIdentity = Form.useWatch('isUseSingleIdentity')
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
-  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const form = Form.useFormInstance()
 
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+
   const { data: policySetsData } = useAdaptivePolicySetListByQueryQuery(
-    { payload: { page: 1, pageSize: '2000' } }, { skip: !policyEnabled })
+    { payload: { page: 1, pageSize: '2000' } })
+
+  const { data: identityGroupList } = useSearchPersonaGroupListQuery({
+    payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' } })
+
+  const [identityDrawerState, setIdentityDrawerState] = useState({
+    visible: false,
+    data: {} as Persona | undefined
+  })
+
+  const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
+
+  const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
+    // eslint-disable-next-line max-len
+    { params: { groupId: identityGroupId } },
+    { skip: !identityGroupId }
+  )
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
@@ -49,8 +73,8 @@ export function MacRegistrationListSettingForm () {
 
   return (
     <>
-      <Row>
-        <Col span={10}>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
           <Form.Item name='name'
             label={$t({ defaultMessage: 'Name' })}
             rules={[
@@ -64,69 +88,204 @@ export function MacRegistrationListSettingForm () {
             children={<Input/>}
             validateTrigger={'onBlur'}
           />
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
           <ExpirationDateSelector
             inputName={'expiration'}
             label={$t({ defaultMessage: 'List Expiration' })}
           />
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
           <Form.Item name='autoCleanup'
             valuePropName='checked'
             initialValue={true}
             label={$t({ defaultMessage: 'Automatically clean expired entries' })}>
             <Switch/>
           </Form.Item>
-        </Col>
-        {policyEnabled &&
-        <Col span={24}>
-          <Form.Item label={$t({ defaultMessage: 'Adaptive Policy Set' })}>
-            <Space direction='horizontal'>
-              <Form.Item name='policySetId'
-                noStyle
-                valuePropName='value'
+        </GridCol>
+      </GridRow>
+      { isIdentityRequired &&
+        <>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
+              <Form.Item name='identityGroupId'
+                label={$t({ defaultMessage: 'Identity Group' })}
                 rules={[
-                  { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
+                  { required: true },
+                  { message: $t({ defaultMessage: 'Please select Identity Group' }) }
                 ]}
                 children={
-                  <Select style={{ minWidth: 250 }}
-                    allowClear
-                    placeholder={$t({ defaultMessage: 'Select...' })}
-                    options={policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
+                  <Select
+                    disabled={editMode}
+                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    options={
+                      identityGroupList?.data
+                        .filter(group => editMode ? group : !group.macRegistrationPoolId)
+                        .map(group => ({ value: group.id, label: group.name }))}
                   />
                 }
               />
-            </Space>
+            </GridCol>
+            {
+              (!editMode && hasCreateIdentityGroupPermission()) &&
+          <>
+            <Space align='center'>
+              <Button
+                type='link'
+                onClick={async () => {
+                  setIdentityGroupModelVisible(true)
+                  // setIdentityGroupDrawerState({ visible: true, data: undefined })
+                }}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            </Space >
+            <Modal
+              title={$t({ defaultMessage: 'Add Identity Group' })}
+              visible={identityGroupModelVisible}
+              type={ModalType.ModalStepsForm}
+              children={<IdentityGroupForm
+                modalMode={true}
+                callback={(identityGroupId?: string) => {
+                  if (identityGroupId) {
+                    form.setFieldValue('identityGroupId', identityGroupId)
+                  }
+                  setIdentityGroupModelVisible(false)
+                }}
+              />}
+              onCancel={() => setIdentityGroupModelVisible(false)}
+              width={1200}
+              destroyOnClose={true}
+            />
+          </>
+            }
+          </GridRow>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
+              <Form.Item name='isUseSingleIdentity'
+                valuePropName='checked'
+                initialValue={false}
+                label={$t({ defaultMessage: 'Use Single Identity for all connections' })}>
+                <Switch disabled={!identityGroupId}/>
+              </Form.Item>
+            </GridCol>
+          </GridRow>
+          {isUseSingleIdentity &&
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
+          <Form.Item
+            name='identityId'
+            label={$t({ defaultMessage: 'Identity' })}
+            rules={[
+              { required: isUseSingleIdentity },
+              { message: $t({ defaultMessage: 'Please select Identity' }) }
+            ]}
+          >
+            <Select
+              placeholder={$t({ defaultMessage: 'Choose ...' })}
+              options={
+                // eslint-disable-next-line max-len
+                personaGroupData?.identities?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
+            />
           </Form.Item>
-          {policySetId &&
-            <Form.Item name='defaultAccess'
-              label={$t({ defaultMessage: 'Default Access' })}
-              initialValue='ACCEPT'>
-              <SelectionControl
-                options={[{ value: 'ACCEPT', label: $t({ defaultMessage: 'ACCEPT' }) },
-                  { value: 'REJECT', label: $t({ defaultMessage: 'REJECT' }) }]}
-              />
-            </Form.Item>
-          }
-        </Col>
+        </GridCol>
+        {
+          hasCreateIdentityPermission() &&
+          <Space align='center'>
+            <Button
+              type='link'
+              onClick={async () => {
+                setIdentityDrawerState({ visible: true,
+                  // eslint-disable-next-line max-len
+                  data: { groupId: identityGroupId } as Persona })
+              }}
+            >
+              {$t({ defaultMessage: 'Add' })}
+            </Button>
+            <PersonaDrawer
+              data={identityDrawerState.data}
+              isEdit={false}
+              visible={identityDrawerState.visible}
+              onClose={(result) => {
+                if (result?.id) {
+                  form.setFieldValue('identityId', result?.id)
+                }
+                setIdentityDrawerState({ visible: false, data: undefined })
+              }} />
+          </Space>
         }
-      </Row>
-      {policyEnabled &&
-        <Modal
-          title={$t({ defaultMessage: 'Add Adaptive Policy Set' })}
-          visible={policyModalVisible}
-          type={ModalType.ModalStepsForm}
-          children={<AdaptivePolicySetForm
-            modalMode
-            modalCallBack={(addedPolicySetId?: string) => {
-              if (addedPolicySetId) {
-                form.setFieldValue('policySetId', addedPolicySetId)
-              }
-              setPolicyModalVisible(false)
-            }}
-          />}
-          onCancel={() => setPolicyModalVisible(false)}
-          width={1200}
-          destroyOnClose={true}
-        />
+      </GridRow>
+          }
+        </>
       }
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
+          <Form.Item name='policySetId'
+            label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+            rules={[
+              { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
+            ]}
+            children={
+              <Select
+                allowClear
+                placeholder={$t({ defaultMessage: 'Select ...' })}
+                options={
+                  policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
+              />
+            }
+          />
+        </GridCol>
+        {
+          hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+          <>
+            <Space align='center'>
+              <Button
+                type='link'
+                onClick={async () => {
+                  setPolicyModalVisible(true)
+                }}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            </Space >
+            <Modal
+              title={$t({ defaultMessage: 'Add Adaptive Policy Set' })}
+              visible={policyModalVisible}
+              type={ModalType.ModalStepsForm}
+              children={<AdaptivePolicySetForm
+                modalMode
+                modalCallBack={(addedPolicySetId?: string) => {
+                  if (addedPolicySetId) {
+                    form.setFieldValue('policySetId', addedPolicySetId)
+                  }
+                  setPolicyModalVisible(false)
+                }}
+              />}
+              onCancel={() => setPolicyModalVisible(false)}
+              width={1200}
+              destroyOnClose={true}
+            />
+          </>
+        }
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
+          {policySetId &&
+          <Form.Item name='defaultAccess'
+            label={$t({ defaultMessage: 'Default Access' })}
+            initialValue='ACCEPT'>
+            <SelectionControl
+              options={[{ value: 'ACCEPT', label: $t({ defaultMessage: 'ACCEPT' }) },
+                { value: 'REJECT', label: $t({ defaultMessage: 'REJECT' }) }]}
+            />
+          </Form.Item>
+          }
+        </GridCol>
+      </GridRow>
     </>
   )
 }

@@ -2,9 +2,8 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { edgeSdLanApi }          from '@acx-ui/rc/services'
+import { Features }     from '@acx-ui/feature-toggle'
+import { edgeSdLanApi } from '@acx-ui/rc/services'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
@@ -17,7 +16,9 @@ import {
   EdgeUrlsInfo,
   EdgePinUrls,
   PersonaUrls,
-  TunnelProfileUrls
+  TunnelProfileUrls,
+  EdgeMdnsProxyUrls,
+  EdgeMdnsFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -45,16 +46,17 @@ const { mockFirewallData } = EdgeFirewallFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const mockPinStatsList = cloneDeep(EdgePinFixtures.mockPinStatsList)
 mockPinStatsList.data[0].edgeClusterInfo.segments = 10
-mockPinStatsList.data[0].edgeClusterInfo.devices = 10
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 
 const mockedSetVisible = jest.fn()
 const mockedUseSearchParams = jest.fn()
+const mockUseIsEdgeFeatureReady = jest.fn().mockReturnValue(false)
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />,
+  MdnsProxyForwardingRulesTable: () => <div data-testid='rc-MdnsProxyForwardingRulesTable' />,
   PersonalIdentityNetworkDetailTableGroup: () => <div data-testid='rc-PinTableGroup' />,
-  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
 }))
 
 describe('Edge Detail Services Tab - Service Detail Drawer', () => {
@@ -101,6 +103,10 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+      ),
+      rest.post(
+        EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockEdgeMdnsViewDataList }))
       )
     )
   })
@@ -181,8 +187,9 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByText('Identity Group')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'TestPersona' })).toBeVisible()
     expect(await screen.findByText('Number of Segments')).toBeVisible()
+    expect(await screen.findByText('10')).toBeVisible()
     expect(await screen.findByText('Number of devices per segment')).toBeVisible()
-    expect((await screen.findAllByText('10')).length).toBe(2)
+    expect(await screen.findByText('253')).toBeVisible()
     expect(await screen.findByText('DHCP Service')).toBeVisible()
     expect(await screen.findByRole('link', { name: 'TestDhcp-1' })).toBeVisible()
     expect(await screen.findByText('Tunnel Profile')).toBeVisible()
@@ -210,7 +217,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
   describe('SD-LAN Phase2', () => {
     beforeEach(() => {
       // mock SDLAN HA(i,e p2) enabled
-      jest.mocked(useIsEdgeFeatureReady)
+      jest.mocked(mockUseIsEdgeFeatureReady)
         .mockImplementation((ff) => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
@@ -271,7 +278,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
 
   describe('Multi-venues SD-LAN', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady)
+      jest.mocked(mockUseIsEdgeFeatureReady)
         .mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
     })
 
@@ -333,5 +340,21 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         .closest('.ant-row.ant-form-item-row')
       expect(within(networkItemContainer as HTMLElement).getByText('2')).toBeVisible()
     })
+  })
+
+  it('should render mDNS detail successfully', async () => {
+    render(
+      <Provider>
+        <ServiceDetailDrawer
+          visible={true}
+          setVisible={mockedSetVisible}
+          serviceData={mockEdgeServiceList.data[4]}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByText('mDNS Settings')).toBeVisible()
+    expect(await screen.findByTestId('rc-MdnsProxyForwardingRulesTable')).toBeVisible()
   })
 })

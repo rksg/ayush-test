@@ -6,6 +6,7 @@ import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  VlanPoolRbacUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -34,19 +35,19 @@ describe('Networks Table', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(networklist))
+        (_, res, ctx) => res(ctx.json(networklist))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (_, res, ctx) => res(ctx.json([]))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetwork.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '' }))
+        (_, res, ctx) => res(ctx.json({ requestId: '' }))
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networksApCompatibilities))
+        (_, res, ctx) => res(ctx.json(networksApCompatibilities))
       ),
       rest.post(
         WifiRbacUrlsInfo.getNetworkApCompatibilities.url,
@@ -54,7 +55,15 @@ describe('Networks Table', () => {
       ),
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
-        (req, res, ctx) => res(ctx.json(wifiNetworklist))
+        (_, res, ctx) => res(ctx.json(wifiNetworklist))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))
       )
     )
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -96,7 +105,7 @@ describe('Networks Table', () => {
     render(<Component/>, { wrapper: Provider, route: {} })
 
     const row = await screen.findByRole('row', { name: /network-01/i })
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 
@@ -110,7 +119,7 @@ describe('Networks Table', () => {
     render(<Component/>, { wrapper: Provider, route: {} })
 
     const row = await screen.findByRole('row', { name: /network-01/i })
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 

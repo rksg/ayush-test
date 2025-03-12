@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Form }                      from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer, Button, Loader }                 from '@acx-ui/components'
+import { Drawer,  Loader }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetApModelFamiliesQuery,
@@ -20,15 +20,16 @@ import {
   IncompatibleFeature,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
-import { ApModelFamiliesItem } from '../../Compatibility/ApModelFamiliesItem'
+import { ApModelFamiliesItem } from '../../Compatibility/CompatibilityDrawer/CompatibilityItem/ApModelFamiliesItem'
 import {
-  detailStyle,
   StyledFeatureName,
   StyledRequirementWrapper,
-  StyledWrapper
+  StyledFormItem
 } from '../../Compatibility/CompatibilityDrawer/styledComponents'
+import { getApFirmwareLink }                            from '../../Compatibility/CompatibilityDrawer/utils'
+import { SpaceWrapper }                                 from '../../SpaceWrapper'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
 export type ApModelCompatibilityDrawerProps = {
@@ -109,7 +110,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
     defaultMessage={
       'The following features are not enabled on this access point due to <b>firmware</b> or <b>device ' +
       'incompatibility</b>. Please see the minimum firmware versions required below. Also note that ' +
-      'not all features are available on all access points. You may upgrade your firmware from'
+      'not all features are available on all access points. You may upgrade your firmware from '
     }
     values={{
       b: (text: string) => <strong>{text}</strong>
@@ -125,7 +126,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const singleFromNetwork= <FormattedMessage
     defaultMessage={
       'To use the <b>{featureName}</b> feature, ensure that the access points meet the minimum '+
-      'required version and AP model support list below. You may upgrade your firmware from'
+      'required version and AP model support list below. You may upgrade your firmware from '
     }
     values={{
       b: (text: string) => <strong>{text}</strong>,
@@ -159,7 +160,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
       */
 
     } else if (ApCompatibilityType.VENUE === currentType) {
-      return await getVenuePerCheckApCompatibilities({
+      const venueApCompatibilities = await getVenuePerCheckApCompatibilities({
         params: { venueId },
         payload: {
           filters: {
@@ -170,6 +171,11 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           pageSize: 10
         }
       }).unwrap()
+
+      const incompatible = venueApCompatibilities?.compatibilities?.[0]?.incompatible ?? 0
+      if (incompatible > 0) {
+        return venueApCompatibilities
+      }
     }
 
     const apFeatureSetsResponse = await getApFeatureSets({
@@ -225,7 +231,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const getItems = (items: Compatibility[]) => items?.map((item: Compatibility, index) => {
     const { incompatibleFeatures } = item
     return incompatibleFeatures?.map((itemDetail) => (
-      <StyledWrapper key={`incompatibleFeatures_${item.id}`}>
+      <div key={`incompatibleFeatures_${item.id}`}>
         {isMultiple &&
           <Form.Item>
             <StyledFeatureName>
@@ -234,42 +240,37 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           </Form.Item>
         }
         {!apName && currentType !== ApCompatibilityType.ALONE &&
-          <Form.Item
+          <StyledFormItem
             label={$t({
               defaultMessage: 'Incompatible Access Points (Currently)'
             })}
-            style={detailStyle}
-            className='ApCompatibilityDrawerFormItem'
           >
             {`${item?.incompatible}`}
-          </Form.Item>
+          </StyledFormItem>
         }
 
-        {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
-          <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Minimum required version' })}
-              style={detailStyle}
-              className='ApCompatibilityDrawerFormItem'
-            >
-              {requirement?.firmware}
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'Supported AP Models' })}
-              style={detailStyle}
-              className='ApCompatibilityDrawerFormItem'
-            >
-              {apModelFamilies && requirement?.models &&
+        <SpaceWrapper size={8} direction='vertical' fullWidth>
+          {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
+            <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
+              <StyledFormItem
+                label={$t({ defaultMessage: 'Minimum required version' })}
+              >
+                {requirement?.firmware}
+              </StyledFormItem>
+              <StyledFormItem
+                label={$t({ defaultMessage: 'Supported AP Models' })}
+              >
+                {apModelFamilies && requirement?.models &&
                 <ApModelFamiliesItem
                   apModelFamilies={apModelFamilies}
                   models={requirement.models}
                 />
-              }
-            </Form.Item>
-          </StyledRequirementWrapper>
-        ))}
-
-      </StyledWrapper>
+                }
+              </StyledFormItem>
+            </StyledRequirementWrapper>
+          ))}
+        </SpaceWrapper>
+      </div>
     ))
   })
 
@@ -279,10 +280,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
     >
       <Form layout='vertical' form={form} data-testid='apCompatibility-form'>
         <Form.Item>
-          {contentTxt}
-          <TenantLink to='/administration/fwVersionMgmt'>
-            <Button type='link'>{ $t({ defaultMessage: 'Administration > Version Management > AP Firmware' }) }</Button>
-          </TenantLink>
+          {contentTxt} {getApFirmwareLink()}
         </Form.Item>
         {getItems(items)}
       </Form>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Menu, MenuProps }        from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
@@ -7,18 +7,19 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { SwitchTable, SwitchTabContext, defaultSwitchPayload, SwitchTableRefType } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { SwitchTable, SwitchTabContext, SwitchTableRefType } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
-  useSwitchListQuery
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  usePollingTableQuery
+  SwitchRbacUrlsInfo
 }      from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { SwitchScopes }          from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
+import { getOpsApi }             from '@acx-ui/utils'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
@@ -26,21 +27,6 @@ export default function useSwitchesTable () {
   const [ switchCount, setSwitchCount ] = useState(0)
   const switchTableRef = useRef<SwitchTableRefType>(null)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
-  const tableQuery = usePollingTableQuery({
-    useQuery: useSwitchListQuery,
-    enableRbac: isSwitchRbacEnabled,
-    defaultPayload: {
-      ...defaultSwitchPayload
-    },
-    search: {
-      searchTargetFields: defaultSwitchPayload.searchTargetFields
-    }
-  })
-
-  useEffect(() => {
-    setSwitchCount(tableQuery.data?.totalCount!)
-  }, [tableQuery.data])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {
@@ -62,6 +48,19 @@ export default function useSwitchesTable () {
         {$t({ defaultMessage: 'Switch Stack' })}</TenantLink>
     }]}
   />
+
+  const { venueFilterOptions } = useVenuesListQuery({
+    params: { tenantId }, payload: {
+      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+    })
+  })
 
   const { getSwitchModelList } = useGetSwitchModelListQuery({
     params: { tenantId },
@@ -85,9 +84,11 @@ export default function useSwitchesTable () {
   })
 
   const extra = filterByAccess([
-    <Dropdown overlay={addMenu} scopeKey={[SwitchScopes.CREATE]}>{() =>
-      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    <Dropdown overlay={addMenu}
+      scopeKey={[SwitchScopes.CREATE]}
+      rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.addSwitch)]}>{() =>
+        <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }</Dropdown>
   ])
 
   const component =
@@ -95,6 +96,7 @@ export default function useSwitchesTable () {
       <SwitchTable ref={switchTableRef}
         searchable={true}
         filterableKeys={{
+          venueId: venueFilterOptions,
           model: getSwitchModelList
         }}
       />

@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType }                         from '@acx-ui/components'
-import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }                                      from '@acx-ui/components'
+import { PolicyOperation, PolicyType, useTemplateAwarePolicyPermission } from '@acx-ui/rc/utils'
 
 import { RogueAPDetectionForm } from './RogueAPDetectionForm/RogueAPDetectionForm'
 
@@ -13,7 +13,7 @@ export const RogueApModal = (props: { setPolicyId: (id: string) => void }) => {
   const { setPolicyId } = props
   const [visible, setVisible] = useState(false)
 
-  if (!hasPolicyPermission({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })) {
+  if (!useTemplateAwarePolicyPermission(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.CREATE)) {
     return null
   }
 

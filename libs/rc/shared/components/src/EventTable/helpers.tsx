@@ -14,6 +14,7 @@ type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
 const entityTypes
   = [
     'ap',
+    'remoteAp',
     'client',
     'network',
     'switch',
@@ -36,6 +37,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     ap: {
       path: 'devices/wifi/:serialNumber/details/overview',
       params: ['serialNumber']
+    },
+    remoteAp: {
+      path: 'devices/wifi/:remoteApSerialId/details/overview',
+      params: ['remoteApSerialId']
     },
     client: {
       path: 'users/wifi/clients/:clientMac/details/overview',
@@ -79,13 +84,17 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   if (entityTypes.includes(entityKey as EntityType)) {
     entity = entityKey as EntityType
   } else {
-    [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+    const parts = _.kebabCase(entityKey).split('-')
+    if (parts[parts.length - 1] === 'name') {
+      parts.pop()
+    }
+    entity = _.camelCase(parts.join('-')) as EntityType
   }
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
 
-  const existKey = `is${_.capitalize(identifyExistKey(entity))}Exists` as EntityExistsKey
+  const existKey = `is${_.upperFirst(identifyExistKey(entity))}Exists` as EntityExistsKey
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
@@ -177,12 +186,27 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
   }
 }
 
+const extraHandle = (entityType: EntityType) => {
+  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
+}
+
+const identifyExistKey = (entityType: EntityType) => {
+  switch (entityType) {
+    case 'transaction':
+      return 'switch'
+    case 'clientMldMac':
+      return 'client'
+    default:
+      return entityType
+  }
+}
+
 export const getDetail = (data: Event) => {
   try {
     // eslint-disable-next-line max-len
     let detailedDescription = data.detailedDescription && JSON.parse(data.detailedDescription).message_template
     const template = replaceStrings(detailedDescription, data, (key) => `<entity>${key}</entity>`)
-    if (!template) return noDataDisplay
+    if (!template) return null
 
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
@@ -199,21 +223,6 @@ export const getDetail = (data: Event) => {
       }}
     />
   } catch {
-    return noDataDisplay
-  }
-}
-
-const extraHandle = (entityType: EntityType) => {
-  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
-}
-
-const identifyExistKey = (entityType: EntityType) => {
-  switch (entityType) {
-    case 'transaction':
-      return 'switch'
-    case 'clientMldMac':
-      return 'client'
-    default:
-      return entityType
+    return null
   }
 }

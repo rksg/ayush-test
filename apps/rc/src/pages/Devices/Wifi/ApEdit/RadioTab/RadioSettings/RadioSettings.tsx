@@ -50,7 +50,7 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
-import { ApDataContext, ApEditContext } from '../..'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
 import { ApBandManagement }      from './ApBandManagement'
 import { ApSingleRadioSettings } from './ApSingleRadioSettings'
@@ -286,9 +286,10 @@ export function VenueNameDisplay ({ venue }: { venue: VenueExtended | undefined 
   )
 }
 
-export function RadioSettings () {
+export function RadioSettings (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,
@@ -309,6 +310,8 @@ export function RadioSettings () {
   const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
 
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
+
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const { apData, apCapabilities, venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
@@ -346,6 +349,7 @@ export function RadioSettings () {
   const venueRef = useRef<ApRadioCustomization>()
   const cachedDataRef = useRef<ApRadioCustomization>()
   const operationCache = useRef<boolean>()
+  const prevoiusBendModeRef = useRef<BandModeEnum>()
 
   const [stateOfIsUseVenueSettings, setStateOfIsUseVenueSettings] = useState(defaultStateOfIsUseVenueSettings)
 
@@ -672,7 +676,14 @@ export function RadioSettings () {
 
         const { method, manualChannel } = radioParams
         if (method === 'MANUAL') {
-          radioParams.allowedChannels = [manualChannel.toString()]
+          if (isVenueChannelSelectionManualEnabled) {
+            // Use venue settings & channel selection method is "manual", ap's allowedChannels = venue's allowedChannels.
+            if (!radioParams.useVenueSettings) {
+              radioParams.allowedChannels = [manualChannel.toString()]
+            }
+          } else {
+            radioParams.allowedChannels = [manualChannel.toString()]
+          }
         }
       }
 
@@ -731,12 +742,35 @@ export function RadioSettings () {
     }
 
     //console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
+    const currentBendMode = getCurrentBandMode()
 
-    if (isSupportDual5GAp) {
-      const isDual5gEnabled = (getCurrentBandMode() === BandModeEnum.DUAL)
-      setIsDual5gMode(isDual5gEnabled)
-      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
-      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueSettings)
+    if (currentBendMode !== prevoiusBendModeRef.current) {
+      const isDual5gEnabled = (currentBendMode === BandModeEnum.DUAL)
+
+      if (isSupportDual5GAp) { // ex: R760
+        setIsDual5gMode(isDual5gEnabled)
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueSettings)
+
+        if (prevoiusBendModeRef.current) {
+          formRef.current?.setFieldValue(['apRadioParamsDual5G', 'lower5gEnabled'], isDual5gEnabled)
+          formRef.current?.setFieldValue(['apRadioParamsDual5G', 'upper5gEnabled'], isDual5gEnabled)
+          formRef.current?.setFieldValue(['enable50G'], !isDual5gEnabled)
+          formRef.current?.setFieldValue(['enable6G'], !isDual5gEnabled)
+
+          handleEnableChanged(isDual5gEnabled, ApRadioTypeEnum.RadioLower5G)
+          handleEnableChanged(isDual5gEnabled, ApRadioTypeEnum.RadioUpper5G)
+          handleEnableChanged(!isDual5gEnabled, ApRadioTypeEnum.Radio5G)
+          handleEnableChanged(!isDual5gEnabled, ApRadioTypeEnum.Radio6G)
+        }
+      } else { // ex: R670 ...etc
+        if (prevoiusBendModeRef.current) {
+          formRef.current?.setFieldValue(['enable6G'], !isDual5gEnabled)
+          handleEnableChanged(!isDual5gEnabled, ApRadioTypeEnum.Radio6G)
+        }
+      }
+
+      prevoiusBendModeRef.current = currentBendMode
     }
 
     onTabChange('Normal24GHz')
@@ -997,6 +1031,7 @@ export function RadioSettings () {
         delete payload.apRadioParams6G.enableAfc
       }
 
+
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
         await updateApBandMode({
           params,
@@ -1015,6 +1050,7 @@ export function RadioSettings () {
     }
   }
 
+  // remove the function after the WifiSwitchableRfEnabled always ON
   const handleTriBandTypeRadioChange = (e: RadioChangeEvent) => {
     const isDual5gEnabled = e.target.value
     setIsDual5gMode(isDual5gEnabled)
@@ -1128,7 +1164,7 @@ export function RadioSettings () {
           </Space>
         </Col>
         <Col span={8}>
-          <Button type='link' onClick={handleStateOfIsUseVenueSettingsChange}>
+          <Button type='link' disabled={!isAllowEdit} onClick={handleStateOfIsUseVenueSettingsChange}>
             {isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab) ?
               $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
             }
@@ -1246,6 +1282,7 @@ export function RadioSettings () {
                 enabledFieldName={['enable24G']}
                 onEnableChanged={handleEnableChanged}
                 radioType={ApRadioTypeEnum.Radio24G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal24GHz)}
               />
@@ -1258,6 +1295,7 @@ export function RadioSettings () {
                 enabledFieldName={['enable50G']}
                 onEnableChanged={handleEnableChanged}
                 radioType={ApRadioTypeEnum.Radio5G}
+                disabled={!isAllowEdit}
                 handleChanged={handleChange}
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz)}
               />
@@ -1271,6 +1309,7 @@ export function RadioSettings () {
                   enabledFieldName={['enable6G']}
                   onEnableChanged={handleEnableChanged}
                   radioType={ApRadioTypeEnum.Radio6G}
+                  disabled={!isAllowEdit}
                   handleChanged={handleChange}
                   isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz)}
                   afcProps={afcProps}
@@ -1287,6 +1326,7 @@ export function RadioSettings () {
                     enabledFieldName={['apRadioParamsDual5G', 'lower5gEnabled']}
                     onEnableChanged={handleEnableChanged}
                     radioType={ApRadioTypeEnum.RadioLower5G}
+                    disabled={!isAllowEdit}
                     handleChanged={handleChange}
                     isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Lower5GHz)}
                   />
@@ -1299,6 +1339,7 @@ export function RadioSettings () {
                     enabledFieldName={['apRadioParamsDual5G', 'upper5gEnabled']}
                     onEnableChanged={handleEnableChanged}
                     radioType={ApRadioTypeEnum.RadioUpper5G}
+                    disabled={!isAllowEdit}
                     handleChanged={handleChange}
                     isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Upper5GHz)}
                   />

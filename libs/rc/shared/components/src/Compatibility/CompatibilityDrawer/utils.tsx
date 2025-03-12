@@ -39,15 +39,25 @@ export const getEdgeFirmwareLink = () => {
   </TenantLink>
 }
 
+export const getSwitchFirmwareLink = () => {
+  const { $t } = getIntl()
+  return <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>
+    { $t({ defaultMessage: 'Administration > Version Management > Switch Firmware' }) }
+  </TenantLink>
+}
+
 export const getFirmwareLinkByDeviceType = (deviceType: CompatibilityDeviceEnum) => {
   const apFwLink = getApFirmwareLink()
   const edgeFwLink = getEdgeFirmwareLink()
+  const switchFwLink = getSwitchFirmwareLink()
 
   switch(deviceType) {
     case CompatibilityDeviceEnum.AP:
       return apFwLink
     case CompatibilityDeviceEnum.EDGE:
       return edgeFwLink
+    case CompatibilityDeviceEnum.SWITCH:
+      return switchFwLink
     default:
       return null
   }
@@ -66,6 +76,7 @@ export const useDescription = (props: Pick<CompatibilityDrawerProps, 'compatibil
 
   const apFwLink = getApFirmwareLink()
   const edgeFwLink = getEdgeFirmwareLink()
+  const switchFwLink = getSwitchFirmwareLink()
 
   const { data: venueData } = useGetVenueQuery({ params: { venueId } },
     { skip: !isFeatureLevel || !featureName || !venueId || !!venueName })
@@ -104,7 +115,8 @@ export const useDescription = (props: Pick<CompatibilityDrawerProps, 'compatibil
     values={{
       b: (txt) => <b>{txt}</b>,
       apFwLink,
-      edgeFwLink
+      edgeFwLink,
+      switchFwLink
     }}/>
 
   return (!isVenueLevel && !!featureName) ? singleFeatureTitle : multipleTitle
@@ -115,7 +127,7 @@ export const getFeatureTypeTag = (featureType: IncompatibleFeatureTypeEnum | und
     case IncompatibleFeatureTypeEnum.WIFI:
       return <StyledFeatureTypeWifi children={'Wi-Fi'} />
     case IncompatibleFeatureTypeEnum.EDGE:
-      return <StyledFeatureTypeEdge children={'SmartEdge'} />
+      return <StyledFeatureTypeEdge children={'RUCKUS Edge'} />
     case IncompatibleFeatureTypeEnum.SWITCH:
       return <StyledFeatureTypeSwitch children={'Switch'} />
   }

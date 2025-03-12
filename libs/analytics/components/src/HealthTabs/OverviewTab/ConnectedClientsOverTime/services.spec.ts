@@ -40,7 +40,8 @@ describe('connectedClientsOverTimeApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.healthConnectedClientsOverTime.initiate(props)
+      api.endpoints.healthConnectedClientsOverTime.initiate(
+        { ...props, isSwitchHealth10010eEnabled: true } )
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
@@ -51,7 +52,8 @@ describe('connectedClientsOverTimeApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.healthConnectedClientsOverTime.initiate(props)
+      api.endpoints.healthConnectedClientsOverTime.initiate(
+        { ...props, isSwitchHealth10010eEnabled: false } )
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

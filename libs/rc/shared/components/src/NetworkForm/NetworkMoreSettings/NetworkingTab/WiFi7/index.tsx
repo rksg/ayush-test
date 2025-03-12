@@ -3,8 +3,13 @@ import { useEffect, useState, useContext } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
-import _, { get, isUndefined } from 'lodash'
-import { useIntl }             from 'react-intl'
+import {
+  cloneDeep,
+  get,
+  isUndefined,
+  set
+} from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { StepsForm, Tooltip }                                     from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -12,10 +17,17 @@ import { InformationSolid }                                       from '@acx-ui/
 import {
   NetworkSaveData,
   IsNetworkSupport6g,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../../../ApCompatibility'
 import { MLOContext }           from '../../../NetworkForm'
 import NetworkFormContext       from '../../../NetworkFormContext'
 import * as UI                  from '../../../NetworkMoreSettings/styledComponents'
@@ -38,6 +50,7 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
 
   const labels = {
     labelOf24G: $t({ defaultMessage: '2.4 GHz' }),
@@ -55,7 +68,9 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
   const dpskWlanSecurity = useWatch('dpskWlanSecurity') // for DPSK network
   const wisprWlanSecurity = useWatch('pskProtocol') // for WISPr network
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity })
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData,
+    { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity },
+    { isSupport6gOWETransition })
 
   useEffect(() => {
     const updateMloOptions = () => {
@@ -167,6 +182,8 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
 function WiFi7 () {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+
   const { setData, data: wlanData } = useContext(NetworkFormContext)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
@@ -174,6 +191,9 @@ function WiFi7 () {
   const editMode = params.action === 'edit'
   const { isDisableMLO, disableMLO } = useContext(MLOContext)
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
+  const mloTooltip = $t({ defaultMessage: `MLO allows Wi-Fi 7 devices to use multiple radio channels simultaneously (at least two) for better throughput and efficiency.
+    For MLO to function, radios on APs must be active, and their usage is determined by AP configuration, which limits the number of supported 6 GHz networks` })
+  const [mloDrawerVisible, setMloDrawerVisible] = useState(false)
   const [
     wifi7Enabled,
     mloEnabled
@@ -196,13 +216,15 @@ function WiFi7 () {
   useEffect(()=>{
     if(editMode && wlanData !== null){
 
-      const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK && IsNetworkSupport6g(wlanData))
+      const shouldMLOBeDisable = wlanData.type === NetworkTypeEnum.DPSK ||
+        wlanData?.wlanSecurity === WlanSecurityEnum.OWETransition ||
+          !IsNetworkSupport6g(wlanData)
 
       disableMLO(shouldMLOBeDisable)
 
       if (shouldMLOBeDisable) {
-        const cloneData = _.cloneDeep(wlanData)
-        _.set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
+        const cloneData = cloneDeep(wlanData)
+        set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
         setData && setData(cloneData)
       }
     }
@@ -261,13 +283,24 @@ function WiFi7 () {
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
                   {/* eslint-disable max-len */}
-                  <Tooltip.Question
-                    title={$t({ defaultMessage: `MLO allows Wi-Fi 7 devices to use multiple radio channels simultaneously (at least two) for better throughput and efficiency.
-                     For MLO to function, radios on APs must be active, and their usage is determined by AP configuration, which limits the number of supported 6 GHz networks` })
-                    }
+                  {!isR370UnsupportedFeatures && <Tooltip.Question
+                    title={mloTooltip}
                     placement='right'
                     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-                  />
+                  />}
+                  {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                    title={mloTooltip}
+                    showDetailButton
+                    placement='right'
+                    onClick={() => setMloDrawerVisible(true)}
+                  />}
+                  {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                    visible={mloDrawerVisible}
+                    type={ApCompatibilityType.ALONE}
+                    networkId={params.networkId}
+                    featureName={InCompatibilityFeatures.MLO_3R}
+                    onClose={() => setMloDrawerVisible(false)}
+                  />}
                 </Space>
                 <Form.Item
                   name={['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']}
@@ -280,10 +313,10 @@ function WiFi7 () {
                         title={$t({
                           defaultMessage: 'For the functioning of MLO, ensure that either the WPA3 or OWE encryption method is activated.'
                         })}>
-                        <Switch disabled={!wifi7Enabled || isDisableMLO} />
+                        <Switch data-testid='mlo-switch-1' disabled={!wifi7Enabled || isDisableMLO} />
                       </Tooltip>
                       :
-                      <Switch disabled={!wifi7Enabled || isDisableMLO} />
+                      <Switch data-testid='mlo-switch-2' disabled={!wifi7Enabled || isDisableMLO} />
                   } />
               </UI.FieldLabel>
       }

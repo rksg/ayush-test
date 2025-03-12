@@ -42,8 +42,8 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
 
   const steps = [
     {
-      key: 'onboardCA',
-      title: $t({ defaultMessage: 'Onboard CA' }),
+      key: 'templateDetails',
+      title: $t({ defaultMessage: 'Template Details' }),
       content: <OnboardForm editMode={editMode}/>,
       showEdit: true
     },
@@ -78,7 +78,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
         caType: CertificateAuthorityType.ONBOARD,
         notBefore,
         notAfter,
-        keyLength: 2048,
+        keyLength: 4096,
         algorithm: AlgorithmType.SHA_256,
         chromebook: {
           enabled: false,

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
@@ -9,11 +10,14 @@ import {
   LbsServerProfileViewModel,
   PolicyOperation,
   PolicyType,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  usePolicyListBreadcrumb
+  getScopeKeyByPolicy,
+  usePolicyListBreadcrumb,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink }                               from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { TenantLink }               from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { LbsServerProfileInstancesTable } from './LbsServerProfileInstancesTable'
 import { LbsServerProfileOverview }       from './LbsServerProfileOverview'
@@ -47,12 +51,14 @@ const LbsServerProfileDetail = () => {
     <PageHeader
       title={data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={hasCrossVenuesPermission() && filterByAccess([
+      extra={hasCrossVenuesPermission() && filterByAccessForServicePolicyMutation([
         <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.LBS_SERVER_PROFILE,
           oper: PolicyOperation.EDIT,
           policyId: policyId as string
-        })}>
+        })}
+        scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ])} />

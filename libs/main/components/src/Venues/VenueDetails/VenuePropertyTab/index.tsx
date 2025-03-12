@@ -37,18 +37,19 @@ import {
   PolicyType,
   PropertyUnit,
   PropertyUnitMessages,
-  PropertyUnitStatus,
+  PropertyUnitStatus, PropertyUrlsInfo,
   SEARCH,
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }               from '@acx-ui/react-router-dom'
-import { RolesEnum }                from '@acx-ui/types'
-import { filterByAccess, hasRoles } from '@acx-ui/user'
-import { exportMessageMapping }     from '@acx-ui/utils'
+import { TenantLink }                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { filterByAccess, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi }                from '@acx-ui/utils'
 
-import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
-import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
+import { PropertyUnitBulkDrawer }     from './PropertyUnitBulkDrawer'
+import { PropertyUnitDrawer }         from './PropertyUnitDrawer'
+import { PropertyUnitIdentityDrawer } from './PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
 
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { $expired: boolean }) => props)`
@@ -128,7 +129,9 @@ export function VenuePropertyTab () {
     isEdit: false,
     visible: false
   })
+  const [selectedUnit, setSelectedUnit] = useState<PropertyUnit>()
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
+  const [addIdentityDrawerVisible, setAddIdentityDrawerVisible] = useState(false)
 
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
@@ -145,10 +148,13 @@ export function VenuePropertyTab () {
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
   const hasPropertyUnitPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasBulkUpdateUnitsPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.bulkUpdateUnitProfile)])
 
   const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
@@ -319,11 +325,13 @@ export function VenuePropertyTab () {
     hasPropertyUnitPermission
       ? [{
         label: $t({ defaultMessage: 'Add Unit' }),
+        rbacOpsIds: [getOpsApi(PropertyUrlsInfo.addPropertyUnit)],
         disabled: !hasAssociation,
         onClick: () => setDrawerState({ isEdit: false, visible: true, units: undefined })
       },
       {
         label: $t({ defaultMessage: 'Import From File' }),
+        rbacOpsIds: [getOpsApi(PropertyUrlsInfo.importPropertyUnits)],
         disabled: !hasAssociation,
         onClick: () => setUploadCsvDrawerVisible(true)
       }] : []
@@ -333,8 +341,11 @@ export function VenuePropertyTab () {
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.updatePropertyUnit)],
           visible: (selectedItems => selectedItems.length <= 1 ||
-        (isConnectionMeteringAvailable && selectedItems.length > 1)),
+        (isConnectionMeteringAvailable
+          && selectedItems.length > 1
+          && hasBulkUpdateUnitsPermission)),
           onClick: (units, clearSelection) => {
             setDrawerState({ units: units.map(u=> {return {
               ...u,
@@ -348,6 +359,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Suspend' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.updatePropertyUnit)],
           visible: (selectedRows => {
             const activeCount = selectedRows.filter(row => enabled(row.status)).length
             return activeCount > 0 && activeCount === selectedRows.length
@@ -383,6 +395,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Activate' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.updatePropertyUnit)],
           visible: (selectedRows => {
             const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
             return suspendCount > 0 && suspendCount === selectedRows.length
@@ -406,6 +419,15 @@ export function VenuePropertyTab () {
           }
         },
         {
+          label: $t({ defaultMessage: 'Add Identity Association' }),
+          visible: (selectedItems => selectedItems.length <= 1 && isMultipleIdentityUnits),
+          onClick: (units, clearSelection) => {
+            setSelectedUnit(units.at(0))
+            clearSelection()
+            setAddIdentityDrawerVisible(true)
+          }
+        },
+        {
           label: $t({ defaultMessage: 'Resend' }),
           onClick: (selectedItems, clearSelection) => {
             notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
@@ -422,6 +444,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.deletePropertyUnit)],
           onClick: (selectedItems, clearSelection) => {
             setDrawerState({ isEdit: false, visible: false })
             showActionModal({
@@ -446,7 +469,14 @@ export function VenuePropertyTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        return (
+          isMultipleIdentityUnits ? <TenantLink
+            to={`/venues/${venueId}/${row.id}/property-units`}>
+            {highlightFn(row.name)}</TenantLink> : row.name
+        )
+      }
     },
     {
       key: 'status',
@@ -515,6 +545,11 @@ export function VenuePropertyTab () {
           return ''
         }
       }]: [],
+    ...isMultipleIdentityUnits ? [{
+      key: 'identityCount',
+      title: $t({ defaultMessage: 'Identities' }),
+      dataIndex: ['identityCount']
+    }] : [],
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),
@@ -592,6 +627,17 @@ export function VenuePropertyTab () {
           data={drawerState.units}
           onClose={() => setDrawerState({ isEdit: false, visible: false, units: undefined })}
         />
+      }
+      {groupId && addIdentityDrawerVisible && <PropertyUnitIdentityDrawer
+        visible={addIdentityDrawerVisible}
+        groupId={groupId}
+        venueId={venueId}
+        unitId={selectedUnit?.id}
+        identityCount={selectedUnit?.identityCount?selectedUnit?.identityCount:0}
+        onClose={() => {
+          setAddIdentityDrawerVisible(false)
+        }}
+      />
       }
       <ImportFileDrawer
         title={$t({ defaultMessage: 'Import Units From File' })}

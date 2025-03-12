@@ -54,6 +54,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     = useState(null as unknown as SwitchViewModel)
   const [aclUnionList, setAclUnionList] = useState(null as unknown as AclUnion)
   const [switchData, setSwitchData] = useState(null as unknown as Switch)
+  const [switchModelMap, setSwitchModelMap] = useState(new Map())
 
   const [getVePortVlansList] = useLazyGetFreeVePortVlansQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
@@ -67,6 +68,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const [addVePort] = useAddVePortMutation()
   const [updateVePort] = useUpdateVePortMutation()
   const [resetField, setResetField] = useState(false)
+  const [ospfAreaEnabled, setOspfAreaEnabled] = useState(true)
 
   //Only for edit mode
   const [isIncludeIpSetting, setIsIncludeIpSetting] = useState(false)
@@ -77,6 +79,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const [ipSubnetFromDH, setIpSubnetFromDH] = useState('')
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const getSwitches = async () => {
     const payload = { filters: { venueId: [venueId] } }
@@ -86,7 +89,12 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       enableRbac: isSwitchRbacEnabled
     }, true))
       .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
-    setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+    setSwitchOption(switches?.filter(s => !(s.model?.startsWith('ICX8100') && (s.veCount ?? 0) > 0))
+      .map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+    if (isSupport8100) {
+      const switchModelMap = new Map(switches?.map((s) => [s.id, s.model]))
+      setSwitchModelMap(switchModelMap)
+    }
   }
 
   const getSwitchDetailHeader = async (switchId: string) => {
@@ -141,6 +149,9 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       setDisableIpSetting( ipFullContentParsed === false)
       setIpAddressFromDH(switchDetailHeaderData.ipAddress || '')
       setIpSubnetFromDH(switchDetailHeaderData.subnetMask || '')
+      if (isSupport8100 && switchDetailHeaderData.model?.startsWith('ICX8100')) {
+        setOspfAreaEnabled(false)
+      }
     }
 
     if(switchData){
@@ -275,6 +286,13 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     </Space>
   ]
 
+  const updateOspfAreaEnabled = (switchId: string) => {
+    if (isSupport8100 && switchModelMap) {
+      const switchModel = switchModelMap.get(switchId) ?? ''
+      setOspfAreaEnabled(!switchModel.startsWith('ICX8100'))
+    }
+  }
+
   return (
     <Drawer
       title={isEditMode
@@ -305,7 +323,12 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             initialValue={null}
           >
             <Select
-              onChange={(e)=> { setSwitchId(e) }}
+              onChange={(e)=> {
+                setSwitchId(e)
+                updateOspfAreaEnabled(e)
+                form.resetFields(['vlanId'])
+                form.resetFields(['veId'])
+              }}
               options={[{
                 label: $t({ defaultMessage: 'Select Switch...' }),
                 value: null
@@ -342,8 +365,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'VE' })}
             name='veId'
-            rules={[
-              { required: true }]}
           >
             {/* <span style={{
               display: 'flex',
@@ -352,7 +373,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             }}>
           VE- */}
             <InputNumber
-              disabled={isEditMode || readOnly}
+              disabled={true}
               style={{ marginLeft: '5px' }}
               min={1}
               max={4095}
@@ -373,6 +394,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           </Form.Item>
 
 
+          { ospfAreaEnabled &&
           <Form.Item
             label={$t({ defaultMessage: 'OSPF Area' })}
             name='ospfArea'
@@ -383,6 +405,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           >
             <Input disabled={readOnly} />
           </Form.Item>
+          }
 
 
           <Form.Item

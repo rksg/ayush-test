@@ -8,8 +8,7 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { certificateAuthorityList, serverCertificateList } from '../../__test__/fixtures'
 
-import GenerateCertificate from './GenerateCertificate'
-
+import { GenerateCertificate } from './GenerateCertificate'
 
 
 describe('GenerateCertificate', () => {

@@ -159,10 +159,11 @@ export const FwContainer = styled.div`
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 140px 80px 100px;
+  grid-template-columns: 160px 80px 100px;
   align-items: baseline;
   label:nth-child(2), label:nth-child(3) {
     text-align: center;
+    line-height: 20px;
   }
 `
 export const FieldLabelSubs2 = styled.div<{ width: string }>`
@@ -244,4 +245,53 @@ export const Expired = styled(Space)`
 `
 export const Warning = styled(Space)`
   color: var(--acx-accents-orange-50)
+`
+
+export const FieldLabelSubs3 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 208px 130px;
+  align-items: baseline;
+  line-height: 24px;
+  label {
+    font-size: 12px;
+  }
+  .ant-checkbox-inner {
+    width: 14px;
+    height: 14px;
+  }
+`
+
+export const SettingsFieldLabel = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  border-bottom: 1px solid var(--acx-neutrals-100);
+  grid-template-columns: 164px 130px 124px 150px;
+  align-items: baseline;
+  line-height: 24px;
+  label {
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .ant-checkbox-inner {
+    width: 14px;
+    height: 14px;
+  }
+`
+
+export const SettingsFieldLabelKeyValue = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns: 164px 130px 124px 150px;
+  gap: 8px 0;
+  align-items: baseline;
+  line-height: 24px;
+  label {
+    font-size: 12px;
+  }
+  .ant-checkbox-inner {
+    width: 14px;
+    height: 14px;
+  }
 `

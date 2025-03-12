@@ -6,6 +6,7 @@ import { useGetClientIsolationQuery }                        from '@acx-ui/rc/se
 import {
   ClientIsolationSaveData,
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -47,6 +48,7 @@ export default function ClientIsolationDetail () {
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
           })}
+          rbacOpsIds={getPolicyAllowedOperation(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT)}
           scopeKey={getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT)}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

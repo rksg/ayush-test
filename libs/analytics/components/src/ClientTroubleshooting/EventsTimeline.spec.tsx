@@ -8,7 +8,7 @@ import { Provider }                 from '@acx-ui/store'
 import { render, screen,fireEvent } from '@acx-ui/test-utils'
 
 import { connectionEvents, connectionDetailsByAp, connectionQualities } from './__tests__/fixtures'
-import  { TimeLine }                                                    from './EventsTimeline'
+import  { Timeline }                                                    from './EventsTimeline'
 import { ConnectionEvent, ConnectionQuality }                           from './services'
 
 import { Filters } from '.'
@@ -120,7 +120,7 @@ const connectionEventsArray: ConnectionEvent[] = [
     failedMsgId: null,
     radio: '5'
   }]
-describe('EventsTimeLine', () => {
+describe('EventsTimeline', () => {
   beforeEach(() => jest.mocked(mockOverlapsRollup).mockReturnValue(false))
   const sharedChartName = 'testingChartConnections'
   it('should render correctly with out search params', async () => {
@@ -142,7 +142,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine
+        <Timeline
           filters={{}}
           data={data}
           setEventState={setEventState}
@@ -186,7 +186,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={filters}
+        <Timeline filters={filters}
           data={data}
           setEventState={setEventState}
           setVisible={setVisible}
@@ -229,7 +229,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={filters}
+        <Timeline filters={filters}
           data={data}
           setEventState={setEventState}
           setVisible={setVisible}
@@ -271,7 +271,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={filters}
+        <Timeline filters={filters}
           data={data}
           setEventState={setEventState}
           setVisible={setVisible}
@@ -320,7 +320,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={filters}
+        <Timeline filters={filters}
           data={data}
           setEventState={setEventState}
           setVisible={setVisible}
@@ -364,7 +364,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={filters}
+        <Timeline filters={filters}
           data={data}
           setEventState={setEventState}
           setVisible={setVisible}
@@ -407,7 +407,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={filters}
+        <Timeline filters={filters}
           data={data}
           setEventState={setEventState}
           setVisible={setVisible}
@@ -481,7 +481,7 @@ describe('EventsTimeLine', () => {
     const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine
+        <Timeline
           filters={{}}
           data={data}
           setEventState={setEventState}

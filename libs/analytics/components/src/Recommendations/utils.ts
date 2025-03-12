@@ -6,7 +6,7 @@ import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { getIntl }   from '@acx-ui/utils'
 
-import { enumMap }     from '../ConfigChange/Table/mapping/enumMap'
+import { enumMap }     from '../ConfigChange/mapping/enumMap'
 import { json2keymap } from '../ConfigChange/Table/util'
 
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }

@@ -3,24 +3,20 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
-import { Button, GridCol, GridRow }                             from '@acx-ui/components'
-import { useGetDnsServersQuery, useGetEdgePasswordDetailQuery } from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow }            from '@acx-ui/components'
+import { EdgePortsWidget, EdgeSysResourceBox } from '@acx-ui/edge/components'
+import { useGetDnsServersQuery }               from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
   EdgePortStatus,
   EdgeResourceUtilizationEnum,
   EdgeStatus
 } from '@acx-ui/rc/utils'
-import { useParams }             from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
+import { useParams } from '@acx-ui/react-router-dom'
 
-import { useIsEdgeReady } from '../useEdgeActions'
-
-import { EdgeAlarmWidget }    from './EdgeAlarmWidget'
-import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
-import { EdgePortsWidget }    from './EdgePortsWidget'
-import { EdgeSysResourceBox } from './EdgeSysResourceBox'
-import { Styles }             from './styledComponents'
+import { EdgeAlarmWidget } from './EdgeAlarmWidget'
+import EdgeDetailsDrawer   from './EdgeDetailsDrawer'
+import { Styles }          from './styledComponents'
 
 interface EdgeInfoWidgetProps {
   className?: string
@@ -45,7 +41,7 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const [visible, setVisible] = React.useState(false)
-  const isEdgeReady = useIsEdgeReady()
+
   const moreDetailsHandler = () => {
     setVisible(true)
   }
@@ -60,21 +56,6 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
     },
     {
       skip: !currentEdge
-    }
-  )
-
-  const { data: userProfile } = useUserProfileContext()
-  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
-  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
-    {
-      params: {
-        venueId: currentEdge?.venueId,
-        edgeClusterId: currentEdge?.clusterId,
-        serialNumber
-      }
-    },
-    {
-      skip: !isShowEdgePassword || !isEdgeReady || !currentEdge
     }
   )
 
@@ -132,7 +113,6 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
         currentEdge={currentEdge}
         currentCluster={currentCluster}
         dnsServers={dnsServers}
-        passwordDetail={passwordDetail}
       />
     </GridRow>
   )

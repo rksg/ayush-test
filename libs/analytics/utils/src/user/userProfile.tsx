@@ -48,6 +48,7 @@ export const setUserProfile = (profile: UserProfile) => {
   setRaiPermissions(selectedTenant.permissions)
   user.profile = { ...profile, selectedTenant }
 }
+export const getUserName = () => `${user.profile.firstName} ${user.profile.lastName}`
 export const updateSelectedTenant = () => {
   const currentProfile = getUserProfile()
   const selectedTenant = getSelectedTenant(currentProfile)

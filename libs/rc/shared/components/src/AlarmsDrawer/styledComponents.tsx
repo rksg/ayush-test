@@ -100,3 +100,33 @@ export const Drawer = styled(AntdDrawer)`
     overflow-x: hidden;
   }
 `
+
+export const TableWrapper = styled.div`
+  .ant-pro-table.alarms-table {
+    .ant-table {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        line-height: var(--acx-body-5-line-height);
+        padding-bottom: 6px;
+      }
+
+      &-tbody > tr {
+        vertical-align: top;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-bottom: 0px;
+        white-space: normal;
+      }
+    }
+      
+    .ant-table-cell-fix-right {
+      display: none;
+    }
+  }
+`

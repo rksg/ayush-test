@@ -1,4 +1,28 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
+
+export const mockedStatusTrail = {
+  statusTrail: [{
+    status: 'new',
+    statusReason: null,
+    displayStatus: 'new',
+    createdAt: '2024-08-20T06:05:49.507Z'
+  }]
+}
+
+export const mockedKPIs = {
+  kpi_avg_ap_channel_change_count: {
+    data: { timestamp: '2024-08-20T00:00:00.000Z', result: 21 },
+    compareData: null
+  },
+  kpi_max_ap_channel_change_count: {
+    data: { timestamp: '2024-08-20T00:00:00.000Z', result: 63 },
+    compareData: null
+  },
+  kpi_co_channel_interference_ratio: {
+    data: { timestamp: '2024-08-20T00:00:00.000Z', result: null },
+    compareData: null
+  }
+}
 
 export const mocked = {
   id: '94aea205-8d11-4636-b686-805c59113cd4',
@@ -15,26 +39,14 @@ export const mocked = {
     { type: 'system', name: 'Aaron-Public-1' },
     { type: 'zone', name: 'Aaron M510 Mesh' }
   ],
-  statusTrail: [{
-    status: 'new',
-    statusReason: null,
-    displayStatus: 'new',
-    createdAt: '2024-08-20T06:05:49.507Z'
-  }],
+  ...mockedStatusTrail,
+  ...mockedKPIs,
   updatedAt: '2024-08-20T06:05:49.507Z',
   preferences: null,
   currentValue: 220000,
   recommendedValue: 20000,
-  kpi_avg_ap_channel_change_count: {
-    data: { timestamp: '2024-08-20T00:00:00.000Z', result: 21 },
-    compareData: null
-  },
-  kpi_max_ap_channel_change_count: {
-    data: { timestamp: '2024-08-20T00:00:00.000Z', result: 63 },
-    compareData: null
-  },
-  kpi_co_channel_interference_ratio: {
-    data: { timestamp: '2024-08-20T00:00:00.000Z', result: null },
-    compareData: null
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
   }
-} as unknown as Intent
+} as unknown as IntentDetail

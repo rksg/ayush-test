@@ -3,10 +3,10 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Tabs }                   from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { isRouter, isVerGEVer }   from '@acx-ui/rc/utils'
-import { useTenantLink }          from '@acx-ui/react-router-dom'
+import { Tabs }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { isRouter, isFirmwareVersionAbove10010f } from '@acx-ui/rc/utils'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 
@@ -42,21 +42,6 @@ export function SwitchTroubleshootingTab () {
   const isSupportRouter = switchDetailsContextData.switchDetailHeader?.switchType ?
     isRouter(switchDetailsContextData.switchDetailHeader.switchType) : false
 
-  const isSupportCLIMode = function () {
-    if(switchDetailsContextData.switchDetailHeader?.firmware){
-      const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
-      /*
-      Only support the firmware versions listed below:
-      1. > 10010f < 10020
-      2. > 10020b
-      */
-      return isVerGEVer(fwVersion, '10010f', false) &&
-      (!isVerGEVer(fwVersion, '10020', false) || isVerGEVer(fwVersion, '10020b', false))
-    }else{
-      return false
-    }
-  }
-
   return (
     <Tabs
       destroyInactiveTabPane={true}
@@ -78,16 +63,18 @@ export function SwitchTroubleshootingTab () {
         </TabPane>
       }
       {
-        isSupportCLIMode() && isSwitchCliEnabled &&
-        <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
-          <SwitchMacAddressForm />
-        </TabPane>
+        isFirmwareVersionAbove10010f(switchDetailsContextData.switchDetailHeader?.firmware)
+          && isSwitchCliEnabled
+          && <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
+            <SwitchMacAddressForm />
+          </TabPane>
       }
       {
-        isSupportCLIMode() && isCableTestEnabled &&
-        <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
-          <SwitchCableTestForm/>
-        </TabPane>
+        isFirmwareVersionAbove10010f(switchDetailsContextData.switchDetailHeader?.firmware)
+          && isCableTestEnabled
+          && <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
+            <SwitchCableTestForm/>
+          </TabPane>
       }
     </Tabs>
   )

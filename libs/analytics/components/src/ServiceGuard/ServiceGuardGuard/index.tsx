@@ -8,7 +8,7 @@ import { getIntl }           from '@acx-ui/utils'
 
 import { messageMapping }                           from '../contents'
 import { useServiceGuardSpec, useServiceGuardTest } from '../services'
-// import { TypedUseQueryHookResult } from '@reduxjs/toolkit/dist/query/react'
+// import { TypedUseQueryHookResult } from '@reduxjs/toolkit/query/react'
 
 export function showAlertAndNavigateAway (
   navigateToList: () => void,

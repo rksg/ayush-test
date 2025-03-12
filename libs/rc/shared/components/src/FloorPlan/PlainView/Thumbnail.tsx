@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Tooltip }                                   from 'antd'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { useParams }                                 from 'react-router-dom'
 
@@ -66,8 +67,10 @@ export default function Thumbnail (props: {
             { floorPlanName: floorPlan?.name })}/>
       </div>
     </UI.StyledCardGrid>
-    <UI.ImageDesc key={floorPlan.name} active={active}>
-      {floorPlan.name}
-    </UI.ImageDesc>
+    <Tooltip title={floorPlan.name}>
+      <UI.ImageDesc key={floorPlan.name} active={active}>
+        {floorPlan.name}
+      </UI.ImageDesc>
+    </Tooltip>
   </UI.Thumbnail>
 }

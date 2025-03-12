@@ -41,7 +41,7 @@ export default function ScepDrawer
       const blockedSubnets = getFieldValue('blockedSubnets') as string
 
       // eslint-disable-next-line max-len
-      const subnetRegex = /^(\*|(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/?(3[0-2]|[12]?[0-9])?))$/
+      const subnetRegex = /^(\*|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\/([0-9]|[12][0-9]|3[0-2]))?)$/
 
       // Validate each subnet in the value field
       if (value) {
@@ -103,7 +103,7 @@ export default function ScepDrawer
       challengePasswordType: ChallengePasswordType.NONE,
       challengePassword: '',
       allowedSubnets: '*',
-      overrideDays: 10,
+      overrideDays: 0,
       cnValue1: ScepKeyCommonNameType.USERNAME,
       cnValue2: ScepKeyCommonNameType.IGNORE,
       cnValue3: ScepKeyCommonNameType.IGNORE,

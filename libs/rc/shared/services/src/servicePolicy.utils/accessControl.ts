@@ -1,7 +1,5 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
-import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs }                               from '@reduxjs/toolkit/query'
+import { QueryReturnValue, FetchArgs }             from '@reduxjs/toolkit/query'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 import { Params }                                  from 'react-router-dom'
 
 import {
@@ -19,8 +17,8 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   TableResult
 } from '@acx-ui/rc/utils'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
+import { createHttpRequest }            from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 
@@ -488,7 +486,7 @@ export function getEnhancedAccessControlProfileListFn (isTemplate: boolean = fal
 
     // fill in the mac addresses
     const processFn = async (policy: EnhancedAccessControlInfoType) => {
-      if (!enableRbac) return policy
+      if (!enableRbac || payload?.noDetails) return policy
 
       try {
         const aclPolicyDetail = createHttpRequest(
@@ -502,7 +500,7 @@ export function getEnhancedAccessControlProfileListFn (isTemplate: boolean = fal
         return {
           ...aclData,
           ...policy,
-          networkIds: aclData.networkIds
+          networkIds: aclData.networkIds || policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -550,7 +548,8 @@ export function getEnhancedL2AclProfileListFn (isTemplate: boolean = false) : Qu
 
         return {
           ...policy,
-          macAddress: l2AclData.macAddresses
+          macAddress: l2AclData.macAddresses,
+          networkIds: policy.wifiNetworkIds
         }
       } catch (e) {
         // eslint-disable-next-line no-console

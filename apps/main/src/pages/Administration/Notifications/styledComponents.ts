@@ -54,3 +54,38 @@ export const ButtonFooterWrapper = styled.div`
   justify-content: space-between;
   gap: 100%;
 `
+export const NotificationFormWrapper = styled.div`
+  .ant-tabs-tab {
+    font-size: 12px;
+  }
+  .ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap
+  > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
+    margin-left: 16px;
+  }
+`
+export const NotificationCheckboxWrapper = styled.div`
+  .ant-tree-switcher, .ant-tree .ant-tree-node-content-wrapper {
+    pointer-events: none;
+  }
+  div.ant-tree-list-holder-inner {
+    display: block !important;
+  }
+  .multi-col > .ant-tree-list {
+    column-count: 2;
+  }
+  div.ant-tree-treenode.ant-tree-treenode-switcher-open {
+    margin-top: 10px;
+    column-span: all;
+  }
+`
+export const FieldLabel = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  line-height: 32px;
+  grid-template-columns: ${props => props.width} 1fr;
+`
+export const PhoneInputWrapper = styled.div`
+  .ant-form-item {
+    margin-bottom: 0px;
+  }
+`

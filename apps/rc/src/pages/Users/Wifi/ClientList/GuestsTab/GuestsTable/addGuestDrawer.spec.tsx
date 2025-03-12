@@ -42,7 +42,7 @@ import {
 jest.mock('socket.io-client')
 jest.spyOn(window, 'print').mockImplementation(jest.fn())
 
-const mobilePlaceHolder = /555/
+const mobilePlaceHolder = '555'
 
 async function fillInfo () {
   await userEvent.type(await screen.findByRole('textbox', { name: 'Guest Name' }), 'wifitest')
@@ -59,6 +59,10 @@ async function selectAllowedNetwork (optionName: string) {
 }
 
 const mockedAddGuestReq = jest.fn()
+
+jest.mock('@acx-ui/rc/components', () => ({
+  PhoneInput: () => <input data-testid='PhoneInput' placeholder={mobilePlaceHolder}/>
+}))
 
 describe('Add Guest Drawer', () => {
   let params: { tenantId: string, networkId: string }
@@ -148,7 +152,7 @@ describe('Add Guest Drawer', () => {
 
     await userEvent.click(await screen.findByTestId('saveBtn'))
     await waitFor(async ()=>{
-      expect(await screen.findByText(/Guest pass won\’t be printed or sent/)).toBeVisible()
+      expect(await screen.findByText(/Guest pass won’t be printed or sent/)).toBeVisible()
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [drawer, dialog, ...rest] = await screen.findAllByRole('dialog')

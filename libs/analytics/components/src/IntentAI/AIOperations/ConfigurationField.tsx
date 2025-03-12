@@ -4,10 +4,10 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { IntentConfigurationConfig } from '../IntentContext'
-import { Intent }                    from '../useIntentDetailsQuery'
+import { IntentDetail }              from '../useIntentDetailsQuery'
 
 export const ConfigurationField: React.FC<{
-    configuration: IntentConfigurationConfig, intent: Intent
+    configuration: IntentConfigurationConfig, intent: IntentDetail
 }> = ({ configuration, intent }) => {
   const { $t } = useIntl()
   return <Form.Item label={$t(configuration.label)}>

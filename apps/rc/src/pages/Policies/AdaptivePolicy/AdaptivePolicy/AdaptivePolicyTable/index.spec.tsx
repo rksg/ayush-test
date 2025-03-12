@@ -124,7 +124,9 @@ describe('AdaptivePolicyTable', () => {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }), {
+      timeout: 20000
+    })
 
     const row = await screen.findByRole('row', { name: 'test1 RADIUS 0 0' })
     fireEvent.click(within(row).getByRole('radio'))
@@ -143,8 +145,10 @@ describe('AdaptivePolicyTable', () => {
       pathname: `${mockedTenantPath.pathname}/${editPath}`
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }), {
+      timeout: 20000
+    })
+  }, 40000)
 
   it('should navigate add policy', async () => {
     render(<Provider><AdaptivePolicyTable/></Provider>, {

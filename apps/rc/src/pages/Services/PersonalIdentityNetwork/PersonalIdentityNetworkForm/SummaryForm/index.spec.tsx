@@ -139,4 +139,49 @@ describe('PersonalIdentityNetworkForm - SummaryForm', () => {
       expect(mockedFinishFn).toBeCalled()
     })
   })
+
+  it('should show empty info correctly', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        name: 'testEmptyConfigName',
+        venueId: 'venueId',
+        edgeClusterId: 'edgeId',
+        segments: 6,
+        devices: 6,
+        dhcpId: 'dhcpId',
+        poolId: 'poolId',
+        poolName: 'DHCP_Pool',
+        vxlanTunnelProfileId: 'vxlanTunnelProfileId'
+        // networkIds: ['testDpsk1', 'testDpsk2'],
+        // distributionSwitchInfos: mockPinSwitchInfoData.distributionSwitches,
+        // accessSwitchInfos: mockPinSwitchInfoData.accessSwitches
+      })
+      return form
+    })
+    render(
+      <PersonalIdentityNetworkFormContext.Provider
+        value={{
+          ...mockContextData,
+          getVenueName: mockedGetVenueName,
+          getClusterName: mockedGetClusterName,
+          getDhcpName: mockedGetDhcpName,
+          getTunnelProfileName: mockedGetTunnelProfileName,
+          getNetworksName: mockedGetNetworksName
+        }}
+      >
+        <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
+            <SummaryForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </PersonalIdentityNetworkFormContext.Provider>,
+      { route: { params, path: createPinPath } })
+
+    expect(screen.getByText('General Settings')).toBeVisible()
+    expect(screen.getAllByText('RUCKUS Edge')[0]).toBeVisible()
+    expect(screen.getByText('Distribution Switch (0)')).toBeInTheDocument()
+    expect(screen.getByText('Access Switch (0)')).toBeInTheDocument()
+    expect(screen.getByText('Wireless Networks (0)')).toBeVisible()
+  })
 })

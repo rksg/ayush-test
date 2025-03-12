@@ -29,11 +29,13 @@ import {
   useDeleteMigrationMutation
 } from '@acx-ui/rc/services'
 import {
+  MigrationUrlsInfo,
   TaskContextType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }                              from '@acx-ui/react-router-dom'
 import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                               from '@acx-ui/utils'
 
 import {
   GuestsDetail
@@ -201,15 +203,20 @@ const MigrationTable = () => {
             {$t({ defaultMessage: 'Migrated ZD Configurations' })}
           </Subtitle>
         </Col>
-        { hasCrossVenuesPermission() && hasPermission() &&
-        <Col span={12}>
-          <SpaceWrapper full justifycontent='flex-end' size='large'>
-            <TenantLink to='/administration/onpremMigration/add'>
-              <Button type='primary'>{ $t({ defaultMessage: 'Migrate ZD Configuration' }) }</Button>
-            </TenantLink>
-          </SpaceWrapper>
-        </Col>
-        }
+        {hasCrossVenuesPermission() &&
+          hasPermission({
+            rbacOpsIds: [getOpsApi(MigrationUrlsInfo.addZdMigration)]
+          }) && (
+          <Col span={12}>
+            <SpaceWrapper full justifycontent='flex-end' size='large'>
+              <TenantLink to='/administration/onpremMigration/add'>
+                <Button type='primary'>
+                  {$t({ defaultMessage: 'Migrate ZD Configuration' })}
+                </Button>
+              </TenantLink>
+            </SpaceWrapper>
+          </Col>
+        )}
       </Row>
 
       <Table
@@ -226,7 +233,9 @@ const MigrationTable = () => {
         searchableWidth={430}
         locale={{
           // eslint-disable-next-line max-len
-          emptyText: <Empty description={$t({ defaultMessage: 'No migration data' })} />
+          emptyText: (
+            <Empty description={$t({ defaultMessage: 'No migration data' })} />
+          )
         }}
       />
 
@@ -235,14 +244,10 @@ const MigrationTable = () => {
         visible={visible}
         onClose={onClose}
         children={
-          <GuestsDetail
-            triggerClose={onClose}
-            currentTask={currentTask}
-          />
+          <GuestsDetail triggerClose={onClose} currentTask={currentTask} />
         }
         width={'550px'}
       />
-
     </Loader>
   )
 }

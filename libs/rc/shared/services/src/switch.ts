@@ -59,7 +59,15 @@ import {
   SORTER,
   SwitchPortViewModelQueryFields,
   TroubleshootingResponse,
-  SwitchFeatureSet
+  FlexibleAuthentication,
+  FlexibleAuthenticationAppliedTargets,
+  FeatureSetResponse,
+  SwitchPortProfiles,
+  LldpTlvs,
+  MacOuis,
+  SwitchPortProfilesAppliedTargets,
+  PortProfilesForMultiSwitches,
+  PortDisableRecoverySetting
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -105,6 +113,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const hasGroupBy = !!arg.payload?.groupBy
+        const enableAggregateStackMember = arg?.enableAggregateStackMember ?? true
         const switchUrls = getSwitchUrls(arg.enableRbac)
         const headers = arg.enableRbac ? customHeaders.v1 : {}
         const req = hasGroupBy
@@ -138,10 +147,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             })
           }
         })
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allStacksMember:any = await Promise.all(stacks.map(stack =>
-          fetchWithBQ(genStackMemberPayload(arg, stack))
-        ))
+        const allStacksMember:any = enableAggregateStackMember
+          ? await Promise.all(stacks.map(stack =>
+            fetchWithBQ(genStackMemberPayload(arg, stack))
+          ))
+          : []
+
         stacks.forEach((stack:StackInfo, index:number) => {
           stackMembers[stack.serialNumber] = allStacksMember[index]?.data?.data
         })
@@ -386,7 +399,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const activities = [
             'AddSwitchConfigProfile',
             'UpdateSwitchConfigProfile',
-            'DeleteSwitchConfigProfile'
+            'DeleteSwitchConfigProfile',
+            'UpdateSwitchCliProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(switchApi.util.invalidateTags([
@@ -424,13 +438,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
-    getSwitchFeatureSets: build.query<SwitchFeatureSet, RequestPayload>({
-      query: ({ params }) => {
+    getSwitchFeatureSets: build.query<FeatureSetResponse, RequestPayload>({
+      query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getSwitchFeatureSets, params, { ...ignoreErrorModal }
         )
         return {
-          ...req
+          ...req, body: JSON.stringify(payload)
         }
       }
     }),
@@ -782,6 +796,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           data: result ? result.map(item => ({
             ...item,
+            rawStartTime: item.startTime,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
@@ -1075,7 +1090,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const switchesInfo = {
           ...createHttpRequest(switchUrls.getSwitchList, arg.params, headers),
           body: JSON.stringify({
-            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
+            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName', 'firmware'],
             filters: { id: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
           })
@@ -1112,7 +1127,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const clientListReq = createHttpRequest(switchUrls.getSwitchClientDetail, params, headers)
         const payload = {
           fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-            'clientName','clientDesc','clientType','switchPort','vlanName',
+            'clientName','clientDesc','clientType', 'clientAuthType', 'switchPort','vlanName',
             'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr', 'clientIpv6Addr',
             'dhcpClientOsVendorName', 'dhcpClientHostName',
             'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
@@ -1465,8 +1480,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile
+      query: ({ params, payload, enableRbac,
+        enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
 
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1486,8 +1502,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile
+      query: ({ params, payload, enableRbac,
+        enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.addSwitchConfigProfile, params, headers)
@@ -1499,8 +1516,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
     updateSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile
+      query: ({ params, payload, enableRbac,
+        enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.updateSwitchConfigProfile, params, headers)
@@ -1559,32 +1577,382 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    downloadSwitchsCSV: build.mutation<Blob, {
-      payload: SwitchsExportPayload, enableRbac:boolean }>({
-        query: ({ payload, enableRbac }) => {
-          const switchUrls = getSwitchUrls(enableRbac)
-          const headers = enableRbac ? customHeaders.v1 : {}
-          const req = createHttpRequest(switchUrls.downloadSwitchsCSV,
-            { tenantId: payload.tenantId },
-            headers
-          )
-          return {
-            ...req,
-            body: JSON.stringify(payload),
-            responseHandler: async (response) => {
-              const date = new Date()
-              // eslint-disable-next-line max-len
-              const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
-              const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
-              const headerContent = response.headers.get('content-disposition')
-              const fileName = headerContent
-                ? headerContent.split('filename=')[1]
-                : filename
-              downloadFile(response, fileName)
-            }
+    // eslint-disable-next-line max-len
+    downloadSwitchsCSV: build.mutation<Blob, { payload: SwitchsExportPayload, enableRbac:boolean }>({
+      query: ({ payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.downloadSwitchsCSV,
+          { tenantId: payload.tenantId },
+          headers
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response: Response) => {
+            const date = new Date()
+            // eslint-disable-next-line max-len
+            const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
+            const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : filename
+            downloadFile(response, fileName)
           }
         }
-      })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getFlexAuthenticationProfiles: build.query<TableResult<FlexibleAuthentication>, RequestPayload>({
+      async queryFn (
+        arg: RequestPayload & { payload?: { enableAggregateAppliedTargets?: boolean } },
+        _queryApi, _extraOptions, fetchWithBQ
+      ) {
+        const headers = customHeaders.v1
+        const listInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfiles, arg.params, headers),
+          body: JSON.stringify(_.omit(arg?.payload, ['enableAggregateAppliedTargets']))
+        }
+        const listQuery = await fetchWithBQ(listInfo)
+        const profileList = listQuery.data as TableResult<FlexibleAuthentication>
+        const profileIds = profileList?.data.map(p => p.id)
+        const enableAggregateAppliedTargets = arg?.payload?.enableAggregateAppliedTargets
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const profileAppliedTargets:any = enableAggregateAppliedTargets
+          ? await Promise.all(profileIds.map(pid =>
+            fetchWithBQ({
+              ...createHttpRequest(SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, {
+                ...arg.params,
+                profileId: pid
+              }, headers),
+              body: JSON.stringify({})
+            })
+          )) : []
+
+        const aggregatedList = profileList.data.map((profile: FlexibleAuthentication, index) => {
+          // eslint-disable-next-line max-len
+          const appliedTargets = profileAppliedTargets?.[index]?.data?.data as FlexibleAuthenticationAppliedTargets[]
+          const appliedVenues = appliedTargets?.reduce((result, target) => ({
+            ...result,
+            [target.venueId]: target.venueName
+          }), {})
+
+          return {
+            ...profile,
+            appliedVenues
+          }
+        })
+
+        return listQuery.data
+          ? { data: {
+            ...profileList,
+            data: aggregatedList
+          } }
+          : { error: listQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: APT_QUERY_CACHE_TIME,
+      providesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AuthenticationProfile'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'FlexAuthProfile', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getFlexAuthenticationProfileAppliedTargets: build.query<TableResult<FlexibleAuthenticationAppliedTargets>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getFlexAuthenticationProfileAppliedTargets, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify({})
+        }
+      }
+    }),
+    addFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addFlexAuthenticationProfile, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
+    }),
+    updateFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateFlexAuthenticationProfile, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
+    }),
+    deleteFlexAuthenticationProfile: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteFlexAuthenticationProfile, params, customHeaders.v1
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'FlexAuthProfile', id: 'LIST' }]
+    }),
+    getSwitchesAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchesAuthentication, params, customHeaders.v1
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    getSwitchAuthentication: build.query<FlexibleAuthentication, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchAuthentication, params, customHeaders.v1
+        )
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateSwitch'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }),
+    updateSwitchAuthentication: build.mutation<FlexibleAuthentication, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateSwitchAuthentication, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
+    }),
+    switchPortProfilesList: build.query<TableResult<SwitchPortProfiles>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfilesList, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    switchPortProfilesCount: build.query<number, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfilesCount, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    addSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchPortProfile, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    editSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.editSwitchPortProfile, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    deleteSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchPortProfile, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    switchPortProfilesDetail: build.query<SwitchPortProfiles, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfileDetail, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    switchPortProfileAppliedList:
+    build.query<TableResult<SwitchPortProfilesAppliedTargets>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfileAppliedList, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    switchPortProfileMacOuisList: build.query<TableResult<MacOuis>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfileMacOuisList, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    addSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchPortProfileMacOui, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    editSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.editSwitchPortProfileMacOui, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    deleteSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchPortProfileMacOui, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    switchPortProfileLldpTlvsList: build.query<TableResult<LldpTlvs>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfileLldpTlvsList, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    addSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchPortProfileLldpTlv, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    editSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.editSwitchPortProfileLldpTlv, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    deleteSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchPortProfileLldpTlv, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    portProfileOptionsForMultiSwitches:
+      build.query<PortProfilesForMultiSwitches[], RequestPayload>({
+        query: ({ params, payload }) => {
+          const req = createHttpRequest(
+            SwitchUrlsInfo.getPortProfileOptionsForMultiSwitches, params, customHeaders.v1)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      }),
+    portProfilesListBySwitchId: build.query<TableResult<SwitchPortProfiles>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getPortProfilesListBySwitchId, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    portDisableRecoverySetting: build.query<PortDisableRecoverySetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getPortDisableRecovery, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    updatePortDisableRecoverySetting: build.mutation<PortDisableRecoverySetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updatePortDisableRecovery, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    })
   })
 })
 
@@ -1698,7 +2066,10 @@ const aggregatedSwitchClientData = (
     const target = switches.data.find(s => s.id === item.switchId)
     const switchPortStatus = switchPortsQuery?.data.find(p => p.portId === item.switchPortId)
     const switchId = target ? item.switchId : ''
-    return switchPortsQuery ? { ...item, switchId, switchPortStatus } : { ...item, switchId } // use switchId to mark non-exist switch
+    const switchFirmware = target ? target.firmware : ''
+    return switchPortsQuery
+      ? { ...item, switchId, switchPortStatus, switchFirmware }
+      : { ...item, switchId } // use switchId to mark non-exist switch
   })
   return {
     ...clients,
@@ -1708,6 +2079,7 @@ const aggregatedSwitchClientData = (
 
 export const {
   useSwitchListQuery,
+  useLazySwitchListQuery,
   useStackMemberListQuery,
   useBatchDeleteSwitchMutation,
   useDeleteSwitchesMutation,
@@ -1837,5 +2209,36 @@ export const {
   useBatchDisassociateSwitchProfileMutation,
   useGetSwitchModelListQuery,
   useDownloadSwitchsCSVMutation,
-  useBatchDeleteProfilesMutation
+  useBatchDeleteProfilesMutation,
+  useGetFlexAuthenticationProfilesQuery,
+  useLazyGetFlexAuthenticationProfilesQuery,
+  useGetFlexAuthenticationProfileAppliedTargetsQuery,
+  useLazyGetFlexAuthenticationProfileAppliedTargetsQuery,
+  useAddFlexAuthenticationProfileMutation,
+  useUpdateFlexAuthenticationProfileMutation,
+  useDeleteFlexAuthenticationProfileMutation,
+  useGetSwitchAuthenticationQuery,
+  useUpdateSwitchAuthenticationMutation,
+  useSwitchPortProfilesListQuery,
+  useLazySwitchPortProfilesListQuery,
+  useSwitchPortProfilesCountQuery,
+  useSwitchPortProfilesDetailQuery,
+  useAddSwitchPortProfileMutation,
+  useEditSwitchPortProfileMutation,
+  useDeleteSwitchPortProfileMutation,
+  useSwitchPortProfileAppliedListQuery,
+  useSwitchPortProfileMacOuisListQuery,
+  useLazySwitchPortProfileMacOuisListQuery,
+  useAddSwitchPortProfileMacOuiMutation,
+  useEditSwitchPortProfileMacOuiMutation,
+  useDeleteSwitchPortProfileMacOuiMutation,
+  useSwitchPortProfileLldpTlvsListQuery,
+  useLazySwitchPortProfileLldpTlvsListQuery,
+  useAddSwitchPortProfileLldpTlvMutation,
+  useEditSwitchPortProfileLldpTlvMutation,
+  useDeleteSwitchPortProfileLldpTlvMutation,
+  useLazyPortProfileOptionsForMultiSwitchesQuery,
+  usePortProfilesListBySwitchIdQuery,
+  usePortDisableRecoverySettingQuery,
+  useUpdatePortDisableRecoverySettingMutation
 } = switchApi

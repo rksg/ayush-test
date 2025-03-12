@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ClientIsolationViewModel, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -32,7 +33,7 @@ export default function ClientIsolationTable () {
   const settingsId = 'policies-client-isolation-table'
   const defaultPayload = {
     fields: ['id', 'name', 'tenantId', 'clientEntries', 'description',
-      enableRbac ? 'activations':'venueIds'],
+      enableRbac ? 'activations':'venueIds', 'venueActivations', 'apActivations'],
     searchString: '',
     filters: {}
   }
@@ -58,6 +59,7 @@ export default function ClientIsolationTable () {
 
   const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.CLIENT_ISOLATION, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: ClientIsolationViewModel[], clearSelection) => {
@@ -65,6 +67,7 @@ export default function ClientIsolationTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows?.length === 1,
@@ -98,6 +101,8 @@ export default function ClientIsolationTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.CLIENT_ISOLATION, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Profile' })}</Button>

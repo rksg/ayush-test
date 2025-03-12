@@ -1,135 +1,152 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 
 import { Select, Switch, Space } from 'antd'
-import { isEqual }               from 'lodash'
+import { LabeledValue }          from 'antd/lib/select'
+import { isEqual, omit }         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Table, TableProps, Loader, showToast } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
+import { Button, Table, TableProps, Loader, AnchorContext, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon }                                                from '@acx-ui/icons'
 import {
   useGetVenueLedOnQuery,
   useGetVenueApModelsQuery,
   useUpdateVenueLedOnMutation
 } from '@acx-ui/rc/services'
-import { VenueLed }               from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { VenueLed }  from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }           from '../..'
-import { VenueEditContext, EditContext } from '../../../index'
+import { VenueUtilityContext }                        from '../..'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
-export interface ModelOption {
-    label: string
-    value: string
-  }
+const defaultArray: VenueLed[] = []
+const defaultOptionArray: LabeledValue[] = []
 
-export function AccessPointLED () {
+export function AccessPointLED (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
-  const { tenantId, venueId, activeSubTab } = useParams()
-  const navigate = useNavigate()
+  const { tenantId, venueId } = useParams()
+  const { isAllowEdit=true } = props
+
+  const initDataRef = useRef<VenueLed[]>([])
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
+  const { venueApModels } = useGetVenueApModelsQuery({
+    params: { tenantId, venueId },
+    enableRbac: true
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueApModels: data?.models?.map( model => model.toUpperCase())
+    })
+  })
+
   const venueLed = useGetVenueLedOnQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi }
   )
-  const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
+
   const {
     editContextData,
     setEditContextData,
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
-  const defaultArray: VenueLed[] = []
-  const defaultOptionArray: ModelOption[] = []
+
   const [tableData, setTableData] = useState(defaultArray)
   const [selectedModels, setSelectedModels] = useState([] as string[])
   const [modelOptions, setModelOptions] = useState(defaultOptionArray)
   const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
 
+  useEffect(() => {
+    const apModels = venueApCaps?.apModels
+    const { data: venueApLedData, isLoading } = venueLed
 
+    if (apModels?.length && !isLoading) {
+      const supportModels = apModels.filter(apModel => apModel.ledOn)
+        .map(apModel => apModel.model)
+
+      setSupportModelOptions(supportModels.map((item) => ({ label: item, value: item })))
+
+      if (supportModels?.length) {
+        const venueApLeds: VenueLed[] = []
+        const configuratedModels: string[] = []
+
+        if (venueApLedData) {
+          venueApLedData.forEach((item: VenueLed) => {
+            const { model } = item
+
+            configuratedModels.push(model)
+
+            venueApLeds.push({
+              ...item,
+              manual: !venueApModels?.includes(model)
+            })
+          })
+        }
+        initDataRef.current = venueApLedData ?? []
+
+        setSelectedModels(configuratedModels)
+        setTableData(venueApLeds)
+
+        const availableModelsOptions = supportModels
+          ?.filter((item) => !configuratedModels.includes(item))
+          .map((item) => ({ label: item, value: item }))
+
+        setModelOptions(availableModelsOptions)
+      }
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Access-Point-LEDs')))])
+    }
+  }, [venueLed, venueApCaps, setReadyToScroll])
 
   useEffect(() => {
-    // set default data when switching sub tab
-    const tab = activeSubTab as keyof EditContext['tempData']
-    const data = editContextData?.tempData?.[tab] || undefined
+    //const newData = tableData.filter(d => d.model).map(({ manual, ...others }) => others)
+    const newData = tableData.map(({ manual, ...others }) => others)
+    const hasChanged = !isEqual(newData, initDataRef.current)
+    const hasError = tableData.filter(item => !item.model).length > 0
 
-    setEditContextData({
+    const newEditAdvancedContextData = (hasChanged) ? {
+      ...editAdvancedContextData,
+      updateAccessPointLED: () => handleUpdateSetting(newData)
+    } : {
+      ...omit(editAdvancedContextData, ['updateAccessPointLED'])
+    }
+    setEditAdvancedContextData && setEditAdvancedContextData(newEditAdvancedContextData)
+
+    setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'settings',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
-      oldData: data,
-      newData: data,
-      isDirty: false,
-      setData: setTableData
+      isDirty: Object.keys(newEditAdvancedContextData).length > 0,
+      hasError
     })
 
-    // eslint-disable-next-line max-len
-    const shouldApplyUpdateSetting = editContextData?.oldData ? isEqual(editContextData?.oldData, tableData) : false
-
-    if(shouldApplyUpdateSetting){
-      setEditAdvancedContextData({
-        ...editAdvancedContextData,
-        updateAccessPointLED: handleUpdateSetting
-      })
-    }
-
-  }, [navigate])
-
-
-  useEffect(() => {
-    const apModels = venueApCaps?.apModels
-    if (apModels?.length) {
-      const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
-        .map(apModel => apModel.model)
-      const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({
-        ...item,
-        manual: !venueApModels?.data?.models?.includes(item.model)
-      }))
-      const existingModels = venueApLeds?.map((item: VenueLed) => item.model)
-      const availableModels = supportModels
-        ?.filter((item) => existingModels ? existingModels?.indexOf(item) === -1 : item)
-        .reduce((opts: ModelOption[], item) => [...opts, { label: item, value: item }], [])
-
-      setTableData((venueApLeds as VenueLed[])?.map(
-        (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
-      ))
-      setSupportModelOptions(supportModels?.reduce((opts: ModelOption[], item) =>
-        [...opts, { label: item, value: item }], []))
-      setSelectedModels(existingModels as string[])
-      setModelOptions(availableModels)
-    }
-  }, [venueLed.data, venueApCaps])
-
-  useEffect(() => {
-    setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
-      newData: tableData,
-      oldData: (venueLed?.data as VenueLed[])?.map(
-        (item: VenueLed) => ({
-          ...item,
-          key: item.model,
-          value: item.model,
-          manual: !venueApModels?.data?.models?.includes(item.model)
-        })
-      ),
-      isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
-      hasError: tableData?.filter(item => !item.model).length > 0,
-      setData: setTableData
-    })
-    // Avoid initial render
-    if (editContextData?.oldData && !isEqual(editContextData?.oldData, tableData)) {
-      setEditAdvancedContextData({
-        ...editAdvancedContextData,
-        updateAccessPointLED: handleUpdateSetting
-      })
-    }
   }, [tableData])
+
+  const handleUpdateSetting = async (data: VenueLed[]) => {
+    const isValid = !tableData.find(data => !data.model)
+    if (!isValid) {
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Access Point LEDs' }),
+        content: $t({ defaultMessage: 'Please select a model' })
+      })
+
+      return
+    }
+    try {
+      await updateVenueLedOn({
+        params: { tenantId, venueId },
+        payload: data,
+        enableRbac: isUseRbacApi
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const columns: TableProps<VenueLed>['columns'] = [{
     title: $t({ defaultMessage: 'Model' }),
@@ -139,6 +156,7 @@ export function AccessPointLED () {
     render: function (data) {
       return (data ? data : <Select
         size='small'
+        status={editContextData.hasError ? 'error' : undefined}
         options={modelOptions}
         placeholder={$t({ defaultMessage: 'Select Model...' })}
         onChange={handleChange}
@@ -150,6 +168,7 @@ export function AccessPointLED () {
     key: 'ledEnabled',
     render: function (data, row) {
       return <Switch
+        disabled={!isAllowEdit}
         checked={!!data}
         onClick={(checked) => {
           setTableData([
@@ -158,20 +177,17 @@ export function AccessPointLED () {
               return item
             })
           ])
-          setEditAdvancedContextData({
-            ...editAdvancedContextData,
-            updateAccessPointLED: handleUpdateSetting
-          })
         }}
       />
     }
   }, {
     key: 'action',
     dataIndex: 'action',
-    render: (data, row) => row.manual ? <Button
+    render: (_, row) => (row.manual)? <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
+      disabled={!isAllowEdit}
       icon={<DeleteOutlinedIcon />}
       style={{ height: '16px' }}
       onClick={() => handleDelete(row.model)}
@@ -179,16 +195,18 @@ export function AccessPointLED () {
   }]
 
   const handleAdd = () => {
-    setTableData([...tableData, { ledEnabled: true, model: '', key: '', manual: true }])
+    setTableData([...tableData, { ledEnabled: true, model: '', manual: true }])
   }
+
   const handleDelete = (model: string) => {
     const models = selectedModels.filter((item) => item !== model)
     setSelectedModels(models)
     setTableData(tableData.filter(item => item.model !== model))
-    setModelOptions(supportModelOptions.filter(item =>
-      models.indexOf(item.value) === -1)
+    setModelOptions(supportModelOptions.filter((item) =>
+      !models.includes((item.value) as string))
     )
   }
+
   const handleChange = (model: string) => {
     const models = [...selectedModels, model]
     setSelectedModels(models)
@@ -196,41 +214,14 @@ export function AccessPointLED () {
       ...tableData.map((item, index) => {
         if (index === tableData.length - 1) {
           item.model = model
-          item.key = model
-          item.manual = !venueApModels?.data?.models?.includes(item.model)
+          item.manual = !venueApModels?.includes(model)
         }
         return item
       })
     ])
     setModelOptions([
-      ...modelOptions.filter(item =>
-        models.indexOf(item.value) === -1
-      )])
-  }
-
-  const handleUpdateSetting = async () => {
-    const isValid = !tableData.find(data => !data.model)
-    if (!isValid) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Please select model' })
-      })
-    } else {
-      try {
-        setEditContextData({
-          ...editContextData,
-          oldData: editContextData?.newData,
-          isDirty: false
-        })
-        await updateVenueLedOn({
-          params: { tenantId, venueId },
-          payload: tableData.filter(data => data.model),
-          enableRbac: isUseRbacApi
-        })
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
-    }
+      ...modelOptions.filter(({ value }) => !models.includes(value as string))
+    ])
   }
 
   return (
@@ -243,11 +234,13 @@ export function AccessPointLED () {
           columns={columns}
           dataSource={tableData}
           type='form'
+          rowKey='model'
         />
         <Button
           onClick={handleAdd}
           type='link'
           disabled={venueLed.isLoading
+                  || !isAllowEdit
                   || !modelOptions.length
                   || !!tableData?.find((item) => !item.model)
           }

@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
@@ -40,14 +40,16 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     embeddedMode = false,
     embeddedObject = {} as AclEmbeddedObject
   } = props
+  const fetchDone = useRef(false)
+
   const form = Form.useFormInstance()
 
   const data = useGetAclPolicyInstance(editMode)
 
-  const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance(editMode)
+  const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance()
 
   useEffect(() => {
-    if (data) {
+    if (data?.name && editMode && !fetchDone.current) {
       form.setFieldValue('oldPayload', data)
       form.setFieldValue('policyName', data.name)
       form.setFieldValue('description', get(data, 'description'))
@@ -80,6 +82,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
         )
       }
 
+      fetchDone.current = true
     }
   }, [form, data, editMode])
 
@@ -124,8 +127,8 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
             { validator: async (rule, value) => {
               if (value && aclProfileList &&
                 aclProfileList
-                  .filter((aclProfile) => editMode ? (aclProfile.name !== value) : true)
-                  .findIndex((aclProfile) => aclProfile.name === value) !== -1) {
+                  .filter((aclProfile) => (editMode ? (aclProfile.name !== data.name) : true))
+                  .some((aclProfile) => aclProfile.name === value)) {
                 return Promise.reject(
                   $t({ defaultMessage: 'The access control profile with that name already exists' })
                 )
@@ -135,7 +138,6 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
           ]}
           validateFirst
           hasFeedback
-          initialValue={''}
           children={<Input />}
         />
         <Form.Item
@@ -159,7 +161,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   )
 }
 
-const useGetAclPolicyListInstance = (editMode: boolean) => {
+const useGetAclPolicyListInstance = () => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
@@ -180,7 +182,7 @@ const useGetAclPolicyListInstance = (editMode: boolean) => {
     defaultPayload: QUERY_DEFAULT_PAYLOAD,
     enableRbac,
     option: {
-      skip: !editMode || isTemplate
+      skip: isTemplate
     }
   })
 
@@ -216,7 +218,8 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAccessControlProfileQuery,
     useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
-    enableRbac: enableRbac
+    enableRbac: enableRbac,
+    skip: !editMode
   })
 
   const aclPolicyData = tableQuery?.data?.data[0]

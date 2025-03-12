@@ -1,5 +1,6 @@
 import { defineMessage } from 'react-intl'
 
+import { EnforceableFields } from '..'
 import {
   ServiceAdminState,
   ServiceStatus,
@@ -26,6 +27,7 @@ export * from './policies'
 export * from './msp'
 export * from './license'
 export * from './edge'
+export * from './edgeOlt'
 export * from './client'
 export * from './components'
 export * from './switch'
@@ -42,6 +44,7 @@ export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
 export * from './mDnsFencingServie'
+export * from './ruckusAi'
 
 export interface CommonResult {
   requestId: string
@@ -63,7 +66,7 @@ export interface KeyValue<K, V> {
   value: V;
 }
 
-export interface Venue {
+export interface Venue extends EnforceableFields {
   id: string
   venueId?: string
   name: string
@@ -102,6 +105,7 @@ export interface Venue {
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
+  addressLine?: string
 }
 
 export interface AlarmBase {
@@ -113,7 +117,9 @@ export interface AlarmBase {
   entityType: string
   entityId: string
   sourceType: string,
-  switchMacAddress: string
+  switchMacAddress: string,
+  clearTime?: string,
+  clearedBy?: string
 }
 
 export interface AlarmMeta {
@@ -497,19 +503,6 @@ export interface WifiCallingSettingContextType {
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
 
-export interface CatchErrorDetails {
-  code: string,
-  message: string
-}
-
-export interface CatchErrorResponse {
-  data: {
-    errors: CatchErrorDetails[],
-    requestId: string
-  },
-  status: number
-}
-
 export enum ClientStatusEnum {
   HISTORICAL = 'historical',
   CONNECTED = 'connected'
@@ -569,12 +562,14 @@ export interface SwitchClient {
   clientName: string
   clientDesc: string
   clientType: SWITCH_CLIENT_TYPE
+  switchFirmware?: string
   switchId: string
   switchName: string
   switchPort: string
   switchPortId?: string
   switchSerialNumber: string
   clientVlan: string
+  clientAuthType?: string
   vlanName: string
   venueId: string
   venueName: string

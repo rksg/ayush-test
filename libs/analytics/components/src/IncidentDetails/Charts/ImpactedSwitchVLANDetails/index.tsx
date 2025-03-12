@@ -1,19 +1,15 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { overlapsRollup }                  from '@acx-ui/analytics/utils'
-import { Card, Loader, NoGranularityText } from '@acx-ui/components'
-import {
-  Switch,
-  VLANIcon
-} from '@acx-ui/icons'
+import { overlapsRollup } from '@acx-ui/analytics/utils'
+import { Loader }         from '@acx-ui/components'
 
 import {
   ImpactedSwitchPortRow,
   useImpactedSwitchVLANsQuery
 } from '../ImpactedSwitchVLANsTable/services'
 
-import * as UI from './styledComponents'
+import DetailsCard from './DetailsCard'
 
 import type { ChartProps } from '../types.d'
 
@@ -43,7 +39,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       return { ...response, rows }
     } })
 
-  const impactedSwitches = response.data!
+  const impactedSwitcheVLANs = response.data!
 
   const removeDuplicateMismatchVLANs = (impactedSwitches: ImpactedSwitchPortRow[]) =>
     _.isEmpty(impactedSwitches)
@@ -51,7 +47,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       : _.uniqBy(impactedSwitches, (item) =>
         item.mismatchedVlans ? item.mismatchedVlans[0]?.id : [])
 
-  const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
+  const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitcheVLANs)
     ?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
       .map(({ id, name }) => ({ mac, id, name }))
     )
@@ -65,15 +61,16 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
       return agg
     }, {} as Record<number, { macs: string[]; names: string[] }>)), ([id]) => parseInt(id, 10))
 
-  const uniqueSwitchCount = impactedSwitches?.length || 0
+  const uniqueSwitchs = _.uniqBy(
+    impactedSwitcheVLANs?.map(({ name, mac: title }) => ({ name, title })), 'title')
   const uniqueVlanCount = !_.isEmpty(uniqImpactedVlans)
     ? _.flatMap(uniqImpactedVlans, ([, { macs }]) => macs).length : 0
   const impactedTypes = [
     {
       icon: 'switch',
       max: 3,
-      count: uniqueSwitchCount,
-      data: impactedSwitches?.map(({ name, mac: title }) => ({ name, title })),
+      count: uniqueSwitchs.length,
+      data: uniqueSwitchs,
       title: $t({ defaultMessage: 'Impacted switches' }),
       // eslint-disable-next-line max-len
       details: $t({ defaultMessage: 'Out of {switchCount} {switchCount, plural, one {switch} other {switches}}' }, { switchCount })
@@ -98,32 +95,10 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   ]
 
   return <Loader states={[response]}>
-    <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      {druidRolledup
-        ? <NoGranularityText />
-        : <UI.SummaryWrapper>
-          {impactedSwitches && impactedTypes.map((type, index) => {
-            const items = type.data.slice(0, type.max)
-            const remaining = type.data.length - items?.length
-            return <UI.SummaryType key={index}>
-              <UI.Summary>
-                <UI.SummaryCount>{type.count}</UI.SummaryCount>
-                <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
-                <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
-              </UI.Summary>
-              <UI.SummaryList>
-                {items.map((d, i) => <div key={i} title={d.title}>
-                  {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
-                  <span>{d.name}</span>
-                </div>)}
-                {remaining > 0 && <span>
-                  {$t({ defaultMessage: 'and {remaining} more…' }, { remaining } )}
-                </span>}
-              </UI.SummaryList>
-            </UI.SummaryType>
-          })}
-        </UI.SummaryWrapper>
-      }
-    </Card>
+    <DetailsCard
+      druidRolledup={druidRolledup}
+      isImpactedSwitches={impactedSwitcheVLANs?.length > 0}
+      impactedTypes={impactedTypes}
+    />
   </Loader>
 }

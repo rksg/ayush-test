@@ -7,9 +7,9 @@ import { Button, Loader, Table, TableProps, showActionModal }                   
 import { Features, useIsSplitOn }                                                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
 import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel, deleteDescription }                                                                                                                                                                                             from '@acx-ui/rc/components'
 import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery, useSearchPersonaGroupListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate, Network, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getScopeKeyByPolicy, useTableQuery }                                                                                                                    from '@acx-ui/rc/utils'
+import { CertificateTemplate, CertificateUrls, Network, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getScopeKeyByPolicy, useTableQuery }                                                                                                   from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                                                                                   from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                                                                                                                                                                                                                  from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                                                                                                                                                                                                                                                       from '@acx-ui/utils'
 
 
 export default function CertificateTemplateTable () {
@@ -51,7 +51,8 @@ export default function CertificateTemplateTable () {
 
   const { caFilterOptions } = useGetCertificateAuthoritiesQuery(
     {
-      payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
+      payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1,
+        sortField: 'name', sortOrder: 'ASC' }
     },
     {
       selectFromResult: ({ data }) => ({
@@ -202,6 +203,7 @@ export default function CertificateTemplateTable () {
   const rowActions: TableProps<CertificateTemplate>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCertificateTemplate)],
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -216,6 +218,7 @@ export default function CertificateTemplateTable () {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DELETE),
+      rbacOpsIds: [getOpsApi(CertificateUrls.deleteCertificateTemplate)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection)
     }

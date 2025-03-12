@@ -9,6 +9,7 @@ import {
   EdgeLagLacpModeEnum,
   EdgeLagTimeoutEnum,
   EdgeLagTypeEnum,
+  EdgePortInfo,
   EdgePortTypeEnum,
   EdgeStatus
 } from '@acx-ui/rc/utils'
@@ -24,6 +25,7 @@ import {
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
   interfaceCompatibilityCheck,
+  interfaceNameComparator,
   lagSettingsCompatibleCheck,
   transformFromApiToFormData } from './utils'
 
@@ -523,5 +525,29 @@ describe('Compatibility status result rendering', () => {
       expect(within(node2).queryByRole('cell', { name: 'Number of Core Ports 0' })).toBeValid()
       expect(within(node2).queryByRole('cell', { name: 'Port Types danger LAN' })).toBeValid()
     })
+  })
+})
+
+describe('interfaceNameComparator', () => {
+  it('should correctly compare interface names', async () => {
+    const ifNames = [
+      'port1', 'port2',
+      'port1.1', 'port1.2', 'port1.10',
+      'port2.1',
+      'lag1', 'lag2',
+      'lag1.1', 'lag1.2', 'lag1.10',
+      'lag2.1'
+    ].map(name => ({ portName: name } as EdgePortInfo))
+
+    ifNames.sort((port1, port2) => {
+      return interfaceNameComparator(port1.portName, port2.portName)
+    })
+
+    expect(ifNames.map(item => item.portName)).toEqual([
+      'lag1', 'lag1.1', 'lag1.2', 'lag1.10',
+      'lag2', 'lag2.1',
+      'port1', 'port1.1', 'port1.2', 'port1.10',
+      'port2', 'port2.1'
+    ])
   })
 })

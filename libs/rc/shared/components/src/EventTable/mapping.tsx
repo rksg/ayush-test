@@ -30,6 +30,13 @@ export const adminLogTypeMapping = {
   NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
 }
 
+export const authTypeMapping = {
+  RUCKUS_SFDC: defineMessage({ defaultMessage: 'RUCKUS SFDC' }),
+  RUCKUS_OTP: defineMessage({ defaultMessage: 'RUCKUS OTP' }),
+  API_TOKEN: defineMessage({ defaultMessage: 'API TOKEN' }),
+  SSO: defineMessage({ defaultMessage: 'SSO' })
+}
+
 export const typeMapping = {
   ...eventTypeMapping,
   ...adminLogTypeMapping,

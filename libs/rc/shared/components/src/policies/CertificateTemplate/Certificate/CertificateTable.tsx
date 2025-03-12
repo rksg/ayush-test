@@ -10,9 +10,26 @@ import {
   useGenerateCertificateToIdentityMutation, useGetCertificateAuthorityQuery,
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
-import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                                                                                                                                         from '@acx-ui/types'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                 from '@acx-ui/utils'
+import {
+  TableQuery,
+  Certificate,
+  CertificateCategoryType,
+  CertificateStatusType,
+  CertificateTemplate,
+  EXPIRATION_DATE_FORMAT,
+  EXPIRATION_TIME_FORMAT,
+  EnrollmentType,
+  FILTER,
+  PolicyOperation,
+  PolicyType,
+  SEARCH,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
+  IdentityDetailsLink,
+  CertificateUrls
+} from '@acx-ui/rc/utils'
+import { RequestPayload }                    from '@acx-ui/types'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'
 
@@ -36,7 +53,8 @@ export function CertificateTable (
   const [detailId, setDetailId] = useState<string | null>(null)
 
   const { data: identityList } = useSearchPersonaListQuery(
-    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { payload: { pageSize: 1000,
+      ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data })
 
   const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
@@ -62,6 +80,7 @@ export function CertificateTable (
   const [generateCertificate] = useGenerateCertificateToIdentityMutation()
 
   const filterOptions = [
+    { key: 'INVALID', label: $t({ defaultMessage: 'Invalid Certificates' }), value: 'INVALID' },
     { key: 'VALID', label: $t({ defaultMessage: 'Valid Certificates' }), value: 'VALID' },
     { key: 'REVOKED', label: $t({ defaultMessage: 'Revoked Certificates' }), value: 'REVOKED' },
     { key: 'EXPIRED', label: $t({ defaultMessage: 'Expired Certificates' }), value: 'EXPIRED' }
@@ -140,9 +159,13 @@ export function CertificateTable (
       dataIndex: 'identityId',
       key: 'identityId',
       render: function (_, row) {
-        const item = identityList?.data?.filter(data =>
-          data.id===row.identityId).map(data => data.name)[0]
-        return item ?? noDataDisplay
+        const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+        return (item ? <IdentityDetailsLink
+          name={item.name}
+          personaId={item.id}
+          personaGroupId={item.groupId}
+          revoked={item.revoked}
+        /> : noDataDisplay)
       }
     },
     {
@@ -211,6 +234,7 @@ export function CertificateTable (
   const rowActions: TableProps<Certificate>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCertificate)],
       label: $t({ defaultMessage: 'Revoke' }),
       disabled: ([selectedRow]) =>
         getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
@@ -228,6 +252,7 @@ export function CertificateTable (
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
+      rbacOpsIds: [getOpsApi(CertificateUrls.editCertificate)],
       label: $t({ defaultMessage: 'Unrevoke' }),
       disabled: ([selectedRow]) =>
         getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
@@ -256,6 +281,7 @@ export function CertificateTable (
   const actionButtons = [
     ...(templateData && showGenerateCert && templateData.identityGroupId && !!privateKeyBase64 ? [{
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
+      rbacOpsIds: [getOpsApi(CertificateUrls.generateCertificatesToIdentity)],
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
         setCertificateDrawerOpen(true)
@@ -290,12 +316,18 @@ export function CertificateTable (
       <Drawer
         title={$t({ defaultMessage: 'Generate Certificate' })}
         visible={certificateDrawerOpen}
-        onClose={() => setCertificateDrawerOpen(false)}
+        onClose={() => {
+          setCertificateDrawerOpen(false)
+          certificateForm.resetFields()
+        }}
         width={550}
         destroyOnClose={true}
         footer={
           <Drawer.FormFooter
-            onCancel={() => setCertificateDrawerOpen(false)}
+            onCancel={() => {
+              setCertificateDrawerOpen(false)
+              certificateForm.resetFields()
+            }}
             onSave={async () => {
               try {
                 await certificateForm.validateFields()

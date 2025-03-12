@@ -13,10 +13,6 @@ import {
 
 import { useLogo } from './useLogo'
 
-jest.mock('@acx-ui/main/components', () => ({
-  Logo: () => <div data-testid='mocked-logo' />
-}))
-
 const mspEcProfileData = {
   msp_label: '',
   name: '',
@@ -80,7 +76,7 @@ describe('useLogo', () => {
     const { result } = renderHook(() => useLogo(tenantId), { wrapper: Provider })
     await waitFor(() => expect(result.current).not.toBeNull())
     render(result.current as React.ReactElement)
-    expect(await screen.findByTestId('mocked-logo')).toBeVisible()
+    expect(await screen.findByAltText('logo')).toBeVisible()
   })
 
   it('renders product logo when MSP-EC but no custom logo', async () => {
@@ -99,7 +95,7 @@ describe('useLogo', () => {
     const { result } = renderHook(() => useLogo(tenantId), { wrapper: Provider })
     await waitFor(() => expect(result.current).not.toBeNull())
     render(result.current as React.ReactElement)
-    expect(await screen.findByTestId('mocked-logo')).toBeVisible()
+    expect(await screen.findByAltText('logo')).toBeVisible()
   })
 
   it('renders custom logo', async () => {

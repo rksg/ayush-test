@@ -8,7 +8,8 @@ import {
   Loader,
   Tabs
 } from '@acx-ui/components'
-import { SwitchInfoWidget } from '@acx-ui/rc/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { SwitchInfoWidget }       from '@acx-ui/rc/components'
 import {
   useGetVenueQuery,
   useStackMemberListQuery
@@ -19,7 +20,8 @@ import {
   SwitchViewModel,
   isRouter,
   SWITCH_TYPE,
-  StackMember
+  StackMember,
+  isFirmwareVersionAbove10020b
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -33,6 +35,7 @@ import { useSwitchFilter }      from '../switchFilter'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
+import SwitchOverviewPortProfiles        from './SwitchOverviewPortProfiles'
 import { SwitchOverviewPorts }           from './SwitchOverviewPorts'
 import { SwitchOverviewRouteInterfaces } from './SwitchOverviewRouteInterfaces'
 import { SwitchOverviewVLANs }           from './SwitchOverviewVLANs'
@@ -45,6 +48,7 @@ export function SwitchOverviewTab () {
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const [syncedStackMember, setSyncedStackMember] = useState([] as StackMember[])
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader, switchData } = switchDetailsContextData
@@ -148,6 +152,12 @@ export function SwitchOverviewTab () {
       {switchDetail &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
           <SwitchOverviewACLs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
+      {switchDetail && isSwitchPortProfileEnabled &&
+        isFirmwareVersionAbove10020b(switchDetail?.firmware) &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Port Profiles' })} key='portProfiles'>
+          <SwitchOverviewPortProfiles switchDetail={switchDetail} />
         </Tabs.TabPane>
       }
     </Tabs>

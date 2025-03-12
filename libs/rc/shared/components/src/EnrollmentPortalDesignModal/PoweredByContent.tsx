@@ -1,5 +1,9 @@
-import PoweredLogo from './images/PoweredLogo.svg'
-import * as UI     from './styledComponents'
+import { baseUrlFor } from '@acx-ui/config'
+
+import * as UI from './styledComponents'
+
+const PoweredLogo = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+
 export function PoweredByContent () {
   return (
     <UI.SelectedDiv style={{}}>

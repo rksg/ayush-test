@@ -1164,13 +1164,8 @@ exports[`Table component renders nested table 1`] = `
                             <tr>
                               <th
                                 class="ant-table-cell ant-table-row-expand-icon-cell ant-table-cell-fix-left ant-table-cell-fix-left-last"
-                                data-testid="react-resizable"
                                 style="position: sticky; left: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 data-testid="react-resizable"
@@ -1208,13 +1203,8 @@ exports[`Table component renders nested table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                data-testid="react-resizable"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -1865,13 +1855,8 @@ exports[`Table component renders stickyPagination table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                data-testid="react-resizable"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -2440,13 +2425,8 @@ exports[`Table component should render correctly 1`] = `
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            >
-                              <div
-                                class=""
-                              />
-                            </th>
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -2982,11 +2962,7 @@ exports[`Table component should render multi select table and render action butt
                           <tr>
                             <th
                               class="ant-table-cell ant-table-selection-column"
-                              data-testid="react-resizable"
                             >
-                              <div
-                                class=""
-                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -3045,13 +3021,8 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            >
-                              <div
-                                class=""
-                              />
-                            </th>
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -3837,11 +3808,7 @@ exports[`Table component should render multi select table and render action butt
                           <tr>
                             <th
                               class="ant-table-cell ant-table-selection-column"
-                              data-testid="react-resizable"
                             >
-                              <div
-                                class=""
-                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -3901,13 +3868,8 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            >
-                              <div
-                                class=""
-                              />
-                            </th>
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -4512,11 +4474,7 @@ exports[`Table component should render multi select table and render action butt
                           <tr>
                             <th
                               class="ant-table-cell ant-table-selection-column"
-                              data-testid="react-resizable"
                             >
-                              <div
-                                class=""
-                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -4575,13 +4533,8 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            >
-                              <div
-                                class=""
-                              />
-                            </th>
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -5277,13 +5230,8 @@ exports[`Table component should render table with Beta indicator correctly 1`] =
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            >
-                              <div
-                                class=""
-                              />
-                            </th>
+                            />
                           </tr>
                         </thead>
                         <tbody

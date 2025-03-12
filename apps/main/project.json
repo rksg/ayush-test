@@ -20,7 +20,8 @@
           "apps/main/src/assets",
           "apps/main/src/locales",
           "apps/main/src/robots.txt",
-          { "glob": "**/*", "input": "libs/main/assets/", "output": "./assets/" }
+          { "glob": "**/*", "input": "libs/main/assets/", "output": "./assets/" },
+          { "glob": "**/*", "input": "libs/assets/", "output": "./assets/" }
         ],
         "styles": [],
         "scripts": [],

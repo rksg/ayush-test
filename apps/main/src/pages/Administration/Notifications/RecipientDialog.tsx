@@ -22,10 +22,10 @@ import {
   NotificationRecipientUIModel,
   NotificationEndpointType,
   emailRegExp,
-  CatchErrorResponse,
   generalPhoneRegExp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { CatchErrorResponse } from '@acx-ui/utils'
 
 import { dialogStyles } from './styledComponents'
 

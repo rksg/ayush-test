@@ -1,17 +1,17 @@
-import { unitOfTime } from 'moment-timezone'
-
-import type { Incident }          from '@acx-ui/analytics/utils'
+import { type Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
-import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
-import { Insights }                                         from '../Insights'
-import { TimeSeries }                                       from '../TimeSeries'
-import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
+import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchDDoSTable }        from '../Charts/ImpactedSwitchDDoS'
+import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { IncidentHeader }                     from './IncidentHeader'
+import { getTimeseriesBuffer, granularities } from './portCountTimeseriesHelper'
 
 export const SwitchTcpSynDDoS = (incident: Incident) => {
   const attributeList = [
@@ -25,13 +25,13 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
   ]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchDDoSAttackChart
+    TimeSeriesChartTypes.SwitchImpactedPortsCount
   ]
 
-  const buffer = {
-    front: { value: 10, unit: 'days' as unitOfTime.Base },
-    back: { value: 1, unit: 'second' as unitOfTime.Base }
-  }
+  const start = incident.impactedStart || incident.startTime
+  const end = incident.impactedEnd || incident.endTime
+
+  const buffer = getTimeseriesBuffer(start, end)
 
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_DDOS_TOGGLE),
@@ -52,13 +52,14 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <Insights incident={incident} />
       </GridCol>
       <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '129px' }}>
-        <ImpactedSwitchDDoSDonut incident={incident}/>
+        <ImpactedSwitchesDonut incident={incident} />
       </GridCol>
       <GridCol col={{ span: 15 }} style={{ minHeight: '129px' }}>
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity='PT1H'
+          minGranularity={'PT180S'}
+          granularities={granularities}
           buffer={buffer}
         />
       </GridCol>

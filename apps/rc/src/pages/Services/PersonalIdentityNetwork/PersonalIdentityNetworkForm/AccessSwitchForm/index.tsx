@@ -12,13 +12,16 @@ import {
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
-import { AccessSwitchTable, AccessSwitchTableDataType }                      from '@acx-ui/rc/components'
-import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
+import { Features }                                                            from '@acx-ui/feature-toggle'
+import { AccessSwitchTable, AccessSwitchTableDataType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData }   from '@acx-ui/rc/utils'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 
 export function AccessSwitchForm () {
   const { $t } = useIntl()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
 
   const [open, setOpen] = useState(false)
@@ -73,7 +76,10 @@ export function AccessSwitchForm () {
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsForm.Title>
     <Typography.Paragraph>
-      {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
+      {isEdgePinEnhanceReady
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Ensure that the uplink port and VLAN ID are properly configured on the connected access switches.' })
+        : $t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>
     <AccessSwitchTable rowActions={rowActions}
       rowSelection={{ type: 'checkbox', selectedRowKeys: selected.map(as=>as.id) }}

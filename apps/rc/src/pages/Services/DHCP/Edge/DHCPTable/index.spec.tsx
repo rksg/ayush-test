@@ -31,14 +31,24 @@ const { mockEdgeDhcpCompatibilities } = EdgeCompatibilityFixtures
 const mockedGetClusterList = jest.fn()
 const mockedUsedNavigate = jest.fn()
 const mockedUpdateFn = jest.fn()
-const test123 = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
+  // eslint-disable-next-line max-len
+  EdgeTableCompatibilityWarningTooltip: () => <div data-testid='EdgeTableCompatibilityWarningTooltip' />,
+  SimpleListTooltip: ({ displayText }: { displayText: string }) =>
+    <div data-testid='SimpleListTooltip' >{displayText}</div>,
+  EdgeServiceStatusLight: () => <div data-testid='EdgeServiceStatusLight' />,
+  useEdgeDhcpCompatibilityData: () => ({
+    compatibilities: mockEdgeDhcpCompatibilities,
+    isLoading: false
+  }),
+  useEdgeDhcpActions: () => ({
+    upgradeEdgeDhcp: mockedUpdateFn,
+    isEdgeDhcpUpgrading: false
+  })
 }))
 
 describe('EdgeDhcpTable', () => {
@@ -70,19 +80,6 @@ describe('EdgeDhcpTable', () => {
           mockedGetClusterList()
           return res(ctx.json(mockEdgeClusterList))
         }
-      ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => {
-          mockedUpdateFn()
-          return res(ctx.status(202))
-        }
-      ),
-      rest.post(
-        EdgeDhcpUrls.getDhcpEdgeCompatibilities.url,
-        (req, res, ctx) => {
-          test123()
-          return res(ctx.json(mockEdgeDhcpCompatibilities))}
       )
     )
   })
@@ -98,8 +95,7 @@ describe('EdgeDhcpTable', () => {
     await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
-    await waitFor(() => expect(test123).toBeCalled())
-    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
+    await screen.findAllByTestId('EdgeTableCompatibilityWarningTooltip')
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -286,9 +282,6 @@ describe('EdgeDhcpTable', () => {
     const expectedClusterCount = mockDhcpStatsData.data[0].edgeClusterIds.length.toString()
     expect(receivedClusterCount).toEqual(expectedClusterCount)
 
-    const clusterCountCells = screen.getAllByRole('cell', { name: expectedClusterCount })
-    await userEvent.hover(within(clusterCountCells[0]).getByText(expectedClusterCount))
-    expect(await screen.findByRole('tooltip', { hidden: false }))
-      .toHaveTextContent(mockEdgeClusterList.data[0].name)
+    expect(await within(row[0]).findByTestId('SimpleListTooltip')).toBeVisible()
   })
 })

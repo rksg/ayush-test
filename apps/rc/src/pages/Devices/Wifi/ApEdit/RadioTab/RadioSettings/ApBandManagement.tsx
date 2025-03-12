@@ -27,11 +27,17 @@ export interface ApBandManagementPorps {
   isSupportDual5GAp: boolean
   isSupportTriBandRadioAp: boolean
   currentApBandModeData: ApBandModeSettings
-  setCurrentApBandModeData: (data: ApBandModeSettings) => void
+  setCurrentApBandModeData: (data: ApBandModeSettings) => void,
+  disabled?: boolean
+}
+
+const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
+  [BandModeEnum.DUAL]: defineMessage({ defaultMessage: 'Dual-band' }),
+  [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
 }
 
 export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSupportTriBandRadioAp,
-  currentApBandModeData, setCurrentApBandModeData }: ApBandManagementPorps) => {
+  currentApBandModeData, setCurrentApBandModeData, disabled }: ApBandManagementPorps) => {
 
   const { $t } = useIntl()
 
@@ -42,11 +48,6 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
   const getCurrentBandMode = useCallback(() => {
     return (currentApBandModeData?.useVenueSettings ? venueBandMode : currentApBandModeData?.bandMode)
   }, [currentApBandModeData, venueBandMode])
-
-  const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
-    [BandModeEnum.DUAL]: defineMessage({ defaultMessage: 'Dual-band' }),
-    [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
-  }
 
   const onClickUseVenueSettings = () => {
     setCurrentApBandModeData({ ...currentApBandModeData,
@@ -85,13 +86,13 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
           style={{ width: '100%' }}
           defaultValue={getCurrentBandMode()}
           value={getCurrentBandMode()}
-          disabled={currentApBandModeData?.useVenueSettings}
+          disabled={disabled || currentApBandModeData?.useVenueSettings}
           options={bandCombinationOptions}
           onChange={onChangeBandCombination}
         />
       </Col>
       <Col span={3} style={{ paddingLeft: '8px' }}>
-        <Button type='link' onClick={onClickUseVenueSettings}>
+        <Button type='link' disabled={disabled} onClick={onClickUseVenueSettings}>
           { currentApBandModeData.useVenueSettings ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' }) }
         </Button>
       </Col>

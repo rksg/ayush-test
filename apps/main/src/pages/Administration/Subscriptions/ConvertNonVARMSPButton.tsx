@@ -20,7 +20,6 @@ import {
   useLazyGetDelegationsQuery
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorDetails,
   CommonErrorsResult,
   TenantType,
   TenantDetails,
@@ -35,6 +34,7 @@ import {
   useSaveUserSettingsMutation,
   useUserProfileContext
 } from '@acx-ui/user'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 
 

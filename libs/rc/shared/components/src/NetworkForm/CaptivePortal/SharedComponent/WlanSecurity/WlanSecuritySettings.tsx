@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
-import { Form, Space, Select } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, Space, Select, Switch } from 'antd'
+import { useIntl }                     from 'react-intl'
 
-import { Button, PasswordInput }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
+import { Button, PasswordInput, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { InformationSolid }               from '@acx-ui/icons'
 import {
   generateHexKey,
   GuestNetworkTypeEnum,
@@ -18,11 +18,13 @@ import {
   WlanSecurityEnum,
   WisprSecurityEnum,
   WisprSecurityOptionsDescription,
-  ManagementFrameProtectionEnum
+  ManagementFrameProtectionEnum,
+  WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 
 import { MLOContext }     from '../../../NetworkForm'
 import NetworkFormContext from '../../../NetworkFormContext'
+import * as UI            from '../../../styledComponents'
 
 export const WlanSecurityFormItems = () => {
   const { $t } = useIntl()
@@ -46,11 +48,20 @@ export const WlanSecurityFormItems = () => {
     return data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass
   }
 
-  const isCaptivePortalPskEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_PSK) ||
-    isGuestNetworkTypeWISPr()
-  const isCaptivePortalOweEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE) ||
-    isGuestNetworkTypeWISPr() || isGuestNetworkTypeGuestPass()
+  const isGuestNetworkTypeDirectoryServer = (): boolean => {
+    return data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Directory
+  }
+
+  const isCaptivePortalPskEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_PSK)
+    || isGuestNetworkTypeWISPr()
+    || isGuestNetworkTypeDirectoryServer()
+  const isCaptivePortalOweEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE)
+    || isGuestNetworkTypeWISPr()
+    || isGuestNetworkTypeGuestPass()
+    || isGuestNetworkTypeDirectoryServer()
   const isDeprecateWep = useIsSplitOn(Features.WIFI_WLAN_DEPRECATE_WEP)
+  // eslint-disable-next-line max-len
+  const isCaptivePortalOWETransitionEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION)
 
   useEffect(() => {
     const transNetworkSecurity =
@@ -81,11 +92,19 @@ export const WlanSecurityFormItems = () => {
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
         form.setFieldValue('networkSecurity', 'OWE')
         setEnablePreShared(false)
-      } else {
+      } else if (wlanSecurity === WlanSecurityEnum.OWETransition) {
+        form.setFieldValue('networkSecurity', 'OWE')
+        form.setFieldValue('enableOweTransition', true)
+        setEnablePreShared(false)
+      }
+      else {
         form.setFieldValue('networkSecurity', 'PSK')
         setEnablePreShared(true)
         form.setFieldValue('pskProtocol', wlanSecurity)
       }
+    }
+    if (data && 'enableOweTransition' in data) {
+      delete data['enableOweTransition']
     }
   }, [data?.wlan?.wlanSecurity])
 
@@ -93,11 +112,24 @@ export const WlanSecurityFormItems = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
+  const onOweTransitionChange = (checked: boolean) => {
+    form.setFieldValue(['wlan', 'wlanSecurity'],
+      checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
+    )
+    setData && setData({
+      ...data,
+      wlan: {
+        ...data?.wlan,
+        wlanSecurity: checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
+      }
+    })
+  }
   const securityDescription = () => {
     const wlanSecurity = form.getFieldValue('pskProtocol')
     return (
       <>
-        {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
+        {wlanSecurity in PskWlanSecurityEnum &&
+          $t(SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum])}
         {[
           WlanSecurityEnum.WPA2Personal,
           WlanSecurityEnum.WPAPersonal,
@@ -105,7 +137,7 @@ export const WlanSecurityFormItems = () => {
         ].indexOf(wlanSecurity) > -1 &&
           <Space align='start'>
             <InformationSolid />
-            {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
+            {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
           </Space>
         }
       </>
@@ -126,7 +158,9 @@ export const WlanSecurityFormItems = () => {
   const networkSecurityDescription = () => {
     const networkSecurity = form.getFieldValue('networkSecurity')
     return (
-      WisprSecurityOptionsDescription[networkSecurity as keyof typeof WisprSecurityEnum]
+      networkSecurity in WisprSecurityOptionsDescription &&
+        // eslint-disable-next-line max-len
+        $t(WisprSecurityOptionsDescription[networkSecurity as keyof typeof WisprSecurityOptionsDescription])
     )
   }
   const securityOptions = Object.keys(PskWlanSecurityEnum).filter(key => {
@@ -162,9 +196,12 @@ export const WlanSecurityFormItems = () => {
     if (value === WlanSecurityEnum.OWE) {
       networkSec = 'OWE'
       protocol.managementFrameProtection = ManagementFrameProtectionEnum.Required
+      // eslint-disable-next-line max-len
+      form.setFieldValue(['wlan', 'managementFrameProtection'], ManagementFrameProtectionEnum.Required)
     } else if (value === WlanSecurityEnum.None) {
       networkSec = 'NONE'
     }
+    form.setFieldValue(['wlan', 'wlanSecurity'], value)
     setData && setData({
       ...data,
       ...{
@@ -226,6 +263,23 @@ export const WlanSecurityFormItems = () => {
         />
       }
 
+      {(isCaptivePortalOWETransitionEnabled && networkSecurity === 'OWE') &&
+        <UI.FieldLabel width={'250px'}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'OWE Transition mode' }) }
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_OWE_TRANSITION_TOOLTIP)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            data-testid={'owe-transition-switch'}
+            name='enableOweTransition'
+            valuePropName='checked'
+            children={<Switch onChange={onOweTransitionChange} />}/>
+        </UI.FieldLabel>
+      }
       {isCaptivePortalPskEnabled && enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
         wlanSecurity !== WlanSecurityEnum.WPA3 &&
         <Form.Item

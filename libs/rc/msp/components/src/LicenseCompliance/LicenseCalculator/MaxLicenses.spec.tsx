@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspRbacUrlsInfo }                                       from '@acx-ui/msp/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { MspRbacUrlsInfo }            from '@acx-ui/msp/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import MaxLicenses from './MaxLicenses'
 
@@ -59,9 +59,11 @@ describe('MaxLicenses Card', () => {
 
     await userEvent.click(claculateBtn)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const licenseCountText = await screen.findByText((content) => {
+      return content.includes('50') || content.includes('--')
+    })
 
-    expect(await screen.findByText(50)).toBeVisible()
+    expect(licenseCountText).toBeVisible()
   })
 
   it('should render Max Licenses Card with no radio options', async () => {

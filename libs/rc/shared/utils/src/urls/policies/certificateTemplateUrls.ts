@@ -20,27 +20,32 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   addCertificateTemplate: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities/:caId/templates'
+    url: '/certificateAuthorities/:caId/templates',
+    opsApi: 'POST:/certificateAuthorities/{id}/templates'
   },
   editCertificateTemplate: {
     method: 'PATCH',
     newApi: true,
-    url: '/certificateTemplates/:policyId'
+    url: '/certificateTemplates/:policyId',
+    opsApi: 'PATCH:/certificateTemplates/{id}'
   },
   bindCertificateTemplateWithPolicySet: {
     method: 'put',
     newApi: true,
-    url: '/certificateTemplates/:templateId/policySets/:policySetId'
+    url: '/certificateTemplates/:templateId/policySets/:policySetId',
+    opsApi: 'PUT:/certificateTemplates/{id}/policySets/{id}'
   },
   unbindCertificateTemplateWithPolicySet: {
     method: 'delete',
     newApi: true,
-    url: '/certificateTemplates/:templateId/policySets/:policySetId'
+    url: '/certificateTemplates/:templateId/policySets/:policySetId',
+    opsApi: 'DELETE:/certificateTemplates/{id}/policySets/{id}'
   },
   deleteCertificateTemplate: {
     method: 'delete',
     newApi: true,
-    url: '/certificateTemplates/:templateId'
+    url: '/certificateTemplates/:templateId',
+    opsApi: 'DELETE:/certificateTemplates/{id}'
   },
   getCertificateTemplateScepKeys: {
     method: 'get',
@@ -50,17 +55,20 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   createCertificateTemplateScepKeys: {
     method: 'post',
     newApi: true,
-    url: '/certificateTemplates/:policyId/scepKeys'
+    url: '/certificateTemplates/:policyId/scepKeys',
+    opsApi: 'POST:/certificateTemplates/{id}/scepKeys'
   },
   editCertificateTemplateScepKeys: {
     method: 'PATCH',
     newApi: true,
-    url: '/certificateTemplates/:policyId/scepKeys/:scepKeysId'
+    url: '/certificateTemplates/:policyId/scepKeys/:scepKeysId',
+    opsApi: 'PATCH:/certificateTemplates/{id}/scepKeys/{id}'
   },
   deleteCertificateTemplateScepKeys: {
     method: 'delete',
     newApi: true,
-    url: '/certificateTemplates/:policyId/scepKeys/:scepKeysId'
+    url: '/certificateTemplates/:policyId/scepKeys/:scepKeysId',
+    opsApi: 'DELETE:/certificateTemplates/{id}/scepKeys/{id}'
   },
   getCAs: {
     method: 'post',
@@ -80,32 +88,38 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   addCA: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities'
+    url: '/certificateAuthorities',
+    opsApi: 'POST:/certificateAuthorities'
   },
   addSubCA: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities/:caId/subCas'
+    url: '/certificateAuthorities/:caId/subCas',
+    opsApi: 'POST:/certificateAuthorities/{id}/subCas'
   },
   editCA: {
     method: 'PATCH',
     newApi: true,
-    url: '/certificateAuthorities/:caId'
+    url: '/certificateAuthorities/:caId',
+    opsApi: 'PATCH:/certificateAuthorities/{id}'
   },
   uploadCAPrivateKey: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities/:caId/privateKeys'
+    url: '/certificateAuthorities/:caId/privateKeys',
+    opsApi: 'POST:/certificateAuthorities/{id}/privateKeys'
   },
   deleteCAPrivateKey: {
     method: 'delete',
     newApi: true,
-    url: '/certificateAuthorities/:caId/privateKeys'
+    url: '/certificateAuthorities/:caId/privateKeys',
+    opsApi: 'DELETE:/certificateAuthorities/{id}/privateKeys'
   },
   deleteCA: {
     method: 'delete',
     newApi: true,
-    url: '/certificateAuthorities/:caId'
+    url: '/certificateAuthorities/:caId',
+    opsApi: 'DELETE:/certificateAuthorities/{id}'
   },
   downloadCA: {
     method: 'get',
@@ -130,12 +144,14 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   generateCertificate: {
     method: 'post',
     newApi: true,
-    url: '/certificateTemplates/:templateId/certificates'
+    url: '/certificateTemplates/:templateId/certificates',
+    opsApi: 'POST:/certificateTemplates/{id}/certificates'
   },
   editCertificate: {
     method: 'PATCH',
     newApi: true,
-    url: '/certificateTemplates/:templateId/certificates/:certificateId'
+    url: '/certificateTemplates/:templateId/certificates/:certificateId',
+    opsApi: 'PATCH:/certificateTemplates/{id}/certificates/{id}'
   },
   downloadCertificate: {
     method: 'get',
@@ -148,6 +164,18 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/certificateTemplates/:templateId/certificates/:certificateId/chains'
   },
+  downloadCertificateWithPost: {
+    method: 'post',
+    newApi: true,
+    // eslint-disable-next-line max-len
+    url: '/certificateTemplates/:templateId/certificates/:certificateId'
+  },
+  downloadCertificateInP12: {
+    method: 'post',
+    newApi: true,
+    // eslint-disable-next-line max-len
+    url: '/certificateTemplates/:templateId/certificates/:certificateId'
+  },
   getCertificatesByIdentity: {
     method: 'post',
     newApi: true,
@@ -156,7 +184,8 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   generateCertificatesToIdentity: {
     method: 'post',
     newApi: true,
-    url: '/certificateTemplates/:templateId/identities/:personaId/certificates'
+    url: '/certificateTemplates/:templateId/identities/:personaId/certificates',
+    opsApi: 'POST:/certificateTemplates/{id}/identities/{id}/certificates'
   },
   getServerCertificates: {
     method: 'post',
@@ -166,16 +195,70 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   updateServerCertificate: {
     method: 'PATCH',
     newApi: true,
-    url: '/certificates/:certId'
+    url: '/certificates/:certId',
+    opsApi: 'PATCH:/certificates/{id}'
   },
   downloadServerCertificate: {
     method: 'get',
     newApi: true,
     url: '/certificates/:certId'
   },
+  downloadServerCertificateChains: {
+    method: 'get',
+    newApi: true,
+    url: '/certificates/:certId/chains'
+  },
+  getCertificateList: {
+    method: 'post',
+    newApi: true,
+    url: '/certificates/query'
+  },
+  activateCertificateAuthorityOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
+    newApi: true,
+    opsApi: 'PUT:/radiusServerProfiles/{id}/certificateAuthorities/{id}'
+  },
+  deactivateCertificateAuthorityOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
+    newApi: true,
+    opsApi: 'DELETE:/radiusServerProfiles/{id}/certificateAuthorities/{id}'
+  },
+  activateClientCertificateOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificates/:clientCertificateId?certType=CLIENT',
+    newApi: true,
+    opsApi: 'PUT:/radiusServerProfiles/{id}/certificates/{id}'
+  },
+  deactivateClientCertificateOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificates/:clientCertificateId?certType=CLIENT',
+    newApi: true,
+    opsApi: 'DELETE:/radiusServerProfiles/{id}/certificates/{id}'
+  },
+  activateServerCertificateOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificates/:serverCertificateId?certType=SERVER',
+    newApi: true,
+    opsApi: 'PUT:/radiusServerProfiles/{id}/certificates/{id}'
+  },
+  deactivateServerCertificateOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificates/:serverCertificateId?certType=SERVER',
+    newApi: true,
+    opsApi: 'DELETE:/radiusServerProfiles/{id}/certificates/{id}'
+  },
   generateClientServerCertificate: {
     method: 'post',
     newApi: true,
-    url: '/certificateAuthorities/:caId/certificates'
+    url: '/certificateAuthorities/:caId/certificates',
+    opsApi: 'POST:/certificateAuthorities/{id}/certificates'
+  },
+  uploadCertificate: {
+    method: 'post',
+    newApi: true,
+    url: '/certificates',
+    opsApi: 'POST:/certificates'
   }
 }

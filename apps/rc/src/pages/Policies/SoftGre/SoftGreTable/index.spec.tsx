@@ -7,7 +7,7 @@ import { Path }                                                                 
 import { Provider, store }                                                                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                        from '@acx-ui/test-utils'
 
-import { mockSoftGreTable, mockedVenueQueryData } from '../__tests__/fixtures'
+import { mockSoftGreTable, mockedVenueName1, mockedVenueName3, mockedVenueName4, mockedVenueQueryData } from '../__tests__/fixtures'
 
 import SoftGreTable from '.'
 
@@ -177,7 +177,7 @@ describe('SoftGreTable', () => {
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
     // eslint-disable-next-line max-len
-    await(within(dialog).findByText('You are unable to delete this record due to its usage in Network with Venue'))
+    await(within(dialog).findByText('You are unable to delete this record due to its usage in Network with Venue,AP LAN Port with Venue,Venue LAN Port'))
     await user.click(screen.getByRole('button', { name: 'OK' }))
   })
 
@@ -189,9 +189,11 @@ describe('SoftGreTable', () => {
         route: { params, path: tablePath }
       })
     const row1 = await screen.findByRole('row', { name: /softGreProfileName1/i })
-    await userEvent.hover(within(row1).getByText('1'))
+    await userEvent.hover(within(row1).getByText('3'))
     const tooltip = await screen.findByRole('tooltip')
-    expect(tooltip).toHaveTextContent('My-Venue')
+    expect(tooltip).toHaveTextContent(mockedVenueName1)
+    expect(tooltip).toHaveTextContent(mockedVenueName3)
+    expect(tooltip).toHaveTextContent(mockedVenueName4)
     const row2 = await screen.findByRole('row', { name: /softGreProfileName2/i })
     await userEvent.hover(within(row2).getByText('0'))
   })

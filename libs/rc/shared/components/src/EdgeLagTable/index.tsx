@@ -11,6 +11,7 @@ import {
   EdgeLagStatus,
   EdgePort,
   EdgeSerialNumber,
+  EdgeUrlsInfo,
   defaultSort,
   getEdgePortDisplayName,
   getEdgePortIpModeString,
@@ -19,6 +20,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -165,6 +167,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const actionButtons = [
     {
       scopeKey: get(actionScopes, 'add') ?? [EdgeScopes.CREATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.addEdgeLag)],
       label: $t({ defaultMessage: 'Add LAG' }),
       onClick: () => {
         openDrawer()
@@ -187,6 +190,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const rowActions: TableProps<EdgeLagTableType>['rowActions'] = [
     {
       scopeKey: editPermissionScopes,
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.updateEdgeLag)],
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows) => {
         openDrawer(rows[0])
@@ -194,6 +198,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     },
     {
       scopeKey: deletePermissionScopes,
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteEdgeLag)],
       label: $t({ defaultMessage: 'Delete' }),
       disabled: (rows) => checkInterfacesInVRRPSetting(rows),
       tooltip: (rows) => {

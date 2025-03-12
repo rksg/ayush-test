@@ -19,7 +19,7 @@ export interface ApSingleRadioSettingsPorps {
   enabledFieldName: NamePath,
   useVenueSettingsFieldName: NamePath,
   onEnableChanged: Function,
-  disable?: boolean,
+  disabled?: boolean,
   inherit5G?: boolean,
   radioType: ApRadioTypeEnum,
   handleChanged?: () => void,
@@ -34,7 +34,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
   const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
-  const { radioType, handleChanged, isUseVenueSettings, afcProps } = props
+  const { radioType, handleChanged, isUseVenueSettings, afcProps, disabled } = props
 
   const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
   const bandwidthOptions = bandwidthRadioOptions[radioType]
@@ -119,7 +119,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
           >
             {isUseVenueSettings ?
               <span>{$t({ defaultMessage: 'On' })}</span> :
-              <Switch onChange={handleEnableChanged} />
+              <Switch disabled={disabled} onChange={handleEnableChanged} />
             }
           </Form.Item>
         </FieldLabel>
@@ -131,11 +131,13 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
           <SingleRadioSettings
             context='ap'
             radioType={radioType}
+            disabled={disabled}
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
             afcProps={afcProps}
             firmwareProps={{ firmware: apViewContextData?.fwVersion }}
+            apCapabilities={apCapabilities}
           />
         )
         }

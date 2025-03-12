@@ -4,15 +4,31 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
-import { get }                              from '@acx-ui/config'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { get }                                        from '@acx-ui/config'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                  from '@acx-ui/formatter'
+import { getIntl, PathNode, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { cssNumber, cssStr }   from '../../theme/helper'
 import { qualitativeColorSet } from '../Chart/helper'
 import { TooltipWrapper }      from '../Chart/styledComponents'
 
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
+
+
+export interface ConfigChangePaginationParams {
+  current: number
+  pageSize: number
+  defaultPageSize?: number
+  total: number
+}
+
+export const CONFIG_CHANGE_DEFAULT_PAGINATION = {
+  current: 1,
+  pageSize: TABLE_DEFAULT_PAGE_SIZE,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+  total: 0
+}
 
 export type ConfigChange = {
   id?: number
@@ -23,6 +39,10 @@ export type ConfigChange = {
   key: string
   oldValues: string[]
   newValues: string[]
+  root?: string
+  sliceId?: string
+  sliceValue?: string
+  path?: [PathNode]
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
@@ -30,36 +50,41 @@ type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
-  selectedData?: ConfigChange,
-  onDotClick?: (params: ConfigChange) => void,
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
+  selectedData?: ConfigChange,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  onDotClick?: (params: ConfigChange) => void,
+  setLegend?: (legend: Record<string, boolean>) => void,
+  pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 }
 
-type ChartRowMappingType = { key: string, label: string, color: string }
-export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
+export type ChartRowMappingType = { key: string, label: string, color: string }
+export function getConfigChangeEntityTypeMapping (showIntentAI: boolean) : ChartRowMappingType[] {
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
   const rcMap = [
-    { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) },
-    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
-    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+    { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }), color: 0 },
+    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }), color: 2 },
+    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }), color: 3 },
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }), color: 4 },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }), color: 5 }
   ]
   const raMap = [
-    { key: 'zone', label: $t({ defaultMessage: 'Zone' }) },
-    { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }) },
-    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
-    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+    { key: 'zone', label: $t({ defaultMessage: 'Zone' }), color: 0 },
+    { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }), color: 1 },
+    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }), color: 2 },
+    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }), color: 3 },
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }), color: 4 },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }), color: 5 }
   ]
   return (get('IS_MLISA_SA') ? raMap : rcMap)
-    .slice(0).map((rec, index) => ({ ...rec, color: colors[index] })).reverse()
+    .slice(0).map(({ color, ...rec }) => ({ ...rec, color: colors[color] }))
+    .reverse()
+    .filter(entity => showIntentAI ? true : (entity.key !== 'intentAI') )
 }
 
 const rowHeight = 16, rowGap = 4
@@ -409,22 +434,36 @@ export function useLegendTableFilter (
   selectedLegend: Record<string, boolean>,
   data: ConfigChange[],
   selectedData?: ConfigChange,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setLegend?: (legend: Record<string, boolean>) => void,
+  pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 ){
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+  const isPaged = showIntentAI
+
   useEffect(() => {
-    const chartRowMapping = getConfigChangeEntityTypeMapping()
+    const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
     setLegend?.(selectedLegend)
     const selectedConfig = data.filter(i => i.id === selectedData?.id)
     const selectedType = chartRowMapping.filter(
       ({ key }) => key === selectedConfig[0]?.type)[0]?.label
 
     selectedLegend[selectedType] === false && setSelectedData?.(null)
-    setPagination?.({
-      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / TABLE_DEFAULT_PAGE_SIZE),
-      pageSize: TABLE_DEFAULT_PAGE_SIZE
-    })
+    const pageSize = pagination?.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+
+    if(isPaged){
+      setPagination?.(CONFIG_CHANGE_DEFAULT_PAGINATION)
+    }
+    else {
+      setPagination?.({
+        current: Math.ceil((selectedConfig[0]?.filterId! + 1) / pageSize),
+        pageSize: pageSize
+      })
+    }
   }, [selectedLegend, data.length])
 }
 
@@ -492,8 +531,8 @@ export const hexToRGB = (hex: string) =>
 export const getSelectedDot = (color: string) =>
   // eslint-disable-next-line max-len
   `image://data:image/svg+xml;utf8,<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 5.5C10 7.98528 7.98528 10 5.5 10C3.01472 10 1 7.98528 1 5.5C1 3.01472 3.01472 1 5.5 1C7.98528 1 10 3.01472 10 5.5ZM11 5.5C11 8.53757 8.53757 11 5.5 11C2.46243 11 0 8.53757 0 5.5C0 2.46243 2.46243 0 5.5 0C8.53757 0 11 2.46243 11 5.5ZM5.5 9C7.433 9 9 7.433 9 5.5C9 3.567 7.433 2 5.5 2C3.567 2 2 3.567 2 5.5C2 7.433 3.567 9 5.5 9Z" fill="${color}"/></svg>`
-export const getSymbol = (selected: number) =>
+export const getSymbol = (selected: number, showIntentAI: boolean) =>
   (value: [number, string, ConfigChange]) => (value[2].id !== selected)
     ? 'circle'
-    : getSelectedDot(hexToRGB(getConfigChangeEntityTypeMapping()
+    : getSelectedDot(hexToRGB(getConfigChangeEntityTypeMapping(showIntentAI)
       .filter(({ key }) => key === value[2].type)[0].color))

@@ -1,0 +1,61 @@
+# FROM gcr.io/kumo-scratch/baseimg/node:master--latest AS build-base
+FROM us-docker.pkg.dev/alto-cicd/acx-service/baseimage/node:master--latest AS build-base
+
+WORKDIR /app
+
+RUN apk add curl
+
+# Install dependencies
+COPY package.json package-lock.json ./
+COPY patches ./patches
+COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
+RUN npm install
+
+COPY .eslintignore \
+  .eslintrc.json \
+  babel.config.json \
+  jest.config.ts \
+  jest.preset.ts \
+  jest.setup.js \
+  jest.build.setup.js \
+  nx.json \
+  webpack.config.base.js \
+  tsconfig.base.json \
+  workspace.json \
+  ./
+
+COPY .storybook ./.storybook
+COPY apps ./apps
+COPY libs ./libs
+
+COPY tools/tests ./tools/tests
+
+FROM build-base AS acx-ui-base-test
+ENV NODE_OPTIONS=--max-old-space-size=2048
+
+FROM acx-ui-base-test AS acx-ui-group1-test
+ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
+
+# Copy the tar.xz file if it exists
+COPY nxcache/nxcache.tar.xz* ./
+
+# Extract it only if the file exists
+RUN mkdir -p ./node_modules/.cache/nx
+RUN tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx
+
+# Remove files and folders older than 24 hours from the nx cache
+RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
+    find /app/node_modules/.cache/nx -type d -empty -delete
+
+RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
+
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run main:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run main-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS

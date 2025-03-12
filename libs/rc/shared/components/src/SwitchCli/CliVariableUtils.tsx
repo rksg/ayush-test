@@ -114,7 +114,7 @@ export function formatContentWithLimit (content: string, maxLines: number, maxLe
 export const formatSwitchSerialWithName = (switchData: SwitchViewModel) => {
   const { name, serialNumber } = switchData
   return name && name !== serialNumber
-    ? `${serialNumber} (${name})`
+    ? `${name} (${serialNumber})`
     : (name ?? '')
 }
 
@@ -164,6 +164,20 @@ export const getVariableFields = (
               validator: () => {
                 const invalid = validateSubnetmaskOverlap(form)
                 if (invalid) {
+                  return Promise.reject($t(validationMessages.ipAddress))
+                }
+                return Promise.resolve()
+              }
+            },
+            {
+              validator: (_, value) => {
+                const ipAddressStart = form.getFieldValue('ipAddressStart')
+                const subMask = form.getFieldValue('subMask')
+                const isInSameSubnet
+                  = IpUtilsService.validateInTheSameSubnet(ipAddressStart, subMask, value)
+                const isBroadcastAddress = IpUtilsService.validateBroadcastAddress(value, subMask)
+
+                if (!isInSameSubnet || isBroadcastAddress) {
                   return Promise.reject($t(validationMessages.ipAddress))
                 }
                 return Promise.resolve()
@@ -789,7 +803,7 @@ export function renderVariableValue (
 
   const customizedSwitches = !!switchCount && <>
     <UI.VariableTitle>{
-      $t({ defaultMessage: 'Switches with their own settings' })
+      $t({ defaultMessage: 'Switches with custom settings' })
     }</UI.VariableTitle>
     <UI.VariableContent>
       <Button type='link'

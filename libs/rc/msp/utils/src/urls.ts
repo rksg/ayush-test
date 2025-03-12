@@ -6,7 +6,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/mspecs/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/mspecs/query'
   },
   getMspECList: {
     method: 'post',
@@ -234,7 +235,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/msps/:tenantId/ecInventories/query/csvFiles',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/msps/:tenantId/ecInventories/query/csvFiles'
   },
   deactivateMspEcAccount: {
     // method: 'PATCH',
@@ -358,6 +360,21 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/files/uploadurls',
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
+    newApi: true
+  },
+  getCustomerNamesFilter: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/customers/filters/query',
+    newApi: true
+  },
+  getVenuesFilter: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/venues/filters/query',
+    newApi: true
+  },
+  getdeviceModelsFilter: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/deviceModels/filters/query',
     newApi: true
   }
 }

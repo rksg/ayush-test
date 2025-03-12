@@ -1,14 +1,27 @@
 import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
-import { NetworkSaveData, OpenWlanAdvancedCustomization } from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { render, screen }                                 from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
+import { FirmwareUrlsInfo, NetworkSaveData, OpenWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen }                                       from '@acx-ui/test-utils'
+
+import { mockedApModelFamilies } from '../../../../LanPortSettings/__tests__/fixtures'
 
 import QoS from '.'
 
 
 describe('QoS', () => {
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockedApModelFamilies))
+        }
+      )
+    )
+  })
   it('should render correctly', function () {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)

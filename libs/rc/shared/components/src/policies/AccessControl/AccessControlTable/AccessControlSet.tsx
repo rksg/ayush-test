@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -15,6 +15,7 @@ import {
 import {
   AclOptionType,
   EnhancedAccessControlInfoType, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy, Network,
   PolicyOperation,
   PolicyType,
@@ -23,11 +24,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { defaultNetworkPayload } from '../../../NetworkTable'
-import { ApplicationDrawer }     from '../../AccessControlForm/ApplicationDrawer'
-import { DeviceOSDrawer }        from '../../AccessControlForm/DeviceOSDrawer'
-import { Layer2Drawer }          from '../../AccessControlForm/Layer2Drawer'
-import { Layer3Drawer }          from '../../AccessControlForm/Layer3Drawer'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { ApplicationDrawer }                from '../../AccessControlForm/ApplicationDrawer'
+import { DeviceOSDrawer }                   from '../../AccessControlForm/DeviceOSDrawer'
+import { Layer2Drawer }                     from '../../AccessControlForm/Layer2Drawer'
+import { Layer3Drawer }                     from '../../AccessControlForm/Layer3Drawer'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
 
 
 const defaultPayload = {
@@ -131,6 +133,7 @@ const AccessControlSet = () => {
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -139,6 +142,7 @@ const AccessControlSet = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -278,9 +282,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       filterable: networkFilterOptions,
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (_, row) => {
-        return row.networkIds?.length || 0
-      }
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

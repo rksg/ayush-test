@@ -16,7 +16,7 @@ export function PersonalIdentityPreparationListDrawer (props: {
 }) {
   const { $t } = useIntl()
   useParams()
-  const { open, onClose = ()=>{} } = props
+  const { open, onClose } = props
 
   return (
     <Drawer

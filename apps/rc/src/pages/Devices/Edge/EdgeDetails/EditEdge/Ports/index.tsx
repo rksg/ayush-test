@@ -22,8 +22,11 @@ import {
   EdgeIpModeEnum,
   EdgePortTypeEnum,
   EdgePortWithStatus,
+  EdgeUrlsInfo,
   convertEdgePortsConfigToApiPayload } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission }                         from '@acx-ui/user'
+import { getOpsApi }                             from '@acx-ui/utils'
 
 import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
 import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
@@ -150,6 +153,11 @@ const Ports = () => {
     navigate(linkToEdgeList)
   }
 
+  const hasUpdatePermission = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(EdgeUrlsInfo.updatePortConfig)
+    ] })
+
   return <Loader states={[{
     isLoading: isEdgeSdLanLoading,
     isFetching: isFetching || isEdgeSdLanFetching
@@ -165,7 +173,8 @@ const Ports = () => {
           onFinish={handleFinish}
           onCancel={onCancel}
           onValuesChange={handleFormChange}
-          buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
+          buttonLabel={{
+            submit: hasUpdatePermission ? $t({ defaultMessage: 'Apply Ports General' }) : '' }}
           disabled={isCluster}
         >
           <StepsForm.StepForm onFinishFailed={handleFinishFailed}>

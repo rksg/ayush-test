@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features }                                                                                                                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                                                              from '@acx-ui/rc/components'
-import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                           from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                                                                                            from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                                                                             from '@acx-ui/rc/components'
+import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, PropertyUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -20,7 +20,14 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn(),
+  useIsBetaEnabled: jest.fn().mockReturnValue(false)
+}))
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
+const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
+
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
@@ -58,6 +65,16 @@ describe('MyServices', () => {
           page: 1,
           data: mockEdgeMdnsViewDataList
         }))
+      ),
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeTnmServiceList.url,
+        (_, res, ctx) => res(ctx.json(mockTnmServiceDataList))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getResidentPortalList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({
+          data: { totalCount: 0 }
+        }))
       )
     )
   })
@@ -92,7 +109,7 @@ describe('MyServices', () => {
     expect(await screen.findByText('Network Control')).toBeVisible()
   })
 
-  it('should render Edge MDNS when FF is off', async () => {
+  it('should not render anything when FF is off', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(
@@ -104,6 +121,7 @@ describe('MyServices', () => {
     )
 
     expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/)).toBeNull()
+    expect(screen.queryByText(/Thirdparty Network Management/)).toBeNull()
   })
 
   it('should render Edge MDNS when FF is ON', async () => {
@@ -119,5 +137,51 @@ describe('MyServices', () => {
     )
 
     expect(await screen.findByText('mDNS Proxy for RUCKUS Edge (2)')).toBeVisible()
+  })
+
+  it('should render Edge TNM SERVICE when FF is ON', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Thirdparty Network Management (2)')).toBeVisible()
+  })
+
+  describe('Edge OLT', () => {
+    it('should render Edge OLT when FF is ON', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
+
+      render(
+        <Provider>
+          <MyServices />
+        </Provider>, {
+          route: { params, path }
+        }
+      )
+
+      await screen.findByText('NOKIA GPON Services')
+    })
+
+    it('should not render Edge OLT when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+      render(
+        <Provider>
+          <MyServices />
+        </Provider>, {
+          route: { params, path }
+        }
+      )
+
+      expect(screen.queryByText('NOKIA GPON Services')).toBeNull()
+    })
   })
 })

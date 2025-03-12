@@ -1,0 +1,20 @@
+<svg width="120" height="71" viewBox="0 0 120 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M32.0454 28.5H88.3181V59.5001H32.0454V28.5Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M34.2397 10H86.124L93.3636 28.1818H27L34.2397 10Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M32.4545 33.6364C35.467 33.6364 37.9091 31.1943 37.9091 28.1819H27C27 31.1943 29.4421 33.6364 32.4545 33.6364Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M43.3637 33.6364C46.3762 33.6364 48.8183 31.1943 48.8183 28.1819H37.9092C37.9092 31.1943 40.3513 33.6364 43.3637 33.6364Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M54.2727 33.6364C57.2851 33.6364 59.7272 31.1943 59.7272 28.1819H48.8181C48.8181 31.1943 51.2602 33.6364 54.2727 33.6364Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M65.1818 33.6364C68.1943 33.6364 70.6364 31.1943 70.6364 28.1819H59.7273C59.7273 31.1943 62.1694 33.6364 65.1818 33.6364Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M76.091 33.6364C79.1035 33.6364 81.5456 31.1943 81.5456 28.1819H70.6365C70.6365 31.1943 73.0786 33.6364 76.091 33.6364Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M87 33.6364C90.0124 33.6364 92.4545 31.1943 92.4545 28.1819H81.5454C81.5454 31.1943 83.9875 33.6364 87 33.6364Z" fill="white" stroke="#333333" stroke-linejoin="round"/>
+<path d="M37.9092 28.1818L42.9092 10" stroke="#333333"/>
+<path d="M82 28.1818L77 10" stroke="#333333"/>
+<path d="M48.8181 28.1818L51.9999 10" stroke="#333333"/>
+<path d="M71.0908 28.1818L67.909 10" stroke="#333333"/>
+<path d="M59.7273 10V28.1818" stroke="#333333"/>
+<path d="M82 60V38H64V60" stroke="#333333" stroke-linejoin="round"/>
+<path d="M73 38V60" stroke="#333333"/>
+<rect x="37" y="38" width="23" height="17" stroke="#333333" stroke-linejoin="round"/>
+<path d="M48 42.5L44 46.5" stroke="#333333" stroke-linejoin="round"/>
+<path d="M53 42L44 51.5" stroke="#333333" stroke-linejoin="round"/>
+</svg>

@@ -12,6 +12,7 @@ import { IntentIcon }           from '../common/IntentIcon'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
+import { getStatusTooltip }     from '../services'
 
 import { ComparisonDonutChart }    from './ComparisonDonutChart'
 import { useIntentAIEcoFlexQuery } from './ComparisonDonutChart/services'
@@ -41,7 +42,8 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent } = useIntentContext()
+    const { intent, state } = useIntentContext()
+    const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const fields = useCommonFields(intent)
     const kpiQuery = useIntentAIEcoFlexQuery()
@@ -64,36 +66,44 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection data-testid='Benefits'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
-          </DetailsSection>
+          {state !== 'no-data' ? <>
+            <DetailsSection data-testid='Details'>
+              <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+            </DetailsSection>
 
-          <DetailsSection data-testid='Key Performance Indications'>
-            <DetailsSection.Title
-              children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <ComparisonDonutChart kpiQuery={kpiQuery} isDetail/>
-          </DetailsSection>
+            <DetailsSection data-testid='Key Performance Indications'>
+              <DetailsSection.Title
+                children={$t({ defaultMessage: 'Key Performance Indications' })} />
+              <ComparisonDonutChart kpiQuery={kpiQuery} isDetail/>
+            </DetailsSection>
 
-          <GridRow>
+            <GridRow>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Benefits'>
+                  <DetailsSection.Title
+                    children={$t(SideNotes.title)} />
+                  <Card>{$t(SideNotes.benefits)}</Card>
+                </DetailsSection>
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Potential Trade-off'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
+                  <Card>{$t(SideNotes.tradeoff)}</Card>
+                </DetailsSection>
+              </GridCol>
+            </GridRow>
+          </> : <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Why the intent'>
-                <DetailsSection.Title
-                  children={$t(SideNotes.title)} />
-                <Card>{$t(SideNotes.benefits)}</Card>
+              <DetailsSection data-testid='Current Status'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                <DetailsSection.Details children={
+                  <Card>{getStatusTooltip(
+                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>} />
               </DetailsSection>
             </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Potential trade-off'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <Card>{$t(SideNotes.tradeoff)}</Card>
-              </DetailsSection>
-            </GridCol>
-          </GridRow>
+          </GridRow>}
 
-          <DetailsSection data-testid='Status Trail'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
-            <StatusTrail />
-          </DetailsSection>
+          <StatusTrail />
         </GridCol>
       </GridRow>
     </>

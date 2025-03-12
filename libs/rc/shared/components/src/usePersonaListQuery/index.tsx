@@ -51,23 +51,26 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     if (!personaGroupQuery.data || !personaListTableQuery.data) return
     if (personaListTableQuery.isLoading || personaListTableQuery.isFetching) return
 
+    setDataSource(personaListTableQuery.data?.data ?? [])
+
     const serviceId = personaGroupQuery.data?.dpskPoolId
-    if (!serviceId) return
+    const templateId = personaGroupQuery.data?.certificateTemplateId
 
     const requests = [] as Promise<unknown>[]
     const certRequests = [] as Promise<unknown>[]
     personaListTableQuery?.data.data.forEach(persona => {
-      const passphraseId = persona.dpskGuid
-      if (personaGroupQuery.data?.certificateTemplateId) {
+      if (templateId) {
         certRequests.push(getCertificates({
           params: {
-            templateId: personaGroupQuery.data?.certificateTemplateId!,
+            templateId,
             personaId: persona.id
           },
           payload: {}
         }))
       }
-      if (!passphraseId) return
+
+      const passphraseId = persona.dpskGuid
+      if (!serviceId || !passphraseId) return
       requests.push(getDpskDevices({
         params: { tenantId, passphraseId, serviceId }
       }))

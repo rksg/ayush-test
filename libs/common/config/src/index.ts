@@ -16,6 +16,7 @@ type commonEnvironment = {
   SPLIT_PROXY_ENDPOINT: string
   DRUID_RETAIN_PERIOD_DAYS: string
   DRUID_ROLLUP_DAYS: string
+  DRUID_COLD_TIER_DAYS: string
 }
 
 type R1Environment = {
@@ -51,9 +52,10 @@ const config: { value?: EnvironmentConfig } = {}
 
 export class CommonConfigGetError extends Error {}
 
+export const baseUrlFor = (path: string) => `${trimEnd(document.baseURI, '/')}${path}`
+
 export async function initialize () {
-  const baseUrl = trimEnd(document.baseURI, '/')
-  const envConfigUrl = `${baseUrl}/globalValues.json`
+  const envConfigUrl = baseUrlFor('/globalValues.json')
 
   const response = await fetch(envConfigUrl, { headers: {
     ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` })

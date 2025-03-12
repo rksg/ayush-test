@@ -8,7 +8,12 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import HspContext                                          from '../../../HspContext'
 import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
 
-import { ApplyTemplateDrawer } from './ApplyTemplateDrawer'
+import { ApplyTemplateConfirmationDrawer, ApplyTemplateDrawer } from './ApplyTemplateDrawer'
+
+jest.mock('./CustomerFirmwareReminder', () => ({
+  ...jest.requireActual('./CustomerFirmwareReminder'),
+  CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
+}))
 
 describe('ApplyTemplateDrawer', () => {
   beforeEach(() => {
@@ -50,5 +55,24 @@ describe('ApplyTemplateDrawer', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('columnheader', { name: 'Template Override Value' })).toBeInTheDocument()
+  })
+
+  describe('ApplyTemplateConfirmationDrawer', () => {
+    it('should render the customer firmware reminder', async () => {
+      // eslint-disable-next-line max-len
+      const venueTemplate = mockedConfigTemplateList.data.find(d => d.type === ConfigTemplateType.VENUE)!
+      render(
+        <ApplyTemplateConfirmationDrawer
+          targetMspEcs={[]}
+          selectedTemplate={venueTemplate}
+          overrideValues={undefined}
+          onBack={jest.fn()}
+          onApply={jest.fn()}
+          onCancel={jest.fn()}
+        />
+      )
+
+      expect(await screen.findByText('CustomerFirmwareReminder')).toBeInTheDocument()
+    })
   })
 })

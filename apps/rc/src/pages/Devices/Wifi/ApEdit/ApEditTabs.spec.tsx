@@ -62,6 +62,10 @@ describe('ApEditTabs', () => {
         (_, res, ctx) => res(ctx.json(r650Cap))
       ),
       rest.post(
+        WifiRbacUrlsInfo.getApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
         MdnsProxyUrls.queryMdnsProxy.url,
         (_, res, ctx) => res(ctx.json({}))
       )

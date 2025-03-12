@@ -39,12 +39,21 @@ export const MSPUtils = () => {
     return false
   }
 
-  const transformInstalledDevice = (entitlements: DelegationEntitlementRecord[]) => {
+  const transformInstalledDevice = (entitlements: DelegationEntitlementRecord[],
+    licenseTypeSpecific?: EntitlementNetworkDeviceType) => {
     entitlements = entitlements ?? []
     let installedDevices = 0
-    const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
-      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
-    const consumedEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+
+    let consumedEntitlements
+
+    if (licenseTypeSpecific) {
+      consumedEntitlements = entitlements.filter((en:DelegationEntitlementRecord) =>
+        en.entitlementDeviceType === licenseTypeSpecific)
+    } else {
+      const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
+        en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+      consumedEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+    }
 
     consumedEntitlements.forEach((entitlement:DelegationEntitlementRecord) => {
       const consumed = parseInt(entitlement.consumed, 10)
@@ -53,18 +62,46 @@ export const MSPUtils = () => {
     return installedDevices
   }
 
-  const transformDeviceEntitlement = (entitlements: DelegationEntitlementRecord[]) => {
+  const transformDeviceEntitlement = (entitlements: DelegationEntitlementRecord[],
+    licenseTypeSpecific?: EntitlementNetworkDeviceType) => {
     entitlements = entitlements ?? []
     let assignedDevices = 0
-    const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
-      en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
-    const assignedEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+    let assignedEntitlements
+
+    if (licenseTypeSpecific) {
+      assignedEntitlements = entitlements.filter((en:DelegationEntitlementRecord) =>
+        en.entitlementDeviceType === licenseTypeSpecific)
+    } else {
+      const apswEntitlement = entitlements.filter((en:DelegationEntitlementRecord) =>
+        en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+      assignedEntitlements = apswEntitlement.length > 0 ? apswEntitlement : entitlements
+    }
 
     assignedEntitlements.forEach((entitlement:DelegationEntitlementRecord) => {
       const quantity = parseInt(entitlement.quantity, 10)
       assignedDevices += quantity
     })
     return assignedDevices
+  }
+
+  const transformAvailableLicenses = (entitlements: DelegationEntitlementRecord[],
+    licenseTypeSpecific?: EntitlementNetworkDeviceType
+  ) => {
+    let availableLicenses = 0
+    if (licenseTypeSpecific) {
+      entitlements.filter((en:DelegationEntitlementRecord) =>
+        en.entitlementDeviceType === licenseTypeSpecific)
+        .forEach((entitlement:DelegationEntitlementRecord) => {
+          availableLicenses += entitlement?.availableLicenses || 0
+        })
+    } else {
+      entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+        availableLicenses += entitlement?.availableLicenses || 0
+      })
+    }
+    return availableLicenses > 0 ? availableLicenses :
+      transformDeviceEntitlement(entitlements, licenseTypeSpecific)
+      - transformInstalledDevice(entitlements, licenseTypeSpecific)
   }
 
   const transformDeviceUtilization = (entitlements: DelegationEntitlementRecord[]) => {
@@ -220,16 +257,31 @@ export const MSPUtils = () => {
     switch(deviceType) {
       case ComplianceMspCustomersDevicesTypes.AP:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.wifiDeviceCount || 0), 0)
+          sum + (+(en.wifiDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.SWITCH:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.switchDeviceCount || 0), 0)
+          sum + (+(en.switchDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.EDGE:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.edgeDeviceCount || 0), 0)
+          sum + (+(en.edgeDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.RWG:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.rwgDeviceCount || 0), 0)
+          sum + (+(en.rwgDeviceCount || 0)), 0)
+      case ComplianceMspCustomersDevicesTypes.SLTN_ADAPT_POLICY:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (+(en.adaptivePolicyCount || 0)), 0)
+      case ComplianceMspCustomersDevicesTypes.SLTN_PI_NET:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (+(en.piNetworkCount || 0)), 0)
+      case ComplianceMspCustomersDevicesTypes.SLTN_SIS_INT:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (+(en.sisIntegrationCount || 0)), 0)
+      case ComplianceMspCustomersDevicesTypes.SLTN_PMS_INT:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (+(en.pmsIntegrationCount || 0)), 0)
+      case ComplianceMspCustomersDevicesTypes.SLTN_HYBRID_CLOUD_SEC:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (+(en.hybridCloudSecCount || 0)), 0)
       default: return 0
     }
   }
@@ -239,6 +291,7 @@ export const MSPUtils = () => {
     isOnboardedMsp,
     transformInstalledDevice,
     transformDeviceEntitlement,
+    transformAvailableLicenses,
     transformDeviceUtilization,
     transformOutOfComplianceDevices,
     transformFutureOutOfComplianceDevices,

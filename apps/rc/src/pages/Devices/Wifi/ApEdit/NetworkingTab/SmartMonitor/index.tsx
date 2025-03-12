@@ -19,14 +19,15 @@ import {
 } from '@acx-ui/rc/services'
 import { ApSmartMonitor, VenueApSmartMonitor } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { FieldLabel }                   from '../../styledComponents'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { FieldLabel }                                    from '../../styledComponents'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
-export function SmartMonitor () {
+export function SmartMonitor (props: ApEditItemProps) {
   const colSpan = 8
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
 
   const {
     editContextData,
@@ -201,6 +202,7 @@ export function SmartMonitor () {
         <StepsFormLegacy.StepForm initialValues={initData}>
           <VenueSettingsHeader
             venue={venueData}
+            disabled={!isAllowEdit}
             isUseVenueSettings={isUseVenueSettings}
             handleVenueSetting={handleVenueSetting}
           />
@@ -237,6 +239,7 @@ export function SmartMonitor () {
                       </span>
                     ) : (
                       <Switch
+                        disabled={!isAllowEdit}
                         checked={smartMonitorEnabled}
                         onChange={handleChange}
                         onClick={toggleSmartMonitor}
@@ -279,6 +282,7 @@ export function SmartMonitor () {
                           min={5}
                           max={60}
                           style={{ width: '75px' }}
+                          disabled={!isAllowEdit}
                           onChange={handleChange}
                         />
                       )
@@ -314,6 +318,7 @@ export function SmartMonitor () {
                           min={1}
                           max={10}
                           style={{ width: '75px' }}
+                          disabled={!isAllowEdit}
                           onChange={handleChange}
                         />
                       )

@@ -1,20 +1,29 @@
+import { rest } from 'msw'
+
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApIncompatibleFeature,
-  CompatibilityDeviceEnum, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { render, screen, within } from '@acx-ui/test-utils'
+  CompatibilityDeviceEnum,
+  FirmwareUrlsInfo,
+  IncompatibilityFeatures,
+  APCompatibilityFixtures
+} from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import {
   mockApCompatibilitiesVenue,
   mockApFeatureCompatibilities
-} from '../../ApCompatibilityDrawer/__test__/fixtures'
+} from '../../Ap/ApCompatibilityDrawer/__test__/fixtures'
 import {
   transformedMockEdgeCompatibilitiesVenue
-} from '../../EdgeCompatibilityDrawer/__test__/fixtures'
+} from '../../Edge/EdgeCompatibilityDrawer/__test__/fixtures'
 
 import { FeatureItemProps } from './FeatureItem'
 
 import { CompatibilityItem } from '.'
+
+const { mockApModelFamilies, mockFeatureCompatibilities } = APCompatibilityFixtures
 
 jest.mock('./FeatureItem', () => {
   const FeatureItemComp = jest.requireActual('./FeatureItem')
@@ -31,6 +40,19 @@ describe('CompatibilityItem', () => {
   const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   const featureName = IncompatibilityFeatures.BETA_DPSK3
   let params = { tenantId, venueId, featureName: IncompatibilityFeatures.BETA_DPSK3 }
+
+  const mockeModelFamiliesReq = jest.fn()
+  beforeEach(() => {
+    mockeModelFamiliesReq.mockClear()
+
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (_, res, ctx) => {
+          mockeModelFamiliesReq()
+          return res(ctx.json(mockApModelFamilies))
+        }))
+  })
 
   it('should render with description correctly', async () => {
     const mockData = mockApCompatibilitiesVenue.apCompatibilities[0]
@@ -105,6 +127,38 @@ describe('CompatibilityItem', () => {
       within(tunnelProfileInfo).getByText('Incompatible RUCKUS Edges (Currently)')
       expect(within(tunnelProfileInfo).getByText('2.1.0.400')).toBeInTheDocument()
       expect(within(tunnelProfileInfo).getByText('2 / 6')).toBeInTheDocument()
+
+      expect(mockeModelFamiliesReq).toBeCalledTimes(0)
+    })
+  })
+
+  describe('AP compatibility enhancement by model', () => {
+    it('should display supported model correctly', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_COMPATIBILITY_BY_MODEL)
+
+      const mockData = mockFeatureCompatibilities.featureSets
+
+      render(
+        <Provider>
+          <CompatibilityItem
+            deviceType={CompatibilityDeviceEnum.AP}
+            data={mockData}
+            featureName={featureName}
+          />
+        </Provider>, {
+          route: { params: { tenantId, featureName }, path: '/:tenantId' }
+        })
+
+      const fItems = await screen.findAllByTestId('FeatureItem')
+      expect(fItems.length).toBe(1)
+      expect(within(fItems[0]).getByText('6.2.3.103.252')).toBeInTheDocument()
+      expect(await within(fItems[0]).findByText('Supported AP Models')).toBeVisible()
+      expect(within(fItems[0]).getByText('Wi-Fi 6')).toBeInTheDocument()
+      expect(within(fItems[0]).getByText('Wi-Fi 7')).toBeInTheDocument()
+      expect(within(fItems[0]).queryByText('Incompatible Access Points (Currently)')).toBeNull()
+
+      jest.mocked(useIsSplitOn).mockReset()
     })
   })
 })

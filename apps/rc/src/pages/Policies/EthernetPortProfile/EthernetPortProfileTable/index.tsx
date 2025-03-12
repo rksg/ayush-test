@@ -1,34 +1,41 @@
+/* eslint-disable max-len */
+
+import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                       from '@acx-ui/rc/components'
+import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useDeleteEthernetPortProfileMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetEthernetPortProfileViewDataListQuery,
-  useGetVenuesQuery }                     from '@acx-ui/rc/services'
+  useGetVenuesQuery
+} from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
   EthernetPortProfileViewData,
+  filterByAccessForServicePolicyMutation,
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
+interface EthernetPortProfileTableProps {
+  setTableTotalCount?: (totalCount: number) => void;
+}
 
-const EthernetPortProfileTable = () => {
+const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { setTableTotalCount } = props
   const defaultEthernetPortProfileTablePayload = {}
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
@@ -45,7 +52,7 @@ const EthernetPortProfileTable = () => {
       searchTargetFields: ['name', 'venue']
     }
   })
-  // eslint-disable-next-line max-len
+
   const { radiusNameMap = [] } = useGetAAAPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -78,6 +85,12 @@ const EthernetPortProfileTable = () => {
   })
 
   const [deleteEthernetPortProfile] = useDeleteEthernetPortProfileMutation()
+
+  useEffect(() => {
+    if(tableQuery.data?.totalCount && setTableTotalCount){
+      setTableTotalCount(tableQuery.data?.totalCount)
+    }
+  }, [tableQuery.data?.totalCount])
 
   const columns: TableProps<EthernetPortProfileViewData>['columns'] = [
     {
@@ -199,92 +212,64 @@ const EthernetPortProfileTable = () => {
     }
   ]
 
-  const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [
-    {
-      scopeKey: [WifiScopes.UPDATE],
-      // Default Ethernet Port Profile cannot Edit
-      visible: (selectedRows) => selectedRows.length === 1
+  const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
+    // Default Ethernet Port Profile cannot Edit
+    visible: (selectedRows) => selectedRows.length === 1
             && !selectedRows[0].isDefault,
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.ETHERNET_PORT_PROFILE,
-            oper: PolicyOperation.EDIT,
-            policyId: selectedRows[0].id
-          })
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
+          type: PolicyType.ETHERNET_PORT_PROFILE,
+          oper: PolicyOperation.EDIT,
+          policyId: selectedRows[0].id
         })
-      }
-    },
-    {
-      scopeKey: [WifiScopes.DELETE],
-      // Default Ethernet Port Profile cannot Delete
-      visible: (selectedRows) => {
-        return !selectedRows.some(row => row.isDefault)
-      },
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            Promise.all(rows.map(row => deleteEthernetPortProfile({ params: { id: row.id } })))
-              .then(clearSelection)
-          }
-        })
-      }
+      })
     }
-  ]
+  }, {
+    scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
+    // Default Ethernet Port Profile cannot Delete
+    visible: (selectedRows) => {
+      return !selectedRows.some(row => row.isDefault)
+    },
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: (rows, clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Profile' }),
+          entityValue: rows.length === 1 ? rows[0].name : undefined,
+          numOfEntities: rows.length
+        },
+        onOk: () => {
+          Promise.all(rows.map(row => deleteEthernetPortProfile({ params: { id: row.id } })))
+            .then(clearSelection)
+        }
+      })
+    }
+  }]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
-  })
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
-    <>
-      <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Ethernet Port Profile ({count})' },
-            { count: tableQuery.data?.totalCount }
-          )
-        }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
-
-        extra={filterByAccess([<TenantLink scopeKey={[WifiScopes.CREATE]}
-          // eslint-disable-next-line max-len
-          to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
-        >
-          <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
-        </TenantLink>
-        ])}
+    <Loader states={[tableQuery]}>
+      <Table
+        rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
+        columns={columns}
+        rowActions={allowedRowActions}
+        rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
-      <Loader states={[tableQuery]}>
-        <Table
-          rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
-          columns={columns}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={isSelectionVisible && { type: 'checkbox' }}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-        />
-      </Loader>
-    </>
+    </Loader>
   )
 }
 

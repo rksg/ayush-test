@@ -7,6 +7,16 @@ describe('Card component', () => {
     render(<Card title='title'/>)
     expect(screen.getByText('title')).toBeVisible()
   })
+  it('should render card with title and icons', () => {
+    render(
+      <Card
+        cardIcon={<>card icon</>}
+        title={{ title: 'title', icon: <>icon</> }}
+      />)
+    expect(screen.getByText('title')).toBeVisible()
+    expect(screen.getByText('card icon')).toBeVisible()
+    expect(screen.getByText('icon')).toBeVisible()
+  })
   it('should render card with subtitle', () => {
     render(<Card title='title' subTitle='sub title' />)
     expect(screen.getByText('sub title')).toBeVisible()

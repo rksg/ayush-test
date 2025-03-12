@@ -3,13 +3,25 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                                                  from '@acx-ui/components'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
-import { TenantType }                                                                       from '@acx-ui/react-router-dom'
-import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                       from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission }                                         from '@acx-ui/user'
-import { useDateFilter }                                                                    from '@acx-ui/utils'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import {
+  ConfigTemplateUrlsInfo,
+  generateConfigTemplateBreadcrumb,
+  useConfigTemplate,
+  useConfigTemplateTenantLink,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { TenantType }                                         from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                         from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi, useDateFilter } from '@acx-ui/utils'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
@@ -17,16 +29,22 @@ import { useGetNetwork }     from './services'
 
 function NetworkPageHeader ({
   setSelectedVenues,
-  selectedVenues
+  selectedVenues,
+  noConfig
 }: {
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
+  noConfig?: boolean
 }) {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({
+    showResetMsg, earliestStart: getDefaultEarliestStart() })
   const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()
   const { isTemplate } = useConfigTemplate()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const basePath = useTenantLink('/networks/wireless')
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
@@ -56,28 +74,36 @@ function NetworkPageHeader ({
     }
   }, [networkData, isLoading])
 
+  const updateNetworkOpsApi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkDeep)
+
+  const hasUpdateNetworkPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([ updateNetworkOpsApi ])
+    : (hasCrossVenuesPermission()
+    && hasPermission({ scopes: [WifiScopes.UPDATE] }) )
+
   return (
     <PageHeader
       title={networkData?.name || ''}
       breadcrumb={breadcrumb}
       extra={[
-        ...(setSelectedVenues && selectedVenues)
-          ? [
-            <ActiveVenueFilter
-              selectedVenues={selectedVenues}
-              setSelectedVenues={setSelectedVenues}
-            />
-          ]
-          : [],
-        enableTimeFilter()
-          ? <RangePicker
+        ...((setSelectedVenues && selectedVenues) ? [
+          <ActiveVenueFilter
+            selectedVenues={selectedVenues}
+            setSelectedVenues={setSelectedVenues}
+          />
+        ] : []),
+        ...(enableTimeFilter() ? [
+          <RangePicker
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
-          : <></>,
-        ...(hasCrossVenuesPermission()? filterByAccess([
+        ]: []),
+        ...((hasUpdateNetworkPermission && !noConfig) ? [
           <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'
@@ -94,7 +120,7 @@ function NetworkPageHeader ({
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>
-        ]) : [])
+        ] : [])
       ]}
       footer={<NetworkTabs />}
     />

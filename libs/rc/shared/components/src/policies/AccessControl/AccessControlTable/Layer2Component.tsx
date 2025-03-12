@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AclOptionType, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getScopeKeyByPolicy,
   L2AclPolicy,
   Network, PolicyOperation,
@@ -23,10 +24,11 @@ import {
   WifiNetwork
 } from '@acx-ui/rc/utils'
 
-import { defaultNetworkPayload }           from '../../../NetworkTable'
-import { AddModeProps }                    from '../../AccessControlForm'
-import { Layer2Drawer }                    from '../../AccessControlForm/Layer2Drawer'
-import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { AddModeProps }                     from '../../AccessControlForm'
+import { Layer2Drawer }                     from '../../AccessControlForm/Layer2Drawer'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY }  from '../constants'
 
 const defaultPayload = {
   searchString: '',
@@ -35,6 +37,7 @@ const defaultPayload = {
     'name',
     'description',
     'macAddressCount',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -113,6 +116,7 @@ const Layer2Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_2_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_2_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER2_POLICY,
@@ -137,6 +141,7 @@ const Layer2Component = () => {
 
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_2_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_2_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -145,6 +150,7 @@ const Layer2Component = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_2_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_2_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -227,7 +233,7 @@ function useColumns (
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

@@ -12,6 +12,7 @@ export type StepsFormProps <T = any> = Omit<
   children: React.ReactNode
 
   editMode?: boolean
+  hasPrerequisiteStep?: boolean
 
   onCancel?: (values: T) => void
   onFinish?: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
@@ -24,6 +25,13 @@ export type StepsFormProps <T = any> = Omit<
     pre?: string
     cancel?: string
     apply?: string
+  }
+
+  buttonProps?: {
+    apply?: {
+      disabled?: boolean
+      tooltip?: string | React.ReactNode
+    }
   }
 
   customSubmit?: {

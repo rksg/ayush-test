@@ -19,15 +19,18 @@ import {
   toReactFlowData,
   ActionTypeTitle,
   UIConfiguration,
-  WorkflowStep
+  WorkflowStep,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
+import { hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                      from '@acx-ui/utils'
 
 import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
 import * as UI                         from '../styledComponents'
 
-import { DpskActionPreview } from './DpskActionPreview'
+import { CertTemplateActionPreview } from './CertTemplateActionPreview'
+import { DpskActionPreview }         from './DpskActionPreview'
 
 import { AupPreview, DataPromptPreview, DisplayMessagePreview, MacRegActionPreview } from './index'
 
@@ -37,7 +40,8 @@ const previewMap = {
   [ActionType.DATA_PROMPT]: DataPromptPreview,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
   [ActionType.DPSK]: DpskActionPreview,
-  [ActionType.MAC_REG]: MacRegActionPreview
+  [ActionType.MAC_REG]: MacRegActionPreview,
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview
 }
 
 export interface WorkflowActionPreviewProps {
@@ -201,11 +205,14 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                 paddingRight: 80,
                 paddingTop: 4
               }}>
-              {hasCrossVenuesPermission({ needGlobalPermission: true }) && !disablePortalDesign &&
+              {hasCrossVenuesPermission({ needGlobalPermission: true }) &&
+                !disablePortalDesign &&
+                hasAllowedOperations([getOpsApi(WorkflowUrls.updateWorkflowUIConfig)]) &&
                 <div>
                   <UI.Button type='default'
                     size='small'
                     style={{ fontSize: '14px' }}
+                    rbacOpsIds={[getOpsApi(WorkflowUrls.updateWorkflowUIConfig)]}
                     onClick={() => {
                       setNavigatorVisible(false)
                       setPortalVisible(true)

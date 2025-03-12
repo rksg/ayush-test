@@ -2,16 +2,22 @@
 export type NodeType = 'network'
   | 'system'
   | 'controller'
-  | 'domain'
-  | 'zone' | 'switchGroup' | 'switchSubGroup'
-  | 'apGroup'
-  | 'switch' | 'AP'
+  | 'domain' | 'zone'
+  | 'AP' | 'apGroup'
+  | 'switch' | 'switchGroup' | 'switchSubGroup'
+  | 'wlan' | 'wlanGroup'
 
 export type PathNode = {
   type: NodeType
   name: string
 }
 export type NetworkPath = PathNode[]
+
+// RAI
+type NetworkHierarchy<T> = T & { children?: NetworkHierarchy<T>[] }
+export interface NetworkNode extends NetworkHierarchy<PathNode & {
+  mac?: string, model?: string, firmware?: string, deviceId?: string
+}>{}
 
 // filter sent to data api (xNodes + SSIDs), uses resource group format
 export type FilterNameNode = {

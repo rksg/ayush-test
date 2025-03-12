@@ -8,21 +8,23 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, Select, showActionModal, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { PhoneInput }                               from '@acx-ui/rc/components'
 import {
   useAddAdminMutation,
   useGetTenantAuthenticationsQuery
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
-  CatchErrorDetails,
   sfdcEmailRegExp,
   TenantAuthenticationType,
   TenantAuthentications,
   getRoles,
   PrivilegeGroup,
-  CustomGroupType
+  CustomGroupType,
+  generalPhoneRegExp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }         from '@acx-ui/react-router-dom'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 import AuthenticationSelector, { AuthTypeRadioButtonEnum } from '../../Administrators/AdministratorsTable/AddAdministratorDialog/AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from '../../Administrators/AdministratorsTable/AddAdministratorDialog/MspCustomersSelector'
@@ -46,6 +48,7 @@ interface AddUserDataModel {
   authenticationId?: string;
   name?: string;
   lastName?: string;
+  phoneNumber?: string;
 }
 
 const AddUserDrawer = (props: AddUserDrawerProps) => {
@@ -66,6 +69,8 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   const [isSystemRoleSelected, setSelectedRole] = useState<Boolean>()
 
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const notificationAdminContextualEnabled =
+    useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   const tenantAuthenticationData =
     useGetTenantAuthenticationsQuery({ params })
@@ -126,6 +131,8 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
       }
 
       payload.email = formValues.newEmail
+      payload.phoneNumber =
+        notificationAdminContextualEnabled ? formValues.mobile?.trim() : undefined
       if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
         payload.authenticationId = authenticationData.id
         payload.lastName = formValues.lastName ?? ''
@@ -147,6 +154,11 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
 
   const selectedPrivilegeGroup = (selected: PrivilegeGroup) => {
     setSelectedRole(selected.type === CustomGroupType.SYSTEM)
+  }
+
+  const setPhoneValue = (phoneNumber: string) => {
+    form.setFieldValue('mobile', phoneNumber)
+    form.validateFields(['mobile'])
   }
 
   useEffect(() => {
@@ -244,6 +256,17 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
               />
             </Form.Item>
           </div>}
+
+        {notificationAdminContextualEnabled && <Form.Item
+          label={$t({ defaultMessage: 'Phone' })}
+          name='mobile'
+          rules={[
+            { validator: (_, value) => generalPhoneRegExp(value) }
+          ]}
+          initialValue=''
+          validateFirst >
+          <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
+        </Form.Item>}
 
         {isAbacToggleEnabled
           ? <PrivilegeGroupSelector

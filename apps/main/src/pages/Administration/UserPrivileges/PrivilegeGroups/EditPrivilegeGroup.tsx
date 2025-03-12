@@ -227,7 +227,8 @@ export function EditPrivilegeGroup () {
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
-          const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
+          const venueIds = ec.allVenues ? []
+            : ec.children.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
@@ -238,8 +239,8 @@ export function EditPrivilegeGroup () {
         })
         privilegeGroupData.delegation = displayMspScope
         privilegeGroupData.policyEntityDTOS =
-        (selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
-          ? policyEntities : undefined
+        (displayMspScope && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+         policyEntities.length > 0) ? policyEntities : undefined
       }
 
       isClone ? await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
@@ -296,6 +297,7 @@ export function EditPrivilegeGroup () {
         ? ChoiceCustomerEnum.SPECIFIC_CUSTOMER : ChoiceCustomerEnum.ALL_CUSTOMERS)
       const memberCount = privilegeGroup?.memberCount || 0
       setDisableNameChange(memberCount > 0 && !isClone)
+      setSelectedRole(privilegeGroup.roleName as RolesEnum)
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 
@@ -489,7 +491,8 @@ export function EditPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
        <DisplaySelectedCustomers />}
     </>
   }
@@ -547,7 +550,8 @@ export function EditPrivilegeGroup () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {displayMspScope && selectedCustomers.length > 0 &&
+       selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
     </>
   }
@@ -612,32 +616,9 @@ export function EditPrivilegeGroup () {
               : <ScopeForm />}
           </Col>
         </Row>
-        {selectVenueDrawer && <SelectVenuesDrawer
-          visible={selectVenueDrawer}
-          selected={selectedVenues}
-          setVisible={setSelectVenueDrawer}
-          setSelected={setSelectedVenus}
-        />}
-        {selectCustomerDrawer && (selectedRole === RolesEnum.PRIME_ADMIN
-          ? <SelectCustomerOnlyDrawer
-            visible={selectCustomerDrawer}
-            selected={selectedCustomers}
-            setVisible={setSelectCustomerDrawer}
-            setSelected={setSelectedCustomers}
-          />
-          : <SelectCustomerDrawer
-            visible={selectCustomerDrawer}
-            selected={selectedCustomers}
-            setVisible={setSelectCustomerDrawer}
-            setSelected={setSelectedCustomers}
-          />)
-        }
-
       </StepsForm.StepForm>
     </StepsForm>
   }
-
-  //   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
 
   return (<>
     <PageHeader
@@ -653,6 +634,25 @@ export function EditPrivilegeGroup () {
       footer={<AdministrationTabs />}
     />
     <PrivilegeGroupForm />
-    {/* { ActiveTabPane && <ActiveTabPane /> } */}
+    {selectVenueDrawer && <SelectVenuesDrawer
+      visible={selectVenueDrawer}
+      selected={selectedVenues}
+      setVisible={setSelectVenueDrawer}
+      setSelected={setSelectedVenus}
+    />}
+    {selectCustomerDrawer && (selectedRole === RolesEnum.PRIME_ADMIN
+      ? <SelectCustomerOnlyDrawer
+        visible={selectCustomerDrawer}
+        selected={selectedCustomers}
+        setVisible={setSelectCustomerDrawer}
+        setSelected={setSelectedCustomers}
+      />
+      : <SelectCustomerDrawer
+        visible={selectCustomerDrawer}
+        selected={selectedCustomers}
+        setVisible={setSelectCustomerDrawer}
+        setSelected={setSelectedCustomers}
+      />)
+    }
   </>)
 }

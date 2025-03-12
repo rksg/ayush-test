@@ -4,12 +4,12 @@ import { Divider } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Table }                                                                from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortInfo, EdgeStatus, VirtualIpSetting, getIpWithBitMask } from '@acx-ui/rc/utils'
+import { Button, Table }                                                  from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgeStatus, VirtualIpSetting, getIpWithBitMask } from '@acx-ui/rc/utils'
 
 import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
 
-import { VirtualIpFormType } from '.'
+import { VipInterface, VirtualIpFormType } from '.'
 
 interface InterfaceTableProps {
   value?: VirtualIpSetting['ports']
@@ -17,7 +17,7 @@ interface InterfaceTableProps {
   index?: number
   nodeList?: EdgeStatus[]
   lanInterfaces?: {
-    [key: string]: EdgePortInfo[]
+    [key: string]: VipInterface[]
   }
   selectedInterfaces?: VirtualIpFormType['vipConfig']
   onClear?: () => void
@@ -44,7 +44,7 @@ export const InterfaceTable = (props: InterfaceTableProps) => {
     setData(nodeList.map(node => {
       const target = value.find(item => item.serialNumber === node.serialNumber)
       const targetInterfaceInfo = lanInterfaces[node.serialNumber].find(item =>
-        item.portName.toLowerCase() === target?.portName.toLowerCase())
+        item.interfaceName.toLowerCase() === target?.portName.toLowerCase())
       return {
         nodeName: node.name,
         interface: _.capitalize(target?.portName),

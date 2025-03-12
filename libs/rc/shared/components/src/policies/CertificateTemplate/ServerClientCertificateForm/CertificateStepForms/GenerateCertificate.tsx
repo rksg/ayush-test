@@ -2,9 +2,9 @@ import { Checkbox, Form, Input, Select, Space } from 'antd'
 import moment                                   from 'moment'
 import { useIntl }                              from 'react-intl'
 
-import { DatePicker, GridCol, GridRow }                                                 from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery }             from '@acx-ui/rc/services'
-import { trailingNorLeadingSpaces, checkObjectNotExists, ExtendedKeyUsages, KeyUsages } from '@acx-ui/rc/utils'
+import { DatePicker, GridCol, GridRow }                                                                          from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery, useGetServerCertificatesQuery }                                      from '@acx-ui/rc/services'
+import { trailingNorLeadingSpaces, checkObjectNotExists, ExtendedKeyUsages, KeyUsages, CertificateCategoryType } from '@acx-ui/rc/utils'
 
 import CertificateStrengthSettings                                     from '../../CertificateTemplateForm/CertificateTemplateSettings/CertificateStrengthSettings'
 import { MAX_CERTIFICATE_PER_TENANT }                                  from '../../constants'
@@ -12,7 +12,11 @@ import { caFormDescription, ExtendedKeyUsagesLabels, KeyUsagesLabels } from '../
 import { SettingsSectionTitle, Description, Section }                  from '../../styledComponents'
 
 
-export default function GenerateCertificate () {
+type GenerateCertificateFormProps = {
+  extendedKeyUsages?: ExtendedKeyUsages[]
+}
+
+export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { isCaNameListLoading, caNameList } = useGetCertificateAuthoritiesQuery({
@@ -178,7 +182,7 @@ export default function GenerateCertificate () {
         <Description>{$t(caFormDescription.STRENGTH)}</Description>
         <GridRow>
           <GridCol col={{ span: 10 }} >
-            <CertificateStrengthSettings />
+            <CertificateStrengthSettings certType={CertificateCategoryType.SERVER_CERTIFICATES}/>
           </GridCol>
         </GridRow>
       </Section >
@@ -209,19 +213,24 @@ export default function GenerateCertificate () {
         <GridRow>
           <GridCol col={{ span: 10 }} >
             <Form.Item
-              name={'ExtendedkeyUsages'}
+              name={'extendedKeyUsages'}
               label={$t({ defaultMessage: 'Extended Key Usage' })}
+              initialValue={props?.extendedKeyUsages}
               children={
                 <Checkbox.Group>
                   <Space direction={'vertical'}>
                     <Checkbox
                       value={ExtendedKeyUsages.CLIENT_AUTH}
                       key={ExtendedKeyUsages.CLIENT_AUTH}
-                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.CLIENT_AUTH])} />
+                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.CLIENT_AUTH])}
+                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.CLIENT_AUTH)}
+                    />
                     <Checkbox
                       value={ExtendedKeyUsages.SERVER_AUTH}
                       key={ExtendedKeyUsages.SERVER_AUTH}
-                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.SERVER_AUTH])} />
+                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.SERVER_AUTH])}
+                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.SERVER_AUTH)}
+                    />
                   </Space>
                 </Checkbox.Group>
               }

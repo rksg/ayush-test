@@ -2,18 +2,28 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                              from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeErrorsFixtures, EdgeUrlsInfo, EdgeCompatibilityFixtures, FirmwareUrlsInfo, EdgeFirmwareFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                            from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  CommonUrlsInfo,
+  EdgeErrorsFixtures,
+  EdgeUrlsInfo,
+  EdgeCompatibilityFixtures,
+  FirmwareUrlsInfo,
+  EdgeFirmwareFixtures,
+  EdgeGeneralFixtures,
+  VenueFixtures
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockClusterData, mockVenueData } from '../__tests__/fixtures'
-
 import AddEdge from './index'
+
+const { mockVenueOptions } = VenueFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const {
   mockValidationFailedDataWithDefinedCode,
@@ -28,14 +38,19 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getEnabledDialogImproved: jest.fn().mockReturnValue(false),
+  isShowImprovedErrorSuggestion: jest.fn().mockReturnValue(false)
+}))
+
 describe('AddEdge', () => {
-  let params: { tenantId: string }
+  let params: { tenantId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
+
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
-
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
 
     mockServer.use(
       rest.post(
@@ -46,10 +61,10 @@ describe('AddEdge', () => {
         (_, res, ctx) => res(ctx.status(202))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(mockVenueData))),
+        (_, res, ctx) => res(ctx.json(mockVenueOptions))),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (_, res, ctx) => res(ctx.json(mockClusterData))),
+        (_, res, ctx) => res(ctx.json(mockEdgeClusterList))),
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
@@ -129,7 +144,7 @@ describe('AddEdge', () => {
     await user.click(await screen.findByText('Mock Venue 1'))
     const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
     await user.click(clusterDropdown)
-    await user.click(await screen.findByText('Mock Cluster 1'))
+    await user.click(await screen.findByText('Edge Cluster 1'))
     const edgeNameInput = screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })
     await user.type(edgeNameInput, 'edge_name_test')
     const serialNumberInput = screen.getByRole('textbox',
@@ -201,10 +216,10 @@ describe('AddEdge api fail', () => {
         (_, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithDefinedCode))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(mockVenueData))),
+        (_, res, ctx) => res(ctx.json(mockVenueOptions))),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (_, res, ctx) => res(ctx.json(mockClusterData))),
+        (_, res, ctx) => res(ctx.json(mockEdgeClusterList))),
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
@@ -229,7 +244,7 @@ describe('AddEdge api fail', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
     await user.click(clusterDropdown)
-    await user.click(await screen.findByText('Mock Cluster 1'))
+    await user.click(await screen.findByText('Edge Cluster 1'))
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
@@ -245,7 +260,7 @@ describe('AddEdge api fail', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
+        (req, res, ctx) => res(ctx.json(mockVenueOptions))
       )
     )
     const user = userEvent.setup()
@@ -260,7 +275,7 @@ describe('AddEdge api fail', () => {
     await user.click(await screen.findByText('Mock Venue 1'))
     const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
     await user.click(clusterDropdown)
-    await user.click(await screen.findByText('Mock Cluster 1'))
+    await user.click(await screen.findByText('Edge Cluster 1'))
     const edgeNameInput = screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',

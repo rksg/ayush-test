@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                                                                                   from '@acx-ui/feature-toggle'
@@ -102,8 +103,10 @@ describe('Auth Server Form Item', () => {
   it('should render layout correctly when no data exists', async () => {
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={emptyData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={emptyData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -114,8 +117,10 @@ describe('Auth Server Form Item', () => {
   it('should render layout correctly when data exists', async () => {
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -130,8 +135,10 @@ describe('Auth Server Form Item', () => {
   it('should show drawer when edit button is clicked', async () => {
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -145,8 +152,10 @@ describe('Auth Server Form Item', () => {
     global.fetch = unmockedFetch
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -179,8 +188,10 @@ describe('Auth Server Form Item', () => {
     })
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -202,8 +213,10 @@ describe('Auth Server Form Item', () => {
     })
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -226,8 +239,10 @@ describe('Auth Server Form Item', () => {
     })
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -246,8 +261,10 @@ describe('Auth Server Form Item', () => {
     }]
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={googleData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={googleData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -259,8 +276,10 @@ describe('Auth Server Form Item', () => {
   it('should show drawer when set up button is clicked', async () => {
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={emptyData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={emptyData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -272,8 +291,10 @@ describe('Auth Server Form Item', () => {
   it('should show drawer when view xml code button is clicked', async () => {
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -293,8 +314,10 @@ describe('Auth Server Form Item', () => {
     }]
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={directUrlData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={directUrlData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })
@@ -311,8 +334,10 @@ describe('Auth Server Form Item', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
-        <AuthServerFormItem
-          tenantAuthenticationData={tenantAuthenticationData}/>
+        <Form>
+          <AuthServerFormItem
+            tenantAuthenticationData={tenantAuthenticationData}/>
+        </Form>
       </Provider>, {
         route: { params }
       })

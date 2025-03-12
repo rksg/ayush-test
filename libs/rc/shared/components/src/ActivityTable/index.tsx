@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 import { omit }                   from 'lodash'
+import { Moment }                 from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
@@ -53,9 +55,11 @@ const defaultPayload = {
 
 export function useActivityTableQuery (
   baseFilters: Record<string, string> = {},
-  pagination?: Record<string, unknown>
+  pagination?: Record<string, unknown>,
+  earliestStart?: Moment
 ) {
-  const { dateFilter } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart })
   const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = useTableQuery<Activity>({
@@ -66,13 +70,12 @@ export function useActivityTableQuery (
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 
-  useEffect(
-    () => tableQuery.setPayload({
+  useEffect(() => {
+    tableQuery.setPayload({
       ...tableQuery.payload,
       filters: { ...(tableQuery.payload.filters as object), ...filters }
-    }),
-    [dateFilter]
-  )
+    })
+  }, [dateFilter.startDate, dateFilter.endDate, dateFilter.range])
 
   return tableQuery
 }

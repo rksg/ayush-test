@@ -27,14 +27,14 @@ import {
   AvcCategory,
   CommonResult,
   defaultSort,
-  hasPolicyPermission,
   PolicyOperation,
   PolicyType,
   sortProp,
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -663,6 +663,14 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     />
   </>
 
+  const hasCreatePermission = useTemplateAwarePolicyPermission(
+    PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE
+  )
+
+  const hasEditPermission = useTemplateAwarePolicyPermission(
+    PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT
+  )
+
   const modelContent = () => {
     if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
@@ -703,7 +711,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.EDIT }) &&
+        {hasEditPermission &&
           <Button type='link'
             disabled={visible || !applicationPolicyId}
             onClick={() => {
@@ -719,9 +727,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {
-          // eslint-disable-next-line max-len
-          hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE }) &&
+        {hasCreatePermission &&
           <Button type='link'
             disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
             onClick={() => {

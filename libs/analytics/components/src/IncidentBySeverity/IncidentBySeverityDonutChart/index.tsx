@@ -9,6 +9,8 @@ import {
   cssStr,
   DonutChart
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { useIncidentToggles }                                   from '../../useIncidentToggles'
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
@@ -16,6 +18,8 @@ import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../service
 export function IncidentBySeverityDonutChart ({ filters, type }:
   { filters: IncidentFilter, type?:string }) {
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const toggles = useIncidentToggles()
   const queryResult = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
@@ -62,6 +66,12 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
         )}
       </AutoSizer>
   }
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.INCIDENT_BY_SEVERITY_DONUT_CHART,
+    states: [queryResult],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return <Loader states={[queryResult]}>
     {

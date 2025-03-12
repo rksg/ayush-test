@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space } from 'antd'
 import _                                                     from 'lodash'
 import { useIntl }                                           from 'react-intl'
-import styled                                                from 'styled-components'
 
 import { Button, Drawer, Modal, Subtitle, Table, Tooltip, Transfer, useStepFormContext } from '@acx-ui/components'
+import { Features }                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                         from '@acx-ui/rc/components'
 import {
   useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
@@ -14,21 +15,17 @@ import {
   checkVlanMember,
   DistributionSwitch,
   DistributionSwitchSaveData,
+  isVerGEVer,
   networkWifiIpRegExp,
-  SwitchLite,
   PersonalIdentityNetworkFormData,
-  isVerGEVer
+  SwitchLite
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-const RequiredMark = styled.span`
-  &:before {
-    color: var(--acx-accents-orange-50);
-    font-size: var(--acx-body-4-font-size);
-    content: '*';
-  }
-`
+import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
+
+import * as UI from './styledComponents'
 
 export function DistributionSwitchDrawer (props: {
   open: boolean;
@@ -39,6 +36,14 @@ export function DistributionSwitchDrawer (props: {
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
+  const requiredFw = '10.0.10f'
+  const {
+    requiredFw_DS = requiredFw,
+    requiredFw_AS = requiredFw,
+    requiredSwitchModels: requiredModels = []
+  } = useContext(PersonalIdentityNetworkFormContext)
   const [form] = Form.useForm<DistributionSwitch>()
   const { open, editRecord, availableSwitches, onClose = ()=>{}, onSaveDS } = props
 
@@ -47,7 +52,6 @@ export function DistributionSwitchDrawer (props: {
   const edgeClusterId = pinForm.getFieldValue('edgeClusterId')
 
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3' }
-  const requiredFw = '10.0.10f'
 
   const [openModal, setOpenModal] = useState(false)
   const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])
@@ -73,9 +77,7 @@ export function DistributionSwitchDrawer (props: {
     const inUseSwitchIds = (accessSwitches || []).map(sw=>sw.id).concat(dsId)
     const availableSwitchList =
       availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
-        .filter(item =>
-          item.firmwareVersion && !isVerGEVer(requiredFw, item.firmwareVersion, true)
-        )
+
     setAvailableSwitchList(availableSwitchList)
   }, [pinForm, availableSwitches, dsId, accessSwitches])
 
@@ -100,6 +102,7 @@ export function DistributionSwitchDrawer (props: {
         onSave={async () => {
           const values: DistributionSwitchSaveData = form.getFieldsValue()
           try {
+            await form.validateFields()
             await validateDistributionSwitchInfo({
               params: { tenantId, venueId },
               payload: { ...values, siteName: edgeClusterId }
@@ -127,8 +130,8 @@ export function DistributionSwitchDrawer (props: {
                 firmwareLink: <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>
                   {$t({ defaultMessage: 'Administration > Version Management > Switch Firmware' })}
                 </TenantLink>,
-                requiredFw,
-                supportedModels: ['ICX-7550', 'ICX-7650', 'ICX-7850'].join(', ')
+                requiredFw: requiredFw_DS,
+                supportedModels: requiredModels.join(', ')
               })}
             />
           </>}
@@ -136,7 +139,9 @@ export function DistributionSwitchDrawer (props: {
           hidden={!!editRecord}
         >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitchList.map(item => ({
+            options={availableSwitchList.filter(item =>
+              item.firmwareVersion && isVerGEVer(item.firmwareVersion, requiredFw_DS, false)
+            ).map(item => ({
               value: item.id,
               label: item.name
             }))}
@@ -165,6 +170,11 @@ export function DistributionSwitchDrawer (props: {
           rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}>
           <Input />
         </Form.Item>
+        {isEdgePinEnhanceReady && <UI.StyledTextParagraph
+          type='secondary'
+          // eslint-disable-next-line max-len
+          children={$t({ defaultMessage: 'A static route will be automatically created/ configured to the cluster nodes for this switch\'s loopback IP address to ensure connectivity.' })}
+        />}
         <Form.Item name='loopbackInterfaceSubnetMask'
           label={$t({ defaultMessage: 'Loopback Interface Subnet Mask' })}
           rules={[{ required: true }, { validator: (_, value) => subnetMaskIpRegExp(value) }]}>
@@ -186,7 +196,7 @@ export function DistributionSwitchDrawer (props: {
           <Col>
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Select Access Switches' })}
-              <RequiredMark style={{ margin: '0 5px' }}/>
+              <UI.RequiredMark />
               <Tooltip.Question iconStyle={{ width: '20px', marginBottom: '-7px' }}
                 title={$t({ defaultMessage: `
                   PIN feature requires your switch running firmware version {requiredFw} or higher.
@@ -195,7 +205,7 @@ export function DistributionSwitchDrawer (props: {
                   firmwareLink: <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>{
                     $t({ defaultMessage: 'Administration > Version Management > Switch Firmware' })
                   }</TenantLink>,
-                  requiredFw
+                  requiredFw: requiredFw_AS
                 })}
               />
             </Subtitle>
@@ -236,7 +246,9 @@ export function DistributionSwitchDrawer (props: {
         }}
         onCancel={() => setOpenModal(false)}
         selected={accessSwitches}
-        availableAs={availableSwitchList.concat(accessSwitches || [])}
+        availableAs={availableSwitchList.filter(item =>
+          item.firmwareVersion && isVerGEVer(item.firmwareVersion, requiredFw_AS, false)
+        ).concat(accessSwitches || [])}
         switchId={dsId} />
     </Drawer>
   )

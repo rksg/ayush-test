@@ -11,6 +11,7 @@ import { getEdgeServiceTypeString } from '../utils'
 
 import { DhcpDetails }                    from './DhcpDetails'
 import { FirewallDetails }                from './FirewallDetails'
+import { MdnsDetails }                    from './MdnsDetails'
 import { MvSdLanDetails }                 from './MvSdLan'
 import { PersonalIdentityNetworkDetails } from './PersonalIdentityNetworkDetails'
 import { SdLanDetails }                   from './SdLanDetails'
@@ -28,7 +29,8 @@ const drawerWidthMap = {
   [EdgeServiceTypeEnum.PIN]: '50%',
   [EdgeServiceTypeEnum.SD_LAN]: 500,
   [EdgeServiceTypeEnum.SD_LAN_P2]: 500,
-  [EdgeServiceTypeEnum.MV_SD_LAN]: 500
+  [EdgeServiceTypeEnum.MV_SD_LAN]: 500,
+  [EdgeServiceTypeEnum.MDNS_PROXY]: 500
 }
 
 const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {
@@ -125,6 +127,12 @@ const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, serviceId: string
         oper: ServiceOperation.DETAIL,
         serviceId: serviceId
       })
+    case EdgeServiceTypeEnum.MDNS_PROXY:
+      return getServiceDetailsLink({
+        type: ServiceType.EDGE_MDNS_PROXY,
+        oper: ServiceOperation.DETAIL,
+        serviceId: serviceId
+      })
     default:
       return ''
   }
@@ -146,6 +154,8 @@ const useServiceContentByType = (serviceData: EdgeService) => {
         : (sdLanServiceType === EdgeServiceTypeEnum.SD_LAN_P2
           ? <SdLanDetailsP2 serviceData={serviceData} />
           : <SdLanDetails serviceData={serviceData} />)
+    case EdgeServiceTypeEnum.MDNS_PROXY:
+      return <MdnsDetails serviceData={serviceData} />
     default:
       return
   }

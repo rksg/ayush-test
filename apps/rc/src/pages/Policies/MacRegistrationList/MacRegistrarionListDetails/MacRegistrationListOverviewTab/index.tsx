@@ -4,8 +4,9 @@ import { Space }     from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { SummaryCard }                from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SummaryCard }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { IdentityGroupLink }                        from '@acx-ui/rc/components'
 import {
   useGetMacRegListQuery,
   useLazyGetAdaptivePolicySetQuery
@@ -24,6 +25,7 @@ export function MacRegistrationListOverviewTab () {
   const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   useEffect(() => {
     if(policyEnabled && data?.policySetId) {
@@ -62,7 +64,12 @@ export function MacRegistrationListOverviewTab () {
       title: $t({ defaultMessage: 'Adaptive Policy Set' }),
       content: policySetName,
       colSpan: 3
-    }
+    },
+    ...(isIdentityRequired ? [{
+      title: $t({ defaultMessage: 'Identity Group' }),
+      content: <IdentityGroupLink enableFetchName personaGroupId={data?.identityGroupId}/>,
+      colSpan: 5
+    }] : [])
   ]
 
   return (

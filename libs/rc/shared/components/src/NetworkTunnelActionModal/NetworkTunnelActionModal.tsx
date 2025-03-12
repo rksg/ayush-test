@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, Space, Typography, Tooltip } from 'antd'
+import { Form, Radio, Space, Tooltip, Typography } from 'antd'
 
-import { Modal }                  from '@acx-ui/components'
+import { Loader, Modal }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanViewData,
+import {
+  EdgeMvSdLanViewData,
+  EdgePinUrls,
+  EdgeSdLanUrls,
   NetworkTunnelSdLanAction,
   NetworkTypeEnum,
   PolicyOperation,
@@ -13,14 +16,17 @@ import { EdgeMvSdLanViewData,
   ServiceType,
   getServiceDetailsLink,
   hasPolicyPermission,
-  hasServicePermission } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }    from '@acx-ui/utils'
+  hasServicePermission
+} from '@acx-ui/rc/utils'
+import { TenantLink }         from '@acx-ui/react-router-dom'
+import { hasPermission }      from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { SpaceWrapper }          from '../SpaceWrapper'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeSdLanRadioOption }                           from './EdgeSdLanRadioOption'
+import { messageMappings }                                from './messageMappings'
 import * as UI                                            from './styledComponents'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 import { SoftGreNetworkTunnel }                           from './useSoftGreTunnelActions'
@@ -45,18 +51,25 @@ export interface NetworkTunnelActionModalProps {
     }
   ) => Promise<void>
   cachedActs?: NetworkTunnelSdLanAction[]
-  cachedSoftGre?: SoftGreNetworkTunnel[]
+  cachedSoftGre?: SoftGreNetworkTunnel[],
+  isPinNetwork?: boolean
   disableAll?: boolean
   radioOptTooltip?: string
 }
 
 export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
-  const { visible, network, onClose, onFinish, cachedActs, cachedSoftGre=[] } = props
+  const {
+    visible,
+    network,
+    onClose, onFinish,
+    cachedActs, cachedSoftGre
+  } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const hasChangePermission = usePermissionResult()
+  const isPinNetwork = isEdgePinHaEnabled && props.isPinNetwork
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isValidData, setIsValidData] = useState<boolean>(true)
@@ -71,12 +84,17 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const networkVenueName = network?.venueName
   const hiddenSoftGre = NetworkTypeEnum.CAPTIVEPORTAL === networkType
   const hiddenPin = NetworkTypeEnum.DPSK !== networkType
+  const hasPinAllowOps = hasPermission({
+    rbacOpsIds: [
+      getOpsApi(EdgePinUrls.updateEdgePin)
+    ] })
 
   const {
     tunnelType: tunnelTypeInitVal,
     venueSdLanInfo,
     networkVlanPool,
-    venuePinInfo
+    venuePinInfo,
+    isLoading
   } = useTunnelInfos({ network, cachedActs, cachedSoftGre })
 
   const handleApply = async () => {
@@ -135,11 +153,11 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
     onOk={() => form.submit()}
     onCancel={onClose}
   >
+
     <Form form={form} onFinish={handleApply}>
       <Typography style={{ marginBottom: '20px' }}>
         {
-        // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Define how this network traffic will be tunnelled at <venueSingular></venueSingular> "{venueName}":' }, {
+          $t(messageMappings.description, {
             venueName: <b>{networkVenueName}</b>
           })
         }
@@ -151,15 +169,11 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
             {!isEdgePinHaEnabled &&
             <Form.Item
               extra={<UI.RadioSubTitle>
-                {
-                // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'All network traffic will local breakout on this <venueSingular></venueSingular>' })
-                }
+                { $t(messageMappings.localbreakout_opt_description) }
               </UI.RadioSubTitle>}
             >
               <Tooltip title={isDisabledAll
-                // eslint-disable-next-line max-len
-                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                ? $t(messageMappings.disable_deactivate_last_network)
                 : undefined}>
                 {localBreakoutRadio}
               </Tooltip>
@@ -176,14 +190,16 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
                   ? {
                     isDisabled: isDisabledAll,
                     noChangePermission,
-                    // eslint-disable-next-line max-len
-                    tooltip: isDisabledAll ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' }) : undefined
+                    tooltip: isDisabledAll
+                      ? $t(messageMappings.disable_deactivate_last_network)
+                      : undefined
                   }
                   : undefined}
               />
             }
 
-            {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
+            <Loader states={[{ isLoading }]} style={{ backgroundColor: 'transparent' }}>
+              {network && visible && isEdgeSdLanMvEnabled && !venuePinInfo &&
               <EdgeSdLanRadioOption
                 tunnelTypeInitVal={tunnelTypeInitVal}
                 currentTunnelType={tunnelType}
@@ -192,25 +208,28 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
                 networkType={networkType!}
                 venueSdLan={venueSdLanInfo}
                 networkVlanPool={networkVlanPool}
-                disabledInfo={(isDisabledAll || noChangePermission)
+                disabledInfo={(isDisabledAll || noChangePermission || isPinNetwork)
                   ? {
-                    isDisabled: isDisabledAll,
+                    isDisabled: isDisabledAll || !!isPinNetwork,
                     noChangePermission,
-                    // eslint-disable-next-line max-len
-                    tooltip: isDisabledAll ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' }) : undefined
+                    tooltip: isPinNetwork
+                      ? $t(messageMappings.disable_pin_network)
+                      : (isDisabledAll
+                        ? $t(messageMappings.disable_deactivate_last_network)
+                        : undefined)
                   }
                   : undefined}
               />
-            }
+              }
+            </Loader>
           </Space>
         </Radio.Group>
       </Form.Item>
-      {isEdgePinHaEnabled && !hiddenPin && venuePinInfo &&
+      {isEdgePinHaEnabled && !hiddenPin && venuePinInfo && hasPinAllowOps &&
         <SpaceWrapper fullWidth>
           <Typography>
             {
-              // eslint-disable-next-line max-len
-              $t({ defaultMessage: '<b>Note</b>: If you\'d like to choose Personal Identity Network as tunnel type for this network, please go to the PIN wizard({pinEditLink})' }, {
+              $t(messageMappings.pin_venue_msg, {
                 b: (chr) => (<b>{chr}</b>),
                 pinEditLink: <TenantLink to={getServiceDetailsLink({
                   type: ServiceType.PIN,
@@ -239,17 +258,28 @@ const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNet
   return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }
 
-const usePermissionResult = () => {
+export const usePermissionResult = () => {
+  const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
-  // eslint-disable-next-line max-len
-  const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT }) : true
-  // eslint-disable-next-line max-len
-  const hasEdgePinPermission = isEdgePinHaEnabled ? hasServicePermission({ type: ServiceType.PIN, oper: ServiceOperation.EDIT }) : true
+  const hasSdLanPermission = () => {
+    return isAllowOpsEnabled ?
+      hasPermission({
+        rbacOpsIds: [
+          [
+            getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
+            getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
+          ]
+        ]
+      }):
+      hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
+  }
 
   // eslint-disable-next-line max-len
+  const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasSdLanPermission() : true
+  // eslint-disable-next-line max-len
   const hasSoftGrePermission = isSoftGreEnabled ? hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT }) : true
-  return hasEdgeSdLanPermission && hasEdgePinPermission && hasSoftGrePermission
+
+  return hasEdgeSdLanPermission && hasSoftGrePermission
 }

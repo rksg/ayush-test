@@ -1,19 +1,20 @@
 import { ReactElement } from 'react'
 
-import { RolesEnum, ScopeKeys }                                                                           from '@acx-ui/types'
-import { AuthRoute, filterByAccess, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
+import { Button }                                                                                                         from '@acx-ui/components'
+import { TenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { RbacOpsIds, RolesEnum, ScopeKeys }                                                                               from '@acx-ui/types'
+import { AuthRoute, filterByAccess, getUserProfile, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
+import { useConfigTemplate }             from '../../configTemplate'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
+import { getPolicyAllowedOperation, getServiceAllowedOperation } from './allowedOperationUtils'
 import {
   policyOperScopeMap, policyTypeScopeMap, serviceOperScopeMap, serviceTypeScopeMap,
   SvcPcyAllowedScope, SvcPcyAllowedType, SvcPcyScopeMap,
   SvcPcyAllowedOper, SvcPcyOperMap
 } from './servicePolicyAbacContentsMap'
-import { ServiceOperation } from './serviceRouteUtils'
-
 
 export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): Item[] {
   if (!hasCrossVenuesPermission({ needGlobalPermission: true })) return []
@@ -23,6 +24,13 @@ export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): I
 export function hasDpskAccess () {
   return hasCrossVenuesPermission()
     && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.DPSK_ADMIN])
+}
+
+export function filterDpskOperationsByPermission<Item> (rowActions: Item[]): Item[] {
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return filterByAccess(rowActions)
+  }
+  return (hasDpskAccess() && filterByAccess(rowActions)) || []
 }
 
 export function isServiceCardEnabled (
@@ -48,10 +56,22 @@ export function getScopeKeyByService (type: ServiceType, oper: ServiceOperation)
   })
 }
 
-// eslint-disable-next-line max-len
-export function hasServicePermission (props: { type: ServiceType, oper: ServiceOperation, roles?: RolesEnum[] }) {
+export function hasServicePermission (props: {
+  type: ServiceType, oper: ServiceOperation, roles?: RolesEnum[], isTemplate?: boolean
+}) {
   const specialCheckFn = () => props.type === ServiceType.DPSK && !!hasDpskAccess()
-  return hasGenericPermission(props, getScopeKeyByService, specialCheckFn)
+  return hasGenericPermission({
+    ...props,
+    getScopeKeyFn: getScopeKeyByService,
+    getAllowedOperation: getServiceAllowedOperation,
+    specialCheckFn
+  })
+}
+
+export function useTemplateAwareServicePermission (type: ServiceType, oper: ServiceOperation) {
+  const { isTemplate } = useConfigTemplate()
+
+  return hasServicePermission({ type, oper, isTemplate })
 }
 
 export function ServiceAuthRoute (props: {
@@ -60,6 +80,10 @@ export function ServiceAuthRoute (props: {
   children: ReactElement
 }) {
   const { serviceType, oper, children } = props
+
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return hasServicePermission({ type: serviceType, oper }) ? children : goToNoPermission()
+  }
 
   if ([ServiceOperation.DETAIL, ServiceOperation.LIST].includes(oper)) {
     return <AuthRoute
@@ -94,8 +118,19 @@ export function getScopeKeyByPolicy (type: PolicyType, oper: PolicyOperation): S
   })
 }
 
-export function hasPolicyPermission (props: { type: PolicyType, oper: PolicyOperation }) {
-  return hasGenericPermission(props, getScopeKeyByPolicy)
+// eslint-disable-next-line max-len
+export function hasPolicyPermission (props: { type: PolicyType, oper: PolicyOperation, isTemplate?: boolean }) {
+  return hasGenericPermission({
+    ...props,
+    getScopeKeyFn: getScopeKeyByPolicy,
+    getAllowedOperation: getPolicyAllowedOperation
+  })
+}
+
+export function useTemplateAwarePolicyPermission (type: PolicyType, oper: PolicyOperation) {
+  const { isTemplate } = useConfigTemplate()
+
+  return hasPolicyPermission({ type, oper, isTemplate })
 }
 
 export function PolicyAuthRoute (props: {
@@ -104,6 +139,10 @@ export function PolicyAuthRoute (props: {
   children: ReactElement
 }) {
   const { policyType, oper, children } = props
+
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return hasPolicyPermission({ type: policyType, oper }) ? children : goToNoPermission()
+  }
 
   if ([PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper)) {
     return <AuthRoute
@@ -116,6 +155,25 @@ export function PolicyAuthRoute (props: {
     requireCrossVenuesPermission={{ needGlobalPermission: true }}
     children={children}
   />
+}
+
+interface AddProfileButtonProps {
+  targetPath: string
+  linkText: string
+  hasSomeProfilesPermission: () => boolean
+}
+
+export function AddProfileButton (props: AddProfileButtonProps) {
+  const { targetPath, linkText, hasSomeProfilesPermission } = props
+
+  const AddButton = <TenantLink to={targetPath}>
+    <Button type='primary'>{linkText}</Button>
+  </TenantLink>
+
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return hasSomeProfilesPermission() ? AddButton : null
+  }
+  return filterByAccessForServicePolicyMutation([AddButton])[0]
 }
 
 function isCardEnabled<T, U> (
@@ -170,24 +228,32 @@ function getSpecialScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowed
   return null
 }
 
-type PermissionProps<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> = {
+type hasGenericPermissionProps<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> = {
   type: T
   oper: U
-  roles?: RolesEnum[]
+  roles?: RolesEnum[],
+  isTemplate?: boolean
+  getScopeKeyFn: (type: T, oper: U) => ScopeKeys,
+  getAllowedOperation: (type: T, oper: U, isTemplate?: boolean) => RbacOpsIds | undefined,
+  specialCheckFn?: () => boolean
 }
 
 function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
-  props: PermissionProps<T, U>,
-  getScopeKeyFn: (type: T, oper: U) => ScopeKeys,
-  specialCheckFn?: () => boolean
+  props: hasGenericPermissionProps<T, U>
 ): boolean {
-  const { type, oper, roles } = props
-  const scopeKeys = getScopeKeyFn(type, oper)
+  // eslint-disable-next-line max-len
+  const { type, oper, roles, isTemplate, getScopeKeyFn, specialCheckFn, getAllowedOperation } = props
+
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return hasPermission({ rbacOpsIds: getAllowedOperation(type, oper, isTemplate) })
+  }
 
   // eslint-disable-next-line max-len
   if ([ServiceOperation.LIST, ServiceOperation.DETAIL, PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper as unknown as SvcPcyAllowedOper)) {
     return true // Always allow users to access the view page
   }
+
+  const scopeKeys = getScopeKeyFn(type, oper)
 
   if (specialCheckFn && specialCheckFn()) {
     return true

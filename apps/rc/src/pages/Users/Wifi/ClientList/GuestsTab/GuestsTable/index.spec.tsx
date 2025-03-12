@@ -12,8 +12,7 @@ import {
   render,
   screen,
   waitFor,
-  within,
-  fireEvent
+  within
 } from '@acx-ui/test-utils'
 import { RolesEnum, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
@@ -43,9 +42,37 @@ jest.mock('@acx-ui/rc/utils', () => ({
   downloadFile: jest.fn().mockImplementation(() => mockedDownloadFileReq)
 }))
 
+const mockFormData = new FormData()
+
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  NetworkForm: () => <div data-testid='network-form' />
+  NetworkForm: () => <div data-testid='network-form' />,
+  ImportFileDrawer: ({ importRequest, onClose, visible }: {
+    visible: boolean
+    importRequest: (formData: FormData, values: object) => void
+    onClose: () => void
+  }) =>
+    visible && <div data-testid={'ImportFileDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        importRequest(mockFormData, { wifiNetworkId: 'network-id', deliveryMethods: [] })
+      }}>Import</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>,
+  CsvSize: {},
+  ImportFileDrawerType: {},
+  ClientHealthIcon: () => <div data-testid='ClientHealthIcon' />
+}))
+
+jest.mock('./addGuestDrawer', () => ({
+  ...jest.requireActual('./addGuestDrawer'),
+  AddGuestDrawer: () => <div data-testid='AddGuestDrawer' />
+}))
+
+jest.mock('../GuestsDetail/generateNewPasswordModal', () => ({
+  GenerateNewPasswordModal: () => <div data-testid='GenerateNewPasswordModal' />
 }))
 
 const mockGuestData = { data: GuestList, isLoading: false }
@@ -184,10 +211,7 @@ describe('Guest Table', () => {
     expect(await within(table).findByText('test1')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
-    expect(await screen.findByTestId('saveBtn')).toBeVisible()
-    const dialog = await screen.findByRole('dialog')
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(dialog).not.toBeVisible())
+    expect(await screen.findByTestId('AddGuestDrawer')).toBeVisible()
   })
 
   it('should render Add Guest Pass Network modal correctly', async () => {
@@ -306,7 +330,6 @@ describe('Guest Table', () => {
     const dialog = await screen.findByRole('dialog')
     const closeButton = await within(dialog).findByTestId('CloseSymbol')
     expect(closeButton).toBeVisible()
-    await userEvent.click(closeButton)
   })
 
   it('should render detail by click created time', async () => {
@@ -334,7 +357,6 @@ describe('Guest Table', () => {
     const dialog = await screen.findByRole('dialog')
     const closeButton = await within(dialog).findByTestId('CloseSymbol')
     expect(closeButton).toBeVisible()
-    await userEvent.click(closeButton)
   })
 
   it('should render online guest client detail', async () => {
@@ -432,22 +454,12 @@ describe('Guest Table', () => {
 
     const importBtn = await screen.findByRole('button', { name: 'Import from file' })
     await userEvent.click(importBtn)
-    const dialog = await screen.findByRole('dialog')
-    const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-    const allowedNetworkCombo =
-      await within(dialog).findByLabelText('Allowed Network', { exact: false })
-    fireEvent.mouseDown(allowedNetworkCombo)
-    const option = await screen.findByText('guest pass wlan2')
-    await userEvent.click(option)
-    await userEvent.click(await within(dialog).findByRole('checkbox', { name: /Print Guest pass/ }))
-    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).not.toBeChecked()
+
+    const dialog = await screen.findByTestId('ImportFileDrawer')
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
-    expect(await screen.findByText(/Guest pass won\’t be printed or sent/)).toBeVisible()
+    expect(await screen.findByText(/Guest pass won’t be printed or sent/)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
     await waitFor(() => expect(mockedImportFileReq).toBeCalledTimes(1))
-    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
 
   it('should show correct template file after guest-manual-password-toggle turn on', async () => {
@@ -467,14 +479,7 @@ describe('Guest Table', () => {
     const importBtn = await screen.findByRole('button', { name: 'Import from file' })
     await userEvent.click(importBtn)
 
-    const manualRadio = screen.queryByTestId('manual-radio')
-    expect(manualRadio).not.toBeInTheDocument()
-
-    const link = screen.getByRole('link', {
-      name: /download template/i
-    })
-    // eslint-disable-next-line max-len
-    expect(link).toHaveAttribute('href', 'assets/templates/guests_import_template_with_guestpass.csv')
+    expect(await screen.findByTestId('ImportFileDrawer')).toBeVisible()
   })
 
 
@@ -515,9 +520,7 @@ describe('Guest Table', () => {
       const table = await screen.findByRole('table')
       expect(await within(table).findByText('test1')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
-      const dialog = await screen.findByRole('dialog')
-      await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(dialog).not.toBeVisible())
+      expect(await screen.findByTestId('AddGuestDrawer')).toBeVisible()
     })
 
     it('should correctly hide with custom scopeKeys', async () => {

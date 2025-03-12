@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Root }          from 'react-dom/client'
-import { addMiddleware } from 'redux-dynamic-middlewares'
+import { Root } from 'react-dom/client'
 
 import {
   ConfigProvider,
@@ -13,7 +12,7 @@ import { TenantDetail }                       from '@acx-ui/msp/utils'
 import { useGetPreferencesQuery }             from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
 import { BrowserRouter }                      from '@acx-ui/react-router-dom'
-import { Provider }                           from '@acx-ui/store'
+import { Provider, dynamicMiddleware }        from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -27,7 +26,8 @@ import {
   useLocaleContext,
   LangKey,
   DEFAULT_SYS_LANG,
-  initializeSockets
+  initializeSockets,
+  LoadTimeProvider
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -141,11 +141,13 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
+  const rbacOpsApiEnabled = userProfile.rbacOpsApiEnabled
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
+        (rbacOpsApiEnabled ? !Boolean(userProfile.allowedOperations.length) : false) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
@@ -154,8 +156,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
-  addMiddleware(errorMiddleware)
-
+  dynamicMiddleware.addMiddleware(errorMiddleware)
   initializeSockets()
 
   root.render(
@@ -167,7 +168,9 @@ export async function init (root: Root) {
               <PreferredLangConfigProvider>
                 <DataGuardLoader>
                   <React.Suspense fallback={null}>
-                    <AllRoutes />
+                    <LoadTimeProvider>
+                      <AllRoutes />
+                    </LoadTimeProvider>
                   </React.Suspense>
                 </DataGuardLoader>
               </PreferredLangConfigProvider>

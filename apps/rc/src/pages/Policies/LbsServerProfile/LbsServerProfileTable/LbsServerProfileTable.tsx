@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
 import { PageHeader, TableProps, Loader, Table, Button } from '@acx-ui/components'
@@ -20,11 +21,12 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   useTableQuery,
-  Venue
+  Venue,
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'lbsServerVenueName', 'server', 'venueIds'],
@@ -60,30 +62,31 @@ export default function LbsServerProfileTable () {
     )
   }
 
-  const rowActions: TableProps<LbsServerProfileViewModel>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [WifiScopes.DELETE],
-      onClick: (selectedRows: LbsServerProfileViewModel[], clearSelection) => {
-        doDelete(selectedRows, clearSelection)
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [WifiScopes.UPDATE],
-      visible: (selectedRows) => selectedRows?.length === 1,
-      onClick: ([{ id }]) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.LBS_SERVER_PROFILE,
-            oper: PolicyOperation.EDIT,
-            policyId: id
-          })
-        })
-      }
+  const rowActions: TableProps<LbsServerProfileViewModel>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.DELETE),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.DELETE),
+    onClick: (selectedRows: LbsServerProfileViewModel[], clearSelection) => {
+      doDelete(selectedRows, clearSelection)
     }
-  ]
+  }, {
+    label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.EDIT),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.EDIT),
+    visible: (selectedRows) => selectedRows?.length === 1,
+    onClick: ([{ id }]) => {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
+          type: PolicyType.LBS_SERVER_PROFILE,
+          oper: PolicyOperation.EDIT,
+          policyId: id
+        })
+      })
+    }
+  }]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -99,9 +102,10 @@ export default function LbsServerProfileTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={hasCrossVenuesPermission() && filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.LBS_SERVER_PROFILE, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.LBS_SERVER_PROFILE,
               oper: PolicyOperation.CREATE
@@ -122,8 +126,8 @@ export default function LbsServerProfileTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCrossVenuesPermission() && hasPermission() && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

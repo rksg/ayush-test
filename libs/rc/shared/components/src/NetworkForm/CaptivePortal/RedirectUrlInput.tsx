@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import {
   Checkbox,
@@ -10,16 +10,25 @@ import { useIntl }             from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { URLRegExp }                  from '@acx-ui/rc/utils'
+import { HttpURLRegExp }              from '@acx-ui/rc/utils'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 export function RedirectUrlInput () {
   const intl = useIntl()
+
+  const {
+    data,
+    setData,
+    editMode
+  } = useContext(NetworkFormContext)
 
   const REDIRECT_TOOLTIP =
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
 
   const REDIRECT_INVALID_MSG =
-    intl.$t({ defaultMessage: 'Please enter the redirect URL. This field cannot be left blank.' })
+    // eslint-disable-next-line max-len
+    intl.$t({ defaultMessage: 'Please enter the redirect URL. It should start with \'http\' or \'https\' and include a valid domain name or IP address.' })
 
   const form = Form.useFormInstance()
   const { useWatch } = Form
@@ -37,7 +46,21 @@ export function RedirectUrlInput () {
       form.setFieldValue(['guestPortal','redirectUrl'], redirectUrlValue)
     } else {
       setRedirectUrlValue(redirectUrl)
-      form.setFieldValue(['guestPortal','redirectUrl'], null)
+      form.setFieldValue(['guestPortal','redirectUrl'], undefined)
+    }
+
+    if(editMode && data) {
+      setData && setData({
+        ...data,
+        guestPortal: {
+          ...data.guestPortal,
+          ...(e.target.checked ? {
+            redirectUrl: redirectUrlValue
+          } : {
+            redirectUrl: undefined
+          })
+        }
+      })
     }
   }
 
@@ -63,7 +86,7 @@ export function RedirectUrlInput () {
           { required: redirectCheckbox,
             message: REDIRECT_INVALID_MSG
           },
-          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve(),
+          { validator: (_, value) => redirectCheckbox ? HttpURLRegExp(value) : Promise.resolve(),
             message: REDIRECT_INVALID_MSG
           }
         ]}

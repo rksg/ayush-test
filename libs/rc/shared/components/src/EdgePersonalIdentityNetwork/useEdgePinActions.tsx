@@ -7,11 +7,13 @@ import {
   useUpdateEdgePinMutation
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorDetails,
   CommonErrorsResult,
   CommonResult,
   PersonalIdentityNetworkFormData
 } from '@acx-ui/rc/utils'
+import {
+  CatchErrorDetails
+} from '@acx-ui/utils'
 
 // return the networks NOT included in `second`
 const differenceNetworks = (first: string[], second: string[]) => {

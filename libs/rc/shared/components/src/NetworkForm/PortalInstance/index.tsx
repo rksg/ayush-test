@@ -6,6 +6,7 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
+import { baseUrlFor }                        from '@acx-ui/config'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useGetPortalLangMutation,
@@ -26,12 +27,13 @@ import { getImageDownloadUrl } from '@acx-ui/utils'
 
 import { PortalDemo }        from '../../services/PortalDemo'
 import { initialPortalData } from '../../services/PortalForm'
-import Photo                 from '../assets/images/portal-demo/PortalPhoto.svg'
-import Powered               from '../assets/images/portal-demo/PoweredLogo.svg'
-import Logo                  from '../assets/images/portal-demo/RuckusCloud.svg'
 import NetworkFormContext    from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
+
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 type ImagePortalData = {
   poweredImg: string,
@@ -59,10 +61,18 @@ const PortalInstance = (props: {
     googleEnabled: false,
     twitterEnabled: false,
     linkedInEnabled: false,
-    smsEnabled: false
+    smsEnabled: false,
+    whatsappEnabled: false,
+    emailEnabled: false
   }
   if (networkData?.guestPortal?.enableSmsLogin) {
     socials.smsEnabled = true
+  }
+  if (networkData?.guestPortal?.enableWhatsappLogin) {
+    socials.whatsappEnabled = true
+  }
+  if (networkData?.guestPortal?.enableEmailLogin) {
+    socials.emailEnabled = true
   }
   if (socialIdentities) {
     socials.facebookEnabled = socialIdentities.facebook ? true : false
@@ -215,7 +225,9 @@ const PortalInstance = (props: {
                   ...portalList
                 ]}
                 onChange={(v) => {
-                  setPortal(v, isEnabledRbacService)
+                  if(v) {
+                    setPortal(v, isEnabledRbacService)
+                  }
                 }}
               />
             }

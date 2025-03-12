@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { EditPortDrawer, SwitchLagModal }                       from '@acx-ui/rc/components'
-import { Lag, StackMember, SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { EditPortDrawer, SwitchLagModal }                                  from '@acx-ui/rc/components'
+import { useGetFlexAuthenticationProfilesQuery }                           from '@acx-ui/rc/services'
+import { Lag, StackMember, SwitchPortStatus, SwitchRow, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -47,18 +49,33 @@ export function SwitchFrontRearView (props:{
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [breakoutPorts, setBreakoutPorts] = useState([] as SwitchPortStatus[])
   const { serialNumber } = params
-  const {
-    switchDetailsContextData
-  } = useContext(SwitchDetailsContext)
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
+  const [ switchList, setSwitchList ] = useState([] as SwitchRow[])
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   useEffect(() => {
     if (stackMember && switchDetail) {
+      setSwitchList([{
+        id: switchDetail.id, firmware: switchDetail?.firmware
+      }] as SwitchRow[])
       genSlotViewData()
     }
   }, [stackMember, switchDetail])
 
+  const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
+    payload: {
+      pageSize: 10000,
+      sortField: 'profileName',
+      sortOrder: 'ASC'
+    }
+  }, {
+    skip: !isSwitchFlexAuthEnabled,
+    selectFromResult: ( { data } ) => ({
+      authenticationProfiles: data?.data
+    })
+  })
 
   const genSlotViewData = () => {
     if (switchDetail.isStack || switchDetail.formStacking) {
@@ -119,6 +136,8 @@ export function SwitchFrontRearView (props:{
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={false}
       selectedPorts={selectedPorts}
+      switchList={switchList}
+      authProfiles={authenticationProfiles}
     />
     }
 
@@ -146,6 +165,8 @@ export function SwitchFrontRearView (props:{
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={false}
       selectedPorts={selectedPorts}
+      switchList={switchList}
+      authProfiles={authenticationProfiles}
       onBackClick={() => {
         setBreakoutPortDrawerVisible(true)
         setSelectedPorts([])

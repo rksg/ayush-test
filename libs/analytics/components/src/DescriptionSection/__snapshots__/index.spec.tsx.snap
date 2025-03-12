@@ -94,6 +94,34 @@ exports[`DescriptionRow should match snapshot 4`] = `
 </DocumentFragment>
 `;
 
+exports[`DescriptionRow should match snapshot 5`] = `
+<DocumentFragment>
+  .c0 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c0 > span:after {
+  content: '';
+  display: block;
+}
+
+<span
+    class="c0"
+  >
+    <span
+      class=""
+    >
+      <div
+        data-testid="children"
+      >
+        Children
+      </div>
+    </span>
+  </span>
+</DocumentFragment>
+`;
+
 exports[`DescriptionSection should match snapshot 1`] = `
 <DocumentFragment>
   .c1 > span {

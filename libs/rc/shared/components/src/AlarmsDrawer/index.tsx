@@ -12,7 +12,8 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { formatter }  from '@acx-ui/formatter'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -26,12 +27,14 @@ import {
   CommonUrlsInfo,
   useTableQuery,
   EventSeverityEnum,
-  EventTypeEnum
+  EventTypeEnum,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { store }                 from '@acx-ui/store'
-import { RolesEnum }             from '@acx-ui/types'
-import { hasRoles }              from '@acx-ui/user'
+import { useParams, TenantLink }                          from '@acx-ui/react-router-dom'
+import { store }                                          from '@acx-ui/store'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -75,11 +78,16 @@ const defaultPayload: {
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { visible, setVisible } = props
+  const isFilterProductToggleEnabled = useIsSplitOn(Features.ALARM_WITH_PRODUCT_FILTER_TOGGLE)
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     setSeverity(e.detail.data.name)
+    if (isFilterProductToggleEnabled) {
+      setProductType(e.detail.data.product ?? 'all')
+    }
 
     if(e.detail.data.venueId){
       setVenueId(e.detail.data.venueId)
@@ -95,6 +103,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   }) as EventListener)
 
   const [severity, setSeverity] = useState('all')
+  const [productType, setProductType] = useState('all')
   const [venueId, setVenueId] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
 
@@ -145,6 +154,9 @@ export function AlarmsDrawer (props: AlarmsType) {
   useEffect(()=>{
     const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
+    if (isFilterProductToggleEnabled && productType !== 'all') {
+      filters = { ...filters, ...{ product: [productType] } }
+    }
     tableQuery.setPayload({
       ...payload,
       filters
@@ -168,7 +180,7 @@ export function AlarmsDrawer (props: AlarmsType) {
 
     if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
       const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
-      if(paginationValue.page > totalPage){
+      if(paginationValue.page >= totalPage){
         const pagination = {
           current: totalPage,
           pageSize: paginationValue.pageSize
@@ -184,7 +196,7 @@ export function AlarmsDrawer (props: AlarmsType) {
         tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
       }
     }
-  }, [tableQuery.data, severity, serialNumber, venueId])
+  }, [tableQuery.data, severity, serialNumber, venueId, productType])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
@@ -231,7 +243,11 @@ export function AlarmsDrawer (props: AlarmsType) {
     return venueIds
   }
 
-  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.clearAlarm),
+      getOpsApi(CommonRbacUrlsInfo.clearAlarmByVenue)
+    ])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const alarmList = <>
     <UI.FilterRow>
@@ -251,8 +267,32 @@ export function AlarmsDrawer (props: AlarmsType) {
           { $t({ defaultMessage: 'Major' }) }
         </Select.Option>
       </Select>
+      {isFilterProductToggleEnabled && <Select value={productType}
+        size='small'
+        onChange={(val)=>{
+          setProductType(val)
+        }}
+        dropdownMatchSelectWidth={false}>
+        <Select.Option value={'all'}>
+          { $t({ defaultMessage: 'Products' }) }
+        </Select.Option>
+        <Select.Option value={'WIFI'}>
+          { $t({ defaultMessage: 'Wi-Fi' }) }
+        </Select.Option>
+        <Select.Option value={'SWITCH'}>
+          { $t({ defaultMessage: 'Switch' }) }
+        </Select.Option>
+        <Select.Option value={'EDGE'}>
+          { $t({ defaultMessage: 'RUCKUS Edge' }) }
+        </Select.Option>
+      </Select>}
+
       <Button type='link'
-        disabled={!hasPermission || tableQuery.data?.totalCount === 0}
+        disabled={!hasPermission
+          || tableQuery.data?.totalCount === 0
+          || tableQuery.isFetching
+          || isAlarmCleaning || isAlarmByVenueCleaning
+        }
         size='small'
         style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={async ()=>{
@@ -374,7 +414,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   </>
 
   return <UI.Drawer
-    width={400}
+    width={isFilterProductToggleEnabled ? 415 : 400}
     title={$t({ defaultMessage: 'Alarms' })}
     visible={visible}
     onClose={() => {

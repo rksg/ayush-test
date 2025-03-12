@@ -12,14 +12,16 @@ import { TenantLink }                  from '@acx-ui/react-router-dom'
 import { hasAccess, hasRaiPermission } from '@acx-ui/user'
 
 import {
+  btmEventCategories,
+  ConnectionEventsCategoryMap,
   DisplayEvent,
-  eventColorByCategory,
   IncidentDetails
 } from './config'
-import { ConnectionEventPopover }                              from './ConnectionEvent'
-import { ClientInfoData }                                      from './services'
-import * as UI                                                 from './styledComponents'
-import { transformEvents,formatEventDesc, transformIncidents } from './util'
+import { ConnectionEventPopover }                                             from './ConnectionEvent'
+import { ClientInfoData }                                                     from './services'
+import * as UI                                                                from './styledComponents'
+import useClientTroubleshootingConfig                                         from './useClientTroubleshootingConfig'
+import { transformEvents,formatEventDesc, transformIncidents, getEventColor } from './util'
 
 import { Filters } from '.'
 
@@ -44,11 +46,13 @@ export type FormattedEvent = {
   event: DisplayEvent
 }
 
-const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
+const transformData = (
+  clientInfo: ClientInfoData, filters: Filters, intl: IntlShape, isBtmEventsEnabled: boolean
+) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const events = transformEvents(
+  let events = transformEvents(
     clientInfo.connectionEvents,
     types,
     radios
@@ -59,8 +63,15 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     types,
     intl
   )
+
+  if (!isBtmEventsEnabled) {
+    events = events.filter(({ category }) =>
+      !btmEventCategories.includes(category as keyof ConnectionEventsCategoryMap)
+    )
+  }
+
   return [ ...events.map((event: DisplayEvent) => {
-    const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
+    const color = getEventColor(event.category, event.btmInfo)
     return {
       start: event.start,
       date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(event.start),
@@ -128,7 +139,9 @@ export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters, onPanelCallback } = props
-  const histData = transformData(data!, filters!, intl)
+  const { isBtmEventsOn } = useClientTroubleshootingConfig()
+
+  const histData = transformData(data!, filters!, intl, isBtmEventsOn)
   return (
     <UI.History>
       <UI.HistoryHeader>

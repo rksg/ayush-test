@@ -6,6 +6,7 @@ import moment                                                    from 'moment'
 import { useIntl }                                               from 'react-intl'
 
 import { Button, DatePicker, Loader, showToast } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { useGetCalculatedLicencesMutation }      from '@acx-ui/msp/services'
 import { LicenseCalculatorData }                 from '@acx-ui/msp/utils'
@@ -16,6 +17,8 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const [ maxPeriod, setMaxPeriod ] = useState<string>()
+
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
 
   const [
     getCalculatedLicense,
@@ -73,9 +76,12 @@ export default function MaxPeriod (props: { showExtendedTrial: boolean }) {
         initialValue={'paidLicenses'}
         children={<Radio.Group>
           <Space direction='vertical'>
-            <Radio value={'paidLicenses'}>{ $t({ defaultMessage: 'Paid Licenses' })}</Radio>
-            <Radio value={'extendedTrialLicenses'}>{
-              $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
+            <Radio value={'paidLicenses'}>{solutionTokenFFToggled
+              ? $t({ defaultMessage: 'Device Networking Paid Licenses' })
+              : $t({ defaultMessage: 'Paid Licenses' })}</Radio>
+            <Radio value={'extendedTrialLicenses'}>{solutionTokenFFToggled
+              ? $t({ defaultMessage: 'Device Networking Extended Trial Licenses' })
+              : $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
           </Space>
         </Radio.Group>}/> }
       <Form.Item

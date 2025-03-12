@@ -17,10 +17,8 @@ const { mockEdgeClusterList } = EdgeGeneralFixtures
 jest.mock('./EdgeAlarmWidget', () => ({
   EdgeAlarmWidget: () => <div data-testid='rc-EdgeAlarmWidget' />
 }))
-jest.mock('./EdgePortsWidget', () => ({
-  EdgePortsWidget: () => <div data-testid='rc-EdgePortsWidget' />
-}))
-jest.mock('./EdgeSysResourceBox', () => ({
+jest.mock('@acx-ui/edge/components', () => ({
+  EdgePortsWidget: () => <div data-testid='rc-EdgePortsWidget' />,
   EdgeSysResourceBox: () => <div data-testid='rc-EdgeSysResourceBox' />
 }))
 jest.mock('./EdgeDetailsDrawer', () => ({

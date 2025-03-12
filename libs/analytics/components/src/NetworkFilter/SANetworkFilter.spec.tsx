@@ -4,11 +4,11 @@ import { Provider }     from 'react-redux'
 import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
 import { dataApiURL, store }                from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { DateRange, NetworkNode }           from '@acx-ui/utils'
 
 import * as fixtures                              from './__tests__/fixtures'
 import { SANetworkFilter, filterSystemAndDomain } from './SANetworkFilter'
-import { api, NetworkNode }                       from './services'
+import { api }                                    from './services'
 
 const mockSetNetworkPath = jest.fn()
 const filters = {

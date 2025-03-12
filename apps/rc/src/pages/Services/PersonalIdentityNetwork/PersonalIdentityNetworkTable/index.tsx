@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData, EdgeTableCompatibilityWarningTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
@@ -25,9 +25,11 @@ import {
 import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
+  IncompatibilityFeatures,
   PersonalIdentityNetworksViewData,
   ServiceOperation,
   ServiceType,
@@ -35,8 +37,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                       from '@acx-ui/utils'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
 
 const getEdgePinPayload = {
   fields: [
@@ -152,9 +152,10 @@ const PersonalIdentityNetworkTable = () => {
             })}>
             {row.name}
           </TenantLink>
-          <CompatibilityCheck
+          <EdgeTableCompatibilityWarningTooltip
             serviceId={serviceId!}
-            compatibilityData={compatibilityData.compatibilities}
+            featureName={IncompatibilityFeatures.PIN}
+            compatibility={compatibilityData.compatibilities}
           />
         </Space>
       }
@@ -250,6 +251,7 @@ const PersonalIdentityNetworkTable = () => {
   const rowActions: TableProps<PersonalIdentityNetworksViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -266,6 +268,7 @@ const PersonalIdentityNetworkTable = () => {
     },
     {
       scopeKey: getScopeKeyByService(ServiceType.PIN, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.DELETE),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -308,6 +311,7 @@ const PersonalIdentityNetworkTable = () => {
             })}
             // eslint-disable-next-line max-len
             scopeKey={getScopeKeyByService(ServiceType.PIN, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.CREATE)}
           >
             {/* eslint-disable-next-line max-len */}
             <Button type='primary'>{$t({ defaultMessage: 'Add Personal Identity Network' })}</Button>

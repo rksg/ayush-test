@@ -14,7 +14,7 @@ import { Features, useIsSplitOn }                                               
 import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation, useGetVenueQuery } from '@acx-ui/rc/services'
 import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                                        from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../../index'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 import { LabelOfInput }             from './styledComponents'
@@ -32,10 +32,11 @@ export enum WanConnectionEnum {
   CELLULAR = 'CELLULAR',
 }
 
-export function CellularOptionsForm () {
+export function CellularOptionsForm (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId, venueId } = useParams()
+  const { isAllowEdit=true } = props
   const formRef = useRef<StepsFormLegacyInstance>()
   const form = Form.useFormInstance()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -200,6 +201,7 @@ export function CellularOptionsForm () {
           onValuesChange={onChange}>
           <div data-testid='primarySim'>
             <CellularRadioSimSettings
+              disabled={!isAllowEdit}
               editData={editData}
               simCardNumber={1}
               countryCode={isUseRbacApi
@@ -212,6 +214,7 @@ export function CellularOptionsForm () {
               formControlName={'primarySim'} />
           </div>
           <CellularRadioSimSettings
+            disabled={!isAllowEdit}
             editData={editData}
             simCardNumber={2}
             legend={$t({ defaultMessage: 'Secondary SIM' })}
@@ -231,6 +234,7 @@ export function CellularOptionsForm () {
             }]}
             children={
               <Select
+                disabled={!isAllowEdit}
                 style={{ width: '330px' }}>
                 <Option value={WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER}>
                   {$t({ defaultMessage: 'Ethernet (Primary) with cellular failover' })}
@@ -265,7 +269,7 @@ export function CellularOptionsForm () {
                     'Primary WAN Recovery Timer must be between 10 and 300'
                 })
               }]}
-              children={<InputNumber style={{ width: '150px' }} />}
+              children={<InputNumber disabled={!isAllowEdit} style={{ width: '150px' }} />}
             />
           </div>
         </StepsFormLegacy.StepForm>

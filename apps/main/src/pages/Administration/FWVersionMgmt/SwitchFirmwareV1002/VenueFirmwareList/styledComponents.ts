@@ -172,8 +172,9 @@ export const Description = styled.div`
   color: var(--acx-primary-black);
   padding: 20px;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
   ol, ul {
+    list-style-type: "*   ";
     padding-left: 15px;
     padding-top: 15px;
     line-height: 20px;

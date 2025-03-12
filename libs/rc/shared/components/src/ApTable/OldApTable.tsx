@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { Ref, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { Badge }               from 'antd'
 import { find }                from 'lodash'
 import { useIntl }             from 'react-intl'
@@ -511,6 +511,8 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
     ...(apTxPowerFlag ? [{
       key: 'actualTxPower',
       dataIndex: 'actualTxPower',
+      show: false,
+      sorter: false,
       title: $t({ defaultMessage: 'Tx Power' }),
       children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
         if (!visible) return acc

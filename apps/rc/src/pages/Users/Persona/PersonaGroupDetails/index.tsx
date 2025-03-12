@@ -12,6 +12,7 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupDrawer,
+  PolicySetLink,
   VenueLink,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -21,11 +22,13 @@ import {
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
   useLazyGetEdgePinByIdQuery,
-  useLazyGetVenueQuery
+  useLazyGetVenueQuery,
+  useLazyGetAdaptivePolicySetQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }             from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }            from '@acx-ui/utils'
+import { PersonaGroup, PersonaUrls }                    from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -36,16 +39,20 @@ function PersonaGroupDetailsPageHeader (props: {
   const { title, onClick } = props
 
   const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
-    && [
-      <Button type={'primary'} onClick={onClick} >
+    ? [
+      <Button
+        type={'primary'}
+        onClick={onClick}
+        rbacOpsIds={[getOpsApi(PersonaUrls.updatePersonaGroup)]}
+      >
         {$t({ defaultMessage: 'Configure' })}
       </Button>
-    ]
+    ] : []
 
   return (
     <PageHeader
       title={title}
-      extra={extra}
+      extra={filterByOperations(extra)}
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
@@ -64,9 +71,12 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const basePath = useTenantLink('users/identity-management/identity-group')
+  const navigate = useNavigate()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnable = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
@@ -75,12 +85,14 @@ function PersonaGroupDetails () {
   const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [pinDisplay, setPinDisplay] = useState<{ id?: string, name?: string }>()
   const [certTemplateDisplay, setCertTemplateDisplay] = useState<{ id?: string, name?: string }>()
+  const [policySetDisplay, setPolicySetDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getCertTemplateById] = useLazyGetCertificateTemplateQuery()
+  const [ getPolicySetById ] = useLazyGetAdaptivePolicySetQuery()
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
@@ -93,7 +105,8 @@ function PersonaGroupDetails () {
       dpskPoolId,
       personalIdentityNetworkId,
       propertyId,
-      certificateTemplateId
+      certificateTemplateId,
+      policySetId
     } = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
@@ -135,6 +148,16 @@ function PersonaGroupDetails () {
         .then(result => {
           setCertTemplateDisplay({
             id: certificateTemplateId,
+            name: result?.data?.name
+          })
+        })
+    }
+
+    if (policySetId) {
+      getPolicySetById({ params: { policySetId } })
+        .then(result => {
+          setPolicySetDisplay({
+            id: policySetId,
             name: result?.data?.name
           })
         })
@@ -190,6 +213,15 @@ function PersonaGroupDetails () {
           name={certTemplateDisplay?.name}
           id={detailsQuery.data?.certificateTemplateId}
         />
+    }] : []),
+    ...(isCertTemplateEnable ? [{
+      title: $t({ defaultMessage: 'Adaptive Policy' }),
+      content:
+        <PolicySetLink
+          showNoData={true}
+          name={policySetDisplay?.name}
+          id={detailsQuery.data?.policySetId}
+        />
     }] : [])
   ]
 
@@ -197,7 +229,16 @@ function PersonaGroupDetails () {
     <>
       <PersonaGroupDetailsPageHeader
         title={detailsQuery.data?.name ?? personaGroupId}
-        onClick={() => setEditVisible(true)}
+        onClick={() => {
+          if (isIdentityRefactorEnabled) {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/${personaGroupId}/edit`
+            })
+          } else {
+            setEditVisible(true)
+          }
+        }}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

@@ -5,12 +5,13 @@ import _, { find } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
+  ColumnState,
+  ColumnType,
   Loader,
   Table,
-  TableProps,
-  ColumnState,
-  ColumnType
+  TableProps
 } from '@acx-ui/components'
+import { EdgePermissions } from '@acx-ui/edge/components'
 import {
   Features,
   useIsSplitOn
@@ -25,6 +26,9 @@ import {
 import {
   EdgeStatus,
   EdgeStatusEnum,
+  EdgeUrlsInfo,
+  FILTER,
+  SEARCH,
   TABLE_QUERY,
   TableQuery,
   allowRebootShutdownForStatus,
@@ -34,10 +38,10 @@ import {
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
-import { exportMessageMapping }                   from '@acx-ui/utils'
+import { exportMessageMapping, getOpsApi }        from '@acx-ui/utils'
 
 import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
-import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
 import { seriesMappingAP }                                from '../DevicesWidget'
 import { useEdgeActions, useIsEdgeFeatureReady }          from '../useEdgeActions'
 
@@ -99,6 +103,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  // eslint-disable-next-line max-len
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
 
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   // eslint-disable-next-line max-len
@@ -109,7 +115,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
     defaultPayload: incompatibleCheck
       ? {
         ...defaultEdgeTablePayload,
-        fields: (defaultEdgeTablePayload.fields as string[]).concat(['incompatible'])
+        fields: (defaultEdgeTablePayload.fields as string[]).concat(
+          isEdgeCompatibilityEnhancementEnabled ? ['incompatibleV1_1'] : ['incompatible'])
       }
       : defaultEdgeTablePayload,
     sorter: {
@@ -130,7 +137,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     { payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data }) => {
         return {
-          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+          venueOptions: data?.data?.map(item => ({ value: item.name, key: item.id }))
         }
       }
     })
@@ -145,6 +152,17 @@ export const EdgesTable = (props: EdgesTableProps) => {
         setShowFeatureCompatibilitiy(state['incompatible'])
       }
     }
+  }
+
+  const handleFilterChange = (
+    filters: FILTER,
+    customSearch: SEARCH
+  ) => {
+    const customFilters = { ...filters }
+    if (filters?.firmwareVersion) {
+      customFilters.firmwareVersion = filters.firmwareVersion.slice(1)
+    }
+    tableQuery.handleFilterChange?.(customFilters, customSearch)
   }
 
   const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => [
@@ -279,6 +297,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: EdgePermissions.editEdgeNode,
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -291,6 +310,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.DELETE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.deleteEdge)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         deleteEdges(rows, clearSelection)
@@ -298,6 +318,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.reboot)],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
@@ -307,6 +328,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.shutdown)],
       visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Shutdown' }),
@@ -316,6 +338,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.sendOtp)],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
@@ -324,6 +347,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },{
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(EdgeUrlsInfo.factoryReset)],
       visible: (selectedRows) => (
         selectedRows.length === 1 &&
         allowResetForStatus(selectedRows[0]?.deviceStatus)
@@ -344,7 +368,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         columnState={isEdgeCompatibilityEnabled?{ onChange: handleColumnStateChange } : {}}
         enableApiFilter
         iconButton={(exportDevice && false) ? {

@@ -20,11 +20,22 @@ import {
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueTemplateDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
-import { APMeshRole, DHCPSaveData, Mesh, VenueSettings, generateAlphanumericString, useConfigTemplate, VenueDefaultRegulatoryChannels } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                                                           from '@acx-ui/utils'
+import {
+  APMeshRole,
+  DHCPSaveData,
+  Mesh,
+  VenueSettings,
+  generateAlphanumericString,
+  useConfigTemplate,
+  VenueDefaultRegulatoryChannels
+} from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                                                                from '../../../index'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
@@ -120,10 +131,11 @@ const useVenueWifiSettings = (venueId: string | undefined): VenueSettings | unde
     : venueSettings
 }
 
-export function MeshNetwork () {
+export function MeshNetwork (props: VenueWifiConfigItemProps) {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
+  const { isAllowEdit=true } = props
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
@@ -421,7 +433,7 @@ export function MeshNetwork () {
             <Switch
               data-testid='mesh-switch'
               checked={meshEnabled}
-              disabled={!isAllowEnableMesh}
+              disabled={!isAllowEdit || !isAllowEnableMesh}
               onClick={toggleMesh}
             />
           </Tooltip>}
@@ -454,7 +466,7 @@ export function MeshNetwork () {
         }
         />
         { !isSsidEditMode ? <>
-          <Button type='link' disabled={isReadOnly} onClick={handleSsidEdit}>
+          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handleSsidEdit}>
             {$t({ defaultMessage: 'Change' })}
           </Button>
           <MeshInfoIcon />
@@ -488,7 +500,7 @@ export function MeshNetwork () {
           />}
         />
         { !isPassphraseEditMode ? <>
-          <Button type='link' disabled={isReadOnly} onClick={handlePassphraseEdit}>
+          <Button type='link' disabled={!isAllowEdit || isReadOnly} onClick={handlePassphraseEdit}>
             {$t({ defaultMessage: 'Change' })}
           </Button>
           <MeshInfoIcon />
@@ -517,7 +529,7 @@ export function MeshNetwork () {
         {$t({ defaultMessage: 'Mesh Radio' })}
         <Form.Item >
           <Radio.Group
-            disabled={isReadOnly}
+            disabled={!isAllowEdit || isReadOnly}
             value={meshRadioType}
             onChange={handleRadioTypeChanged}>
             { isWifiMeshIndependents56GEnable ? (
@@ -568,7 +580,7 @@ export function MeshNetwork () {
               <Switch
                 data-testid='zero-touch-mesh-switch'
                 checked={meshZeroTouchEnabled}
-                disabled={!isAllowEnableMesh}
+                disabled={!isAllowEdit || !isAllowEnableMesh}
                 onClick={toggleZeroTouchMesh}
               />
             }

@@ -1,9 +1,8 @@
 import { ReactNode } from 'react'
 
-import { MessageDescriptor, defineMessage } from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
-import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
-import { hasRaiPermission }                                            from '@acx-ui/user'
+import { ClientEventEnum, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
 
 import { ConnectionEvent } from './services'
 
@@ -12,6 +11,8 @@ export const SLOW = 'slow'
 export const DISCONNECT = 'disconnect'
 export const INFO_UPDATED = 'info-updated'
 export const JOIN = 'join'
+export const BTM_REQUEST = 'btm-request'
+export const BTM_RESPONSE = 'btm-response'
 export const ROAMED = 'roamed'
 export const DISCONNECTED = 'disconnected'
 export const FAILURE = 'failure'
@@ -23,11 +24,13 @@ export const EAPOLMessageIds = ['21', '22', '23', '24']
 export const filterEventMap = {
   [JOIN]: [ClientEventEnum.JOIN],
   [INFO_UPDATED]: [ClientEventEnum.INFO_UPDATED],
+  [BTM_REQUEST]: [ClientEventEnum.BTM_REQUEST],
+  [BTM_RESPONSE]: [ClientEventEnum.BTM_RESPONSE],
   [ROAMED]: [ClientEventEnum.ROAM],
   [DISCONNECTED]: Object.keys(disconnectClientEventsMap),
   [FAILURE]: ['FAILURE'],
   [RADIO2DOT4G]: ['2.4'],
-  [RADIO5G]: ['5'] ,
+  [RADIO5G]: ['5'],
   [RADIO65G]: ['6(5)']
 }
 export const EVENT_STATES = {
@@ -76,217 +79,56 @@ export type DisplayEvent = ConnectionEvent & {
   state: string;
   event: string;
   category: string;
+  type?: string;
 }
 
-export type ChartMapping = { key: string; label: string; chartType: string; series: string }
+export type IsVisibleType = () => boolean
 
-interface Subtitle {
-  title: MessageDescriptor;
-  value: string;
-  isLast?: boolean;
+export type ChartMapping = {
+  key: string
+  label: string
+  chartType: string
+  series: string
+  isVisible: IsVisibleType
 }
+
+interface BaseSubtitle {
+  title: MessageDescriptor | string
+  value: string
+  isVisible: IsVisibleType
+}
+
+export interface RoamingSubtitle extends BaseSubtitle {
+  noData: boolean
+  apMac: string
+  apModel: string
+  apFirmware: string
+}
+
+type Subtitle = BaseSubtitle | RoamingSubtitle
 
 export type TimelineItem = {
-  title: MessageDescriptor;
-  value: string;
-  showCount: boolean;
-  hasXaxisLabel?: boolean;
-  chartMapping: ChartMapping[];
-  showResetZoom?: boolean;
-  subtitle?: Subtitle[];
+  title: MessageDescriptor
+  value: string
+  showCount: boolean
+  hasXaxisLabel?: boolean
+  chartMapping: ChartMapping[]
+  showResetZoom?: boolean
+  subtitle?: Subtitle[]
+  isVisible: IsVisibleType
 }
 
-export const eventColorByCategory = {
-  [DISCONNECT]: '--acx-neutrals-50',
-  [SUCCESS]: '--acx-semantics-green-50',
-  [FAILURE]: '--acx-semantics-red-50',
-  [SLOW]: '--acx-semantics-yellow-50'
+export const btmInfoToDisplayTextMap: Record<string, string> = {
+  'BTM_EVENT_RECEIVE_REJECT': 'REJECTED',
+  'BTM_EVENT_RECEIVE_ACCEPT': 'ACCEPTED',
+  'sticky client': 'sticky',
+  'load balancing': 'load balancing'
 }
 
 export const rssGroups = {
   good: { lower: -74 },
   average: { lower: -85, upper: -75 },
   bad: { upper: -86 }
-}
-export const ClientTroubleShootingConfig = {
-  selection: [
-    {
-      entityName: {
-        singular: defineMessage({ defaultMessage: 'category' }),
-        plural: defineMessage({ defaultMessage: 'categories' })
-      },
-      selectionType: 'category',
-      defaultValue: [],
-      placeHolder: defineMessage({ defaultMessage: 'All Categories' }),
-      options: categoryOptions,
-      isVisible: () => hasRaiPermission('READ_INCIDENTS')
-    },
-    {
-      entityName: {
-        singular: defineMessage({ defaultMessage: 'type' }),
-        plural: defineMessage({ defaultMessage: 'types' })
-      },
-      selectionType: 'type',
-      defaultValue: [],
-      placeHolder: defineMessage({ defaultMessage: 'All Types' }),
-      options: [
-        {
-          value: INFO_UPDATED,
-          label: defineMessage({ defaultMessage: 'Client associated' }),
-          isVisible: () => true
-        },
-        {
-          value: ROAMED,
-          label: defineMessage({ defaultMessage: 'Client roamed' }),
-          isVisible: () => true
-        },
-        {
-          value: DISCONNECTED,
-          label: defineMessage({ defaultMessage: 'Client disconnected' }),
-          isVisible: () => true
-        },
-        {
-          value: FAILURE,
-          label: defineMessage({ defaultMessage: 'Connection failure' }),
-          isVisible: () => true
-        },
-        {
-          value: INCIDENT,
-          label: defineMessage({ defaultMessage: 'Incident' }),
-          isVisible: () => hasRaiPermission('READ_INCIDENTS')
-        }
-      ],
-      isVisible: () => true
-    },
-    {
-      entityName: {
-        singular: defineMessage({ defaultMessage: 'radio' }),
-        plural: defineMessage({ defaultMessage: 'radios' })
-      },
-      selectionType: 'radio',
-      defaultValue: [],
-      placeHolder: defineMessage({ defaultMessage: 'All Radios' }),
-      options: [
-        {
-          value: RADIO2DOT4G,
-          label: defineMessage({ defaultMessage: '2.4 GHz' })
-        },
-        {
-          value: RADIO5G,
-          label: defineMessage({ defaultMessage: '5 GHz' })
-        },
-        {
-          value: RADIO65G,
-          label: defineMessage({ defaultMessage: '6 GHz' })
-        }
-      ],
-      isVisible: () => true
-    }
-  ],
-  timeLine: [
-    {
-      title: defineMessage({ defaultMessage: 'Connection Events' }),
-      value: TYPES.CONNECTION_EVENTS,
-      showCount: true,
-      chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter', series: 'events' },
-        { key: 'success', label: 'success', chartType: 'scatter', series: 'events' },
-        { key: 'failure', label: 'failure', chartType: 'scatter', series: 'events' },
-        { key: 'slow', label: 'slow', chartType: 'scatter', series: 'events' },
-        { key: 'disconnect', label: 'disconnect', chartType: 'scatter', series: 'events' }
-      ] as ChartMapping[],
-      showResetZoom: true,
-      subtitle: [
-        {
-          title: defineMessage({ defaultMessage: 'Success' }),
-          value: SUCCESS
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Failure' }),
-          value: FAILURE
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Slow' }),
-          value: SLOW
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Disconnect' }),
-          value: DISCONNECT,
-          isLast: true
-        }
-      ],
-      isVisible: () => true
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Roaming' }), //hide
-      value: TYPES.ROAMING,
-      showCount: true,
-      chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' }
-      ] as ChartMapping[],
-      isVisible: () => true
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Connection Quality' }),
-      value: TYPES.CONNECTION_QUALITY,
-      showCount: false,
-      chartMapping: [
-        { key: 'all', label: 'all', chartType: 'bar', series: 'quality' },
-        { key: 'rss', label: 'rss', chartType: 'bar', series: 'quality' },
-        { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality' },
-        { key: 'throughput', label: 'throughput', chartType: 'bar', series: 'quality' },
-        { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar', series: 'quality' }
-      ] as ChartMapping[],
-      subtitle: [
-        {
-          title: defineMessage({ defaultMessage: 'RSS' }),
-          value: 'RSS'
-        },
-        {
-          title: defineMessage({ defaultMessage: 'SNR' }),
-          value: 'SNR'
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Client Throughput' }),
-          value: 'clientThroughput'
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Avg. MCS(Downlink)' }),
-          value: 'AvgMCS',
-          isLast: true
-        }
-      ],
-      isVisible: () => true
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Network Incidents' }),
-      value: TYPES.NETWORK_INCIDENTS,
-      showCount: true,
-      hasXaxisLabel: true,
-      chartMapping: [
-        { key: 'all', label: 'all', chartType: 'bar', series: 'incidents' },
-        { key: 'connection', label: 'connection', chartType: 'bar', series: 'incidents' },
-        { key: 'performance', label: 'performance', chartType: 'bar', series: 'incidents' },
-        { key: 'infrastructure', label: 'infrastructure', chartType: 'bar', series: 'incidents' }
-      ] as ChartMapping[],
-      subtitle: [
-        {
-          title: defineMessage({ defaultMessage: 'Client Connection' }),
-          value: 'connection'
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Performance' }),
-          value: 'performance'
-        },
-        {
-          title: defineMessage({ defaultMessage: 'Infrastructure' }),
-          value: 'infrastructure',
-          isLast: true
-        }
-      ],
-      isVisible: () => hasRaiPermission('READ_INCIDENTS')
-    }
-  ]
 }
 
 export const connectionQualityLabels = {
@@ -337,39 +179,69 @@ export type RoamingByAP = {
   bssid: string
 }
 export interface Event {
-  timestamp: string;
-  event: string;
-  ttc: string;
-  mac: string;
-  apName: string;
-  path: [];
-  code: string;
-  state: string;
-  failedMsgId: string;
-  messageIds: string;
-  radio: string;
-  ssid: string;
-  type: string;
-  key: string;
-  start: number;
-  end: number;
-  category: string;
-  seriesKey: string;
+  timestamp: string
+  event: string
+  ttc: string
+  mac: string
+  apName: string
+  path: []
+  code: string
+  state: string
+  failedMsgId: string
+  messageIds: string
+  radio: string
+  ssid: string
+  type: string
+  key: string
+  start: number
+  end: number
+  category: string
+  seriesKey: string
+  /**
+   * Contains `Trigger` field for BTM request event type or
+   * `Status` field for BTM response event type
+   */
+  btmInfo?: string
 }
 export type TimelineData = {
-  connectionEvents: EventsCategoryMap;
-  roaming: EventsCategoryMap;
-  connectionQuality: EventsCategoryMap;
-  networkIncidents: NetworkIncidentCategoryMap;
+  connectionEvents: ConnectionEventsCategoryMap
+  roaming: EventsCategoryMap
+  connectionQuality: EventsCategoryMap
+  networkIncidents: NetworkIncidentCategoryMap
 }
-export type EventsCategoryMap = {
-  [SUCCESS]: Event[] | [];
-  [FAILURE]: Event[] | [];
-  [DISCONNECT]: Event[] | [];
-  [SLOW]: Event[] | [];
-  all: Event[] | [];
+
+export type TimelineDataCategoryMap =
+  | ConnectionEventsCategoryMap
+  | EventsCategoryMap
+  | NetworkIncidentCategoryMap
+
+type EventsCategoryMap = {
+  [SUCCESS]: Event[] | []
+  [FAILURE]: Event[] | []
+  [DISCONNECT]: Event[] | []
+  [SLOW]: Event[] | []
+  all: Event[] | []
 }
-export type NetworkIncidentCategoryMap = {
+
+export const btmEventCategories: Array<keyof ConnectionEventsCategoryMap> = [
+  BTM_REQUEST,
+  BTM_RESPONSE
+]
+
+export const eventCategories: Array<keyof ConnectionEventsCategoryMap> = [
+  SUCCESS,
+  FAILURE,
+  DISCONNECT,
+  SLOW,
+  ALL
+]
+
+export type ConnectionEventsCategoryMap = EventsCategoryMap & {
+  [BTM_REQUEST]: Event[] | []
+  [BTM_RESPONSE]: Event[] | []
+}
+
+type NetworkIncidentCategoryMap = {
   connection:IncidentDetails[] |[],
   performance:IncidentDetails[] |[],
   infrastructure:IncidentDetails[] |[],

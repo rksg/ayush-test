@@ -36,9 +36,9 @@ describe('UploadCaSettings', () => {
 
     const publicFileInput = screen.getByTestId('public-key-upload')
     const file = new File([''], 'public.cer')
-    Object.defineProperty(file, 'size', { value: 1024 * 11 })
+    Object.defineProperty(file, 'size', { value: 1024 * 51 })
     await userEvent.upload(publicFileInput, file)
-    expect(screen.getByText('File size (11 KB) is too big.')).toBeInTheDocument()
+    expect(screen.getByText('File size (51 KB) is too big.')).toBeInTheDocument()
   })
 
   it('should not display public key when showPublicKeyUpload is false', async () => {

@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { render, screen, within } from '@acx-ui/test-utils'
 
 import { ReportList } from '.'
@@ -10,6 +11,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate
 }))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false) }))
 
 describe('ReportList', () => {
   const path = '/:tenantId/t'
@@ -38,6 +43,23 @@ describe('ReportList', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render report cards with feature ready', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+
+    render(<ReportList />, { route: { path, params } })
+
+    expect(await screen.findByText('RUCKUS Edge Applications')).toBeVisible()
+    expect(screen.getByText('RUCKUS Edge Applications')).toBeVisible()
+  })
+
+  it('should not render report cards without feature ready', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+
+    render(<ReportList />, { route: { path, params } })
+
+    expect(screen.queryByText('RUCKUS Edge Applications')).toBeNull()
   })
 
 })

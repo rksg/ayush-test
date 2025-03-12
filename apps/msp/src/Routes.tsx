@@ -22,7 +22,10 @@ import {
   SyslogForm,
   SyslogDetailView,
   ConfigurationProfileForm,
-  CliProfileForm, ApGroupDetails, ApGroupEdit
+  CliProfileForm, ApGroupDetails, ApGroupEdit,
+  AddEthernetPortProfile,
+  EditEthernetPortProfile,
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -53,6 +56,7 @@ import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
 import { MspCustomers }                            from './pages/MspCustomers'
 import { MspRecCustomers }                         from './pages/MspRecCustomers'
 import { AddRecCustomer }                          from './pages/MspRecCustomers/AddRecCustomer'
+import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
 import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
@@ -82,6 +86,8 @@ export default function MspRoutes () {
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
+  const newDeviceInventory =
+    useIsSplitOn(Features.VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE)
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -142,7 +148,10 @@ export default function MspRoutes () {
       <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/varCustomers' element={<VarCustomers />} />
       <Route path='integrators/*' element={<CustomersRoutes />} />
-      <Route path='deviceinventory' element={<DeviceInventory />} />
+      <Route path='deviceinventory'
+        element={newDeviceInventory
+          ? <NewDeviceInventory />
+          : <DeviceInventory />} />
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
@@ -198,7 +207,7 @@ export function ConfigTemplatesRoutes () {
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
-        <Route path=':activeTab' element={<ConfigTemplate />} />
+        <Route path='templates' element={<ConfigTemplate />} />
         {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
@@ -336,6 +345,29 @@ export function ConfigTemplatesRoutes () {
               oper: PolicyOperation.DETAIL
             })}
             element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ETHERNET_PORT_PROFILE] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<AddEthernetPortProfile />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<EditEthernetPortProfile />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<EthernetPortProfileDetail />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>

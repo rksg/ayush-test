@@ -5,11 +5,17 @@ import _                                    from 'lodash'
 import { useIntl }                          from 'react-intl'
 import styled                               from 'styled-components/macro'
 
-import { PasswordInput }                      from '@acx-ui/components'
-import { SpaceWrapper }                       from '@acx-ui/rc/components'
-import { RecoveryPassphrase }                 from '@acx-ui/rc/utils'
-import { RolesEnum }                          from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles } from '@acx-ui/user'
+import { PasswordInput }                              from '@acx-ui/components'
+import { SpaceWrapper }                               from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, RecoveryPassphrase } from '@acx-ui/rc/utils'
+import { RolesEnum }                                  from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -24,9 +30,14 @@ interface RecoveryPassphraseFormItemProps {
 const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps) => {
   const { $t } = useIntl()
   const { className, recoveryPassphraseData } = props
+  const { rbacOpsApiEnabled } = getUserProfile()
   const [openPassphraseDrawer, setOpenPassphraseDrawer] = useState(false)
-  const hasPermission = hasCrossVenuesPermission() &&
-    hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
+
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.updateRecoveryPassphrase)])
+    : hasCrossVenuesPermission() &&
+      hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const onClickChangePassphrase = () => {
     setOpenPassphraseDrawer(true)

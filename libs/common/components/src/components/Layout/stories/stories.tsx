@@ -11,12 +11,12 @@ import {
   SearchOutlined
 } from '@acx-ui/icons'
 
-import { Layout }                 from '..'
-import { ReactComponent as Logo } from '../../../../../../main/assets/Logo.svg'
-import { Card }                   from '../../Card'
-import { Dropdown }               from '../../Dropdown'
-import { regionMenu, helpMenu }   from '../../Dropdown/stories'
-import { LayoutUI }               from '../styledComponents'
+import { Layout }               from '..'
+import Logo                     from '../../../../../../main/assets/Logo.svg'
+import { Card }                 from '../../Card'
+import { Dropdown }             from '../../Dropdown'
+import { regionMenu, helpMenu } from '../../Dropdown/stories'
+import { LayoutUI }             from '../styledComponents'
 
 import menuConfig from './menuConfig'
 
@@ -25,7 +25,7 @@ storiesOf('Layout', module).add('Basic', () => (
   <div style={{ margin: '-16px' }}>
     <HashRouter>
       <Layout
-        logo={<Logo />}
+        logo={<img src={Logo} alt='Logo' width={180} height={60} />}
         menuConfig={menuConfig}
         leftHeaderContent={
           <Dropdown overlay={regionMenu}>{(selectedKeys) =>

@@ -1,5 +1,7 @@
-import _ from 'lodash'
+import _             from 'lodash'
+import { IntlShape } from 'react-intl'
 
+import { NetworkTypeEnum, WlanSecurityEnum }                  from '../../constants'
 import { RadioEnum, RadioTypeEnum }                           from '../../contents'
 import { SchedulerTypeEnum }                                  from '../../models/SchedulerTypeEnum'
 import { Venue, ApVenueStatusEnum, Network, NetworkSaveData } from '../../types'
@@ -56,4 +58,20 @@ export const isDsaeOnboardingNetwork = (data: Network | NetworkSaveData): boolea
     const _data = (data as NetworkSaveData)
     return _data.isDsaeServiceNetwork === false && !_.isNil(_data.dsaeNetworkPairId)
   }
+}
+
+// eslint-disable-next-line max-len
+export const validateRadioBandForDsaeNetwork = (radios: string[], network: NetworkSaveData | undefined | null, intl: IntlShape) => {
+  const { wlan, type } = network || {}
+  if (wlan?.wlanSecurity
+    && type === NetworkTypeEnum.DPSK
+    && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
+    && radios.length
+    && radios.length === 1
+    && radios.includes(RadioTypeEnum._6_GHz)) {
+    return Promise.reject(intl.$t({ defaultMessage:
+    // eslint-disable-next-line max-len
+        'Configure a <VenueSingular></VenueSingular> using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
+  }
+  return Promise.resolve()
 }

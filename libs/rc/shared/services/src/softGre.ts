@@ -7,17 +7,22 @@ import { CommonResult,
   SoftGreUrls,
   SoftGre,
   CommonUrlsInfo,
-  SoftGreActivation,
   Network,
   VenueTableUsageBySoftGre,
   VenueDetail,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  SoftGreOptionsData
+  SoftGreOptionsData,
+  VenueApModelLanPortSettingsV1,
+  VenueTableSoftGreActivation,
+  CommonRbacUrlsInfo,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
+
+import consolidateActivations from './softGreUtils'
 
 export const softGreApi = baseSoftGreApi.injectEndpoints({
   endpoints: (build) => ({
@@ -97,35 +102,75 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
     }),
     getVenuesSoftGrePolicy: build.query<TableResult<VenueTableUsageBySoftGre>, RequestPayload>({
       queryFn: async ( { payload }, _api, _extraOptions, fetchWithBQ) => {
-        const activations = _.get(payload,'activations') as SoftGreActivation[]
+        const activations =
+          _.get(payload,'activations') as Record<string, VenueTableSoftGreActivation>
         const emptyResponse = { data: { totalCount: 0 } as TableResult<VenueTableUsageBySoftGre> }
         const venueNetworksMap:{ [key:string]: string[] } = {}
         let networkIds: string[] = []
 
-        activations.forEach(venue => {
-          venueNetworksMap[venue.venueId] = venue.wifiNetworkIds
-          networkIds = networkIds.concat(venue.wifiNetworkIds)
-        })
+        const apNameMap:{ [key:string]: string[] } = {}
+        let apSerialNumbers: string[] = []
 
-        const networkIdsSet = Array.from(new Set(networkIds))
+        let venues: string[] = []
 
-        if (networkIds.length === 0) return emptyResponse
-        const networkQueryPayload = {
-          fields: ['name', 'id'],
-          filters: { id: networkIdsSet },
-          page: 1,
-          pageSize: 10_000
+        Object.entries(activations)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .filter(([venueId, activation]) => { return !!activation })
+          .forEach(([venueId, activation]) => {
+            venueNetworksMap[venueId] = Array.from(activation.wifiNetworkIds)
+            networkIds = networkIds.concat(Array.from(activation.wifiNetworkIds))
+            apNameMap[venueId] = Array.from(activation.apSerialNumbers)
+            apSerialNumbers = apSerialNumbers.concat(Array.from(activation.apSerialNumbers))
+            venues.push(venueId)
+          })
+
+        if(
+          networkIds.length === 0 &&
+          apSerialNumbers.length === 0 &&
+          venues.length === 0) {
+
+          return emptyResponse
         }
-        const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList)
-        // eslint-disable-next-line max-len
-        const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
-        if (networkRes.error) return emptyResponse
 
-        const { data: networkData } = networkRes.data as TableResult<Network>
+        // Collect network names by ids
+        const networkIdsSet = Array.from(new Set(networkIds))
         let networkMapping:{ [key:string]: string } = {}
-        networkData?.forEach((network: Network) => {
-          networkMapping[network.id] = network.name
-        })
+        if(networkIdsSet.length > 0){
+          const networkQueryPayload = {
+            fields: ['name', 'id'],
+            filters: { id: networkIdsSet },
+            page: 1,
+            pageSize: 10_000
+          }
+          const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList)
+          // eslint-disable-next-line max-len
+          const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
+          const { data: networkData } = networkRes.data as TableResult<Network>
+
+          networkData?.forEach((network: Network) => {
+            networkMapping[network.id] = network.name
+          })
+        }
+
+        // Collect AP names by serial numbers
+        let apMapping:{ [key:string]: string } = {}
+        const apSerialNumbersSet = Array.from(new Set(apSerialNumbers))
+        if(apSerialNumbersSet.length > 0){
+          const apsQueryPayload = {
+            fields: ['name', 'serialNumber'],
+            filters: { serialNumber: apSerialNumbers },
+            pageSize: 10000
+          }
+          const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
+          const apsRes = await fetchWithBQ({ ...apsReq, body: JSON.stringify(apsQueryPayload) })
+          const { data: apsData } = apsRes.data as TableResult<NewAPModel>
+
+          apsData.forEach((ap: NewAPModel) => {
+            if (ap.name) {
+              apMapping[ap.serialNumber] = ap.name
+            }
+          })
+        }
 
         const venueIds = Object.keys(venueNetworksMap)
         const venueQueryPayload = {
@@ -140,8 +185,11 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const venueResult = venueData?.map(venue =>{
           const wifiNetworkIDs = venueNetworksMap[venue.id]
           const wifiNetworkNames = wifiNetworkIDs.map(id => (networkMapping[id]))
-          // eslint-disable-next-line max-len
-          return { ...venue, wifiNetworkIds: wifiNetworkIDs, wifiNetworkNames } as unknown as VenueTableUsageBySoftGre
+          const apSerialNumbers = apNameMap[venue.id]
+          const apNames = apSerialNumbers.map(id => (apMapping[id]))
+          return {
+            ...venue, wifiNetworkIds: wifiNetworkIDs, wifiNetworkNames, apSerialNumbers, apNames
+          } as unknown as VenueTableUsageBySoftGre
         })
 
         const result = {
@@ -186,7 +234,9 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           let isSame = false
           gatewayIpMaps[id] = [primaryGatewayAddress, secondaryGatewayAddress ?? '']
 
-          item.activations?.forEach(activation => {
+          const profileActivations = consolidateActivations(item, venueId)
+
+          profileActivations.forEach(activation => {
             const isEqualVenue = activation.venueId === venueId
             if (isEqualVenue) {
               activationProfiles.push(item.id)
@@ -256,6 +306,50 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         return createHttpRequest(SoftGreUrls.dectivateSoftGre, params)
       },
       invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+    }),
+    activateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnVenue, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    deactivateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnAP, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getSoftGreProfileConfigurationOnVenue: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnVenue, params)
+      }
+    }),
+    getSoftGreProfileConfigurationOnAP: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnAP, params)
+      }
     })
   })
 })
@@ -270,6 +364,15 @@ export const {
   useUpdateSoftGreMutation,
   useGetVenuesSoftGrePolicyQuery,
   useGetSoftGreOptionsQuery,
+  useLazyGetSoftGreOptionsQuery,
   useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useDectivateSoftGreMutation,
+  useActivateSoftGreProfileOnVenueMutation,
+  useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnAPMutation,
+  useDeactivateSoftGreProfileOnAPMutation,
+  useGetSoftGreProfileConfigurationOnVenueQuery,
+  useLazyGetSoftGreProfileConfigurationOnVenueQuery,
+  useGetSoftGreProfileConfigurationOnAPQuery,
+  useLazyGetSoftGreProfileConfigurationOnAPQuery
 } = softGreApi

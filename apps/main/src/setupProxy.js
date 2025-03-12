@@ -33,13 +33,28 @@ module.exports = async function setupProxy (app) {
   })
   if (await mockServerApi === 'up') {
     app.use(createProxyMiddleware(
-      '/enhancedHotspot20IdentityProviders/query',
+      '/venues/apCompatibilities/query',
       {
         target: MOCK_SERVER_URL,
         changeOrigin: true,
         secure: false,
         pathRewrite: {
-          '.+': '/enhancedHotspot20IdentityProviders-query'
+          '.+': '/venues-apCompatibilities-query'
+        },
+        onProxyReq: function (request) {
+          request.setHeader('origin', CLOUD_URL)
+          request.method = 'GET'
+        }
+      }
+    ))
+    app.use(createProxyMiddleware(
+      '/venues/aps/apCompatibilities/query',
+      {
+        target: MOCK_SERVER_URL,
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '.+': '/venues-aps-apCompatibilities-query'
         },
         onProxyReq: function (request) {
           request.setHeader('origin', CLOUD_URL)
@@ -61,12 +76,13 @@ module.exports = async function setupProxy (app) {
       {
         target: LOCAL_MLISA_URL,
         changeOrigin: true,
-        onProxyReq: (proxyReq, { headers }) => {
+        onProxyReq: (proxyReq, { headers, socket }) => {
           proxyReq.setHeader('x-mlisa-tenant-id',
             headers['x-mlisa-tenant-id'] || headers.referer.match(/([0-9a-f]{32})\/[t|v]/)[1])
           proxyReq.setHeader('x-mlisa-user-role',
             headers['x-mlisa-user-role'] || 'alto-report-only')
           proxyReq.setHeader('x-mlisa-user-id', headers['x-mlisa-user-id'] || 'some-id')
+          socket.on('close', () => proxyReq.socket.destroy())
         }
       }
     ))
@@ -117,6 +133,14 @@ module.exports = async function setupProxy (app) {
   ))
   app.use(createProxyMiddleware(
     '/mfa',
+    { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
+  app.use(createProxyMiddleware(
+    '/allowedOperations',
     { target: CLOUD_URL, changeOrigin: true,
       onProxyReq: function (request) {
         request.setHeader('origin', CLOUD_URL)

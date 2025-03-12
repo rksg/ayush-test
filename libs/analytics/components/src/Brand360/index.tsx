@@ -71,6 +71,7 @@ const getlspPayload = (parentTenantId: string | undefined) => ({
 
 export function Brand360 () {
   const isMDUEnabled = useIsSplitOn(Features.BRAND360_MDU_TOGGLE)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { names, settingsQuery } = useBrand360Config()
   const { brand, lsp, property } = names
   const { tenantId, tenantType } = getJwtTokenPayload()
@@ -172,6 +173,7 @@ export function Brand360 () {
             showTimePicker
             selectionType={range}
             showLast8hours
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
           <ConfigSettings settings={settings as Settings} />
         </>

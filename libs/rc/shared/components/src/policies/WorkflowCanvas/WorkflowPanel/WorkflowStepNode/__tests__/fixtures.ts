@@ -1,9 +1,11 @@
 import {
   ActionType,
   DpskAction,
-  DpskSaveData, MacRegAction, MacRegistrationPool,
+  DpskSaveData, MacRegAction, MacRegistrationPool,CertTempAction,
   PassphraseFormatEnum,
-  PersonaGroup
+  PersonaGroup,
+  CertificateTemplate,
+  AlgorithmType
 } from '@acx-ui/rc/utils'
 
 
@@ -14,7 +16,8 @@ export const mockedDpskEnrollmentAction:DpskAction = {
   id: '65d2f63d-b773-45f6-b81d-a2cb832e3841',
   version: 0,
   dpskPoolId: 'dpsk-pool-id-for-testing',
-  identityGroupId: 'identity-group-id-for-testing'
+  identityGroupId: 'identity-group-id-for-testing',
+  valid: true
 }
 
 export const mockedDpskActionInvalid:DpskAction = {
@@ -40,6 +43,17 @@ export const mockedIdentityGroupData:PersonaGroup = {
   name: 'My Identity Group for Testing'
 }
 
+export const mockedMacRegEnrollmentAction:MacRegAction = {
+  name: 'mac-reg-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.MAC_REG,
+  id: 'bacc6a41-0c27-4b4e-a2a4-d7ad506974af',
+  version: 0,
+  macRegListId: 'dpsk-pool-id-for-testing',
+  identityGroupId: 'identity-group-id-for-testing',
+  valid: true
+}
+
 export const mockedMacRegData:MacRegistrationPool = {
   id: 'test-mac-list-id',
   name: 'test-mac-list-name',
@@ -58,4 +72,37 @@ export const mockedMacRegActionInvalid:MacRegAction = {
   macRegListId: 'mac-reg-list-id-for-testing',
   identityGroupId: 'bogus-identity-group-id',
   valid: false
+}
+
+export const mockedCertTempEnrollmentAction:CertTempAction = {
+  name: 'cert-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.CERT_TEMPLATE,
+  id: '65d2f63d-b773-45f6-b81d-a2cb832e3841',
+  version: 0,
+  certTemplateId: 'cert-template-id-for-testing',
+  identityGroupId: 'identity-group-id-for-testing',
+  valid: true
+}
+
+export const mockedCertTempActionInvalid:CertTempAction = {
+  name: 'cert-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.CERT_TEMPLATE,
+  id: 'invalid-cert-temp-id',
+  version: 0,
+  certTemplateId: 'cert-pool-id-for-testing',
+  identityGroupId: 'bogus-identity-group-id',
+  valid: false
+}
+
+export const mockedCertTempData:CertificateTemplate = {
+  id: 'cert-template-id-for-testing',
+  description: 'cert-template-id-for-testing',
+  name: 'cert-template-id-for-testing',
+  networkIds: ['65d2f63d-b773-45f6-b81d-a2cb832e3841', '65d2f63d-b773-45f6-b81d-a2cb832e3811'],
+  identityGroupId: 'identity-group-id-for-testing',
+  caType: '',
+  keyLength: 0,
+  algorithm: AlgorithmType.SHA_256
 }

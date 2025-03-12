@@ -1,15 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { store, Provider, userApi } from '@acx-ui/store'
-import {
-  mockServer,
-  render,
-  screen } from '@acx-ui/test-utils'
-import { RolesEnum } from '@acx-ui/types'
+import { store, Provider, userApi }   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }                  from '@acx-ui/types'
 
-import { UserRbacUrlsInfo, UserUrlsInfo } from './services'
-import { CustomRoleType, UserProfile }    from './types'
+import { UserRbacUrlsInfo, UserUrlsInfo }            from './services'
+import { BetaFeatures, CustomRoleType, UserProfile } from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -82,6 +79,45 @@ const fakedVenueList = {
   ]
 }
 
+const mockedBetaFeatures: BetaFeatures = {
+  betaFeatures: [
+    {
+      id: 'BETA-DPSK3',
+      enabled: true
+    },
+    {
+      id: 'PLCY-EDGE',
+      enabled: false
+    },
+    {
+      id: 'SAMPLE',
+      enabled: true
+    }
+  ]
+}
+
+const mockAllowedOperations = {
+  allowedOperations: [
+    {
+      scope: ['edge.cluster-config-u'],
+      uri: [
+        'DELETE:/edgeSdLanServices/{id}/guestSettings/venues/{id}/edgeClusters/{id}',
+        'PUT:/edgeSdLanServices/{id}/guestSettings/venues/{id}/edgeClusters/{id}'
+      ]
+    },
+    {
+      scope: ['all-c'],
+      uri: [
+        'POST:/api/tenant/{id}/chatbot/idtoken',
+        'POST:/api/tenant/{id}/admin/mspecadmindeletevalidation',
+        'POST:/admins/ValidationForMspecAdminsDeletions',
+        'POST:/tenants/chatbot/idToken',
+        'POST:/tenants/chatbot/idtoken',
+        'POST:/admins/validationForMspecAdminsDeletions'
+      ]
+    }
+  ]
+}
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -98,6 +134,9 @@ describe('UserProfileContext', () => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
     })
+    services.useGetBetaFeatureListQuery = jest.fn().mockImplementation(() => {
+      return { data: mockedBetaFeatures }
+    })
     mockServer.use(
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
@@ -109,6 +148,9 @@ describe('UserProfileContext', () => {
         (_req, res, ctx) => res(ctx.json(fakedVenueList))),
       rest.get(UserRbacUrlsInfo.getAccountTier.url.split('?')[0],
         (_req, res, ctx) => res(ctx.json({ acx_account_tier: 'Gold' }))
+      ),
+      rest.get(UserRbacUrlsInfo.getAllowedOperations.url,
+        (_req, res, ctx) => res(ctx.json(mockAllowedOperations))
       )
     )
   })
@@ -426,6 +468,38 @@ describe('UserProfileContext', () => {
       fakedVenueList.data.map(item => item.id))}`)).toBeVisible()
   })
 
+  it('should generate allowedOpeartions correctly when rbacOpsApiFF enabled', async () => {
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return {
+        data: {
+          'abac-policies-toggle': true,
+          'allowed-operations-toggle': false,
+          'acx-ui-rbac-allow-operations-api-toggle': true
+        }
+      }
+    })
+
+    services.useGetAllowedOperationsQuery = jest.fn().mockImplementation(() => {
+      return { data: mockAllowedOperations }
+    })
+
+    const TestOpsApiEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { allowedOperations, rbacOpsApiEnabled } = props.userProfileCtx
+      return (
+        <>
+          <div>{`rbacOpsApiEnabled:${rbacOpsApiEnabled}`}</div>
+          <div>{`allowedOperations:${JSON.stringify(allowedOperations)}`}</div>
+        </>
+      )
+    }
+
+    render(<TestUserProfile ChildComponent={TestOpsApiEnabled} />, {
+      wrapper,
+      route
+    })
+    await checkDataRendered()
+    expect(screen.queryByText('rbacOpsApiEnabled:true')).toBeVisible()
+  })
 })
 
 const checkDataRendered = async () => {

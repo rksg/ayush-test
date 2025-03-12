@@ -24,7 +24,6 @@ export const SummaryForm = () => {
     getVenueName,
     getClusterName,
     getDhcpName,
-    // getDhcpPoolName,
     getTunnelProfileName,
     getNetworksName
   } = useContext(PersonalIdentityNetworkFormContext)
@@ -34,7 +33,6 @@ export const SummaryForm = () => {
   const venueId = form.getFieldValue('venueId')
   const edgeClusterId = form.getFieldValue('edgeClusterId')
   const segments = form.getFieldValue('segments')
-  const devices = form.getFieldValue('devices')
   const dhcpId = form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const tunnelProfileId = form.getFieldValue('vxlanTunnelProfileId')
@@ -49,7 +47,7 @@ export const SummaryForm = () => {
   const alertMsg = <FormattedMessage
     defaultMessage={
       'For segment assignment for <sub5b>AP wired</sub5b>, please go to the\
-      <sub5b><VenueSingular></VenueSingular>/ property Units page</sub5b> to assign an AP\
+      <sub5b><VenueSingular></VenueSingular>/ Property Units page</sub5b> to assign an AP\
       for the specific unit / identity.'}
 
     values={{
@@ -62,12 +60,11 @@ export const SummaryForm = () => {
       {
         edgeName: getClusterName(edgeClusterId),
         segments: segments.toString(),
-        devices: devices.toString(),
         dhcpServiceName: getDhcpName(dhcpId),
         dhcpPoolName: poolName.toString()
       }
     ])
-  }, [edgeClusterId, segments, devices, dhcpId, poolId, poolName])
+  }, [edgeClusterId, segments, dhcpId, poolId, poolName])
 
   useEffect(() => {
     setAccessSwitchData(accessSwitchInfos?.map(as => ({
@@ -79,11 +76,7 @@ export const SummaryForm = () => {
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
-    <Alert message={
-      alertMsg
-    }
-    type='info'
-    showIcon />
+    <Alert message={alertMsg} type='info' showIcon />
     <Subtitle level={4}>
       { $t({ defaultMessage: 'General Settings' }) }
     </Subtitle>
@@ -128,6 +121,7 @@ export const SummaryForm = () => {
         />
       </Col>
     </Row>
+
     <Subtitle level={4}>
       { $t({ defaultMessage: 'Distribution Switch ({num})' },
         { num: distributionSwitchInfos?.length??0 }) }
@@ -141,7 +135,7 @@ export const SummaryForm = () => {
     </Subtitle>
     { accessSwitchData?.length && <Form.Item>
       <AccessSwitchTable type='form'
-        dataSource={accessSwitchData} /></Form.Item>}
-
+        dataSource={accessSwitchData} />
+    </Form.Item>}
   </>)
 }

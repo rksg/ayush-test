@@ -34,6 +34,7 @@ export function AssignedSubscriptionTable () {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
 
   const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
@@ -164,10 +165,18 @@ export function AssignedSubscriptionTable () {
       { skip: isEntitlementRbacApiEnabled })
     const subscriptionData = isEntitlementRbacApiEnabled
       ? tableResults.data?.data.map(response => {
+        const type = solutionTokenFFToggled
+          ? response?.licenseType === 'APSW'
+            ? $t({ defaultMessage: 'Device Networking' })
+            : $t({ defaultMessage: 'Devices' })
+          : response?.licenseType === 'SLTN_TOKEN'
+            ? $t({ defaultMessage: 'Solution Tokens' })
+            : $t({ defaultMessage: 'Devices' })
         return {
           ...response,
           name: (response?.isTrial
-            ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' Devices'
+            ? $t({ defaultMessage: 'Trial {type}' }, { type })
+            : $t({ defaultMessage: 'Paid {type}' }, { type }))
         }
       })
       : queryResults.data?.map(response => {
@@ -176,7 +185,8 @@ export function AssignedSubscriptionTable () {
         return {
           ...response,
           name: isDeviceAgnosticEnabled ? (response?.trialAssignment
-            ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' ' + type
+            ? $t({ defaultMessage: 'Trial {type}' }, { type })
+            : $t({ defaultMessage: 'Paid {type}' }, { type }))
             : type
         }
       }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)

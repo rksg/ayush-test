@@ -1,10 +1,12 @@
 import userEvent from '@testing-library/user-event'
 
-import { get }                               from '@acx-ui/config'
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { Provider }                          from '@acx-ui/store'
-import { render, screen, waitFor }           from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { get }                                       from '@acx-ui/config'
+import { useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { dataApi, dataApiURL, Provider, store }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }         from '@acx-ui/user'
+
+import { mockNetworkHierarchy } from './__tests__/fixtures'
 
 import { AIAnalytics, AIAnalyticsTabEnum } from '.'
 
@@ -48,6 +50,8 @@ describe('NetworkAssurance', () => {
       READ_AI_DRIVEN_RRM: true,
       READ_INTENT_AI: true
     } as RaiPermissions)
+    store.dispatch(dataApi.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
   })
   afterEach(() => {
     jest.resetAllMocks()

@@ -2,11 +2,16 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Drawer, PasswordInput }                                                                                                                                         from '@acx-ui/components'
-import { formatter }                                                                                                                                                     from '@acx-ui/formatter'
-import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                    from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                                                                                         from '@acx-ui/user'
+import { Drawer, PasswordInput }                                                                                                                                   from '@acx-ui/components'
+import { Features }                                                                                                                                                from '@acx-ui/feature-toggle'
+import { formatter }                                                                                                                                               from '@acx-ui/formatter'
+import { useGetEdgePasswordDetailQuery }                                                                                                                           from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDnsServers, EdgeStatus, EdgeStatusEnum, EdgeUrlsInfo, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                              from '@acx-ui/react-router-dom'
+import { hasPermission, useUserProfileContext }                                                                                                                    from '@acx-ui/user'
+import { getOpsApi }                                                                                                                                               from '@acx-ui/utils'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import * as UI from './styledComponents'
 
@@ -16,15 +21,30 @@ interface EdgeDetailsDrawerProps {
   currentEdge: EdgeStatus | undefined,
   currentCluster: EdgeClusterStatus | undefined
   dnsServers: EdgeDnsServers | undefined
-  passwordDetail: EdgePasswordDetail | undefined
 }
 
 
 const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, currentEdge, currentCluster, dnsServers, passwordDetail } = props
+  const { visible, setVisible, currentEdge, currentCluster, dnsServers } = props
   const { data: userProfile } = useUserProfileContext()
-  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
+
+  const isShowEdgePassword = (userProfile?.support || userProfile?.var || userProfile?.dogfood)
+  && hasPermission({ rbacOpsIds: [getOpsApi(EdgeUrlsInfo.getEdgePasswordDetail)] })
+  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
+    {
+      params: {
+        venueId: currentEdge?.venueId,
+        edgeClusterId: currentEdge?.clusterId,
+        serialNumber: currentEdge?.serialNumber
+      }
+    }, {
+      skip: !visible || !isShowEdgePassword || !currentEdge
+    }
+  )
+
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeArptReady = useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -85,14 +105,22 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
         }
       />
 
-      <Divider/>
 
-      <Form.Item
+      {(isEdgeHqosEnabled || isEdgeArptReady) && <Divider/>}
+
+      {isEdgeHqosEnabled && <Form.Item
         label={$t({ defaultMessage: 'Hierarchical QoS' })}
         children={
           transformDisplayEnabledDisabled(currentEdge?.isHqosEnabled??false)
         }
-      />
+      />}
+
+      {isEdgeArptReady && <Form.Item
+        label={$t({ defaultMessage: 'ARP Termination' })}
+        children={
+          transformDisplayEnabledDisabled(currentEdge?.isArpTerminationEnabled??false)
+        }
+      />}
 
       <Divider/>
 

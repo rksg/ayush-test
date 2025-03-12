@@ -89,7 +89,7 @@ export const getAttributes = (node?: PathNode) => {
   const defaultAttributes = ['type', 'clientCount', 'apCount']
   if(!node) return defaultAttributes
 
-  const attributes: Record<Exclude<NodeType, 'controller'>, string[]> = {
+  const attributes: Record<Exclude<NodeType, 'controller' | 'wlan' | 'wlanGroup'>, string[]> = {
     network: [...defaultAttributes, 'switchCount'],
     system: [
       'cluster: clusters',
@@ -118,7 +118,8 @@ export const getAttributes = (node?: PathNode) => {
     switchSubGroup: [ 'switchCount' ],
     switch: [ 'model', 'firmware', 'mac', 'portCount' ]
   }
-  return attributes[node.type as Exclude<NodeType, 'controller'>] || defaultAttributes
+  return attributes[
+    node.type as Exclude<NodeType, 'controller' | 'wlan' | 'wlanGroup'>] || defaultAttributes
 }
 
 export const getSummaryAttributes = (node: PathNode) => {

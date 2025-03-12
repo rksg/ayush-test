@@ -76,8 +76,16 @@ cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
 
 ### Creating a pull request
 
-Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
+Create a PR using the Bitbucket UI. You need at least 1 gatekeeper to approve the PR before it can be
 merged.
+
+**Gatekeepers by region:**
+
+- **TDC:** James, Karen, George, Ann, Cherry, YC, Jacky, Jeffery, Peter, Bess, Joe, Amy, Roil, Jerry.
+- **SGDC:** Jason, ShiawUen, Mickael
+- **BDC:** Suraj, Vivek
+- **HQ:** Eric
+
 
 ### Deleting a branch
 
@@ -115,8 +123,10 @@ start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/de
 before executing the command.
 
 ```sh
-npx nx run main:serve
+npx nx run main:serve --memoryLimit=4096
 ```
+If you need smoother performance, you can increase the memory limit to `--memoryLimit=8192`.
+
 
 or for Ruckus Analytics:
 
@@ -144,6 +154,16 @@ Use command below if you intend to run test for selected packages
 
 ```sh
 npx nx run-many --target=test --projects=rc,rc-utils --coverage --runInBand --verbose
+```
+
+### Check for flaky tests
+
+This project uses [flaky-test-detector](https://www.npmjs.com/package/@smartesting/flaky-test-detector) to identify inconsistent test results. The `./tools/dev/run-flaky-test-detector.sh` script runs updated/added JavaScript/TypeScript test files (`.spec.js`, `.test.ts`, - as determined by `git diff` against `origin/master`) 7 times. And identifies flaky tests based on their XML test output in `./flaky-test-detector-results.xml`.
+
+To detect flaky tests, run:
+
+```sh
+./tools/dev/run-flaky-test-detector.sh
 ```
 
 ### Run lint
@@ -175,5 +195,25 @@ Refer to [Nx.md](Nx.md) for other Nx related commands.
 ### Split.io Feature toggle
 Refer to [Feature Flag Operators & Usage in ACX-UI](https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=260188984) wiki on how to make use of feature toggle with Split.io
 
+##### Tool for generating Feature toggle code in R1
+From acx-ui/ root directory run following script
+```sh
+export GIT_OPS_PATH=<path-to-local-gitops-flux-nonbom-repo>
+export NONDB_SCHEMA_PATH=<path-to-local-acx-nondb-schema-repo>
+node tools/dev/createFF.js -n <toggle-name> -d <description> -t <tags separated by space>
+for eg:
+export GIT_OPS_PATH=../gitops-flux-nonbom
+export NONDB_SCHEMA_PATH=../acx-nondb-schema
+node tools/dev/createFF.js -n acx-ui-roaming-type-events-toggle -d "Feature flag for CT roaming type events" -t acx-ui MLSA-8666
+```
+Note: The script by default refers to local repos `gitops-flux-nonbom` & `acx-nondb-schema` located at the same level of `acx-ui`, hence there is no need to export the repo paths if repos happen to be at the mentioned location.
+
+The script sets default state for `dev` & `int` env as on. 
+
+After successfully running the script the files should be generated in the respective repos locally.
+
 ### I18n strings extraction and compilation
 Refer to  [Locale.md](Locale.md)
+
+### ACX-UI Unit Test Submodule NX Cache Setup Workflow
+https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI+Unit+Test+Submodule+NX+Cache+Setup+Workflow

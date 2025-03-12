@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksDataV2,
+  edgeSdLanApi,
   networkApi,
   softGreApi,
   venueApi
@@ -61,7 +62,8 @@ const disabledFFs = [
   Features.WIFI_COMPATIBILITY_BY_MODEL,
   Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE,
-  Features.EDGE_PIN_HA_TOGGLE
+  Features.EDGE_PIN_HA_TOGGLE,
+  Features.EDGE_PIN_ENHANCE_TOGGLE
 ]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
@@ -138,6 +140,7 @@ describe('VenueNetworksTab', () => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
       store.dispatch(softGreApi.util.resetApiState())
+      store.dispatch(edgeSdLanApi.util.resetApiState())
     })
 
     mockServer.use(
@@ -331,7 +334,7 @@ describe('VenueNetworksTab', () => {
 
     const row = await screen.findByRole('row', { name: /test_1/i })
 
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 
@@ -413,12 +416,7 @@ describe('VenueNetworksTab', () => {
 
   describe('Edge and SD-LAN P2 FF is on', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
-        && ff !== Features.WIFI_RBAC_API
-        && ff !== Features.EDGE_SD_LAN_MV_TOGGLE
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
-        && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.EDGE_PIN_HA_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{
@@ -478,11 +476,7 @@ describe('VenueNetworksTab', () => {
     const targetNetworkId = targetNetworkInfo.networkId
 
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
-        && ff !== Features.WIFI_RBAC_API
-        && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
-        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
-        && ff !== Features.EDGE_PIN_HA_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{
@@ -626,13 +620,7 @@ describe('VenueNetworksTab', () => {
     const venueId = 'venueId-1'
 
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff !== Features.G_MAP &&
-        ff !== Features.EDGES_SD_LAN_TOGGLE &&
-        ff !== Features.EDGES_SD_LAN_HA_TOGGLE &&
-        ff !== Features.EDGE_SD_LAN_MV_TOGGLE &&
-        ff !== Features.WIFI_COMPATIBILITY_BY_MODEL &&
-        ff !== Features.EDGE_PIN_HA_TOGGLE)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
     })
 
     it('should correctly display tunnel column when SoftGre is running on it', async () => {

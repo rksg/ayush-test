@@ -7,22 +7,29 @@ import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 
-interface ProgressBarProps {
-  percent: number // 0 - 100
-}
+import type { ProgressBarProps } from './styledComponents'
 
-export const strokeColorsByPercent = (percent: number) => {
-  const poor = cssStr('--acx-semantics-red-50')
-  const average = cssStr('--acx-semantics-yellow-40')
-  const good = cssStr('--acx-semantics-green-50')
 
+
+const red = cssStr('--acx-semantics-red-50')
+const yellow = cssStr('--acx-semantics-yellow-40')
+const green = cssStr('--acx-semantics-green-50')
+
+export const strokeColorsCompletionByPercent = (percent: number) => {
   // Create array of same color based on the percentage
   if (percent <= 20)
-    return Array(1).fill(poor)
+    return Array(1).fill(red)
   else if (percent <= 60)
-    return Array(3).fill(average)
-  else
-    return Array(5).fill(good)
+    return Array(3).fill(yellow)
+  return Array(5).fill(green)
+}
+
+export const strokeColorsUsageByPercent = (percent: number) => {
+  if (percent <= 25)
+    return green
+  else if (percent <= 50)
+    return yellow
+  return red
 }
 
 export const normalizePercent = (percent: number) => {
@@ -38,7 +45,7 @@ export const normalizePercent = (percent: number) => {
 }
 
 export function ProgressBar ({
-  percent
+  percent, strokeWidth = 10
 }: ProgressBarProps) {
   const { $t } = useIntl()
 
@@ -50,13 +57,13 @@ export function ProgressBar ({
       steps={5}
       showInfo={false}
       trailColor={cssStr('--acx-neutrals-30')}
-      strokeWidth={10}
-      strokeColor={strokeColorsByPercent(percent)} />
+      strokeWidth={strokeWidth}
+      strokeColor={strokeColorsCompletionByPercent(percent)} />
   </Tooltip>
 }
 
 export function ProgressBarV2 ({
-  percent
+  percent, strokeWidth = 10, gradientMode='completion', style
 }: ProgressBarProps) {
   const { $t } = useIntl()
 
@@ -67,7 +74,11 @@ export function ProgressBarV2 ({
       percent={percent}
       showInfo={false}
       trailColor={cssStr('--acx-neutrals-30')}
-      strokeWidth={10}
-      strokeColor={strokeColorsByPercent(percent)} />
+      strokeWidth={strokeWidth}
+      strokeColor={gradientMode === 'usage' ?
+        strokeColorsUsageByPercent(percent) : strokeColorsCompletionByPercent(percent)}
+      style={style}
+      gradientmode={gradientMode}
+    />
   </Tooltip>
 }

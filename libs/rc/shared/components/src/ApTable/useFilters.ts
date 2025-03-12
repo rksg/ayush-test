@@ -20,6 +20,10 @@ export const useFilters = (params: Params) => {
   targetNetworkData?.venueApGroups?.forEach(venudApGroup => {
     apGroupIds = apGroupIds.concat(venudApGroup.apGroupIds)
   })
+  // Avoid to get All APs if the network does not activate any venues.
+  if (targetNetworkData && apGroupIds.length === 0) {
+    apGroupIds = ['no_apgroup']
+  }
 
   useEffect(() => {
     setFilters({

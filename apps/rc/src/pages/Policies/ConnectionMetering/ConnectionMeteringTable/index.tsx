@@ -7,12 +7,10 @@ import {
   PageHeader,
   Table,
   TableProps,
-  showToast,
   Loader
 } from '@acx-ui/components'
 import {
-  SimpleListTooltip,
-  usePersonaAsyncHeaders
+  SimpleListTooltip
 } from '@acx-ui/rc/components'
 import {
   useDeleteConnectionMeteringMutation,
@@ -128,7 +126,6 @@ export default function ConnectionMeteringTable () {
   const navigate = useNavigate()
   const [venueMap, setVenueMap] = useState(new Map())
   const [propertyMap, setPropertyMap] = useState(new Map<string, PropertyConfigs>())
-  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
   const { tenantId } = useParams()
   const venueListPayload = {
     fields: [
@@ -196,17 +193,9 @@ export default function ConnectionMeteringTable () {
           [{ fieldName: 'unitCount', fieldText: $t({ defaultMessage: 'Unit' }) }],
           async () => {
             const id = selectedItems[0].id
-            const name = selectedItems[0].name
-            deleteConnectionMetering({ params: { id }, customHeaders })
+            deleteConnectionMetering({ params: { id } })
               .unwrap()
               .then(() => {
-                if (!isAsync) {
-                  showToast({
-                    type: 'success',
-                    content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
-                      { name })
-                  })
-                }
                 clearSelection()
               }).catch((e) => {
                 // eslint-disable-next-line no-console

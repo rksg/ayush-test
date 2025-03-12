@@ -1,21 +1,26 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
   PersonaUrls,
-  DpskUrls
+  DpskUrls,
+  RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+
+import { mockedPolicySet } from '../../services/DpskForm/__tests__/fixtures'
 
 import {
   mockDpskList,
   mockMacRegistrationList,
   mockPersonaGroup,
   mockPersonaGroupTableResult,
+  mockAdaptivePolicySetTableResult,
   replacePagination
 } from './__tests__/fixtures'
 
@@ -35,6 +40,10 @@ describe('Persona Group Drawer', () => {
       rest.post(
         replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({ ...mockedPolicySet }))
       ),
       rest.patch(
         PersonaUrls.updatePersonaGroup.url,
@@ -57,6 +66,12 @@ describe('Persona Group Drawer', () => {
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json(mockDpskList))
+      ),
+      rest.get(
+        replacePagination(RulesManagementUrlsInfo.getPolicySets.url),
+        (_, res, ctx) => {
+          return res(ctx.json(mockAdaptivePolicySetTableResult))
+        }
       )
     )
     params = {
@@ -89,7 +104,6 @@ describe('Persona Group Drawer', () => {
 
     // Required fields
     await screen.findByText('Please enter Identity Group Name')
-    await screen.findByText('Please select a DPSK Service')
 
     const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     await userEvent.type(nameField, mockPersonaGroupTableResult.content[0].name)
@@ -166,5 +180,21 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(applyButton)
 
     await waitFor(() => expect(updatePersonaSpy).toHaveBeenCalled())
+  })
+
+  it('should render PersonaGroupDrawer without identityGroup', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_REQUIRE_IDENTITY_GROUP)
+    render(
+      <Provider>
+        <PersonaGroupDrawer
+          visible
+          isEdit={false}
+          onClose={closeFn}
+        />
+      </Provider>
+    )
+
+    await screen.findByRole('dialog')
+    expect(screen.queryByText('DPSK Service')).toBeNull()
   })
 })

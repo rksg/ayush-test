@@ -7,14 +7,18 @@ import { useIntl }   from 'react-intl'
 import { Loader }                                from '@acx-ui/components'
 import {
   useDeleteEthernetPortProfileRadiusIdMutation,
-  useGetAAAPolicyListQuery,
-  useGetEthernetPortProfileByIdQuery,
+  useGetEthernetPortProfileTemplateQuery,
+  useGetEthernetPortProfileWithRelationsByIdQuery,
   useUpdateEthernetPortProfileMutation,
-  useUpdateEthernetPortProfileRadiusIdMutation
+  useUpdateEthernetPortProfileRadiusIdMutation,
+  useUpdateEthernetPortProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   EthernetPortAuthType,
-  EthernetPortProfileFormType
+  EthernetPortProfileFormType,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher
 }                                                     from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -23,27 +27,31 @@ import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfi
 export const EditEthernetPortProfile = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const [ updateEthernetPortProfile ] = useUpdateEthernetPortProfileMutation()
+  const { isTemplate } = useConfigTemplate()
+  const [form] = Form.useForm()
+
+  const { data: ethernetPortProfileData, isLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
+    useTemplateQueryFn: useGetEthernetPortProfileTemplateQuery,
+    enableRbac: true,
+    extraParams: { id: policyId },
+    payload: {
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: {
+        id: [policyId]
+      }
+    }
+  })
+
+  const [ updateEthernetPortProfile ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateEthernetPortProfileMutation,
+    useTemplateMutationFn: useUpdateEthernetPortProfileTemplateMutation
+  })
+
   const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
   const [ deleteEthernetPortProfileRadiusId ] = useDeleteEthernetPortProfileRadiusIdMutation()
 
-  const [form] = Form.useForm()
-
-  const { data: ethernetPortProfileData, isLoading } =
-    useGetEthernetPortProfileByIdQuery(
-      { params: { id: policyId } }
-    )
-
-  const { data: aaaRadiusList } = useGetAAAPolicyListQuery(
-    { payload: {
-      filters: {
-        ethernetPortProfileIds: [ethernetPortProfileData?.id]
-      }
-    } },
-    {
-      skip: !!!ethernetPortProfileData?.id
-    }
-  )
 
   const handleEditEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
@@ -56,17 +64,19 @@ export const EditEthernetPortProfile = () => {
         }
       }).unwrap()
 
-      handleEthernetPortRadiusId(
-        ethernetPortProfileData?.id,
-        payload.authRadiusId,
-        ethernetPortProfileData?.authRadiusId
-      )
+      if (!isTemplate) {
+        handleEthernetPortRadiusId(
+          ethernetPortProfileData?.id,
+          payload.authRadiusId,
+          ethernetPortProfileData?.authRadiusId
+        )
 
-      handleEthernetPortRadiusId(
-        ethernetPortProfileData?.id,
-        payload.accountingRadiusId,
-        ethernetPortProfileData?.accountingRadiusId
-      )
+        handleEthernetPortRadiusId(
+          ethernetPortProfileData?.id,
+          payload.accountingRadiusId,
+          ethernetPortProfileData?.accountingRadiusId
+        )
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)
@@ -79,49 +89,43 @@ export const EditEthernetPortProfile = () => {
       return
     }
 
-    if (Boolean(oldId)) {
-      deleteEthernetPortProfileRadiusId({ params: {
-        id: ethernetPortId,
-        radiusId: newId
-      } })
-    }
-
     if (Boolean(newId)) {
       updateEthernetPortProfileRadiusId({ params: {
         id: ethernetPortId,
         radiusId: newId
       } })
+
+      // If there have newId, then don't need to call delete API avoid race condition
+      return
+    }
+
+    if (Boolean(oldId)) {
+      deleteEthernetPortProfileRadiusId({ params: {
+        id: ethernetPortId,
+        radiusId: oldId
+      } })
     }
   }
   useEffect(() => {
-    if(!ethernetPortProfileData || !aaaRadiusList) {
+    if(!ethernetPortProfileData) {
       return
     }
 
     const sourceData = cloneDeep(ethernetPortProfileData) as EthernetPortProfileFormType
     if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
       sourceData.authEnabled = true
-      sourceData.accountingEnabled=false
+      sourceData.accountingEnabled = false
       sourceData.authTypeRole = sourceData.authType
 
-      aaaRadiusList.data.forEach((radius) =>{
-        if (radius.type === 'AUTHENTICATION') {
-          sourceData.authRadiusId = radius.id
-        }
-
-        if (radius.type === 'ACCOUNTING') {
-          sourceData.accountingEnabled=true
-          sourceData.accountingRadiusId = radius.id
-        }
-      })
+      sourceData.accountingEnabled = Boolean(sourceData.accountingRadiusId)
     }
     form.setFieldsValue(sourceData)
-  }, [ethernetPortProfileData, aaaRadiusList])
+
+  }, [ethernetPortProfileData])
 
   return (
     <Loader states={[{ isLoading }]}>
       <EthernetPortProfileForm
-        title={$t({ defaultMessage: 'Edit Ethernet Port Profile' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handleEditEthernetPortProfile}
         form={form}

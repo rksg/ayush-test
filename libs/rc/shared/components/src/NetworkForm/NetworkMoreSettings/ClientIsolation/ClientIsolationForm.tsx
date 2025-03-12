@@ -4,7 +4,7 @@ import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
 
-import { ConfigTemplateType } from '@acx-ui/rc/utils'
+import { ConfigTemplateType, IsolatePacketsTypeEnum, getIsolatePacketsTypeOptions } from '@acx-ui/rc/utils'
 
 import NetworkFormContext                                                              from '../../NetworkFormContext'
 import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
@@ -13,13 +13,6 @@ import * as UI                                                                  
 import ClientIsolationAllowListEditor from './ClientIsolationAllowListEditor'
 
 const { useWatch } = Form
-const { Option } = Select
-
-enum IsolatePacketsTypeEnum {
-  UNICAST = 'UNICAST',
-  MULTICAST = 'MULTICAST',
-  UNICAST_MULTICAST = 'UNICAST_MULTICAST',
-}
 
 export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const form = Form.useFormInstance()
@@ -70,17 +63,9 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
         initialValue={IsolatePacketsTypeEnum.UNICAST}
       >
         <Select
-          style={{ width: '240px' }}>
-          <Option value={IsolatePacketsTypeEnum.UNICAST}>
-            {$t({ defaultMessage: 'Unicast' })}
-          </Option>
-          <Option value={IsolatePacketsTypeEnum.MULTICAST}>
-            {$t({ defaultMessage: 'Multicast/broadcast' })}
-          </Option>
-          <Option value={IsolatePacketsTypeEnum.UNICAST_MULTICAST}>
-            {$t({ defaultMessage: 'Unicast and multicast/broadcast' })}
-          </Option>
-        </Select>
+          style={{ width: '240px' }}
+          options={getIsolatePacketsTypeOptions()}
+        />
       </Form.Item>
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Automatic support for VRRP/HSRP' })}

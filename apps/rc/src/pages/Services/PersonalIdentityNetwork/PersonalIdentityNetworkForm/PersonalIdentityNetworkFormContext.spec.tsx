@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 
-import { rest } from 'msw'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
@@ -19,9 +20,14 @@ import {
   TunnelTypeEnum,
   VenueFixtures,
   EdgeSdLanUrls,
-  EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+  EdgeSdLanFixtures,
+  EdgeCompatibilityFixtures,
+  EdgeStatus,
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+
+import { mockSwitchFeatureSet } from '../__tests__/fixtures'
 
 import { PersonalIdentityNetworkFormContext, PersonalIdentityNetworkFormDataProvider } from './PersonalIdentityNetworkFormContext'
 
@@ -33,7 +39,7 @@ jest.mock('@acx-ui/utils', () => ({
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 const editPinPath = '/:tenantId/services/personalIdentityNetwork/:serviceId/edit'
-const { mockVenueOptions } = VenueFixtures
+const { mockVenueOptions, mockVenueOptionsForMutuallyExclusive } = VenueFixtures
 const {
   mockPersonaGroup,
   mockDpsk,
@@ -46,13 +52,17 @@ const {
   mockDPSKNetworkList
 } = EdgePinFixtures
 const { mockSdLanDataForPinMutuallyExclusive } = EdgeSdLanFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
   data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
 }
+
+// make cluster[0] and cluster[1] have the same venue
+const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
+mockEdgeClusterList.data[1].venueId = mockEdgeClusterList.data[0].venueId
 
 const services = require('@acx-ui/rc/services')
 
@@ -75,6 +85,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
     })
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenueOptions))
@@ -118,6 +132,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockSwitchFeatureSet))
       )
     )
   })
@@ -127,7 +145,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
       const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
         wrapper: ({ children }) => <Provider>
           <PersonalIdentityNetworkFormDataProvider
-            venueId='venue-id'
+            venueId='mock_venue_1'
           >
             {children}
           </PersonalIdentityNetworkFormDataProvider>
@@ -143,9 +161,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
       await waitFor(() =>
         expect(result.current.dpskData?.id).toBe(mockDpsk.id))
       await waitFor(() =>
-        expect(result.current.clusterOptions?.length).toBe(5))
-      expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
-      expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
+        expect(result.current.clusterOptions?.length).toBe(1))
+      expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[1].name)
+      expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[1].clusterId)
       await waitFor(() =>
         expect(result.current.tunnelProfileOptions?.length)
           .toBe(pinTunnelData.data.length))
@@ -162,13 +180,16 @@ describe('PersonalIdentityNetworkFormContext', () => {
         expect(result.current.switchList?.length)
           .toBe(mockPinSwitchInfoData.distributionSwitches.length +
           mockPinSwitchInfoData.accessSwitches.length))
+      expect(result.current.requiredFw_DS).toBe('10.0.10f')
+      expect(result.current.requiredFw_AS).toBe('10.0.10f')
+      expect(result.current.requiredSwitchModels).toStrictEqual(['ICX7650', 'ICX7850', 'ICX7550'])
     })
 
     it('should get name correctly', async () => {
       const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
         wrapper: ({ children }) => <Provider>
           <PersonalIdentityNetworkFormDataProvider
-            venueId='venue-id'
+            venueId='mock_venue_1'
           >
             {children}
           </PersonalIdentityNetworkFormDataProvider>
@@ -178,7 +199,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
       await waitFor(() =>
         expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
       await waitFor(() =>
-        expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
+        expect(result.current.getClusterName('clusterId_2')).toBe('Edge Cluster 2'))
+      // HA AA mode should not be an option
+      expect(result.current.getClusterName('clusterId_1')).toBe('')
       await waitFor(() =>
         expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
       await waitFor(() =>
@@ -208,7 +231,13 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter venue already bound with SD-LAN', async () => {
+    const edgeList = cloneDeep(mockEdgeClusterList)
+    edgeList.data[1].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
     mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockVenueOptionsForMutuallyExclusive))
+      ),
       rest.post(
         EdgePinUrls.getEdgePinStatsList.url,
         (_req, res, ctx) => res(ctx.json(mockPinListForMutullyExclusive))
@@ -216,6 +245,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json({ data: mockSdLanDataForPinMutuallyExclusive }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(edgeList))
       )
     )
 
@@ -229,11 +262,15 @@ describe('PersonalIdentityNetworkFormContext', () => {
     })
 
     await waitFor(() =>
-      expect(result.current.getVenueName('mock_venue_3')).toBe(''))
+      expect(result.current.getVenueName('mock_venue_5')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getVenueName('mock_venue_4')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
     await waitFor(() =>
       expect(result.current.getVenueName('mock_venue_2')).toBe(''))
     await waitFor(() =>
-      expect(result.current.getVenueName('mock_venue_1')).toBe('Mock Venue 1'))
+      expect(result.current.getVenueName('mock_venue_1')).toBe(''))
   })
 
   it('should filter network already bound with SD-LAN', async () => {
@@ -277,7 +314,15 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter cluster already bound with SD-LAN', async () => {
+    const mockClusterList = cloneDeep(mockEdgeClusterList)
+    // eslint-disable-next-line max-len
+    mockClusterList.data[4].edgeList.forEach(node => (node as EdgeStatus).firmwareVersion = '2.2.0.123')
+
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusterList))
+      ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockSdLanDataForPinMutuallyExclusive))
@@ -286,7 +331,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
 
     const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
       wrapper: ({ children }) => <Provider>
-        <PersonalIdentityNetworkFormDataProvider venueId='venue-id'>
+        <PersonalIdentityNetworkFormDataProvider venueId='0000000005'>
           {children}
         </PersonalIdentityNetworkFormDataProvider>
       </Provider>,
@@ -298,10 +343,41 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.getClusterName('clusterId_2')).toBe(''))
     await waitFor(() =>
-      expect(result.current.getClusterName('clusterId_3')).toBe('Edge Cluster 3'))
+      expect(result.current.getClusterName('clusterId_3')).toBe(''))
     await waitFor(() =>
-      expect(result.current.getClusterName('clusterId_4')).toBe('Edge Cluster 4'))
+      expect(result.current.getClusterName('clusterId_4')).toBe(''))
     await waitFor(() =>
       expect(result.current.getClusterName('clusterId_5')).toBe('Edge Cluster 5'))
+  })
+
+  it('should filter cluster which firmware version is less than 2.2.0.1', async () => {
+    const mockClusterList = cloneDeep(mockEdgeClusterList)
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusterList))
+      )
+    )
+
+    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+      wrapper: ({ children }) => <Provider>
+        <PersonalIdentityNetworkFormDataProvider venueId='0000000005'>
+          {children}
+        </PersonalIdentityNetworkFormDataProvider>
+      </Provider>,
+      route: { params, path: createPinPath }
+    })
+
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_1')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_2')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_3')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_4')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_5')).toBe(''))
   })
 })

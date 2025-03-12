@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState, useRef } from 'react'
 
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
-import styled        from 'styled-components/macro'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
+import styled             from 'styled-components/macro'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -21,8 +21,8 @@ import {
 } from '@acx-ui/rc/services'
 import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl } from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
 const { useWatch } = Form
@@ -33,9 +33,10 @@ export const FieldGroup = styled.div`
   margin: 10px;
 `
 
-export function ClientAdmissionControlSettings () {
+export function ClientAdmissionControlSettings (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const form = Form.useFormInstance()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -189,35 +190,40 @@ export function ClientAdmissionControlSettings () {
     isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
   }]}>
     <VenueSettingsHeader venue={venueData}
+      disabled={!isAllowEdit}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
-    <ClientAdmissionControlForm
-      key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
-      level={ClientAdmissionControlLevelEnum.AP_LEVEL}
-      type={ClientAdmissionControlTypeEnum.CAC_24G}
-      readOnly={isUseVenueSettings}
-      isEnabled={enable24G}
-      isMutuallyExclusive={false}
-      enabledFieldName={enable24GFieldName}
-      minClientCountFieldName={minClientCount24GFieldName}
-      maxRadioLoadFieldName={maxRadioLoad24GFieldName}
-      minClientThroughputFieldName={minClientThroughput24GFieldName}
-      onFormDataChanged={onFormDataChanged}
-    />
-    <br/>
-    <ClientAdmissionControlForm
-      key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
-      level={ClientAdmissionControlLevelEnum.AP_LEVEL}
-      type={ClientAdmissionControlTypeEnum.CAC_5G}
-      readOnly={isUseVenueSettings}
-      isEnabled={enable50G}
-      isMutuallyExclusive={false}
-      enabledFieldName={enable50GFieldName}
-      minClientCountFieldName={minClientCount50GFieldName}
-      maxRadioLoadFieldName={maxRadioLoad50GFieldName}
-      minClientThroughputFieldName={minClientThroughput50GFieldName}
-      onFormDataChanged={onFormDataChanged}
-    />
+    <Row gutter={0}>
+      <Col style={{ width: '340px' }}>
+        <ClientAdmissionControlForm
+          key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_24G}
+          level={ClientAdmissionControlLevelEnum.AP_LEVEL}
+          type={ClientAdmissionControlTypeEnum.CAC_24G}
+          readOnly={!isAllowEdit || isUseVenueSettings}
+          isEnabled={enable24G}
+          isMutuallyExclusive={false}
+          enabledFieldName={enable24GFieldName}
+          minClientCountFieldName={minClientCount24GFieldName}
+          maxRadioLoadFieldName={maxRadioLoad24GFieldName}
+          minClientThroughputFieldName={minClientThroughput24GFieldName}
+          onFormDataChanged={onFormDataChanged}
+        />
+        <br/>
+        <ClientAdmissionControlForm
+          key={ClientAdmissionControlLevelEnum.AP_LEVEL+ClientAdmissionControlTypeEnum.CAC_5G}
+          level={ClientAdmissionControlLevelEnum.AP_LEVEL}
+          type={ClientAdmissionControlTypeEnum.CAC_5G}
+          readOnly={!isAllowEdit || isUseVenueSettings}
+          isEnabled={enable50G}
+          isMutuallyExclusive={false}
+          enabledFieldName={enable50GFieldName}
+          minClientCountFieldName={minClientCount50GFieldName}
+          maxRadioLoadFieldName={maxRadioLoad50GFieldName}
+          minClientThroughputFieldName={minClientThroughput50GFieldName}
+          onFormDataChanged={onFormDataChanged}
+        />
+      </Col>
+    </Row>
   </Loader>
   )
 }

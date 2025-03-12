@@ -53,6 +53,9 @@ export const ImageDesc = styled('div')<{ active: number }>`
   font-size: var(--acx-subtitle-6-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   background: var(${props => props.active ? '--acx-accents-orange-55' : '--acx-neutrals-80'});
+  text-overflow: ellipsis;
+  overflow: auto;
+  padding: 0px 4px;
 `
 
 export const Thumbnail = styled('div')`

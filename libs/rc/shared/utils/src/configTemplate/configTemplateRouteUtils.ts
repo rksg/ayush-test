@@ -1,7 +1,8 @@
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { PolicyOperation, ServiceOperation, getPolicyDetailsLink, getServiceDetailsLink } from '../features'
-import { ConfigTemplateType }                                                             from '../types'
+import { ServiceOperation }                            from '../constants'
+import { getPolicyDetailsLink, getServiceDetailsLink } from '../features'
+import { ConfigTemplateType, PolicyOperation }         from '../types'
 
 import { configTemplatePolicyTypeMap, configTemplateServiceTypeMap } from './contentsMap'
 

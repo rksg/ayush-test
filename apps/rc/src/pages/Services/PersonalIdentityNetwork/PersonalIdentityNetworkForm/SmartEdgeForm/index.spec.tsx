@@ -186,10 +186,9 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       await screen.findByRole('combobox', { name: 'Cluster' }),
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
+
     const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
     await user.type(segmentsInput, '10')
-    const devicesInput = screen.getByRole('spinbutton', { name: 'Number of devices per Segment' })
-    await user.type(devicesInput, '10')
     const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
     await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
     await user.selectOptions(
@@ -221,8 +220,44 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
     await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
     await screen.findByText('Please select Cluster')
     await screen.findByText('Please enter Number of Segments')
-    await screen.findByText('Please enter Number of devices per Segment')
     await screen.findByText('Please enter DHCP Service')
+  })
+
+  it('Step2 - Smart edge will be blocked by segment validation', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <PersonalIdentityNetworkFormContext.Provider
+          value={mockContextData}
+        >
+          <StepsForm onFinish={mockedFinishFn}>
+            <StepsForm.StepForm>
+              <SmartEdgeForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </PersonalIdentityNetworkFormContext.Provider>
+      </Provider>,
+      { route: { params, path: createPinPath } })
+
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
+    )
+    const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
+    await user.type(segmentsInput, '10001')
+    const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
+    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
+    await user.selectOptions(
+      dhcpSelect,
+      await screen.findByRole('option', { name: 'TestDhcp-1' })
+    )
+    await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
+    await user.click(screen.getByText('PoolTest1'))
+    await user.click(screen.getByRole('button', { name: 'Select' }))
+
+    await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
+    const alerts = await screen.findAllByRole('alert')
+    expect(alerts[0]).toHaveTextContent('Number of Segments must be an integer between 1 and 10000')
   })
 
   it('Step2 - Should navigate to detail page when in edit mode and click "service details page"', async () => {
@@ -232,9 +267,9 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
         <PersonalIdentityNetworkFormContext.Provider
           value={mockContextData}
         >
-          <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm onFinish={mockedFinishFn} editMode>
             <StepsForm.StepForm>
-              <SmartEdgeForm editMode />
+              <SmartEdgeForm />
             </StepsForm.StepForm>
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>

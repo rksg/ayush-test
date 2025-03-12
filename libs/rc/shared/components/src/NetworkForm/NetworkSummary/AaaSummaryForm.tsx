@@ -10,7 +10,8 @@ import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   NetworkSaveData,
-  macAuthMacFormatOptions
+  macAuthMacFormatOptions,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
@@ -60,6 +61,9 @@ function AaaServerFields ({ serverType, data }: {
   data: NetworkSaveData
 }) {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   const enableProxy = serverType === AaaServerTypeEnum.AUTHENTICATION ?
     data.enableAuthProxy : data.enableAccountingProxy
@@ -75,6 +79,13 @@ function AaaServerFields ({ serverType, data }: {
       serverType={serverType}
       order={AaaServerOrderEnum.SECONDARY}
     />}
+    {supportRadsec &&
+      <Form.Item
+        label={$t({ defaultMessage: 'RadSec' })}
+        children={$t({ defaultMessage: '{tlsEnabled}' }, {
+          tlsEnabled: data[serverType]?.radSecOptions?.tlsEnabled ? 'On' : 'Off'
+        })}
+      />}
     <Form.Item
       label={$t({ defaultMessage: 'Proxy Service:' })}
       children={$t(enableProxy ? contents.states.enabled : contents.states.disabled)} />
@@ -86,6 +97,8 @@ function AaaServerData ({ order, data, serverType }: {
   order: AaaServerOrderEnum
 }) {
   const { $t } = useIntl()
+  const tlsEnabled = get(data, `${serverType}.radSecOptions.tlsEnabled`)
+  const sharedSecret = get(data, `${serverType}.${order}.sharedSecret`)
   return (<>
     <Form.Item
       label={$t(contents.aaaServerTypes[order])}
@@ -93,13 +106,13 @@ function AaaServerData ({ order, data, serverType }: {
         ipAddress: get(data, `${serverType}.${order}.ip`),
         port: get(data, `${serverType}.${order}.port`)
       })} />
-    <Form.Item
+    {!tlsEnabled && sharedSecret && <Form.Item
       label={$t({ defaultMessage: 'Shared Secret:' })}
       children={<PasswordInput
         readOnly
         bordered={false}
-        value={get(data, `${serverType}.${order}.sharedSecret`)}
+        value={sharedSecret}
       />}
-    />
+    />}
   </>)
 }

@@ -1,6 +1,15 @@
-import { getWiredWirelessIncidentCodes, IncidentToggle } from './constants'
+import { getWiredWirelessIncidentCodes, IncidentToggle, categoryOptions } from './constants'
 
 describe('constants', () => {
+  describe('categoryOptions', () => {
+    it('returns true for isVisible', () => {
+      expect(categoryOptions.map(({ isVisible }) => isVisible())).toEqual([
+        true,
+        true,
+        true
+      ])
+    })
+  })
   describe('productNames', () => {
     const mockGet = jest.fn()
     beforeEach(() => {
@@ -94,7 +103,10 @@ describe('constants', () => {
     it('should return wired and wireless codes when no active toggles', () => {
       const toggles = {
         [IncidentToggle.AirtimeIncidents]: false,
-        [IncidentToggle.SwitchDDoSIncidents]: false
+        [IncidentToggle.SwitchDDoSIncidents]: false,
+        [IncidentToggle.SwitchLoopDetectionIncidents]: false,
+        [IncidentToggle.SwitchPortCongestionIncidents]: false,
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
@@ -125,17 +137,23 @@ describe('constants', () => {
         ]
       ])
     })
-    it('should return wired and wireless codes when active switch DDoS toggle', () => {
+    it('should return wired and wireless codes when active all switch related toggle', () => {
       const toggles = {
         [IncidentToggle.AirtimeIncidents]: false,
-        [IncidentToggle.SwitchDDoSIncidents]: true
+        [IncidentToggle.SwitchDDoSIncidents]: true,
+        [IncidentToggle.SwitchLoopDetectionIncidents]: true,
+        [IncidentToggle.SwitchPortCongestionIncidents]: true,
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
           'p-switch-memory-high',
           'i-switch-vlan-mismatch',
           'i-switch-poe-pd',
-          's-switch-tcp-syn-ddos'
+          's-switch-tcp-syn-ddos',
+          'i-switch-loop-detection',
+          'p-switch-port-congestion',
+          'p-switch-uplink-port-congestion'
         ],
         [
           'ttc',

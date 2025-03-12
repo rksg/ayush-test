@@ -69,6 +69,7 @@ describe('Edge Detail Services Tab', () => {
     const rows = await screen.findAllByRole('row')
     expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
     expect(within(rows[2]).getByRole('cell', { name: /NSG-1/i })).toBeVisible()
+    expect(within(rows[5]).getByRole('cell', { name: /Mock mDNS/i })).toBeVisible()
   })
 
   it('should render service detail drawer when click service name', async () => {

@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   DpskUrls,
   getServiceDetailsLink,
@@ -81,6 +83,10 @@ describe('DpskTable', () => {
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
         res(ctx.json(AllowedNetworkList))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(AllowedNetworkList))
       )
     )
   })
@@ -150,7 +156,8 @@ describe('DpskTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should not delete the selected row when it is mapped to Identity or Network', async () => {
+  // eslint-disable-next-line max-len
+  it('should not delete the selected row when it is mapped to Identity Group or Network', async () => {
     render(
       <Provider>
         <DpskTable />
@@ -168,10 +175,39 @@ describe('DpskTable', () => {
     const alertDialog = await screen.findByRole('dialog')
 
     // eslint-disable-next-line max-len
-    expect(await within(alertDialog).findByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
+    expect(await within(alertDialog).findByText('You are unable to delete this record due to its usage in Identity Group,Network')).toBeVisible()
 
     await userEvent.click(within(alertDialog).getByRole('button', { name: /OK/ }))
     await waitFor(() => expect(alertDialog).not.toBeVisible())
+  })
+
+  it('should delete the selected row when it is mapped to Identity Group', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const targetDpsk = mockedDpskList.data[3]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
+
+    const alertDialog = await screen.findByRole('dialog')
+
+    // Only the network association checking
+    // eslint-disable-next-line max-len
+    expect(await within(alertDialog).findByText('You are unable to delete this record due to its usage in Network')).toBeVisible()
+
+    await userEvent.click(within(alertDialog).getByRole('button', { name: /OK/ }))
+    await waitFor(() => expect(alertDialog).not.toBeVisible())
+
+    jest.clearAllMocks()
   })
 
   it('should navigate to the Edit view', async () => {

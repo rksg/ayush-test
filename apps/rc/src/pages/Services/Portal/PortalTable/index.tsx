@@ -4,6 +4,7 @@ import { throttle } from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
+import { baseUrlFor }                                                            from '@acx-ui/config'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { PortalPreviewModal, SimpleListTooltip, getLanguage, initialPortalData } from '@acx-ui/rc/components'
 import {
@@ -26,15 +27,15 @@ import {
   Demo,
   PORTAL_LIMIT_NUMBER,
   getScopeKeyByService,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getImageDownloadUrl }                                     from '@acx-ui/utils'
 
-
-import Photo   from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo    from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 export default function PortalTable () {
   const intl = useIntl()
@@ -70,6 +71,7 @@ export default function PortalTable () {
 
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, serviceName, name }], clearSelection) => {
@@ -87,6 +89,7 @@ export default function PortalTable () {
       }
     },
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.EDIT),
       onClick: ([{ id }]) => {
@@ -227,6 +230,7 @@ export default function PortalTable () {
         extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
           <TenantLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.CREATE)}
           >

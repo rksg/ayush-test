@@ -851,6 +851,15 @@ describe('Table component', () => {
       expect(await tbody.findAllByRole('checkbox')).toHaveLength(4)
     })
 
+    it('compactWidget Table: custom placeholde-r(Search...)', async () => {
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        type={'compactWidget'}
+      />)
+      expect(await screen.findByPlaceholderText(
+        'Search...')).toBeVisible()
+    })
 
     it('Enabled the flag: alwaysShowFilters', async () => {
       render(<Table
@@ -945,6 +954,20 @@ describe('Table component', () => {
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: 'John Doe' } })
+
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelectorAll('mark')).toHaveLength(1)
+    })
+
+    it('should highlight only', async () => {
+      const { asFragment } = render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        highLightValue='John Doe'
+      />)
+      expect(screen
+        .queryByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      ).not.toBeInTheDocument()
 
       // eslint-disable-next-line testing-library/no-node-access
       expect(asFragment().querySelectorAll('mark')).toHaveLength(1)

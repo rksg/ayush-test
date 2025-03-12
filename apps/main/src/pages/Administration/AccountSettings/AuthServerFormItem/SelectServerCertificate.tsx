@@ -26,38 +26,39 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
   }))
 
   const handleChange = (certificate: string) => {
-    setSelected(certificate)
+    setSelected(certificate ?? '')
   }
 
   return (
-    <Row gutter={24}>
-      <Col span={24}>
-        <Form.Item
-          name='serverCertificate'
-          label={$t({ defaultMessage: 'Configure a Server Certificate' })}
-        >
-          <Select style={{ width: '400px' }}
-            //   value={currentMapRegion}
-            onChange={handleChange}
-            allowClear={true}
-            showSearch
-            optionFilterProp='children'
-            disabled={!hasCrossVenuesPermission()}
-            defaultValue={selected}
+    <Form layout='vertical'>
+      <Row gutter={24}>
+        <Col span={24}>
+          <Form.Item
+            name='serverCertificate'
+            label={$t({ defaultMessage: 'Configure a Server Certificate' })}
+            initialValue={selected}
           >
-            {certificateData?.map(({ label, value }) =>
-              (<Select.Option value={value} key={value} children={label}/>)
-            )}
-          </Select>
-        </Form.Item>
-        <SpaceWrapper className='indent' justifycontent='flex-start'>
-          <UI.DrawerParagraph>
-            {$t(MessageMapping.configure_a_server_certificate, { br: <br/> })}
-          </UI.DrawerParagraph>
-        </SpaceWrapper>
+            <Select style={{ width: '400px' }}
+              onChange={handleChange}
+              allowClear={true}
+              showSearch
+              optionFilterProp='children'
+              disabled={!hasCrossVenuesPermission()}
+            >
+              {certificateData?.map(({ label, value }) =>
+                (<Select.Option value={value} key={value} children={label}/>)
+              )}
+            </Select>
+          </Form.Item>
+          <SpaceWrapper className='indent' justifycontent='flex-start'>
+            <UI.DrawerParagraph>
+              {$t(MessageMapping.configure_a_server_certificate, { br: <br/> })}
+            </UI.DrawerParagraph>
+          </SpaceWrapper>
 
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+    </Form>
   )
 }
 

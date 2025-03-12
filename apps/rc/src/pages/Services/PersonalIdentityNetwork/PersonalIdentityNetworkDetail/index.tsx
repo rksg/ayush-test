@@ -16,9 +16,11 @@ import {
   filterByAccessForServicePolicyMutation,
   genDhcpConfigByPinSetting,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  MAX_DEVICE_PER_SEGMENT
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
@@ -62,30 +64,35 @@ const PersonalIdentityNetworkDetail = () => {
     const targetPool = dhcpPools?.find(item => item.id === edgeClusterInfo?.dhcpPoolId)
     if(!edgeClusterInfo || !targetPool) return
 
-    const dhcpConfigs = genDhcpConfigByPinSetting(
-      targetPool.poolStartIp,
-      targetPool.poolEndIp,
-      edgeClusterInfo.segments,
-      edgeClusterInfo.devices
-    )
+    try {
+      const dhcpConfigs = genDhcpConfigByPinSetting(
+        targetPool.poolStartIp,
+        targetPool.poolEndIp,
+        edgeClusterInfo.segments,
+        MAX_DEVICE_PER_SEGMENT
+      )
 
-    const keaConfig = new File(
-      [dhcpConfigs.keaDhcpConfig],
-      'kea-dhcp4.conf',
-      { type: 'text/plain;charset=utf-8' }
-    )
-    const iscConfig = new File(
-      [dhcpConfigs.iscDhcpConfig],
-      'dhcpd.conf',
-      { type: 'text/plain;charset=utf-8' }
-    )
-    const zip = new JSZip()
-    zip.file('kea-dhcp4.conf', keaConfig)
-    zip.file('dhcpd.conf', iscConfig)
-    zip.generateAsync({ type: 'blob' })
-      .then((content) => {
-        saveAs(content, 'externalDhcp.zip')
-      })
+      const keaConfig = new File(
+        [dhcpConfigs.keaDhcpConfig],
+        'kea-dhcp4.conf',
+        { type: 'text/plain;charset=utf-8' }
+      )
+      const iscConfig = new File(
+        [dhcpConfigs.iscDhcpConfig],
+        'dhcpd.conf',
+        { type: 'text/plain;charset=utf-8' }
+      )
+      const zip = new JSZip()
+      zip.file('kea-dhcp4.conf', keaConfig)
+      zip.file('dhcpd.conf', iscConfig)
+      zip.generateAsync({ type: 'blob' })
+        .then((content) => {
+          saveAs(content, 'externalDhcp.zip')
+        })
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+    }
   }
 
   const warningMsg = <>
@@ -121,6 +128,7 @@ const PersonalIdentityNetworkDetail = () => {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId! })}
             scopeKey={getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.EDIT)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

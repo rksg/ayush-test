@@ -14,10 +14,11 @@ import { PersonaDevicesForm } from './PersonaDevicesForm'
 
 export function PersonaForm (props: {
   form: FormInstance,
-  defaultValue?: Partial<Persona>
+  defaultValue?: Partial<Persona>,
+  disableAddDevices?: boolean
 }) {
   const { $t } = useIntl()
-  const { form, defaultValue } = props
+  const { form, defaultValue, disableAddDevices = false } = props
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [selectedGroupId, setSelectedGroupId] = useState('')
   const [canAddDevices, setCanAddDevices] = useState(false)
@@ -47,7 +48,7 @@ export function PersonaForm (props: {
         onGroupChange={onGroupChange}
       />
 
-      {!defaultValue?.id &&
+      {(!defaultValue?.id && !disableAddDevices) &&
           <>
             <Subtitle level={4}>{$t({ defaultMessage: 'Devices' })}</Subtitle>
             <Form

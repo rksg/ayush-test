@@ -11,7 +11,7 @@ import {
   graphqlRequestBaseQuery as originalGraphqlRequestBaseQuery
 } from './graphqlRequestBaseQuery'
 
-import type { FetchArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
+import type { FetchArgs } from '@reduxjs/toolkit/query'
 
 export { createApi }
 

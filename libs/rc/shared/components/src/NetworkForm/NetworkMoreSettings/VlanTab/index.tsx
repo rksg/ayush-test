@@ -3,13 +3,18 @@ import { useContext, useEffect } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { ConfigTemplateType, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                         from '@acx-ui/utils'
 
-import NetworkFormContext                                                              from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
-import VLANPoolInstance                                                                from '../../VLANPoolInstance'
-import * as UI                                                                         from '../styledComponents'
+import NetworkFormContext                     from '../../NetworkFormContext'
+import {
+  isShowDynamicVlan,
+  useNetworkVxLanTunnelProfileInfo,
+  useServicePolicyEnabledWithConfigTemplate
+} from '../../utils'
+import VLANPoolInstance from '../../VLANPoolInstance'
+import * as UI          from '../styledComponents'
 
 
 const { useWatch } = Form
@@ -19,6 +24,8 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const { data } = useContext(NetworkFormContext)
 
   const labelWidth = '250px'
+  // eslint-disable-next-line max-len
+  const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
 
   const [
     enableDhcp,
@@ -43,11 +50,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   }, [isPortalDefaultVLANId, form])
 
 
-  const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
-    data?.type === NetworkTypeEnum.DPSK ||
-    ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-      data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
-    (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication))
+  const showDynamicWlan = isShowDynamicVlan(data, { isSupportDVlanWithPskMacAuth })
 
   const { enableVxLan: pureVxLanEnabled } = useNetworkVxLanTunnelProfileInfo(wlanData)
   // eslint-disable-next-line max-len

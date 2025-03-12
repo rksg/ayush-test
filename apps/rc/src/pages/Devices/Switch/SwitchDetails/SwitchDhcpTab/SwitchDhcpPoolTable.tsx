@@ -14,11 +14,13 @@ import {
   useTableQuery,
   SwitchDhcp,
   isOperationalSwitch,
-  VenueMessages
+  VenueMessages,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                     from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
 
@@ -57,7 +59,11 @@ export function SwitchDhcpPoolTable () {
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
 
   const isSelectionVisible = !switchDetail?.cliApplied && hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE],
+    rbacOpsIds: [
+      getOpsApi(SwitchRbacUrlsInfo.updateDhcpServer),
+      getOpsApi(SwitchRbacUrlsInfo.deleteDhcpServers)
+    ]
   })
 
   const handleSavePool = async (values: SwitchDhcp) => {
@@ -133,6 +139,7 @@ export function SwitchDhcpPoolTable () {
   const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [SwitchScopes.UPDATE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateDhcpServer)],
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       setSelected(selectedRows[0].id)
@@ -141,6 +148,7 @@ export function SwitchDhcpPoolTable () {
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [SwitchScopes.DELETE],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteDhcpServers)],
     onClick: (selectedRows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -174,6 +182,7 @@ export function SwitchDhcpPoolTable () {
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Pool' }),
           scopeKey: [SwitchScopes.CREATE],
+          rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addDhcpServer)],
           disabled: !isOperational || !!switchDetail?.cliApplied,
           tooltip: !!switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
           onClick: () => {

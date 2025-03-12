@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }                     from '@acx-ui/react-router-dom'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen }                  from '@acx-ui/test-utils'
+import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { MacRegListUrlsInfo, PersonaUrls, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }                                  from '@acx-ui/react-router-dom'
+import { Provider }                                                 from '@acx-ui/store'
+import { mockServer, render, screen }                               from '@acx-ui/test-utils'
 
 import { MacRegistrationListSettingForm } from './MacRegistrationListSettingForm'
 
@@ -63,6 +63,51 @@ const policySetList = {
   ]
 }
 
+const groupList = {
+  content: [
+    {
+      id: 'e4dca1f2-39a6-48c2-84dd-0bf8e2d14b9a',
+      name: '0000-mandatory-test-auto-generated',
+      description: null,
+      dpskPoolId: 'c4a02abcf2614d2681afc4ef9401b2db',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2024-12-03T02:21:18.714163Z',
+      updatedAt: '2024-12-03T02:21:18.714163Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 0
+    }
+  ],
+  pageable: {
+    sort: {
+      empty: false,
+      sorted: true,
+      unsorted: false
+    },
+    offset: 0,
+    pageNumber: 0,
+    pageSize: 2000,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  last: true,
+  totalElements: 35,
+  size: 2000,
+  number: 0,
+  sort: {
+    empty: false,
+    sorted: true,
+    unsorted: false
+  },
+  first: true,
+  numberOfElements: 35,
+  empty: false
+}
+
 describe('MacRegistrationListSettingForm', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
 
@@ -83,6 +128,10 @@ describe('MacRegistrationListSettingForm', () => {
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(groupList))
       )
     )
 

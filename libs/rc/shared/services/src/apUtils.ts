@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
-import { QueryReturnValue }                                                from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                                    from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
-import { cloneDeep, find, forIn, get, invert, isNil, set, uniq, uniqueId } from 'lodash'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { cloneDeep, find, forIn, get, invert, isNil, set, uniq, uniqueId }      from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -23,21 +21,24 @@ import {
   FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,
+  LanPort,
   MeshStatus,
   NewAPExtendedGrouped,
   NewApGroupViewModelResponseType,
   NewAPModel,
   NewAPModelExtended,
+  ProfileLanApActivations,
   RadioProperties,
   SwitchClient,
   SwitchInformation,
   SwitchRbacUrlsInfo,
   TableResult,
   Venue,
+  WifiApSetting,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RequestPayload }             from '@acx-ui/types'
-import { createHttpRequest, getIntl } from '@acx-ui/utils'
+import { RequestPayload, MaybePromise } from '@acx-ui/types'
+import { createHttpRequest, getIntl }   from '@acx-ui/utils'
 
 import { isFulfilled, isPayloadHasField } from './utils'
 
@@ -267,11 +268,11 @@ const setAPRadioInfo = (
   row.channelU50 = get(radios.radioU50, 'channel') || undefined
   row.channel60 = get(radios.radio60, 'channel') || undefined
 
-  row.actualTxPower24 = get(radios.radio24, 'actualTxPower') || undefined
-  row.actualTxPower50 = get(radios.radio50, 'actualTxPower') || undefined
-  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower') || undefined
-  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower') || undefined
-  row.actualTxPower60 = get(radios.radio60, 'actualTxPower') || undefined
+  row.actualTxPower24 = get(radios.radio24, 'actualTxPower')
+  row.actualTxPower50 = get(radios.radio50, 'actualTxPower')
+  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower')
+  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower')
+  row.actualTxPower60 = get(radios.radio60, 'actualTxPower')
 
   if (channelColumnShow) {
     if (!channelColumnShow.channel24 && radios.radio24) channelColumnShow.channel24 = true
@@ -418,7 +419,7 @@ export const aggregateApDeviceModelTypeInfo = (
 ) => {
   const apListData = apList?.data
   apListData?.forEach(apItem => {
-    apItem.deviceModelType = getApDeviceModelType(wifiCapabilities?.apModels.find(cap =>
+    apItem.deviceModelType = getApDeviceModelType(wifiCapabilities?.apModels?.find(cap =>
       cap.model === apItem.model))
   })
 }
@@ -449,8 +450,12 @@ const apOldNewFieldsMapping: Record<string, string> = {
   [`${apSystemNamePathHeading}.secondaryDnsServer`]: 'networkStatus.secondaryDnsServer',
   [`${apSystemNamePathHeading}.secureBootEnabled`]: 'supportSecureBoot',
   [`${apSystemNamePathHeading}.managementVlan`]: 'networkStatus.managementTrafficVlan',
-  'apStatusData.afcInfo.powerMode': 'afcStatus.powerState', //?
-  'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState', //?
+  'apStatusData.afcInfo.powerMode': 'afcStatus.powerState',
+  'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState',
+  'apStatusData.afcInfo.availableChannels': 'afcStatus.availableChannels',
+  'apStatusData.afcInfo.geoLocation': 'afcStatus.geoLocationSource',
+  'apStatusData.afcInfo.maxPowerDbm': 'afcStatus.maxPower',
+  'apStatusData.afcInfo.minPowerDbm': 'afcStatus.minPower',
   'apStatusData.vxlanStatus.vxlanMtu': 'vxLanTunnelStatus.mtuSize',
   'apStatusData.vxlanStatus.tunStatus': 'vxLanTunnelStatus.connectStatus',
   'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId': 'vxLanTunnelStatus.preferredEdgeId',
@@ -608,11 +613,15 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
 
     if (typeof value === 'object') {
       if (Array.isArray(value)) {
-        if (['lanPortStatuses', 'radioStatuses', 'tags'].includes(key) === false) continue
+        if (['lanPortStatuses', 'radioStatuses', 'tags', 'availableChannels'].includes(key) === false) continue
 
         if (key === 'tags') {
           set(result, oldApFieldName, value.join(','))
-        } else {
+        }
+        else if (key === 'availableChannels') {
+          set(result, oldApFieldName, value)
+        }
+        else {
           set(result, oldApFieldName, value.map(item => {
             switch (key) {
               case 'lanPortStatuses':
@@ -627,7 +636,8 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
                   Rssi: item.rssi,
                   band: item.band,
                   channel: item.channel,
-                  txPower: item.transmitterPower
+                  txPower: item.transmitterPower,
+                  actualTxPower: item.actualTxPower
                 }
               default:
                 return undefined
@@ -822,4 +832,21 @@ export const fetchAppendApPositions = async (apListData: TableResult<FloorPlanMe
     apListData.data[targetIdx].xPercent = (p.value?.data as ApPosition).xPercent
     apListData.data[targetIdx].yPercent = (p.value?.data as ApPosition).yPercent
   })
+}
+
+export const findTargetLanPorts = (
+  apLanPorts: WifiApSetting,
+  activations: ProfileLanApActivations[],
+  apSerialNumber: string
+) => {
+  const targetActivations = activations?.filter(ap => ap.apSerialNumber === apSerialNumber)
+  const targetPorts: LanPort[] = []
+  targetActivations?.forEach(activation => {
+    const lanPort = apLanPorts.lanPorts?.find(l => l.portId?.toString() === activation.portId?.toString())
+    if(lanPort) {
+      targetPorts.push(lanPort)
+    }
+  })
+
+  return targetPorts
 }

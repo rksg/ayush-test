@@ -5,6 +5,7 @@ import { useIntl }                                                              
 import { Table, TableProps, cssStr, useStepFormContext }                                                            from '@acx-ui/components'
 import { SpaceWrapper }                                                                                             from '@acx-ui/rc/components'
 import { EdgeHqosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyNameRegExp, trafficClassToDisplay } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                                       from '@acx-ui/utils'
 
 import * as UI from '../../styledComponents'
 
@@ -12,7 +13,7 @@ const checkMinAndMaxBandwidthCompare = (minBandwidth?: number, maxBandwidth?: nu
   if(!minBandwidth || !maxBandwidth) {
     return true
   }
-  if(minBandwidth >= maxBandwidth) {
+  if(minBandwidth > maxBandwidth) {
     return false
   }
   return true
@@ -42,26 +43,19 @@ export const SettingsForm = () => {
   const isDefaultProfile = initialValues?.isDefault??false
   const formTrafficClassSettings = Form.useWatch('trafficClassSettings', form)
 
-  const minBandwidthRangeErrMsg =
-  $t({ defaultMessage: 'This value should be between 0 and 100' })
-  const maxBandwidthRangeErrMsg =
-  $t({ defaultMessage: 'This value should be between 1 and 100' })
   const prioritySchedulingRangeErrMsg =
   // eslint-disable-next-line max-len
-  $t({ defaultMessage: 'If you want to set this traffic class to priority scheduling, the value must be at least 1' })
+  $t({ defaultMessage: 'Guaranteed Bandwidth value must be 1% or higher if this traffic class is set to priority scheduling' })
   const guaranteedBandwidthSumErrMsg =
   $t({ defaultMessage: 'Total guaranteed bandwidth across all classes must NOT exceed 100%' })
   const bandwidthRangeCompareErrMsg =
-  $t({ defaultMessage: 'Max bandwidth must exceed minimal guaranteed bandwidth.' })
+  $t({ defaultMessage: 'Max bandwidth cannot be less than guaranteed bandwidth.' })
 
   const validateMinBandwidth = (index:number, minBandwidth?: number) => {
     if(minBandwidth === undefined || minBandwidth === null) {
       return Promise.resolve()
     }
 
-    if(minBandwidth < 0 || minBandwidth > 100) {
-      return Promise.reject(minBandwidthRangeErrMsg)
-    }
     if(
       form.getFieldValue(['trafficClassSettings', index, 'priorityScheduling']) &&
       minBandwidth < 1
@@ -90,9 +84,6 @@ export const SettingsForm = () => {
       return Promise.resolve()
     }
 
-    if(maxBandwidth <= 0 || maxBandwidth > 100) {
-      return Promise.reject(maxBandwidthRangeErrMsg)
-    }
     const trafficClassSettings = form.getFieldValue('trafficClassSettings')
     const trafficClassArray = Object.values(trafficClassSettings) as TrafficClassSetting[]
     if(trafficClassArray!== undefined) {
@@ -158,11 +149,13 @@ export const SettingsForm = () => {
               rules={[
                 // eslint-disable-next-line max-len
                 { required: true, message: $t({ defaultMessage: 'Please enter Guaranteed Bandwidth' }) },
+                {
+                  type: 'integer', transform: Number, min: 0, max: 100,
+                  message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 100 })
+                },
                 { validator: (_, value) => validateMinBandwidth(index, value) }
               ]}
               children={<InputNumber style={{ width: '70px' }}
-                min={0}
-                max={100}
                 disabled={isDefaultProfile} />}
               validateFirst
             />
@@ -197,12 +190,17 @@ export const SettingsForm = () => {
               noStyle
               rules={[
                 { required: true, message: $t({ defaultMessage: 'Please enter Max Bandwidth' }) },
+                {
+                  type: 'integer', transform: Number, min: 1, max: 100,
+                  message: $t(validationMessages.numberRangeInvalid, { from: 1, to: 100 })
+                },
                 { validator: (_, value) => validateMaxBandwidth(index, value) }
               ]}
-              children={<InputNumber style={{ width: '70px' }}
-                min={1}
-                max={100}
-                disabled={isDefaultProfile} />}
+              children={
+                <InputNumber
+                  style={{ width: '70px' }}
+                  disabled={isDefaultProfile} />
+              }
               validateFirst
             />
             <span> % </span>
@@ -250,32 +248,39 @@ export const SettingsForm = () => {
                     children={<Input disabled={isDefaultProfile} />}
                   />
                 </Col>
-                <Form.Item
-                  name='trafficClassSettings'
-                  label={<>
-                    {$t({ defaultMessage:
+                <Col span={20}>
+                  <Form.Item
+                    name='trafficClassSettings'
+                    label={<>
+                      {$t({ defaultMessage:
                         'Configure the HQoS bandwidth settings for each traffic class' })}
-                  </>}
-                  rules={
-                    [{ required: true }]
-                  }
-                >
-                  <Form.Item noStyle>
-                    <Alert type='info'
-                      message={
-                      // eslint-disable-next-line max-len
-                        $t({ defaultMessage: `Note: Total guaranteed bandwidth across all classes must NOT exceed 100%.
-                        Max bandwidth must exceed minimal guaranteed bandwidth in each class.` })
-                      }
-                    />
-                    <Table
-                      rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
-                      columns={columns}
-                      dataSource={initialValues?.trafficClassSettings}
-                      pagination={false}
-                    />
+                    </>}
+                    rules={
+                      [{ required: true }]
+                    }
+                  >
+                    <Form.Item noStyle>
+                      <Alert type='info'
+                        message={
+                          // eslint-disable-next-line max-len
+                          $t({ defaultMessage: `
+                          Note:
+                          Total guaranteed bandwidth across all classes must NOT exceed 100%.
+                          Max bandwidth must exceed minimal guaranteed bandwidth in each class.
+                          Guaranteed Bandwidth per traffic class must be over 1% if that traffic
+                            class isset to Priority Scheduling.
+                        ` })
+                        }
+                      />
+                      <Table
+                        rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
+                        columns={columns}
+                        dataSource={initialValues?.trafficClassSettings}
+                        pagination={false}
+                      />
+                    </Form.Item>
                   </Form.Item>
-                </Form.Item>
+                </Col>
               </Row>
             </Col>
           </Row>

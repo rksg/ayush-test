@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Root }          from 'react-dom/client'
-import { addMiddleware } from 'redux-dynamic-middlewares'
+import { Root } from 'react-dom/client'
 
 import { showExpiredSessionModal }                        from '@acx-ui/analytics/components'
 import { getPendoConfig, getUserProfile, setUserProfile } from '@acx-ui/analytics/utils'
@@ -10,8 +9,8 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { BrowserRouter }               from '@acx-ui/react-router-dom'
+import { Provider, dynamicMiddleware } from '@acx-ui/store'
 import {
   renderPendo,
   useLocaleContext,
@@ -47,7 +46,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-  addMiddleware(errorMiddleware)
+  dynamicMiddleware.addMiddleware(errorMiddleware)
   const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile', {
     headers: { ...getJwtHeaders() }
   })

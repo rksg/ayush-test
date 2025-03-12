@@ -1,11 +1,10 @@
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AupAction }                              from '@acx-ui/rc/utils'
-import { WorkflowUrls }                           from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, screen, renderHook } from '@acx-ui/test-utils'
+import { AupAction }                  from '@acx-ui/rc/utils'
+import { WorkflowUrls }               from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { AupPreview } from './AupPreview'
 
@@ -28,20 +27,16 @@ describe('AUP Preview', () => {
 
 
   it('should render AUP preview for file option', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [form] = Form.useForm()
-      return form
-    })
     const expectedTitle = 'Test Title'
     const expectedHtml = 'Test message html'
-    render(<Provider><Form form={formRef.current}><AupPreview
+    render(<Provider><AupPreview
       data={{
         title: expectedTitle,
         messageHtml: expectedHtml,
         useAupFile: true,
         aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.docs'
       } as AupAction}
-    /></Form></Provider>)
+    /></Provider>)
 
     expect(screen.getByText(expectedTitle)).toBeInTheDocument()
     expect(screen.getByText(expectedHtml)).toBeInTheDocument()
@@ -49,20 +44,16 @@ describe('AUP Preview', () => {
   })
 
   it('should render AUP preview for aup text', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [form] = Form.useForm()
-      return form
-    })
     const expectedTitle = 'Test Title'
     const expectedHtml = 'Test message html'
-    render(<Provider><Form form={formRef.current}><AupPreview
+    render(<Provider><AupPreview
       data={{
         title: expectedTitle,
         messageHtml: expectedHtml,
         useAupFile: false,
         aupPlainText: 'all is well'
       } as AupAction}
-    /></Form></Provider>)
+    /></Provider>)
 
     expect(screen.getByText(expectedTitle)).toBeInTheDocument()
     expect(screen.getByText(expectedHtml)).toBeInTheDocument()

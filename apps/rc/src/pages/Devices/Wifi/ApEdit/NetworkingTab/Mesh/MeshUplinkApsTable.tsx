@@ -10,13 +10,14 @@ import { MeshApNeighbor, defaultSort, sortProp } from '@acx-ui/rc/utils'
 interface MeshUplinkApsTableProps {
   tableData?: MeshApNeighbor[],
   selected?: string[],
+  disabled?: boolean
   onSelectChanged: (checked: boolean, mac: string) => void
 }
 
 export const MeshUplinkApsTable = (props: MeshUplinkApsTableProps) => {
   const { $t } = useIntl()
 
-  const { tableData=[], selected=[] } = props
+  const { tableData=[], selected=[], disabled } = props
 
   const handleClick = (e: CheckboxChangeEvent, mac: string) => {
     const checked = e.target.checked
@@ -29,6 +30,7 @@ export const MeshUplinkApsTable = (props: MeshUplinkApsTableProps) => {
       dataIndex: 'mac',
       render: function (_, row) {
         return <Checkbox
+          disabled={disabled}
           checked={selected.includes(row.mac)}
           onChange={(e) => handleClick(e, row.mac)}
         />

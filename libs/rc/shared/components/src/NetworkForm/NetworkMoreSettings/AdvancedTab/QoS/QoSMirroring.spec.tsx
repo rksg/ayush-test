@@ -11,6 +11,10 @@ import QoSMirroring from './QoSMirroring'
 
 import { QoSMirroringScope } from '.'
 
+jest.mock('../../../../ApCompatibility', () => ({
+  ...jest.requireActual('../../../../ApCompatibility'),
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
 
 describe('QoS', () => {
   it('should render QoS correctly when add Network', function () {

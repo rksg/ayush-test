@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import { Loader }                            from '@acx-ui/components'
-import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
-import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
-import { getIntl }                           from '@acx-ui/utils'
+import { Loader }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { useGetAllApModelFirmwareListQuery }      from '@acx-ui/rc/services'
+import { FirmwareLabel, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { compareVersions, getVersionLabel } from '../../FirmwareUtils'
 import * as UI                              from '../styledComponents'
@@ -30,6 +31,7 @@ type DisplayDataType = {
 
 export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300
   })
@@ -39,7 +41,11 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
   useEffect(() => {
     if (!apModelFirmwares) return
 
-    const updateGrps = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
+    const updateGrps = convertApModelFirmwaresToUpdateGroups(
+      isApFwMgmtEarlyAccess
+        ? apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA))
+        : apModelFirmwares
+    )
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
     const displayData = convertToApModelGroupDisplayData(venuesBasedUpdateGrps, initialPayload)
 
@@ -91,11 +97,15 @@ function convertToApModelGroupDisplayData (data: ApFirmwareUpdateGroupType[], in
 function getDefaultFirmwareFromPayload (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
   if (!initialValues || initialValues.length === 0) return updateGroup.firmwares[0].name
 
-  const targetFirmwares = initialValues.filter(fw => updateGroup.apModels.includes(fw.apModel))
+  // eslint-disable-next-line max-len
+  const targetFirmwares = initialValues.filter(initValue => updateGroup.apModels.includes(initValue.apModel))
+  const uniqueInitialFirmware = new Set([...targetFirmwares.map(tf => tf.firmware)])
+
   if (targetFirmwares.length === 0) {
     return ''
   } else if (targetFirmwares.length === updateGroup.apModels.length
-    && new Set([...targetFirmwares.map(tf => tf.firmware)]).size === 1) {
+    && uniqueInitialFirmware.size === 1
+    && updateGroup.firmwares.some(fw => fw.name === Array.from(uniqueInitialFirmware)[0])) {
     return targetFirmwares[0].firmware
   }
 

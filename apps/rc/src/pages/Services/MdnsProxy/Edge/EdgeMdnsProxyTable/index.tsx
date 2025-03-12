@@ -1,3 +1,6 @@
+import { useMemo } from 'react'
+
+import { Space }   from 'antd'
 import { groupBy } from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -10,7 +13,13 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable, ToolTipTableStyle }                   from '@acx-ui/rc/components'
+import {
+  CountAndNamesTooltip,
+  MdnsProxyForwardingRulesTable,
+  ToolTipTableStyle,
+  useEdgeMdnssCompatibilityData,
+  EdgeTableCompatibilityWarningTooltip
+} from '@acx-ui/rc/components'
 import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -23,7 +32,10 @@ import {
   useTableQuery,
   EdgeMdnsProxyViewData,
   defaultSort,
-  MdnsProxyFeatureTypeEnum
+  MdnsProxyFeatureTypeEnum,
+  EdgeServiceCompatibility,
+  getServiceAllowedOperation,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -53,6 +65,7 @@ export function EdgeMdnsProxyTable () {
   const rowActions: TableProps<EdgeMdnsProxyViewData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -63,7 +76,8 @@ export function EdgeMdnsProxyTable () {
           })
         })
       },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -82,9 +96,17 @@ export function EdgeMdnsProxyTable () {
           }
         })
       },
-      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE)
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.DELETE)
     }
   ]
+
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+  // eslint-disable-next-line max-len
+  const compatibilityData = useEdgeMdnssCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
@@ -103,6 +125,8 @@ export function EdgeMdnsProxyTable () {
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.EDGE_MDNS_PROXY, oper: ServiceOperation.CREATE })}
           >
             <Button type='primary'>
@@ -115,7 +139,7 @@ export function EdgeMdnsProxyTable () {
         <Table
           rowKey='id'
           settingsId={settingsId}
-          columns={useColumns()}
+          columns={useColumns(compatibilityData.compatibilities)}
           dataSource={tableQuery.data?.data}
           rowActions={allowedRowActions}
           rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
@@ -129,7 +153,7 @@ export function EdgeMdnsProxyTable () {
   )
 }
 
-function useColumns () {
+function useColumns (compatibilityData?: Record<string, EdgeServiceCompatibility[]>) {
   const { $t } = useIntl()
   const emptyVenues: { key: string, value: string }[] = []
   const { venueNameMap } = useVenuesListQuery({
@@ -157,7 +181,7 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: function (_, row) {
-        return (
+        return (<Space>
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_MDNS_PROXY,
@@ -166,7 +190,12 @@ function useColumns () {
             })}>
             {row.name}
           </TenantLink>
-        )
+          <EdgeTableCompatibilityWarningTooltip
+            serviceId={row.id!}
+            featureName={IncompatibilityFeatures.EDGE_MDNS_PROXY}
+            compatibility={compatibilityData}
+          />
+        </Space>)
       }
     },
     {

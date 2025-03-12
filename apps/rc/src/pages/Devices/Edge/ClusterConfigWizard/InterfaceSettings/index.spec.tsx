@@ -63,6 +63,15 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeHaSettingsForm: () => <div data-testid='rc-HaSettingForm' />
 }))
 
+const { mockLanInterfaces } = EdgePortConfigFixtures
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetAllInterfacesByTypeQuery: () => ({
+    data: mockLanInterfaces,
+    isLoading: false
+  })
+}))
+
 const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{
  portIfName: string
   }>) => <div data-testid='rc-PortForm'>

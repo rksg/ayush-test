@@ -1,9 +1,10 @@
 import moment from 'moment-timezone'
 
-import { PageHeader, PageHeaderProps, RangePicker, TimeRangeDropDown } from '@acx-ui/components'
-import { get }                                                         from '@acx-ui/config'
-import { getShowWithoutRbacCheckKey }                                  from '@acx-ui/user'
-import { useDateFilter }                                               from '@acx-ui/utils'
+import { getDefaultEarliestStart, PageHeader, PageHeaderProps, RangePicker, TimeRangeDropDown } from '@acx-ui/components'
+import { get }                                                                                  from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { getShowWithoutRbacCheckKey }                                                           from '@acx-ui/user'
+import { useDateFilter }                                                                        from '@acx-ui/utils'
 
 import { NetworkFilter }   from '../NetworkFilter'
 import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
@@ -42,7 +43,10 @@ export const Filter = (
 }
 
 export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) => {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   return [
     <Filter
       key={getShowWithoutRbacCheckKey('network-filter')}
@@ -59,6 +63,7 @@ export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) =>
         onDateApply={setDateFilter as CallableFunction}
         showTimePicker
         selectionType={range}
+        maxMonthRange={isDateRangeLimit ? 1 : 3}
       />
   ]
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
@@ -10,10 +10,10 @@ import {
   useAnalyticsFilter,
   Roles as RolesEnumRA
 } from '@acx-ui/analytics/utils'
-import type { UserProfile as UserProfileRA } from '@acx-ui/analytics/utils'
-import { RadioBand, Loader }                 from '@acx-ui/components'
-import { get }                               from '@acx-ui/config'
-import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
+import type { UserProfile as UserProfileRA }          from '@acx-ui/analytics/utils'
+import { RadioBand, Loader, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                        from '@acx-ui/config'
+import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
 import {
   useGuestTokenMutation,
   useEmbeddedIdMutation,
@@ -51,16 +51,11 @@ export function convertDateTimeToSqlFormat (dateTime: string): string {
 
 const getReportType = (reportName: ReportType) => {
   const mode = reportTypeMapping[reportName]
-  const isApReport = ['ap', 'both'].includes(mode)
-  const isSwitchReport = ['switch', 'both'].includes(mode)
-  const isRadioBandDisabled = bandDisabledReports.includes(reportName)
-  const isNetworkFilterDisabled = networkFilterDisabledReports.includes(reportName)
-
   return {
-    isApReport,
-    isSwitchReport,
-    isRadioBandDisabled,
-    isNetworkFilterDisabled
+    isApReport: ['ap', 'both'].includes(mode),
+    isSwitchReport: ['switch', 'both'].includes(mode),
+    isRadioBandDisabled: bandDisabledReports.includes(reportName),
+    isNetworkFilterDisabled: networkFilterDisabledReports.includes(reportName)
   }
 }
 
@@ -83,19 +78,12 @@ export const getSupersetRlsClause = (
   if (isNetworkFilterDisabled) return clause
 
   if (radioBands?.length && isApReport && !isRadioBandDisabled) {
-    const radioBandClause = ` "band" in (${radioBands
+    clause.radioBandClause = `"band" in (${radioBands
       .map((radioBand) => `'${radioBand}'`)
       .join(', ')})`
-    clause.radioBandClause = radioBandClause
   }
 
-  /* istanbul ignore else */
   if (paths?.length) {
-    let zoneClause = ''
-    let apClause = ''
-    let switchGroupClause = ''
-    let switchClause = ''
-
     const zoneIds: string[] = []
     const switchGroupIds: string[] = []
     const apMacs: string[] = []
@@ -119,35 +107,24 @@ export const getSupersetRlsClause = (
           break
       }
     })
-
     if (isApReport) {
       if (zoneIds.length) {
-        zoneClause = `"zoneName" in (${zoneIds.join(', ')})`
+        clause.networkClause += `"zoneName" in (${zoneIds.join(', ')}) OR `
       }
       if (apMacs.length) {
-        apClause = `"apMac" in (${apMacs.join(', ')})`
+        clause.networkClause += `"apMac" in (${apMacs.join(', ')}) OR `
       }
     }
-
     if (isSwitchReport) {
       if (switchGroupIds.length) {
-        switchGroupClause = `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')})`
+        clause.networkClause += `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')}) OR `
       }
       if (switchMacs.length) {
-        switchClause = `"switchId" in (${switchMacs.join(', ')})`
+        clause.networkClause += `"switchId" in (${switchMacs.join(', ')}) OR `
       }
     }
-
-    if(zoneClause || apClause || switchGroupClause || switchClause)
-      clause.networkClause = ` (${[
-        zoneClause,
-        apClause,
-        switchGroupClause,
-        switchClause
-      ].filter(Boolean)
-        .join(' OR ')})`
+    clause.networkClause = clause.networkClause.slice(0, -4)
   }
-
   return clause
 }
 
@@ -156,25 +133,17 @@ export const getRLSClauseForSA = (
   systemMap: SystemMap | undefined,
   reportName: ReportType
 ) => {
-
   const { isNetworkFilterDisabled } = getReportType(reportName)
-
-  // If networkFilter is not shown, do not read it from URL
-  // Reports like Overview and WLAN does not support network filter
   if (isNetworkFilterDisabled) return {
     radioBandClause: '',
     networkClause: ''
   }
 
-  // Initialize an empty object to group conditions by type
   const sqlConditionsByType: Record<string, string[]> = {}
 
-  // Iterate through the data and group SQL conditions by type
   paths.forEach(item => {
     const { name, type } = item
-
-    if(type === 'network') // Skip network, as its not understood by druid
-      return
+    if (type === 'network') return
 
     if (!sqlConditionsByType[type]) {
       sqlConditionsByType[type] = []
@@ -204,10 +173,7 @@ export const getRLSClauseForSA = (
     }
   })
 
-  // Initialize an empty array to store SQL conditions
   const sqlConditions: string[] = []
-
-  // Convert grouped conditions to SQL format
   for (const type in sqlConditionsByType) {
     if (sqlConditionsByType.hasOwnProperty(type)) {
       const conditions = sqlConditionsByType[type]
@@ -217,7 +183,6 @@ export const getRLSClauseForSA = (
     }
   }
 
-  // Combine SQL conditions using 'AND' or 'OR' as needed
   return {
     networkClause: sqlConditions.filter(Boolean)
       .join(' AND ')
@@ -241,14 +206,19 @@ export function EmbeddedReport (props: ReportProps) {
   const isRA = get('IS_MLISA_SA')
   const embedDashboardName = reportTypeDataStudioMapping[reportName]
   const systems = useSystems()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
 
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
-  const { startDate, endDate } = useDateFilter()
+  const { startDate, endDate } = useDateFilter({
+    showResetMsg,
+    earliestStart: isRA ? moment().subtract(12, 'month'):
+      getDefaultEarliestStart({ isReport: true }) })
   const { pathFilters: { path } } = useAnalyticsFilter()
   const { filters: { paths, bands } } = useReportsFilter()
 
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
+  const [guestTokenPayload, setGuestTokenPayload] = useState<string|null>(null)
 
   const {
     firstName, lastName, email,                                           // Common
@@ -283,18 +253,20 @@ export function EmbeddedReport (props: ReportProps) {
   /**
    * Show expired session modal if session is expired, triggered from Superset
    */
-  useEffect(() => {
-    const eventHandler = (event: MessageEvent) => {
-      if (event.data && event.data.type === 'unauthorized') {
+  const eventHandler = useCallback((event: MessageEvent) => {
+    if (event.data) {
+      if (event.data.type === 'unauthorized') {
         showExpiredSessionModal()
-      }
-      if(event.data && event.data.type === 'refreshToken') {
+      } else if (event.data.type === 'refreshToken') {
         refreshJWT(event.data)
       }
     }
+  }, [])
+
+  useEffect(() => {
     window.addEventListener('message', eventHandler)
     return () => window.removeEventListener('message', eventHandler)
-  }, [])
+  }, [eventHandler])
 
   useEffect(() => {
     const embeddedData = {
@@ -380,6 +352,19 @@ export function EmbeddedReport (props: ReportProps) {
       embedDashboardName
     )
     return await guestToken({ payload: guestTokenPayload }).unwrap()
+      .then((guestToken) => {
+        setGuestTokenPayload(guestToken)
+        return guestToken
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(
+          '%c[%s][EmbeddedReport] -> Failed to refresh guest token for [%s]',
+          'color: red',
+          new Date().toLocaleString(),
+          embedDashboardName
+        )
+        return Promise.reject(error)
+      })
   }
 
   const isRoleReadOnly = () => {
@@ -455,9 +440,18 @@ export function EmbeddedReport (props: ReportProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, paths, bands, path, dashboardEmbeddedId, systems.status, locale])
 
+  const isLoading = systems.status === 'pending' ||
+    !Boolean(dashboardEmbeddedId) || !Boolean(guestTokenPayload)
+
   return (
-    <Loader>
+    <>
+      {isLoading && (
+        <Loader
+          states={[{ isLoading }]}
+          style={{ height: '100vh' }}
+        />
+      )}
       <div id={`acx-report-${dashboardEmbeddedId}`} className='acx-report' />
-    </Loader>
+    </>
   )
 }

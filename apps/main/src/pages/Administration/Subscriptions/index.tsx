@@ -6,6 +6,7 @@ import moment                   from 'moment'
 import { IntlShape, useIntl }   from 'react-intl'
 
 import {
+  Filter,
   Loader,
   Table,
   TableProps,
@@ -30,11 +31,12 @@ import {
   AdministrationUrlsInfo,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { AccountType, noDataDisplay }               from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -77,8 +79,21 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'future',
     value: $t({ defaultMessage: 'Show Future' })
+  },
+  {
+    key: 'active,future',
+    value: $t({ defaultMessage: 'Show Active & Future' })
   }
 ]
+
+const defaultSelectedFilters: Filter = {
+  status: ['active', 'future']
+}
+
+export const entitlementRefreshPayload = {
+  status: 'synchronize',
+  usageType: 'SELF'
+}
 
 export const SubscriptionTable = () => {
   const { $t } = useIntl()
@@ -86,6 +101,7 @@ export const SubscriptionTable = () => {
   const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
@@ -210,6 +226,7 @@ export const SubscriptionTable = () => {
       key: 'status',
       filterMultiple: false,
       filterValueNullable: true,
+      filterValueArray: true,
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
@@ -227,7 +244,10 @@ export const SubscriptionTable = () => {
   const refreshFunc = async () => {
     setBannerRefreshLoading(true)
     try {
-      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
+      isEntitlementRbacApiEnabled
+        ? refreshEntitlement({ params, payload: entitlementRefreshPayload,
+          enableRbac: isEntitlementRbacApiEnabled }).then()
+        : await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
       if (isNewApi === false) {
         showToast({
           type: 'success',
@@ -245,7 +265,8 @@ export const SubscriptionTable = () => {
 
   const actions: TableProps<Entitlement>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      label: $t({ defaultMessage: 'Manage Subscriptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
@@ -253,6 +274,7 @@ export const SubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: refreshFunc
     }
   ]
@@ -294,6 +316,7 @@ export const SubscriptionTable = () => {
         columns={columns}
         actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
+        selectedFilters={defaultSelectedFilters}
         rowKey='id'
       />
     </Loader>
@@ -302,18 +325,20 @@ export const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const params = useParams()
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const tenantType = tenantDetailsData.data?.tenantType
 
   return (
-    (isPendingActivationEnabled &&
-      (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC))
-      ? <SubscriptionTabs />
-      : <SpaceWrapper fullWidth size='large' direction='vertical'>
-        <SubscriptionHeader />
-        <SubscriptionTable />
-      </SpaceWrapper>
+    tenantType ?
+      (isPendingActivationEnabled && isEntitlementRbacApiEnabled
+        ? <SubscriptionTabs tenantType={tenantType} />
+        : <SpaceWrapper fullWidth size='large' direction='vertical'>
+          <SubscriptionHeader />
+          <SubscriptionTable />
+        </SpaceWrapper>
+      ) : <></>
   )
 }
 

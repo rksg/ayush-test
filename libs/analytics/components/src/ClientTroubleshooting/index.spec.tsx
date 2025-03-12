@@ -59,12 +59,12 @@ describe('ClientTroubleshootingTab', () => {
   it('should render error panel when max event error', async () => {
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
       error: {
-        message: 'CTP:MAX_EVENTS_EXCEEDED'
+        message: 'RDA-413'
       }
     })
     mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
       error: {
-        message: 'CTP:MAX_EVENTS_EXCEEDED'
+        message: 'RDA-413'
       }
     })
     render(

@@ -16,6 +16,7 @@ describe('VersionChangeAlert', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Moving to this venue involves a firmware version downgrade. Please consider the impact on AP stability before proceeding.')).toBeInTheDocument()
+    expect(await screen.findByText('From 7.0.0.104.1 to 7.0.0.103.1')).toBeInTheDocument()
   })
 
   it('renders nothing when the condition is not met', async () => {

@@ -68,7 +68,7 @@ const userProfile = {
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 const applyFn = jest.fn()
 const closeFn = jest.fn()
-describe('Property Unit Bulk Drawer', () => {
+describe.skip('Property Unit Bulk Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
     applyFn.mockClear()

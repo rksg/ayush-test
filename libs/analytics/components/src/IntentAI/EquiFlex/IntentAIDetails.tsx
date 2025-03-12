@@ -15,12 +15,12 @@ import { useCommonFields }      from '../common/commonFields'
 import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentIcon }           from '../common/IntentIcon'
-import { KpiCard }              from '../common/KpiCard'
+import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
+import { IntentWlan }           from '../config'
 import { useIntentContext }     from '../IntentContext'
-import { getGraphKPIs }         from '../useIntentDetailsQuery'
-import { IntentWlan }           from '../utils'
+import { getStatusTooltip }     from '../services'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
 
@@ -68,7 +68,8 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, state } = useIntentContext()
+    const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const isMlisa = get('IS_MLISA_SA') === 'true'
     const { wlans } = intent.metadata
@@ -110,40 +111,44 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection data-testid='Details'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <GridRow>
-              <GridCol data-testid='Configuration' col={{ span: 12 }}>
-                <ConfigurationCard />
-              </GridCol>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
+          {state !== 'no-data' ? <>
+            <DetailsSection data-testid='Details'>
+              <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+              <GridRow>
+                <GridCol data-testid='Configuration' col={{ span: 12 }}>
+                  <ConfigurationCard />
                 </GridCol>
-              ))}
+                <KPIGrid/>
+              </GridRow>
+            </DetailsSection>
+
+            <GridRow>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Benefits'>
+                  <DetailsSection.Title
+                    children={$t(SideNotes.title)} />
+                  <Card>{$t(SideNotes.benefits)}</Card>
+                </DetailsSection>
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Potential Trade-off'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
+                  <Card>{$t(SideNotes.tradeoff)}</Card>
+                </DetailsSection>
+              </GridCol>
             </GridRow>
-          </DetailsSection>
-
-          <GridRow>
+          </> : <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Benefits'>
-                <DetailsSection.Title
-                  children={$t(SideNotes.title)} />
-                <Card>{$t(SideNotes.benefits)}</Card>
+              <DetailsSection data-testid='Current Status'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                <DetailsSection.Details children={
+                  <Card>{getStatusTooltip(
+                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>} />
               </DetailsSection>
             </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Potential trade-off'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <Card>{$t(SideNotes.tradeoff)}</Card>
-              </DetailsSection>
-            </GridCol>
-          </GridRow>
+          </GridRow>}
 
-          <DetailsSection data-testid='Status Trail'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
-            <StatusTrail />
-          </DetailsSection>
+          <StatusTrail />
         </GridCol>
       </GridRow>
     </>

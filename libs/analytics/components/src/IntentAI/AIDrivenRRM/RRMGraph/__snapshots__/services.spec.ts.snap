@@ -403,3 +403,7 @@ W07-R760-West-FACP,5C:DF:89:0B:FB:40,5 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Full
 W10-R760-Doberman,5C:DF:89:0B:FE:E0,5 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
 "
 `;
+
+exports[`useIntentAICRRMQuery should return correct when isHotTierData is false 1`] = `Array []`;
+
+exports[`useIntentAICRRMQuery should return correct when isHotTierData is false 2`] = `""`;

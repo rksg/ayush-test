@@ -26,7 +26,7 @@ import {
 import {
   AccessSwitch,
   AccessSwitchSaveData,
-  validateVlanName,
+  validateVlanExcludingReserved,
   UplinkInfo,
   WebAuthTemplate,
   defaultTemplateData,
@@ -188,7 +188,10 @@ export function AccessSwitchDrawer (props: {
       {uplinkInfoType === radioValue &&
         <Form.Item name={['uplinkInfo', 'uplinkId']}
           rules={[
-            { required: uplinkInfoOverwrite },
+            { required: uplinkInfoOverwrite,
+              message: $t({ defaultMessage: 'Please enter {label}' }, {
+                label: uplinkTypeMap[radioValue]
+              }) },
             { pattern: uplinkIdValidatorMap[radioValue],
               message: $t(validationMessages.invalid) }
           ]}
@@ -267,7 +270,10 @@ export function AccessSwitchDrawer (props: {
         required={!isMultipleEdit}
         >
           <Form.Item name={['uplinkInfo', 'uplinkType']}
-            rules={[{ required: !isMultipleEdit }]}
+            rules={[{
+              required: !isMultipleEdit || uplinkInfoOverwrite,
+              message: $t({ defaultMessage: 'Please select an Uplink Port type.' })
+            }]}
             noStyle>
             <Radio.Group onChange={uplinkTypeChangeHandler}
               disabled={!uplinkInfoOverwrite}>
@@ -291,7 +297,7 @@ export function AccessSwitchDrawer (props: {
         wrapperCol={{ span: 10 }}>
           <Form.Item name='vlanId'
             rules={vlanIdOverwrite ?
-              [{ validator: (_, value) => validateVlanName(value) }] : []}
+              [{ validator: (_, value) => validateVlanExcludingReserved(value) }] : []}
             noStyle>
             { isMultipleEdit ?
               <InputNumber disabled={!vlanIdOverwrite} min={1} max={4095} />:

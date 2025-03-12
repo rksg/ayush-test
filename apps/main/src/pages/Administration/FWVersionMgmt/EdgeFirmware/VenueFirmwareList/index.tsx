@@ -36,6 +36,7 @@ import {
   EdgeVenueFirmware,
   FirmwareCategory,
   FirmwareSwitchVenue,
+  FirmwareUrlsInfo,
   UpgradePreferences,
   dateSort,
   defaultSort,
@@ -48,7 +49,7 @@ import {
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
-import { noDataDisplay } from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
@@ -172,6 +173,9 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: isBatchOperationEnable ?
+        [getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow)] :
+        [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmware)],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -192,6 +196,9 @@ export function VenueFirmwareList () {
     rowActions.push(...[
       {
         scopeKey: [EdgeScopes.UPDATE],
+        rbacOpsIds: isBatchOperationEnable ?
+          [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
+          [getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -208,6 +215,9 @@ export function VenueFirmwareList () {
       },
       {
         scopeKey: [EdgeScopes.UPDATE],
+        rbacOpsIds: isBatchOperationEnable ?
+          [getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
+          [getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -323,7 +333,18 @@ export function VenueFirmwareList () {
   }
 
   const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.UPDATE]
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: isBatchOperationEnable ?
+      [
+        getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow),
+        getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule),
+        getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)
+      ] :
+      [
+        getOpsApi(FirmwareUrlsInfo.updateEdgeFirmware),
+        getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules),
+        getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
+      ]
   })
 
   const isPreferencesVisible

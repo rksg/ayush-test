@@ -1,14 +1,31 @@
-import React from 'react'
+import { Middleware, isRejectedWithValue } from '@reduxjs/toolkit'
+import { FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
+import _                                   from 'lodash'
+import { FormattedMessage, IntlShape }     from 'react-intl'
 
-import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
-import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
+import { ActionModalType, ErrorDetailsProps, showActionModal } from '@acx-ui/components'
+import {
+  getIntl,
+  setUpIntl,
+  IntlSetUpError,
+  isShowApiError,
+  isShowImprovedErrorSuggestion,
+  isIgnoreErrorModal,
+  userLogout,
+  CatchErrorResponse,
+  formatGraphQLErrors,
+  errorMessage,
+  ErrorMessageType,
+  isGraphQLError,
+  hasGraphQLErrorCode,
+  Meta,
+  CatchErrorDetails
+} from '@acx-ui/utils'
 
-import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
-import { CatchErrorResponse }                                                                 from '@acx-ui/rc/utils'
-import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
+import type { GraphQLResponse } from 'graphql-request/dist/types'
 
 type QueryMeta = {
-  response?: Response,
+  response?: Response
   request: Request
 }
 export type ErrorAction = {
@@ -37,11 +54,6 @@ export type ErrorAction = {
   } | string | number)
 })
 
-interface ErrorMessageType {
-  title: { defaultMessage: string },
-  content: { defaultMessage: string }
-}
-
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
@@ -55,59 +67,6 @@ const isIntDevMode =
   window.location.search.includes('devMode=true')
 
 const isDevModeOn = window.location.hostname === 'localhost'
-
-export const errorMessage = {
-  SERVER_ERROR: {
-    title: defineMessage({ defaultMessage: 'Server Error' }),
-    content: defineMessage({
-      defaultMessage: 'An internal error has occurred. Please contact support.'
-    })
-  },
-  BAD_REQUEST: {
-    title: defineMessage({ defaultMessage: 'Bad Request' }),
-    content: defineMessage({
-      defaultMessage: 'Your request resulted in an error. Please contact Support.'
-    })
-  },
-  VALIDATION_ERROR: {
-    title: defineMessage({ defaultMessage: 'Validation Error' }),
-    content: defineMessage({
-      defaultMessage: 'An internal error has occurred. Please contact Support.'
-    })
-  },
-  SESSION_EXPIRED: {
-    title: defineMessage({ defaultMessage: 'Session Expired' }),
-    content: defineMessage({
-      defaultMessage: 'Your session has expired. Please login again.'
-    })
-  },
-  OPERATION_FAILED: {
-    title: defineMessage({ defaultMessage: 'Operation Failed' }),
-    content: defineMessage({
-      defaultMessage: 'The operation failed because of a request time out'
-    })
-  },
-  REQUEST_IN_PROGRESS: {
-    title: defineMessage({ defaultMessage: 'Request in Progress' }),
-    content: defineMessage({
-      defaultMessage: `A configuration request is currently being executed and additional
-      requests cannot be performed at this time.<br></br>Try again once the request has completed.`
-    })
-  },
-  CHECK_YOUR_CONNECTION: {
-    title: defineMessage({ defaultMessage: 'Check Your Connection' }),
-    content: defineMessage({
-      defaultMessage: 'RUCKUS One needs you to be online,<br></br>you appear to be offline.'
-    })
-  },
-  COUNTRY_INVALID: {
-    title: defineMessage({ defaultMessage: 'Error' }),
-    content: defineMessage({
-      defaultMessage: `The service is currently not supported in the country which you entered.
-      <br></br>Please make sure that you entered the correct address.`
-    })
-  }
-}
 
 export const getErrorContent = (action: ErrorAction) => {
   // IntlSetUpError can be thrown by bootstrap.tsx when getting
@@ -126,12 +85,22 @@ export const getErrorContent = (action: ErrorAction) => {
     (typeof action.payload !== 'object') ? undefined :
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
+  const path = (queryMeta?.response) ? queryMeta.response.url :
+    (typeof action.payload !== 'object') ? undefined :
+      ('type' in action.payload) ? action.payload['type'] : undefined
   const request = queryMeta?.request
+  const response = queryMeta?.response as GraphQLResponse
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
-  let errors: ErrorDetailsProps | CatchErrorResponse['data'] | string | undefined
-  if (typeof action.payload === 'string') {
+  let errors: ErrorDetailsProps
+    | CatchErrorResponse['data']
+    | string
+    | undefined
+
+  if (isGraphQLError(action.type, response)) {
+    errors = formatGraphQLErrors({ ...response!, errors: _.get(response, 'errors')! })
+  } else if (typeof action.payload === 'string') {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
     if('data' in action.payload) {
@@ -160,6 +129,18 @@ export const getErrorContent = (action: ErrorAction) => {
       break
     case 423:
       errorMsg = errorMessage.REQUEST_IN_PROGRESS
+      errors = ''
+      break
+    case 429:
+      errorMsg = errorMessage.TOO_MANY_REQUESTS
+      errors = ''
+      break
+    case 502:
+      errorMsg = errorMessage.BAD_GATEWAY
+      errors = ''
+      break
+    case 503:
+      errorMsg = errorMessage.SERVICE_UNAVAILABLE
       errors = ''
       break
     case 504: // no connection [development mode]
@@ -197,9 +178,18 @@ export const getErrorContent = (action: ErrorAction) => {
     }
   }
 
+  if(errors && isShowImprovedErrorSuggestion(errors)) {
+    const errorObj = errors as { errors: CatchErrorDetails[] }
+    const description =
+      errorObj.errors?.[0].suggestion || errorObj.errors?.[0].reason || ''
+    content = <span>{description}</span>
+  }
+
   return {
     title: $t(errorMsg?.title),
     content,
+    path,
+    errorCode: status as number,
     type,
     errors: errors as ErrorDetailsProps,
     callback
@@ -210,10 +200,13 @@ export const showErrorModal = (details: {
   title: string,
   content: JSX.Element,
   type: ActionModalType,
+  errorCode?: number,
   errors?: ErrorDetailsProps,
+  path?: string,
   callback?: () => void
 }) => {
-  const { title, content, type, errors, callback } = details
+  const { title, content, type, errors,
+    errorCode, callback, path } = details
   if (title && !isModalShown) {
     isModalShown = true
     showActionModal({
@@ -222,7 +215,9 @@ export const showErrorModal = (details: {
       content,
       ...(type === 'error' && { customContent: {
         action: 'SHOW_ERRORS',
-        errorDetails: errors
+        errorDetails: errors,
+        path,
+        errorCode
       } }),
       onOk: () => {
         callback?.()
@@ -235,21 +230,26 @@ export const showErrorModal = (details: {
 const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   const endpoint = action?.meta?.arg?.endpointName || ''
   const request = action?.meta?.baseQueryMeta?.request
-  return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
+  return ignoreEndpointList.includes(endpoint) ||
+    isIgnoreErrorModal(request) ||
+    hasGraphQLErrorCode('RDA-413', action?.meta as Meta)
 }
 
-export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
-  if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
-    && action.meta && !action.meta?.baseQueryMeta) {
+export const errorMiddleware: Middleware = () => next => action => {
+  const typedAction = action as unknown as {
+    type: string,
+    meta?: { baseQueryMeta?: FetchBaseQueryMeta },
+    payload: { meta?: QueryMeta, data?: ErrorDetailsProps }
+  }
+  const { meta, payload } = typedAction
+  if (payload && typeof payload === 'object' && meta && !meta.baseQueryMeta) {
     // baseQuery (for retry API)
-    const payload = action.payload as { meta?: QueryMeta }
-    action.meta.baseQueryMeta = payload.meta
+    meta.baseQueryMeta = payload.meta
     delete payload.meta
   }
-
   if (isRejectedWithValue(action)) {
-    const details = getErrorContent(action)
-    if (!shouldIgnoreErrorModal(action)) {
+    const details = getErrorContent(typedAction)
+    if (!shouldIgnoreErrorModal(typedAction)) {
       showErrorModal(details)
     }
   }

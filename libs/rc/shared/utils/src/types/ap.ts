@@ -1,3 +1,5 @@
+import { DefaultOptionType } from 'antd/lib/select'
+
 import { APMeshRole, ApDeviceStatusEnum } from '../constants'
 import {
   ApAntennaTypeEnum,
@@ -12,6 +14,7 @@ import {
   PoeModeEnum,
   VenueLanPort
 } from '../models'
+import { IsolatePacketsTypeEnum } from '../models/ClientIsolationEnum'
 
 import { ApVenueStatusEnum, CountAndNames } from '.'
 
@@ -483,7 +486,15 @@ export interface LanPort {
   portId?: string,
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
-  ethernetPortProfileId: string
+  ethernetPortProfileId?: string,
+  softGreProfileId?: string,
+  softGreEnabled?: boolean,
+  ipsecProfileId?: string,
+  ipsecEnabled?: boolean,
+  dhcpOption82?: LanPortSoftGreProfileSettings,
+  clientIsolationProfileId?: string,
+  clientIsolationEnabled?: boolean,
+  clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
 export enum ApModelTypeEnum {
@@ -510,10 +521,10 @@ export interface CapabilitiesApModel {
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
   requireOneEnabledTrunkPort: boolean,
-  simCardPrimaryEnabled: boolean,
-  simCardPrimaryRoaming: boolean,
-  simCardSecondaryEnabled: boolean,
-  simCardSecondaryRoaming: boolean,
+  simCardPrimaryEnabled?: boolean,
+  simCardPrimaryRoaming?: boolean,
+  simCardSecondaryEnabled?: boolean,
+  simCardSecondaryRoaming?: boolean,
   supportChannel144: boolean,
   supportDual5gMode: boolean,
   supportTriRadio: boolean,
@@ -529,7 +540,14 @@ export interface CapabilitiesApModel {
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
   defaultBandCombination?: BandModeEnum,
-  supportApStickyClientSteering?: boolean
+  supportApStickyClientSteering?: boolean,
+  supportAggressiveTxPower?: boolean,
+  supportAutoCellSizing?: boolean,
+  supportSmartMonitor?: boolean,
+  supportMesh5GOnly6GOnly?: boolean,
+  supportSoftGre?: boolean,
+  supportIoT?: boolean,
+  usbPowerEnable?: boolean
 }
 
 export interface PingAp {
@@ -580,6 +598,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApUsbSettings {
+  usbPortEnable: boolean,
   useVenueSettings: boolean
 }
 
@@ -692,6 +715,12 @@ export interface ApSmartMonitor {
   enabled: boolean,
   interval: number,
   threshold: number
+}
+
+export interface ApIot {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  mqttBrokerAddress: string
 }
 
 export interface APExtendedGrouped extends APExtended {
@@ -924,4 +953,151 @@ export interface StickyClientSteering {
 
 export interface ApStickyClientSteering extends StickyClientSteering {
   useVenueSettings?: boolean
+}
+
+export enum DhcpOption82SubOption1Enum {
+  SUBOPT1_AP_INFO_LOCATION = 'SUBOPT1_AP_INFO_LOCATION',
+  SUBOPT1_AP_INFO = 'SUBOPT1_AP_INFO',
+  SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE',
+  SUBOPT1_AP_MAC_HEX = 'SUBOPT1_AP_MAC_hex',
+  SUBOPT1_AP_MAC_HEX_ESSID = 'SUBOPT1_AP_MAC_hex_ESSID',
+  SUBOPT1_ESSID = 'SUBOPT1_ESSID',
+  SUBOPT1_AP_MAC = 'SUBOPT1_AP_MAC',
+  SUBOPT1_AP_MAC_ESSID = 'SUBOPT1_AP_MAC_ESSID',
+  SUBOPT1_AP_NAME_ESSID = 'SUBOPT1_AP_Name_ESSID',
+}
+
+export enum DhcpOption82SubOption2Enum {
+  SUBOPT2_CLIENT_MAC = 'SUBOPT2_CLIENT_MAC',
+  SUBOPT2_CLIENT_MAC_HEX = 'SUBOPT2_CLIENT_MAC_hex',
+  SUBOPT2_CLIENT_MAC_HEX_ESSID = 'SUBOPT2_CLIENT_MAC_hex_ESSID',
+  SUBOPT2_AP_MAC = 'SUBOPT2_AP_MAC',
+  SUBOPT2_AP_MAC_HEX = 'SUBOPT2_AP_MAC_hex',
+  SUBOPT2_AP_MAC_HEX_ESSID = 'SUBOPT2_AP_MAC_hex_ESSID',
+  SUBOPT2_AP_MAC_ESSID = 'SUBOPT2_AP_MAC_ESSID',
+  SUBOPT2_AP_NAME = 'SUBOPT2_AP_Name',
+}
+
+export enum DhcpOption82SubOption151Enum {
+  SUBOPT151_AREA_NAME = 'SUBOPT151_AREA_NAME',
+  SUBOPT151_ESSID = 'SUBOPT151_ESSID',
+}
+
+export enum DhcpOption82MacEnum {
+  COLON = 'COLON',
+  HYPHEN = 'HYPHEN',
+  NODELIMITER = 'NODELIMITER',
+}
+
+export interface DhcpOption82Settings {
+  subOption151Input:	string
+  subOption151Format:	DhcpOption82SubOption151Enum
+  subOption2Format:	DhcpOption82SubOption2Enum
+  subOption1Format:	DhcpOption82SubOption1Enum
+  macFormat:	DhcpOption82MacEnum
+  subOption1Enabled:	boolean
+  subOption2Enabled:	boolean
+  subOption150Enabled:	boolean
+  subOption151Enabled:	boolean
+}
+
+export interface VenueApModelLanPortSettingsV1 {
+  softGreEnabled: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
+  softGreProfileId?: string
+}
+
+export interface LanPortSoftGreProfileSettings {
+  dhcpOption82Enabled?: boolean
+  dhcpOption82Settings?: DhcpOption82Settings
+}
+
+export interface SoftGreChanges {
+  model: string,
+  lanPorts: SoftGreLanPortChange[]
+}
+
+export enum SoftGreState {
+  Init,
+  TurnOffSoftGre,
+  TurnOnSoftGre,
+  ModifySoftGreProfile,
+  TurnOffDHCPOption82,
+  TurnOnAndModifyDHCPOption82Settings,
+  TurnOnLanPort,
+  TurnOffLanPort,
+  ResetToDefault
+}
+
+export enum SoftGreDuplicationChangeState {
+  Init,
+  OnChangeSoftGreProfile,
+  TurnOnSoftGre,
+  TurnOffSoftGre,
+  TurnOnLanPort,
+  TurnOffLanPort,
+  ResetToDefault,
+  FindTheOnlyVoter,
+  ReloadOptionList
+}
+
+export interface SoftGreDuplicationChangeDispatcher {
+  state: SoftGreDuplicationChangeState
+  softGreProfileId?: string
+  voter?: Voter
+  voters?: Voter[]
+  index?: string,
+  candidate?: SoftGreOptionCandidate
+}
+
+export interface SoftGreOptionCandidate {
+  option: DefaultOptionType
+  gatewayIps:string[]
+}
+
+export interface SoftGreProfileDispatcher {
+  portId?: string,
+  state: SoftGreState,
+  index: number,
+  softGreProfileId?: string
+}
+
+export interface Voter {
+  model?: string,
+  serialNumber?: string,
+  portId: string,
+}
+
+export interface VoteTallyBoard {
+  softGreProfileId: string,
+  FQDNAddresses: string[],
+  name?: string,
+  vote: number,
+  voters: Voter[]
+}
+
+export interface SoftGreLanPortChange {
+    lanPortId: string
+    lanPortEnable?: boolean
+    venueLanPortSettings: VenueApModelLanPortSettingsV1
+}
+
+
+export interface LanPortClientIsolationSettings {
+  packetsType: IsolatePacketsTypeEnum
+  autoVrrp: boolean
+}
+
+export interface VenueLanPortSettings {
+  portId?: number
+  enabled?: boolean
+  softGreEnabled?: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
+  clientIsolationEnabled?: boolean
+  clientIsolationSettings?: LanPortClientIsolationSettings
+}
+
+export interface APLanPortSettings extends VenueLanPortSettings {
+  overwriteUntagId?: number
+  overwriteVlanMembers?: string
 }

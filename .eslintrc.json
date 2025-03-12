@@ -5,7 +5,10 @@
     "react-app/jest"
   ],
   "ignorePatterns": ["**/*"],
-  "plugins": ["align-import", "@nrwl/nx", "custom"],
+  "plugins": ["align-import", "@nrwl/nx", "custom", "jest"],
+  "env": {
+    "jest/globals": true
+  },
   "rules": {
     "align-import/align-import": 2,
     "comma-dangle": [2, "never"],

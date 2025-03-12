@@ -1,4 +1,4 @@
-import { Key, useEffect, useState } from 'react'
+import React, { Key, useEffect, useState } from 'react'
 
 import {
   Form,
@@ -10,24 +10,28 @@ import {
   Select,
   Switch
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { RuleObject } from 'antd/lib/form'
+import _              from 'lodash'
+import { useIntl }    from 'react-intl'
 
-import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Drawer, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
   SwitchModel,
   SwitchModelPortData,
   SwitchSlot,
   StackMember,
   PortStatusMessages,
-  validateVlanName,
+  validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
-  Vlan
+  validateVlanRangeFormat,
+  Vlan,
+  versionAbove10020a
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess }              from '@acx-ui/user'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 
 import * as UI            from './styledComponents'
@@ -39,6 +43,11 @@ export interface PortsUsedByProps {
   untagged?: Record<string, number>
 }
 
+export interface GptObjectProps {
+  vlanId: string,
+  vlanName: string
+}
+
 export interface VlanSettingDrawerProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
@@ -48,17 +57,21 @@ export interface VlanSettingDrawerProps {
   vlansList: Vlan[]
   isProfileLevel?: boolean
   enablePortModelConfigure?: boolean
+  enableVlanRangeConfigure?: boolean
   switchFamilyModel?: string
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
-  stackMember?: StackMember[]
+  stackMember?: StackMember[],
+  gptObject?: GptObjectProps
+  switchFirmware?: string
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
     vlansList, isProfileLevel, switchFamilyModel,
-    enablePortModelConfigure = true, portSlotsData, portsUsedBy, stackMember } = props
+    enablePortModelConfigure = true, enableVlanRangeConfigure = false,
+    portSlotsData, portsUsedBy, stackMember, gptObject, switchFirmware } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -84,10 +97,13 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           vlansList={vlansList || []}
           isProfileLevel={isProfileLevel}
           enablePortModelConfigure={enablePortModelConfigure}
+          enableVlanRangeConfigure={enableVlanRangeConfigure}
           switchFamilyModel={switchFamilyModel}
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}
           stackMember={stackMember}
+          gptObject={gptObject}
+          switchFirmware={switchFirmware}
         />
       }
       footer={
@@ -123,15 +139,19 @@ interface VlanSettingFormProps {
   isProfileLevel?: boolean
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
+  enableVlanRangeConfigure?: boolean
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
   stackMember?: StackMember[]
+  gptObject?: GptObjectProps
+  switchFirmware?: string
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
   const { $t } = useIntl()
   const { Option } = Select
   const [openModal, setOpenModal] = useState(false)
+  const [vlanId, setVlanId] = useState(undefined)
   const [ipv4DhcpSnooping, setIpv4DhcpSnooping] = useState(false)
   const [arpInspection, setArpInspection] = useState(false)
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
@@ -140,11 +160,17 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [hasPortsUsedByLag, setHasPortsUsedByLag] = useState(false)
 
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
-    switchFamilyModel, portSlotsData, enablePortModelConfigure = true,
-    portsUsedBy, stackMember } = props
+    switchFamilyModel, portSlotsData,
+    enablePortModelConfigure = true, enableVlanRangeConfigure,
+    portsUsedBy, stackMember, gptObject, switchFirmware } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const is10020aSwitchOnlyRstpEnabled = useIsSplitOn(Features.SWITCH_UPDATE_RSTP_ABOVE_10020A)
+
   const isSwitchLevel = !!switchFamilyModel
+  const isRuckusAiMode = !_.isEmpty(gptObject)
+  const hideStp = is10020aSwitchOnlyRstpEnabled &&
+    isSwitchLevel && versionAbove10020a(switchFirmware ?? '')
 
   const multicastVersionEnabled = () : boolean => {
     const igmpSnooping = form.getFieldValue('igmpSnooping')
@@ -223,6 +249,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         setSelected({
           ...selectedRows[0]
         })
+        setVlanId(form.getFieldValue('vlanId'))
         setOpenModal(true)
       }
     },
@@ -302,26 +329,87 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         }}
       >
         <Form.Item
-          label={$t({ defaultMessage: 'VLAN ID' })}
+          label={<>
+            {$t({ defaultMessage: 'VLAN ID' })}
+            {enableVlanRangeConfigure &&
+              <Tooltip
+                title={$t({
+                  defaultMessage: `Type one or more VLAN IDs. Examples: {br}
+                  (1) 11, 21, 31 {br}
+                  (2) 11, 21, 31-40,100`
+                }, {
+                  br: <br />
+                })}
+                placement='top'
+              >
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            }
+          </>}
           name='vlanId'
           validateFirst
+          initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
-            { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanId(
-              value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
-            ) }
+            ...(enableVlanRangeConfigure ? [{
+              validator: (_: RuleObject, value: string) => validateVlanRangeFormat(value)
+            }, {
+              validator: (_: RuleObject, value: string) => {
+                const originalVlanId = vlan?.vlanId?.toString()
+                const {
+                  isValidRange, isVlanDuplicate, isIncludeOriginal, vlans
+                } = checkVlanRange(value, originalVlanId)
+                const isIncludeOriginalInEditMode
+                  = editMode && !isIncludeOriginal && vlans.length > 1
+
+                if (isIncludeOriginalInEditMode) {
+                  return Promise.reject($t(validationMessages.originalVlanNotIncluded))
+                }
+                if (!isValidRange || isVlanDuplicate) {
+                  return Promise.reject($t(validationMessages.invalidVlanRange))
+                }
+                return Promise.all(
+                  vlans.map(async (v: string) => {
+                    await validateVlanExcludingReserved(v)
+                    await validateDuplicateVlanId(
+                      Number(v),
+                      vlansList.filter(vlanItem =>
+                        (editMode ? vlanItem.vlanId !== vlan?.vlanId : true)
+                      )
+                    )
+                  })
+                ).then(() => Promise.resolve())
+                  .catch(err => Promise.reject(err))
+              }
+            }] : [
+              { validator: (_: RuleObject, value: string) => validateVlanExcludingReserved(value) },
+              {
+                validator: (_: RuleObject, value: number) => {
+                  if (isRuckusAiMode) {return Promise.resolve()}
+                  return validateDuplicateVlanId(
+                    value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
+                  )
+                }
+              }
+            ])
           ]}
-          children={<Input style={{ width: '400px' }} />}
+          children={
+            <Input
+              style={{ width: '400px' }}
+              disabled={isRuckusAiMode}
+              placeholder={enableVlanRangeConfigure
+                ? $t({ defaultMessage: 'ex: 11, 21, 31-40, 100' }) : ''
+              }
+            />}
         />
         <Form.Item
           name='vlanName'
           label={$t({ defaultMessage: 'VLAN Name' })}
-          initialValue={''}
+          initialValue={isRuckusAiMode ? gptObject?.vlanName : ''}
           rules={[
             { validator: (_, value) => validateVlanNameWithoutDVlans(value) }
           ]}
-          children={<Input style={{ width: '400px' }} maxLength={32} />}
+          children={<Input style={{ width: '400px' }} maxLength={32} disabled={isRuckusAiMode} />}
         />
         <UI.FieldLabel width='130px'>
           { $t({ defaultMessage: 'IPv4 DHCP Snooping' }) }
@@ -387,14 +475,29 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         />
         <Form.Item
           name='spanningTreeProtocol'
-          label={$t({ defaultMessage: 'Spanning tree protocol' })}
+          label={<>
+            {$t({ defaultMessage: 'Spanning tree protocol' })}
+            {is10020aSwitchOnlyRstpEnabled && !isSwitchLevel &&
+              <Tooltip
+                title={$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
+                })}
+                placement='top'
+              >
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            }
+          </>}
           initialValue={'none'}
           children={
             <Select>
               <Option value={'rstp'}>
                 {$t({ defaultMessage: 'RSTP' })}</Option>
-              <Option value={'stp'}>
-                {$t({ defaultMessage: 'STP' })}</Option>
+              {!hideStp &&
+                <Option value={'stp'}>
+                  {$t({ defaultMessage: 'STP' })}</Option>
+              }
               <Option value={'none'}>
                 {$t({ defaultMessage: 'NONE' })}</Option>
             </Select>
@@ -420,6 +523,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
               disabled={isSwitchLevel && ruleList?.length > 0}
               onClick={() => {
                 setSelected(undefined)
+                setVlanId(form.getFieldValue('vlanId'))
                 setOpenModal(true)
               }}
             >
@@ -446,6 +550,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           dataSource={ruleList || undefined}
         />
         <VlanPortsModal
+          vlanId={vlanId}
           open={openModal}
           editRecord={selected}
           currrentRecords={ruleList}
@@ -484,4 +589,31 @@ export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) 
       </VlanPortsUI.PortSpan>
     </div>
   </div>
+}
+
+export const checkVlanRange = (value: string, originalVlanId?: string) => {
+  let isValidRange = true
+  const vlans = value.toString().split(',').flatMap(v => {
+    if (v.includes('-')) {
+      const vlanRanges = v.split('-')
+      const startNum = Number(vlanRanges[0])
+      const endNum = Number(vlanRanges[vlanRanges.length - 1])
+      if (endNum - startNum > 4095 || endNum > 4095) {
+        isValidRange = false
+        return ''
+      }
+      if (endNum > startNum) {
+        return new Array(endNum - startNum + 1).fill(0).map((_, i) => (startNum + i).toString())
+      }
+    } else if (Number(v)) {
+      return v.trim()
+    }
+    isValidRange = false
+    return ''
+  })
+
+  const vlansSet = new Set(vlans)
+  const isVlanDuplicate = vlansSet.size !== vlans.length
+  const isIncludeOriginal = originalVlanId ? vlans.includes(originalVlanId) : true
+  return { isValidRange, isVlanDuplicate, isIncludeOriginal, vlans }
 }

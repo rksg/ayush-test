@@ -164,7 +164,9 @@ function MismatchConnectionCarousel (props: {
   </UI.CarouselContainer>
 }
 
-const uniqueVlans = (vlans: VLAN[], untaggedVlan: VLAN | null) => _(vlans)
+const filterVlan99999 = (vlans: VLAN[]) => vlans
+  .filter(v => v.id !== 99999 && v.name !== 'ID_NAME_LIST_MISMATCHED')
+const uniqueVlans = (vlans: VLAN[], untaggedVlan: VLAN | null) => _(filterVlan99999(vlans))
   .concat(untaggedVlan || [])
   .uniqBy('id')
   .sort((a, b) => a.id - b.id)
@@ -243,8 +245,7 @@ function MismatchedDevice ({ data, gridArea }: {
     }
   }, [visible])
 
-  const newVlans = data.vlans.filter(v => v.id !== 99999 && v.name !== 'ID_NAME_LIST_MISMATCHED')
-  const listNotMatched = newVlans.length < data.vlans.length
+  const listNotMatched = filterVlan99999(data.vlans).length < data.vlans.length
   const content = <UI.PopoverContainer style={{ height: listNotMatched ? 365 : 350 }}>
     <UI.PopoverTitle children={$t({ defaultMessage: 'VLANs' })} />
     <Table

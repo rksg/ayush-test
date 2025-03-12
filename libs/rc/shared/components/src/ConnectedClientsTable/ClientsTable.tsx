@@ -74,7 +74,10 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
     sortOrder: 'ASC'
   } }, {
     selectFromResult: ({ data }) => ({
-      networkFilterOptions: data?.data?.map(v=>({ key: v.ssid, value: v.name })) || true
+      networkFilterOptions: data?.data?.map(v=>({
+        key: v.ssid,
+        value: v.name === v.ssid ? v.name : `${v.name} (SSID: ${v.ssid})`
+      })) || true
     })
   })
   return networkFilterOptions

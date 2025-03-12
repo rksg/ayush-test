@@ -45,7 +45,8 @@ export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null,
         aaaWlanSecurity? : WlanSecurityEnum,
         dpskWlanSecurity? : WlanSecurityEnum,
         wisprWlanSecurity?: WlanSecurityEnum
-    }
+    },
+  options?: Record<string, boolean>
 ) => {
 
   // add Network mode
@@ -58,7 +59,7 @@ export const isEnableOptionOf6GHz = (wlanData: NetworkSaveData | null,
   if (getIsOwe(wlanData)) return true
 
   // edit network mode
-  return IsNetworkSupport6g(wlanData)
+  return IsNetworkSupport6g(wlanData, options)
 }
 
 export const inverseTargetValue =

@@ -7,9 +7,11 @@ import {
 import { Button, Form, Input, Space, Typography, Upload } from 'antd'
 import { useIntl }                                        from 'react-intl'
 
-import { GridRow, GridCol } from '@acx-ui/components'
-import { formatter }        from '@acx-ui/formatter'
-import { KeyType }          from '@acx-ui/rc/utils'
+import { GridRow, GridCol }         from '@acx-ui/components'
+import { formatter }                from '@acx-ui/formatter'
+import { CertificateUrls, KeyType } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }     from '@acx-ui/user'
+import { getOpsApi }                from '@acx-ui/utils'
 
 import { caFormDescription }           from '../../contentsMap'
 import { Description, Section, Title } from '../../styledComponents'
@@ -26,7 +28,7 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
   const password = Form.useWatch('password', form)
   const [fileDescription, setFileDescription] = useState<{ [key in KeyType]?: ReactNode }>({})
   const bytesFormatter = formatter('bytesFormat')
-  const maxSize: number = 1024 * 10
+  const maxSize: number = 1024 * 50
   const acceptableFileExtensions = ['cer', 'crt', 'chain', 'pem', 'p7b', 'p12', 'der', 'key']
 
   const beforeUpload = async (file: File, keyType: KeyType) => {
@@ -95,42 +97,46 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
           </GridRow>
         </Section>
       </>}
-      <GridRow style={{ marginBottom: '30px' }}>
-        <GridCol col={{ span: 16 }}>
-          <Form.Item
-            name={'privateKey'}
-            label={$t({ defaultMessage: 'Private Key' })}
-            rules={[
-              {
-                required: password || !showPublicKeyUpload,
-                message: $t({ defaultMessage: 'Please upload valid private key' })
-              }]}
-            valuePropName='file'>
-            <Upload.Dragger
-              data-testid='private-key-upload'
-              accept={acceptableFileExtensions.map(type => `.${String(type)}`).join(', ')}
-              maxCount={1}
-              showUploadList={false}
-              beforeUpload={(file) => beforeUpload(file, KeyType.PRIVATE)} >
-              <Space style={{ height: '90px' }}>
-                {fileDescription[KeyType.PRIVATE] ? fileDescription[KeyType.PRIVATE] :
-                  <Typography.Text>
-                    {$t({ defaultMessage: 'Drag & drop file here or' })}
-                  </Typography.Text>}
-                <Button type='primary'>{fileDescription[KeyType.PRIVATE] ?
-                  $t({ defaultMessage: 'Change File' }) :
-                  $t({ defaultMessage: 'Browse' })}
-                </Button>
-              </Space>
-            </Upload.Dragger>
-          </Form.Item>
-        </GridCol>
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 16 }}>
-          <Description>{$t(caFormDescription.PRIVATE_KEY)}</Description>
-        </GridCol>
-      </GridRow>
+      { hasAllowedOperations([getOpsApi(CertificateUrls.uploadCAPrivateKey)]) &&<>
+        <GridRow style={{ marginBottom: '30px' }}>
+          <GridCol col={{ span: 16 }}>
+            <Form.Item
+              name={'privateKey'}
+              label={$t({ defaultMessage: 'Private Key' })}
+              rules={[
+                {
+                  required: password || !showPublicKeyUpload,
+                  message: $t({ defaultMessage: 'Please upload valid private key' })
+                }]}
+              valuePropName='file'>
+              <Upload.Dragger
+                data-testid='private-key-upload'
+                accept={acceptableFileExtensions.map(type => `.${String(type)}`).join(', ')}
+                maxCount={1}
+                showUploadList={false}
+                beforeUpload={(file) => beforeUpload(file, KeyType.PRIVATE)} >
+                <Space style={{ height: '90px' }}>
+                  {fileDescription[KeyType.PRIVATE] ? fileDescription[KeyType.PRIVATE] :
+                    <Typography.Text>
+                      {$t({ defaultMessage: 'Drag & drop file here or' })}
+                    </Typography.Text>}
+                  <Button type='primary'>{fileDescription[KeyType.PRIVATE] ?
+                    $t({ defaultMessage: 'Change File' }) :
+                    $t({ defaultMessage: 'Browse' })}
+                  </Button>
+                </Space>
+              </Upload.Dragger>
+            </Form.Item>
+          </GridCol>
+        </GridRow>
+        <GridRow>
+          <GridCol col={{ span: 16 }}>
+            <Description>{$t(caFormDescription.PRIVATE_KEY)}</Description>
+          </GridCol>
+        </GridRow>
+      </>
+      }
+
       <Section>
         <GridRow>
           <GridCol col={{ span: 16 }}>

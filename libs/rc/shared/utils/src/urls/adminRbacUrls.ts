@@ -89,6 +89,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/delegations/support',
     oldUrl: '/tenants/supportDelegations',
+    opsApi: 'POST:/tenants/delegations/support',
     newApi: true
   },
   disableAccessSupport: {
@@ -179,13 +180,13 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //     url: '/entitlements/orders/:orderId',
   //     newApi: true
   //   },
-  //   refreshLicensesData: {
-  //     method: 'get',
-  //     url: '/entitlements/summaries?refresh=true',
-  //     oldMethod: 'post',
-  //     oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
-  //     newApi: true
-  //   },
+  refreshLicensesData: {
+    method: 'PATCH',
+    url: '/entitlements',
+    oldUrl: '/entitlements/summaries?refresh=true',
+    opsApi: 'PATCH:/entitlements',
+    newApi: true
+  },
   //   internalRefreshLicensesData: {
   //     method: 'get',
   //     url: '/entitlements/summaries?refresh=true',
@@ -308,6 +309,11 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/tenants/settings',
     oldUrl: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  getMspEcDelegatePrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroupDelegations?tenantId=:mspEcTenantId',
     newApi: true
   }
   //   deleteMspAggregations: {

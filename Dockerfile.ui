@@ -1,6 +1,12 @@
 ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
+ARG GAR_CICD_BASEIMAGE_CONTAINER_URL
+
+# Avoid "docker build" for more than one hour, causing gcloud credential to time out.
+# So we need to execute "pull image" first.
+FROM ${GAR_CICD_BASEIMAGE_CONTAINER_URL}ci-precommit-sonar:stable as sonar-stage
+FROM ${GAR_CONTAINER_URL}nginx:1.27.4-alpine as final-stage
 
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
@@ -17,6 +23,7 @@ RUN source ${ENV_FILE} \
 
 # Install dependencies
 COPY package.json package-lock.json ./
+
 COPY patches ./patches
 COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
@@ -38,15 +45,25 @@ COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 
+ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
-# Remove files and folders older than 24 hours from the nx cache
-RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
-    find /app/node_modules/.cache/nx -type d -empty -delete
+# # Remove files and folders older than 24 hours from the nx cache
+# RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
+#     find /app/node_modules/.cache/nx -type d -empty -delete
 
 COPY tools/tests ./tools/tests
+
+# Copy the tar.xz file if it exists
+# COPY nxcache/nxcache.tar.xz* ./
+
+# Extract it only if the file exists
+# RUN if [ -f ./nxcache.tar.xz ]; then \
+#       mkdir -p ./node_modules/.cache/nx && \
+#       tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+#     fi
 
 # dump git information
 RUN source ${ENV_FILE} \
@@ -59,38 +76,25 @@ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
-RUN node ./node_modules/.bin/nx run ra:tsc
+# FROM build-base as acx-ui-tslint
+# Multistage: trigger run
+# COPY --from=acx-ui-lint /app/lint-done /tmp/
+# RUN node ./node_modules/.bin/nx run ra:tsc
+# RUN touch tslint-done
 ###############################################################
-FROM ${GAR_CONTAINER_URL}node:14.21.1-alpine as build-locales
-WORKDIR /app
-RUN apk add curl
-ARG ENV_FILE
-COPY ${ENV_FILE} .
-RUN source ${ENV_FILE} \
-  && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
-  && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
-COPY package.json ./
-RUN npm install react-intl lodash
-COPY apps ./apps
-COPY libs ./libs
-COPY tools/docker/locales ./tools/docker/locales
-RUN chmod +x tools/docker/locales/generate.sh
-RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
-COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
+# Multistage: trigger run
+# COPY --from=acx-ui-tslint /app/tslint-done /tmp/
+COPY --from=acx-ui-lint /app/lint-done /tmp/
+RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
-FROM build-base as acx-ui-base-test
-ENV NODE_OPTIONS=--max-old-space-size=2048
+FROM build-base as acx-ui-group-test
 
-# Force dependency with lint & build stages
-COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
-COPY --from=build         /app/dist/apps   ./dist/apps
+# Multistage: trigger run
+COPY --from=build /app/dist/apps ./dist/apps
 
-FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
@@ -103,27 +107,48 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
         CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --projects=main,main-components $NX_RUN_OPTIONS; \
+        CICD_BUILD=true node ./node_modules/.bin/nx run cloudpath-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run switch-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run wifi-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run main:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+      CICD_BUILD=true node ./node_modules/.bin/nx run main-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --projects=msp,msp-components $NX_RUN_OPTIONS; \
+      CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS; \
+      CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,edge-components,switch-components,wifi-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS; \
     fi
 
 RUN mkdir -p /app/coverage
 
 FROM build-base as acx-ui-sonar-run
-COPY --from=acx-ui-group1-test /app/coverage /app/coverage
+COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
 
+RUN ./node_modules/.bin/nx reset
+RUN rm -rf ./node_modules
+
 ###############################################################
-FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
+FROM final-stage
 
 WORKDIR /usr/share/nginx/html
 
@@ -142,11 +167,9 @@ COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p tenant && \
   # Move all files into it
-  mv -v main/* tenant/t/. && \
-  # Remove the main folder
-  rm -rf main
+  ln -s /usr/share/nginx/html/main tenant/t
 
 EXPOSE 8080
 

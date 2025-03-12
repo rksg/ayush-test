@@ -70,12 +70,17 @@ export interface UserProfile {
   externalId: string
   cloudCertStatus: string
   email: string
+  phoneNumber: string
   initials?: string
   fullName: string
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: []
+  scopes?: [],
+  preferredNotifications?: {
+    emailPreferences: boolean,
+    smsPreferences: boolean
+  }
 }
 
 export type GuestErrorRes = {
@@ -103,6 +108,14 @@ export interface PlmMessageBanner {
   startTime: string,
   tenantType: string,
   updatedDate: string
+}
+
+export interface AllowedOperation {
+  scope: string[]
+  uri: string[]
+};
+export interface AllowedOperationsResponse {
+  allowedOperations: AllowedOperation[]
 }
 
 // not sure if it is really belongs to user
@@ -141,6 +154,20 @@ export interface CommonResponse {
 export interface BetaStatus {
   enabled?: string,
   startDate?: string
+}
+
+export interface BetaFeatures {
+  betaFeatures: FeatureAPIResults[]
+}
+
+export interface FeatureAPIResults {
+  id: string,
+  enabled: boolean
+}
+
+export interface Feature extends FeatureAPIResults {
+  name: string,
+  desc: string
 }
 
 export interface TenantAccountTierValue {
@@ -185,6 +212,10 @@ export enum raiPermissionsList {
 
   'READ_DATA_STUDIO',
   'WRITE_DATA_STUDIO',
+  'READ_DATA_CONNECTOR',
+  'WRITE_DATA_CONNECTOR',
+  'READ_DATA_CONNECTOR_STORAGE',
+  'WRITE_DATA_CONNECTOR_STORAGE',
   'READ_REPORTS',
   'READ_OCCUPANCY',
   'WRITE_OCCUPANCY',

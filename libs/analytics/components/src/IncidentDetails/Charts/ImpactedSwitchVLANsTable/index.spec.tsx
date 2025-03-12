@@ -436,6 +436,8 @@ describe('ImpactedSwitchVLANsTable', () => {
     const popover = await screen.findByRole('tooltip')
     expect(popover).toBeInTheDocument()
 
+    expect(screen.queryAllByText('99999')).toHaveLength(0)
+
     expect(await within(popover).findByText(/some VLANs could be missing/)).toBeInTheDocument()
   })
 

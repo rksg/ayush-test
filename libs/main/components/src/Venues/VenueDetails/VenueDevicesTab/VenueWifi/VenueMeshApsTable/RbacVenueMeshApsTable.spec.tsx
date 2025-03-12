@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CommonRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -23,14 +23,13 @@ describe('RbacVenueMeshApsTable', () => {
   }
   beforeEach(() => {
     mockServer.use(
-      rest.post(CommonRbacUrlsInfo.getMeshAps.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...meshApsQuery }))
+      rest.post(WifiRbacUrlsInfo.getMeshAps.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({ ...meshApsQuery }))
       )
     )
   })
 
   it('should render mesh radio correct', async () => {
-
     render(
       <Provider>
         <RbacVenueMeshApsTable />

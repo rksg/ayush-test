@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -16,6 +16,7 @@ import {
 import {
   AclOptionType,
   DevicePolicy, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getScopeKeyByPolicy,
   Network, PolicyOperation,
   PolicyType,
@@ -23,10 +24,11 @@ import {
   WifiNetwork
 } from '@acx-ui/rc/utils'
 
-import { defaultNetworkPayload }           from '../../../NetworkTable'
-import { AddModeProps }                    from '../../AccessControlForm'
-import { DeviceOSDrawer }                  from '../../AccessControlForm/DeviceOSDrawer'
-import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { AddModeProps }                     from '../../AccessControlForm'
+import { DeviceOSDrawer }                   from '../../AccessControlForm/DeviceOSDrawer'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY }  from '../constants'
 
 
 const defaultPayload = {
@@ -35,6 +37,7 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -109,6 +112,7 @@ const DevicePolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Device & OS Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
@@ -133,6 +137,7 @@ const DevicePolicyComponent = () => {
 
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -141,6 +146,7 @@ const DevicePolicyComponent = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -221,7 +227,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

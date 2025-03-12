@@ -42,7 +42,8 @@
       ]
   }, {
       "matches": [
-          "http://localhost:3000/*"
+          "http://localhost:3000/*",
+          "http://localhost:3333/*"
       ],
       "js": [
           "content/target.js"

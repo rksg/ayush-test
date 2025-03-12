@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -14,17 +14,19 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  AclOptionType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
+  AclOptionType, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation, getScopeKeyByPolicy,
   L3AclPolicy,
   Network, PolicyOperation, PolicyType,
   useTableQuery,
   WifiNetwork
 } from '@acx-ui/rc/utils'
 
-import { defaultNetworkPayload }           from '../../../NetworkTable'
-import { AddModeProps }                    from '../../AccessControlForm'
-import { Layer3Drawer }                    from '../../AccessControlForm/Layer3Drawer'
-import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
+import { defaultNetworkPayload }            from '../../../NetworkTable'
+import { AddModeProps }                     from '../../AccessControlForm'
+import { Layer3Drawer }                     from '../../AccessControlForm/Layer3Drawer'
+import { getToolTipByNetworkFilterOptions } from '../AccessControlPolicy'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY }  from '../constants'
 
 
 const defaultPayload = {
@@ -33,6 +35,7 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
+    'wifiNetworkIds',
     'networkIds',
     'networkCount'
   ],
@@ -110,6 +113,7 @@ const Layer3Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
@@ -134,6 +138,7 @@ const Layer3Component = () => {
 
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -142,6 +147,7 @@ const Layer3Component = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -222,7 +228,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      render: (_, row) => row.networkIds?.length
+      render: (_, row) => getToolTipByNetworkFilterOptions(row, networkFilterOptions)
     }
   ]
 

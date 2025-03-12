@@ -5,6 +5,7 @@ import moment                                                        from 'momen
 import { useIntl }                                                   from 'react-intl'
 
 import { Button, DatePicker, Loader, showToast } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetCalculatedLicencesMutation }      from '@acx-ui/msp/services'
 import { LicenseCalculatorData }                 from '@acx-ui/msp/utils'
 import { EntitlementDeviceType }                 from '@acx-ui/rc/utils'
@@ -15,6 +16,8 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
   const [form] = Form.useForm()
   const [ selectedDate, setSelectedDate ] = useState(moment().endOf('day'))
   const [ maxLicenceCount, setMaxLicenceCount ] = useState<number>()
+
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
 
   const onDateChange: DatePickerProps['onChange'] = (dateString: moment.Moment | null) => {
     if (dateString) {
@@ -82,9 +85,14 @@ export default function MaxLicenses (props: { showExtendedTrial: boolean }) {
         initialValue={'paidLicenses'}
         children={<Radio.Group>
           <Space direction='vertical'>
-            <Radio value={'paidLicenses'}>{$t({ defaultMessage: 'Paid Licenses' })}</Radio>
+            <Radio value={'paidLicenses'}>{
+              solutionTokenFFToggled
+                ? $t({ defaultMessage: 'Device Networking Paid Licenses' })
+                : $t({ defaultMessage: 'Paid Licenses' })}</Radio>
             <Radio value={'extendedTrialLicenses'}>{
-              $t({ defaultMessage: 'Extended Trial Licenses' }) }</Radio>
+              solutionTokenFFToggled
+                ? $t({ defaultMessage: 'Device Networking Trial Licenses' })
+                : $t({ defaultMessage: 'Trial Licenses' }) }</Radio>
           </Space>
         </Radio.Group>}/>}
       <Form.Item

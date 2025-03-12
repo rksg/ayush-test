@@ -7,7 +7,8 @@ import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping,
-  MdnsProxyFeatureTypeEnum
+  MdnsProxyFeatureTypeEnum,
+  NewMdnsProxyForwardingRule
 } from '@acx-ui/rc/utils'
 import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -40,17 +41,15 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
-const mockedRules: MdnsProxyForwardingRule[] = [
+const mockedRules: NewMdnsProxyForwardingRule[] = [
   {
-    id: '__UUID__rule1',
-    ruleIndex: '__UUID__rule1',
+    ruleIndex: 1,
     service: BridgeServiceEnum.AIRPLAY,
     fromVlan: 10,
     toVlan: 20
   },
   {
-    id: '__UUID__rule2',
-    ruleIndex: '__UUID__rule2',
+    ruleIndex: 2,
     service: BridgeServiceEnum.APPLETV,
     fromVlan: 21,
     toVlan: 30
@@ -95,9 +94,8 @@ describe('MdnsProxyForwardingRulesTable', () => {
   })
 
   it('should be invalid when creating the duplicated rule', async () => {
-    const ruleToAdd: MdnsProxyForwardingRule = {
-      id: '__RULE_ID__',
-      ruleIndex: '__RULE_ID__',
+    const ruleToAdd: NewMdnsProxyForwardingRule = {
+      ruleIndex: 1,
       service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2

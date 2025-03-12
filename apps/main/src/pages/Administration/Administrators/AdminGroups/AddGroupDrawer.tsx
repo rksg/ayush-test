@@ -16,6 +16,7 @@ interface AddGroupDrawerProps {
   visible: boolean
   isEditMode: boolean
   editData?: AdminGroup
+  groupData?: AdminGroup[]
   setVisible: (visible: boolean) => void
 }
 
@@ -28,7 +29,7 @@ interface AdminGroupData {
 export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, isEditMode, editData } = props
+  const { visible, setVisible, isEditMode, editData, groupData } = props
   const [form] = Form.useForm()
 
   const [addAdminGroup] = useAddAdminGroupsMutation()
@@ -83,7 +84,15 @@ export const AddGroupDrawer = (props: AddGroupDrawerProps) => {
         rules={[
           { required: true },
           { min: 2 },
-          { max: 64 }
+          { max: 64 },
+          { validator: (_, value) => {
+            if(groupData?.map((item) => { return item.name}).includes(value)) {
+              return Promise.reject(
+                `${$t({ defaultMessage: 'The Group Name already exists' })} `
+              )
+            }
+            return Promise.resolve()}
+          }
         ]}
         children={<Input />}
       />}

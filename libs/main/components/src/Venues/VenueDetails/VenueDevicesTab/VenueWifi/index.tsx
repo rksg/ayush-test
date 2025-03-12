@@ -17,17 +17,22 @@ import {
   ApTable,
   ApCompatibilityDrawer,
   retrievedCompatibilitiesOptions,
+  retrievedApCompatibilitiesOptions,
   useApGroupsFilterOpts,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
   useGetApCompatibilitiesVenueQuery,
-  useGetVenueMeshQuery
+  useGetVenueMeshQuery,
+  useGetVenueApCompatibilitiesQuery
 } from '@acx-ui/rc/services'
-import { ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType }              from '@acx-ui/reports/components'
+import {
+  ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY,
+  IncompatibleFeatureLevelEnum
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
 
 import { CompatibilityCheck }      from './CompatibilityCheck'
 import { IconThirdTab, AlertNote } from './styledComponents'
@@ -50,6 +55,39 @@ const useIsMeshEnabled = (venueId: string | undefined) => {
     : venueWifiSetting?.mesh?.enabled) ?? false
 }
 
+const useGetCompatibilitiesOptions = (venueId: string) => {
+  const isSupportApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const oldFilterData = useGetApCompatibilitiesVenueQuery(
+    {
+      params: { venueId },
+      payload: { filters: {} }
+    }, {
+      skip: isSupportApCompatibilitiesByModel,
+      selectFromResult: ({ data }) => retrievedApCompatibilitiesOptions(data)
+    })
+
+  const newFilterData = useGetVenueApCompatibilitiesQuery(
+    {
+      params: { venueId },
+      payload: {
+        filters: {
+          venueIds: [ venueId ],
+          featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+        },
+        page: 1,
+        pageSize: 10
+      }
+    }, {
+      skip: !isSupportApCompatibilitiesByModel,
+      selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
+    }
+  )
+
+  const filterData = isSupportApCompatibilitiesByModel? newFilterData : oldFilterData
+  return filterData
+
+}
+
 export function VenueWifi () {
   const { $t } = useIntl()
   const params = useParams()
@@ -59,6 +97,7 @@ export function VenueWifi () {
 
   const isEnableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
@@ -66,14 +105,7 @@ export function VenueWifi () {
   const apCompatibilityTenantId = sessionStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
   const enabledMesh = useIsMeshEnabled(venueId)
 
-  const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
-    {
-      params: { venueId },
-      payload: { filters: {} }
-    },
-    {
-      selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
-    })
+  const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetCompatibilitiesOptions(venueId!)
 
   const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [venueId] })
 
@@ -145,6 +177,7 @@ export function VenueWifi () {
       defaultActiveKey='list'
       onChange={onCategoryTabChange}
       tabBarExtraContent={showCompatibilityNote? alertNote(): []}
+      destroyInactiveTabPane
     >
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>

@@ -23,6 +23,14 @@ const mockedOTPMethodResponse = {
   method: 'EMAIL'
 }
 const mockedCloseDrawer = jest.fn()
+
+jest.mock('@acx-ui/rc/components', () => ({
+  PhoneInput: ({ name, callback }: {
+    name: string,
+    callback?: (value: string) => void
+  }) => <input data-testid='PhoneInput' name={name} onChange={e => callback && callback(e.target.value)} />
+}))
+
 describe('One-Time Password Setup Drawer', () => {
   beforeEach(() => {
     mockServer.use(
@@ -66,7 +74,7 @@ describe('One-Time Password Setup Drawer', () => {
 
     await screen.findByText('OTP Authentication')
     await userEvent.click(await screen.findByRole('radio', { name: /Text Message/i }))
-    await userEvent.type(await screen.findByRole('textbox'), '+886912345678')
+    await userEvent.type(await screen.findByTestId('PhoneInput'), '+886912345678')
     await userEvent.click(await screen.findByRole('button', { name: 'Verify' }))
   })
 
@@ -105,7 +113,7 @@ describe('One-Time Password Setup Drawer', () => {
 
     await screen.findByText('OTP Authentication')
     await userEvent.click(await screen.findByRole('radio', { name: /Text Message/i }))
-    await userEvent.type(await screen.findByRole('textbox'), '123')
+    await userEvent.type(await screen.findByTestId('PhoneInput'), '123')
     await userEvent.click(await screen.findByRole('button', { name: 'Verify' }))
     await screen.findByText('Please enter a valid phone number')
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
@@ -132,7 +140,7 @@ describe('One-Time Password Setup Drawer', () => {
 
     await screen.findByText('OTP Authentication')
     await userEvent.click(await screen.findByRole('radio', { name: /Text Message/i }))
-    await userEvent.type(await screen.findByRole('textbox'), '+886912345678')
+    await userEvent.type(await screen.findByTestId('PhoneInput'), '+886912345678')
     await userEvent.click(await screen.findByRole('button', { name: 'Verify' }))
     // TODO
     // expect(await screen.findByText('Server Error')).toBeVisible()
@@ -152,7 +160,7 @@ describe('One-Time Password Setup Drawer', () => {
 
     await screen.findByText('OTP Authentication')
     await userEvent.click(await screen.findByRole('radio', { name: /Text Message/i }))
-    await userEvent.type(await screen.findByRole('textbox'), '+886912345678')
+    await userEvent.type(await screen.findByTestId('PhoneInput'), '+886912345678')
     await userEvent.click(await screen.findByRole('button', { name: 'Verify' }))
     expect(await screen.findByText('Verify your Mobile Number')).toBeVisible()
     const verifyCodeDialog = await screen.findByRole('dialog', { name: /Verify your Mobile Number/i })

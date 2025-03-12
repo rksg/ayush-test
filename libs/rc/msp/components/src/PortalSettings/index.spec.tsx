@@ -110,6 +110,13 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  PhoneInput: ({ name, callback }: {
+    name: string,
+    callback?: (value: string) => void
+  }) => <input data-testid='PhoneInput' name={name} onChange={e => callback && callback(e.target.value)} />
+}))
+
 describe('PortalSettings', () => {
   const params = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
   const fileUrl: string = '/api/file/tenant/' + params.tenantId + '/'

@@ -68,6 +68,9 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c3 {
@@ -121,17 +124,9 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center"
+                class="c2"
               >
-                <div
-                  class="ant-space-item"
-                >
-                  <div
-                    class="c2"
-                  >
-                    Network Impact
-                  </div>
-                </div>
+                Network Impact
               </div>
             </div>
             <div
@@ -483,6 +478,9 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c3 {
@@ -536,17 +534,9 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center"
+                class="c2"
               >
-                <div
-                  class="ant-space-item"
-                >
-                  <div
-                    class="c2"
-                  >
-                    Network Impact
-                  </div>
-                </div>
+                Network Impact
               </div>
             </div>
             <div
@@ -608,7 +598,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                           <g>
                             <path
                               d="M640 32A368 368 0 1 1 639.9632 32M640 72A328 328 0 1 0 640.0328 72Z"
-                              fill="none"
+                              fill="#66B1E8"
                               stroke="#C4C4C4"
                               stroke-linejoin="round"
                             />
@@ -898,6 +888,9 @@ exports[`NetworkImpact should match snapshot 1`] = `
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .c3 {
@@ -951,17 +944,9 @@ exports[`NetworkImpact should match snapshot 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center"
+                class="c2"
               >
-                <div
-                  class="ant-space-item"
-                >
-                  <div
-                    class="c2"
-                  >
-                    Network Impact
-                  </div>
-                </div>
+                Network Impact
               </div>
             </div>
             <div

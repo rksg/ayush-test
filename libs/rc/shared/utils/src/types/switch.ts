@@ -50,6 +50,8 @@ export const SwitchPortViewModelQueryFields = [
   'switchMac',
   'switchModel',
   'switchName',
+  'switchPortProfileName',
+  'switchPortProfileType',
   'switchSerial',
   'switchUnitId',
   'syncedSwitchConfig',
@@ -61,7 +63,9 @@ export const SwitchPortViewModelQueryFields = [
   'venueId',
   'vlanIds',
   'vsixEgressAclName',
-  'vsixIngressAclName'
+  'vsixIngressAclName',
+  'authDefaultVlan',
+  'errorDisableStatus'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -152,6 +156,10 @@ export class Switch {
   serialNumber?: string
   firmwareVersion?: string
   vlanCustomize?: boolean
+
+  authEnable?: boolean
+  authDefaultVlan?: number
+  guestVlan?: number
 
   constructor () {
     this.name = ''
@@ -306,6 +314,8 @@ export class SwitchViewModel extends Switch {
   syncedAdminPassword?: boolean
   adminPassword?: string
   extIp?: string
+  vlanMapping?: string
+  veCount?: number
 }
 
 export interface SwitchRow {
@@ -387,6 +397,7 @@ export interface StackMemberList {
 export interface ConfigurationHistory {
   switchName: string
   startTime: string
+  rawStartTime: string
   endTime: string
   serialNumber: string
   configType: string
@@ -513,6 +524,20 @@ export interface SwitchPortViewModel extends GridDataRow {
   venueId: string;
   portSpeedConfig?: string;
   portConnectorType?: string;
+  // flex auth
+  isAuthPort?: boolean
+  flexibleAuthenticationEnabled?: boolean
+	authenticationType?: string
+	changeAuthOrder?: boolean
+	dot1xPortControl?: string
+	authDefaultVlan?: number
+	restrictedVlan?: number
+	criticalVlan?: number
+	authFailAction?: string
+	authTimeoutAction?: string,
+  switchPortProfileName?: string,
+  switchPortProfileType?: string
+  errorDisableStatus?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -740,6 +765,18 @@ export interface SwitchSlot2 { //TODO
   portStatus?: PortStatus[]
 }
 
+export interface PortProfileAPI {
+  id?: string
+  models: string[]
+  portProfileId: string
+}
+
+export interface PortProfileUI {
+  id?: string
+  models: string[]
+  portProfileId: string[]
+}
+
 export interface TrustedPort {
   id?: string
   vlanDemand?: boolean
@@ -781,6 +818,7 @@ export interface SwitchConfigurationProfile {
   trustedPorts: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
+  portProfiles?: PortProfileAPI[]
   applyOnboardOnly: boolean
 }
 
@@ -807,6 +845,7 @@ export interface SwitchModelPortData {
   slots: SwitchSlot2[]
   taggedPorts: string[]
   untaggedPorts: string[]
+  portProfiles?: PortProfileAPI[]
 }
 
 export interface CliTemplateExample {
@@ -928,8 +967,127 @@ export enum VlanModalType {
   TAGGED = 'taggedVlans'
 }
 
-export interface SwitchFeatureSet {
-  featureName: string,
-  requiredFw?: string,
-  supportedModelFamilies?: string[]
+export interface FlexibleAuthentication {
+  id?: string
+	profileId?: string
+	profileName?: string
+	flexibleAuthenticationEnabled?: boolean
+	authenticationType: string
+	changeAuthOrder?: boolean
+	dot1xPortControl: string
+	authDefaultVlan: number
+	restrictedVlan?: number
+	criticalVlan?: number
+	authFailAction: string
+	authTimeoutAction: string
+  guestVlan?: number
+  appliedVenues?: Record<string, string>
+}
+
+export interface FlexibleAuthenticationAppliedTargets {
+  id?: string
+  venueId: string
+  venueName: string
+  switchId: string
+  switchName?: string
+  ports: string[]
+  switchModel: string
+}
+
+export interface LldpTlvs {
+  id?: string
+  systemName: string
+  systemDescription?: string
+  nameMatchingType: string
+  descMatchingType?: string
+  portProfiles?: string[]
+}
+
+export interface MacOuis {
+  id?: string
+  oui: string
+  note?: string
+  portProfiles?: string[]
+}
+
+export enum LldpTlvMatchingType {
+  FULL_MAPPING = 'FULL_MAPPING',
+  BEGIN = 'BEGIN',
+  INCLUDE = 'INCLUDE'
+}
+
+export enum PortProfileConfigSourceType {
+  SWITCH_LEVEL = 'SWITCH_LEVEL',
+  PROFILE_LEVEL = 'PROFILE_LEVEL',
+  GLOBAL_LEVEL = 'GLOBAL_LEVEL'
+}
+
+export interface PortProfilesBySwitchId {
+  switchId?: string
+  portProfileId: string
+  portProfileName: string
+  configSource: PortProfileConfigSourceType
+  ports?: string[]
+}
+
+export interface PortProfilesForMultiSwitches {
+  switchId: string,
+  availablePortProfiles: PortProfilesBySwitchId[]
+}
+
+export interface SwitchPortProfiles {
+  id?: string
+  name: string
+  type: string
+  taggedVlans?: string[]
+  untaggedVlan?: number
+  poeEnable: boolean
+  poeClass: string
+  poePriority: number
+  portSpeed: string
+  ingressAcl?: string
+  egressAcl?: string
+  portProtected: boolean
+  rstpAdminEdgePort: boolean
+  stpBpduGuard: boolean
+  stpRootGuard: boolean
+  dhcpSnoopingTrust: boolean
+  ipsg: boolean
+  dot1x: boolean
+  macAuth: boolean
+  lldpTlvs?: LldpTlvs[]
+  macOuis?: MacOuis[]
+  regularProfiles?: string[]
+  appliedSwitchesInfo?: SwitchPortProfilesAppliedTargets[]
+}
+
+export interface SwitchPortProfilesAppliedTargets {
+  id?: string
+  switchId: string
+  switchName: string
+  serialNumber: string
+  model: string
+  venueId: string
+  venueName: string
+}
+
+export enum PortProfileTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+}
+
+export interface PortDisableRecoverySetting {
+  bpduGuard: boolean,
+  loopDetection: boolean,
+  packetInError: boolean,
+  loamRemoteCriticalEvent: boolean,
+  pvstplusProtect: boolean,
+  bpduTunnelThreshold: boolean,
+  lagOperationalSpeedMismatch: boolean,
+  recoveryInterval?: number
+}
+
+export interface PortDisableRecoverySettingForm {
+  recoveryInterval: number,
+  recoverySetting: PortDisableRecoverySetting,
 }

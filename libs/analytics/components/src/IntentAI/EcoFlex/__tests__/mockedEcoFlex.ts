@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Intent }         from '../../useIntentDetailsQuery'
+import { IntentDetail }   from '../../useIntentDetailsQuery'
 import { categoryStyles } from '../ComparisonDonutChart/services'
 
 export const mocked = {
@@ -40,8 +40,12 @@ export const mocked = {
         disabled: 31
       }
     }
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
   }
-} as unknown as Intent
+} as unknown as IntentDetail
 export const mockNetworkHierarchy = {
   network: {
     venueHierarchy: [{
@@ -159,3 +163,37 @@ export const mockKpiResultData = {
     }]
   }
 }
+
+export const mockNetworkNodes = [
+  {
+    name: 'default',
+    type: 'apGroup',
+    children: [
+      {
+        type: 'AP',
+        name: 'T670-22',
+        mac: '80:F0:CF:3E:60:00'
+      },
+      {
+        type: 'AP',
+        name: 'R750-201',
+        mac: '94:B3:4F:3D:21:70'
+      },
+      {
+        type: 'AP',
+        name: 'H550-163',
+        mac: 'B4:79:C8:3E:95:20'
+      },
+      {
+        type: 'AP',
+        name: 'R770-153',
+        mac: 'B4:79:C8:3E:E5:80'
+      },
+      {
+        type: 'AP',
+        name: 'R760-96',
+        mac: 'C0:C7:0A:21:26:C0'
+      }
+    ]
+  }
+]

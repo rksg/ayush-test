@@ -23,6 +23,10 @@ import CloudpathProxyWithPskDiagram    from '../assets/images/network-wizard-dia
 import CloudpathProxyDiagram           from '../assets/images/network-wizard-diagrams/cloudpath-proxy.png'
 import CloudpathWithPskDiagram         from '../assets/images/network-wizard-diagrams/cloudpath-psk.png'
 import CloudpathDiagram                from '../assets/images/network-wizard-diagrams/cloudpath.png'
+import DirectoryServerWithOweDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-owe.png'
+import DirectoryServerWithPskDiagram   from '../assets/images/network-wizard-diagrams/directoryserver-psk.png'
+import DirectoryServerDiagram          from '../assets/images/network-wizard-diagrams/directoryserver.png'
+import DpskCloudpathNonProxyDiagram    from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-non-proxy.png'
 import DpskUsingRadiusNonProxyDiagram  from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
 import DpskUsingRadiusDiagram          from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
 import DpskDiagram                     from '../assets/images/network-wizard-diagrams/dpsk.png'
@@ -57,7 +61,10 @@ interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
   isCloudpathEnabled?: boolean;
-  enableAuthProxy?: boolean
+  enableAuthProxy?: boolean;
+  enableAccountingProxy?: boolean;
+  enableAaaAuthBtn?: boolean;
+  wlanSecurity?: WlanSecurityEnum
 }
 
 interface OpenDiagramProps extends DiagramProps {
@@ -105,8 +112,17 @@ function getDiagram (props: NetworkDiagramProps) {
 }
 
 function getDPSKDiagram (props:DpskDiagramProps) {
-  return props?.isCloudpathEnabled ? (!!props?.enableAuthProxy? DpskUsingRadiusDiagram
-    : DpskUsingRadiusNonProxyDiagram) : DpskDiagram
+  return props?.isCloudpathEnabled ? getDpskUsingRadiusDiagram(props) : DpskDiagram
+}
+function getDpskUsingRadiusDiagram (props: DpskDiagramProps) {
+  const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
+  const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
+  if (props.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
+    return DpskCloudpathNonProxyDiagram
+  } else {
+    return enableAuthProxyService || enableAccProxyService ?
+      DpskUsingRadiusDiagram : DpskUsingRadiusNonProxyDiagram
+  }
 }
 function getPSKDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? AaaDiagram : PskDiagram
@@ -144,7 +160,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const wlanSecurity = props.wlanSecurity as WlanSecurityEnum
   const wisprWithPsk=Object.keys(PskWlanSecurityEnum)
     .includes(wlanSecurity as keyof typeof PskWlanSecurityEnum)
-  const wisprWithOwe=wlanSecurity === WlanSecurityEnum.OWE
+  const wisprWithOwe=
+    (wlanSecurity === WlanSecurityEnum.OWE) || (wlanSecurity === WlanSecurityEnum.OWETransition)
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]: wisprWithPsk ? ClickThroughWithPskDiagram :
@@ -159,7 +176,9 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept ?
       (wisprWithPsk ? WISPrWithAlwaysAcceptPskDiagram :
         (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
-      (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram))
+      (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram)),
+    [GuestNetworkTypeEnum.Directory]: wisprWithOwe ? DirectoryServerWithOweDiagram
+      : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram)
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }

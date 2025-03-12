@@ -27,9 +27,14 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
         const baseListQuery = await fetchWithBQ(alarmsListInfo)
         const baseList = baseListQuery.data as TableResult<AlarmBase>
 
+        const payloadFilters = arg.payload as { filters: { [key: string]: unknown; } }
+        const alarmTypeFilter = 'alarmType' in payloadFilters.filters ?
+          (payloadFilters.filters['alarmType'] as string[]) : undefined
+
         const metaListInfo = getMetaList<AlarmBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getAlarmsListMeta, arg.params),
-          fields: ['venueName', 'apName', 'switchName', 'edgeName']
+          fields: ['venueName', 'apName', 'switchName', 'edgeName'],
+          ...(alarmTypeFilter && { filters: { alarmType: alarmTypeFilter } })
         })
         const metaListQuery = await fetchWithBQ(metaListInfo)
         const metaList = metaListQuery.data as TableResult<AlarmMeta>
@@ -54,6 +59,15 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
     clearAlarmByVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonRbacUrlsInfo.clearAlarmByVenue, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Alarms', id: 'LIST' }, { type: 'Alarms', id: 'OVERVIEW' }]
+    }),
+    clearAllAlarms: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.clearAllAlarms, params)
         return {
           ...req
         }
@@ -86,6 +100,7 @@ export const {
   useAlarmsListQuery,
   useClearAlarmMutation,
   useClearAlarmByVenueMutation,
+  useClearAllAlarmsMutation,
   useGetAlarmCountQuery,
   useGetAlarmsCountQuery
 } = eventAlarmApi

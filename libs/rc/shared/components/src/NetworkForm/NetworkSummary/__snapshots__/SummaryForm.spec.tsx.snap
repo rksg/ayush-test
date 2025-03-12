@@ -68,7 +68,7 @@ h5.c1.ant-typography {
     </h3>
     <div
       class="ant-row"
-      style="margin-left: -10px; margin-right: -10px;"
+      style="margin-left: -10px; margin-right: -10px; display: grid; grid-template-columns: 1fr auto 1fr;"
     >
       <div
         class="ant-col"
@@ -141,6 +141,7 @@ h5.c1.ant-typography {
         </div>
         <div
           class="ant-form-item"
+          style="word-break: break-word;"
         >
           <div
             class="ant-row ant-form-item-row"
@@ -212,6 +213,35 @@ h5.c1.ant-typography {
             >
               <label
                 class=""
+                title="Security Protocol:"
+              >
+                Security Protocol
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
                 title="Use RADIUS Server:"
               >
                 Use RADIUS Server
@@ -228,35 +258,6 @@ h5.c1.ant-typography {
                 >
                   No
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Security Protocol:"
-              >
-                Security Protocol
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                />
               </div>
             </div>
           </div>
@@ -313,7 +314,7 @@ h5.c1.ant-typography {
                         />
                       </svg>
                     </span>
-                    6cf550cdb67641d798d804793aaa82db
+                    My-Venue
                   </li>
                 </div>
               </div>
@@ -394,7 +395,7 @@ h5.c1.ant-typography {
     </h3>
     <div
       class="ant-row"
-      style="margin-left: -10px; margin-right: -10px;"
+      style="margin-left: -10px; margin-right: -10px; display: grid; grid-template-columns: 1fr auto 1fr;"
     >
       <div
         class="ant-col"
@@ -467,6 +468,7 @@ h5.c1.ant-typography {
         </div>
         <div
           class="ant-form-item"
+          style="word-break: break-word;"
         >
           <div
             class="ant-row ant-form-item-row"
@@ -522,37 +524,6 @@ h5.c1.ant-typography {
                   class="ant-form-item-control-input-content"
                 >
                   Dynamic Pre-Shared Key (DPSK)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Use RADIUS Server:"
-              >
-                Use RADIUS Server
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  Yes
                 </div>
               </div>
             </div>
@@ -645,6 +616,37 @@ h5.c1.ant-typography {
                 <div
                   class="ant-form-item-control-input-content"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Use RADIUS Server:"
+              >
+                Use RADIUS Server
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  No
+                </div>
               </div>
             </div>
           </div>
@@ -782,7 +784,7 @@ h5.c1.ant-typography {
     </h3>
     <div
       class="ant-row"
-      style="margin-left: -10px; margin-right: -10px;"
+      style="margin-left: -10px; margin-right: -10px; display: grid; grid-template-columns: 1fr auto 1fr;"
     >
       <div
         class="ant-col"
@@ -855,6 +857,7 @@ h5.c1.ant-typography {
         </div>
         <div
           class="ant-form-item"
+          style="word-break: break-word;"
         >
           <div
             class="ant-row ant-form-item-row"
@@ -910,37 +913,6 @@ h5.c1.ant-typography {
                   class="ant-form-item-control-input-content"
                 >
                   Dynamic Pre-Shared Key (DPSK)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Use RADIUS Server:"
-              >
-                Use RADIUS Server
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  Yes
                 </div>
               </div>
             </div>
@@ -1033,6 +1005,37 @@ h5.c1.ant-typography {
                 <div
                   class="ant-form-item-control-input-content"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Use RADIUS Server:"
+              >
+                Use RADIUS Server
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  No
+                </div>
               </div>
             </div>
           </div>

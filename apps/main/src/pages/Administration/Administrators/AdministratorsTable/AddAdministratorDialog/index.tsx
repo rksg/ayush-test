@@ -14,12 +14,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
-  CatchErrorDetails,
   sfdcEmailRegExp,
   TenantAuthenticationType,
   TenantAuthentications
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }         from '@acx-ui/react-router-dom'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 import AuthenticationSelector, { AuthTypeRadioButtonEnum } from './AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from './MspCustomersSelector'

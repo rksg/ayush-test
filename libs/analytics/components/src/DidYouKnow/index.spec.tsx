@@ -1,16 +1,17 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
 import { defaultNetworkPath }                                from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                       from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery, mockServer, act } from '@acx-ui/test-utils'
+import { render, screen, mockGraphqlQuery, waitFor, within } from '@acx-ui/test-utils'
 import type { PathFilter }                                   from '@acx-ui/utils'
 import { DateRange }                                         from '@acx-ui/utils'
 
 import { api } from './services'
 
-import { DidYouKnow, getCarouselFactsMap } from './index'
+import { DidYouKnow } from './index'
 
 const filters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -69,103 +70,75 @@ const availableFacts = [
   'busiestSsidByTraffic'
 ]
 describe('DidYouKnowWidget', () => {
-
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     jest.resetAllMocks()
   })
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
+      data: { network: { hierarchyNode: { availableFacts } } }
     })
-    render(<Provider> <DidYouKnow filters={filters}/></Provider>)
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: { network: { hierarchyNode: { facts: sample } } }
+    })
+    render(<DidYouKnow filters={filters}/>, { wrapper: Provider })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render carousel with intial facts', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
+      data: { network: { hierarchyNode: { availableFacts: availableFacts.slice(0, 2) } } }
     })
-    render(
-      <Provider>
-        <DidYouKnow filters={filters}/>
-      </Provider>)
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: { network: { hierarchyNode: { facts: sample } } }
+    })
+    render(<DidYouKnow filters={filters}/>, { wrapper: Provider })
     const regexPattern = /Top 3 applications in terms of users last week were/
     expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
-  })
-  it('should render empty filters', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: [], availableFacts: [] } } }
-    })
-    render(
-      <Provider>
-        <DidYouKnow filters={null}/>
-      </Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
   })
   it('should handle change in slides', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: sample, availableFacts } } }
+    let set: number = 0
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
+      data: { network: { hierarchyNode: { availableFacts } } }
     })
-    render(
-      <Provider>
-        <DidYouKnow filters={filters}/>
-      </Provider>)
-    const regexPattern = /Top 3 applications in terms of users last week were/
-    expect((await screen.findAllByText(regexPattern))?.[0]).toBeVisible()
-    store.dispatch(api.util.resetApiState())
-    jest.resetAllMocks()
-    mockServer.resetHandlers()
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: sample2, availableFacts } } }
+    mockGraphqlQuery(dataApiURL, 'Facts', (req, res, ctx) => {
+      set = _.isEqual(req.body?.variables!.requestedList, availableFacts.slice(0, 2)) ? 1 : 2
+      const facts = set === 1 ? sample : sample2
+      return res(ctx.data({ network: { hierarchyNode: { facts } } }))
     })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await userEvent.click(screen.getByText('4'))
+
+    const { container } = render(<DidYouKnow filters={filters}/>, { wrapper: Provider })
+    const checkSet = async () => waitFor(async () => {
+      if (!set) throw new Error('set is undefined')
+      // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+      const slice = container.querySelector('.slick-slide.slick-active.slick-current')
+      if (!slice) throw new Error('slide not rendered')
+      const pattern = set === 1
+        ? /Top 3 applications in terms of users last week were/
+        : /Busiest WLAN in terms of users last/
+      expect(await within(slice as HTMLElement).findByText(pattern)).toBeVisible()
+      set = 0
     })
-    expect((await screen.findAllByText(/Busiest WLAN in terms of users last/))?.[1]).toBeVisible()
-  })
-  it('should handle error', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      error: new Error('something went wrong!')
-    })
-    render(<Provider><DidYouKnow filters={filters}/></Provider>)
-    expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
+
+    await checkSet()
+    await userEvent.click(await screen.findByRole('button', { name: '2' }), { delay: 500 })
+    await checkSet()
   })
   it('should render empty availableFacts', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: { network: { hierarchyNode: { facts: [], availableFacts: [] } } }
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
+      data: { network: { hierarchyNode: { availableFacts: [] } } }
     })
-    render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
+    render(<DidYouKnow filters={filters}/>, { wrapper: Provider })
     expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
   })
   it('should render "No data to display" when data is empty', async () => {
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
+      data: { network: { hierarchyNode: { availableFacts } } }
+    })
     mockGraphqlQuery(dataApiURL, 'Facts', {
       data: { network: { hierarchyNode: { facts: [], availableFacts } } }
     })
-    render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
+    render(<DidYouKnow filters={filters}/>, { wrapper: Provider })
     expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
-  })
-})
-describe('getCarouselFactsMap', () => {
-  it('should return an empty object when passed an empty array', () => {
-    expect(getCarouselFactsMap([])).toEqual({})
-  })
-
-  it('should correctly map a single fact', () => {
-    const facts = ['fact1']
-    const expectedMap = { 1: { facts: ['fact1'] } }
-    expect(getCarouselFactsMap(facts)).toEqual(expectedMap)
-  })
-
-  it('should correctly map multiple facts', () => {
-    const facts = ['fact1', 'fact2', 'fact3']
-    const expectedMap = {
-      1: { facts: ['fact1', 'fact2'] },
-      2: { facts: ['fact3'] }
-    }
-    expect(getCarouselFactsMap(facts)).toEqual(expectedMap)
   })
 })

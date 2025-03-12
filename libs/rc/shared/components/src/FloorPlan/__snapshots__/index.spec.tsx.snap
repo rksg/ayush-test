@@ -336,6 +336,9 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
   font-size: var(--acx-subtitle-6-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   background: var(--acx-accents-orange-55);
+  text-overflow: ellipsis;
+  overflow: auto;
+  padding: 0px 4px;
 }
 
 .c17 {
@@ -352,6 +355,9 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
   font-size: var(--acx-subtitle-6-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   background: var(--acx-neutrals-80);
+  text-overflow: ellipsis;
+  overflow: auto;
+  padding: 0px 4px;
 }
 
 .c12 {
@@ -1270,7 +1276,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                         <div
                           class="c5 device-container gallery"
                           draggable="true"
-                          style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
+                          style="top: calc(9.839357% + 6px); left: calc(65.20548% + 6px); opacity: 1;"
                         >
                           <div
                             class="marker ap-status-severity-attention"
@@ -1287,7 +1293,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                         <div
                           class="c5 device-container gallery"
                           draggable="true"
-                          style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
+                          style="top: calc(7.056452% + 6px); left: calc(52.739727% + 6px); opacity: 1;"
                         >
                           <div
                             class="marker switch-status-never-contacted-cloud"

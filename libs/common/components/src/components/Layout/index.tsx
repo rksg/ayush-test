@@ -143,7 +143,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     let label = content
     if (uri) {
       label = Boolean(item.openNewTab)
-        ? <NewTabLink to={uri}>{label}</NewTabLink>
+        ? <NewTabLink to={uri} rel='opener'>{label}</NewTabLink>
         : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.superscript)
           ? <TenantNavLink
             to={uri}

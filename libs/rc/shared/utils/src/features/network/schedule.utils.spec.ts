@@ -33,7 +33,7 @@ describe('Test schedule.utils', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getTimezone.url,
+        CommonUrlsInfo.getTimezone.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(timezoneRes))
       )
     )

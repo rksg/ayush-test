@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { each, zip }           from 'lodash'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
+import { each, zip }                               from 'lodash'
 
 import {
   MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
@@ -73,7 +74,9 @@ import {
   Network,
   TxStatus,
   ScepKeyData,
-  ServerCertificate
+  ServerCertificate,
+  ServerClientCertificateResult,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                 from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -130,6 +133,15 @@ const LbsServerProfileMutationUseCases = [
   'DeleteLbsServerProfile',
   'ActivateLbsServerProfileOnVenue',
   'DectivateLbsServerProfileOnVenue'
+]
+
+const CertificateMutationUseCases = [
+  'GENERATE_SERVER_CERT',
+  'UpdateRadius',
+  'ActivateCertificateOnRadiusServerProfile',
+  'DeactivateCertificateOnRadiusServerProfile',
+  'ActivateCertificateAuthorityOnRadiusServerProfile',
+  'DeactivateCertificateAuthorityOnRadiusServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -836,7 +848,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
-            'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork'
+            'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
+            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile',
+            'DeactivateCertificateOnRadiusServerProfile',
+            'ActivateCertificateAuthorityOnRadiusServerProfile',
+            'DeactivateCertificateAuthorityOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -874,6 +890,49 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: commonQueryFn(AaaUrls.getAAAPolicy, AaaUrls.getAAAPolicyRbac),
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }]
+    }),
+    aaaPolicyCertificate: build.query<AAAPolicyType | undefined, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.policyId) return Promise.resolve({ data: undefined } as QueryReturnValue<
+          undefined,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const radiusReq = {
+          ...createHttpRequest(
+            AaaUrls.queryAAAPolicyList, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
+          body: JSON.stringify({
+            filters: {
+              id: [ params.policyId ]
+            },
+            page: 1,
+            pageSize: 10
+          })
+        }
+        const radiusData = await fetchWithBQ(radiusReq)
+        const radiusQueryResponse = (radiusData.data) as TableResult<AAAViewModalType>
+
+        const apiCustomHeaderV1_1 = GetApiVersionHeader(ApiVersionEnum.v1_1)
+        const aaaPolicyQuery = await fetchWithBQ(
+          createHttpRequest(AaaUrls.getAAAPolicyRbac, params, apiCustomHeaderV1_1)
+        )
+        const aaaPolicyResponse = (aaaPolicyQuery.data) as AAAPolicyType
+
+        const newRadSecOptions = radiusQueryResponse?.data?.length > 0 ? {
+          ...aaaPolicyResponse.radSecOptions,
+          ...radiusQueryResponse.data[0].radSecOptions
+        } : aaaPolicyResponse.radSecOptions
+
+        const newAaaPolicy = {
+          ...aaaPolicyResponse,
+          radSecOptions: newRadSecOptions
+        }
+
+        return { data: newAaaPolicy } as QueryReturnValue<AAAPolicyType, FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
@@ -1067,7 +1126,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'CREATE_REGISTRATION',
             'UPDATE_REGISTRATION',
-            'DELETE_REGISTRATION'
+            'DELETE_REGISTRATION',
+            'CREATE_DEVICE'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'MacRegistration', id: 'LIST' }
@@ -1078,10 +1138,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
+    }),
+    addMacRegListWithIdentity: build.mutation<MacRegistrationPool, RequestPayload>({
+      query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params, headers)
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPoolWithIdentity, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1090,10 +1159,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     updateMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1102,10 +1169,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     deleteMacRegList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params, headers)
+      query: ({ params }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params)
         return {
           ...req
         }
@@ -1124,10 +1189,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     deleteMacRegistrations: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1146,9 +1209,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'MacRegistrationPool', id: 'DETAIL' }]
     }),
     addMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1157,10 +1219,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     updateMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1256,9 +1316,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if(arg.enableRbac) {
           const res = (response as TableResult<ClientIsolationViewModel>)
           each(res.data, data => {
-            const venueIds = [...new Set(data.activations?.map(act => act.venueId))]
-            data.venueIds = venueIds
-            data.venueCount = venueIds.length
+            let venueIds: Set<string> = new Set()
+            data?.activations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data.venueIds = [...venueIds]
+            data.venueCount = venueIds.size
           })
         }
         return response as TableResult<ClientIsolationViewModel>
@@ -1489,6 +1552,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
+    getPreconfiguredIdentityProvider: build.query<IdentityProvider[], RequestPayload>({
+      query: () => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.getPreconfiguredIdentityProvider, {}, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
     activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -1624,6 +1696,151 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    getCertificateList: build.query<TableResult<ServerCertificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CertificateUrls.getCertificateList, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, CertificateMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    activateCertificateAuthorityOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateCertificateAuthorityOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateCertificateAuthorityOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateCertificateAuthorityOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateClientCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateClientCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateClientCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateClientCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateServerCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.activateServerCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateServerCertificateOnRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          CertificateUrls.deactivateServerCertificateOnRadius, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    getCertificateAuthorityOnRadius: build.query<TableResult<CertificateAuthority>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getCertificateAuthorityOnRadius, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'CertificateAuthority', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'CertificateAuthority', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getClientCertificateOnRadius: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getClientCertificateOnRadius, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getServerCertificateOnRadius: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getServerCertificateOnRadius, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
       queryFn: getVLANPoolPolicyViewModelListFn(),
@@ -1749,7 +1966,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // query venue info
           const venueQueryPayload = {
             fields: ['name', 'id', 'addressLine'],
-            ...(tableChangePayload.searchVenueNameString ? { filters: { name: [tableChangePayload.searchVenueNameString] } } : {}),
+            ...(tableChangePayload.searchVenueNameString ? {
+              searchString: tableChangePayload.searchVenueNameString,
+              searchTargetFields: ['name', 'addressLine']
+            } : {}),
             page: 1,
             pageSize: 10000
           }
@@ -1761,18 +1981,20 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
           // query activations
           const req = createHttpRequest(ClientIsolationUrls.queryClientIsolation, params)
-          const activationPayload = { filters: { id: [tableChangePayload.id],
-            ...(tableChangePayload.searchVenueNameString && venueIds.length > 0 ? { venueIds } : {}) } }
+          const activationPayload = { filters: { id: [tableChangePayload.id] } }
           const res = await fetchWithBQ({ ...req, body: JSON.stringify(activationPayload) })
           if (res.error) return defaultRes
           const activationData = res.data as TableResult<ClientIsolationViewModel>
           const networkIds = Array.from(
             new Set(
-              activationData.data.flatMap(item => item.activations?.map(activation => activation.wifiNetworkId))
+              activationData.data.flatMap(
+                item => item.activations?.filter(
+                  activation => venueIds.includes(activation.venueId)
+                )
+                  .map(activation => activation.wifiNetworkId)
+              )
             )
           )
-
-          if (networkIds.length <= 0) return defaultRes
 
           // query network name with networkId
           const networkQueryPayload = {
@@ -1786,10 +2008,57 @@ export const policyApi = basePolicyApi.injectEndpoints({
           if (networkRes.error) return defaultRes
           const networkData = networkRes.data as TableResult<Network>
 
-          // merge data
+          // apSerialNumbers group by venueId
+          const apsGroupByVenueData = activationData.data.reduce((acc:{ [key: string]: Set<string> }, item) => {
+            item.venueActivations.filter(
+              activation => venueIds.includes(activation.venueId)
+            ).forEach(va => {
+              if (!acc[va.venueId]) {
+                acc[va.venueId] = new Set<string>()
+              }
+              va.apSerialNumbers?.forEach(serial => acc[va.venueId].add(serial))
+            })
+            item.apActivations.filter(
+              activation => venueIds.includes(activation.venueId)
+            ).forEach(aa => {
+              if (!acc[aa.venueId]) {
+                acc[aa.venueId] = new Set<string>()
+              }
+              acc[aa.venueId].add(aa.apSerialNumber)
+            })
+            return acc
+          }, {})
+
+          // Collect AP names by serial numbers
+          let apMapping: { [key: string]: string } = {}
+          const apSerialNumbersSet = Object.values(apsGroupByVenueData).reduce((all, venueSet) => {
+            return new Set([...all, ...venueSet])
+          }, new Set())
+
+          if(apSerialNumbersSet.size > 0){
+            const apsQueryPayload = {
+              fields: ['name', 'serialNumber'],
+              filters: { serialNumber: Array.from(apSerialNumbersSet) },
+              pageSize: 10000
+            }
+            const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
+            const apsRes = await fetchWithBQ({ ...apsReq, body: JSON.stringify(apsQueryPayload) })
+            if (apsRes && apsRes.data) {
+              const { data: apsData } = apsRes.data as TableResult<NewAPModel>
+              apsData.forEach((ap: NewAPModel) => {
+                if (ap.name) {
+                  apMapping[ap.serialNumber] = ap.name
+                }
+              })
+            }
+          }
+
+          // merge network data
           const venuesMap: { [key: string]: VenueUsageByClientIsolation }= {}
           activationData.data.forEach(item => {
-            item.activations?.forEach(activation => {
+            item.activations?.filter(
+              activation => venueIds.includes(activation.venueId)
+            ).forEach(activation => {
               const { venueId, wifiNetworkId } = activation
               if (venueIds.includes(venueId)) {
                 if (!venuesMap[venueId]) {
@@ -1798,7 +2067,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
                     venueName: '',
                     address: '',
                     networkCount: 0,
-                    networkNames: []
+                    networkNames: [],
+                    apCount: 0,
+                    apNames: []
                   }
                 }
                 venuesMap[venueId].networkCount += 1
@@ -1806,11 +2077,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
               }
             })
           })
+          Object.keys(apsGroupByVenueData).forEach((venueId) => {
+            if (!venuesMap[venueId]) {
+              venuesMap[venueId] = {
+                venueId: venueId,
+                venueName: '',
+                address: '',
+                networkCount: 0,
+                networkNames: [],
+                apCount: 0,
+                apNames: []
+              }
+            }
+          })
 
           venueData.data.forEach(venue => {
             if (venuesMap[venue.id]) {
               venuesMap[venue.id].venueName = venue.name
               venuesMap[venue.id].address = venue.addressLine
+              venuesMap[venue.id].apCount = apsGroupByVenueData[venue.id]?.size || 0
+              venuesMap[venue.id].apNames = Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
             }
           })
 
@@ -1825,9 +2111,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     uploadMacRegistration: build.mutation<{}, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, customHeaders)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params)
         return {
           ...req,
           body: payload
@@ -3244,6 +3529,40 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    downloadPrivateKeyCertificate: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateWithPost, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadCertificateInP12: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateInP12, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
     downloadCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -3312,8 +3631,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddServerCertificate',
-            'UpdateServerCertificate'
+            'GENERATE_SERVER_CERT',
+            'UPDATE_SERVER_CERT',
+            'UPLOAD_SERVER_CERT'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'ServerCertificate', id: 'LIST' }
@@ -3352,7 +3672,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     downloadServerCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
         return {
           ...req,
           responseHandler: async (response) => {
@@ -3365,13 +3685,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    generateClientServerCertificates: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+    generateClientServerCertificates:
+      build.mutation<ServerClientCertificateResult, RequestPayload>({
+        query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
+          const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
+          return{
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        },
+        invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+      }),
+    uploadCertificate: build.mutation<ServerClientCertificateResult, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.uploadCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
         return{
           ...req,
-          body: JSON.stringify(payload)
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
@@ -3393,6 +3725,7 @@ export const {
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
+  useAddMacRegListWithIdentityMutation,
   useUpdateMacRegListMutation,
   useUpdateAdaptivePolicySetToMacListMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
@@ -3461,6 +3794,7 @@ export const {
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
   useLazyAaaPolicyQuery,
+  useAaaPolicyCertificateQuery,
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
@@ -3491,6 +3825,7 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetPreconfiguredIdentityProviderQuery,
   useActivateIdentityProviderRadiusMutation,
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
@@ -3503,6 +3838,16 @@ export const {
   useGetLbsServerProfileListQuery,
   useActivateLbsServerProfileOnVenueMutation,
   useDeactivateLbsServerProfileOnVenueMutation,
+  // Certificate
+  useGetCertificateListQuery,
+  useActivateCertificateAuthorityOnRadiusMutation,
+  useActivateClientCertificateOnRadiusMutation,
+  useDeactivateClientCertificateOnRadiusMutation,
+  useActivateServerCertificateOnRadiusMutation,
+  useDeactivateServerCertificateOnRadiusMutation,
+  useGetCertificateAuthorityOnRadiusQuery,
+  useGetClientCertificateOnRadiusQuery,
+  useGetServerCertificateOnRadiusQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
@@ -3606,6 +3951,8 @@ export const {
   useLazyDownloadCertificateAuthorityChainsQuery,
   useLazyDownloadCertificateQuery,
   useLazyDownloadCertificateChainsQuery,
+  useLazyDownloadPrivateKeyCertificateQuery,
+  useLazyDownloadCertificateInP12Query,
   useDeleteCertificateAuthorityMutation,
   useGetCertificatesByIdentityIdQuery,
   useLazyGetCertificatesByIdentityIdQuery,
@@ -3614,5 +3961,6 @@ export const {
   useUpdateServerCertificateMutation,
   useLazyDownloadServerCertificateQuery,
   useLazyDownloadServerCertificateChainsQuery,
-  useGenerateClientServerCertificatesMutation
+  useGenerateClientServerCertificatesMutation,
+  useUploadCertificateMutation
 } = policyApi

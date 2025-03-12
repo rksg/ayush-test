@@ -42,7 +42,6 @@ import {
   ApErrorHandlingMessages,
   APMeshRole,
   apNameRegExp,
-  CatchErrorResponse,
   checkObjectNotExists,
   checkValues,
   DeviceGps,
@@ -63,7 +62,7 @@ import {
   useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { validationMessages, CatchErrorResponse, getEnabledDialogImproved } from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '../ApEdit/index'
 
@@ -78,7 +77,7 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
-  fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
+  fields: ['serialNumber', 'name', 'venueId', 'apStatusData', 'firmwareVersion'],
   pageSize: 10000
 }
 
@@ -153,6 +152,9 @@ export function ApForm () {
   const location = useLocation()
   const venueFromNavigate = location.state as { venueId?: string }
 
+  const currentApFirmware = isUseWifiRbacApi
+    ? apList?.data?.find(item => item.serialNumber === serialNumber)?.fwVersion
+    : apDetails?.firmware
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -263,7 +265,9 @@ export function ApForm () {
       }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as CatchErrorResponse)
+      if(!getEnabledDialogImproved()) {
+        handleError(err as CatchErrorResponse)
+      }
     }
   }
 
@@ -359,7 +363,9 @@ export function ApForm () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
     } catch (err) {
-      handleError(err as CatchErrorResponse)
+      if(!getEnabledDialogImproved()) {
+        handleError(err as CatchErrorResponse)
+      }
     }
   }
 
@@ -619,11 +625,12 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <VenueFirmwareInformation
+              {apDetails?.model && currentApFirmware && <VenueFirmwareInformation
                 isEditMode={isEditMode}
                 venue={selectedVenue}
-                apDetails={apDetails}
-              />
+                apModel={apDetails.model}
+                currentApFirmware={currentApFirmware}
+              />}
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     $t({ defaultMessage:
@@ -727,6 +734,7 @@ export function ApForm () {
           gpsModalVisible={gpsModalVisible}
           setGpsModalVisible={setGpsModalVisible}
           onSaveCoordinates={onSaveCoordinates}
+          isApAfcEnabled={displayAFCGeolocation()}
         />
 
       </StepsFormLegacy.StepForm>
@@ -757,13 +765,15 @@ export function ApForm () {
             {!sameAsVenue && <Button
               type='link'
               size='small'
-              onClick={() => onSaveCoordinates(
-                selectedVenue?.latitude ? {
+              onClick={() => {
+                const deviceGpsObject = selectedVenue?.latitude ? {
                   latitude: selectedVenue.latitude,
                   longitude: selectedVenue.longitude
                 } as unknown as DeviceGps
                   : null
-              )}
+                formRef?.current?.setFieldValue('deviceGps', deviceGpsObject)
+                onSaveCoordinates(deviceGpsObject)
+              }}
             >
               {$t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' })}
             </Button>}
@@ -781,7 +791,8 @@ function CoordinatesModal (props: {
   deviceGps: DeviceGps | null,
   gpsModalVisible: boolean,
   setGpsModalVisible: (data: boolean) => void,
-  onSaveCoordinates: (data: DeviceGps | null) => void
+  onSaveCoordinates: (data: DeviceGps | null) => void,
+  isApAfcEnabled: boolean
 }) {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -792,7 +803,8 @@ function CoordinatesModal (props: {
     deviceGps,
     gpsModalVisible,
     setGpsModalVisible,
-    onSaveCoordinates
+    onSaveCoordinates,
+    isApAfcEnabled
   } = props
 
   const [zoom, setZoom] = useState(1)
@@ -801,6 +813,7 @@ function CoordinatesModal (props: {
   })
   const [marker, setMarker] = useState<google.maps.LatLng>()
   const [coordinatesValid, setCoordinatesValid] = useState(true)
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
 
   useEffect(() => {
     setTimeout(() => {
@@ -864,19 +877,58 @@ function CoordinatesModal (props: {
     }
   }
 
-  const onDragEndMaker = (event: google.maps.MapMouseEvent) => {
-    const hasError = formRef?.current
-      ? formRef?.current?.getFieldError(fieldName).length > 0 : false
+  const onDragEndMaker = async (event: google.maps.MapMouseEvent) => {
+    if (!event.latLng) return
+
     const latLng = [
-      event.latLng?.lat().toFixed(6),
-      event.latLng?.lng().toFixed(6)
+      event.latLng.lat().toFixed(6),
+      event.latLng.lng().toFixed(6)
     ]
-    if (hasError) {
-      updateMarkerPosition(event?.latLng as google.maps.LatLng)
-      formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
-    }
+
+    updateMarkerPosition(event.latLng)
+    formRef.current?.setFields([{ name: fieldName, value: latLng.join(', '), errors: [] }])
     formRef?.current?.setFieldValue(fieldName, `${latLng.join(', ')}`)
+
+    if (default6gEnablementToggle && !isApAfcEnabled) {
+      try {
+        const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
+        if (country !== selectedVenue.country) {
+          setCoordinatesValid(false)
+          formRef.current?.setFields([{
+            name: fieldName,
+            errors: [$t(validationMessages.diffApGpsWithVenueCountry)]
+          }])
+          return
+        }
+      } catch (error) {
+        console.warn('Failed to validate country:', error) // eslint-disable-line no-console
+      }
+    }
+
     setCoordinatesValid(true)
+  }
+
+  const getCountryFromGpsCoordinates = (
+    latitude: string,
+    longitude: string
+  ): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode(
+        { location: { lat: Number(latitude), lng: Number(longitude) } },
+        (results, status) => {
+          if (status === 'OK' && results) {
+            const countryComponent = results
+              .flatMap((result) => result.address_components)
+              .find((component) => component.types.includes('country'))
+            resolve(countryComponent?.long_name || null)
+          } else {
+            // eslint-disable-next-line no-console
+            console.warn('Geocoding failed:', status)
+          }
+        }
+      )
+    })
   }
 
   return <Modal
@@ -891,7 +943,10 @@ function CoordinatesModal (props: {
       disabled: !coordinatesValid
     }}
     onOk={onApplyCoordinates}
-    onCancel={() => setGpsModalVisible(false)}
+    onCancel={() => {
+      formRef?.current?.setFields([{ name: fieldName, errors: [] }])
+      setGpsModalVisible(false)
+    }}
   >
     <GoogleMap.FormItem>
       <Form.Item
@@ -903,11 +958,29 @@ function CoordinatesModal (props: {
           message: $t(validationMessages.gpsCoordinates)
         }, {
           validator: (_, value) => {
-            const latLng = value.split(',').map((v: string) => v.trim())
+            const latLng = typeof value === 'string'
+              ? value.split(',').map((v: string) => v.trim())
+              : [value.latitude, value.longitude]
             const sameAsVenue = isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)
             return sameAsVenue
               ? Promise.resolve()
               : gpsRegExp(latLng[0], latLng[1])
+          }
+        }, {
+          validator: async (_, value) => {
+            if (default6gEnablementToggle && !isApAfcEnabled) {
+              const latLng = typeof value === 'string'
+                ? value.split(',').map((v: string) => v.trim())
+                : [value.latitude, value.longitude]
+              const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
+              if (country === selectedVenue.country) {
+                return Promise.resolve()
+              } else {
+                return Promise.reject($t(validationMessages.diffApGpsWithVenueCountry))
+              }
+            } else {
+              return Promise.resolve()
+            }
           }
         }]}
         validateFirst

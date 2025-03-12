@@ -2,14 +2,19 @@
 import { ReactNode } from 'react'
 
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Provider } from '@acx-ui/store'
+import { EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }    from '@acx-ui/store'
 import {
   render,
   screen,
-  waitFor
+  waitFor,
+  mockServer
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
+
+import { edgeClusterConfigValidationFailed } from '../__tests__/fixtures'
 
 import AddPersonalIdentityNetwork from '.'
 
@@ -43,7 +48,7 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
@@ -59,38 +64,41 @@ jest.mock('@acx-ui/rc/components', () => ({
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('Add PersonalIdentityNetwork', () => {
-  let params: { tenantId: string, serviceId: string }
+  const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serviceId: 'testServiceId'
-    }
+    mockedUsedNavigate.mockClear()
+
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => res(ctx.status(202)))
+    )
   })
 
   it('should create PersonalIdentityNetwork successfully', async () => {
-    const user = userEvent.setup()
     render(<AddPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: createPinPath }
     })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step 3
     await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step 4
     await screen.findByTestId('DistributionSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step5
     await screen.findByTestId('AccessSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
     await screen.findByTestId('SummaryForm')
-    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -111,5 +119,39 @@ describe('Add PersonalIdentityNetwork', () => {
       name: 'Personal Identity Network'
     })).toBeVisible()
     await screen.findByTestId('GeneralSettingsForm')
+  })
+
+  it('should popup edge cluster config validation failed message', async () => {
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => res(ctx.status(422), ctx.json(edgeClusterConfigValidationFailed)))
+    )
+
+    render(<AddPersonalIdentityNetwork />, {
+      wrapper: Provider,
+      route: { params, path: createPinPath }
+    })
+    await screen.findByTestId('GeneralSettingsForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 2
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 4
+    await screen.findByTestId('DistributionSwitchForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step5
+    await screen.findByTestId('AccessSwitchForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step6
+    await screen.findByTestId('SummaryForm')
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByRole('dialog')
+    expect(await screen.findByText('Validation Error')).toBeVisible()
+    expect(mockedUsedNavigate).toBeCalledTimes(0)
   })
 })

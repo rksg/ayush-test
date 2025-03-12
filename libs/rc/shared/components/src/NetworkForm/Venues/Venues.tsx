@@ -13,6 +13,8 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useEnhanceNetworkVenueTableQuery,
+  useEnhanceNetworkVenueTableV2Query,
   useNetworkVenueListV2Query,
   useNewNetworkVenueTableQuery,
   useScheduleSlotIndexMap
@@ -34,17 +36,18 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                                from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                             from '../../NetworkTunnelActionModal/types'
-import { NetworkVenueScheduleDialog }                                                          from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                                  from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                               from '../../useEdgeActions'
-import NetworkFormContext                                                                      from '../NetworkFormContext'
+import { useEnforcedStatus }                                                                                              from '../../configTemplates'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                                           from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                                                           from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionDrawer, NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                                                                        from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                                                                                     from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                                                             from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                                                                                          from '../../useEdgeActions'
+import NetworkFormContext                                                                                                 from '../NetworkFormContext'
 
-import { useTunnelColumn }                                    from './TunnelColumn/useTunnelColumn'
-import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
+import { useTunnelColumn }                                                       from './TunnelColumn/useTunnelColumn'
+import { handleIpsecAction, handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -96,7 +99,8 @@ const defaultRbacPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId',
-    'venueApGroups'
+    'venueApGroups',
+    'isEnforced'
   ],
   searchTargetFields: ['name']
 }
@@ -118,6 +122,8 @@ const useNetworkVenueList = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
 
   const networkId = resolvedRbacEnabled? (params.networkId ?? getNetworkId()) : getNetworkId()
 
@@ -132,7 +138,11 @@ const useNetworkVenueList = () => {
   })
 
   const rbacTableQuery = useTableQuery({
-    useQuery: useNewNetworkVenueTableQuery,
+    useQuery: isApCompatibilitiesByModel
+      ? (isUseNewRbacNetworkVenueApi
+        ? useEnhanceNetworkVenueTableV2Query
+        : useEnhanceNetworkVenueTableQuery)
+      : useNewNetworkVenueTableQuery,
     apiParams: { networkId: networkId! },
     defaultPayload: {
       ...defaultRbacPayload,
@@ -159,6 +169,10 @@ export function Venues (props: VenuesProps) {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
+
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
 
@@ -168,7 +182,7 @@ export function Venues (props: VenuesProps) {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = IsNetworkSupport6g(data)
+  const isWPA3security = IsNetworkSupport6g(data, { isSupport6gOWETransition })
 
   const { $t } = useIntl()
   const tableQuery = useNetworkVenueList()
@@ -199,6 +213,8 @@ export function Venues (props: VenuesProps) {
     setTunnelModalState
   })
   // hooks for tunnel column - end
+
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   useEffect(() => {
     // need to make sure table data is ready.
@@ -264,6 +280,8 @@ export function Venues (props: VenuesProps) {
         })
         return !enabled
       },
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows) => {
         handleActivateVenue(true, rows)
       }
@@ -276,6 +294,8 @@ export function Venues (props: VenuesProps) {
         })
         return !enabled
       },
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (rows) => {
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
           rows.map(item => item.id),
@@ -345,7 +365,7 @@ export function Venues (props: VenuesProps) {
 
   useEffect(() => {
     if (data?.wlan) {
-      const isSupport6G = IsNetworkSupport6g(data)
+      const isSupport6G = IsNetworkSupport6g(data, { isSupport6gOWETransition })
       if (prevIsWPA3securityRef.current === true && !isSupport6G) {
         if (activatedNetworkVenues?.length > 0) {
           // remove radio 6g when wlanSecurity is changed from WPA3 to others
@@ -366,6 +386,28 @@ export function Venues (props: VenuesProps) {
 
           handleVenueSaveData(newActivatedNetworkVenues)
           setTableDataActivate(tableData, newActivatedNetworkVenues.map(i=>i.venueId))
+        }
+      // eslint-disable-next-line max-len
+      } else if (default6gEnablementToggle && prevIsWPA3securityRef.current === false && isSupport6G) {
+        if (activatedNetworkVenues?.length > 0) {
+          // add 6G when switching to WPA3
+          const newActivatedNetworkVenues = activatedNetworkVenues.map(venue => {
+            const { allApGroupsRadioTypes, apGroups } = venue
+            if (allApGroupsRadioTypes && !allApGroupsRadioTypes.includes(RadioTypeEnum._6_GHz)) {
+              allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
+            }
+            if (apGroups && apGroups.length > 0) {
+              apGroups.forEach(apGroup => {
+                if (apGroup.radioTypes && !apGroup.radioTypes.includes(RadioTypeEnum._6_GHz)) {
+                  apGroup.radioTypes.push(RadioTypeEnum._6_GHz)
+                }
+              })
+            }
+            return venue
+          })
+
+          handleVenueSaveData(newActivatedNetworkVenues)
+          setTableDataActivate(tableData, newActivatedNetworkVenues.map(i => i.venueId))
         }
       }
       prevIsWPA3securityRef.current = isSupport6G
@@ -416,20 +458,20 @@ export function Venues (props: VenuesProps) {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (_, row) {
-        let disabled = false
-        // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
-        if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
-          disabled = true
-        }else{
-          title = ''
-        }
+        const isDhcpDisabled = data && data.enableDhcp && row.mesh && row.mesh.enabled
+        const dhcpDisabledMsg = isDhcpDisabled
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          : ''
+
+        const isEnforcedByTemplate = hasEnforcedItem([row])
+        const enforcedActionMsg = getEnforcedActionMsg([row])
 
         return <Tooltip
-          title={title}
+          title={dhcpDisabledMsg || enforcedActionMsg}
           placement='bottom'>
           <Switch
-            disabled={disabled}
+            disabled={isDhcpDisabled || isEnforcedByTemplate}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
@@ -453,8 +495,13 @@ export function Venues (props: VenuesProps) {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row),
-          data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformAps(
+          getCurrentVenue(row),
+          data as NetworkSaveData,
+          (e) => handleClickApGroups(row, e),
+          false,
+          row?.incompatible
+        )
       }
     },
     {
@@ -601,8 +648,12 @@ export function Venues (props: VenuesProps) {
         networkInfo: otherData.network,
         otherData
       }
-      if (isSoftGreEnabled)
+      if (isSoftGreEnabled) {
         handleSoftGreTunnelAction(args)
+        if (isIpSecEnabled) {
+          handleIpsecAction(args)
+        }
+      }
 
       const networkVenueId = otherData.network?.venueId ?? ''
       // eslint-disable-next-line max-len
@@ -658,16 +709,25 @@ export function Venues (props: VenuesProps) {
             />
           </Form.Provider>
           {(isEdgeSdLanMvEnabled || isSoftGreEnabled) && tunnelModalState.visible &&
+          <>
+            {!isIpSecEnabled &&
             <NetworkTunnelActionModal
               {...tunnelModalState}
               onFinish={handleNetworkTunnelActionFinish}
-              onClose={handleCloseTunnelModal}
-            />
+              onClose={handleCloseTunnelModal}/>}
+            {isIpSecEnabled &&
+            <NetworkTunnelActionDrawer
+              {...tunnelModalState}
+              onFinish={handleNetworkTunnelActionFinish}
+              onClose={handleCloseTunnelModal}/>}
+          </>
           }
         </Loader>
       </Form.Item>
       {isEdgePinEnabled && <Form.Item hidden name={['sdLanAssociationUpdate']}></Form.Item>}
       {isSoftGreEnabled && <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>}
+      {isSoftGreEnabled && isIpSecEnabled &&
+        <Form.Item hidden name={['ipsecAssociationUpdate']}></Form.Item>}
     </>
   )
 }

@@ -1,0 +1,1 @@
+export const tooltipIconStyle = { width: 16, height: 16 }

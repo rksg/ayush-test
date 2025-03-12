@@ -1,9 +1,4 @@
 /* eslint-disable max-len */
-import {
-  renderHook,
-  waitFor,
-  within
-} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import _         from 'lodash'
@@ -20,7 +15,10 @@ import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  renderHook,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 import { ScopeForm } from '.'
@@ -173,7 +171,7 @@ describe('HQoS Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
 
-    const warningTooltip = await within(rows[0]).findByTestId('WarningCircleSolid')
+    const warningTooltip = await within(rows[0]).findByTestId('WarningTriangleSolid')
     await userEvent.hover(warningTooltip)
     expect(await screen.findByText(/HQoS feature requires your RUCKUS Edge cluster/i)).toBeInTheDocument()
   })

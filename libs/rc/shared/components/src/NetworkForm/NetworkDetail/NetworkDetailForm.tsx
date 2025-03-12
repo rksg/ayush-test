@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { ProtectedEnforceTemplateToggle }            from '../../configTemplates'
 import { networkTypesDescription }                   from '../contentsMap'
 import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext                            from '../NetworkFormContext'
@@ -56,11 +57,12 @@ export function NetworkDetailForm () {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isExtendSsidDespriptionEnabled = useIsSplitOn(Features.EXTEND_SSID_DESPRIPTION_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
-      enableAccountingProxy: false,
+      enableAccountingProxy: e.target.value === NetworkTypeEnum.DPSK,
       enableAuthProxy: e.target.value === NetworkTypeEnum.DPSK, // to set default value as true for DPSK while adding new network
       enableAccountingService: false })
   }
@@ -188,7 +190,12 @@ export function NetworkDetailForm () {
         <Form.Item
           name='description'
           label={intl.$t({ defaultMessage: 'Description' })}
-          children={<TextArea rows={4} maxLength={64} />}
+          rules={[
+            ...(isExtendSsidDespriptionEnabled ? [{ max: 256 }] : [])
+          ]}
+          children={<TextArea rows={4}
+            maxLength={isExtendSsidDespriptionEnabled ? undefined : 64}
+          />}
         />
         <Form.Item>
           {( !editMode && !cloneMode && (!modalMode || (modalMode && !createType)) ) &&
@@ -229,6 +236,7 @@ export function NetworkDetailForm () {
             </Form.Item>
           }
         </Form.Item>
+        <ProtectedEnforceTemplateToggle templateId={data?.id} />
       </Col>
 
       <Col span={14}>

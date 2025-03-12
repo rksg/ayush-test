@@ -1,7 +1,11 @@
 import {
-  Checkbox as AntCheckbox
+  Checkbox as AntCheckbox,
+  Switch,
+  Typography
 } from 'antd'
 import styled from 'styled-components/macro'
+
+import { SpaceWrapper } from '@acx-ui/rc/components'
 
 
 export const Wrapper = styled.div`
@@ -19,23 +23,39 @@ export const Spacer = styled.div`
   height: var(--acx-descriptions-space);
 `
 export const DrawerContentWrapper = styled.div`
-  padding: var(--acx-content-vertical-space);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+export const DrawerContent = styled.div`
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
-  height: 394px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   flex-wrap: nowrap;
   margin-top: 0;
-  border: 1px solid #cccccc;
+`
+export const FeatureTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+`
+export const FeatureTitle = styled(Typography.Text)`
+  font-weight: 800;
+  font-size: var(--acx-headline-4-font-size);
+`
+export const FeatureDescription = styled(Typography.Paragraph)`
+  font-size: 13px;
+  width: 85%;
 `
 export const Checkbox = styled(AntCheckbox)`
   padding-right: 5px;
 `
 export const FooterMsg = styled.div`
   color: var(--acx-neutrals-60);
-  padding-bottom: var(--acx-content-vertical-space);
+  align-self: center;
 `
 export const List = styled.li`
   font-family: var(--acx-neutral-brand-font);
@@ -104,18 +124,43 @@ padding: var(--acx-content-vertical-space);
   }
 `
 
-export const FooterWrapper = styled.div`
+export const FooterWrapper = styled.div<{ editMode?: boolean }>`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${(props) => props.editMode ? 'row' : 'column' };
   align-items: flex-start;
   flex-wrap: nowrap;
+  width: 100%;
+  ${(props) => props.editMode ? 'justify-content: space-between' : 'gap: 20px' };
 `
 
-export const ButtonFooterWrapper = styled.div`
+export const ButtonFooterWrapper = styled.div<{ editMode?: boolean }>`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: nowrap;
   justify-content: space-between;
-  gap: 65%;
+  ${(props) => props.editMode ? '' : 'width: 100%' } ;
+`
+
+export const EarlyAccessFeatureSwitch = styled(Switch)`
+  height: 18px;
+  width: 54px;
+  border-color: var(--acx-neutrals-60) !important;
+  background-color: ${(props) => props.checked ? 'var(--acx-semantics-green-60) !important'
+    : 'var(--acx-neutrals-50) !important' };
+  .ant-switch-inner {
+    color: var(--acx-primary-white);
+  }
+  .ant-switch-handle::before {
+    background: var(--acx-primary-white) !important;
+  }
+`
+export const IconCheckboxWrapper = styled(SpaceWrapper)`
+  .ant-checkbox {
+    top: 3px;
+  }
+  .ant-row {
+    position: relative;
+    top: 3px;
+  }
 `

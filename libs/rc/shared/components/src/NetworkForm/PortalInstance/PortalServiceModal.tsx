@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType }                                                         from '@acx-ui/components'
-import { hasServicePermission, Portal, PORTAL_LIMIT_NUMBER, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }                                                                      from '@acx-ui/components'
+import { Portal, PORTAL_LIMIT_NUMBER, ServiceOperation, ServiceType, useTemplateAwareServicePermission } from '@acx-ui/rc/utils'
 
 import { PortalForm } from '../../services/PortalForm'
 
@@ -23,9 +23,8 @@ export default function PortalServiceModal (props:{
       if(data)updateInstance(data)
     }}/>
 
-  const hasAddPortalPermission = hasServicePermission({
-    type: ServiceType.PORTAL, oper: ServiceOperation.CREATE
-  })
+  // eslint-disable-next-line max-len
+  const hasAddPortalPermission = useTemplateAwareServicePermission(ServiceType.PORTAL, ServiceOperation.CREATE)
 
   if (!hasAddPortalPermission) return null
 

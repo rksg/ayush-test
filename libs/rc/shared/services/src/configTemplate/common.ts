@@ -1,9 +1,9 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/query'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
-import { MspEc, MspUrlsInfo }    from '@acx-ui/msp/utils'
+import { MspEc, MspUrlsInfo } from '@acx-ui/msp/utils'
 import {
   AAAPolicyType,
   AAAViewModalType,
@@ -19,7 +19,11 @@ import {
   onSocketActivityChanged,
   transformNetwork,
   NetworkRadiusSettings,
-  ConfigTemplateDriftsResponse
+  ConfigTemplateDriftsResponse,
+  transformWifiNetwork,
+  ConfigTemplateCloneUrlsInfo,
+  AllowedCloneTemplateTypes,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -27,6 +31,8 @@ import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { networkApi }    from '../network'
 import {
+  fetchEnhanceRbacNetworkVenueList,
+  fetchNetworkVlanPoolList,
   fetchRbacAccessControlPolicyNetwork,
   fetchRbacNetworkVenueList,
   updateNetworkVenueFn
@@ -97,7 +103,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         if (networkDeepData && enableRbac) {
           const arg = {
             params,
-            payload: { isTemplate: true }
+            payload: { isTemplate: true, page: 1, pageSize: 10000 }
           }
 
           const {
@@ -118,6 +124,71 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
           if (networkDeep?.venues) {
             networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
+          }
+        }
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
+    }),
+    // replace getNetworkDeepTemplate
+    getNetworkDeepTemplateV2: build.query<NetworkSaveData | null, RequestPayload>({
+      async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(
+            enableRbac ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : ConfigTemplateUrlsInfo.getNetworkTemplate,
+            params
+          )
+        )
+        const networkDeepData = networkQuery.data as NetworkSaveData
+
+        if (networkDeepData && enableRbac) {
+          const arg = {
+            params,
+            payload: { isTemplate: true, page: 1, pageSize: 10000 }
+          }
+
+          const { networkId } = params
+          // fetch network vlan pool info
+          const networkVlanPoolList = await fetchNetworkVlanPoolList([networkId], true, fetchWithBQ)
+          const networkVlanPool = networkVlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+
+          const {
+            error: networkVenuesListQueryError,
+            networkDeep
+          } = await fetchEnhanceRbacNetworkVenueList(arg, fetchWithBQ)
+
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
+          if (networkVenuesListQueryError)
+            return { error: networkVenuesListQueryError }
+
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
+          if (networkDeep?.venues) {
+            networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (networkVlanPool && networkDeepData.wlan?.advancedCustomization) {
+            const { id , name } = networkVlanPool
+            networkDeepData.wlan.advancedCustomization.vlanPool = { id , name } as VlanPool
           }
 
           if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
@@ -160,8 +231,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return query(queryArgs)
       },
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse (result: TableResult<Network | WifiNetwork>) {
-        result.data = result.data.map(item => transformNetwork(item)) as Network[]
+      transformResponse (result: TableResult<Network | WifiNetwork>, _, args) {
+        result.data = result.data.map(item => {
+          return args?.enableRbac ? transformWifiNetwork(item as WifiNetwork) : transformNetwork(item)
+        }) as Network[]
         return result
       },
       keepUnusedDataFor: 0,
@@ -411,6 +484,26 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }))
         return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
       }
+    }),
+    cloneTemplate: build.mutation<CommonResult, RequestPayload<{ type: AllowedCloneTemplateTypes, templateId: string, name: string }>>({
+      query: (queryArgs) => {
+        const { payload } = queryArgs
+        const { type, templateId, name } = payload!
+        const apiInfo = ConfigTemplateCloneUrlsInfo[type]
+        return {
+          ...createHttpRequest(apiInfo, { templateId }),
+          body: JSON.stringify({ name })
+        }
+      },
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
+    }),
+    updateEnforcementStatus: build.mutation<CommonResult, RequestPayload<{ enabled: boolean }>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.updateEnforcement, params),
+          body: JSON.stringify({ isEnforced: payload?.enabled })
+        }
+      }
     })
   })
 })
@@ -420,6 +513,7 @@ export const {
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkDeepTemplateQuery,
+  useGetNetworkDeepTemplateV2Query,
   useDeleteNetworkTemplateMutation,
   useGetNetworkTemplateListQuery,
   useLazyGetNetworkTemplateListQuery,
@@ -440,5 +534,7 @@ export const {
   useAddNetworkVenueTemplatesMutation,
   useGetDriftInstancesQuery,
   useLazyGetDriftReportQuery,
-  usePatchDriftReportMutation
+  usePatchDriftReportMutation,
+  useCloneTemplateMutation,
+  useUpdateEnforcementStatusMutation
 } = configTemplateApi

@@ -9,8 +9,7 @@ import { FormattedMessage, useIntl }                                 from 'react
 import { Drawer, Loader, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  PhoneInput,
-  usePersonaAsyncHeaders
+  PhoneInput
 } from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
@@ -90,7 +89,7 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
       value: ap.apMac,
       label: ap.name,
       model: ap.model
-    }))
+    })) || []
 
   const onSelectApChange = (macAddress: string) => {
     const selectedAp = apOptions?.find(ap => ap.value === macAddress)
@@ -136,7 +135,7 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
           { required: !!accessAp, message: $t({ defaultMessage: 'Please select the LAN ports' }) }
         ]}
       >
-        {accessAp && selectedModel.lanPorts &&
+        {accessAp && selectedModel.lanPorts ?
           <Checkbox.Group >
             <Space direction={'vertical'}>
               {
@@ -155,7 +154,7 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
                 )
               }
             </Space>
-          </Checkbox.Group>
+          </Checkbox.Group> : <></>
         }
       </Form.Item>
     </>
@@ -208,7 +207,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [addUnitMutation] = useAddPropertyUnitMutation()
   const [updateUnitMutation] = useUpdatePropertyUnitMutation()
   const [updatePersonaMutation] = useUpdatePersonaMutation()
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(()=>{
     if (!connectionMeteringListQuery.isLoading && connectionMeteringListQuery?.data) {
@@ -400,8 +398,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     return (id && payload)
       ? await updatePersonaMutation({
         params: { groupId: personaGroupId, id },
-        payload,
-        customHeaders
+        payload
       }).unwrap()
       : Promise.resolve()
   }
@@ -662,13 +659,13 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 { validator: (_, value) => phoneRegExp(value) }
               ]}
               children={
-                isReady &&
-                <PhoneInput
-                  name={['resident', 'phoneNumber']}
-                  callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
-                  onTop={false}
-                  defaultCountryCode={countryCode}
-                />}
+                isReady ?
+                  <PhoneInput
+                    name={['resident', 'phoneNumber']}
+                    callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
+                    onTop={false}
+                    defaultCountryCode={countryCode}
+                  />: <></>}
               validateFirst
             />
             {isConnectionMeteringAvailable &&

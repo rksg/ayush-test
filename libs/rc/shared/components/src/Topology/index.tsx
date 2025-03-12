@@ -23,11 +23,14 @@ import {
   NodeData,
   TopologyData,
   ShowTopologyFloorplanOn,
-  LinkConnectionInfo
+  LinkConnectionInfo,
+  WifiRbacUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink }               from '@acx-ui/react-router-dom'
 import { SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { hasPermission }            from '@acx-ui/user'
+import { getOpsApi }                from '@acx-ui/utils'
 
 import LinkTooltip             from './LinkTooltip'
 import NodeTooltip             from './NodeTooltip'
@@ -593,12 +596,16 @@ export function TopologyGraphComponent (props:{ venueId?: string,
               // eslint-disable-next-line max-len
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this <venueSingular></venueSingular>' })}>
                 { <Row style={{ justifyContent: 'space-around' }}>
-                  { hasPermission({ scopes: [WifiScopes.CREATE] }) && <Col>
+                  { hasPermission({ scopes: [WifiScopes.CREATE],
+                    rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)]
+                  }) && <Col>
                     <TenantLink to='devices/wifi/add'>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>
                   </Col>}
-                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) && <Col >
+                  { hasPermission({ scopes: [SwitchScopes.CREATE],
+                    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitch)]
+                  }) && <Col >
                     <TenantLink to='devices/switch/add'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>

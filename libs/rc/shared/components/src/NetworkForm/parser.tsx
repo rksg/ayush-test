@@ -14,11 +14,10 @@ import {
   NetworkVenue,
   ClientIsolationVenue,
   ManagementFrameProtectionEnum,
-  GuestNetworkTypeEnum,
   NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
-import { NetworkVxLanTunnelProfileInfo } from './utils'
+import { isShowDynamicVlan, NetworkVxLanTunnelProfileInfo } from './utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
@@ -271,8 +270,11 @@ export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean)
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
 
-export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData,
-  tunnelInfo?: NetworkVxLanTunnelProfileInfo) {
+export function transferMoreSettingsToSave (data: NetworkSaveData,
+  originalData: NetworkSaveData,
+  tunnelInfo?: NetworkVxLanTunnelProfileInfo,
+  options?: Record<string, boolean>
+) {
   let advancedCustomization = {
     ...originalData?.wlan?.advancedCustomization,
     ...data?.wlan?.advancedCustomization
@@ -333,12 +335,12 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.l3AclPolicyId = null
   }
 
-  if (data?.type && (data?.type !== NetworkTypeEnum.DPSK &&
-    data?.type !== NetworkTypeEnum.AAA &&
-    !(data?.type === NetworkTypeEnum.OPEN &&
-      get(data, 'wlan.macAddressAuthentication')) &&
-    !(data?.guestPortal && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-      get(data, 'wlan.bypassCPUsingMacAddressAuthentication')))) {
+  const { isSupportDVlanWithPskMacAuth=false } = options ?? {}
+  const showDynamicWlan = isShowDynamicVlan(data, {
+    isSupportDVlanWithPskMacAuth
+  })
+
+  if (data?.type && !showDynamicWlan) {
     (advancedCustomization as OpenWlanAdvancedCustomization).enableAaaVlanOverride = undefined
   }
 
@@ -544,6 +546,11 @@ export function handleServicePolicyRbacPayload (data: NetworkSaveData): NetworkS
     'accountingRadius',
     'enableAuthProxy',
     'enableAccountingProxy',
-    'wlan.macAddressAuthenticationConfiguration'
+    'wlan.macAddressAuthenticationConfiguration',
+    'guestPortal.wisprPage.authRadius',
+    'guestPortal.wisprPage.authRadiusId',
+    'guestPortal.wisprPage.accountingRadius',
+    'guestPortal.wisprPage.accountingRadiusId',
+    'directoryServerId'
   ])
 }

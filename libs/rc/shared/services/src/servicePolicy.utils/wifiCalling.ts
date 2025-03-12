@@ -146,7 +146,8 @@ export function queryWifiCallingFn (isTemplate = false)
 
     if (enableRbac) {
       const wifiCallingData = res.data?.data
-        ?.map(profile => ({ ...profile, networkIds: profile.wifiNetworkIds }))
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ?.map((profile: any) => ({ ...profile, networkIds: profile.wifiNetworkIds }))
 
       return {
         data: {

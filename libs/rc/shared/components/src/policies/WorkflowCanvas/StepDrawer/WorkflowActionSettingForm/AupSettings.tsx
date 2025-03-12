@@ -23,6 +23,7 @@ export function AupSettings () {
   const [displayFileOption, setDisplayFileOption] = useState(false)
   const [fileLoading, setFileLoading] = useState(false)
   const [fileSizeInvalid, setfileSizeInvalid] = useState(false)
+  const [fileTypeInvalid, setfileTypeInvalid] = useState(false)
   const [uploadFile] = useUploadFileMutation()
 
   const aupFormatSwitch = () => {
@@ -43,7 +44,14 @@ export function AupSettings () {
       setfileSizeInvalid(true)
       return false
     }
+    if (file.type !== 'application/pdf' &&
+      file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+            file.type !== 'application/msword') {
+      setfileTypeInvalid(true)
+      return false
+    }
     setfileSizeInvalid(false)
+    setfileTypeInvalid(false)
     formInstance.setFieldValue('aupFileName',file.name)
     return true
   }
@@ -110,6 +118,15 @@ export function AupSettings () {
       return Promise.resolve()
     }
   }
+
+  const invalidFileType = async ( ) => {
+    if (fileTypeInvalid === true) {
+      return Promise.reject($t({ defaultMessage: 'Invalid file type' }))
+    } else {
+      return Promise.resolve()
+    }
+  }
+
   return (<>
     <CommonActionSettings actionType={ActionType.AUP} />
 
@@ -182,6 +199,7 @@ export function AupSettings () {
         rules={[
           { validator: validateFileLoading },
           { validator: invalidFileSize },
+          { validator: invalidFileType },
           { validator: fileUrlPresent }
         ]}
         valuePropName='file'

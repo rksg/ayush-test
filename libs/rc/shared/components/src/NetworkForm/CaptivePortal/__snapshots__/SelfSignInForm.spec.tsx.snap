@@ -1,0 +1,1480 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CaptiveNetworkForm-SelfSignIn should render Self sign in network successfully for snapshot test 1`] = `
+<DocumentFragment>
+  .c11 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c11 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c11 svg:before {
+  content: 'a';
+}
+
+.c11 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c11.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c11.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c11.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c11.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c11[disabled] svg path,
+.c11.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c11[disabled].ant-btn-link svg path,
+.c11.ant-btn-disabled.ant-btn-link svg path,
+.c11[disabled].ant-btn-default svg path,
+.c11.ant-btn-disabled.ant-btn-default svg path,
+.c11[disabled].ant-btn-primary svg path,
+.c11.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c18 {
+  position: fixed;
+  width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  bottom: 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
+  background-color: var(--acx-neutrals-10);
+  z-index: 5;
+}
+
+.c18::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c18 .ant-space-item .ant-space {
+  position: absolute;
+  left: 50%;
+  bottom: var(--acx-steps-form-actions-vertical-space);
+  -webkit-transform: translate(-50%,0);
+  -ms-transform: translate(-50%,0);
+  transform: translate(-50%,0);
+}
+
+.c5 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c5 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c19 .has-steps-form .ant-modal-content .c17 {
+  position: -webkit-sticky;
+  position: sticky;
+  width: 100%;
+  min-width: 100%;
+}
+
+.c19 .has-steps-form .ant-modal-content .c17::before {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  inset: 0 -24px 0 -24px;
+}
+
+.c19 .ant-modal-content:has(.c17) .c17 {
+  position: -webkit-sticky;
+  position: sticky;
+  width: 100%;
+  min-width: 100%;
+}
+
+.c19 .ant-modal-content:has(.c17) .c17::before {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  inset: 0 -24px 0 -24px;
+}
+
+.c19 .ant-modal-content:has(.c17) .ant-modal-body {
+  padding-bottom: 0px;
+}
+
+.c19 .ant-modal-content:has(.c17) .ant-modal-footer {
+  display: none;
+}
+
+.c2 {
+  position: fixed;
+  width: calc(( (100% + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  min-width: calc(( (1280px + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  padding-top: calc( var(--acx-steps-form-form-title-line-height) + var(--acx-steps-form-form-title-margin-bottom) + 3px );
+  z-index: 1;
+}
+
+.c0 {
+  --acx-steps-form-steps-title-color: var(--acx-primary-black);
+  --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
+  --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
+  --acx-steps-form-steps-step-size: 12px;
+  --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
+  --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
+  --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
+  --acx-steps-form-form-title-margin-bottom: 16px;
+  --acx-steps-form-actions-vertical-space: 12px;
+}
+
+.c0 .ant-pro-table .ant-pagination {
+  position: relative;
+  bottom: unset;
+  background-color: var(--acx-primary-white);
+}
+
+.c0 .ant-pro-steps-form {
+  position: relative;
+}
+
+.c0 .ant-pro-steps-form-step {
+  position: initial;
+  display: none;
+  margin-top: unset;
+}
+
+.c0 .ant-pro-steps-form-step.ant-pro-steps-form-step-active {
+  display: block;
+}
+
+.c0 .ant-descriptions-view table {
+  table-layout: initial;
+}
+
+.c0 .c1 {
+  display: none;
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-title {
+  padding: 0 0 var(--acx-steps-form-steps-title-line-height) 12px;
+  line-height: var(--acx-steps-form-steps-title-line-height);
+  font-size: var(--acx-steps-form-steps-title-font-size);
+}
+
+.c0 .ant-steps-dot .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
+  font-weight: var(--acx-steps-form-steps-active-title-font-weight);
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-title,
+.c0 .ant-steps-dot .ant-steps-item.ant-steps-item-wait .ant-steps-item-title {
+  color: var(--acx-steps-form-steps-title-color);
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-container .ant-steps-item-tail {
+  top: 3px;
+  left: unset;
+  width: var(--acx-steps-form-steps-step-size);
+  padding: 11px 0 0;
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-container .ant-steps-item-tail::after {
+  margin: 0 auto;
+  display: block;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-container .ant-steps-item-content {
+  min-height: calc(var(--acx-body-4-line-height) * 2);
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-icon {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  top: unset;
+  margin-top: 3px;
+  margin-right: 0px;
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  border: 1px solid var(--acx-steps-form-steps-step-color);
+  background-color: transparent;
+  top: unset;
+  left: unset;
+}
+
+.c0 .ant-steps-dot .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  -webkit-transition-property: top,left,background-color;
+  transition-property: top,left,background-color;
+}
+
+.c0 .ant-steps-dot .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot {
+  top: unset;
+  left: unset;
+}
+
+.c0 .ant-steps-dot .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot::after {
+  width: 10px;
+  height: 10px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c0 .ant-steps-dot .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 1px;
+  left: 1px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c0 .ant-pro-steps-form-container {
+  margin: unset;
+  margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+  width: unset;
+  min-width: unset;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.c16 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+.c9 {
+  width: 130px;
+}
+
+.c6 {
+  width: 130px;
+}
+
+.c12 {
+  margin-bottom: -3px;
+  margin-left: -6px !important;
+  color: var(--acx-primary-black);
+}
+
+.c12:hover {
+  cursor: pointer;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.c7 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c7 path {
+  fill: var(--acx-neutrals-60);
+}
+
+.c8 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c8 path:first-of-type {
+  fill: var(--acx-neutrals-60);
+}
+
+.c8 path {
+  stroke: var(--acx-neutrals-60);
+}
+
+.c13 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c13 path {
+  stroke: var(--acx-neutrals-60);
+}
+
+.c10 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c10 path {
+  fill: var(--acx-neutrals-60);
+}
+
+.c14 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c14 path {
+  fill: var(--acx-neutrals-60);
+}
+
+.c15 {
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+}
+
+.c15 path {
+  fill: var(--acx-neutrals-60);
+}
+
+<section
+    class="c0"
+  >
+    <div
+      class="ant-pro-steps-form"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="c1 c2"
+          >
+            <div
+              class="ant-steps ant-steps-vertical ant-steps-dot"
+            >
+              <div
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="ant-pro-steps-form-container"
+          >
+            <div
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="0"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-row "
+                  style="margin: -10px -10px -10px -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-12 c3"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="c4"
+                    >
+                      <h3
+                        class="ant-typography c5"
+                      >
+                        Onboarding
+                      </h3>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="0_allowSign"
+                              title=""
+                            >
+                              Allow Sign-In Using: (At least one option must be selected)
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c6"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                data-testid="sms-check-box"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c7"
+                                                data-testid="SMSToken"
+                                              />
+                                              SMS Token
+                                            </span>
+                                          </label>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                            style="margin-left: -5px; margin-bottom: -3px;"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item c6"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c8"
+                                                data-testid="Whatsapp"
+                                              />
+                                              WhatsApp
+                                            </span>
+                                          </label>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                            style="margin-left: -5px; margin-bottom: -3px;"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c10"
+                                                data-testid="Facebook"
+                                              />
+                                              Facebook
+                                            </span>
+                                          </label>
+                                          <button
+                                            class="ant-btn ant-btn-link c11"
+                                            data-testid="settingicon"
+                                            type="button"
+                                          >
+                                            <svg
+                                              class="c12"
+                                              data-testid="ConfigurationSolid"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c13"
+                                                data-testid="Google"
+                                              />
+                                              Google
+                                            </span>
+                                          </label>
+                                          <button
+                                            class="ant-btn ant-btn-link c11"
+                                            data-testid="settingicon"
+                                            type="button"
+                                          >
+                                            <svg
+                                              class="c12"
+                                              data-testid="ConfigurationSolid"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c14"
+                                                data-testid="Twitter"
+                                              />
+                                              X
+                                            </span>
+                                          </label>
+                                          <button
+                                            class="ant-btn ant-btn-link c11"
+                                            data-testid="settingicon"
+                                            type="button"
+                                          >
+                                            <svg
+                                              class="c12"
+                                              data-testid="ConfigurationSolid"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                  style="margin-bottom: 0px;"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item c9"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked"
+                                            >
+                                              <input
+                                                class="ant-checkbox-input"
+                                                type="checkbox"
+                                                value=""
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <svg
+                                                class="c15"
+                                                data-testid="LinkedIn"
+                                              />
+                                              LinkedIn
+                                            </span>
+                                          </label>
+                                          <button
+                                            class="ant-btn ant-btn-link c11"
+                                            data-testid="settingicon"
+                                            type="button"
+                                          >
+                                            <svg
+                                              class="c12"
+                                              data-testid="ConfigurationSolid"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title=""
+                            >
+                              Here is some information about  
+                              <a
+                                href="https://www.commscope.com/about-us/privacy-statement/"
+                                rel="noreferrer"
+                                target="_blank"
+                              >
+                                Ruckus Networks’ privacy policy
+                              </a>
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-checkbox ant-checkbox-checked"
+                                  >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      id="0_allowedDomainsCheckbox"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Allowed Domains
+                                  </span>
+                                </label>
+                                <svg
+                                  data-testid="QuestionMarkCircleOutlined"
+                                  style="margin-left: -5px; margin-bottom: -3px;"
+                                />
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <input
+                                            class="ant-input ant-input-status-success"
+                                            id="0_guestPortal_socialDomains"
+                                            placeholder="Enter domain(s) separated by comma"
+                                            style="margin-top: 5px;"
+                                            type="text"
+                                            value="http://123.com"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-checkbox ant-checkbox-checked"
+                                  >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      id="0_redirectCheckbox"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Redirect users to
+                                  </span>
+                                </label>
+                                <svg
+                                  data-testid="QuestionMarkCircleOutlined"
+                                  style="margin-left: -5px; margin-bottom: -3px;"
+                                />
+                                <div
+                                  class="ant-form-item ant-form-item-has-success"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <input
+                                            class="ant-input ant-input-status-success"
+                                            id="0_guestPortal_redirectUrl"
+                                            placeholder="e.g. http://www.example.com"
+                                            style="margin-top: 5px;"
+                                            type="text"
+                                            value="dbaidu.com"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-checkbox ant-checkbox-checked"
+                                  >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      id="0_guestPortal_socialEmails"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Collect email addresses of users who connect to this network
+                                  </span>
+                                </label>
+                                <svg
+                                  data-testid="QuestionMarkCircleOutlined"
+                                  style="margin-left: -5px; margin-bottom: -3px;"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="Password expires after"
+                            >
+                              Password expires after
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-start"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <div
+                                      class="ant-input-number ant-input-number-in-form-item"
+                                    >
+                                      <div
+                                        class="ant-input-number-handler-wrap"
+                                      >
+                                        <span
+                                          aria-disabled="false"
+                                          aria-label="Increase Value"
+                                          class="ant-input-number-handler ant-input-number-handler-up"
+                                          role="button"
+                                          unselectable="on"
+                                        >
+                                          <span
+                                            aria-label="up"
+                                            class="anticon anticon-up ant-input-number-handler-up-inner"
+                                            role="img"
+                                          >
+                                            <svg
+                                              aria-hidden="true"
+                                              data-icon="up"
+                                              fill="currentColor"
+                                              focusable="false"
+                                              height="1em"
+                                              viewBox="64 64 896 896"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                              />
+                                            </svg>
+                                          </span>
+                                        </span>
+                                        <span
+                                          aria-disabled="false"
+                                          aria-label="Decrease Value"
+                                          class="ant-input-number-handler ant-input-number-handler-down"
+                                          role="button"
+                                          unselectable="on"
+                                        >
+                                          <span
+                                            aria-label="down"
+                                            class="anticon anticon-down ant-input-number-handler-down-inner"
+                                            role="img"
+                                          >
+                                            <svg
+                                              aria-hidden="true"
+                                              data-icon="down"
+                                              fill="currentColor"
+                                              focusable="false"
+                                              height="1em"
+                                              viewBox="64 64 896 896"
+                                              width="1em"
+                                            >
+                                              <path
+                                                d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                              />
+                                            </svg>
+                                          </span>
+                                        </span>
+                                      </div>
+                                      <div
+                                        class="ant-input-number-input-wrap"
+                                      >
+                                        <input
+                                          aria-valuemax="2147483647"
+                                          aria-valuemin="1"
+                                          aria-valuenow="12"
+                                          autocomplete="off"
+                                          class="ant-input-number-input"
+                                          data-testid="expireTime"
+                                          id="0_guestPortal_smsPasswordDuration_duration"
+                                          role="spinbutton"
+                                          step="1"
+                                          value="12"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <div
+                                      class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                      data-testid="expireUnit"
+                                    >
+                                      <div
+                                        class="ant-select-selector"
+                                      >
+                                        <span
+                                          class="ant-select-selection-search"
+                                        >
+                                          <input
+                                            aria-activedescendant="0_guestPortal_smsPasswordDuration_unit_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="0_guestPortal_smsPasswordDuration_unit_list"
+                                            aria-haspopup="listbox"
+                                            aria-owns="0_guestPortal_smsPasswordDuration_unit_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            id="0_guestPortal_smsPasswordDuration_unit"
+                                            readonly=""
+                                            role="combobox"
+                                            style="opacity: 0;"
+                                            type="search"
+                                            unselectable="on"
+                                            value=""
+                                          />
+                                        </span>
+                                        <span
+                                          class="ant-select-selection-item"
+                                          title="Hours"
+                                        >
+                                          Hours
+                                        </span>
+                                      </div>
+                                      <span
+                                        aria-hidden="true"
+                                        class="ant-select-arrow"
+                                        style="user-select: none;"
+                                        unselectable="on"
+                                      >
+                                        <span
+                                          aria-label="down"
+                                          class="anticon anticon-down ant-select-suffix"
+                                          role="img"
+                                        >
+                                          <svg
+                                            aria-hidden="true"
+                                            data-icon="down"
+                                            fill="currentColor"
+                                            focusable="false"
+                                            height="1em"
+                                            viewBox="64 64 896 896"
+                                            width="1em"
+                                          >
+                                            <path
+                                              d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                            />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-checkbox"
+                                  >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      id="0_enableDhcp"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Enable RUCKUS DHCP service
+                                  </span>
+                                </label>
+                                <svg
+                                  data-testid="QuestionMarkCircleOutlined"
+                                  style="margin-left: -5px; margin-bottom: -3px;"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        data-testid="bypasscna-fullblock"
+                        style="display: flex; margin-top: 10px; margin-bottom: 10px;"
+                      >
+                        <label
+                          class="ant-checkbox-wrapper"
+                        >
+                          <span
+                            class="ant-checkbox"
+                          >
+                            <input
+                              class="ant-checkbox-input"
+                              data-testid="bypasscna-checkbox"
+                              id="0_wlan_bypassCNA"
+                              type="checkbox"
+                              value=""
+                            />
+                            <span
+                              class="ant-checkbox-inner"
+                            />
+                          </span>
+                          <span>
+                            Use Bypass Captive Network Assistant
+                          </span>
+                        </label>
+                        <svg
+                          data-testid="QuestionMarkCircleOutlined"
+                          style="width: 16px; margin-left: -5px; margin-bottom: -3px;"
+                        />
+                      </div>
+                      <div
+                        class="ant-form-item ant-form-item-has-success"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                          data-testid="walled-garden-fullblock"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="0_walledGardensString"
+                              title=""
+                            >
+                              Walled Garden
+                              <svg
+                                data-testid="QuestionMarkCircleOutlined"
+                              />
+                              <button
+                                class="ant-btn ant-btn-link c11"
+                                data-testid="walled-garden-clear-button"
+                                style="margin-left: 90px; margin-right: 10px;"
+                                type="button"
+                              >
+                                <span>
+                                  Clear
+                                </span>
+                              </button>
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <textarea
+                                  class="ant-input ant-input-status-success"
+                                  data-testid="walled-garden-showed-textarea"
+                                  id="0_walledGardensString"
+                                  placeholder="Enter permitted walled garden destinations and IP subnets, a new line for each entry. Hover over the question mark for help with this field."
+                                  rows="15"
+                                  style="resize: none;"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item ant-form-item-has-success ant-form-item-hidden"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                          data-testid="walled-garden-hidden-item"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <textarea
+                                  class="ant-input ant-input-status-success"
+                                  data-testid="walled-garden-hidden-textarea"
+                                  id="0_guestPortal_walledGardens"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-12 c3"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="c4"
+                    >
+                      <div
+                        class="ant-row ant-row-center"
+                      >
+                        <div
+                          class="ant-col"
+                        >
+                          <div
+                            class="c16"
+                          >
+                            <img
+                              src="SelfSignIn"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-row "
+                  style="margin: -10px -10px -10px -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-24 c3"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="c4"
+                    >
+                      <div
+                        data-testid="rc-NetworkMoreSettingsForm"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="c17 c18"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-primary c11"
+              type="button"
+            >
+              <span>
+                Add
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-default c11"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;

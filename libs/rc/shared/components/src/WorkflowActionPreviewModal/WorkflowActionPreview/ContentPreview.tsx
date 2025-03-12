@@ -3,7 +3,7 @@ import React from 'react'
 import { Image, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { PoweredBy, WiFi4EuBanner }                                  from '@acx-ui/icons'
+import { baseUrlFor }                                                from '@acx-ui/config'
 import { DefaultUIConfiguration, getLogoImageSize, UIConfiguration } from '@acx-ui/rc/utils'
 
 import { StepNavigation } from './StepNavigation'
@@ -33,9 +33,12 @@ export function ContentPreview (props: ContentPreviewProps) {
     <UI.PreviewContainer
       hasBackgroundImage={!!uiConfiguration?.logoImage}
     >
-      {!!uiStyleSchema.wifi4EuNetworkId &&
-        <WiFi4EuBanner />
-      }
+      {!!uiStyleSchema.wifi4EuNetworkId && <img
+        src={baseUrlFor('/assets/images/portal/WiFi4euBanner.png')}
+        alt='WiFi4EU Banner'
+        width='420'
+        height='120'
+      />}
 
       {uiConfiguration?.logoImage &&
         <Image
@@ -76,7 +79,12 @@ export function ContentPreview (props: ContentPreviewProps) {
 
       {!uiStyleSchema.disablePoweredBy &&
         <UI.PoweredByContainer>
-          <PoweredBy/>
+          <img
+            src={baseUrlFor('/assets/images/portal/PoweredBy.png')}
+            alt='Powered by RUCKUS'
+            width='126'
+            height='30'
+          />
         </UI.PoweredByContainer>
       }
     </UI.PreviewContainer>

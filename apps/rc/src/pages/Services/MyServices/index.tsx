@@ -1,30 +1,33 @@
 import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                   from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCardCategory }                          from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                    from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
-  useGetEnhancedMdnsProxyListQuery,
+  useGetEdgeFirewallViewDataListQuery,
+  useGetEdgeMdnsProxyViewDataListQuery,
   useGetEdgePinViewDataListQuery,
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeTnmServiceListQuery,
+  useGetEnhancedMdnsProxyListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
-  useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
-  useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery,
-  useGetEdgeMdnsProxyViewDataListQuery
+  useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
+  AddProfileButton,
   getSelectServiceRoutePath,
+  hasSomeServicesPermission,
   isServiceCardEnabled,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -44,8 +47,10 @@ export default function MyServices () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEdgeOltEnabled = useIsSplitOn(Features.EDGE_NOKIA_OLT_MGMT_TOGGLE)
 
   const services = [
     {
@@ -63,7 +68,8 @@ export default function MyServices () {
       }, {
         skip: !isEdgeMdnsReady
       }).data?.totalCount,
-      disabled: !isEdgeMdnsReady
+      disabled: !isEdgeMdnsReady,
+      isBetaFeature: useIsBetaEnabled(TierFeatures.EDGE_MDNS_PROXY)
     },
     {
       type: ServiceType.DHCP,
@@ -101,6 +107,14 @@ export default function MyServices () {
         skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }).data?.totalCount,
       disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+    },
+    {
+      type: ServiceType.EDGE_TNM_SERVICE,
+      categories: [RadioCardCategory.EDGE],
+      totalCount: useGetEdgeTnmServiceListQuery({}, {
+        skip: !isEdgeTnmServiceReady
+      }).data?.length,
+      disabled: !isEdgeTnmServiceReady
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -156,11 +170,11 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink to={getSelectServiceRoutePath(true)}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
-          </TenantLink>
-        ])}
+        extra={<AddProfileButton
+          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
+          linkText={$t({ defaultMessage: 'Add Service' })}
+          targetPath={getSelectServiceRoutePath(true)}
+        />}
       />
       <GridRow>
         {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {
@@ -172,11 +186,27 @@ export default function MyServices () {
                 categories={service.categories}
                 count={service.totalCount}
                 type={'default'}
+                isBetaFeature={service.isBetaFeature}
               />
             </GridCol>
           )
         })}
+        {isEdgeOltEnabled && <OltCardWrapper col={{ span: 6 }}>
+          <ServiceCard
+            key={'EDGE_OLT'}
+            serviceType={ServiceType.EDGE_OLT}
+            categories={[RadioCardCategory.EDGE]}
+            type={'default'}
+            isBetaFeature={false}
+          />
+        </OltCardWrapper>}
       </GridRow>
     </>
   )
 }
+
+const OltCardWrapper = styled(GridCol)`
+ & > div.ant-card.ant-card-bordered {
+  pointer-events: none;
+ }
+`

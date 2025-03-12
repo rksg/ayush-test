@@ -89,6 +89,7 @@ export interface Administrator {
   roleDsc?: string;
   fullName?: string;
   authenticationId?: string;
+  phoneNumber?: string;
 }
 
 export interface TenantMspEc {
@@ -101,7 +102,7 @@ export interface NotificationPreference {
   DEVICE_AP_FIRMWARE?: boolean;
   DEVICE_SWITCH_FIRMWARE?: boolean;
   DEVICE_EDGE_FIRMWARE?: boolean;
-  DEVICE_API_CHANGES?: boolean;
+  API_CHANGES?: boolean;
 }
 
 export interface TenantDetails {
@@ -174,9 +175,18 @@ export interface RegisteredUserSelectOption {
   email: string;
 }
 
+export enum NotificationRecipientType {
+  GLOBAL = 'GLOBAL',
+  PRIVILEGEGROUP = 'PRIVILEGEGROUP'
+}
+
 export interface NotificationRecipientUIModel {
   id: string;
   description: string;
+  recipientType: NotificationRecipientType;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean,
+  privilegeGroup?: string;
   endpoints: NotificationEndpoint[];
   email: string;
   emailEnabled: boolean;
@@ -197,6 +207,9 @@ export interface NotificationEndpoint {
 export interface NotificationRecipientResponse {
   id: string;
   description: string;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean,
+  privilegeGroupId?: string;
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
@@ -311,6 +324,7 @@ export interface CustomRole {
   createdDate?: string,
   updatedDate?: string,
   scopes?: string[],
+  features?: string[],
   preDefinedRole?: string
 }
 
@@ -324,8 +338,18 @@ export interface groupMembers {
   lastLoginDate?: string
 }
 
+export interface PgAdmin {
+  id?: string;
+  externalId?: string;
+  email?: string;
+  name?: string;
+  lastName?: string;
+  detailLevel?: string;
+  delegateToAllECs?: boolean;
+}
+
 export interface PrivilegeGroup {
-  id?: string,
+  id: string,
   name?: string,
   type?: string,
   description?: string,
@@ -337,7 +361,9 @@ export interface PrivilegeGroup {
   allVenues?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],
-  policyEntityDTOS?: PrivilegePolicyEntity[]
+  policyEntityDTOS?: PrivilegePolicyEntity[],
+  admins?: PgAdmin[],
+  parentPrivilegeGroupId?: string
 }
 
 export enum PrivilegePolicyObjectType {
@@ -395,6 +421,8 @@ export interface NotificationSmsConfig
   accountSid?: string,
   authToken?: string,
   fromNumber?: string,
+  enableWhatsapp?: boolean,
+  authTemplateSid?: string,
   // esendex
   apiKey?: string,
   // others
@@ -411,6 +439,27 @@ export interface TwiliosMessagingServices
   messagingServiceResources?: string[]
 }
 
+export interface TwiliosWhatsappServices
+{
+  approvalFetch?: {
+    sid: string,
+    whatsapp: {
+      allow_category_change: boolean,
+      category: string,
+      content_type: string,
+      flows: string | null,
+      name: string,
+      rejection_reason: string,
+      status: string,
+      type: string
+    },
+    url: string,
+    accountSid: string
+  },
+  hasError?: boolean,
+  errorMessage?: string
+}
+
 export interface ErrorsResult<T> {
   data: T;
   status: number;
@@ -420,4 +469,100 @@ export interface ErrorDetails {
   code: string,
   message?: string,
   errorMessage?: string
+}
+
+export enum WebhookPayloadEnum {
+  RUCKUS = 'RUCKUS One',
+  DATADOG = 'DataDog',
+  MICROSOFT_TEAM = 'Microsoft Teams',
+  // JIRA = 'Jira',
+  PAGERDUTY = 'PagerDuty',
+  SERVICE_NOW = 'ServiceNow',
+  SLACK = 'Slack',
+  // ELASTIC = 'Elastic',
+  SPLUNK = 'Splunk'
+}
+
+export enum WebhookIncidentEnum {
+  SEVERITY_P1 = 'INCIDENT_SEVERITY_P1',
+  SEVERITY_P2 = 'INCIDENT_SEVERITY_P2',
+  SEVERITY_P3 = 'INCIDENT_SEVERITY_P3',
+  SEVERITY_P4 = 'INCIDENT_SEVERITY_P4',
+}
+
+export enum WebhookActivityEnum {
+  PRODUCT_GENERAL = 'ACTIVITY_PRODUCT_GENERAL',
+  PRODUCT_WIFI = 'ACTIVITY_PRODUCT_WIFI',
+  PRODUCT_SWITCH = 'ACTIVITY_PRODUCT_SWITCH',
+  PRODUCT_EDGE = 'ACTIVITY_PRODUCT_EDGE'
+}
+
+export enum WebhookEventEnum {
+  SEVERITY_CRITICAL = 'EVENT_SEVERITY_CRITICAL',
+  SEVERITY_WARNING = 'EVENT_SEVERITY_WARNING',
+  SEVERITY_MAJOR = 'EVENT_SEVERITY_MAJOR',
+  SEVERITY_INFO = 'EVENT_SEVERITY_INFO',
+  SEVERITY_MINOR = 'EVENT_SEVERITY_MINOR',
+  TYPE_AP = 'EVENT_TYPE_AP',
+  TYPE_NETWORK = 'EVENT_TYPE_NETWORK',
+  TYPE_SECURITY = 'EVENT_TYPE_SECURITY',
+  TYPE_EDGE = 'EVENT_TYPE_EDGE',
+  TYPE_CLIENT = 'EVENT_TYPE_CLIENT',
+  TYPE_PROFILE = 'EVENT_TYPE_PROFILE',
+  TYPE_SWITCH = 'EVENT_TYPE_SWITCH',
+  TYPE_ADMIN = 'EVENT_TYPE_ADMIN',
+  PRODUCT_GENERAL = 'EVENT_PRODUCT_GENERAL',
+  PRODUCT_WIFI = 'EVENT_PRODUCT_WIFI',
+  PRODUCT_SWITCH = 'EVENT_PRODUCT_SWITCH',
+  PRODUCT_EDGE = 'EVENT_PRODUCT_EDGE'
+}
+
+export interface Webhook {
+  id?: string,
+  name?: string,
+  url?: string,
+  secret?: string,
+  payload?: string,
+  status?: string,
+  incident: Record<string, string[]>,
+  activity: Record<string, string[]>,
+  event: Record<string, string[]>
+}
+
+export interface ScopePermission extends Record<string, string|boolean> {
+  name: string
+  id: string
+  read: boolean
+  create: boolean
+  update: boolean
+  delete: boolean
+}
+
+export enum PermissionType {
+  read = 'r',
+  create = 'c',
+  update = 'u',
+  delete = 'd'
+}
+
+export enum PrivacyFeatureName {
+  ARC='ARC',
+  APP_VISIBILITY='APP_VISIBILITY'
+}
+
+export interface PrivacySettings {
+  featureName: PrivacyFeatureName,
+  isEnabled: boolean
+}
+
+export interface PrivacyFeatures {
+  privacyFeatures: PrivacySettings[]
+}
+
+export interface ScopeFeature {
+  id: string,
+  name: string,
+  description: string,
+  category: string,
+  subFeatures?: ScopeFeature[]
 }

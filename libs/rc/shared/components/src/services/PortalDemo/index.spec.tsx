@@ -4,17 +4,20 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { baseUrlFor }                        from '@acx-ui/config'
 import { defaultComDisplay, PortalUrlsInfo
 }     from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { render, fireEvent, screen, mockServer } from '@acx-ui/test-utils'
 
-import Photo                     from './assets/images/portal-demo/PortalPhoto.svg'
-import Powered                   from './assets/images/portal-demo/PoweredLogo.svg'
-import Logo                      from './assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from './commonUtils'
+import PortalViewSelfSignConnect from './PortalViewSelfSignConnect'
 
 import { PortalDemo } from './index'
+
+const Photo = baseUrlFor('/assets/images/portal/PortalPhoto.jpg')
+const Powered = baseUrlFor('/assets/images/portal/PoweredLogo.png')
+const Logo = baseUrlFor('/assets/images/portal/RuckusCloud.png')
 
 const mockDemo = {
   bgColor: 'var(--acx-primary-white)',
@@ -144,5 +147,29 @@ describe('PortalDemo', () => {
     expect(await screen.findAllByText(
       'Terms & conditions is enabled but not configured!'
     )).not.toBeNull()
+  })
+})
+
+describe('PortalViewSelfSignConnect', () => {
+  it('should render PortalViewSelfSignConnect successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <PortalViewSelfSignConnect
+            portalLang={{
+              connectWithEmail: 'Connect with Email'
+            }}
+            networkSocial={{
+              smsEnabled: true,
+              emailEnabled: true,
+              facebookEnabled: true,
+              googleEnabled: true,
+              twitterEnabled: true,
+              linkedInEnabled: true
+            }} />
+        </Form>
+      </Provider>
+    )
+    expect(await screen.findByTestId('self-sign-in-email-otp')).toBeInTheDocument()
   })
 })

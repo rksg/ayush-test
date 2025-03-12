@@ -15,7 +15,8 @@ import {
   PolicyType,
   useTableQuery,
   GetApiVersionHeader,
-  ApiVersionEnum
+  ApiVersionEnum,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -75,7 +76,8 @@ export default function SnmpAgentDetail () {
               oper: PolicyOperation.EDIT,
               policyId: params.policyId as string
             })}
-            scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT)}>
+            scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.SNMP_AGENT, PolicyOperation.EDIT)}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>

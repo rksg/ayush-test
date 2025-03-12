@@ -32,14 +32,19 @@ export const useTunnelInfos = (props: useTunnelInfosProps) => {
 
   const networkVenueId = network?.venueId
 
-  const { venueSdLan, networkVlanPool } = useEdgeMvSdLanData(network)
+  const {
+    venueSdLan,
+    networkVlanPool,
+    isLoading: isSdLanLoading
+  } = useEdgeMvSdLanData(network)
 
   let venueSdLanInfo = venueSdLan
   if (venueSdLan && cachedActs)
     venueSdLanInfo = mergeSdLanCacheAct(venueSdLan, cachedActs)
 
   const {
-    venuePinInfo
+    venuePinInfo,
+    isPinLoading
   } = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id', 'name', 'tunneledWlans'],
@@ -47,9 +52,10 @@ export const useTunnelInfos = (props: useTunnelInfosProps) => {
     }
   }, {
     skip: !isEdgePinHaEnabled || !network,
-    selectFromResult: ({ data }) => {
+    selectFromResult: ({ data, isLoading }) => {
       return {
-        venuePinInfo: data?.data[0]
+        venuePinInfo: data?.data[0],
+        isPinLoading: isLoading
       }
     }
   })
@@ -61,6 +67,7 @@ export const useTunnelInfos = (props: useTunnelInfosProps) => {
       :(tunnelType === NetworkTunnelTypeEnum.SoftGre ? cachedSoftGre : undefined))
 
   return {
+    isLoading: isSdLanLoading || isPinLoading,
     tunnelData,
     tunnelType,
 

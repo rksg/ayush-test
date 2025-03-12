@@ -1,14 +1,15 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
-import { Popover, Space }                         from 'antd'
-import { useIntl }                                from 'react-intl'
-import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
+import { Popover, Space }                                   from 'antd'
+import { useIntl }                                          from 'react-intl'
+import { Handle, NodeProps, Position, useNodeId, useNodes } from 'reactflow'
 
 import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
 import { useDeleteWorkflowStepByIdMutation }                                                     from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle }                                                           from '@acx-ui/rc/utils'
-
+import { ActionType, ActionTypeTitle, MaxAllowedSteps, MaxTotalSteps, WorkflowUrls }             from '@acx-ui/rc/utils'
+import { hasAllowedOperations, hasPermission }                                                   from '@acx-ui/user'
+import { getOpsApi }                                                                             from '@acx-ui/utils'
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
 import { useWorkflowContext }         from '../WorkflowContextProvider'
@@ -21,6 +22,8 @@ export default function BaseStepNode (props: NodeProps
 {
   const { $t } = useIntl()
   const nodeId = useNodeId()
+  const nodes = useNodes()
+  const isOverMaximumSteps = useMemo(() => nodes.length >= MaxTotalSteps, [nodes])
   const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const {
     nodeState, actionDrawerState,
@@ -39,6 +42,7 @@ export default function BaseStepNode (props: NodeProps
   }
 
   const onAddClick = () => {
+    if (isOverMaximumSteps) return
     onHandleNode(props)
     actionDrawerState.onOpen()
   }
@@ -78,6 +82,8 @@ export default function BaseStepNode (props: NodeProps
         <Button
           size={'small'}
           type={'link'}
+          rbacOpsIds={[getOpsApi(WorkflowUrls.patchAction)]}
+          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.patchAction)])}
           icon={<EditorToolbarIcon><EditOutlined/></EditorToolbarIcon>}
           onClick={onEditClick}
         />
@@ -94,6 +100,8 @@ export default function BaseStepNode (props: NodeProps
         <Button
           size={'small'}
           type={'link'}
+          rbacOpsIds={[getOpsApi(WorkflowUrls.deleteAction)]}
+          disabled={!hasAllowedOperations([getOpsApi(WorkflowUrls.deleteAction)])}
           icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
           onClick={onDeleteClick}
         />
@@ -132,9 +140,21 @@ export default function BaseStepNode (props: NodeProps
       }
 
       {props.selected &&
-        <UI.PlusButton onClick={onAddClick}>
-          <Plus />
-        </UI.PlusButton>
+        <Tooltip
+          title={isOverMaximumSteps
+            ? $t({ defaultMessage: 'You have reached the maximum number of {number} steps' },
+              { number: MaxAllowedSteps })
+            : ''}
+        >
+          <UI.PlusButton
+            onClick={onAddClick}
+            disabled={isOverMaximumSteps ||
+              !hasPermission({ rbacOpsIds: [getOpsApi(WorkflowUrls.createAction)] })}
+          >
+            <Plus />
+          </UI.PlusButton>
+        </Tooltip>
+
       }
 
       <Handle

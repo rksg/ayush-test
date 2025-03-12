@@ -4,11 +4,10 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { EdgeServiceStatusLight, SimpleListTooltip, useEdgeDhcpActions }  from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                                    from '@acx-ui/components'
+import { EdgeServiceStatusLight, EdgeTableCompatibilityWarningTooltip, SimpleListTooltip, useEdgeDhcpActions, useEdgeDhcpCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
-  useGetDhcpEdgeCompatibilitiesQuery,
   useGetDhcpStatsQuery,
   useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
@@ -16,17 +15,16 @@ import {
   DhcpStats,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
+  IncompatibilityFeatures,
   ServiceOperation,
   ServiceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
-
 
 
 const EdgeDhcpTable = () => {
@@ -81,15 +79,10 @@ const EdgeDhcpTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-  const { dhcpCompatibilityData = [] } = useGetDhcpEdgeCompatibilitiesQuery({
-    payload: { filters: { serviceIds: currentServiceIds } } }, {
-    skip: !currentServiceIds.length,
-    selectFromResult: ({ data }) => {
-      return {
-        dhcpCompatibilityData: data?.compatibilities
-      }
-    }
-  })
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+
+  // eslint-disable-next-line max-len
+  const dhcpCompatibilityData = useEdgeDhcpCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const isUpdateAvailable = (data: DhcpStats) => {
     let isReadyToUpdate = false
@@ -124,9 +117,10 @@ const EdgeDhcpTable = () => {
               })}>
               {row.serviceName}
             </TenantLink>
-            <CompatibilityCheck
+            <EdgeTableCompatibilityWarningTooltip
               serviceId={row.id!}
-              compatibilityData={dhcpCompatibilityData}
+              featureName={IncompatibilityFeatures.DHCP}
+              compatibility={dhcpCompatibilityData.compatibilities}
             />
           </Space>
         )
@@ -203,6 +197,7 @@ const EdgeDhcpTable = () => {
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -219,6 +214,7 @@ const EdgeDhcpTable = () => {
     },
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -276,6 +272,7 @@ const EdgeDhcpTable = () => {
           <TenantLink
             to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>

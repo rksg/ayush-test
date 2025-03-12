@@ -5,9 +5,9 @@ import {
   Form,
   Checkbox
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import _                       from 'lodash'
-import { useIntl }             from 'react-intl'
+import { CheckboxChangeEvent }        from 'antd/lib/checkbox'
+import { get, isEmpty, keys, pickBy } from 'lodash'
+import { useIntl }                    from 'react-intl'
 
 import { StepsFormLegacy }                                                                                                   from '@acx-ui/components'
 import { AvailableLteBandOptions, AvailableLteBands, CountryIsoDisctionary, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
@@ -31,14 +31,17 @@ export function LteBandChannels (
     region: string,
     formControlName: 'primarySim'|'secondarySim',
     isShowOtherLteBands: boolean,
-    editData: VenueApModelCellular
+    editData: VenueApModelCellular,
+    disabled?: boolean
   }
 ) {
   const form = Form.useFormInstance()
+  const { formControlName, region, regionName,
+    editData, countryCode, availableLteBands, disabled } = props
   const [enableRegion] = [
-    useWatch<boolean>(['checkbox', props.formControlName, props.region])
+    useWatch<boolean>(['checkbox', formControlName, region])
   ]
-  const object = _.get(props.editData, props.formControlName)
+  const object = get(editData, formControlName)
   useEffect(() => {
     const lteBandsArray = object.lteBands
     if (lteBandsArray && lteBandsArray.length === 4) {
@@ -56,10 +59,10 @@ export function LteBandChannels (
       )
 
       if(lteBandsArray){
-        const lteBandsArrayIndex = lteBandsArray.findIndex(i=>i.region==props.region)
-        form.setFieldValue(['checkbox', props.formControlName, props.region],
-          (!_.isEmpty(lteBandsArray[lteBandsArrayIndex]?.band3G)||
-        !_.isEmpty(lteBandsArray[lteBandsArrayIndex]?.band4G)))
+        const lteBandsArrayIndex = lteBandsArray.findIndex(i=>i.region == region)
+        form.setFieldValue(['checkbox', formControlName, props.region],
+          (!isEmpty(lteBandsArray[lteBandsArrayIndex]?.band3G)||
+        !isEmpty(lteBandsArray[lteBandsArrayIndex]?.band4G)))
 
       }
     }
@@ -68,29 +71,29 @@ export function LteBandChannels (
   // set current country name
   let currentCountryName = ''
   const getCurrentCountryName = function (countryCode: string) {
-    return _.pickBy(CountryIsoDisctionary, (val) => {
+    return pickBy(CountryIsoDisctionary, (val) => {
       return val.toUpperCase() === countryCode
     })
   }
-  const currentCountry = getCurrentCountryName(props.countryCode)
+  const currentCountry = getCurrentCountryName(countryCode)
   if (currentCountry) {
-    currentCountryName = _.keys(currentCountry)[0]
+    currentCountryName = keys(currentCountry)[0]
   }
 
   const { $t } = useIntl()
   let availableLteBand3G: AvailableLteBandOptions[] = []
   let availableLteBand4G: AvailableLteBandOptions[] = []
 
-  if (props.availableLteBands.band3G) {
-    availableLteBand3G = props.availableLteBands.band3G.map((band: string) => ({
+  if (availableLteBands.band3G) {
+    availableLteBand3G = availableLteBands.band3G.map((band: string) => ({
       value: band,
       label: band
     })
     )
   }
 
-  if (props.availableLteBands.band4G) {
-    availableLteBand4G = props.availableLteBands.band4G.map((band: string) => ({
+  if (availableLteBands.band4G) {
+    availableLteBand4G = availableLteBands.band4G.map((band: string) => ({
       value: band,
       label: band
     })
@@ -99,8 +102,8 @@ export function LteBandChannels (
 
   const onCheckChange = function (e: CheckboxChangeEvent) {
     if (!e.target.checked) {
-      form.setFieldValue(['bandLteArray', props.formControlName, props.region, 'band3G'], [])
-      form.setFieldValue(['bandLteArray', props.formControlName, props.region, 'band4G'], [])
+      form.setFieldValue(['bandLteArray', formControlName, region, 'band3G'], [])
+      form.setFieldValue(['bandLteArray', formControlName, region, 'band4G'], [])
     }
   }
 
@@ -114,13 +117,14 @@ export function LteBandChannels (
       {(!props.isCurrent && props.isShowOtherLteBands) &&
         <>
           <Form.Item
-            name={['checkbox', props.formControlName, props.region]}
+            name={['checkbox', formControlName, region]}
             initialValue={false}
             valuePropName='checked'
             style={{ marginBottom: '0px' }}
             children={
               <Checkbox
-                children={props.regionName}
+                disabled={disabled}
+                children={regionName}
                 onChange={onCheckChange} />
             }
           />
@@ -139,6 +143,7 @@ export function LteBandChannels (
                 name={['bandLteArray', props.formControlName, props.region, 'band3G']}
                 children={
                   <Checkbox.Group
+                    disabled={disabled}
                     options={availableLteBand3G}
                   />
                 }
@@ -151,9 +156,10 @@ export function LteBandChannels (
             <StepsFormLegacy.MultiSelect>
               <Form.Item
                 initialValue={[]}
-                name={['bandLteArray', props.formControlName, props.region, 'band4G']}
+                name={['bandLteArray', formControlName, region, 'band4G']}
                 children={
                   <Checkbox.Group
+                    disabled={disabled}
                     options={availableLteBand4G}
                   />
                 }

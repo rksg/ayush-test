@@ -26,6 +26,16 @@ jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () 
   ClientAdmissionControlSettings: () => <div data-testid={'clientAdmissionControlSettings'}></div>
 }))
 
+jest.mock('./ClientAdmissionControlSettings/ClientAdmissionControlSettings', () => ({
+  ClientAdmissionControlSettings: () => <div data-testid={'clientAdmissionControlSettings'}></div>
+}))
+
+
+jest.mock('./ClientSteering/ClientSteering', () => ({
+  ClientSteering: () => <div data-testid={'ClientSteering'}></div>
+}))
+
+
 describe('AP Radio Tab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

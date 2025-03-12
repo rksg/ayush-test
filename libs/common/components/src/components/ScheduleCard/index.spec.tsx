@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { LazyQueryTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import userEvent            from '@testing-library/user-event'
-import { Form }             from 'antd'
+import { TypedLazyQueryTrigger } from '@reduxjs/toolkit/query/react'
+import userEvent                 from '@testing-library/user-event'
+import { Form }                  from 'antd'
 
 import { Provider } from '@acx-ui/store'
 import {
@@ -31,7 +31,7 @@ const mockedLazyQuey = jest.fn().mockReturnValue({ unwrap: () => Promise.resolve
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}) }) as LazyQueryTrigger<any>
+}) }) as TypedLazyQueryTrigger<any, any, any>
 
 const onApply = jest.fn()
 

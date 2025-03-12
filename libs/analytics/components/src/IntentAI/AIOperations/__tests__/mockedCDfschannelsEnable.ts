@@ -1,20 +1,6 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
-export const mocked = {
-  id: '1201552d-bc77-49a1-a727-b630afab43c8',
-  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-  code: 'c-dfschannels-enable',
-  sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
-  status: 'new',
-  displayStatus: 'new',
-  metadata: { failures: ['dfs-channel-5g-disabled'] },
-  sliceType: 'zone',
-  sliceValue: 'pazhyannur-zone',
-  updatedAt: '2024-09-02T06:05:19.896Z',
-  path: [
-    { type: 'system', name: 'anindya-vsz-e-cluster' },
-    { type: 'zone', name: 'pazhyannur-zone' }
-  ],
+export const mockedStatusTrail = {
   statusTrail: [
     {
       status: 'new',
@@ -70,11 +56,37 @@ export const mocked = {
       displayStatus: 'na-verified',
       createdAt: '2024-08-21T08:01:04.441Z'
     }
-  ],
+  ]
+}
+
+export const mockedKPIs = {
   kpi_co_channel_interference_ratio: {
     data: null,
     compareData: null
-  },
+  }
+}
+
+export const mocked = {
+  id: '1201552d-bc77-49a1-a727-b630afab43c8',
+  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+  code: 'c-dfschannels-enable',
+  sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+  status: 'new',
+  displayStatus: 'new',
+  metadata: { failures: ['dfs-channel-5g-disabled'] },
+  sliceType: 'zone',
+  sliceValue: 'pazhyannur-zone',
+  updatedAt: '2024-09-02T06:05:19.896Z',
+  path: [
+    { type: 'system', name: 'anindya-vsz-e-cluster' },
+    { type: 'zone', name: 'pazhyannur-zone' }
+  ],
+  ...mockedStatusTrail,
+  ...mockedKPIs,
   currentValue: false,
-  recommendedValue: true
-} as unknown as Intent
+  recommendedValue: true,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
+} as unknown as IntentDetail

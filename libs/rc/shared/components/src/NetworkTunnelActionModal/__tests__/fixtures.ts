@@ -1,4 +1,15 @@
 import {
+  EspProposal,
+  IkeProposal,
+  IpSecAuthEnum,
+  IpSecDhGroupEnum,
+  IpSecEncryptionAlgorithmEnum,
+  IpSecIntegrityAlgorithmEnum,
+  IpSecProposalTypeEnum,
+  IpSecPseudoRandomFunctionEnum,
+  IpsecViewData,
+  IpsecWiredActivation,
+  IpsecWiredApActivation,
   MtuTypeEnum,
   NetworkTypeEnum,
   SoftGreViewData
@@ -104,6 +115,62 @@ export const mockSoftGreTable = {
           wifiNetworkIds: ['network_7','network_8']
         }
       ]
+    },
+    {
+      id: 'softGreProfileName5-id',
+      name: 'softGreProfileName5',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '1.0.0.1',
+      secondaryGatewayAddress: '1.0.0.2',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [],
+      venueActivations: [
+        {
+          venueId: 'venueId-3',
+          apModel: 'R550',
+          portId: 1,
+          apSerialNumbers: []
+        }
+      ],
+      apActivations: []
+    },
+    {
+      id: 'softGreProfileName6-id',
+      name: 'softGreProfileName6',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '1.0.0.3',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [],
+      venueActivations: [],
+      apActivations: [{
+        venueId: 'venueId-3',
+        portId: 1,
+        apSerialNumbers: 'ap1'
+      }]
+    },
+    {
+      id: 'softGreProfileName7-id',
+      name: 'softGreProfileName7',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '1.0.0.4',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-3',
+          wifiNetworkIds: ['network_14']
+        }
+      ],
+      venueActivations: [],
+      apActivations: []
     }
   ] as SoftGreViewData[]
 }
@@ -136,6 +203,14 @@ export const mockedSoftGreScopeVenueMap = {
       profileName: 'softGreProfileName4',
       venueId: 'venueId-2'
     }
+  ],
+  'venueId-3': [
+    {
+      networkIds: ['network_14'],
+      profileId: 'softGreProfileName7-id',
+      profileName: 'softGreProfileName7',
+      venueId: 'venueId-3'
+    }
   ]
 }
 
@@ -148,4 +223,91 @@ export const mockSoftGreScopeNetworkMap = {
       venueId: 'venueId-1'
     }
   ]
+}
+
+export const mockIpSecTable = {
+  data: {
+    fields: null,
+    totalCount: 3,
+    page: 1,
+    data: [
+      {
+        id: '0d89c0f5596c4689900fb7f5f53a0859',
+        name: 'ipsecProfileName1',
+        serverAddress: '128.0.0.1',
+        authenticationType: IpSecAuthEnum.PSK,
+        preSharedKey: 'admin!234',
+        ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
+        ikeProposals: [] as IkeProposal[],
+        espProposalType: IpSecProposalTypeEnum.DEFAULT,
+        espProposals: [] as EspProposal[],
+        activations: [{
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+          wifiNetworkIds: [
+            '9b33509cc0a1464cad9447778a72006f',
+            '797a1f499c254260b7a1aedafba524a3',
+            'b946294426b8413d819751cb3d320a20'
+          ]
+        }],
+        venueActivations: [] as IpsecWiredActivation[],
+        apActivations: [] as IpsecWiredApActivation[]
+      },
+      {
+        id: '75aa5131892d44a6a85a623dd3e524ed',
+        name: 'ipsecProfileName2',
+        serverAddress: '128.0.0.3',
+        authenticationType: IpSecAuthEnum.PSK,
+        preSharedKey: 'admin!234',
+        ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
+        ikeProposals: [] as IkeProposal[],
+        espProposalType: IpSecProposalTypeEnum.SPECIFIC,
+        espProposals: [{
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+          dhGroup: IpSecDhGroupEnum.MODP2048
+        }],
+        activations: [{
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+          wifiNetworkIds: [
+            '9b33509cc0a1464cad9447778a72006fe'
+          ]
+        }],
+        venueActivations: [] as IpsecWiredActivation[],
+        apActivations: [] as IpsecWiredApActivation[]
+      },
+      {
+        id: 'ipsecProfileName3-id',
+        name: 'ipsecProfileName3',
+        serverAddress: '128.0.0.5',
+        authenticationType: IpSecAuthEnum.PSK,
+        preSharedKey: 'admin!234',
+        ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+        ikeProposals: [{
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+          dhGroup: IpSecDhGroupEnum.MODP2048
+        },
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        }],
+        espProposalType: IpSecProposalTypeEnum.DEFAULT,
+        espProposals: [] as EspProposal[],
+        activations: [{
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+          wifiNetworkIds: [
+            '9b33509cc0a1464cad9447778a72006fe'
+          ]
+        }],
+        venueActivations: [] as IpsecWiredActivation[],
+        apActivations: [] as IpsecWiredApActivation[]
+      }
+    ] as IpsecViewData[]
+  },
+  isFetching: false,
+  handleTableChange: () => {},
+  handleFilterChange: () => {}
 }

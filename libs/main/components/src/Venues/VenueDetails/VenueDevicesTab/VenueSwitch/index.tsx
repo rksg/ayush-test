@@ -47,6 +47,7 @@ export function VenueSwitch () {
       activeKey={params?.categoryTab}
       defaultActiveKey='list'
       onChange={onCategoryTabChange}
+      destroyInactiveTabPane
     >
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>

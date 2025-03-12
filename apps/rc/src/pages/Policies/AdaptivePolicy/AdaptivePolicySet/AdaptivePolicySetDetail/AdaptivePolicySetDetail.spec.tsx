@@ -1,13 +1,28 @@
-
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, DpskUrls, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                              from '@acx-ui/store'
-import { mockServer, render, screen }                                            from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  CertificateUrls,
+  CommonUrlsInfo,
+  DpskUrls,
+  MacRegListUrlsInfo,
+  PersonaUrls,
+  RulesManagementUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 
-import { adaptivePolicy, dpskList, macList, networkList, prioritizedPolicies } from './__test__/fixtures'
-import AdaptivePolicySetDetail                                                 from './AdaptivePolicySetDetail'
+import {
+  adaptivePolicy,
+  certificateTemplateList,
+  dpskList,
+  identityGroupList,
+  macList,
+  networkList,
+  prioritizedPolicies
+} from './__test__/fixtures'
+import AdaptivePolicySetDetail from './AdaptivePolicySetDetail'
 
 describe('AdaptivePolicySetDetail', () => {
   beforeEach(() => {
@@ -31,6 +46,14 @@ describe('AdaptivePolicySetDetail', () => {
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(certificateTemplateList))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(identityGroupList))
       )
     )
   })
@@ -66,5 +89,34 @@ describe('AdaptivePolicySetDetail', () => {
     expect(screen.getByRole('link', {
       name: 'Adaptive Policy Sets'
     })).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('renders the associated services table with all types of services when isIdentityGroupIntegration is true', async () => {
+    // Mock feature toggle to enable isIdentityGroupIntegration
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.POLICY_IDENTITY_TOGGLE)
+
+    render(<Provider><AdaptivePolicySetDetail /></Provider>, {
+      route: { params, path: '/:tenantId/:policyId' }
+    })
+
+    // Wait for async data loading
+    expect(await screen.findByText('Associated Services (7)')).toBeInTheDocument()
+    expect(await screen.findByText('123123')).toBeInTheDocument()
+    expect(await screen.findByText('Registration pool')).toBeInTheDocument()
+    expect(await screen.findByText('A1_DPSK_AccessPolicySet')).toBeInTheDocument()
+    expect(await screen.findByText('Amazing')).toBeInTheDocument()
+
+    // Verify table content rows
+    expect(screen.getAllByText('Certificate Template')).toHaveLength(2)
+    expect(screen.getAllByText('MAC Registration List')).toHaveLength(1)
+    expect(screen.getAllByText('DPSK Service')).toHaveLength(2)
+    expect(screen.getAllByText('Identity Group')).toHaveLength(2)
+
+    // Verify network count column
+    expect(screen.getByText('15')).toBeInTheDocument() // MAC Pool 1 networkCount
+    expect(screen.getByText('13')).toBeInTheDocument() // DPSK Pool 1 networkCount
+    expect(screen.getByText('12')).toBeInTheDocument() // Certificate Template 1 networkCount
+    expect(screen.getByText('14')).toBeInTheDocument() // Identity Group 1 networkCount
   })
 })

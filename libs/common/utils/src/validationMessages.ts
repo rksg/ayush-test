@@ -30,6 +30,11 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid IP address or domain',
     description: 'Validation - IP address checks'
   }),
+  validDomain: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Please provide a valid IP address (e.g., 192.168.1.1) or FQDN (e.g., example.com)',
+    description: 'Validation - IP address and domain checks'
+  }),
   domain: defineMessage({
     defaultMessage: 'Please enter a valid domain',
     description: 'Validation - domain checks'
@@ -206,6 +211,11 @@ export const validationMessages = {
     // eslint-disable-next-line max-len
     defaultMessage: 'Cannot move AP to another <venueSingular></venueSingular> in different country code or country',
     description: 'Validation - Venue Country checks'
+  }),
+  diffApGpsWithVenueCountry: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Cannot set AP GPS coordinates to a location in a different country code or country than the <venueSingular></venueSingular>',
+    description: 'Validation - AP GPS Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
@@ -393,8 +403,8 @@ export const validationMessages = {
     defaultMessage: 'The Sequence already exists',
     description: 'Validation - The Sequence already exists'
   }),
-  vlanNameInvalid: defineMessage({
-    defaultMessage: 'Enter a valid number between 1 and 4095, except 4087, 4090-4094',
+  vlanInvalidExclReserved: defineMessage({
+    defaultMessage: 'Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094',
     description: 'Validation - validate vlan name'
   }),
   vlanIdInvalid: defineMessage({
@@ -404,6 +414,20 @@ export const validationMessages = {
   vlanNameInvalidWithDefaultVlans: defineMessage({
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'
+  }),
+  invalidVlanRange: defineMessage({
+    defaultMessage: 'Please enter a valid range.',
+    description: 'Validation - validate vlan range'
+  }),
+  invalidVlanRangeRegExp: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Invalid format. Spaces, punctuation marks etc., are not allowed. Please use commas to separate VLANs, or use \'-\' to define the range or a combination of both.',
+    description: 'Validation - validate vlan range format'
+  }),
+  originalVlanNotIncluded: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'The VLAN range above does not include the VLAN selected from the table. Select at least one VLAN from the range defined above and try editing again.',
+    description: 'Validation - validate vlan range does not include the original VLAN'
   }),
   subnetOverlapping: defineMessage({
     defaultMessage: 'The ports have overlapping subnets',
@@ -477,6 +501,15 @@ export const validationMessages = {
   guestPasswordInvalid: defineMessage({
     defaultMessage: 'Guest password is invalid.',
     description: 'Validation - Guest password check'
+  }),
+  DirectoryServerNotSelected: defineMessage({
+    defaultMessage: 'Must select one directory server.',
+    description: 'Validation - Directory server'
+  }),
+  SwitchPortProfilesDuplicateInvalid: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Duplicate MAC OUI and LLDP TLV values are being used. Please ensure that the MAC OUI and LLDP TLV are not duplicated across the profiles.',
+    description: 'Validation - Switch Port Profiles Duplicate Invalid'
   })
 }
 

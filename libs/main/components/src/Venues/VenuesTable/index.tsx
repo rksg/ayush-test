@@ -1,39 +1,86 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
 import { useIntl }                       from 'react-intl'
 
 import {
   Button,
   ColumnType,
+  cssStr,
+  Loader,
   PageHeader,
+  showActionModal,
   Table,
   TableProps,
-  Loader,
-  showActionModal,
-  cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useVenuesTableQuery,
+  getAPStatusDisplayName,
+  useEnforcedStatus,
+  useIsEdgeFeatureReady,
+  useIsEdgeReady
+} from '@acx-ui/rc/components'
+import {
   useDeleteVenueMutation,
+  useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
-  useEnhanceVenueTableQuery
+  useLazyGetVenueEdgeCompatibilitiesV1_1Query,
+  useVenuesTableQuery
 } from '@acx-ui/rc/services'
 import {
-  Venue,
   ApVenueStatusEnum,
+  CommonUrlsInfo,
   TableQuery,
-  usePollingTableQuery
+  usePollingTableQuery,
+  Venue,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum }   from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, hasPermission, hasRoles } from '@acx-ui/user'
-import { transformToCityListOptions }                                        from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import {
+  EdgeScopes,
+  RequestPayload,
+  RolesEnum,
+  SwitchScopes,
+  WifiScopes
+} from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
+
+const incompatibleIconStyle = {
+  position: 'absolute' as const,
+  height: '16px',
+  width: '16px',
+  marginBottom: '-3px',
+  marginLeft: '4px',
+  color: cssStr('--acx-semantics-yellow-50'),
+  borderColor: cssStr('--acx-accents-orange-30')
+}
+
+const statusColorMapping = (status: keyof ApVenueStatusEnum) => {
+  switch (status) {
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return cssStr('--acx-semantics-red-50')
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return cssStr('--acx-semantics-yellow-40')
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return cssStr('--acx-neutrals-50')
+    case ApVenueStatusEnum.OPERATIONAL:
+      return cssStr('--acx-semantics-green-50')
+    default:
+      return cssStr('--acx-neutrals-50')
+  }
+}
 
 function useColumns (
   searchable?: boolean,
@@ -41,6 +88,7 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -61,47 +109,29 @@ function useColumns (
     {
       title: $t({ defaultMessage: 'Address' }),
       width: Infinity,
-      key: 'country',
+      key: 'addressLine',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
+      searchable: searchable,
       filterable: filterables ? filterables['city'] : false,
-      render: function (_, row) {
-        return `${row.country}, ${row.city}`
+      render: function (_, row, __, highlightFn) {
+        return searchable ? highlightFn(row.addressLine as string)
+          : row.addressLine
       }
     },
-    // { // TODO: Waiting for backend support
-    //   key: 'incidents',
-    //   dataIndex: 'incidents',
-    //   title: () => {
-    //     return (
-    //       <>
-    //         { $t({ defaultMessage: 'Incidents' }) }
-    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-    //       </>
-    //     )
-    //   },
-    //   align: 'center'
-    // },
-    // { // TODO: Waiting for backend support
-    //   key: 'health',
-    //   dataIndex: 'health',
-    //   title: () => {
-    //     return (
-    //       <>
-    //         { $t({ defaultMessage: 'Health Score' }) }
-    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-    //       </>
-    //     )
-    //   },
-    //   align: 'center'
-    // },
-    // { // TODO: Waiting for HEALTH feature support
-    //   title: $t({ defaultMessage: 'Services' }),
-    //   key: 'services',
-    //   dataIndex: 'services',
-    //   align: 'center'
-    // },
+    ...(isStatusColumnEnabled ? [{
+      title: $t({ defaultMessage: 'Status' }),
+      key: 'status',
+      dataIndex: 'status',
+      sorter: true,
+      render: function (_: React.ReactNode, row: Venue) {
+        return <Badge
+          color={statusColorMapping(row.status as keyof typeof statusColorMapping)}
+          text={getAPStatusDisplayName(row.status as ApVenueStatusEnum, false)}
+        />
+      }
+    }] : []),
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       align: 'center',
@@ -121,10 +151,11 @@ function useColumns (
               children={count ? count : 0}
             />
             {row?.incompatible && row.incompatible > 0 ?
-              <Tooltip.Info isFilled
+              <Tooltip.Warning isFilled
+                isTriangle
                 title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+                iconStyle={incompatibleIconStyle}
               />:[]
             }
           </>
@@ -192,22 +223,17 @@ function useColumns (
               children={row.edges ? row.edges : 0}
             />
             {row?.incompatibleEdges && row.incompatibleEdges > 0 ?
-              <Tooltip.Info isFilled
+              <Tooltip.Warning isFilled
+                isTriangle
                 title={$t({ defaultMessage: 'Some RUCKUS Edges may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+                iconStyle={incompatibleIconStyle}
               />:[]
             }
           </>
         )
       }
     }
-    // { // TODO: Waiting for TAG feature support
-    //   key: 'tags',
-    //   dataIndex: 'tags',
-    //   title: $t({ defaultMessage: 'Tags' }),
-    //   show: false
-    // }
   ]
 
   return columns.filter(({ key }) =>
@@ -234,9 +260,11 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'latitude',
       'longitude',
       'status',
-      'id'
+      'id',
+      'isEnforced',
+      'addressLine'
     ],
-    searchTargetFields: ['name'],
+    searchTargetFields: ['name', 'addressLine'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
@@ -257,15 +285,23 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
-  const [
-    deleteVenue,
-    { isLoading: isDeleteVenueUpdating }
-  ] = useDeleteVenueMutation()
+  const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+
+  const hasDeletePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission()
 
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
+    rbacOpsIds: [
+      getOpsApi(CommonUrlsInfo.updateVenue),
+      getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+    ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
@@ -273,7 +309,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission(),
+    visible: hasDeletePermission,
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -312,7 +350,12 @@ export const VenueTable = ({ settingsId = 'venues-table',
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]
+          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
+          rbacOpsIds: [
+            getOpsApi(CommonUrlsInfo.updateVenue),
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+          ]
         }) && rowSelection}
       />
     </Loader>
@@ -341,11 +384,18 @@ export function VenuesTable () {
 
   const count = tableQuery?.currentData?.totalCount || 0
 
+
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasAddVenuePermissions = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.addVenue)])
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+      hasCrossVenuesPermission()
+
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission() && [
+        extra={hasAddVenuePermissions && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
@@ -387,20 +437,28 @@ function useGetVenueCityList () {
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
+  const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
 
   const [tableData, setTableData] = useState<Venue[]>()
 
   useEffect(() => {
     const fetchVenueEdgeCompatibilities = async (tableData: Venue[]) => {
-      const res = await getVenueEdgeCompatibilities({
-        payload: {
-          filters: { venueIds: tableData.map(i => i.id) }
-        }
-      }).unwrap()
+      const res = isEdgeCompatibilityEnhancementEnabled
+        ? await getVenueEdgeCompatibilitiesV1_1({
+          payload: {
+            filters: { venueIds: tableData.map(i => i.id) }
+          }
+        }).unwrap()
+        : await getVenueEdgeCompatibilities({
+          payload: {
+            filters: { venueIds: tableData.map(i => i.id) }
+          }
+        }).unwrap()
 
       const result = cloneDeep(tableData) ?? []
-      res?.compatibilities.forEach((item) => {
+      res?.compatibilities?.forEach((item) => {
         const idx = findIndex(tableQuery.data?.data, { id: item.id })
         if (idx !== -1)
           result[idx].incompatibleEdges = item.incompatible ?? 0

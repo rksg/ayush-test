@@ -1,30 +1,42 @@
-import { Col, Form, Row, Space } from 'antd'
-import { sumBy }                 from 'lodash'
+import React from 'react'
 
-import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Col, Divider, Form, Row } from 'antd'
+import { sumBy }                   from 'lodash'
 
-import { FeatureItem } from './FeatureItem'
+import { CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature } from '@acx-ui/rc/utils'
+
+import { FeatureItem }   from './FeatureItem'
+import { StyledWrapper } from './styledComponents'
 
 export type CompatibilityItemProps = {
   deviceType: CompatibilityDeviceEnum,
-  data: ApIncompatibleFeature[],
+  data: IncompatibleFeature[],
   description?: string | React.ReactNode,
   totalDevices?: number,
   featureName?: IncompatibilityFeatures,
+  isCrossDeviceType?: boolean
 }
 
 export const CompatibilityItem = (props: CompatibilityItemProps) => {
   const {
     deviceType,
-    data = [],
+    data,
     description,
     totalDevices = 0,
-    featureName
+    featureName,
+    isCrossDeviceType = false
   } = props
 
-  const getFeatures = (items: ApIncompatibleFeature[]) => {
+  const isConnectedBlock = isCrossDeviceType && deviceType === CompatibilityDeviceEnum.SWITCH
+
+  const getFeatures = (items: IncompatibleFeature[]) => {
     const isMultipleFeatures = items.length > 1
-    return items?.map((itemDetail) => {
+    return items?.reduce((acc: IncompatibleFeature[], cur: IncompatibleFeature) => {
+      if (cur.children) {
+        return [...acc, ...cur.children]
+      }
+      return [...acc, cur]
+    }, []).map((itemDetail) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
 
       return <FeatureItem
@@ -34,6 +46,7 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
         data={itemDetail}
         incompatible={incompatible}
         total={totalDevices}
+        hasBackgroundColor={isConnectedBlock}
       />
     })
   }
@@ -44,9 +57,13 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
         {description && <Form.Item>
           {description}
         </Form.Item>}
-        <Space size='large' direction='vertical'>
+        <StyledWrapper
+          direction='vertical'
+          split={<Divider style={{ margin: isConnectedBlock ? 0 : '10px 0' }} />}
+          size={0}
+        >
           {getFeatures(data)}
-        </Space>
+        </StyledWrapper>
       </Col>
     </Row>
   )

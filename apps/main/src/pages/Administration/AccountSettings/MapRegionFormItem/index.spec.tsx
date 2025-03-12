@@ -20,6 +20,7 @@ import  { MapRegionFormItem } from './'
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
 jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
   get: jest.fn().mockReturnValue('fake-google-maps-key')
 }))
 

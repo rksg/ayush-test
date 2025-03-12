@@ -1,11 +1,12 @@
-
-
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
 import { EdgeSubInterfaceFixtures, SubInterface } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import { render, screen, waitFor, within }        from '@acx-ui/test-utils'
+
+import { defaultCxtData }                                             from '../__tests__/fixtures'
+import { ClusterConfigWizardContext, ClusterConfigWizardContextType } from '../ClusterConfigWizardDataProvider'
 
 import { SubInterfaceTable, SubInterfaceTableProps } from './SubInterfaceTable'
 
@@ -52,6 +53,7 @@ const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 
 describe('SubInterfaceTable', () => {
   const mockProps: SubInterfaceTableProps = {
+    serialNumber: '962604D7DCEEE011ED9715000C2949F53E',
     currentTab: 'tab1',
     ip: '192.168.1.1',
     mac: '00:1A:2B:3C:4D:5E',
@@ -60,6 +62,26 @@ describe('SubInterfaceTable', () => {
       '962604D7DCEEE011ED9715000C2949F53E',
       '4f40f9cd-54fe-49bc-aade-bbc25ee2b6a7'
     ]
+  }
+
+  const context: ClusterConfigWizardContextType = {
+    ...defaultCxtData,
+    clusterNetworkSettings: {
+      portSettings: [],
+      lagSettings: [],
+      virtualIpSettings: [
+        {
+          virtualIp: '192.168.1.3',
+          timeoutSeconds: 10,
+          ports: [
+            {
+              serialNumber: '962604D7DCEEE011ED9715000C2949F53E',
+              portName: 'port3.1024'
+            }
+          ]
+        }
+      ]
+    }
   }
 
   beforeEach(() => {
@@ -142,6 +164,39 @@ describe('SubInterfaceTable', () => {
     expect(mockedSetFieldValue).toHaveBeenCalledWith(mockProps.namePath, [])
   })
 
+  it('Sub-interface as virtual ip interface cannot be deleted', async () => {
+    const mockSubInterface = {
+      ...mockEdgeSubInterfaces.content[3],
+      vlan: 1024,
+      interfaceName: 'port3.1024'
+    } as SubInterface
+    mockedGetFieldValue.mockReturnValue([mockSubInterface])
+
+    renderTable(mockProps)
+
+    const user = userEvent.setup()
+    const rows = await screen.findAllByRole('row')
+    await user.click(within(rows[1]).getByRole('radio'))
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeDisabled()
+  })
+
+  it('Add sub-interface button should be disabled when reach maximum limit', async () => {
+    const mockSubInterfaces = Array.from({ length: 16 }, (_, i) => ({
+      ...mockEdgeSubInterfaces.content[3],
+      vlan: i + 1,
+      interfaceName: `port3.${i + 1}`,
+      id: 'random-id-' + i
+    }))
+    mockedGetFieldValue.mockReturnValue(mockSubInterfaces)
+
+    renderTable(mockProps)
+
+    const addButton = await screen.findByRole('button', { name: 'Add Sub-interface' })
+    expect(addButton).toBeDisabled()
+  })
+
   it('should have edit dialog show up', async () => {
     const mockSubInterface = mockEdgeSubInterfaces.content[4] as SubInterface
     mockedGetFieldValue.mockReturnValue([mockSubInterface])
@@ -167,9 +222,11 @@ describe('SubInterfaceTable', () => {
   const renderTable = (props: SubInterfaceTableProps) => {
     return render(
       <Provider>
-        <Form>
-          <SubInterfaceTable {...props} />
-        </Form>
+        <ClusterConfigWizardContext.Provider value={context}>
+          <Form>
+            <SubInterfaceTable {...props} />
+          </Form>
+        </ClusterConfigWizardContext.Provider>
       </Provider>
     )
   }

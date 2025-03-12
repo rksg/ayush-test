@@ -29,6 +29,7 @@ export type SwitchDetails = {
 export type ImpactedClients = {
   switchName: string,
   switchId: string,
+  switchSerial?: string,
   deviceName: string,
   deviceMac: string,
   devicePort: string,
@@ -68,6 +69,7 @@ export interface RequestPayload {
   type: WidgetType
   switchIds?: string[]
   n?: number
+  isMlisaVersion4110?: boolean // TODO: remove this once this version is deployed
 }
 
 export const topImpactedSwitchesLimit = 10

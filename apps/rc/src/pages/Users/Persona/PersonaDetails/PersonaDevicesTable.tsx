@@ -9,8 +9,7 @@ import { SuccessSolid }                                                   from '
 import {
   OSIconContainer,
   PersonaDeviceItem,
-  PersonaDevicesImportDialog,
-  usePersonaAsyncHeaders
+  PersonaDevicesImportDialog
 } from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
@@ -26,13 +25,14 @@ import {
   getOsTypeIcon,
   Persona,
   PersonaDevice,
-  PersonaErrorResponse,
+  PersonaErrorResponse, PersonaUrls,
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }                            from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
-import { IdentityDeviceContext } from './index'
+import { IdentityDeviceContext } from './LegacyPersonaDetails'
+
 
 
 const defaultClientPayload = {
@@ -58,7 +58,6 @@ export function PersonaDevicesTable (props: {
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
   const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   const { setDeviceCount } = useContext(IdentityDeviceContext)
   const [getClientList] = useLazyGetClientsQuery()
@@ -73,7 +72,7 @@ export function PersonaDevicesTable (props: {
 
   // ClientMac format should be: 11:22:33:44:55:66
   const toClientMacFormat = (macAddress: string) => {
-    return macAddress.replaceAll('-', ':')
+    return macAddress.replaceAll('-', ':').toLowerCase()
   }
 
   useEffect(() => {
@@ -92,18 +91,19 @@ export function PersonaDevicesTable (props: {
   useEffect(() => {
     if (clientMac.size === 0) return
 
+    setDeviceCount(dpskDevices.length + macDevices.length)
+
     getClientList({
       params: { tenantId },
       payload: {
         ...defaultClientPayload,
-        filters: { macAddress: [...clientMac] }
+        filters: { macAddress: [...clientMac] } // should be lowered case
       }
     })
       .then(result => {
         if (!result.data?.data) return
         setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
         setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
-        setDeviceCount(dpskDevices.length + macDevices.length)
       })
   }, [clientMac])
 
@@ -188,8 +188,7 @@ export function PersonaDevicesTable (props: {
   const deleteDevices = (devices: PersonaDevice[]) => {
     devices.forEach(device => {
       deletePersonaDevicesMutation({
-        params: { groupId: persona?.groupId, id: persona?.id, macAddress: device.macAddress },
-        customHeaders
+        params: { groupId: persona?.groupId, id: persona?.id, macAddress: device.macAddress }
       }).unwrap()
         .then()
         .catch(error => {
@@ -260,6 +259,7 @@ export function PersonaDevicesTable (props: {
       ? [
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.deletePersonaDevices)],
           onClick: (selectedItems, clearSelection) => {
 
             showActionModal({
@@ -286,6 +286,7 @@ export function PersonaDevicesTable (props: {
     hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Device' }),
+        rbacOpsIds: [getOpsApi(PersonaUrls.addPersonaDevices)],
         onClick: () => {
           setModelVisible(true)
         },
@@ -299,8 +300,7 @@ export function PersonaDevicesTable (props: {
   const handleModalSubmit = (data: Partial<PersonaDeviceItem>[]) => {
     addPersonaDevicesMutation({
       params: { groupId: persona?.groupId, id: persona?.id },
-      payload: data,
-      customHeaders
+      payload: data
     }).unwrap()
       .then(() => handleModalCancel())
       .catch(error => {
@@ -349,7 +349,7 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasCrossVenuesPermission({ needGlobalPermission: true }) ? {
+        rowSelection={filterByAccess(rowActions).length !== 0 ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page

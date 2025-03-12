@@ -30,12 +30,16 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.EDGE_MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy for RUCKUS Edge' }),
+  [ServiceType.EDGE_TNM_SERVICE]: defineMessage(
+    { defaultMessage: 'Thirdparty Network Management' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
   [ServiceType.PIN]: defineMessage(
     { defaultMessage: 'Personal Identity Network' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
-  [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' })
+  [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' }),
+  [ServiceType.EDGE_OLT]: defineMessage(
+    { defaultMessage: 'NOKIA GPON Services' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -57,13 +61,17 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' }),
   // eslint-disable-next-line max-len
   [ServiceType.EDGE_MDNS_PROXY]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' }),
+  [ServiceType.EDGE_TNM_SERVICE]: defineMessage(
+    { defaultMessage: 'Manages and monitors thirdparty networks via Zabbix' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.PIN]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Templates of Personal Identity Network Auth Page for Switch' }),
   [ServiceType.RESIDENT_PORTAL]: defineMessage(
-    { defaultMessage: 'Resident portal for property management' })
+    { defaultMessage: 'Resident portal for property management' }),
+  [ServiceType.EDGE_OLT]: defineMessage(
+    { defaultMessage: 'Nokia OLT-ONT network management' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),

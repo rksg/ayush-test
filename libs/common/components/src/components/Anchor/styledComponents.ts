@@ -54,6 +54,10 @@ export const AnchorLayoutSidebar = styled(Col)<{ $offsetTop?: number }>`
   > div > [aria-hidden] + .ant-affix {
     position: fixed;
     top: ${props => props.$offsetTop || 0}px !important;
+    @media screen and (max-height: 560px) {
+      top: ${props => props.$offsetTop ? props.$offsetTop - 60 : 0}px !important;
+      z-index: 4;
+    }
   }
   > div .ant-anchor-wrapper .ant-anchor-ink-ball {
     top: 13.5px;

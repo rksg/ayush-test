@@ -6,13 +6,17 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: './test-results', outputName: 'msp-components.xml' }]
+  ],
   coverageDirectory: '../../../../coverage/libs/rc/msp/components',
   coverageThreshold: {
     global: {
-      statements: 67,
-      branches: 51,
-      functions: 60,
-      lines: 68
+      statements: 77,
+      branches: 56,
+      functions: 71,
+      lines: 77
     }
   }
 }

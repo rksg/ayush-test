@@ -31,7 +31,21 @@ export enum PolicyType {
   ETHERNET_PORT_PROFILE = 'Ethernet Port Profile',
   WORKFLOW = 'Workflow',
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
-  SOFTGRE = 'SoftGRE'
+  FLEX_AUTH = 'Authentication',
+  SOFTGRE = 'SoftGRE',
+  DIRECTORY_SERVER = 'Directory Server',
+  PORT_PROFILE = 'Port Profile',
+  SWITCH_PORT_PROFILE = 'Switch Port Profile',
+  IPSEC = 'IPsec',
+  SAML_IDP = 'SAML IDP'
+}
+
+export enum PolicyOperation {
+  CREATE,
+  EDIT,
+  DELETE,
+  DETAIL,
+  LIST
 }
 
 export enum PolicyTechnology {
@@ -76,7 +90,13 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway' }),
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
-  [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' })
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Define 802.1x and MAC-AUTH settings for switch clients. These profiles can be applied at the switch port(s) level.' }),
+  [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
+  [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' }),
+  [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
+  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
+  [PolicyType.IPSEC]: defineMessage({ defaultMessage: 'Secures IP communications through encryption and authentication' }),
+  [PolicyType.SAML_IDP]: defineMessage({ defaultMessage: 'Provides Identity Provider (IdP) identification and authentication profiles for Hotspot 2.0 and Captive Portal SAML Network Services' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {
@@ -84,5 +104,19 @@ export const downloadCertExtension: Record<CertificateAcceptType, String> = {
   [CertificateAcceptType.DER]: 'der',
   [CertificateAcceptType.PKCS7]: 'p7b',
   [CertificateAcceptType.PKCS8]: 'key',
-  [CertificateAcceptType.PKCS12]: 'p12'
+  [CertificateAcceptType.PKCS12]: 'p12',
+  [CertificateAcceptType.PKCS1]: 'key'
+}
+
+export interface ProfileLanVenueActivations {
+  venueId: string
+  apModel: string
+  apSerialNumbers?: string[],
+  portId: number
+}
+
+export interface ProfileLanApActivations {
+  venueId: string
+  apSerialNumber: string,
+  portId: number
 }

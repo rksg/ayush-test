@@ -2025,7 +2025,7 @@ export const mockPolicySetList = {
 
 export const mockAAAPolicyListResponse = {
   page: 1,
-  totalCount: 2,
+  totalCount: 3,
   data: [
     {
       name: 'test1',
@@ -2039,6 +2039,20 @@ export const mockAAAPolicyListResponse = {
       primary: '2.3.3.4:101',
       secondary: '2.3.3.4:1187',
       id: '2'
+    },
+    {
+      id: '3',
+      name: 'RadSec AAA',
+      primary: {
+        ip: '123.123.123.2',
+        port: 2083
+      },
+      radSecOptions: {
+        tlsEnabled: true,
+        cnSanIdentity: 'cnSan',
+        ocspUrl: 'aaa.com'
+      },
+      type: 'AUTHENTICATION'
     }
   ]
 }
@@ -2063,10 +2077,27 @@ export const mockAAAPolicyTemplateListResponse = {
   ]
 }
 
+export const mockCaListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      id: '1',
+      name: 'CA-1',
+      status: ['VALID']
+    },
+    {
+      id: '2',
+      name: 'CA-2',
+      status: ['VALID']
+    }
+  ]
+}
+
 export const mockAAAPolicyTemplateResponse = mockAAAPolicyTemplateListResponse.data[1]
 
 export const mockAAAPolicyNewCreateResponse = {
-  id: '3',
+  id: '4',
   name: 'test 3',
   primary: {
     ip: '123.123.123.1',
@@ -2077,6 +2108,21 @@ export const mockAAAPolicyNewCreateResponse = {
     ip: '123.123.123.2',
     port: 1187,
     sharedSecret: '12345678'
+  },
+  type: 'AUTHENTICATION'
+}
+
+export const mockRadSecAAAPolicyNewCreateResponse = {
+  id: '9',
+  name: 'test 3',
+  primary: {
+    ip: '123.123.123.1',
+    port: 2083
+  },
+  radSecOptions: {
+    tlsEnabled: true,
+    cnSanIdentity: 'cnSan',
+    ocspUrl: 'aaa.com'
   },
   type: 'AUTHENTICATION'
 }
@@ -2502,6 +2548,27 @@ export const mock_SelfSignIn_SMS_Off = {
   }
 }
 
+export const mock_SelfSignIn_WhatsApp_Error = {
+  guestPortal: {
+    redirectUrl: '123.com',
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: false,
+    enableWhatsapp: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    socialDomains: ['http://123.com'],
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
+
 export const mockSoftGreTable = {
   totalCount: 2,
   page: 1,
@@ -2573,4 +2640,240 @@ export const mockSoftGreTable = {
       ]
     }
   ] as SoftGreViewData[]
+}
+
+export const mockedDirectoryServerProfiles = {
+  fields: [
+    'wifiNetworkIds',
+    'port',
+    'domainName',
+    'name',
+    'host',
+    'id',
+    'type'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      id: '532b91ca9330441bb90d50628911a10e',
+      name: 'ldap-profile1',
+      host: '0.tcp.jp.ngrok.io',
+      port: 13984,
+      type: 'LDAP',
+      domainName: 'dc=test,dc=tw',
+      wifiNetworkIds: [
+        '5c342542bb824a8b981a9bb041a8a2da'
+      ]
+    },
+    {
+      id: '58d667552aac4fc3bc235cf39bfbe889',
+      name: 'ldap-profile3',
+      host: '1.169.93.183',
+      port: 389,
+      type: 'LDAP',
+      domainName: 'dc=tdcad,dc=com',
+      wifiNetworkIds: []
+    },
+    {
+      id: '49d2173ae5d943daa454af8de40fd4d9',
+      name: 'ldap-profile4',
+      host: '1.169.93.183',
+      port: 389,
+      type: 'LDAP',
+      domainName: 'dc=tdcad,dc=com',
+      wifiNetworkIds: [
+        '5c342542bb824a8b981a9bb041a8a2da'
+      ]
+    },
+    {
+      id: 'a5ac9a7a3be54dba9c8741c67d1c41fa',
+      name: 'Online LDAP Test Server',
+      host: 'ldap.forumsys.com',
+      port: 389,
+      type: 'LDAP',
+      domainName: 'ou=mathematicians,dc=example,dc=com',
+      wifiNetworkIds: []
+    },
+    {
+      id: '3596facbfd884b6da9ab40670c8ee397',
+      name: 'Online LDAP Test Server2',
+      host: 'ldap.forumsys.com',
+      port: 389,
+      type: 'AD',
+      domainName: 'ou=mathematicians,dc=example,dc=com',
+      wifiNetworkIds: [
+        'adfdc7ef63e94c8da16e379e7e443fd1'
+      ]
+    }
+  ]
+}
+
+export const mockedMacRegistrationPools = {
+  content: [
+    {
+      id: '47f3d966-4204-455a-aa23-749cec8e0484',
+      name: '0823-MAC pool',
+      autoCleanup: true,
+      expirationType: 'WEEKS_AFTER_TIME',
+      expirationOffset: 5,
+      expirationEnabled: true,
+      registrationCount: 1,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-08-23T04:19:26Z',
+      policySetId: 'b3fb4ed7-b793-42d3-9669-9f7a90735eac',
+      networkIds: [
+        'eef68a729f2a455cb03b575fcbe80ca7',
+        '02db26b004f34df0bc08217a754018d2'
+      ],
+      isReferenced: false,
+      networkCount: 2,
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://api.dev.ruckus.cloud/macRegistrationPools/47f3d966-4204-455a-aa23-749cec8e0484'
+        }
+      ]
+    }
+  ],
+  pageable: {
+    sort: {
+      empty: true,
+      unsorted: true,
+      sorted: false
+    },
+    offset: 0,
+    pageNumber: 0,
+    pageSize: 20,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  size: 20,
+  number: 0,
+  sort: {
+    empty: true,
+    unsorted: true,
+    sorted: false
+  },
+  first: true,
+  numberOfElements: 1,
+  empty: false
+}
+
+export const mockIdentityGroupQuery = {
+  totalElements: 4,
+  totalPages: 1,
+  size: 2000,
+  content: [
+    {
+      id: 'd613141c-780f-4296-8795-4289489a73a7',
+      name: 'DPSK_auto-generated-from-dpsk_d6131',
+      description: null,
+      dpskPoolId: '3afaeffc909e468691045ac499f02504',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-01-13T10:24:18.603153Z',
+      updatedAt: '2025-01-28T05:17:50.486872Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/d613141c-780f-4296-8795-4289489a73a7'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 1
+    },
+    {
+      id: '68c6f030-2aa9-4911-b116-7c50cf17f08c',
+      name: 'Identity_Group_68c6f030-2aa9-4911-b116-7c50cf17f08c',
+      description: null,
+      dpskPoolId: null,
+      macRegistrationPoolId: '752bbef5-a645-4cb0-861b-545843cfa6f9',
+      propertyId: null,
+      createdAt: '2025-01-09T06:10:38.81519Z',
+      updatedAt: '2025-01-20T13:19:54.531194Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/68c6f030-2aa9-4911-b116-7c50cf17f08c'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 0
+    },
+    {
+      id: '0d973a0e-15e1-46cb-884a-d3d04bdc8db8',
+      name: 'IG-1',
+      description: null,
+      dpskPoolId: '317a063e01c44467871b9a28a42bcdd6',
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-02-26T16:47:45.081437Z',
+      updatedAt: '2025-02-26T17:03:18.620709Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/0d973a0e-15e1-46cb-884a-d3d04bdc8db8'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 11
+    },
+    {
+      id: '4e548bc7-e473-49eb-98c8-617de8ca516a',
+      name: 'IG-2',
+      description: null,
+      dpskPoolId: null,
+      macRegistrationPoolId: null,
+      propertyId: null,
+      createdAt: '2025-02-26T16:52:58.297587Z',
+      updatedAt: '2025-02-26T16:52:58.297587Z',
+      certificateTemplateId: null,
+      policySetId: null,
+      links: [
+        {
+          rel: 'self',
+          href: 'https://api.dev.ruckus.cloud/identityGroups/4e548bc7-e473-49eb-98c8-617de8ca516a'
+        }
+      ],
+      personalIdentityNetworkId: null,
+      identities: null,
+      identityCount: 5
+    }
+  ],
+  number: 0,
+  sort: {
+    empty: false,
+    unsorted: false,
+    sorted: true
+  },
+  last: true,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 2000,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: true
+    },
+    offset: 0,
+    unpaged: false,
+    paged: true
+  },
+  first: true,
+  numberOfElements: 4,
+  empty: false
 }

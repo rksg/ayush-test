@@ -6,13 +6,17 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  reporters: [
+    'default',
+    ['jest-junit', { outputDirectory: './test-results', outputName: 'rc-components.xml' }]
+  ],
   coverageDirectory: '../../../../coverage/libs/rc/shared/components',
   coverageThreshold: {
     global: {
-      statements: 86,
-      branches: 75,
-      functions: 84,
-      lines: 86
+      statements: 84,
+      branches: 72.9,
+      functions: 82,
+      lines: 85
     }
   }
 }

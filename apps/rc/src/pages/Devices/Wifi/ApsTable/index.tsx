@@ -11,11 +11,14 @@ import { Features, useIsSplitOn }                                               
 import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
   useNewApListQuery,
-  useApListQuery
+  useApListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import { WifiScopes }           from '@acx-ui/types'
+import { usePollingTableQuery, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { WifiScopes }                             from '@acx-ui/types'
+import { hasPermission }                          from '@acx-ui/user'
+import { getOpsApi }                              from '@acx-ui/utils'
 
 const apsCountQueryPayload = {
   fields: ['serialNumber', 'name'],
@@ -50,9 +53,26 @@ const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] =
 
 export default function useApsTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const apTableRef = useRef<ApTableRefType>(null)
   const [apsCount, setApsCount] = useApsCount()
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+
+  const { venueFilterOptions } = useVenuesListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+      })
+    })
 
   const apgroupFilterOptions = useApGroupsFilterOpts()
 
@@ -64,16 +84,20 @@ export default function useApsTable () {
 
   const addMenu = <Menu
     onClick={handleMenuClick}
-    items={[{
-      key: 'ap',
-      label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
-    }, {
-      key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import APs' })
-    }, {
-      key: 'ap-group',
-      label: <TenantLink to='devices/apgroups/add'>
-        {$t({ defaultMessage: 'AP Group' })}</TenantLink> }
+    items={[
+      ...( hasPermission({ scopes: [WifiScopes.CREATE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addAp)] }) ? [{
+          key: 'ap',
+          label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
+        }, {
+          key: 'import-from-file',
+          label: $t({ defaultMessage: 'Import APs' })
+        }]: [] ),
+      ...( hasPermission({ scopes: [WifiScopes.CREATE],
+        rbacOpsIds: [getOpsApi(WifiRbacUrlsInfo.addApGroup)] }) ? [{
+          key: 'ap-group',
+          label: <TenantLink to='devices/apgroups/add'>
+            {$t({ defaultMessage: 'AP Group' })}</TenantLink> }] : [] )
     ]}
   />
 
@@ -85,6 +109,7 @@ export default function useApsTable () {
   const extra = [
     <Dropdown
       scopeKey={[WifiScopes.CREATE]}
+      rbacOpsIds={[getOpsApi(WifiRbacUrlsInfo.addAp), getOpsApi(WifiRbacUrlsInfo.addApGroup)]}
       overlay={addMenu}>{() =>
         <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
       }
@@ -96,6 +121,7 @@ export default function useApsTable () {
       <ApTable ref={apTableRef}
         searchable={true}
         filterables={{
+          venueId: venueFilterOptions,
           deviceGroupId: apgroupFilterOptions
         }}
         rowSelection={{

@@ -19,10 +19,14 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
   const [file, setFile] = useState<File>({} as File)
   const { $t } = getIntl()
 
-  const validateFile = function (_fileValidation: FileValidation) {
-    form.setFieldValue('imageName', _fileValidation.file.name)
-    form.validateFields(['imageName'])
-    setFile(_fileValidation.file)
+  const validateFile = function (_fileValidation: FileValidation, file?: File) {
+    if (file) {
+      setFile(file)
+    } else {
+      form.setFieldValue('imageName', _fileValidation.file.name)
+      form.validateFields(['imageName'])
+      setFile(_fileValidation.file)
+    }
   }
 
   return (
@@ -43,7 +47,7 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
         rules={[
           { type: 'string', required: true },
           { min: 2 },
-          { max: 32 },
+          { max: 64 },
           { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}>
         <Input />
@@ -77,9 +81,9 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
           { required: true, message: $t({ defaultMessage: 'This field is required' }) }
         ]}
         extra={<>
-          {$t({ defaultMessage: 'Max. image size: 20 MB' })}
+          {$t({ defaultMessage: 'Max. file size: 20 MB' })}
           <br />
-          {$t({ defaultMessage: 'Supported formats: PNG, JPEG, GIF, SVG' })}
+          {$t({ defaultMessage: 'Supported formats: PNG, JPEG, GIF, SVG, PDF' })}
         </>}
       >
         <FloorplanUpload

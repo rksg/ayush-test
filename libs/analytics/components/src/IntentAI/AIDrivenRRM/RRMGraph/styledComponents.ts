@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import { Space } from 'antd'
+import styled    from 'styled-components'
 
 import { Button }            from '@acx-ui/components'
 import { ArrowChevronRight } from '@acx-ui/icons'
@@ -42,6 +43,11 @@ export const GraphTitle = styled.div`
   font-size: var(--acx-subtitle-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   font-weight: var(--acx-subtitle-4-font-weight);
+  background-color: var(--acx-primary-white);
+  width: fit-content;
+  height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const GraphSubTitle = styled.div`
@@ -49,6 +55,11 @@ export const GraphSubTitle = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight);
+  background-color: var(--acx-primary-white);
+  width: fit-content;
+  height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const CrrmArrow = styled.div`
@@ -97,11 +108,12 @@ export const LegendSquare = styled.span<{ $color: string }>`
 `
 
 export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link' })`
-  position: absolute;
-  bottom: 12px;
-  right: 16px;
-
   :hover {
     text-decoration: underline;
   }
+`
+
+export const GraphFooterWrapper = styled(Space)`
+  justify-content: space-between;
+  align-items: flex-start;
 `

@@ -6,6 +6,7 @@ import { cloneDeep }         from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { Drawer, Select }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { IsNetworkSupport6g, Network, RadioTypeEnum, VlanType } from '@acx-ui/rc/utils'
 
 import { getCurrentVenue } from '../../ApGroupNetworkTable'
@@ -78,14 +79,15 @@ const radioTypeEnumToString = (radioType: RadioTypeEnum) => {
   return radioType.replace(/-/g, ' ') //FIXME: useIntl
 }
 
-const IsSupport6g = (editData: Network) => {
+const IsSupport6g = (editData: Network, options?: Record<string, boolean>) => {
   const network = editData?.deepNetwork
-  return IsNetworkSupport6g(network)
+  return IsNetworkSupport6g(network, options)
 }
 
 // eslint-disable-next-line max-len
 export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Network, oldData: Network) => void }) {
   const { $t } = useIntl()
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
 
   const { venueId, apGroupId,
     drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupVlanRadioContext)
@@ -107,7 +109,7 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
       const data = cloneDeep(editData)
       const initApGroupData = getApGroupData(data, venueId, apGroupId)
       setEditingAgGroup(initApGroupData)
-      setIsSupport6G(IsSupport6g(data))
+      setIsSupport6G(IsSupport6g(data, { isSupport6gOWETransition }))
       form.setFieldsValue({
         ...initApGroupData
       })

@@ -26,5 +26,8 @@ export const MessageMapping = {
   delete_sms_provider_msg: defineMessage({ defaultMessage: 'If you opt to remove the SMS provider, your account will no longer support Captive Portal Self Sign-In with SMS one time passcode.' }),
   received_invalid_twilios_number: defineMessage({ defaultMessage: 'We are not able to retrieve phone numbers from Twilio - please check the entered account SID and auth token' }),
   received_invalid_twilios_service: defineMessage({ defaultMessage: 'We are not able to retrieve messaging services from Twilio - please check the entered account SID and auth token' }),
-  configure_a_server_certificate: defineMessage({ defaultMessage: 'Use a server certificate to enable encrypted SAML responses.  If a SAML response{br}from IDP is already encrypted, the selected server certificate will be used.' })
+  configure_a_server_certificate: defineMessage({ defaultMessage: 'Use a server certificate to enable encrypted SAML responses.  If a SAML response{br}from IDP is already encrypted, the selected server certificate will be used.' }),
+  enable_r1_early_access_description: defineMessage({ defaultMessage: 'This option enables current and future early access features for this account across all <venuePlural></venuePlural>, networks, and users. When {br} disabled, any configuration related to early access features will remain available until deleted. You may opt to remove features.' }),
+  enable_r1_early_access_disable_description: defineMessage({ defaultMessage: 'Please note that if you decide to disable early access features, your current configurations will be retained. However, you won\'t be able to modify them until you re-enable early access features.' }),
+  enable_r1_early_access_terms_condition_drawer_footer_msg: defineMessage({ defaultMessage: 'By clicking “Enable Early Access”, you agree to the RUCKUS One Early Access {tc}.' })
 }

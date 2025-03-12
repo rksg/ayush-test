@@ -6,7 +6,8 @@ export enum CompatibilityType {
 
 export enum CompatibilityDeviceEnum {
   AP = 'Ap',
-  EDGE = 'Edge'
+  EDGE = 'Edge',
+  SWITCH = 'Switch'
 }
 
 export enum IncompatibilityFeatures {
@@ -18,8 +19,28 @@ export enum IncompatibilityFeatures {
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
+  NAT_TRAVERSAL = 'NAT Traversal',
+  HA_AA = 'HA-AA',
+  HQOS = 'HQoS',
+  DHCP = 'DHCP',  // edge DHCP
+  PIN = 'PIN',
+  PIN_DS = 'PIN_DS',
+  PIN_AS = 'PIN_AS',
+  EDGE_MDNS_PROXY = 'MDNS_PROXY', // edge mDNS
+  ARP_TERMINATION = 'ARP_TERMINATION'
+}
+
+export enum IncompatibilityFeatureGroups {
+  TUNNEL_PROFILE = 'TUNNEL_PROFILE'
+}
+
+export enum EdgeCompatibilityFeatureEnum {
+  SD_LAN = 'SD-LAN',
+  TUNNEL_PROFILE = 'Tunnel Profile',
+  NAT_TRAVERSAL = 'NAT Traversal',
   HA_AA = 'HA-AA',
   HQOS = 'HQoS',
   DHCP = 'DHCP',
-  PIN = 'PIN'
+  MDNS_PROXY = 'MDNS_PROXY',
+  ARP_TERMINATION = 'ARP_TERMINATION'
 }

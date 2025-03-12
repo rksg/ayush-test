@@ -19,6 +19,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
 import {
   ClientInfo,
+  ClientUrlsInfo,
   getClientHealthClass,
   getOsTypeIcon,
   Guest,
@@ -29,7 +30,7 @@ import {
 import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
 import { hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                                     from '@acx-ui/utils'
+import { getOpsApi, noDataDisplay }                          from '@acx-ui/utils'
 
 import {
   renderAllowedNetwork,
@@ -51,7 +52,8 @@ interface GuestDetailsDrawerProps {
 export const isEnabledGeneratePassword = (guestDetail:Guest) => {
   // self-sign in & host approval should to use forget password
   const isValidType = guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
-  guestDetail.guestType !== GuestTypesEnum.HOST_GUEST
+  guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
+  guestDetail.guestType !== GuestTypesEnum.DIRECTORY
   const isOnline = guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1
   const isOffline = guestDetail.guestStatus === GuestStatusEnum.OFFLINE &&
   guestDetail.wifiNetworkId
@@ -239,6 +241,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label: $t({ defaultMessage: 'Generate New Password' }),
         key: 'generatePassword',
         scopeKey: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(ClientUrlsInfo.generateGuestPassword)],
         roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Download Information' }),
@@ -250,19 +253,23 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label: $t({ defaultMessage: 'Disable Guest' }),
         key: 'disableGuest',
         scopeKey: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(ClientUrlsInfo.disableGuests)],
         roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Enable Guest' }),
         key: 'enableGuest',
         scopeKey: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(ClientUrlsInfo.enableGuests)],
         roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Delete Guest' }),
         key: 'deleteGuest',
         scopeKey: [WifiScopes.DELETE],
+        rbacOpsIds: [getOpsApi(ClientUrlsInfo.deleteGuest)],
         roles: operationRoles
       }].filter((item) => {
-        if (!hasPermission({ scopes: item.scopeKey, roles: item.roles })) {
+        const { scopeKey: scopes, rbacOpsIds, roles } = item
+        if (!hasPermission({ scopes, rbacOpsIds, roles })) {
           return false
         }
         if (item.key === 'enableGuest' &&

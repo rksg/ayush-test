@@ -32,6 +32,10 @@ export function SwitchConfigHistoryTable (props: {
   const { tenantId, venueId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchNtpServerEnabled = useIsSplitOn(Features.SWITCH_NTP_SERVER)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchDisabledRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
+
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
@@ -103,6 +107,15 @@ export function SwitchConfigHistoryTable (props: {
     let configTypeOptions = Object.values(ConfigTypeEnum)
     if (!isSwitchNtpServerEnabled) {
       configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.NTP_SERVER)
+    }
+    if (!isSwitchFlexAuthEnabled) {
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.AUTHENTICATION)
+    }
+    if(!isSwitchPortProfileEnabled){
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.PORT_PROFILE)
+    }
+    if(!isSwitchDisabledRecoveryEnabled){
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.PORT_DISABLE_RECOVERY)
     }
     return configTypeOptions.map(ctype=>({
       key: ctype, value: transformConfigType(ctype)
@@ -206,7 +219,7 @@ export function SwitchConfigHistoryTable (props: {
     <Loader states={[tableQuery]}>
       <Table
         settingsId={settingsId}
-        rowKey={(record) => record.transactionId + record.configType}
+        rowKey={(record) => record.transactionId + '_' + record.configType + '_' + record.rawStartTime}
         columns={getCols()}
         dataSource={tableQuery.data?.data ?? []}
         pagination={tableQuery.pagination}

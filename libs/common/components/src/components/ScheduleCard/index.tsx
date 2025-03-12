@@ -4,8 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import {
   useSelectionContainer
 } from '@air/react-drag-to-select'
-import { LazyQueryTrigger } from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { QueryDefinition }  from '@reduxjs/toolkit/query'
+import { TypedLazyQueryTrigger } from '@reduxjs/toolkit/query/react'
 import {
   ModalProps as AntdModalProps,
   Checkbox,
@@ -39,10 +38,6 @@ import {
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType }   from 'antd/es/checkbox/Group'
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
-
 interface ScheduleCardProps extends AntdModalProps {
   scheduler?: Scheduler
   type: 'ALWAYS_ON' | 'ALWAYS_OFF' | 'CUSTOM' | string
@@ -52,7 +47,7 @@ interface ScheduleCardProps extends AntdModalProps {
     name?: string
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lazyQuery?: LazyQueryTrigger<DefaultQueryDefinition<any>>
+  lazyQuery?: TypedLazyQueryTrigger<any, any, any>
   localTimeZone?: boolean
   form: FormInstance
   fieldNamePath: string[]

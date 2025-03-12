@@ -34,6 +34,11 @@ export {
 export { DefaultVlanDrawer } from './DefaultVlanDrawer'
 export { DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
+export {
+  DhcpOption82Settings,
+  DhcpOption82SettingsFormField,
+  DhcpOption82SettingsDrawer
+} from './DhcpOption82Settings'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
 export { useExportCsv as useEdgeExportCsv } from './EdgesTable/useExportCsv'
@@ -71,6 +76,7 @@ export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
 export { MapWidgetV2 } from './MapWidget'
+export { getAPStatusDisplayName } from './MapWidget/VenuesMap/helper'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
@@ -107,6 +113,7 @@ export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
+export { NewAlarmsDrawer } from './AlarmsDrawer/NewAlarmDrawer'
 export { ApSelector } from './ApSelector'
 export { ApFloorplan } from './ApFloorplan'
 export { ApSnmpMibsDownloadInfo } from './ApSnmpMibsDownloadInfo'
@@ -148,6 +155,7 @@ export {
   transformEdgeHaSettingsToFormType,
   transformEdgeHaSettingsFormToApiPayload
 } from './EdgeFormItem/EdgeHaSettingsForm/utils'
+export { EdgeClusterFirmwareInfo }  from './EdgeFormItem/EdgeClusterFirmwareInfo'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
@@ -184,12 +192,26 @@ export {
   useEdgeSdLanDetailsCompatibilitiesData,
   transformEdgeCompatibilitiesWithFeatureName,
   useEdgePinDetailsCompatibilitiesData,
-  useEdgePinsCompatibilityData
+  useEdgePinsCompatibilityData,
+  useEdgeMdnsDetailsCompatibilitiesData,
+  useEdgeMdnssCompatibilityData,
+  useEdgeHqosDetailsCompatibilitiesData,
+  useEdgeHqosCompatibilityData,
+  useEdgeDhcpDetailsCompatibilitiesData,
+  useEdgeDhcpCompatibilityData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
+export * from './EdgeMdns/EdgeMdnsProxyForm'
+export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsProxyForm'
+export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
-export { PropertyManagementForm } from './PropertyManagementForm'
+export { VenuePropertyManagementForm, PropertyManagementForm  } from './PropertyManagementForm'
+export {
+  useRegisterMessageTemplates,
+  toResidentPortalPayload,
+  getInitialPropertyFormValues
+} from './PropertyManagementForm/utils'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
 export { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSettingForm'
 export { RadiusAttributeForm } from './RadiusAttributeForm'
@@ -234,6 +256,7 @@ export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflic
 export {
   ApCompatibilityType,
   InCompatibilityFeatures,
+  retrievedApCompatibilitiesOptions,
   retrievedCompatibilitiesOptions,
   ApCompatibilityFeature,
   ApCompatibilityToolTip,
@@ -243,8 +266,12 @@ export {
   EdgeCompatibilityDrawer,
   EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
+  CompatibilityWarningTriangleIcon,
   EdgeDetailCompatibilityDrawer,
-  CompatibleAlertBanner
+  CompatibleAlertBanner,
+  EdgeDetailCompatibilityBanner,
+  EdgeTableCompatibilityWarningTooltip,
+  mergeFilterApCompatibilitiesResultByRequiredFeatures
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
@@ -256,7 +283,8 @@ export * from './EdgeCluster/CompatibilityErrorDetails/types'
 export { EdgeClusterVirtualIpSettingForm } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export type {
   VirtualIpFormType,
-  VipConfigType
+  VipConfigType,
+  VipInterface
 } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
@@ -301,6 +329,7 @@ export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
 export * from './SwitchCliTemplateForm'
+export * from './FlexibleAuthentication'
 export {
   useRwgActions
 } from './useRwgActions'
@@ -310,3 +339,5 @@ export * from './EnrollmentPortalLink'
 export * from './WorkflowActionPreviewModal'
 export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
 export * from './WorkflowDrawer'
+export * from './SoftGRETunnelSettings'
+export { ResourceBanner } from './ResourceBanner'

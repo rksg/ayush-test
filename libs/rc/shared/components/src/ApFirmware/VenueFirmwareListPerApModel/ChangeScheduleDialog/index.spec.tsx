@@ -94,7 +94,7 @@ describe('Change Scheudule Dialog Per AP Model', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(screen.getByText('Change Update Schedule')).toBeVisible()
-
+    await screen.findAllByText('Do not update firmware on selected venues')
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('radio', { name: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024' })).toBeVisible()
 

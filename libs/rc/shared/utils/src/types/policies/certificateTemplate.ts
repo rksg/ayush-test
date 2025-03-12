@@ -29,12 +29,12 @@ export enum CertificateExpirationType {
 
 export enum CertificateStatusType {
   VALID = 'VALID',
+  INVALID = 'INVALID',
   REVOKED = 'REVOKED',
   EXPIRED = 'EXPIRED'
 }
 
 export enum AlgorithmType {
-  SHA_1 = 'SHA_1',
   SHA_256 = 'SHA_256',
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
@@ -42,7 +42,19 @@ export enum AlgorithmType {
 
 export enum UsageType {
   CLIENT_AUTH = 'CLIENT_AUTH',
-  SERVER_AUTH = 'SERVER_AUTH'
+  SERVER_AUTH = 'SERVER_AUTH',
+  CODE_SIGNING = 'CODE_SIGNING',
+  EMAIL_PROTECTION = 'EMAIL_PROTECTION',
+  IPSEC_END_SYSTEM = 'IPSEC_END_SYSTEM',
+  IPSEC_TUNNEL = 'IPSEC_TUNNEL',
+  IPSEC_USER = 'IPSEC_USER',
+  TIME_STAMPING = 'TIME_STAMPING',
+  OCSP_SIGNING = 'OCSP_SIGNING',
+  SMART_CARD_LOGON = 'SMART_CARD_LOGON',
+  MICROSOFT_SGC = 'MICROSOFT_SGC',
+  NETSCAPE_SGC = 'NETSCAPE_SGC',
+  DOCUMENT_SIGNING = 'DOCUMENT_SIGNING',
+  HOTSPOT_AUTH = 'HOTSPOT_AUTH'
 }
 
 export enum KeyUsageType {
@@ -109,6 +121,7 @@ export interface CertificateTemplate {
   networkIds?: string[],
   variables?: string[],
   identityGroupId?: string
+  networkCount?: number
 }
 
 export interface OnboardCA {
@@ -139,7 +152,8 @@ export interface Chromebook {
   type?: string
   projectId?: string
   clientEmail?: string
-  privateKeyId?: string
+  privateKeyId?: string,
+  enrollmentUrl?: string
 }
 
 export interface CertificateTemplateFormData extends CertificateTemplate {
@@ -183,7 +197,8 @@ export interface CertificateAuthority {
   keyUsages?: KeyUsageType[]
   chain?: string
   details?: string
-  description?: string
+  description?: string,
+  status: CertificateStatusType[]
 }
 
 export interface CertificateAuthorityFormData extends CertificateAuthority {
@@ -214,7 +229,7 @@ export interface Certificate {
   state?: string
   country?: string
   organizationUnit?: string
-  keyUsage?: KeyUsageType[]
+  keyUsages?: KeyUsageType[]
   privateKeyBase64?: string
   shaThumbprint?: string
   chain?: string
@@ -224,6 +239,7 @@ export interface Certificate {
   identityId?: string
   identityName?: string
   identityGroupId?: string
+  status?: CertificateStatusType[]
 }
 
 export interface CertificateFormData {
@@ -264,7 +280,8 @@ export enum CertificateAcceptType {
   DER = 'application/x-x509-ca-cert',
   PKCS7 = 'application/x-pkcs7-certificates',
   PKCS8 = 'application/pkcs8',
-  PKCS12 = 'application/x-pkcs12'
+  PKCS12 = 'application/x-pkcs12',
+  PKCS1 = 'application/pkcs1'
 }
 
 export enum EnrollmentType {
@@ -277,13 +294,14 @@ export interface ServerCertificate extends Certificate{
   name: string
   status: CertificateStatusType[]
   title?: string
-  algorithm?: AlgorithmType
+  algorithm?: ServerClientCertAlgorithmType
   csrString?: string
   extendedKeyUsages?: [ExtendedKeyUsages]
 }
 
 export const serverCertStatusColors = {
   [CertificateStatusType.VALID]: '--acx-semantics-green-50',
+  [CertificateStatusType.INVALID]: '--acx-neutrals-60',
   [CertificateStatusType.REVOKED]: '--acx-neutrals-20',
   [CertificateStatusType.EXPIRED]: '--acx-semantics-red-50'
 }
@@ -309,4 +327,21 @@ export enum KeyUsages {
 export enum ExtendedKeyUsages {
   SERVER_AUTH = 'SERVER_AUTH',
   CLIENT_AUTH = 'CLIENT_AUTH'
+}
+
+export enum ServerClientCertAlgorithmType {
+  SHA_1 = 'SHA_1',
+  SHA_256 = 'SHA_256',
+  SHA_384 = 'SHA_384',
+  SHA_512 = 'SHA_512'
+}
+
+export type ServerClientCertificateResult = {
+  requestId: string
+  id?: string
+}
+
+export enum ServerClientCertType {
+  PUBLIC = 'publicKey',
+  PRIVATE = 'privateKey'
 }

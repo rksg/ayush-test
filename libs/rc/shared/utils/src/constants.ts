@@ -19,7 +19,8 @@ export enum GuestNetworkTypeEnum {
   HostApproval = 'HostApproval',
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
-  Cloudpath = 'Cloudpath'
+  Cloudpath = 'Cloudpath',
+  Directory = 'Directory'
 }
 
 export enum WlanSecurityEnum {
@@ -122,7 +123,17 @@ export enum ServiceType {
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',
   EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
-  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
+  EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
+  EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management',
+  EDGE_OLT = 'Nokia GPON'
+}
+
+export enum ServiceOperation {
+  CREATE,
+  EDIT,
+  DELETE,
+  DETAIL,
+  LIST
 }
 
 export enum ServiceStatus {
@@ -238,7 +249,12 @@ export enum ConfigTypeEnum {
   STATIC_ROUTE = 'STATIC_ROUTE',
   TRIGGER_SYNC = 'TRIGGER_SYNC',
   DEFAULT_VLAN = 'DEFAULT_VLAN',
-  ADMIN_PASSWORD = 'ADMIN_PASSWORD'
+  ADMIN_PASSWORD = 'ADMIN_PASSWORD',
+  ACL = 'ACL',
+  VLAN = 'VLAN',
+  AUTHENTICATION = 'AUTHENTICATION',
+  PORT_PROFILE = 'PORT_PROFILE',
+  PORT_DISABLE_RECOVERY = 'PORT_DISABLE_RECOVERY'
 }
 
 export enum ConfigStatusEnum {
@@ -512,6 +528,7 @@ export enum PortalViewEnum{
   SelfSignIn = 'SelfSignIn',
   SelfSignInRegister = 'SelfSignInRegister',
   HostApproval = 'HostApproval',
+  Directory = 'Directory',
   ConnectionConfirmed = 'ConnectionConfirmed',
   TermCondition = 'TermCondition'
 }
@@ -1178,5 +1195,6 @@ export const DHCP_LIMIT_NUMBER = 120
 export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
 export const CLIENT_ISOLATION_LIMIT_NUMBER = 64
+export const DIRECTORY_SERVER_LIMIT_NUMBER = 64
 export const ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-ap-compatibiliy-note-hidden'
 export const ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-edge-compatibiliy-note-hidden'

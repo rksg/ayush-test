@@ -1,17 +1,30 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
-import { render, screen }                                  from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                               from '@acx-ui/feature-toggle'
+import { NewAPITableResult, PolicyOperation, PolicyType, Workflow, WorkflowUrls, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                                                                   from '@acx-ui/store'
+import { mockServer, render, screen }                                                                 from '@acx-ui/test-utils'
 
 import WorkflowPageForm from '.'
+
+const paginationPattern = '?size=:pageSize&page=:page&sort=:sort&excludeContent=:excludeContent'
+export const replacePagination = (url: string) => url.replace(paginationPattern, '')
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
   search: '',
   hash: ''
+}
+
+const mockWorkflowList: NewAPITableResult<Workflow> = {
+  content: [],
+  paging: {
+    page: 0,
+    pageSize: 10,
+    totalCount: 1
+  }
 }
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -33,6 +46,14 @@ describe('Workflow page form', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        replacePagination(WorkflowUrls.searchInProgressWorkflows.url),
+        (req, res, ctx) => {
+          return res(ctx.json(mockWorkflowList))
+        }
+      )
+    )
   })
 
   it('should render correctly for create', async () => {

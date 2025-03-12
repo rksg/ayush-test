@@ -1,4 +1,7 @@
-import { useIntl } from 'react-intl'
+import { ReactNode } from 'react'
+
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Card, Table, TableProps }         from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
@@ -12,6 +15,7 @@ import { TenantLink, useParams }                                      from '@acx
 export function ClientIsolationInstancesTable () {
   const { $t } = useIntl()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isClientIsolationEnabled = useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
   const params = useParams()
 
   const tableQuery = useTableQuery({
@@ -55,7 +59,18 @@ export function ClientIsolationInstancesTable () {
           ? <SimpleListTooltip items={row.networkNames} displayText={row.networkCount} />
           : 0
       }
-    }
+    },
+    ...(isClientIsolationEnabled ? [{
+      title: $t({ defaultMessage: 'Applied Wired APs' }),
+      dataIndex: 'apCount',
+      key: 'apCount',
+      align: 'center' as AlignType,
+      render: (_: ReactNode, row: VenueUsageByClientIsolation) => {
+        return row.apCount
+          ? <SimpleListTooltip items={row.apNames} displayText={row.apCount} />
+          : 0
+      }
+    }] : [])
   ]
 
   const handleSearch = (filters: FILTER, search: SEARCH) => {

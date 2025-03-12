@@ -4,7 +4,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { AppInsights } from '.'
+import AppInsights from '.'
 
 describe('AppInsights dashboard', () => {
   it('renders appInsights static data', async () => {

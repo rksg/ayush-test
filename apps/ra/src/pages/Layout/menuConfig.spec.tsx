@@ -1,17 +1,26 @@
 import { find } from 'lodash'
 
+import { getUserProfile, Tenant }                                from '@acx-ui/analytics/utils'
 import { LayoutProps }                                           from '@acx-ui/components'
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { get }                                                   from '@acx-ui/config'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { useSearchParams }                                       from '@acx-ui/react-router-dom'
 import { renderHook }                                            from '@acx-ui/test-utils'
 import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
 
-
 import { useMenuConfig } from './menuConfig'
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useSearchParams: jest.fn(() => [{ get: jest.fn() }])
+}))
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
 }))
 
 const mockSearchGet = jest.fn()
@@ -26,8 +35,9 @@ jest.mock('react-intl', () => {
     defineMessage: mockDefineMessage
   }
 })
-const defaultMockPermissions = Object.keys(raiPermissionsList)
-  .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
+const permissions = Object.keys(raiPermissionsList)
+  .filter(v => isNaN(Number(v)))
+  .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}) as RaiPermissions
 
 const flattenConfig = (configs: LayoutProps['menuConfig'] | undefined) => {
   if (!configs) return []
@@ -42,19 +52,23 @@ const flattenConfig = (configs: LayoutProps['menuConfig'] | undefined) => {
   }, [] as typeof configs)
 }
 
-
-const manageMlisaRoutes = [
-  { uri: '/analytics/admin/onboarded', openNewTab: true },
-  { uri: '/analytics/admin/users', openNewTab: true },
-  { uri: '/analytics/admin/resourceGroups', openNewTab: true },
-  { uri: '/analytics/admin/support', openNewTab: true },
-  { uri: '/analytics/admin/license', openNewTab: true },
-  { uri: '/analytics/admin/webhooks', openNewTab: true }
-]
+const profile: ReturnType<typeof getUserProfile> = {
+  accountId: 'accountId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: '',
+  userId: '',
+  isSupport: false,
+  invitations: [],
+  selectedTenant: { id: 'accountId', permissions } as Tenant,
+  tenants: [{ id: 'accountId', permissions }] as Tenant[]
+}
 
 describe('useMenuConfig', () => {
   beforeEach(() => {
-    setRaiPermissions(defaultMockPermissions as RaiPermissions)
+    jest.mocked(get).mockReturnValue('true')
+    setRaiPermissions(permissions)
+    jest.mocked(getUserProfile).mockReturnValue(profile)
   })
   it('should return an array of menu items based on user permissions', () => {
     const mockSearchHook = useSearchParams as jest.Mock
@@ -71,7 +85,7 @@ describe('useMenuConfig', () => {
   })
   it('should not return analytics related menu items', () => {
     setRaiPermissions({
-      ...defaultMockPermissions,
+      ...permissions,
       READ_DASHBOARD: false,
       READ_INCIDENTS: false,
       READ_HEALTH: false,
@@ -83,30 +97,32 @@ describe('useMenuConfig', () => {
       READ_SWITCH_LIST: false,
       READ_OCCUPANCY: false,
       READ_INTENT_AI: false
-    } as RaiPermissions)
+    })
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
 
   it('should not return app experience', () => {
     setRaiPermissions({
-      ...defaultMockPermissions,
+      ...permissions,
       READ_APP_INSIGHTS: false,
       READ_VIDEO_CALL_QOE: false
-    } as RaiPermissions)
+    })
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return Data Studio', () => {
+  it('should not return menues under the Business Insights', () => {
     setRaiPermissions({
-      ...defaultMockPermissions,
+      ...permissions,
       READ_REPORTS: false,
       READ_OCCUPANCY: false,
-      READ_DATA_STUDIO: false
-    } as RaiPermissions)
+      READ_DATA_STUDIO: false,
+      READ_DATA_CONNECTOR: false
+    })
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
       { uri: '/dataStudio' },
+      { uri: '/dataConnector' },
       { uri: '/reports' },
       { uri: '/analytics/occupancy' }
     ]
@@ -115,12 +131,12 @@ describe('useMenuConfig', () => {
   })
   it('should not return Service Validation & Video Call QoE', () => {
     setRaiPermissions({
-      ...defaultMockPermissions,
+      ...permissions,
       READ_SERVICE_VALIDATION: false,
       READ_VIDEO_CALL_QOE: false,
       READ_AI_DRIVEN_RRM: false,
       READ_AI_OPERATIONS: false
-    } as RaiPermissions)
+    })
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
       { uri: '/serviceValidation' },
@@ -128,47 +144,6 @@ describe('useMenuConfig', () => {
     ]
     const configs = flattenConfig(result.current)
     routes.forEach(route => expect(find(configs, route)).toBeUndefined())
-  })
-  it('should not return Administration menu item', () => {
-    setRaiPermissions({
-      ...defaultMockPermissions,
-      READ_ONBOARDED_SYSTEMS: false,
-      READ_LABELS: false,
-      READ_LICENSES: false,
-      READ_RESOURCE_GROUPS: false,
-      READ_WEBHOOKS: false
-    } as RaiPermissions)
-    const { result } = renderHook(() => useMenuConfig(), { route: true })
-    const configs = flattenConfig(result.current)
-    const adminRoutes = [
-      ...manageMlisaRoutes,
-      { uri: '/analytics/admin/labels', openNewTab: true }
-    ]
-    adminRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
-  })
-  it('should not return Administration-related menu items', () => {
-    setRaiPermissions({
-      ...defaultMockPermissions,
-      READ_ONBOARDED_SYSTEMS: false,
-      READ_LABELS: false,
-      READ_LICENSES: false,
-      READ_RESOURCE_GROUPS: false,
-      READ_WEBHOOKS: false
-    } as RaiPermissions)
-    const { result } = renderHook(() => useMenuConfig(), { route: true })
-    const configs = flattenConfig(result.current)
-    manageMlisaRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
-  })
-  it('should not return label related menu items', () => {
-    setRaiPermissions({
-      ...defaultMockPermissions,
-      READ_LABELS: false
-    } as RaiPermissions)
-    const { result } = renderHook(() => useMenuConfig(), { route: true })
-    expect(result.current).toMatchSnapshot()
-    const target = { uri: '/analytics/admin/labels', openNewTab: true }
-    const match = find(flattenConfig(result.current), target)
-    expect(match).toBeUndefined()
   })
   it('should return zones menu items', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -178,5 +153,76 @@ describe('useMenuConfig', () => {
     }
     const match = find(flattenConfig(result.current), target)
     expect(match).toMatchObject(target)
+  })
+
+  describe('Administration', () => {
+    const getPermissions = (enabled: boolean) => ({
+      ...permissions,
+      READ_ONBOARDED_SYSTEMS: enabled,
+      READ_USERS: enabled,
+      READ_LABELS: enabled,
+      READ_RESOURCE_GROUPS: enabled,
+      READ_SUPPORT: enabled,
+      READ_LICENSES: enabled,
+      READ_REPORT_SCHEDULES: enabled,
+      READ_WEBHOOKS: enabled
+    })
+    const adminRoutes = [
+      { uri: '/admin/onboarded' },
+      { uri: '/admin/users' },
+      { uri: '/analytics/admin/labels', openNewTab: true },
+      { uri: '/analytics/admin/resourceGroups', openNewTab: true },
+      { uri: '/admin/support' },
+      { uri: '/analytics/admin/license', openNewTab: true },
+      { uri: '/analytics/admin/schedules', openNewTab: true },
+      { uri: '/admin/webhooks' }
+    ]
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+    })
+    it('should return menu items with permissions to view', () => {
+      const permissions = getPermissions(true)
+      jest.mocked(getUserProfile).mockReturnValue({
+        ...profile,
+        selectedTenant: { ...profile.selectedTenant, permissions },
+        tenants: [{ ...profile.tenants[0], permissions }]
+      })
+      setRaiPermissions(permissions)
+      const { result } = renderHook(() => useMenuConfig(), { route: true })
+      const configs = flattenConfig(result.current)
+      adminRoutes.forEach(route => expect(find(configs, route)).toBeDefined())
+    })
+    it('should not return menu items without permissions to view', () => {
+      const permissions = getPermissions(false)
+      jest.mocked(getUserProfile).mockReturnValue({
+        ...profile,
+        selectedTenant: { ...profile.selectedTenant, permissions },
+        tenants: [{ ...profile.tenants[0], permissions }]
+      })
+      setRaiPermissions(permissions)
+      const { result } = renderHook(() => useMenuConfig(), { route: true })
+      const configs = flattenConfig(result.current)
+      adminRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
+    })
+    it('shows Developers menu if JWT is enabled', () => {
+      jest.mocked(useIsSplitOn).mockImplementation((split) => {
+        if (split === Features.RUCKUS_AI_JWT_TOGGLE) return true
+        return false
+      })
+      const permissions = getPermissions(true)
+      jest.mocked(getUserProfile).mockReturnValue({
+        ...profile,
+        selectedTenant: { ...profile.selectedTenant, permissions },
+        tenants: [{ ...profile.tenants[0], permissions }]
+      })
+      setRaiPermissions(permissions)
+      const { result } = renderHook(() => useMenuConfig(), { route: true })
+      const configs = flattenConfig(result.current)
+      const routes = [
+        ...adminRoutes.filter(r => r.uri !== '/admin/webhooks'),
+        { uri: '/admin/developers/applicationTokens' }
+      ]
+      routes.forEach(route => expect(find(configs, route)).toBeDefined())
+    })
   })
 })

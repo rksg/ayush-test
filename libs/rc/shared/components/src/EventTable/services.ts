@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 
-import { useAdminLogsQuery, useEventsQuery } from '@acx-ui/rc/services'
+import { Moment } from 'moment'
+
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { useAdminLogsNoMetaQuery, useAdminLogsQuery, useEventsNoMetaQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
   Event,
   CommonUrlsInfo,
@@ -57,7 +60,13 @@ const defaultPayload = {
     'minimumRequiredVersion',
     'clientMldMac',
     'turnOnTimestamp',
-    'turnOffTimestamp'
+    'turnOffTimestamp',
+    'portList',
+    'authenticationType',
+    'profileName',
+    'action',
+    'macOui',
+    'lldpTlv'
   ]
 }
 
@@ -78,8 +87,9 @@ const adminLogsDefaultFilters = {
   entity_type: Object.keys(adminLogTypeMapping)
 }
 
-function useQueryFilter () {
-  const { dateFilter } = useDateFilter()
+function useQueryFilter (earliestStart?: Moment) {
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { dateFilter } = useDateFilter({ showResetMsg, earliestStart })
   const detailLevel = useUserProfileContext().data?.detailLevel
   return {
     detailLevel,
@@ -92,13 +102,15 @@ export function useEventsTableQuery (
   baseFilters: Record<string, unknown> = {},
   search: Record<string, unknown> = eventDefaultSearch,
   pagination?: Record<string, unknown>,
-  pollingInterval = TABLE_QUERY_LONG_POLLING_INTERVAL
+  pollingInterval = TABLE_QUERY_LONG_POLLING_INTERVAL,
+  earliestStart?: Moment
 ) {
-  const { detailLevel, skip, dateFilter } = useQueryFilter()
+  const { detailLevel, skip, dateFilter } = useQueryFilter(earliestStart)
   const filters = { ...baseFilters, dateFilter }
+  const isReplaceMetaToggleEnabled = useIsSplitOn(Features.EVENT_ALARM_META_TIME_RANGE_TOGGLE)
 
   const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
+    useQuery: isReplaceMetaToggleEnabled ? useEventsNoMetaQuery : useEventsQuery,
     defaultPayload: {
       ...defaultPayload,
       detailLevel,
@@ -121,12 +133,13 @@ export function useEventsTableQuery (
   return tableQuery
 }
 
-export function useAdminLogsTableQuery () {
-  const { detailLevel, skip, dateFilter } = useQueryFilter()
+export function useAdminLogsTableQuery (earliestStart?: Moment) {
+  const { detailLevel, skip, dateFilter } = useQueryFilter(earliestStart)
   const pollingInterval = TABLE_QUERY_LONG_POLLING_INTERVAL
+  const isReplaceMetaToggleEnabled = useIsSplitOn(Features.EVENT_ALARM_META_TIME_RANGE_TOGGLE)
 
   const tableQuery = usePollingTableQuery<AdminLog>({
-    useQuery: useAdminLogsQuery,
+    useQuery: isReplaceMetaToggleEnabled ? useAdminLogsNoMetaQuery : useAdminLogsQuery,
     defaultPayload: {
       ...defaultPayload,
       detailLevel,

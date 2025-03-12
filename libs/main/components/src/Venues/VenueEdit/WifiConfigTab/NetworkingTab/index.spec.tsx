@@ -34,9 +34,6 @@ describe('NetworkingTab', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
@@ -52,7 +49,7 @@ describe('NetworkingTab', () => {
         CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(
-        CommonRbacUrlsInfo.getVenueLanPorts.url,
+        WifiRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,
@@ -83,9 +80,13 @@ describe('NetworkingTab', () => {
         WifiUrlsInfo.getVenueApModelCellular.url,
         (_req, res, ctx) => res(ctx.json(mockCellularSettings))
       ),
+      rest.get(
+        WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       // rbac
       rest.get(
-        CommonRbacUrlsInfo.getVenueRadiusOptions.url,
+        WifiRbacUrlsInfo.getVenueRadiusOptions.url,
         (_, res, ctx) => res(ctx.json(mockRadiusOptions))
       ),
       rest.get(WifiRbacUrlsInfo.getVenueDirectedMulticast.url,

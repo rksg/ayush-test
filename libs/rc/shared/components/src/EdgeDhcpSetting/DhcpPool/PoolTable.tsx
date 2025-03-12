@@ -5,6 +5,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features }                            from '@acx-ui/feature-toggle'
+import { useGetEdgePinViewDataListQuery }      from '@acx-ui/rc/services'
 import { defaultSort, EdgeDhcpPool, sortProp } from '@acx-ui/rc/utils'
 import { filterByAccess }                      from '@acx-ui/user'
 
@@ -20,17 +21,45 @@ export function PoolTable (props:{
   const { $t } = useIntl()
   const { data, openDrawer, onDelete, openImportModal, isRelayOn } = props
   const isDHCPCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_DHCP_CSV_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+
+  // get list of used DHCP pool PIN used and greyout it
+  const { pinUsedIds } = useGetEdgePinViewDataListQuery({
+    payload: {
+      fields: ['id', 'venueId', 'edgeClusterInfo'],
+      filters: {}
+    }
+  }, {
+    skip: !isEdgePinReady,
+    selectFromResult: ({ data }) => {
+      return {
+        pinUsedIds: data?.data?.map(d => d.edgeClusterInfo?.dhcpPoolId) ?? []
+      }
+    }
+  })
+
+  const isPinUsedPool = (rows: EdgeDhcpPool[]) => rows.some(item => pinUsedIds.includes(item.id))
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
+      disabled: (selectedRows) => isPinUsedPool(selectedRows),
+      tooltip: (selectedRows) => isPinUsedPool(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'The selected pool is confgiured as PIN DHCP pool and cannot be edited' })
+        : undefined,
       onClick: (rows: EdgeDhcpPool[]) => {
         openDrawer(rows[0])
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: (selectedRows) => isPinUsedPool(selectedRows),
+      tooltip: (selectedRows) => isPinUsedPool(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'The selected pool is confgiured as PIN DHCP pool and cannot be deleted' })
+        : undefined,
       onClick: (rows: EdgeDhcpPool[], clearSelection) => {
         onDelete?.(rows)
         clearSelection()

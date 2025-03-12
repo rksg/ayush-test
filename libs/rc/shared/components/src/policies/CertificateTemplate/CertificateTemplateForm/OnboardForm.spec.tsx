@@ -51,6 +51,10 @@ describe('OnboardForm', () => {
     await userEvent.click(await screen.findByText('ps12'))
     const selectionControlElement = screen.getByText('Default Access')
     expect(selectionControlElement).toBeInTheDocument()
+
+    const addButtons = screen.getAllByRole('button', { name: 'Add' })
+    expect(addButtons).toHaveLength(2)
+
   })
 
   it('should render the form with the given data', async () => {

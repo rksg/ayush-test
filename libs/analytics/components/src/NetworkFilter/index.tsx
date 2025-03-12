@@ -23,7 +23,7 @@ import * as UI                     from './styledComponents'
 
 import type { Child, ApOrSwitch } from './services'
 
-export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
+export type FilterMode = 'ap' | 'switch' | 'edge' | 'both' | 'none'
 
 export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   venueName: string;
@@ -145,7 +145,7 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: ap.name,
+            label: `${ap.name} (${ap.mac})`,
             extraLabel: <SeverityCircles severityCircles={severityData} />,
             value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
           }
@@ -169,7 +169,7 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: switchNode.name,
+            label: `${switchNode.name} (${switchNode.mac})`,
             extraLabel: <SeverityCircles severityCircles={severityData} />,
             value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
           }

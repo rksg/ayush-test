@@ -105,7 +105,7 @@ function useHighlightList (data: IntentHighlight | undefined) {
   return highlightList
 }
 
-export function IntentAIWidget ({
+export default function IntentAIWidget ({
   pathFilters
 }: IntentAIWidgetProps) {
   const { $t } = useIntl()

@@ -105,6 +105,41 @@ describe('WlanSecuritySettings Unit Test', () => {
     })
   })
 
+  describe('Test under OWE Transition feature toggle enabled', () => {
+    beforeEach(() => {
+      jest
+        .mocked(useIsSplitOn)
+        .mockImplementation((ff) => {
+          return ff === Features.WIFI_CAPTIVE_PORTAL_OWE
+              || ff === Features.WIFI_CAPTIVE_PORTAL_OWE_TRANSITION
+        })
+      cleanup()
+    })
+    // eslint-disable-next-line max-len
+    it('Check that the WlanSecuritySettings render correctly if feature toggle enabled', async () => {
+      for (const type of Object.values(GuestNetworkTypeEnum)) {
+        render(WlanSecuritySettingsNormalTestCase(type))
+        await testWlanSecuritySettingsOWETransition()
+      }
+    })
+
+    describe('Check that WlanSecuritySettings render correctly under Edit/Clone mode', () => {
+      it('Test case Edit mode match with exist record', async () => {
+        for (const type of Object.values(GuestNetworkTypeEnum)) {
+          render(WlanSecuritySettingsEditModeTestCase(type))
+          await testWlanSecuritySettingsOWETransition()
+        }
+      })
+
+      it('Test case Clone mode match with exist record', async () => {
+        for (const type of Object.values(GuestNetworkTypeEnum)) {
+          render(WlanSecuritySettingsCloneModeTestCase(type))
+          await testWlanSecuritySettingsOWETransition()
+        }
+      })
+    })
+  })
+
   describe('Test under feature toggle enabled', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -212,7 +247,10 @@ function testNoWlanSecuritySettings (guestNetworkType: GuestNetworkTypeEnum) {
       expect(wpa).toBeInTheDocument()
       expect(wep).toBeInTheDocument()
       expect(wep).not.toHaveClass('ant-select-item-option-disabled')
-    } else if (guestNetworkType === GuestNetworkTypeEnum.GuestPass) {
+    } else if (
+      guestNetworkType === GuestNetworkTypeEnum.GuestPass ||
+      guestNetworkType === GuestNetworkTypeEnum.Directory
+    ) {
       expect(secureNetwork).toBeInTheDocument()
       const defaultNetworkSecurity = (await screen.findAllByTitle('None'))[0]
       expect(defaultNetworkSecurity).toBeInTheDocument()
@@ -258,7 +296,9 @@ function testWlanSecuritySettingsOnlyPSK (guestNetworkType: GuestNetworkTypeEnum
       expect(wpa[0]).toBeInTheDocument()
       expect(wep[0]).toBeInTheDocument()
       expect(wep[0]).not.toHaveClass('ant-select-item-option-disabled')
-    } else if (guestNetworkType === GuestNetworkTypeEnum.GuestPass) {
+    } else if (
+      guestNetworkType === GuestNetworkTypeEnum.GuestPass ||
+      guestNetworkType === GuestNetworkTypeEnum.Directory) {
       expect(oweNetworkSecurity[0]).toBeInTheDocument()
     } else {
       expect(oweNetworkSecurity.length).toBe(0)
@@ -281,11 +321,33 @@ function testWlanSecuritySettingsOnlyOWE (guestNetworkType: GuestNetworkTypeEnum
       (await screen.findAllByTitle('OWE encryption'))[0]
     ).toBeInTheDocument()
     const pskNetworkSecurity = screen.queryAllByTitle('Pre-Share Key (PSK)')
-    if (guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+    if (
+      guestNetworkType === GuestNetworkTypeEnum.WISPr ||
+      guestNetworkType === GuestNetworkTypeEnum.Directory
+    ) {
       expect(pskNetworkSecurity[0]).toBeInTheDocument()
     } else {
       expect(pskNetworkSecurity.length).toBe(0)
     }
+    cleanup()
+  })()
+}
+
+function testWlanSecuritySettingsOWETransition () {
+  return (async () => {
+    expect(
+      await screen.findByLabelText(/Secure your network/)
+    ).toBeInTheDocument()
+    const defaultNetworkSecurity = (await screen.findAllByTitle('None'))[0]
+    expect(defaultNetworkSecurity).toBeInTheDocument()
+    await userEvent.click(defaultNetworkSecurity)
+    expect(
+      (await screen.findAllByTitle('OWE encryption'))[0]
+    ).toBeInTheDocument()
+    const oweNetworkSecurity = (await screen.findAllByTitle('OWE encryption'))[0]
+    await userEvent.click(oweNetworkSecurity)
+
+    expect(await screen.findByTestId('owe-transition-switch')).toBeInTheDocument()
     cleanup()
   })()
 }

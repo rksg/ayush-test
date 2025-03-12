@@ -85,25 +85,29 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/dpskServices/{id}/passphrases'
   },
   updatePassphrase: {
     method: 'put',
     url: NewDpskPassphraseBaseUrlWithId,
     oldUrl: DpskPassphraseBaseUrlWithId,
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/dpskServices/{id}/passphrases/{id}'
   },
   uploadPassphrases: {
     method: 'post',
     url: NewDpskPassphraseBaseUrl + '/csvFiles',
     oldUrl: DpskPassphraseBaseUrl + '/csvFiles',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/dpskServices/{id}/passphrases/csvFiles'
   },
   deletePassphrase: {
     method: 'delete',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/dpskServices/{id}/passphrases'
   },
   exportPassphrases: {
     method: 'get',
@@ -120,7 +124,8 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
-    newApi: true
+    newApi: true,
+    opsApi: 'PATCH:/dpskServices/{id}/passphrases'
   },
   getPassphraseClient: {
     method: 'get',
@@ -137,13 +142,15 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/dpskServices/{id}/passphrases/{id}/devices'
   },
   deletePassphraseDevices: {
     method: 'delete',
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/dpskServices/{id}/passphrases/{id}/devices'
   },
   deleteDpskPolicySet: {
     method: 'delete',
@@ -157,6 +164,15 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   updateDpskPolicySet: {
     method: 'put',
     url: NewDpskBaseUrlWithId + '/policySets/:policySetId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  createDpskWithIdentityGroup: {
+    method: 'post',
+    url: '/identityGroups/:identityGroupId/dpskServices',
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',

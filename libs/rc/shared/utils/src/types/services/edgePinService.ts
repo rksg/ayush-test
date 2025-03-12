@@ -41,11 +41,11 @@ export interface PersonalIdentityNetworkFormData extends PersonalIdentityNetwork
   poolName: string
   tags: string[]
   segments: number
-  devices: number
   tunnelProfileName: string
   networkNames: string[]
   originalAccessSwitchInfos: AccessSwitch[]
   dhcpRelay: boolean
+  networkTopologyType?: string
 }
 
 export interface EdgePinTunneledWlan {
@@ -57,7 +57,6 @@ export interface EdgePinTunneledWlan {
 export interface EdgeClusterInfo {
   edgeClusterId: string
   segments: number
-  devices: number
   dhcpInfoId: string
   dhcpPoolId: string
 }

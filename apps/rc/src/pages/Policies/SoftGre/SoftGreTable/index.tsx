@@ -18,7 +18,8 @@ import {
   MtuTypeEnum,
   useTableQuery,
   getScopeKeyByPolicy,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -34,11 +35,11 @@ const defaultPayload = {
     'keepAliveInterval',
     'keepAliveRetryTimes',
     'disassociateClientEnabled',
-    'activations'
+    'activations',
+    'venueActivations',
+    'apActivations'
   ],
-  searchString: '',
-  filters: {},
-  searchTargetFields: ['name']
+  filters: {}
 }
 
 export default function SoftGreTable () {
@@ -52,12 +53,17 @@ export default function SoftGreTable () {
   const tableQuery = useTableQuery<SoftGreViewData>({
     useQuery: useGetSoftGreViewDataListQuery,
     defaultPayload,
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    },
     pagination: { settingsId }
   })
 
 
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
@@ -73,6 +79,7 @@ export default function SoftGreTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
@@ -84,7 +91,14 @@ export default function SoftGreTable () {
           [{
             fieldName: 'activations',
             fieldText: $t({ defaultMessage: 'Network with <VenueSingular></VenueSingular>' })
-          }],
+          }, {
+            fieldName: 'apActivations',
+            fieldText: $t({ defaultMessage: 'AP LAN Port with <VenueSingular></VenueSingular>' })
+          }, {
+            fieldName: 'venueActivations',
+            fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular> LAN Port' })
+          }
+          ],
           async () =>
             Promise.all(selectedRows.map(row => deleteSoftGreFn({ params: { policyId: row.id } })))
               .then(clearSelection)
@@ -114,6 +128,7 @@ export default function SoftGreTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.SOFTGRE, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add SoftGRE Profile' })}</Button>
@@ -234,15 +249,16 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       align: 'center',
-      filterKey: 'activations.venueId',
-      filterable: venueNameMap,
-      sorter: true,
       render: function (_, row) {
-        if (!row?.activations || row?.activations?.length === 0) return 0
+        let venueIds: Set<string> = new Set()
+        row?.activations?.forEach(activation => venueIds.add(activation.venueId))
+        row?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+        row?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+        if (venueIds.size === 0) return 0
         // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap?.filter(v => row?.activations?.map(venue => venue?.venueId)!.includes(v.key)).map(v => v.value)
+        const tooltipItems = venueNameMap?.filter(v => venueIds.has(v.key)).map(v => v.value)
         // eslint-disable-next-line max-len
-        return <SimpleListTooltip items={tooltipItems} displayText={row?.activations?.length} />
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.size} />
       }
     }
   ]

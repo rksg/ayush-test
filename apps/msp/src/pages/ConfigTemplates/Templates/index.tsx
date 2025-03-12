@@ -1,9 +1,7 @@
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
-import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition } from '@reduxjs/toolkit/query'
-import moment                 from 'moment'
-import { useIntl }            from 'react-intl'
+import { TypedMutationTrigger } from '@reduxjs/toolkit/query/react'
+import { useIntl }              from 'react-intl'
 
 
 import {
@@ -13,15 +11,15 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }               from '@acx-ui/msp/utils'
 import {
-  renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
   isAccessControlSubPolicy,
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, subPolicyMappingType, isNotAllowToApplyPolicy
+  subPolicyMappingType, isNotAllowToApplyPolicy,
+  AccessControlSubPolicyVisibility
 } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
@@ -41,7 +39,8 @@ import {
   useDelSyslogPolicyTemplateMutation,
   useDelRoguePolicyTemplateMutation,
   useDeleteSwitchConfigProfileTemplateMutation,
-  useDeleteApGroupsTemplateMutation
+  useDeleteApGroupsTemplateMutation,
+  useDelEthernetPortProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -49,16 +48,25 @@ import {
   ConfigTemplateType,
   getConfigTemplateEditPath,
   PolicyType,
-  ConfigTemplateDriftType
+  ConfigTemplateDriftType,
+  hasConfigTemplateAllowedOperation,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
+import { getOpsApi }                               from '@acx-ui/utils'
 
-import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }                                              from './ShowDriftsDrawer'
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
-import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }                            from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }                              from './ApplyTemplateDrawer'
+import { ConfigTemplateCloneModal, useCloneConfigTemplate } from './CloneModal'
+import { ProtectedDetailsDrawer }                           from './DetailsDrawer'
+import { ShowDriftsDrawer }                                 from './ShowDriftsDrawer'
+import {
+  ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel,
+  getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel,
+  ViewConfigTemplateDetailsLink, useFormatTemplateDate
+} from './templateUtils'
+import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -67,13 +75,17 @@ export function ConfigTemplateList () {
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
   const [ showDriftsDrawerVisible, setShowDriftsDrawerVisible ] = useState(false)
   const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
+  // eslint-disable-next-line max-len
+  const { visible: cloneModalVisible, setVisible: setCloneModalVisible, canClone } = useCloneConfigTemplate()
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
+  const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+  const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -85,8 +97,21 @@ export function ConfigTemplateList () {
   })
   const addTemplateMenuProps = useAddTemplateMenuProps()
 
+  const isDeleteAllowed = (selectedRows: ConfigTemplate[]) => {
+    const targetRow = selectedRows[0]
+    return targetRow
+      && !!deleteMutationMap[targetRow.type]
+      && hasConfigTemplateAllowedOperation(targetRow.type, 'Delete')
+  }
+
+  const isEditAllowed = (selectedRows: ConfigTemplate[]) => {
+    const targetRow = selectedRows[0]
+    return targetRow && hasConfigTemplateAllowedOperation(targetRow.type, 'Edit')
+  }
+
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
+      visible: isEditAllowed,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
         if (isAccessControlSubPolicy(selectedRow.type)) {
@@ -102,7 +127,16 @@ export function ConfigTemplateList () {
         }
       }
     },
+    ...(cloneEnabled ? [{
+      visible: (selectedRows: ConfigTemplate[]) => canClone(selectedRows[0]?.type),
+      label: $t({ defaultMessage: 'Clone' }),
+      onClick: (rows: ConfigTemplate[]) => {
+        setSelectedTemplates(rows)
+        setCloneModalVisible(true)
+      }
+    }] : []),
     {
+      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
       disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
@@ -113,6 +147,7 @@ export function ConfigTemplateList () {
     ...(driftsEnabled ? [{
       // eslint-disable-next-line max-len
       visible: (selectedRows: ConfigTemplate[]) => selectedRows[0]?.driftStatus === ConfigTemplateDriftType.DRIFT_DETECTED,
+      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.getDriftReport)],
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
@@ -121,7 +156,7 @@ export function ConfigTemplateList () {
     }] : []),
     {
       label: $t({ defaultMessage: 'Delete' }),
-      visible: (selectedRows) => selectedRows[0] && !!deleteMutationMap[selectedRows[0].type],
+      visible: isDeleteAllowed,
       onClick: (selectedRows, clearSelection) => {
         const selectedRow = selectedRows[0]
 
@@ -142,27 +177,32 @@ export function ConfigTemplateList () {
     }
   ]
 
-  const actions: TableProps<ConfigTemplate>['actions'] = [
+  const allowedActions = addTemplateMenuProps ? [
     {
       label: $t({ defaultMessage: 'Add Template' }),
       dropdownMenu: addTemplateMenuProps
     }
-  ]
+  ] : undefined
+  const allowedRowActions = filterByAccess(rowActions)
 
   return (
     <>
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
-            setAppliedToTenantDrawerVisible, setSelectedTemplates, setAccessControlSubPolicyVisible
+            setAppliedToTenantDrawerVisible,
+            setSelectedTemplates,
+            setAccessControlSubPolicyVisible,
+            setDetailsDrawerVisible,
+            setShowDriftsDrawerVisible
           })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
-          actions={filterByAccess(actions)}
+          actions={allowedActions}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -182,10 +222,21 @@ export function ConfigTemplateList () {
         setVisible={setAppliedToTenantDrawerVisible}
         selectedTemplates={selectedTemplates}
       />}
+      {cloneModalVisible &&
+      <ConfigTemplateCloneModal
+        selectedTemplate={selectedTemplates[0]}
+        setVisible={setCloneModalVisible}
+      />}
       <AccessControlSubPolicyDrawers
         accessControlSubPolicyVisible={accessControlSubPolicyVisible}
         setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
       />
+      {detailsDrawerVisible &&
+      <ProtectedDetailsDrawer
+        setVisible={setDetailsDrawerVisible}
+        selectedTemplate={selectedTemplates[0]}
+        setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
+      />}
     </>
   )
 }
@@ -194,7 +245,9 @@ interface TemplateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
   // eslint-disable-next-line max-len
-  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
+  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
+  setShowDriftsDrawerVisible: (visible: boolean) => void
+  setDetailsDrawerVisible: (visible: boolean) => void
 }
 
 function useColumns (props: TemplateColumnProps) {
@@ -202,10 +255,13 @@ function useColumns (props: TemplateColumnProps) {
   const {
     setAppliedToTenantDrawerVisible,
     setSelectedTemplates,
-    setAccessControlSubPolicyVisible
+    setAccessControlSubPolicyVisible,
+    setShowDriftsDrawerVisible,
+    setDetailsDrawerVisible
   } = props
-  const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+  const dateFormatter = useFormatTemplateDate()
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+  const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
@@ -215,6 +271,11 @@ function useColumns (props: TemplateColumnProps) {
     ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
   ))
 
+  const enforcementFilterOptions = [
+    { key: true, value: getConfigTemplateEnforcementLabel(true) },
+    { key: false, value: getConfigTemplateEnforcementLabel(false) }
+  ]
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -223,24 +284,12 @@ function useColumns (props: TemplateColumnProps) {
       sorter: true,
       searchable: true,
       render: (_, row) => {
-        if (isAccessControlSubPolicy(row.type)) {
-          return <Button
-            type='link'
-            size={'small'}
-            onClick={() => {
-              setAccessControlSubPolicyVisible({
-                ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-                [subPolicyMappingType[row.type] as PolicyType]: {
-                  id: row.id,
-                  visible: true,
-                  drawerViewMode: true
-                }
-              })
-            }}>
-            {row.name}
-          </Button>
-        }
-        return renderConfigTemplateDetailsComponent(row.type, row.id!, row.name)
+        return <NameLink
+          template={row}
+          setSelectedTemplates={setSelectedTemplates}
+          setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
+          setDetailsDrawerVisible={setDetailsDrawerVisible}
+        />
       }
     },
     {
@@ -260,18 +309,50 @@ function useColumns (props: TemplateColumnProps) {
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.appliedOnTenants) return 0
-        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
+        const count = row.appliedOnTenants?.length ?? 0
+
+        if (count === 0) return 0
+
+        if (!hasAllowedOperations([getOpsApi(MspUrlsInfo.getMspCustomersList)])) return count
+
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.appliedOnTenants.length}
+          {count}
         </Button>
       }
     },
+    ...(enforcementEnabled ? [{
+      key: 'isEnforced',
+      title: $t({ defaultMessage: 'Enforcement' }),
+      dataIndex: 'isEnforced',
+      filterable: enforcementFilterOptions,
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return getConfigTemplateEnforcementLabel(row.isEnforced)
+      }
+    }] : []),
+    ...(driftsEnabled ? [{
+      key: 'driftStatus',
+      title: $t({ defaultMessage: 'Drift Status' }),
+      dataIndex: 'driftStatus',
+      filterable: driftStatusFilterOptions,
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return <ConfigTemplateDriftStatus
+          row={row}
+          callbackMap={{
+            [ConfigTemplateDriftType.DRIFT_DETECTED]: () => {
+              setSelectedTemplates([row])
+              setShowDriftsDrawerVisible(true)
+            }
+          }}
+        />
+      }
+    }] : []),
     {
       key: 'createdBy',
       title: $t({ defaultMessage: 'Created By' }),
@@ -284,7 +365,7 @@ function useColumns (props: TemplateColumnProps) {
       dataIndex: 'createdOn',
       sorter: true,
       render: function (_, row) {
-        return moment(row.createdOn).format(dateFormat)
+        return dateFormatter(row.createdOn)
       }
     },
     {
@@ -293,26 +374,16 @@ function useColumns (props: TemplateColumnProps) {
       dataIndex: 'lastModified',
       sorter: true,
       render: function (_, row) {
-        return moment(row.lastModified).format(dateFormat)
+        return dateFormatter(row.lastModified)
       }
     },
-    ...(driftsEnabled ? [{
-      key: 'driftStatus',
-      title: $t({ defaultMessage: 'Drift Status' }),
-      dataIndex: 'driftStatus',
-      filterable: driftStatusFilterOptions,
-      sorter: true,
-      render: function (_: ReactNode, row: ConfigTemplate) {
-        return getConfigTemplateDriftStatusLabel(row.driftStatus)
-      }
-    }] : []),
     {
       key: 'lastApplied',
       title: $t({ defaultMessage: 'Last Applied' }),
       dataIndex: 'lastApplied',
       sorter: true,
       render: function (_, row) {
-        return row.lastApplied ? moment(row.lastApplied).format(dateFormat) : ''
+        return dateFormatter(row.lastApplied)
       }
     }
   ]
@@ -320,10 +391,33 @@ function useColumns (props: TemplateColumnProps) {
   return columns
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DeleteTemplateMutationDefinition = MutationDefinition<any, any, any, any>
-// eslint-disable-next-line max-len
-function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigger<DeleteTemplateMutationDefinition>>> {
+interface NameLinkProps {
+  template: ConfigTemplate
+  setSelectedTemplates: (row: ConfigTemplate[]) => void,
+  // eslint-disable-next-line max-len
+  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void,
+  setDetailsDrawerVisible: (visible: boolean) => void
+}
+function NameLink (props: NameLinkProps) {
+  // eslint-disable-next-line max-len
+  const { template, setSelectedTemplates, setAccessControlSubPolicyVisible, setDetailsDrawerVisible } = props
+  const nameDrawerEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_NAME_DRAWER)
+  return nameDrawerEnabled
+    ? <Button
+      type='link'
+      size={'small'}
+      onClick={() => {
+        setSelectedTemplates([template])
+        setDetailsDrawerVisible(true)
+      }}>{template.name}</Button>
+    : <ViewConfigTemplateDetailsLink
+      template={template}
+      setAclSubPolicyVisible={setAccessControlSubPolicyVisible}
+    />
+}
+
+// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationTrigger<any, any, any>>> {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
@@ -341,6 +435,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deleteRogueAPTemplate ] = useDelRoguePolicyTemplateMutation()
   const [ deleteSwitchConfigProfileTemplate ] = useDeleteSwitchConfigProfileTemplateMutation()
   const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
+  const [ deleteEthernetPortTemplate ] = useDelEthernetPortProfileTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -360,6 +455,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
     [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
     [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
-    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate
+    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
+    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate
   }
 }

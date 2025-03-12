@@ -1,6 +1,5 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore, createDynamicMiddleware }        from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
 
 import {
   baseAdministrationApi as administrationApi,
@@ -18,6 +17,7 @@ import {
   baseEdgeHqosProfilesApi as edgeHqosProfilesApi,
   baseEdgeSdLanApi,
   baseEdgeMdnsProxyApi,
+  baseEdgeTnmServiceApi,
   baseEventAlarmApi as eventAlarmApi,
   baseFirmwareApi as firmwareApi,
   intentAIApi,
@@ -47,10 +47,19 @@ import {
   baseEthernetPortProfileApi as ethernetPortProfileApi,
   baseVenueApi as venueApi,
   baseWorkflowApi,
-  videoCallQoeApi
+  videoCallQoeApi,
+  baseRuckusAssistantApi as ruckusAssistantApi,
+  baseDirectoryServerApi as directoryServerApi,
+  baseRuckusAiChatApi as ruckusAiChatApi,
+  baseClientIsolationApi as clientIsolationApi,
+  baseIpSecApi as ipSecApi,
+  baseSamlIdpProfileApi as samlIdpProfileApi
 } from './baseApi'
+import { cancelMiddleware } from './cancelMiddleware'
 
 const isDev = process.env['NODE_ENV'] === 'development'
+
+export const dynamicMiddleware = createDynamicMiddleware()
 
 export const store = configureStore({
   reducer: {
@@ -94,11 +103,18 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseEdgeMdnsProxyApi.reducerPath]: baseEdgeMdnsProxyApi.reducer,
+    [baseEdgeTnmServiceApi.reducerPath]: baseEdgeTnmServiceApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
     [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
-    [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer
+    [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
+    [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
+    [directoryServerApi.reducerPath]: directoryServerApi.reducer,
+    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
+    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer,
+    [ipSecApi.reducerPath]: ipSecApi.reducer,
+    [samlIdpProfileApi.reducerPath]: samlIdpProfileApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -106,7 +122,8 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
-      dynamicMiddlewares,
+      cancelMiddleware,
+      dynamicMiddleware.middleware,
       commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
@@ -147,11 +164,18 @@ export const store = configureStore({
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
       baseEdgeMdnsProxyApi.middleware,
+      baseEdgeTnmServiceApi.middleware,
       baseConfigTemplateApi.middleware,
       baseWorkflowApi.middleware,
       smartZoneApi.middleware,
       ethernetPortProfileApi.middleware,
-      edgeHqosProfilesApi.middleware
+      edgeHqosProfilesApi.middleware,
+      ruckusAssistantApi.middleware,
+      directoryServerApi.middleware,
+      ruckusAiChatApi.middleware,
+      clientIsolationApi.middleware,
+      ipSecApi.middleware,
+      samlIdpProfileApi.middleware
     ])
   },
 

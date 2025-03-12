@@ -13,6 +13,7 @@ import {
 import {
   EnhancedRoguePolicyType,
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -119,6 +120,7 @@ export function RogueAPDetectionTable () {
 
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems =>
@@ -129,6 +131,7 @@ export function RogueAPDetectionTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems =>
@@ -166,6 +169,8 @@ export function RogueAPDetectionTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.CREATE)}
           >
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>

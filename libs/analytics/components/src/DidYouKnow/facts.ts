@@ -93,39 +93,16 @@ export const toObject = (prefix: string, list: string[],
   }), {})
 }
 
-export function getFactsData (
-  data: DidYouKnowData[],
-  options: { maxSlideChar?: number, maxFactPerSlide?: number } = {}
-) {
+export function getFactsData (data: DidYouKnowData[]): Record<string, string> {
   const intl = getIntl()
-  let factsList: string[]
-  factsList = data?.map(({ key, values, labels }) => {
+  const factsList = data.map(({ key, values, labels }) => {
     const fact:{ valueFormatter?:CallableFunction } = factsConfig[key]
-    if (!fact) { return key }
+    if (!fact) { return [key, key] }
     const options = {
       ...toObject('value', values, fact.valueFormatter),
       ...toObject('label', labels)
     }
-    return formatText(intl, options, key)
+    return [key, formatText(intl, options, key)]
   })
-  let slideContent: string[] = []
-  const { maxSlideChar = 480, maxFactPerSlide = 5 } = options
-  let slideCharCount = 0
-  let slideContentList:string[][] = []
-  factsList?.forEach(function (fact, index) {
-    const regex = /(<([^>]+)>)/ig
-    const factLength = fact.replace(regex, '').length // Fact length without html tags
-    if(factLength + slideCharCount < maxSlideChar && slideContent.length < maxFactPerSlide) {
-      slideCharCount = slideCharCount + factLength
-      slideContent.push(fact)
-    } else {
-      slideCharCount = factLength
-      slideContentList.push(slideContent)
-      slideContent = [fact]
-    }
-    if(index === factsList.length - 1) {
-      slideContentList.push(slideContent)
-    }
-  })
-  return slideContentList
+  return Object.fromEntries(factsList)
 }

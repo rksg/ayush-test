@@ -4,13 +4,15 @@ import { Form }    from 'antd'
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { PasswordInput } from '@acx-ui/components'
+import { PasswordInput }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   Regions,
   NetworkSaveData,
-  WisprPage
+  WisprPage,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
@@ -63,6 +65,11 @@ function AaaServerFields ({ serverType, data }: {
   serverType: AaaServerTypeEnum,
   data: Regions|WisprPage|NetworkSaveData
 }) {
+  const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
   const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ?
     data.authRadius?.secondary :
     data.accountingRadius?.secondary
@@ -78,6 +85,13 @@ function AaaServerFields ({ serverType, data }: {
       serverType={serverType}
       order={AaaServerOrderEnum.SECONDARY}
     />}
+    {supportRadsec &&
+      <Form.Item
+        label={$t({ defaultMessage: 'RadSec' })}
+        children={$t({ defaultMessage: '{tlsEnabled}' }, {
+          tlsEnabled: get(data, `${serverType}.radSecOptions.tlsEnabled`) ? 'On' : 'Off'
+        })}
+      />}
   </>)
 }
 
@@ -87,6 +101,7 @@ function AaaServerData ({ order, data, serverType }: {
   order: AaaServerOrderEnum
 }) {
   const { $t } = useIntl()
+  const tlsEnabled = get(data, `${serverType}.radSecOptions.tlsEnabled`)
   const secret = get(data, `${serverType}.${order}.sharedSecret`)
   return (<>
     <Form.Item
@@ -95,7 +110,7 @@ function AaaServerData ({ order, data, serverType }: {
         ipAddress: get(data, `${serverType}.${order}.ip`),
         port: get(data, `${serverType}.${order}.port`)
       })} />
-    {secret&&<Form.Item
+    {!tlsEnabled && secret && <Form.Item
       label={$t({ defaultMessage: 'Shared Secret' })}
       children={<PasswordInput
         readOnly

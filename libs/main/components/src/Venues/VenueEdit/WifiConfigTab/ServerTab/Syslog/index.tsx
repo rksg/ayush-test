@@ -28,7 +28,7 @@ import {
   TableResult,
   VenueSyslogSettingType,
   useConfigTemplateMutationFnSwitcher,
-  hasPolicyPermission
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -36,8 +36,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../../..'
-import * as UI              from '../../styledComponents'
+import { VenueEditContext, VenueWifiConfigItemProps } from '../../..'
+import * as UI                                        from '../../styledComponents'
 
 
 
@@ -46,13 +46,14 @@ export interface VenueSettings {
   enabled?: boolean
 }
 
-export function Syslog () {
+export function Syslog (props: VenueWifiConfigItemProps) {
   const { Paragraph } = Typography
   const { $t } = useIntl()
   const { venueId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const toPolicyPath = usePathBasedOnConfigTemplate('')
+  const { isAllowEdit=true } = props
   const {
     editContextData,
     setEditContextData,
@@ -170,6 +171,9 @@ export function Syslog () {
     setEnableServerRadio(orinData.enabled ?? false)
   }
 
+  const hasAddProfilePermission = useTemplateAwarePolicyPermission(
+    PolicyType.SYSLOG, PolicyOperation.CREATE
+  )
 
   return (
     <Loader states={[{
@@ -184,6 +188,7 @@ export function Syslog () {
           <span>{$t({ defaultMessage: 'Enable Server' })}</span>
           <Switch
             data-testid='syslog-switch'
+            disabled={!isAllowEdit}
             checked={enableServerRadio}
             onClick={(checked) => {
               handleEnableChange(checked)
@@ -196,6 +201,7 @@ export function Syslog () {
           <Form.Item style={{ margin: '0' }}>
             <Select
               data-testid='syslog-select'
+              disabled={!isAllowEdit}
               defaultValue={defaultSyslogValue}
               options={[
                 { label: $t({ defaultMessage: 'Select Service...' }), value: '' },
@@ -206,7 +212,7 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            { hasPolicyPermission({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE }) &&
+            { isAllowEdit && hasAddProfilePermission &&
             <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {

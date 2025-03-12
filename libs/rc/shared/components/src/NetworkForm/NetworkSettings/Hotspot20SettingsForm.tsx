@@ -1,11 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Input, Space } from 'antd'
 import {
   Form
 } from 'antd'
-import { cloneDeep }                 from 'lodash'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { cloneDeep } from 'lodash'
+import { useIntl }   from 'react-intl'
 
 import {
   Button,
@@ -14,7 +14,8 @@ import {
   Select,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { InformationSolid }     from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import {
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
@@ -25,6 +26,9 @@ import {
   ManagementFrameProtectionEnum,
   PolicyOperation,
   PolicyType,
+  SecurityOptionsDescription,
+  useConfigTemplate,
+  WifiNetworkMessages,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -38,12 +42,13 @@ import { NetworkMoreSettingsForm }                              from '../Network
 import { NETWORK_IDENTITY_PROVIDER_MAX_COUNT } from './Hotspot20/constants'
 import IdentityProviderDrawer                  from './Hotspot20/IdentityProviderDrawer'
 import WifiOperatorDrawer                      from './Hotspot20/WifiOperatorDrawer'
+import { IdentityGroup }                       from './SharedComponent/IdentityGroup/IdentityGroup'
 
 
 const { Option } = Select
 
 export function Hotspot20SettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
 
   useEffect(()=>{
@@ -68,7 +73,7 @@ export function Hotspot20SettingsForm () {
         <NetworkDiagram />
       </GridCol>
     </GridRow>
-    {!(editMode) && <GridRow>
+    {!(editMode) && !(isRuckusAiMode) && <GridRow>
       <GridCol col={{ span: 24 }}>
         <NetworkMoreSettingsForm wlanData={data} />
       </GridCol>
@@ -80,31 +85,21 @@ function Hotspot20Form () {
   const { $t } = useIntl()
   const { useWatch } = Form
   const { editMode, cloneMode } = useContext(NetworkFormContext)
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
-  const wpa2Description = <FormattedMessage
-    /* eslint-disable max-len */
-    defaultMessage={`
-      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
-      WPA2 should be selected unless you have a specific reason to choose otherwise.
-      <highlight>
-        6GHz radios are only supported with WPA3.
-      </highlight>
-    `}
-    /* eslint-enable */
-    values={{
-      highlight: (chunks) => <Space align='start'>
-        <InformationSolid />
-        {chunks}
-      </Space>
-    }}
-  />
+  const wpa2Description = <>
+    {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
+    <Space align='start'>
+      <InformationSolid />
+      {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
+    </Space>
+  </>
 
-  const wpa3Description = $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
-  })
+  const wpa3Description = $t(SecurityOptionsDescription.WPA3)
 
   useEffect(() => {
     if (!editMode && !cloneMode) {
@@ -135,6 +130,7 @@ function Hotspot20Form () {
     <>
       <StepsFormLegacy.Title>{
         $t({ defaultMessage: 'Hotspot 2.0 Settings' }) }</StepsFormLegacy.Title>
+      { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
       <Form.Item
         label='Security Protocol'
         name={['wlan', 'wlanSecurity']}
@@ -163,7 +159,7 @@ function Hotspot20Form () {
 
 function Hotspot20Service () {
   const { $t } = useIntl()
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const params = useParams()
   const { networkId } = params
   const form = Form.useFormInstance()
@@ -172,8 +168,10 @@ function Hotspot20Service () {
   const [disabledSelectProvider, setDisabledSelectProvider] = useState(false)
   const disabledAddProvider = useRef<boolean>(false)
   const isInitProviders = useRef<boolean>(true)
+  const accProviders = useRef<Set<string>>()
+  const supportHotspot20NasId = useIsSplitOn(Features.WIFI_NAS_ID_HOTSPOT20_TOGGLE)
   const defaultPayload = {
-    fields: ['name', 'id', 'wifiNetworkIds'],
+    fields: ['name', 'id', 'wifiNetworkIds', 'accountingRadiusId'],
     pageSize: 100,
     sortField: 'name',
     sortOrder: 'ASC'
@@ -192,11 +190,21 @@ function Hotspot20Service () {
 
   const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
     { payload: defaultPayload }, {
-      selectFromResult: ({ data }) => {
-        const d = data?.data
-        const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
+      selectFromResult: ({ data: identityData }) => {
+        const providers = identityData?.data
+        if (supportHotspot20NasId) {
+          let identitiesWithAcc = new Set<string>()
+          for (let provider of (providers ?? [])) {
+            if (provider.accountingRadiusId) {
+              identitiesWithAcc.add(provider.id as string)
+            }
+          }
+          accProviders.current = identitiesWithAcc
+        }
+        const seletedIds = networkId && providers?.filter(item => item.wifiNetworkIds
           ?.includes(networkId)).map(item => item.id)
-        const providerOptions = d?.map(item => ({ label: item.name, value: item.id } )) ?? []
+        const providerOptions = providers?.map(
+          item => ({ label: item.name, value: item.id } )) ?? []
         disabledAddProvider.current = providerOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
         return { providerSelectOptions: providerOptions, selectedProviderIds: seletedIds }
       }
@@ -298,6 +306,23 @@ function Hotspot20Service () {
             onChange={(newProviders: string[]) => {
               setDisabledSelectProvider(
                 newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
+              if (supportHotspot20NasId) {
+                let enableAcc = false
+                for (let provider of newProviders) {
+                  if (accProviders.current?.has(provider)) {
+                    enableAcc = true
+                    break
+                  }
+                }
+                setData && setData({
+                  ...data,
+                  enableAccountingService: enableAcc,
+                  hotspot20Settings: {
+                    ...data?.hotspot20Settings,
+                    identityProviders: newProviders
+                  }
+                })
+              }
             }}
           />
         </Form.Item>

@@ -6,9 +6,10 @@ import AutoSizer             from 'react-virtualized-auto-sizer'
 import { getSeriesData }                                  from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, MultiLineTimeSeriesChart,
   qualitativeColorSet, StackedAreaChart, NoData, Select } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter }              from '@acx-ui/formatter'
-import type { AnalyticsFilter }   from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter }                        from '@acx-ui/formatter'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
   useSwitchesTrafficByVolumeQuery,
@@ -35,6 +36,7 @@ export function SwitchesTrafficByVolume ({
 }) {
   const { $t } = useIntl()
   const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
     { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
@@ -52,6 +54,13 @@ export function SwitchesTrafficByVolume ({
     })
   }
   )
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.SWITCHES_TRAFFIC_BY_VOLUME,
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>

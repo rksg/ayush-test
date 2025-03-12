@@ -1,17 +1,20 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Row, Form, Switch } from 'antd'
-import { isEmpty }                from 'lodash'
-import { useIntl }                from 'react-intl'
+import { Col, Row, Form, Switch, Space } from 'antd'
+import { isEmpty }                       from 'lodash'
+import { useIntl }                       from 'react-intl'
 
-import { Button, cssStr }             from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { AFCProps }                   from '@acx-ui/rc/utils'
-import { isApFwVersionLargerThan711 } from '@acx-ui/utils'
+import { Button, cssStr }                from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
+import { AFCProps, CapabilitiesApModel } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { isApFwVersionLargerThan711 }    from '@acx-ui/utils'
 
-import { RadioSettingsChannels }       from '../RadioSettingsChannels'
-import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
-import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { RadioSettingsChannels }                                                                       from '../RadioSettingsChannels'
+import { findIsolatedGroupByChannel }                                                                  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
+import { RadioSettingsChannels320Mhz }                                                                 from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
 import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
@@ -58,7 +61,7 @@ const showChannelBarRadios = [
 
 export function SingleRadioSettings (props:{
   context?: string,
-  disable?: boolean,
+  disabled?: boolean,
   inherit5G?: boolean,
   radioType: ApRadioTypeEnum,
   handleChanged?: () => void,
@@ -67,20 +70,23 @@ export function SingleRadioSettings (props:{
   isUseVenueSettings?: boolean,
   LPIButtonText?: LPIButtonText,
   afcProps?: AFCProps,
-  firmwareProps?: FirmwareProps
+  firmwareProps?: FirmwareProps,
+  apCapabilities?: CapabilitiesApModel
 }) {
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { venueId } = useParams()
   const {
-    disable = false,
+    disabled = false,
     inherit5G = false,
     context = 'venue',
     isUseVenueSettings = false,
     testId,
     LPIButtonText,
     afcProps,
-    firmwareProps
+    firmwareProps,
+    apCapabilities
   } = props
 
   const { radioType, handleChanged } = props
@@ -90,6 +96,10 @@ export function SingleRadioSettings (props:{
     supportRadioChannels,
     supportRadioDfsChannels
   } = useContext(SupportRadioChannelsContext)
+
+  const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370Unsupported6gFeatures = isSupportR370ToggleOn &&
+    (radioType === ApRadioTypeEnum.Radio6G)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
@@ -107,6 +117,7 @@ export function SingleRadioSettings (props:{
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
+  const txPowerFieldName = [...radioDataKey, 'txPower']
 
   const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(
     radioType === ApRadioTypeEnum.Radio5G ? ['5G', 'DFS'] : [])
@@ -123,6 +134,8 @@ export function SingleRadioSettings (props:{
   const [channelErrMsg, setChannelErrMsg] = useState<string>()
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
+
+  const [outdoor6gDrawerVisible, setOutdoor6gDrawerVisible] = useState(false)
 
   const previousChannelMethod = useRef<string>()
   const bandWidthOnChanged = useRef(false)
@@ -151,6 +164,8 @@ export function SingleRadioSettings (props:{
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
 
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const [
     channelMethod,
@@ -256,11 +271,42 @@ export function SingleRadioSettings (props:{
       outdoorChBars.dfsChannels = availableDfsChannels
       setOutdoorChannelBars(outdoorChBars)
 
-      // the bandwidth value is changed
-      if (bandWidthOnChanged.current) {
-        form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
-        form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
-        bandWidthOnChanged.current = false
+      if (isVenueChannelSelectionManualEnabled) {
+        const isPreviousManualSelect = previousChannelMethod.current === 'MANUAL'
+        if (previousChannelMethod.current !== channelMethod) {
+          previousChannelMethod.current = channelMethod
+        }
+
+        // the bandwidth value is changed
+        if (bandWidthOnChanged.current ||
+            (methodOnChanged.current && isManualSelect !== isPreviousManualSelect)  ) {
+          if (isManualSelect) {
+            const allowIndoorChannels = form.getFieldValue(allowedIndoorChannelsFieldName)
+            const allowOutdoorChannels = form.getFieldValue(allowedOutdoorChannelsFieldName)
+
+            // eslint-disable-next-line max-len
+            if (allowIndoorChannels && availableIndoorChannels && (allowIndoorChannels.length !== 1 || !availableIndoorChannels.includes(allowIndoorChannels))) {
+              form.setFieldValue(allowedIndoorChannelsFieldName, [])
+              setIndoorChannelList(selectedIndoorChannels)
+            }
+            // eslint-disable-next-line max-len
+            if (allowOutdoorChannels && availableOutdoorChannels && (allowOutdoorChannels.length !== 1 || !availableOutdoorChannels.includes(allowOutdoorChannels))) {
+              form.setFieldValue(allowedOutdoorChannelsFieldName, [])
+              setOutdoorChannelList(selectedOutdoorChannels)
+            }
+          } else {
+            form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
+            form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+          }
+
+          bandWidthOnChanged.current = false
+        }
+      } else {
+        if (bandWidthOnChanged.current) {
+          form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
+          form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+          bandWidthOnChanged.current = false
+        }
       }
 
       // the combinChannels value is changed
@@ -317,11 +363,15 @@ export function SingleRadioSettings (props:{
 
   useEffect(() => {
     const getTxPowerAdjustmentOptions = () => {
-      let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
+      let res = (radioType === ApRadioTypeEnum.Radio6G
+        || (isSupportR370ToggleOn && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
+        ? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
+
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
-          || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware))) {
+          // eslint-disable-next-line max-len
+          || (context === 'ap' && isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
             if (a.value === 'MIN') return 1
             if (b.value === 'MIN') return -1
@@ -332,7 +382,26 @@ export function SingleRadioSettings (props:{
       return res
     }
     setTxPowerOptions(getTxPowerAdjustmentOptions())
+
+    if(isApTxPowerToggleEnabled
+      && context === 'ap'
+      && firmwareProps?.firmware !== undefined
+      && !isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities)) {
+      const txPower = form.getFieldValue(txPowerFieldName)
+      const isExtendedOption = txPowerAdjustmentExtendedOptions.some(o => o.value === txPower)
+      if(isExtendedOption) {
+        // -10 ~ -23 map to -10 for legacy firmware and unsupported model
+        form.setFieldValue(txPowerFieldName, '-10')
+      }
+    }
   }, [radioType, firmwareProps])
+
+  const isModelAndFwSupportAggressiveTxPower = (
+    firmwareProps: FirmwareProps | undefined,
+    apCapabilities: CapabilitiesApModel | undefined) => {
+    return isApFwVersionLargerThan711(firmwareProps?.firmware)
+    && (!isSupportR370ToggleOn || !apCapabilities || apCapabilities?.supportAggressiveTxPower)
+  }
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
@@ -367,7 +436,7 @@ export function SingleRadioSettings (props:{
                 formName={allowedChannelsFieldName}
                 channelBandwidth320MhzGroupFieldName={channelBandwidth320MhzGroupFieldName}
                 channelList={channelList}
-                disabled={inherit5G || disable || isUseVenueSettings}
+                disabled={inherit5G || disabled || isUseVenueSettings}
                 handleChanged={handleChanged}
                 afcProps={afcProps}
                 indoor={!LPIButtonText?.isAPOutdoor}
@@ -383,7 +452,7 @@ export function SingleRadioSettings (props:{
               context={context}
               formName={allowedChannelsFieldName}
               channelList={channelList}
-              disabled={inherit5G || disable || isUseVenueSettings}
+              disabled={inherit5G || disabled || isUseVenueSettings}
               handleChanged={handleChanged}
               afcProps={afcProps}
             />
@@ -400,7 +469,7 @@ export function SingleRadioSettings (props:{
               channelList={channelList}
               displayBarSettings={displayRadioBarSettings}
               channelBars={channelBars}
-              disabled={inherit5G || disable || isUseVenueSettings}
+              disabled={inherit5G || disabled || isUseVenueSettings}
               handleChanged={handleChanged}
               afcProps={afcProps}
             />
@@ -419,7 +488,7 @@ export function SingleRadioSettings (props:{
             <RadioSettingsForm
               radioType={radioType}
               radioDataKey={radioDataKey}
-              disabled={inherit5G || disable}
+              disabled={inherit5G || disabled}
               txPowerOptions={txPowerOptions}
               channelBandwidthOptions={bandwidthOptions}
               context={context}
@@ -429,7 +498,7 @@ export function SingleRadioSettings (props:{
               LPIButtonText={LPIButtonText}
             />
           </Col>
-          { context === 'venue' && !inherit5G && !disable &&
+          { context === 'venue' && !inherit5G && !disabled &&
           <Col offset={4} span={6} style={{ paddingTop: '20px' }}>
             <Button type='link' onClick={resetToDefaule}>
               {$t({ defaultMessage: 'Reset to Default Settings' })}
@@ -515,7 +584,7 @@ export function SingleRadioSettings (props:{
                   channelList={indoorChannelList}
                   displayBarSettings={displayRadioBarSettings}
                   channelBars={indoorChannelBars}
-                  disabled={inherit5G || disable}
+                  disabled={inherit5G || disabled}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 /> :
@@ -523,7 +592,7 @@ export function SingleRadioSettings (props:{
                   context={context}
                   formName={allowedIndoorChannelsFieldName}
                   channelList={indoorChannelList}
-                  disabled={inherit5G || disable || isUseVenueSettings}
+                  disabled={inherit5G || disabled || isUseVenueSettings}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 />
@@ -536,7 +605,25 @@ export function SingleRadioSettings (props:{
         <>
           <Row gutter={20}>
             <Col span={4}>
-              <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+              <Space>
+                <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+                {isR370Unsupported6gFeatures && <ApCompatibilityToolTip
+                  title={''}
+                  showDetailButton
+                  placement='right'
+                  onClick={() => setOutdoor6gDrawerVisible(true)}
+                  icon={<QuestionMarkCircleOutlined
+                    style={{ height: '16px', width: '16px' }}
+                  />}
+                />}
+                {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
+                  visible={outdoor6gDrawerVisible}
+                  type={context === 'venue' ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                  venueId={venueId}
+                  featureName={InCompatibilityFeatures.OUTDOOR_6G_CHANNEL}
+                  onClose={() => setOutdoor6gDrawerVisible(false)}
+                />}
+              </Space>
             </Col>
             {outdoorChannelErrMsg &&
               <Col span={6}>
@@ -555,7 +642,7 @@ export function SingleRadioSettings (props:{
                   channelList={outdoorChannelList}
                   displayBarSettings={displayRadioBarSettings}
                   channelBars={outdoorChannelBars}
-                  disabled={inherit5G || disable}
+                  disabled={inherit5G || disabled}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 /> :
@@ -563,7 +650,7 @@ export function SingleRadioSettings (props:{
                   context={context}
                   formName={allowedOutdoorChannelsFieldName}
                   channelList={outdoorChannelList}
-                  disabled={inherit5G || disable || isUseVenueSettings}
+                  disabled={inherit5G || disabled || isUseVenueSettings}
                   handleChanged={handleChanged}
                   afcProps={afcProps}
                 />
@@ -594,7 +681,7 @@ export function SingleRadioSettings (props:{
                 channelList={indoorChannelList}
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
-                disabled={inherit5G || disable}
+                disabled={inherit5G || disabled}
                 handleChanged={handleChanged}
                 afcProps={afcProps}
               />

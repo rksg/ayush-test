@@ -7,9 +7,12 @@ import { useIntl }         from 'react-intl'
 import { CSSProperties }   from 'styled-components'
 import styled              from 'styled-components/macro'
 
-import { Button, Pill, Table, TableProps }            from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }       from '@acx-ui/icons'
-import { BandModeEnum, VenueApModelBandModeSettings } from '@acx-ui/rc/utils'
+import { Button, Pill, Table, TableProps }                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon, EditOutlinedIcon }                                                        from '@acx-ui/icons'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
+import { BandModeEnum, VenueApModelBandModeSettings }                                                  from '@acx-ui/rc/utils'
+import { useParams }                                                                                   from '@acx-ui/react-router-dom'
 
 import { VenueBandManagementDrawer } from './VenueBandManagementDrawer'
 
@@ -37,16 +40,21 @@ export interface VenueBandManagementPorps {
   bandModeCaps: Record<string, BandModeEnum[]>
   venueTriBandApModels: string[]
   currentVenueBandModeData: VenueApModelBandModeSettings[]
-  setCurrentVenueBandModeData: (data: VenueApModelBandModeSettings[]) => void
+  setCurrentVenueBandModeData: (data: VenueApModelBandModeSettings[]) => void,
+  disabled?: boolean
 }
 
-export const VenueBandManagement = ({ style,
+export const VenueBandManagement = ({ style, disabled,
   triBandApModels, dual5gApModels, bandModeCaps, venueTriBandApModels,
   currentVenueBandModeData, setCurrentVenueBandModeData }: VenueBandManagementPorps) => {
 
   const { $t } = useIntl()
+  const { venueId } = useParams()
 
   const [supportBandManagementApModels, setSupportBandManagementApModels] = useState<string[]>([])
+
+  const [rfDrawerVisible, setRfDrawerVisible] = useState(false)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   useEffect(()=> {
     const supportBandManagementApModels = triBandApModels
@@ -104,6 +112,7 @@ export const VenueBandManagement = ({ style,
         key='edit'
         role='editBtn'
         type='link'
+        disabled={disabled}
         icon={<EditOutlinedIcon />}
         style={{ height: '22px' }}
         onClick={() => {
@@ -114,7 +123,7 @@ export const VenueBandManagement = ({ style,
         key='delete'
         role='deleteBtn'
         type='link'
-        disabled={venueTriBandApModels.includes(row.model)}
+        disabled={disabled || venueTriBandApModels.includes(row.model)}
         icon={<DeleteOutlinedIcon />}
         style={{ height: '22px' }}
         onClick={() => {
@@ -131,7 +140,22 @@ export const VenueBandManagement = ({ style,
   return (<Space size={8} direction='vertical' style={style}>
     <Row gutter={0}>
       <Col span={18}>
-        Wi-Fi 6/7 band management:
+        <Space>
+          {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={''}
+            showDetailButton
+            placement='right'
+            onClick={() => setRfDrawerVisible(true)}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={rfDrawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.BAND_MANAGEMENT}
+            onClose={() => setRfDrawerVisible(false)}
+          />}
+        </Space>
       </Col>
       <Col span={6} style={{ textAlign: 'right' }}>
         <Button
@@ -140,7 +164,7 @@ export const VenueBandManagement = ({ style,
             setDrawerVisible(true)
           }}
           type='link'
-          disabled={triBandApModels
+          disabled={disabled || triBandApModels
             .filter(model => supportBandManagementApModels.includes(model))
             .every(model => tableData.map(row => row.model).includes(model))}
           size='small'>

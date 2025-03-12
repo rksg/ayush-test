@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }                                 from '@acx-ui/rc/components'
 import { venueApi, apApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -42,6 +42,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   ApTable: () => <div data-testid={'ApTable'} />,
   EdgesTable: () => <div data-testid={'EdgesTable'} />,
   ApCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
+  ApGeneralCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
   retrievedCompatibilitiesOptions: () => {
     mockedretrievedOptions()
     return {
@@ -137,6 +138,10 @@ describe('VenueWifi', () => {
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getVenueApCompatibilities.url,
+        (req, res, ctx) => res(ctx.json(venueApCompatibilitiesData))
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesVenue.url,

@@ -10,14 +10,15 @@ import { Features, useIsSplitOn }                                               
 import { useGetApLedQuery, useLazyGetVenueLedOnQuery, useResetApLedMutation, useUpdateApLedMutation } from '@acx-ui/rc/services'
 import { ApLedSettings, VenueLed }                                                                    from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..'
-import { FieldLabel }                   from '../../styledComponents'
-import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
+import { FieldLabel }                                    from '../../styledComponents'
+import { VenueSettingsHeader }                           from '../../VenueSettingsHeader'
 
 
-export function ApLed () {
+export function ApLed (props: ApEditItemProps) {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const { isAllowEdit=true } = props
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -166,6 +167,7 @@ export function ApLed () {
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
         <VenueSettingsHeader venue={venueData}
+          disabled={!isAllowEdit}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>
@@ -180,7 +182,7 @@ export function ApLed () {
                   ?<span data-testid='ApLed-text'>
                     {venueLed?.ledEnabled ? $t({ defaultMessage: 'On' })
                       : $t({ defaultMessage: 'Off' })}</span>
-                  :<Switch data-testid='ApLed-switch'/>
+                  :<Switch disabled={!isAllowEdit} data-testid='ApLed-switch'/>
                 }
               />
             </FieldLabel>

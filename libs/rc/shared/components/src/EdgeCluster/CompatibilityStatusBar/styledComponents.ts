@@ -26,13 +26,9 @@ export const Title = styled(Typography.Text)`
   }
 `
 
-type WrapperProps = {
-  type: CompatibilityStatusEnum
-}
-
-export const AlertMessageWrapper = styled(Space)<WrapperProps>`
+export const AlertMessageWrapper = styled(Space)<{ type: string }>`
   display: flex;
-  color: ${props => props.type === CompatibilityStatusEnum.FAIL
+  color: ${props => (props.type as CompatibilityStatusEnum) === CompatibilityStatusEnum.FAIL
     ? 'red'
     :'green'
 };

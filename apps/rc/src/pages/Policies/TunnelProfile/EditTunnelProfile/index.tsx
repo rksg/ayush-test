@@ -1,12 +1,21 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader }                                                                                                                             from '@acx-ui/components'
-import { Features }                                                                                                                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useTunnelProfileActions }                                                                                     from '@acx-ui/rc/components'
-import { useGetEdgeSdLanP2ViewDataListQuery, useGetEdgeSdLanViewDataListQuery, useGetEdgePinViewDataListQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
-import { getTunnelProfileFormDefaultValues, isDefaultTunnelProfile as getIsDefaultTunnelProfile, TunnelProfileFormType }                      from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
+import { Loader }                                         from '@acx-ui/components'
+import { Features }                                       from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useTunnelProfileActions } from '@acx-ui/rc/components'
+import {
+  useGetEdgePinViewDataListQuery,
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeSdLanViewDataListQuery,
+  useGetTunnelProfileByIdQuery
+} from '@acx-ui/rc/services'
+import {
+  isDefaultTunnelProfile as getIsDefaultTunnelProfile,
+  getTunnelProfileFormDefaultValues,
+  TunnelProfileFormType
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { TunnelProfileForm } from '../TunnelProfileForm'
 
@@ -91,6 +100,9 @@ const EditTunnelProfile = () => {
 
   if (isDMZUsed)
     formInitValues.disabledFields.push('mtuType')
+
+  if (pinId || isDMZUsed)
+    formInitValues.disabledFields.push('natTraversalEnabled')
 
   return (
     <Loader states={[{

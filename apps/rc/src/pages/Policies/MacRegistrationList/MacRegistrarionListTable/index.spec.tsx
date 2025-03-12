@@ -1,11 +1,18 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, ExpirationType, MacRegListUrlsInfo, RulesManagementUrlsInfo }       from '@acx-ui/rc/utils'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import {
+  CommonUrlsInfo,
+  ExpirationType,
+  MacRegListUrlsInfo,
+  RulesManagementUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import MacRegistrationListsTable from './index'
+
 
 const networkList = {
   fields: ['venues', 'id', 'venues.id'],
@@ -54,14 +61,14 @@ const list = {
     },
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc69',
-      name: 'Registration pool-3',
+      name: 'BeDeleted',
       description: '',
       autoCleanup: true,
       enabled: true,
       expirationEnabled: true,
       expirationType: ExpirationType.DAYS_AFTER_TIME,
       expirationOffset: 5,
-      registrationCount: 6
+      registrationCount: 0
     }
   ],
   pageable: {
@@ -83,6 +90,27 @@ const list = {
   empty: false
 }
 
+export const policySetList = {
+  paging: { totalCount: 3, page: 1, pageSize: 3, pageCount: 1 },
+  content: [
+    {
+      id: 'e4fc0210-a491-460c-bd74-549a9334325a',
+      name: 'ps12',
+      description: 'ps12'
+    },
+    {
+      id: 'a76cac94-3180-4f5f-9c3b-50319cb24ef8',
+      name: 'ps2',
+      description: 'ps2'
+    },
+    {
+      id: '2f617cdd-a8b7-47e7-ba1e-fd41caf3dac8',
+      name: 'ps4',
+      description: 'ps4'
+    }
+  ]
+}
+
 describe('MacRegistrationListsTable', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -102,6 +130,10 @@ describe('MacRegistrationListsTable', () => {
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
   })
@@ -197,4 +229,54 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.click(editButton)
   })
 
+  it('should not allow delete selected row when identity group enable', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this list due to it has Mac Registrations')).toBeVisible()
+  })
+
+  it('should allow delete selected row when identity group enable', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockDeleteFn = jest.fn()
+    mockServer.use(
+      rest.delete(
+        MacRegListUrlsInfo.deleteMacRegistrationPool.url,
+        (req, res, ctx) => {
+          mockDeleteFn()
+          return res(ctx.json({ requestId: '12345' }))
+        })
+    )
+
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /BeDeleted/ })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "BeDeleted"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete List/ }))
+
+    await waitFor(() => {
+      expect(mockDeleteFn).toBeCalledTimes(1)
+    })
+  })
 })

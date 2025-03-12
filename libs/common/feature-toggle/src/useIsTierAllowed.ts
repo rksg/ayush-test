@@ -6,7 +6,8 @@ import _                 from 'lodash'
 import { useUserProfileContext }                            from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
-import { Features } from './features'
+import { Features, TierFeatures } from './features'
+import { useIsBetaEnabled }       from './useIsBetaEnabled'
 type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList' | 'alphaList'
 
 /* eslint-disable max-len, key-spacing */
@@ -89,13 +90,17 @@ export function useFFList (): {
 }
 
 export function useIsTierAllowed (featureId: string): boolean {
+  const { selectedBetaListEnabled } = useUserProfileContext()
   const {
     featureList = [],
     betaList = [],
     alphaList = []
   } = useFFList()
+  const isBetaFeatureEnable = useIsBetaEnabled(featureId as TierFeatures)
+  const betaFeatureEnabled =
+    selectedBetaListEnabled ? isBetaFeatureEnable : betaList.includes(featureId)
   const enabled =
-    featureList?.includes(featureId) || betaList.includes(featureId)
+    featureList?.includes(featureId) || betaFeatureEnabled
     || alphaList.includes(featureId)
   useDebugValue(`PLM CONFIG: featureList: ${featureList}, betaList: ${betaList},
   alphaList: ${alphaList}, ${featureId}: ${enabled}`)

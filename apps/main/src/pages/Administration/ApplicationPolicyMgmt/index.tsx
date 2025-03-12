@@ -8,14 +8,25 @@ import {  Loader, Tabs }                                         from '@acx-ui/c
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
-import { ApplicationUpdateType }                                 from '@acx-ui/rc/utils'
+import { ApplicationUpdateType, SigPackUrlsInfo }                from '@acx-ui/rc/utils'
 import { WifiScopes }                                            from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }               from '@acx-ui/user'
+import {
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission
+}               from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
-import * as UI                                                                           from './styledComponents'
-import { UpdateConfirms }                                                                from './UpdateConfirms'
-import { ChangedAPPTable, MergedAPPTable, NewAPPTable, RemovedAPPTable, UpdateAPPTable } from './UpdateTables'
-import { useSigPackDetails }                                                             from './useSigPackDetails'
+import * as UI            from './styledComponents'
+import { UpdateConfirms } from './UpdateConfirms'
+import {
+  ChangedAPPTable,
+  MergedAPPTable,
+  NewAPPTable,
+  RemovedAPPTable,
+  UpdateAPPTable
+} from './UpdateTables'
+import { useSigPackDetails } from './useSigPackDetails'
 
 export const changedApplicationTypeTextMap: Record<ApplicationUpdateType, MessageDescriptor> = {
   [ApplicationUpdateType.APPLICATION_ADDED]: defineMessage({ defaultMessage: 'New Application' }),
@@ -100,7 +111,8 @@ const ApplicationPolicyMgmt = () => {
           </UI.FwContainer>
         </Space>
         {updateAvailable &&
-          hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          hasPermission({ scopes: [WifiScopes.UPDATE],
+            rbacOpsIds: [getOpsApi(SigPackUrlsInfo.updateSigPack)] }) &&
           hasCrossVenuesPermission() && <>
           <div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
             {/* eslint-disable-next-line max-len */}
@@ -118,19 +130,25 @@ const ApplicationPolicyMgmt = () => {
   }
   const updateDetails = () => {
     const tableActions = []
-    if (hasCrossVenuesPermission()) {
+    if (
+      hasCrossVenuesPermission() &&
+      hasAllowedOperations([getOpsApi(SigPackUrlsInfo.exportSigPack)])
+    ) {
       tableActions.push({
         label: $t({ defaultMessage: 'Export All' }),
         onClick: () => {
-          exportAllSigPack({ enableRbac: isWifiRbacEnabled }).unwrap().catch((error) => {
-            console.log(error) // eslint-disable-line no-console
-          })
+          exportAllSigPack({ enableRbac: isWifiRbacEnabled })
+            .unwrap()
+            .catch((error) => {
+              console.log(error) // eslint-disable-line no-console
+            })
         }
       })
       tableActions.push({
         label: $t({ defaultMessage: 'Export Current List' }),
         onClick: () => {
-          exportSigPack({ params: { type }, enableRbac: isWifiRbacEnabled }).unwrap()
+          exportSigPack({ params: { type }, enableRbac: isWifiRbacEnabled })
+            .unwrap()
             .catch((error) => {
               console.log(error) // eslint-disable-line no-console
             })

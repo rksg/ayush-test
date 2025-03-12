@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Select, useStepFormContext } from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { useVenueRadioActiveNetworksQuery }   from '@acx-ui/rc/services'
-import { RadioTypeEnum }                      from '@acx-ui/rc/utils'
+import { Loader, Select, useStepFormContext }                                     from '@acx-ui/components'
+import { get }                                                                    from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { useVenueRadioActiveNetworksQuery, useVenueWifiRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { RadioTypeEnum }                                                          from '@acx-ui/rc/utils'
 
 import { useIntentContext }    from '../../IntentContext'
 import { useIntentWlansQuery } from '../../services'
-import { Intent }              from '../../useIntentDetailsQuery'
+import { IntentDetail }        from '../../useIntentDetailsQuery'
 
 export type Wlan = {
   name: string
@@ -27,9 +28,10 @@ const codeToRadio: Record<string, RadioTypeEnum> = {
 export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const { intent } = useIntentContext()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const { root, code, sliceId } = intent
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const savedWlans = form.getFieldValue('wlans') as Wlan[]
   const [wlans, setWlans] = useState<Array<Wlan>>(savedWlans)
   const selected = wlans.filter(wlan => !wlan.excluded)
@@ -37,12 +39,22 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   const venueId = sliceId
   const raiQuery = useIntentWlansQuery({ sliceId, root, code }, { skip: !isMlisa || disabled })
   let available: Wlan[] | undefined
-  const r1Networks = useVenueRadioActiveNetworksQuery({
+  const networkQuery = isWifiRbacEnabled
+    ? useVenueWifiRadioActiveNetworksQuery
+    : useVenueRadioActiveNetworksQuery
+  const r1Networks = networkQuery({
     params: { venueId },
     radio: codeToRadio[code],
     payload: {
-      venueId,
-      fields: ['id', 'name', 'ssid'],
+      ...(isWifiRbacEnabled
+        ? {
+          filters: {
+            'venueApGroups.venueId': [venueId]
+          }
+        }
+        : { venueId }
+      ),
+      fields: isWifiRbacEnabled ? ['id', 'name', 'venueApGroups', 'ssid'] : ['id', 'name', 'ssid'],
       page: 1,
       sortField: 'name',
       sortOrder: 'ASC',

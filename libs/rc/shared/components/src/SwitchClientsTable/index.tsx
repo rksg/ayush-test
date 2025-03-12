@@ -4,6 +4,9 @@ import { Filter }                                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useSwitchListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay }                 from '@acx-ui/utils'
+
+import { authenticationTypeLabel, AuthenticationType } from '../FlexibleAuthentication'
 
 import { ClientsTable }        from './ClientsTable'
 import { SwitchClientContext } from './context'
@@ -49,6 +52,20 @@ function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean, filters
   }
 
   return filterable
+}
+
+export const getClientAuthType = (type?: string) => {
+  const { $t } = getIntl()
+  switch(type){
+    case 'DOT1X':
+      return $t(authenticationTypeLabel[AuthenticationType._802_1X])
+    case 'MAC_AUTH':
+      return $t(authenticationTypeLabel[AuthenticationType.MACAUTH])
+    case 'WEB_AUTH':
+      return $t({ defaultMessage: 'WEB-AUTH' })
+    default:
+      return noDataDisplay
+  }
 }
 
 export function SwitchClientsTable (props : {

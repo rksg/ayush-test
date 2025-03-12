@@ -5,26 +5,22 @@ import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { Cascader, Button, Loader }           from '@acx-ui/components'
-import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
-import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
+import { Cascader, Button, Loader, getDefaultEarliestStart } from '@acx-ui/components'
+import { get }                                               from '@acx-ui/config'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                         from '@acx-ui/formatter'
+import { useEncodedParameter, useDateFilter }                from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
-import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
-import { ConnectionEventPopover }                                     from './ConnectionEvent'
-import { FormattedEvent, History }                                    from './EventsHistory'
-import { TimeLine }                                                   from './EventsTimeline'
-import { useClientInfoQuery, useClientIncidentsInfoQuery }            from './services'
-import * as UI                                                        from './styledComponents'
+import { DisplayEvent, IncidentDetails }                   from './config'
+import { ConnectionEventPopover }                          from './ConnectionEvent'
+import { FormattedEvent, History }                         from './EventsHistory'
+import { Timeline }                                        from './EventsTimeline'
+import { useClientInfoQuery, useClientIncidentsInfoQuery } from './services'
+import * as UI                                             from './styledComponents'
+import useClientTroubleshootingConfig                      from './useClientTroubleshootingConfig'
 
-type CTIncidentCategoryOption = {
-  value: string
-  label: {
-    defaultMessage: string;
-  }
- isVisible: CallableFunction
-}
 export type Filters = {
   category?: [];
   type?: [];
@@ -73,9 +69,19 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const intl = useIntl()
   const { $t } = intl
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
-  const { startDate, endDate, range } = useDateFilter()
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const { startDate, endDate, range } = useDateFilter({
+    showResetMsg,
+    earliestStart: getDefaultEarliestStart() })
   const toggles = useIncidentToggles()
-  const payload = { startDate, endDate, range, clientMac }
+  const isMLISA = get('IS_MLISA_SA')
+  const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
+  const {
+    clientTroubleshootingConfigType: { selection },
+    isBtmEventsOn: fetchBtmInfo
+  } = useClientTroubleshootingConfig()
+  const fetchRoamingType = Boolean(isMLISA || isRoamingTypeEnabled)
+  const payload = { startDate, endDate, range, clientMac, fetchRoamingType, fetchBtmInfo }
   const clientQuery = useClientInfoQuery(payload)
   const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles })
   const data = clientQuery.data && incidentsQuery.data
@@ -108,7 +114,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
     chartsRef.current = active
   })
 
-  const isMaxEventError = clientQuery.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
+  const isMaxEventError = clientQuery.error?.message?.includes('RDA-413')
 
   return isMaxEventError
     ? <UI.ErrorPanel data-testid='ct-error-panel'>
@@ -123,7 +129,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         <Row style={{ justifyContent: 'end' }} gutter={[20, 32]}>
           <Col span={historyContentToggle ? 24 : 21}>
             <Row style={{ justifyContent: 'end' }} gutter={[12, 6]} wrap={false}>
-              {ClientTroubleShootingConfig.selection
+              {selection
                 .filter(({ isVisible }) => isVisible())
                 .map((config) => (
                   <Col flex='185px' key={config.selectionType}>
@@ -141,13 +147,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                       }
                       placeholder={$t(config.placeHolder)}
                       options={config.options
-                        .filter((option) => {
-                          const { isVisible } = (option as CTIncidentCategoryOption)
-                          return typeof isVisible === 'function' ? isVisible() : true
-                        })
-                        .map((option) => {
-                          return { ...option, label: $t(option.label) }
-                        })}
+                        .filter(({ isVisible }) => isVisible())
+                        .map((option) => ({ ...option, label: $t(option.label) }))}
                       style={{ minWidth: 150 }}
                       onApply={(value: selectionType) =>
                         write({ ...filters, [config.selectionType]: value })
@@ -175,7 +176,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
               <Loader states={[clientQuery, incidentsQuery]}>
-                <TimeLine
+                <Timeline
                   data={data}
                   filters={filters}
                   setEventState={setEventState}
@@ -201,7 +202,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     ]
                   }}
                 >
-                  <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
+                  <div key='popover-child' data-testid='popover-child' ref={popoverRef} />
                 </ConnectionEventPopover>
               </Loader>
             </UI.TimelineLoaderWrapper>
@@ -210,7 +211,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <Loader states={[clientQuery, incidentsQuery]} >
+          <Loader states={[clientQuery, incidentsQuery]}>
             <History
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle
