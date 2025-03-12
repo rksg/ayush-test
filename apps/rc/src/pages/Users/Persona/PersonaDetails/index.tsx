@@ -13,7 +13,8 @@ import {
   useGetPersonaGroupByIdQuery,
   useGetCertificatesByIdentityIdQuery,
   useLazyGetEnhancedDpskPassphraseListQuery,
-  useSearchMacRegistrationsQuery
+  useSearchMacRegistrationsQuery,
+  useSearchIdentityClientsQuery
 } from '@acx-ui/rc/services'
 import {
   MacRegistration,
@@ -50,6 +51,11 @@ enum IdentityTabKey {
   MAC = 'macAddresses'
 }
 
+const identityClientDefaultSorter = {
+  sortField: 'username',
+  sortOrder: 'ASC'
+}
+
 const dpskDefaultSorter = {
   sortField: 'createdDate',
   sortOrder: 'DESC'
@@ -78,6 +84,16 @@ function PersonaDetails () {
 
   const title = personaData?.name ?? personaId
   const revokedStatus = personaData?.revoked ?? false
+
+  const identityClientsQuery = useSearchIdentityClientsQuery({
+    params: { size: '1', page: '1' },
+    payload: {
+      ...identityClientDefaultSorter,
+      identityIds: [personaId],
+      page: 1,
+      pageSize: 1
+    }
+  }, { skip: !personaId })
 
   const certTableQuery = useTableQuery({
     useQuery: useGetCertificatesByIdentityIdQuery,
@@ -141,6 +157,12 @@ function PersonaDetails () {
   const [ certCount, setCertCount ] = useState(0)
   const [ dpskCount, setDpskCount ] = useState(0)
   const [ macAddressCount, setMacAddressCount ] = useState(0)
+
+  useEffect(() => {
+    if (identityClientsQuery?.data) {
+      setDeviceCount(identityClientsQuery.data?.totalCount ?? 0)
+    }
+  }, [identityClientsQuery.data])
 
   useEffect(() => {
     if (certTableQuery?.data) {
