@@ -27,6 +27,7 @@ export interface PropertyUnitIdentityDrawerProps {
 
 export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerProps) {
   const { $t } = useIntl()
+  const MAX_IDENTITY_COUNT = 10
   const { visible, onClose, groupId, venueId, unitId, identityCount } = props
   const settingsId = 'property-units-identity-table'
   const identities = new Map(useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
@@ -52,7 +53,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
 
   const onSave = async () => {
     const identityLimit = (identityCount || 0) + selectedRows.length
-    if(identityLimit > 10)
+    if(identityLimit > MAX_IDENTITY_COUNT)
     {
       (showActionModal({
         type: 'error',
