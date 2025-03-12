@@ -372,10 +372,28 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edgeFeatureSets/query',
     newApi: true
   },
+  getEdgeFeatureSetsV1_1: {
+    method: 'post',
+    url: '/edgeFeatureSets/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getSdLanEdgeCompatibilities: {
     method: 'post',
     url: '/edgeSdLanServices/edgeCompatibilities/query',
     newApi: true
+  },
+  getSdLanEdgeCompatibilitiesV1_1: {
+    method: 'post',
+    url: '/edgeSdLanServices/edgeCompatibilities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getSdLanApCompatibilities: {
     method: 'post',
@@ -401,10 +419,28 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edgeHqosProfiles/edgeCompatibilities/query',
     newApi: true
   },
+  getHqosEdgeCompatibilitiesV1_1: {
+    method: 'post',
+    url: '/edgeHqosProfiles/edgeCompatibilities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getPinEdgeCompatibilities: {
     method: 'post',
     url: '/personalIdentityNetworks/edgeCompatibilities/query',
     newApi: true
+  },
+  getPinEdgeCompatibilitiesV1_1: {
+    method: 'post',
+    url: '/personalIdentityNetworks/edgeCompatibilities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getPinApCompatibilities: {
     method: 'post',
@@ -415,6 +451,15 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeMulticastDnsProxyProfiles/edgeCompatibilities/query',
     newApi: true
+  },
+  getMdnsEdgeCompatibilitiesV1_1: {
+    method: 'post',
+    url: '/edgeMulticastDnsProxyProfiles/edgeCompatibilities/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   // legacy and deprecated
   deleteEdges: {

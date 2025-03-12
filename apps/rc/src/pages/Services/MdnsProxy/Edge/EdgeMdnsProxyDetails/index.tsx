@@ -1,18 +1,19 @@
-import { useIntl } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { MdnsProxyServiceInfo }                 from '@acx-ui/rc/components'
-import { useGetEdgeMdnsProxyQuery }             from '@acx-ui/rc/services'
+import { Button, PageHeader }             from '@acx-ui/components'
+import { MdnsProxyServiceInfo }           from '@acx-ui/rc/components'
+import { useGetEdgeMdnsProxyQuery }       from '@acx-ui/rc/services'
 import {
-  ServiceType,
-  getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath,
-  getServiceListRoutePath,
+  ServiceType,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
-  transformEdgeMdnsRulesToViewModelType,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  getServiceDetailsLink,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  transformEdgeMdnsRulesToViewModelType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -54,23 +55,23 @@ const EdgeMdnsProxyDetails = () => {
           </TenantLink>
         ])}
       />
-      {!!params.serviceId && <GridRow>
-        <GridCol col={{ span: 24 }}>
+      {!!params.serviceId && <Row>
+        <Col span={24}>
           <CompatibilityCheck
             serviceId={params.serviceId}
           />
-        </GridCol>
-      </GridRow>}
-      <GridRow>
-        <GridCol col={{ span: 24 }}>
+        </Col>
+      </Row>}
+      <Row>
+        <Col span={24}>
           {
             // eslint-disable-next-line max-len
             data && <MdnsProxyServiceInfo rules={transformEdgeMdnsRulesToViewModelType(data.forwardingRules)} />}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
+        </Col>
+        <Col span={24}>
           <InstancesTable serviceId={params.serviceId}/>
-        </GridCol>
-      </GridRow>
+        </Col>
+      </Row>
     </>
   )
 }

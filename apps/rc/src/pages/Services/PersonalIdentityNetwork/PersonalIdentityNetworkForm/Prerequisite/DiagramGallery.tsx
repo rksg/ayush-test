@@ -40,7 +40,7 @@ export const DiagramGallery = () => {
     direction='vertical'
     justifycontent='center'
   >
-    <Row justify='center' style={{ minHeight: '500px' }}>
+    <Row justify='center' style={{ maxHeight: '420px' }}>
       {diagramSrc && <img
         src={diagramSrc}
         alt={$t({ defaultMessage: 'PIN Topology' })}

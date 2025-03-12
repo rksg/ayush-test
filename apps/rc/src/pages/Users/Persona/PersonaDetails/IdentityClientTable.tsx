@@ -57,7 +57,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
 
   // ClientMac format should be: 11:22:33:44:55:66
   const toClientMacFormat = (macAddress: string) => {
-    return macAddress.replaceAll('-', ':').toUpperCase()
+    return macAddress.replaceAll('-', ':').toLowerCase()
   }
 
   useEffect(() => {
@@ -103,7 +103,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     getClientList({
       payload: {
         ...defaultClientPayload,
-        filters: { macAddress: [...clientMacs] }
+        filters: { macAddress: [...clientMacs] }  // should be lowered case
       }
     })
       .then(result => {
