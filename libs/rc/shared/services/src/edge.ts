@@ -17,6 +17,7 @@ import {
   EdgeClusterTableDataType,
   EdgeDnsServers,
   EdgeFeatureSets,
+  EdgeFeatureSetsV1_1,
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
@@ -33,6 +34,7 @@ import {
   EdgeSerialNumber,
   EdgeService,
   EdgeServiceCompatibilitiesResponse,
+  EdgeServiceCompatibilitiesResponseV1_1,
   EdgeServicesApCompatibilitiesResponse,
   EdgeStaticRouteConfig,
   EdgeStatus,
@@ -932,6 +934,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    getEdgeFeatureSetsV1_1: build.query<EdgeFeatureSetsV1_1, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeFeatureSetsV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     getVenueEdgeCompatibilities: build.query<VenueEdgeCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilities, params)
@@ -958,6 +970,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
+    }),
+    getSdLanEdgeCompatibilitiesV1_1: build.query<EdgeServiceCompatibilitiesResponseV1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilitiesV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
@@ -1134,12 +1156,32 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'HQOS_EDGE_COMPATIBILITY' }]
     }),
+    getHqosEdgeCompatibilitiesV1_1: build.query<EdgeServiceCompatibilitiesResponseV1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getHqosEdgeCompatibilitiesV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'HQOS_EDGE_COMPATIBILITY' }]
+    }),
     getPinEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getPinEdgeCompatibilities, params)
         return {
           ...req,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'PIN_EDGE_COMPATIBILITY' }]
+    }),
+    getPinEdgeCompatibilitiesV1_1: build.query<EdgeServiceCompatibilitiesResponseV1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPinEdgeCompatibilitiesV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Edge', id: 'PIN_EDGE_COMPATIBILITY' }]
@@ -1160,6 +1202,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'MDNS_EDGE_COMPATIBILITY' }]
+    }),
+    getMdnsEdgeCompatibilitiesV1_1: build.query<EdgeServiceCompatibilitiesResponseV1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getMdnsEdgeCompatibilitiesV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Edge', id: 'MDNS_EDGE_COMPATIBILITY' }]
@@ -1311,16 +1363,27 @@ export const {
   useLazyGetEdgeFeatureSetsQuery,
   useGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
-  useGetVenueEdgeCompatibilitiesV1_1Query,
-  useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesDeprecatedQuery,
   useGetHqosEdgeCompatibilitiesQuery,
+  useLazyGetHqosEdgeCompatibilitiesQuery,
   useGetPinEdgeCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetPinApCompatibilitiesQuery,
-  useLazyGetMdnsEdgeCompatibilitiesQuery
+  useLazyGetMdnsEdgeCompatibilitiesQuery,
+  useGetEdgeFeatureSetsV1_1Query,
+  useLazyGetEdgeFeatureSetsV1_1Query,
+  useGetVenueEdgeCompatibilitiesV1_1Query,
+  useLazyGetVenueEdgeCompatibilitiesV1_1Query,
+  useGetSdLanEdgeCompatibilitiesV1_1Query,
+  useLazyGetSdLanEdgeCompatibilitiesV1_1Query,
+  useGetHqosEdgeCompatibilitiesV1_1Query,
+  useLazyGetHqosEdgeCompatibilitiesV1_1Query,
+  useGetPinEdgeCompatibilitiesV1_1Query,
+  useLazyGetPinEdgeCompatibilitiesV1_1Query,
+  useGetMdnsEdgeCompatibilitiesV1_1Query,
+  useLazyGetMdnsEdgeCompatibilitiesV1_1Query
 } = edgeApi
