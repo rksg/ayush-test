@@ -269,8 +269,7 @@ describe('NetworkForm', () => {
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
         .split('?')[0],
       (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
-      rest.post(PersonaUrls.searchPersonaGroupList.url
-        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
+      rest.post(PersonaUrls.searchPersonaGroupList.url.split('?')[0],,
       (req, res, ctx) => {
         const searchParams = req.url.searchParams
         if (

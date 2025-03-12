@@ -17,19 +17,18 @@ import { IdentityGroup } from './IdentityGroup'
 describe('IdentityGroup', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.post(PersonaUrls.searchPersonaGroupList.url
-        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
-      (req, res, ctx) => {
-        const searchParams = req.url.searchParams
-        if (
-          searchParams.get('size') === '10000' &&
+      rest.post(PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (
+            searchParams.get('size') === '10000' &&
           searchParams.get('page') === '0' &&
           searchParams.get('sort') === 'name,asc'
-        ) {
+          ) {
+            return res(ctx.json(mockIdentityGroupQuery))
+          }
           return res(ctx.json(mockIdentityGroupQuery))
-        }
-        return res(ctx.json(mockIdentityGroupQuery))
-      })
+        })
     )
   })
 
