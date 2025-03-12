@@ -14,11 +14,8 @@ export const Wrapper = styled.div`
   overflow-x: hidden;
 `
 
-export const FootnoteWrapper = styled.div`
+export const FootnoteWrapper = styled.div<{ setPadding: boolean }>`
   color: var(--acx-neutrals-50);
   line-height: 1.5;
-`
-
-export const StatusTrailWrapper = styled.div<{ shouldShowLimitedText: boolean }>`
-  padding-bottom: ${({ shouldShowLimitedText }) => (shouldShowLimitedText ? '18px' : '0px')};
+  padding-top: ${({ setPadding }) => (setPadding ? '18px' : '0px')};
 `

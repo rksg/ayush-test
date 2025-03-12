@@ -38,6 +38,8 @@ export const StatusTrail = () => {
   const shouldShowLimitedText = preventColdTier && query.data &&
     query.data?.total > query.data?.data.length
 
+  const setPadding = (query.data?.data?.length || 0) > 0
+
   return <DetailsSection data-testid='Status Trail'>
     <DetailsSection.Title>
       <FormattedMessage defaultMessage='Status Trail' />
@@ -46,22 +48,20 @@ export const StatusTrail = () => {
     <Loader states={[query]}>
       <Card>
         <UI.Wrapper>
-          <UI.StatusTrailWrapper shouldShowLimitedText={!!shouldShowLimitedText}>
-            {query.data?.data.map(({ displayStatus, createdAt, metadata }, index) => (
-              <div key={index}>
-                <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
-                {preventColdTier ? <Tooltip
-                  title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
-                  placement='right'
-                  dottedUnderline
-                >
-                  {getIntentStatus(displayStatus, metadata?.retries)}
-                </Tooltip>
-                  : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
-              </div>
-            ))}
-          </UI.StatusTrailWrapper>
-          {shouldShowLimitedText ? <UI.FootnoteWrapper>
+          {query.data?.data.map(({ displayStatus, createdAt, metadata }, index) => (
+            <div key={index}>
+              <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
+              {preventColdTier ? <Tooltip
+                title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
+                placement='right'
+                dottedUnderline
+              >
+                {getIntentStatus(displayStatus, metadata?.retries)}
+              </Tooltip>
+                : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
+            </div>
+          ))}
+          {shouldShowLimitedText ? <UI.FootnoteWrapper setPadding={setPadding}>
             <FormattedMessage
               defaultMessage={`
             <i>Limited to the most recent {days, plural, one {# day} other {# days}} of status.</i>
