@@ -1,3 +1,5 @@
+import { MessageDescriptor } from 'react-intl'
+
 export type Response <T> = { data: T }
 
 export type DataQuotaUsage = {
@@ -50,6 +52,16 @@ export type StorageData = {
   id: string
 }
 
+type DataSource = { name: MessageDescriptor; value: string }
+export type DataSources = {
+  dataSource: DataSource,
+  cols: string[]
+} []
+
+export type DataSourceResult = {
+  dataSource: string,
+  columns: string[]
+}
 export type DataConnector = Omit<ConnectorPayload, 'id'> & {
   id: string
   status: boolean,
