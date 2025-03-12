@@ -1,19 +1,16 @@
 /* eslint-disable max-len */
-import { useState } from 'react'
-
 import { Col, Row }                  from 'antd'
+import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Loader, StepsForm } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
-import { CompareSlider }                       from '../../../CompareSlider'
-import { Icon }                                from '../../common/IntentIcon'
-import { IntroSummary }                        from '../../common/IntroSummary'
-import { richTextFormatValues }                from '../../common/richTextFormatValues'
-import { AiFeatures }                          from '../../config'
-import { useIntentContext }                    from '../../IntentContext'
-import { SliderGraphAfter, SliderGraphBefore } from '../RRMGraph'
-import { useIntentAICRRMQuery }                from '../RRMGraph/services'
+import { Icon }                 from '../../common/IntentIcon'
+import { IntroSummary }         from '../../common/IntroSummary'
+import { richTextFormatValues } from '../../common/richTextFormatValues'
+import { AiFeatures }           from '../../config'
+import { useIntentContext }     from '../../IntentContext'
+import { TabGraph }             from '../TabGraph'
 
 import * as SideNotes from './SideNotes'
 import * as UI        from './styledComponents'
@@ -62,44 +59,20 @@ export const SliderAfter = (props: { image: string }) => {
 
 export function Introduction () {
   const { $t } = useIntl()
-  const { isDataRetained, isHotTierData } = useIntentContext()
+  const { intent } = useIntentContext()
+  const isFullOptimization = _.get(intent, ['metadata', 'preferences', 'crrmFullOptimization'])
 
-  const queryResult = useIntentAICRRMQuery()
-  const crrmData = queryResult.data!
-  const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
-  const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
-
-  const compareSlider = <Loader states={[queryResult]}>
-    <CompareSlider
-      style={{ width: '40%', height: '100%' }}
-      itemOne={<SliderBefore image={sliderUrlBefore} />}
-      itemTwo={<SliderAfter image={sliderUrlAfter} />}
-      disabled={false}
-      portrait={false}
-      boundsPadding={0}
-      position={50}
-      changePositionOnHover={false}
-      keyboardIncrement={0}
-      onlyHandleDraggable={false}
-    />
-  </Loader>
-
-  return <>
-    {crrmData && <div hidden data-testid='hidden-graph'>
-      <SliderGraphBefore crrmData={crrmData} setUrl={setSliderUrlBefore} />
-      <SliderGraphAfter crrmData={crrmData} setUrl={setSliderUrlAfter} />
-    </div>}
-    <Row gutter={20}>
-      <Col span={15}>
-        <StepsForm.Title children={$t({ defaultMessage: 'Introduction' })} />
-        <IntroSummary />
-        <StepsForm.TextContent>
-          <StepsForm.Subtitle>
-            <FormattedMessage defaultMessage='Network Intent plays a crucial role in wireless network design' />
-          </StepsForm.Subtitle>
-          <FormattedMessage
-            values={richTextFormatValues}
-            defaultMessage={`
+  return <Row gutter={20}>
+    <Col span={15}>
+      <StepsForm.Title children={$t({ defaultMessage: 'Introduction' })} />
+      <IntroSummary />
+      <StepsForm.TextContent>
+        <StepsForm.Subtitle>
+          <FormattedMessage defaultMessage='Network Intent plays a crucial role in wireless network design' />
+        </StepsForm.Subtitle>
+        <FormattedMessage
+          values={richTextFormatValues}
+          defaultMessage={`
               <p><b>Optimize Channel Plan for:</b></p>
               <p>
                 <b>High number of clients in a dense network:</b>
@@ -112,13 +85,15 @@ export function Introduction () {
               </p>
               <br></br>
             `}
-          />
-        </StepsForm.TextContent>
-        {isDataRetained && isHotTierData && compareSlider}
-      </Col>
-      <Col span={7} offset={2}>
-        <SideNotes.Introduction />
-      </Col>
-    </Row>
-  </>
+        />
+      </StepsForm.TextContent>
+      <StepsForm.TextContent>
+        <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Projection'/>}/>
+        <TabGraph fullOptimization={isFullOptimization}/>
+      </StepsForm.TextContent>
+    </Col>
+    <Col span={7} offset={2}>
+      <SideNotes.Introduction />
+    </Col>
+  </Row>
 }

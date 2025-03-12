@@ -13,15 +13,14 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
-import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
-import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
+import { TabGraph }              from './TabGraph'
 
 export function createUseValuesText () {
   return function useValuesText () {
@@ -105,19 +104,7 @@ export function createIntentAIDetails () {
           {!noData ? <>
             <DetailsSection data-testid='Details'>
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-              <DetailsSection.Details>
-                <GridRow>
-                  <KPIGrid/>
-                </GridRow>
-              </DetailsSection.Details>
-            </DetailsSection>
-
-            <DetailsSection data-testid='Key Performance Indications'>
-              <DetailsSection.Title
-                children={$t({ defaultMessage: 'Key Performance Indications' })} />
-              <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
-                <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
-              </DetailsSection.Details>
+              <TabGraph width={350} fullOptimization={isFullOptimization} />
             </DetailsSection>
 
             <GridRow>
