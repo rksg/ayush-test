@@ -43,6 +43,7 @@ function useColumns (
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
@@ -55,7 +56,7 @@ function useColumns (
     params: { venueId: venueId },
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
   },
-  { skip: !venueId }
+  { skip: !venueId || !isMultipleIdentityUnits }
   ).data?.data.map(identity => [identity.personaId, identity.unitId]))
 
   const units = new Map(useGetPropertyUnitListQuery({
@@ -67,7 +68,7 @@ function useColumns (
       sortOrder: 'ASC'
     }
   },
-  { skip: !venueId }).data?.data.map(unit => [unit.id,unit.name]))
+  { skip: !venueId || !isMultipleIdentityUnits }).data?.data.map(unit => [unit.id,unit.name]))
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -144,8 +145,9 @@ function useColumns (
         render: (_, row) =>
           <PropertyUnitLink
             venueId={venueId}
-            unitId={identities.get(row.id)}
-            name={units.get(identities.get(row.id) as string)}
+            unitId={row.identityId ? row.identityId : identities.get(row.id)}
+            name={row.identityId ?
+              unitPool.get(row.identityId ?? '') : units.get(identities.get(row.id) as string)}
           />
         ,
         ...props.identityId

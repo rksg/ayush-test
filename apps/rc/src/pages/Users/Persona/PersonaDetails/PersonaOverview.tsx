@@ -25,6 +25,7 @@ import { hasAllowedOperations }               from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
 
 
+
 export function PersonaOverview (props:
    { personaData?: Persona, personaGroupData?: PersonaGroup }
 ) {
@@ -35,6 +36,7 @@ export function PersonaOverview (props:
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const { data: pinData } = useGetEdgePinByIdQuery(
     { params: { serviceId: personaGroupData?.personalIdentityNetworkId } },
@@ -51,16 +53,19 @@ export function PersonaOverview (props:
         }
       }
     },
-    { skip: !personaGroupData?.propertyId }
+    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits }
   )
 
   const { data: unitData } = useGetPropertyUnitByIdQuery({
     params: {
       venueId: personaGroupData?.propertyId,
-      unitId: identities?.data?.data[0].unitId
+      unitId: personaData?.identityId ? personaData?.identityId : identities?.data?.data[0].unitId
     }
   },
-  { skip: !personaGroupData?.propertyId || !identities?.data?.data[0].unitId }
+  {
+    skip: !personaGroupData?.propertyId ||
+        (!personaData?.identityId && !identities?.data?.data[0].unitId)
+  }
   )
   const { data: connectionMetering } = useGetConnectionMeteringByIdQuery(
     { params: { id: personaData?.meteringProfileId } },
@@ -94,7 +99,7 @@ export function PersonaOverview (props:
             showNoData={true}
             name={unitData?.name}
             venueId={personaGroupData?.propertyId}
-            unitId={unitData?.id}
+            unitId={personaData?.identityId ? personaData?.identityId : unitData?.id}
           />
       }] : []
   ]
