@@ -59,12 +59,12 @@ export function PersonaOverview (props:
   const { data: unitData } = useGetPropertyUnitByIdQuery({
     params: {
       venueId: personaGroupData?.propertyId,
-      unitId: personaData?.identityId ? personaData?.identityId : identities?.data?.data[0].unitId
+      unitId: personaData?.identityId ?? identities?.data?.data[0]?.unitId
     }
   },
   {
     skip: !personaGroupData?.propertyId ||
-        (!personaData?.identityId && !identities?.data?.data[0].unitId)
+        (!personaData?.identityId && !identities?.data?.data[0]?.unitId)
   }
   )
   const { data: connectionMetering } = useGetConnectionMeteringByIdQuery(
@@ -99,7 +99,7 @@ export function PersonaOverview (props:
             showNoData={true}
             name={unitData?.name}
             venueId={personaGroupData?.propertyId}
-            unitId={personaData?.identityId ? personaData?.identityId : unitData?.id}
+            unitId={personaData?.identityId ?? unitData?.id}
           />
       }] : []
   ]
