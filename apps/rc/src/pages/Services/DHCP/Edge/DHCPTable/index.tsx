@@ -4,16 +4,14 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                      from '@acx-ui/components'
-import { EdgeTableCompatibilityWarningTooltip, EdgeServiceStatusLight, SimpleListTooltip, useEdgeDhcpActions } from '@acx-ui/rc/components'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                                    from '@acx-ui/components'
+import { EdgeServiceStatusLight, EdgeTableCompatibilityWarningTooltip, SimpleListTooltip, useEdgeDhcpActions, useEdgeDhcpCompatibilityData } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
-  useGetDhcpEdgeCompatibilitiesQuery,
   useGetDhcpStatsQuery,
   useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
-  CompatibilityDeviceEnum,
   DhcpStats,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
@@ -81,16 +79,10 @@ const EdgeDhcpTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-  const { dhcpCompatibilityData } = useGetDhcpEdgeCompatibilitiesQuery({
-    payload: { filters: { serviceIds: currentServiceIds } } }, {
-    skip: !currentServiceIds.length,
-    selectFromResult: ({ data }) => {
-      return {
-        // eslint-disable-next-line max-len
-        dhcpCompatibilityData: { [CompatibilityDeviceEnum.EDGE]: data?.compatibilities ?? [] }
-      }
-    }
-  })
+  const skipFetchCompatibilities = currentServiceIds.length === 0
+
+  // eslint-disable-next-line max-len
+  const dhcpCompatibilityData = useEdgeDhcpCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const isUpdateAvailable = (data: DhcpStats) => {
     let isReadyToUpdate = false
@@ -128,7 +120,7 @@ const EdgeDhcpTable = () => {
             <EdgeTableCompatibilityWarningTooltip
               serviceId={row.id!}
               featureName={IncompatibilityFeatures.DHCP}
-              compatibility={dhcpCompatibilityData}
+              compatibility={dhcpCompatibilityData.compatibilities}
             />
           </Space>
         )
