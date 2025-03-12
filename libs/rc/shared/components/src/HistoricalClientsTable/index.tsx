@@ -5,7 +5,6 @@ import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
 import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
 import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
@@ -125,7 +124,6 @@ memo(({ searchString, setHistoricalClientCount } :
   }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   defaultHistoricalClientPayload.searchString = searchString
   defaultHistoricalClientPayload.filters =
@@ -164,7 +162,7 @@ memo(({ searchString, setHistoricalClientCount } :
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
-            filterPersistence={enabledUXOptFeature}
+            filterPersistence={true}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',
