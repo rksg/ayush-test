@@ -269,18 +269,18 @@ describe('NetworkForm', () => {
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
         .split('?')[0],
       (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
-      rest.post(PersonaUrls.searchPersonaGroupList.url.split('?')[0],,
-      (req, res, ctx) => {
-        const searchParams = req.url.searchParams
-        if (
-          searchParams.get('size') === '10000' &&
+      rest.post(PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (
+            searchParams.get('size') === '10000' &&
           searchParams.get('page') === '0' &&
           searchParams.get('sort') === 'name,asc'
-        ) {
+          ) {
+            return res(ctx.json(mockIdentityGroupQuery))
+          }
           return res(ctx.json(mockIdentityGroupQuery))
-        }
-        return res(ctx.json(mockIdentityGroupQuery))
-      })
+        })
     )
 
     render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
