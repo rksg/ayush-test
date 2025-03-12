@@ -3,14 +3,14 @@ import { Col, Row }                  from 'antd'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm, Tabs } from '@acx-ui/components'
 
 import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { AiFeatures }           from '../../config'
 import { useIntentContext }     from '../../IntentContext'
-import { TabGraph }             from '../TabGraph'
+import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
 import * as UI        from './styledComponents'
@@ -89,7 +89,11 @@ export function Introduction () {
       </StepsForm.TextContent>
       <StepsForm.TextContent>
         <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Projection'/>}/>
-        <TabGraph fullOptimization={isFullOptimization}/>
+        <Tabs>
+          <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
+            <IntentAIRRMGraph isFullOptimization={isFullOptimization}/>
+          </Tabs.TabPane>
+        </Tabs>
       </StepsForm.TextContent>
     </Col>
     <Col span={7} offset={2}>

@@ -95,9 +95,10 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     // Step 1
-    const hiddenGraph = await screen.findByTestId('hidden-graph')
-    expect(hiddenGraph).toBeInTheDocument()
+    // const hiddenGraph = await screen.findByTestId('hidden-graph')
+    // expect(hiddenGraph).toBeInTheDocument()
     expect(await screen.findByText('Benefits')).toBeVisible()
+    expect(await screen.findByText('Projection')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     // Step 2
@@ -119,7 +120,7 @@ describe('IntentAIForm', () => {
 
     // Step 4
     await screen.findAllByRole('heading', { name: 'Summary' })
-    expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+    expect(await screen.findByText('Selected Intent Priority')).toBeVisible()
 
     await click(actions.getByRole('button', { name: 'Apply' }))
 

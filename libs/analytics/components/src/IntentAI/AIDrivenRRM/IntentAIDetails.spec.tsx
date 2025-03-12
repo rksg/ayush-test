@@ -1,8 +1,8 @@
 import _ from 'lodash'
 
-import { useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { intentAIUrl, Provider, store, intentAIApi }         from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, within, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen }          from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
@@ -22,7 +22,8 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
   DownloadRRMComparison: () => <div data-testid='DownloadRRMComparison' />
 }))
 
-const mockIntentContextWith = (data: Partial<IntentDetail>) => {
+
+export const mockIntentContextWith = (data: Partial<IntentDetail>) => {
   const intent = _.merge({}, mockedIntentCRRM, data) as IntentDetail
   mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
     { data: { intent: mockedIntentCRRMStatusTrail } })
@@ -41,48 +42,6 @@ describe('IntentAIDetails', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('handle cold tier data retention', async () => {
-    const { params } = mockIntentContextWith({
-      code: 'c-crrm-channel5g-auto',
-      dataCheck: {
-        isDataRetained: true,
-        isHotTierData: false
-      },
-      status: Statuses.active,
-      kpi_number_of_interfering_links: {
-        data: {
-          timestamp: null,
-          result: 0
-        },
-        compareData: {
-          timestamp: '2024-08-14T00:00:00.000Z',
-          result: 2
-        }
-      },
-      metadata: {
-        preferences: {
-          crrmFullOptimization: true
-        }
-      } as unknown as IntentDetail['metadata']
-    })
-    render(
-      <CCrrmChannelAuto.IntentAIDetails />,
-      { route: { params }, wrapper: Provider }
-    )
-
-    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-
-    const loaders = screen.getAllByRole('img', { name: 'loader' })
-    loaders.forEach(loader => expect(loader).toBeVisible())
-    const kpiContainers = await screen.findAllByTestId('KPI')
-    for (const kpiContainer of kpiContainers) {
-      await waitFor(() => {
-        expect(kpiContainer)
-          .toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
-      })
-    }
-  })
-
   describe('renders correctly', () => {
     beforeEach(() => {
       jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
@@ -92,8 +51,7 @@ describe('IntentAIDetails', () => {
     async function assertRenderCorrectly () {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
-      const details = await screen.findByTestId('Details')
-      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
+      expect(await screen.findByText('Interfering Links')).toBeVisible()
     }
 
     it('handles 2.4 GHz', async () => {

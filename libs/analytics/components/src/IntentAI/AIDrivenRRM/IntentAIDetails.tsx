@@ -3,8 +3,8 @@ import { Typography }                               from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { getIntl }                from '@acx-ui/utils'
+import { Card, GridCol, GridRow, Tabs } from '@acx-ui/components'
+import { getIntl }                      from '@acx-ui/utils'
 
 import { DescriptionSection }   from '../../DescriptionSection'
 import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
@@ -19,8 +19,8 @@ import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
+import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
-import { TabGraph }              from './TabGraph'
 
 export function createUseValuesText () {
   return function useValuesText () {
@@ -104,7 +104,11 @@ export function createIntentAIDetails () {
           {!noData ? <>
             <DetailsSection data-testid='Details'>
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-              <TabGraph width={350} fullOptimization={isFullOptimization} />
+              <Tabs>
+                <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
+                  <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+                </Tabs.TabPane>
+              </Tabs>
             </DetailsSection>
 
             <GridRow>
