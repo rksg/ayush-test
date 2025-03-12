@@ -62,7 +62,6 @@ export const dataSetMapping = {
   'mlisa-apConnectionStats': defineMessage({ defaultMessage: 'Client Connection Counts' }),
   'mlisa-apMesh': defineMessage({ defaultMessage: 'AP Mesh' }),
   'mlisa-apPeer': defineMessage({ defaultMessage: 'AP Peer' }),
-  'mlisa-clientTTC': defineMessage({ defaultMessage: 'Client Time to Connect' }),
   'mlisa-clientConnectionStats': defineMessage({ defaultMessage: 'Client Connection Events' }),
   'mlisa-edgeAvc': defineMessage({ defaultMessage: 'Edge AVC' }),
   'rogueAp': defineMessage({ defaultMessage: 'AP Rogues' }),
