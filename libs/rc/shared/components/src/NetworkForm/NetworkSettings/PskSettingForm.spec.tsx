@@ -331,18 +331,7 @@ describe('NetworkForm', () => {
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
-    render(<Provider>
-      <NetworkFormContext.Provider
-        value={{
-          editMode: false,
-          cloneMode: false
-        }}
-      >
-        <Form>
-          <NetworkForm />
-        </Form>
-      </NetworkFormContext.Provider>
-    </Provider>, { route: { params } })
+    render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
 
