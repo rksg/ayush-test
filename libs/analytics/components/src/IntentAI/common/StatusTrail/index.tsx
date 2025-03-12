@@ -46,19 +46,21 @@ export const StatusTrail = () => {
     <Loader states={[query]}>
       <Card>
         <UI.Wrapper>
-          {query.data?.data.map(({ displayStatus, createdAt, metadata }, index) => (
-            <div key={index}>
-              <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
-              {preventColdTier ? <Tooltip
-                title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
-                placement='right'
-                dottedUnderline
-              >
-                {getIntentStatus(displayStatus, metadata?.retries)}
-              </Tooltip>
-                : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
-            </div>
-          ))}
+          <UI.StatusTrailWrapper shouldShowLimitedText={!!shouldShowLimitedText}>
+            {query.data?.data.map(({ displayStatus, createdAt, metadata }, index) => (
+              <div key={index}>
+                <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
+                {preventColdTier ? <Tooltip
+                  title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
+                  placement='right'
+                  dottedUnderline
+                >
+                  {getIntentStatus(displayStatus, metadata?.retries)}
+                </Tooltip>
+                  : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
+              </div>
+            ))}
+          </UI.StatusTrailWrapper>
           {shouldShowLimitedText ? <UI.FootnoteWrapper>
             <FormattedMessage
               defaultMessage={`

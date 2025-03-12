@@ -17,5 +17,8 @@ export const Wrapper = styled.div`
 export const FootnoteWrapper = styled.div`
   color: var(--acx-neutrals-50);
   line-height: 1.5;
-  padding-top: 5px;
+`
+
+export const StatusTrailWrapper = styled.div<{ shouldShowLimitedText: boolean }>`
+  padding-bottom: ${({ shouldShowLimitedText }) => (shouldShowLimitedText ? '18px' : '0px')};
 `
