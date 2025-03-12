@@ -37,7 +37,9 @@ const defaultPayload = {
     'ikeProposals',
     'espProposalType',
     'espProposals',
-    'activations'
+    'activations',
+    'venueActivations',
+    'apActivations'
   ],
   filters: {}
 }
@@ -272,11 +274,15 @@ function useColumns () {
       filterable: venueNameMap,
       sorter: true,
       render: function (_, row) {
-        if (!row?.activations || row?.activations?.length === 0) return 0
+        let venueIds: Set<string> = new Set()
+        row?.activations?.forEach(activation => venueIds.add(activation.venueId))
+        row?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+        row?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+        if (venueIds.size === 0) return 0
         // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap?.filter(v => row?.activations?.map(venue => venue?.venueId)!.includes(v.key)).map(v => v.value)
+        const tooltipItems = venueNameMap?.filter(v => venueIds.has(v.key)).map(v => v.value)
         // eslint-disable-next-line max-len
-        return <SimpleListTooltip items={tooltipItems} displayText={row?.activations?.length} />
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.size} />
       }
     }
   ]
