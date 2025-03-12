@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { MspRbacUrlsInfo, MspUrlsInfo }                             from '@acx-ui/msp/utils'
-import { EntitlementDeviceType, LicenseUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider }                                                 from '@acx-ui/store'
-import { fireEvent, logRoles, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo }                                     from '@acx-ui/msp/utils'
+import { EntitlementDeviceType, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { fireEvent, logRoles, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { NewAssignMspLicense } from '.'
 
@@ -138,7 +138,7 @@ describe('NewAssignMspLicense', () => {
       ),
       rest.post(
         MspUrlsInfo.addMspAssignment.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 123 }))
+        (req, res, ctx) => res(ctx.json({ requestId: 124 }))
       ),
       rest.patch(
         MspUrlsInfo.updateMspAssignment.url,
@@ -266,14 +266,59 @@ describe('NewAssignMspLicense', () => {
     expect(screen.getByRole('heading', { name: 'Solution Tokens Paid Licenses' })).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Solution Tokens Trial Licenses' })).toBeVisible()
 
-    const combos = screen.getAllByRole('combobox')
+    userEvent.click(screen.getAllByRole('combobox')[0])
 
-    await userEvent.click(combos[1])
+    const dropdown = within(document.body)
 
-    const options = await screen.findAllByRole('option')
+    expect(await dropdown.findAllByText('Custom date')).toHaveLength(4)
 
-    await userEvent.click(options[1])
-    await userEvent.click(options[0])
+    expect(await dropdown.findAllByText('Five Years')).toHaveLength(1)
+
+    expect(await dropdown.findAllByText('Three Years')).toHaveLength(1)
+    expect(await dropdown.findAllByText('One Year')).toHaveLength(1)
+    expect(await dropdown.findAllByText('90 Days')).toHaveLength(1)
+    expect(await dropdown.findAllByText('60 Days')).toHaveLength(1)
+    expect(await dropdown.findAllByText('30 Days')).toHaveLength(1)
+
+    const threeYrs = await dropdown.findByText('Three Years')
+    await userEvent.click(threeYrs)
+
+    // paid SLTN
+    userEvent.click(screen.getAllByRole('combobox')[2])
+
+    const dropdown2 = within(document.body)
+
+    expect(await dropdown2.findAllByText('90 Days')).toHaveLength(1)
+    const days90 = await dropdown2.findByText('90 Days')
+    await userEvent.click(days90)
+
+
+    // trial APSW
+    userEvent.click(screen.getAllByRole('combobox')[1])
+
+    const dropdown3 = within(document.body)
+
+    expect(await dropdown3.findAllByText('60 Days')).toHaveLength(1)
+    const days60 = await dropdown3.findByText('60 Days')
+    await userEvent.click(days60)
+
+    // trial SLTN
+    userEvent.click(screen.getAllByRole('combobox')[3])
+
+    const dropdown4 = within(document.body)
+
+    expect(await dropdown4.findAllByText('30 Days')).toHaveLength(1)
+    const days30 = await dropdown4.findByText('30 Days')
+    await userEvent.click(days30)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith({
+        pathname: `/${params.tenantId}/v/msplicenses`,
+        hash: '',
+        search: ''
+      })
+    })
 
   })
 
