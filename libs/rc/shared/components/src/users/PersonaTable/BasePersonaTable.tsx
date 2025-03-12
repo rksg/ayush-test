@@ -220,7 +220,6 @@ export interface PersonaTableProps {
   defaultSelectedPersonaId?: string,
   onChange?: (persona?: Persona) => void
   personaGroupId?: string,
-  venueId?: string,
   colProps: PersonaTableColProps,
   settingsId?: string,
   disableAddDevices?: boolean
