@@ -36,8 +36,7 @@ export const kpiConfig = {
   connectionSuccess: {
     text: defineMessage({ defaultMessage: 'Connection Success' }),
     timeseries: {
-      apiMetric: 'connectionSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'connectionSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('connectionSuccessAndAttemptCount'),
     pill: {
@@ -56,8 +55,7 @@ export const kpiConfig = {
   timeToConnect: {
     text: defineMessage({ defaultMessage: 'Time To Connect' }),
     timeseries: {
-      apiMetric: 'ttcCountAndConnectionCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'ttcCountAndConnectionCount'
     },
     histogram: {
       initialThreshold: 2000,
@@ -87,8 +85,7 @@ export const kpiConfig = {
   association: {
     text: defineMessage({ defaultMessage: 'Association' }),
     timeseries: {
-      apiMetric: 'assocSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'assocSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('assocSuccessAndAttemptCount'),
     pill: {
@@ -108,8 +105,7 @@ export const kpiConfig = {
   userAuthentication: {
     text: defineMessage({ defaultMessage: '802.11 Authentication' }),
     timeseries: {
-      apiMetric: 'authSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'authSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('authSuccessAndAttemptCount'),
     pill: {
@@ -129,8 +125,7 @@ export const kpiConfig = {
   eap: {
     text: defineMessage({ defaultMessage: 'EAP' }),
     timeseries: {
-      apiMetric: 'eapSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'eapSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('eapSuccessAndAttemptCount'),
     pill: {
@@ -151,8 +146,7 @@ export const kpiConfig = {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
-      apiMetric: 'dhcpSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'dhcpSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('dhcpSuccessAndAttemptCount'),
     pill: {
@@ -174,8 +168,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'DHCP' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchDHCPSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchDHCPSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
     pill: {
@@ -190,8 +183,7 @@ export const kpiConfig = {
   radius: {
     text: defineMessage({ defaultMessage: 'RADIUS' }),
     timeseries: {
-      apiMetric: 'radiusSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'radiusSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('radiusSuccessAndAttemptCount'),
     pill: {
@@ -211,8 +203,7 @@ export const kpiConfig = {
   roamingSuccess: {
     text: defineMessage({ defaultMessage: 'Roaming Success' }),
     timeseries: {
-      apiMetric: 'clientRoamingSuccessAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'clientRoamingSuccessAndAttemptCount'
     },
     barChart: createBarChartConfig('clientRoamingSuccessAndAttemptCount'),
     pill: {
@@ -231,8 +222,7 @@ export const kpiConfig = {
   rss: {
     text: defineMessage({ defaultMessage: 'Client RSS' }),
     timeseries: {
-      apiMetric: 'rssCountAndSessionCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'rssCountAndSessionCount'
     },
     histogram: {
       highlightAbove: false,
@@ -264,8 +254,7 @@ export const kpiConfig = {
   clientThroughput: {
     text: defineMessage({ defaultMessage: 'Client Throughput' }),
     timeseries: {
-      apiMetric: 'throughputCountAndSessionCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'throughputCountAndSessionCount'
     },
     histogram: {
       highlightAbove: true,
@@ -296,8 +285,7 @@ export const kpiConfig = {
   apCapacity: {
     text: defineMessage({ defaultMessage: 'AP Capacity' }),
     timeseries: {
-      apiMetric: 'capacityCountAndAPCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'capacityCountAndAPCount'
     },
     histogram: {
       highlightAbove: true,
@@ -329,8 +317,7 @@ export const kpiConfig = {
   apServiceUptime: {
     text: defineMessage({ defaultMessage: 'AP-{smartZone} Connection Uptime' }),
     timeseries: {
-      apiMetric: 'apUptimeCountAndApCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'apUptimeCountAndApCount'
     },
     histogram: {
       highlightAbove: true,
@@ -362,8 +349,7 @@ export const kpiConfig = {
   apToSZLatency: {
     text: defineMessage({ defaultMessage: 'AP-to-{smartZone} Latency' }),
     timeseries: {
-      apiMetric: 'apSzLatencyCountAndAPCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'apSzLatencyCountAndAPCount'
     },
     histogram: {
       highlightAbove: false,
@@ -396,8 +382,7 @@ export const kpiConfig = {
   clusterLatency: {
     text: defineMessage({ defaultMessage: 'Cluster Latency' }),
     timeseries: {
-      apiMetric: 'szLatencyCountAndSzCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'szLatencyCountAndSzCount'
     },
     barChart: createBarChartConfig('szLatencyCountAndSzCount'),
     histogram: {
@@ -436,8 +421,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: shouldAddFirmwareFilter,
     isBeta: false,
     timeseries: {
-      apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchPoeUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
@@ -464,8 +448,7 @@ export const kpiConfig = {
   onlineAPs: {
     text: defineMessage({ defaultMessage: 'Online APs' }),
     timeseries: {
-      apiMetric: 'onlineAPCountAndTotalAPCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'onlineAPCountAndTotalAPCount'
     },
     barChart: createBarChartConfig('onlineAPCountAndTotalAPCount'),
     pill: {
@@ -486,8 +469,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Switch Reachability' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchStatusCountAndSwitchCount'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
@@ -503,8 +485,7 @@ export const kpiConfig = {
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchMemoryUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
@@ -534,8 +515,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     refreshWiredSummary: true,
     timeseries: {
-      apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchCpuUtilizationCountAndSwitchCount'
     },
     histogram: {
       highlightAbove: false,
@@ -564,8 +544,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Temperature Compliance' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchTempCountAndSwitchCount'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
@@ -582,8 +561,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     refreshWiredSummary: true,
     timeseries: {
-      apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchUplinkPortUtilCountAndPortCount'
     },
     histogram: {
       highlightAbove: false,
@@ -613,8 +591,7 @@ export const kpiConfig = {
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchPortUtilizationCountAndPortCount'
     },
     histogram: {
       highlightAbove: false,
@@ -643,8 +620,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Interface Health Compliance' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchInterfaceAnomaliesCountAndPortCount'
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
@@ -661,8 +637,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     refreshWiredSummary: true,
     timeseries: {
-      apiMetric: 'switchPortStormCountAndPortCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchPortStormCountAndPortCount'
     },
     histogram: {
       highlightAbove: false,
@@ -691,8 +666,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Authentication' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
-      apiMetric: 'switchAuthCountAndAttemptCount',
-      minGranularity: 'PT15M'
+      apiMetric: 'switchAuthCountAndAttemptCount'
     },
     barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
     pill: {

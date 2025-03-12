@@ -59,7 +59,6 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={'PT15M'}
           buffer={buffer}
         />
       </GridCol>

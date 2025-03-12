@@ -29,7 +29,6 @@ export interface ChannelDistributionHeatMapProps {
   heatMapConfig: HeatmapConfig;
   incident: Incident;
   buffer: BufferType;
-  minGranularity: string;
 }
 export type heatmapType = 'apDistribution' | 'rogueDistribution' | 'dfsEvents'
 export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
