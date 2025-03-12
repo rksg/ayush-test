@@ -30,6 +30,14 @@ it('should return correct granularity based on interval and min granularity', ()
     {
       input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
       output: 'PT15M'
+    },
+    {
+      input: {
+        start: '2022-01-01T00:00:00+08:00',
+        end: '2022-01-01T05:00:00+08:00',
+        minGranularity: 'PT1H'
+      },
+      output: 'PT15M'
     }
   ]
   data.forEach(({ input, output }) => {

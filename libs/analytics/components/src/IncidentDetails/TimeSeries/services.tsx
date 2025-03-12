@@ -12,7 +12,7 @@ export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
   incident: Incident
   buffer: BufferType
-  minGranularity: string
+  minGranularity?: string
 }
 
 interface Response <TimeSeriesChartResponse> {
@@ -65,7 +65,8 @@ export const Api = dataApi.injectEndpoints({
             path: payload.incident.path,
             granularity: calculateGranularity(
               payload.incident.startTime,
-              payload.incident.endTime
+              payload.incident.endTime,
+              payload.minGranularity
             )
           }
         }
