@@ -401,7 +401,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         try {
           clientDetails = {
             ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
-            body: arg.payload
+            body: latestTimeFilter(arg.payload)
           }
         } catch(e) {
           // eslint-disable-next-line no-console
