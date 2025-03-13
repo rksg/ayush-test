@@ -11,11 +11,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SearchOutlined }         from '@acx-ui/icons'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                      from '@acx-ui/icons'
 import {
-  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes,
-  useEnforcedStatus
+  GoogleMapWithPreference, ProtectedEnforceTemplateToggleVenue,
+  usePlacesAutocomplete, wifiCountryCodes, useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
@@ -500,7 +500,7 @@ export function VenuesForm (props: VenuesFormProps) {
             {!modalMode &&
               <Row gutter={20}>
                 <Col span={8}>
-                  <ProtectedEnforceTemplateToggle templateId={data?.id} />
+                  <ProtectedEnforceTemplateToggleVenue templateId={data?.id} />
                 </Col>
               </Row>
             }

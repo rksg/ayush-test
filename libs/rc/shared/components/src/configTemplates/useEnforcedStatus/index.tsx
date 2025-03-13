@@ -8,16 +8,17 @@ import { getIntl }                                                  from '@acx-u
 
 import { AllowedEnforcedType, ConfigTemplateEnforcementContext, enforcedActionMsg, GetStepsFormProps } from './constants'
 
+export { ConfigTemplateEnforcementContext } from './constants'
+
 
 export function useEnforcedStatus (type: AllowedEnforcedType) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const enforcedFields = useContext(ConfigTemplateEnforcementContext)
-  const isConfigTemplateEnforcedPocEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
   const enforcedAvailableMap: Record<AllowedEnforcedType, boolean> = {
     [ConfigTemplateType.NETWORK]: useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED),
-    [ConfigTemplateType.VENUE]: useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED),
+    [ConfigTemplateType.VENUE]: useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED_VENUE),
     [ConfigTemplateType.DPSK]: useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED_P1),
     [ConfigTemplateType.RADIUS]: useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED_P1),
     [ConfigTemplateType.WIFI_CALLING]: useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED_P1)
@@ -25,9 +26,7 @@ export function useEnforcedStatus (type: AllowedEnforcedType) {
 
   // eslint-disable-next-line max-len
   const hasEnforcedItem = (target: Array<EnforceableFields> | undefined): boolean => {
-    const enforcedAvailable = type ? enforcedAvailableMap[type] : isConfigTemplateEnforcedPocEnabled
-
-    if (!target || !enforcedAvailable || isTemplate) return false
+    if (!target || !enforcedAvailableMap[type] || isTemplate) return false
 
     return target.some(item => item.isEnforced)
   }
