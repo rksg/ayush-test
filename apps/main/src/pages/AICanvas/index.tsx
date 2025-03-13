@@ -42,6 +42,7 @@ export default function AICanvas () {
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
 
+  const maxSearchTextNumber = 5
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
@@ -339,6 +340,7 @@ export default function AICanvas () {
                         name='searchInput'
                         children={<UI.Input
                           autoFocus
+                          maxLength={maxSearchTextNumber}
                           data-testid='search-input'
                           onKeyDown={onKeyDown}
                           onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
@@ -347,10 +349,13 @@ export default function AICanvas () {
                         />}
                       />
                     </Form>
+                    <div>{searchText.length + ' / ' + maxSearchTextNumber}</div>
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}
-                      disabled={aiBotLoading || searchText.length <= 1}
+                      disabled={aiBotLoading
+                        || searchText.length <= 1
+                        || searchText.length > maxSearchTextNumber}
                       onClick={()=> { handleSearch() }}
                     />
                   </div>

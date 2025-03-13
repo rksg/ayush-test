@@ -298,15 +298,20 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         width: 400px;
         padding: 10px 20px 20px 20px;
         button {
+          min-width: 24px;
+          width: 24px;
+          height: 24px;
           position: fixed;
           left: 333px;
-          bottom: 57px;
+          bottom: 46px;
           border: 0px;
           background: var(--acx-accents-orange-50);
           &.ant-btn[disabled] {
             background: var(--acx-neutrals-30);
           }
           svg {
+            width: 14px;
+            height: 14px;
             path { stroke: var(--acx-primary-white); } }
           }
         }
