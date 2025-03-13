@@ -211,6 +211,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
+        // eslint-disable-next-line max-len
         tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, NetworkSegmentTypeEnum.VXLAN),
         isTunnelLoading: isLoading
       }
