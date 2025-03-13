@@ -89,197 +89,185 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     )
   }
 
-  const AppTokenTable = () => {
-    const columns: TableProps<TenantAuthentications>['columns'] = [
-      {
-        title: $t({ defaultMessage: 'Token Name' }),
-        dataIndex: 'name',
-        key: 'name'
-      },
-      {
-        title: $t({ defaultMessage: 'Status' }),
-        dataIndex: 'clientIDStatus',
-        key: 'clientIDStatus',
-        render: function (_, row) {
-          return row.clientIDStatus === ApplicationAuthenticationStatus.ACTIVE
-            ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Revoked' })
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Client ID' }),
-        dataIndex: 'clientID',
-        key: 'clientID',
-        width: 275,
-        render: function (_, row) {
-          return <div>
-            <Input
-              readOnly
-              bordered={false}
-              value={row.clientID}
-              style={{ paddingLeft: '0px', width: '270px' }}
-            />
-            <Button
-              ghost
-              data-testid={'copy'}
-              icon={<CopyOutlined />}
-              onClick={() =>
-                navigator.clipboard.writeText(row.clientID ?? '')
-              }
-            />
-          </div>
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Shared Secret' }),
-        dataIndex: 'clientSecret',
-        key: 'clientSecret',
-        width: 275,
-        render: function (_, row) {
-          return <div onClick={(e)=> {e.stopPropagation()}}>
-            <PasswordInput
-              bordered={false}
-              value={row.clientSecret}
-              style={{ paddingLeft: '0px', width: '275px' }}
-            />
-            <Button
-              ghost
-              data-testid={'copy'}
-              icon={<CopyOutlined />}
-              onClick={() =>
-                navigator.clipboard.writeText(row.clientSecret ?? '')
-              }
-            />
-          </div>
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Scope' }),
-        dataIndex: 'scopes',
-        key: 'scopes',
-        render: function (_, row) {
-          return roleDisplayText[row.scopes as RolesEnum]
-            ? $t(roleDisplayText[row.scopes as RolesEnum]) : row.scopes
-        }
+  const columns: TableProps<TenantAuthentications>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Token Name' }),
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'clientIDStatus',
+      key: 'clientIDStatus',
+      render: function (_, row) {
+        return row.clientIDStatus === ApplicationAuthenticationStatus.ACTIVE
+          ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Revoked' })
       }
-    ]
-
-    const actions: TableProps<TenantAuthentications>['actions'] = [
-      {
-        label: $t({ defaultMessage: 'Add Token' }),
-        rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addTenantAuthentications)],
-        onClick: () => {onAddAppToken()}
+    },
+    {
+      title: $t({ defaultMessage: 'Client ID' }),
+      dataIndex: 'clientID',
+      key: 'clientID',
+      width: 275,
+      render: function (_, row) {
+        return <div>
+          <Input
+            readOnly
+            bordered={false}
+            value={row.clientID}
+            style={{ paddingLeft: '0px', width: '270px' }}
+          />
+          <Button
+            ghost
+            data-testid={'copy'}
+            icon={<CopyOutlined />}
+            onClick={() =>
+              navigator.clipboard.writeText(row.clientID ?? '')
+            }
+          />
+        </div>
       }
-    ]
+    },
+    {
+      title: $t({ defaultMessage: 'Shared Secret' }),
+      dataIndex: 'clientSecret',
+      key: 'clientSecret',
+      width: 275,
+      render: function (_, row) {
+        return <div onClick={(e)=> {e.stopPropagation()}}>
+          <PasswordInput
+            bordered={false}
+            value={row.clientSecret}
+            style={{ paddingLeft: '0px', width: '275px' }}
+          />
+          <Button
+            ghost
+            data-testid={'copy'}
+            icon={<CopyOutlined />}
+            onClick={() =>
+              navigator.clipboard.writeText(row.clientSecret ?? '')
+            }
+          />
+        </div>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Scope' }),
+      dataIndex: 'scopes',
+      key: 'scopes',
+      render: function (_, row) {
+        return roleDisplayText[row.scopes as RolesEnum]
+          ? $t(roleDisplayText[row.scopes as RolesEnum]) : row.scopes
+      }
+    }
+  ]
 
-    const rowActions: TableProps<TenantAuthentications>['rowActions'] = [
-      {
-        label: $t({ defaultMessage: 'Edit' }),
-        rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantAuthentications)],
-        onClick: (rows) => {
-          setAuthenticationsData(rows[0])
-          setEditMode(true)
-          setDrawerVisible(true)
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Revoke' }),
-        visible: (selectedRows) => {
-          if(selectedRows[0] &&
+  const actions: TableProps<TenantAuthentications>['actions'] = [
+    {
+      label: $t({ defaultMessage: 'Add Token' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addTenantAuthentications)],
+      onClick: () => {onAddAppToken()}
+    }
+  ]
+
+  const rowActions: TableProps<TenantAuthentications>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantAuthentications)],
+      onClick: (rows) => {
+        setAuthenticationsData(rows[0])
+        setEditMode(true)
+        setDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Revoke' }),
+      visible: (selectedRows) => {
+        if(selectedRows[0] &&
             (selectedRows[0].clientIDStatus === ApplicationAuthenticationStatus.ACTIVE )) {
-            return true
-          }
-          return false
-        },
-        onClick: (rows, clearSelection) => {
-          const title = $t(
-            { defaultMessage: 'Revoke application "{formattedName}"?' },
-            { formattedName: rows[0].name }
-          )
-          showActionModal({
-            type: 'confirm',
-            title: title,
-            content: $t({
-              defaultMessage: `
+          return true
+        }
+        return false
+      },
+      onClick: (rows, clearSelection) => {
+        const title = $t(
+          { defaultMessage: 'Revoke application "{formattedName}"?' },
+          { formattedName: rows[0].name }
+        )
+        showActionModal({
+          type: 'confirm',
+          title: title,
+          content: $t({
+            defaultMessage: `
               You are about to revoke access for the "{formattedName}" application.
               This will prevent the application from accessing your data and performing
               actions on your behalf
               `
-            }, { formattedName: rows[0].name }),
-            okText: $t({ defaultMessage: 'Revoke' }),
-            onOk: () => {
-              const payload: TenantAuthentications = {
-                name: rows[0].name,
-                authenticationType: rows[0].authenticationType,
-                clientIDStatus: ApplicationAuthenticationStatus.REVOKED
-              }
-              updateTenantAuthentications({ params: { authenticationId: rows[0].id },
-                payload: payload })
-                .then(clearSelection)
-              reloadAuthTable(2)
+          }, { formattedName: rows[0].name }),
+          okText: $t({ defaultMessage: 'Revoke' }),
+          onOk: () => {
+            const payload: TenantAuthentications = {
+              name: rows[0].name,
+              authenticationType: rows[0].authenticationType,
+              clientIDStatus: ApplicationAuthenticationStatus.REVOKED
             }
-          })
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Activate' }),
-        visible: (selectedRows) => {
-          if(selectedRows[0] &&
-            (selectedRows[0].clientIDStatus !== ApplicationAuthenticationStatus.ACTIVE)) {
-            return true
+            updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+              payload: payload })
+              .then(clearSelection)
+            reloadAuthTable(2)
           }
-          return false
-        },
-        onClick: (rows, clearSelection) => {
-          const payload: TenantAuthentications = {
-            name: rows[0].name,
-            authenticationType: rows[0].authenticationType,
-            clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
-          }
-          updateTenantAuthentications({ params: { authenticationId: rows[0].id },
-            payload: payload })
-            .then(clearSelection)
-          reloadAuthTable(2)
-        }
-      },
-      {
-        label: $t({ defaultMessage: 'Delete' }),
-        onClick: (rows, clearSelection) => {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Application' }),
-              entityValue: rows[0].name
-            },
-            onOk: () => {
-              deleteTenantAuthentications({ params: { authenticationId: rows[0].id } })
-                .then(clearSelection)
-              reloadAuthTable(2)
-            }
-          })
-        }
+        })
       }
-    ]
-
-    const getActions = function () {
-      if ( rbacOpsApiEnabled ) {
-        return filterByOperations(actions)
-      } else {
-        return (hasCrossVenuesPermission() ? actions : [])
+    },
+    {
+      label: $t({ defaultMessage: 'Activate' }),
+      visible: (selectedRows) => {
+        if(selectedRows[0] &&
+            (selectedRows[0].clientIDStatus !== ApplicationAuthenticationStatus.ACTIVE)) {
+          return true
+        }
+        return false
+      },
+      onClick: (rows, clearSelection) => {
+        const payload: TenantAuthentications = {
+          name: rows[0].name,
+          authenticationType: rows[0].authenticationType,
+          clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
+        }
+        updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+          payload: payload })
+          .then(clearSelection)
+        reloadAuthTable(2)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (rows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Application' }),
+            entityValue: rows[0].name
+          },
+          onOk: () => {
+            deleteTenantAuthentications({ params: { authenticationId: rows[0].id } })
+              .then(clearSelection)
+            reloadAuthTable(2)
+          }
+        })
       }
     }
+  ]
 
-    return (
-      <Table
-        columns={columns}
-        actions={getActions()}
-        dataSource={appTokenData}
-        rowKey='id'
-        rowActions={filterByOperations(rowActions)}
-        rowSelection={getActions().length > 0 && { type: 'radio' }}
-      />
-    )
+  const getActions = function () {
+    if ( rbacOpsApiEnabled ) {
+      return filterByOperations(actions)
+    } else {
+      return (hasCrossVenuesPermission() ? actions : [])
+    }
   }
+
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '25px' }}>
@@ -291,7 +279,16 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             {$t({ defaultMessage: 'Application Tokens' })}
           </>}
         />
-        {hasAppTokenConfigured ? <AppTokenTable /> : <AddAppLink />}
+        {hasAppTokenConfigured
+          ? <Table
+            columns={columns}
+            actions={getActions()}
+            dataSource={appTokenData}
+            rowKey='id'
+            rowActions={filterByOperations(rowActions)}
+            rowSelection={getActions().length > 0 && { type: 'radio' }}
+          />
+          : <AddAppLink />}
       </Col>
     </Row>
 
