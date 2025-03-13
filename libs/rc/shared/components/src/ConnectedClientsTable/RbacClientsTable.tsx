@@ -340,7 +340,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
-            const { apInformation } = row 
+            const { apInformation } = row
             if (apInformation.serialNumber === undefined) {
               return apInformation.name
             } else {
