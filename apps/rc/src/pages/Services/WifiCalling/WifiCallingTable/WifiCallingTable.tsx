@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip } from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteWifiCallingServicesMutation,
@@ -54,6 +54,7 @@ export default function WifiCallingTable () {
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedWifiCallingServiceListQuery,
@@ -120,9 +121,9 @@ export default function WifiCallingTable () {
       rbacOpsIds: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
-        doDelete(rows, clearSelection)
-      }
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
+      onClick: (rows, clearSelection) => doDelete(rows, clearSelection)
     },
     {
       rbacOpsIds: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
