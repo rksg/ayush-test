@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userEvent          from '@testing-library/user-event'
+import { rest }           from 'msw'
 
-import { Provider }                           from '@acx-ui/store'
-import { notificationApiURL }                 from '@acx-ui/store'
-import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
-import { mockRestApiQuery }                   from '@acx-ui/test-utils'
+import { Provider }                                       from '@acx-ui/store'
+import { notificationApiURL }                             from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { mockRestApiQuery }                               from '@acx-ui/test-utils'
 
 import ConnectorForm         from './ConnectorForm'
 import { dataConnectorApis } from './services'
@@ -33,6 +34,23 @@ describe('DataConnectorForm', () => {
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([dataConnectorApis.middleware])
+  })
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${notificationApiURL}/dataConnector/dataSources`,
+        (_, res, ctx) => res(ctx.json([{
+          dataSource: 'apInventory',
+          columns: ['apName', 'apMac']
+        }, {
+          dataSource: 'switchInventory',
+          columns: ['switchName', 'switchMac']
+        }, {
+          dataSource: 'unknown',
+          columns: []
+        }]))
+      )
+    )
   })
   afterEach(() => {
     store.dispatch(dataConnectorApis.util.resetApiState())
@@ -89,7 +107,7 @@ describe('DataConnectorForm', () => {
     await userEvent.click(screen.getByText('AP Inventory'))
     const dd2 = (await screen.findAllByRole('combobox')).at(1) as HTMLElement
     await userEvent.click(dd2)
-    await userEvent.click(screen.getByText('MAC Address'))
+    await userEvent.click(screen.getAllByText('apMac').at(1) as HTMLElement)
     const name = await screen.findByTestId('name')
     fireEvent.change(name, { target: { value: 'name' } })
     const applyBtn = await screen.findByRole('button', { name: 'Save' })

@@ -127,8 +127,6 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           }
         })
 
-        if(networkIds.length === 0 && apSerialNumbers.length === 0) return emptyResponse
-
         // Collect network names by ids
         const networkIdsSet = Array.from(new Set(networkIds))
         let networkMapping:{ [key:string]: string } = {}
