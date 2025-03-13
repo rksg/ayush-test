@@ -57,6 +57,7 @@ import {
   LocationExtended,
   Network,
   NetworkSaveData,
+  SocialIdentities,
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
@@ -73,9 +74,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }        from '../useEdgeActions'
+import { usePathBasedOnConfigTemplate, useEnforcedStatus } from '../configTemplates'
+import { useGetNetwork }                                   from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
@@ -163,6 +164,38 @@ interface GuestMore {
   guestPortal?: GuestPortal,
   userConnection?: UserConnection
 }
+
+type Processor<NetworkSaveData> = (data: NetworkSaveData) => NetworkSaveData
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const process = (data: NetworkSaveData, ...processors: Processor<any>[]): NetworkSaveData =>
+  processors.reduce((acc, fn) => fn(acc), data)
+
+const mergeButDoNothing: Processor<NetworkSaveData> = (data:NetworkSaveData) => data
+
+const mergeSocialIdentities = (newIdentities?: SocialIdentities): Processor<NetworkSaveData> => {
+  if(newIdentities === undefined) return mergeButDoNothing
+  return (mergedData) => {
+    const cloneData = _.cloneDeep(mergedData)
+    if (cloneData.guestPortal?.socialIdentities && cloneData.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+      cloneData.guestPortal.socialIdentities = newIdentities
+    }
+    return cloneData
+  }
+}
+
+const mergeSocialEmails = (newEmails?: string[]): Processor<NetworkSaveData> => {
+  if(newEmails === undefined) return mergeButDoNothing
+  return (mergedData) => {
+    const cloneData = _.cloneDeep(mergedData)
+    if (cloneData.guestPortal?.hostGuestConfig && cloneData.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+      cloneData.guestPortal.hostGuestConfig.hostEmails = newEmails
+    }
+    return cloneData
+  }
+}
+
+
 export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
@@ -267,6 +300,8 @@ export function NetworkForm (props:{
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     updateSaveState((preState) => {
       const updateSate = { ...preState }
@@ -292,12 +327,16 @@ export function NetworkForm (props:{
         saveData.enableAccountingProxy = false
       }
 
-      const newSavedata = merge({}, updateSate, saveData)
-      newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
-      if(saveData.guestPortal?.walledGardens !== undefined && newSavedata.guestPortal){
-        newSavedata.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
+      const mergedData = merge({}, updateSate, saveData)
+      mergedData.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      if(saveData.guestPortal?.walledGardens !== undefined && mergedData.guestPortal){
+        mergedData.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
       }
-      return { ...saveState, ...newSavedata }
+      const processedData = process(mergedData,
+        mergeSocialIdentities(saveData.guestPortal?.socialIdentities),
+        mergeSocialEmails(saveData.guestPortal?.hostGuestConfig?.hostEmails)
+      )
+      return { ...saveState, ...processedData }
     })
   }
 
@@ -589,7 +628,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId'])
+      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
     }
     return data
   }
@@ -1283,6 +1322,7 @@ export function NetworkForm (props:{
                 : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
+              {...getEnforcedStepsFormProps('StepsForm', saveState.isEnforced)}
             >
               {
                 !isRuckusAiMode && <StepsForm.StepForm
