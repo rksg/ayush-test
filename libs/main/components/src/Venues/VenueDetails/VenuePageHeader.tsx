@@ -7,6 +7,7 @@ import { usePathBasedOnConfigTemplate }                             from '@acx-u
 import { useVenueDetailsHeaderQuery }                               from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  PropertyUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader,
@@ -73,7 +74,9 @@ function VenuePageHeader () {
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
             getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
