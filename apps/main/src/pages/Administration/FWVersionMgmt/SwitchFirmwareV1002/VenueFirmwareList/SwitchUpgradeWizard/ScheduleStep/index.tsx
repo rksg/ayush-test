@@ -188,7 +188,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
     setShowSubTitle(false)
 
     setVersionFieldValue()
-    // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
       updateSwitch82AvNoteEnable(form.getFieldValue('selectedICX82Version'))
     }
