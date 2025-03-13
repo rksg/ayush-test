@@ -31,7 +31,6 @@ const { mockEdgeDhcpCompatibilities } = EdgeCompatibilityFixtures
 const mockedGetClusterList = jest.fn()
 const mockedUsedNavigate = jest.fn()
 const mockedUpdateFn = jest.fn()
-const test123 = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -42,6 +41,10 @@ jest.mock('@acx-ui/rc/components', () => ({
   SimpleListTooltip: ({ displayText }: { displayText: string }) =>
     <div data-testid='SimpleListTooltip' >{displayText}</div>,
   EdgeServiceStatusLight: () => <div data-testid='EdgeServiceStatusLight' />,
+  useEdgeDhcpCompatibilityData: () => ({
+    compatibilities: mockEdgeDhcpCompatibilities,
+    isLoading: false
+  }),
   useEdgeDhcpActions: () => ({
     upgradeEdgeDhcp: mockedUpdateFn,
     isEdgeDhcpUpgrading: false
@@ -77,12 +80,6 @@ describe('EdgeDhcpTable', () => {
           mockedGetClusterList()
           return res(ctx.json(mockEdgeClusterList))
         }
-      ),
-      rest.post(
-        EdgeDhcpUrls.getDhcpEdgeCompatibilities.url,
-        (req, res, ctx) => {
-          test123()
-          return res(ctx.json(mockEdgeDhcpCompatibilities))}
       )
     )
   })
@@ -98,7 +95,6 @@ describe('EdgeDhcpTable', () => {
     await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
-    await waitFor(() => expect(test123).toBeCalled())
     await screen.findAllByTestId('EdgeTableCompatibilityWarningTooltip')
   })
 
