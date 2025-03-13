@@ -312,7 +312,10 @@ function SettingsForm () {
               children={<PasswordInput />}
             />
         }
-        { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
+        { ( isWifiIdentityManagementEnable &&
+            !isMacRegistrationList &&
+            !isTemplate ) &&
+            <IdentityGroup />}
         <Form.Item
           label={$t({ defaultMessage: 'Security Protocol' })}
           name={['wlan', 'wlanSecurity']}

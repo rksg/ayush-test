@@ -49,7 +49,7 @@ function NetworkPageHeader ({
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const enableTimeFilter = () => !['aps', 'clients', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   const GenBreadcrumb = () => {
