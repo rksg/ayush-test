@@ -188,7 +188,7 @@ export function DataConnectorTable () {
         })
       }
     }
-    // Hide delete button to preserve quota usage
+    // Remove delete button to preserve quota usage for phase 1
   ]
 
   const hasDataPermission = get('IS_MLISA_SA')
