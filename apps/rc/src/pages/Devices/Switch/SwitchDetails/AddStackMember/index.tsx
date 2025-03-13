@@ -128,7 +128,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_TOGGLE)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
 
   const { data: switchData } =
     useGetSwitchQuery({

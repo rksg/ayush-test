@@ -13,7 +13,11 @@ import {
   SwitchStatusEnum,
   SwitchViewModel,
   SWITCH_TYPE,
-  SWITCH_SERIAL_PATTERN
+  SWITCH_SERIAL_BASE,
+  SWITCH_SERIAL_8200AV,
+  SWITCH_SERIAL_8100,
+  SWITCH_SERIAL_8100X,
+  SWITCH_SERIAL_SUFFIX
 } from '../../types'
 import { FlexibleAuthentication } from '../../types'
 
@@ -80,8 +84,6 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FPR', 'ICX8100-48-X'],
   ['FPS', 'ICX8100-48P-X'],
   ['FPT', 'ICX8100-C08PF-X'],
-  ['FPU', 'ICX8100-48PF-X'],
-  ['FPV', 'ICX8100-CC16PF-X'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -142,7 +144,12 @@ export const ICX_MODELS_MODULES = {
     '24P': [['24X10/100/1000Mbps'], ['4X100M/1G']],
     '48': [['48X10/100/1000Mbps'], ['4X100M/1G']],
     '48P': [['48X10/100/1000Mbps'], ['4X100M/1G']],
-    'C08PF': [['8X10/100/1000Mbps'], ['2X100M/1G']]
+    'C08PF': [['8X10/100/1000Mbps'], ['2X100M/1G']],
+    '24-X': [['24X10/100/1000Mbps'], ['4X100M/1G/10G']],
+    '24P-X': [['24X10/100/1000Mbps'], ['4X100M/1G/10G']],
+    '48-X': [['48X10/100/1000Mbps'], ['4X100M/1G/10G']],
+    '48P-X': [['48X10/100/1000Mbps'], ['4X100M/1G/10G']],
+    'C08PF-X': [['8X10/100/1000Mbps'], ['2X100M/1G/10G']]
   },
   ICX8200: { //TODO: Need more information
     '24': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
@@ -709,12 +716,34 @@ export const getClientIpAddr = (data?: SwitchClient) => {
   return ipAddress.length > 0 ? ipAddress.join(' / ') : noDataDisplay
 }
 
+export const createSwitchSerialPattern = (
+  isSupport8200AV: boolean,
+  isSupport8100: boolean,
+  isSupport8100X: boolean
+) => {
+  let pattern = SWITCH_SERIAL_BASE
+  if (isSupport8200AV) {
+    pattern += '|' + SWITCH_SERIAL_8200AV
+  }
+  if (isSupport8100) {
+    pattern += '|' + SWITCH_SERIAL_8100
+  }
+  if (isSupport8100X) {
+    pattern += '|' + SWITCH_SERIAL_8100X
+  }
+
+  return new RegExp(`^(${pattern})${SWITCH_SERIAL_SUFFIX}$`, 'i')
+}
+
 export const getAdminPassword = (
   data: SwitchViewModel | SwitchRow,
+  isSupport8200AV: boolean,
+  isSupport8100: boolean,
+  isSupport8100X: boolean,
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  const serialNumberRegExp = new RegExp(SWITCH_SERIAL_PATTERN)
+  const serialNumberRegExp = createSwitchSerialPattern(isSupport8200AV, isSupport8100, isSupport8100X)
 
   // when switch id is the serial number
   // 1) pre-provision 2) migrate from alto
@@ -829,4 +858,50 @@ export const checkSwitchUpdateFields = function (
     }
     return result
   }, [])
+}
+
+export const isRodanAv = (model: string) => {
+  switch(model) {
+    case 'ICX8200-24PV':
+    case 'ICX8200-C08PFV':
+      return true
+    default:
+      return false
+  }
+}
+
+export const isBabyRodanX = (model: string) => {
+  switch(model) {
+    case 'ICX8100-24-X':
+    case 'ICX8100-24P-X':
+    case 'ICX8100-48-X':
+    case 'ICX8100-48P-X':
+    case 'ICX8100-C08PF-X':
+      return true
+    default:
+      return false
+  }
+}
+
+export const isRodanAvSubModel = (model: string) => {
+  switch(model) {
+    case '24PV':
+    case 'C08PFV':
+      return true
+    default:
+      return false
+  }
+}
+
+export const isBabyRodanXSubModel = (model: string) => {
+  switch(model) {
+    case '24-X':
+    case '24P-X':
+    case '48-X':
+    case '48P-X':
+    case 'C08PF-X':
+      return true
+    default:
+      return false
+  }
 }

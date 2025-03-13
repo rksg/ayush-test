@@ -34,7 +34,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   SwitchMessages,
-  SWITCH_SERIAL_PATTERN,
   Switch,
   getSwitchModel,
   SwitchViewModel,
@@ -49,13 +48,10 @@ import {
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
   convertInputToUppercase,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8100,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
-  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV_8100X,
   FirmwareSwitchVenueVersionsV1002,
   SwitchFirmwareModelGroup,
-  getSwitchFwGroupVersionV1002
+  getSwitchFwGroupVersionV1002,
+  createSwitchSerialPattern
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -88,7 +84,7 @@ export function SwitchForm () {
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
-  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X_TOGGLE)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -458,23 +454,15 @@ export function SwitchForm () {
     setIsBabyRodanModel(isBabyRodan || false)
   }
 
-  const switchSerialPatterns = [
-    // eslint-disable-next-line max-len
-    { condition: isSupport8100 && isSupport8200AV && isSupport8100X, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV_8100X },
-    // eslint-disable-next-line max-len
-    { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
-    { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
-    { condition: isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8200AV }
-  ]
-
   const serialNumberRegExp = function (value: string) {
-    const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P',
-      'ICX8100-48', 'ICX8100-48P', 'ICX8100-C08PF']
+    const modelNotSupportStack =
+    ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P', 'ICX8100-48',
+      'ICX8100-48P', 'ICX8100-C08PF', 'ICX8100-24-X', 'ICX8100-24P-X', 'ICX8100-48-X',
+      'ICX8100-48P-X', 'ICX8100-C08PF-X']
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const matchedPattern = switchSerialPatterns.find(p => p.condition)
-    const re = new RegExp(matchedPattern ? matchedPattern.pattern : SWITCH_SERIAL_PATTERN)
+    const re = createSwitchSerialPattern(isSupport8200AV, isSupport8100, isSupport8100X)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }

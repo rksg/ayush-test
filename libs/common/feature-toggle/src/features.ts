@@ -306,7 +306,7 @@ export enum Features {
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
   RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
   WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
-  SWITCH_SUPPORT_ICX8100X_TOGGLE = 'switch-support-icx8100x-toggle'
+  SWITCH_SUPPORT_ICX8100X = 'switch-support-icx8100x-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
