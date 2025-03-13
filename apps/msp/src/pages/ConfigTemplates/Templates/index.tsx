@@ -263,9 +263,9 @@ function useColumns (props: TemplateColumnProps) {
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
-  ))
+  const typeFilterOptions = Object.entries(ConfigTemplateType)
+    .map((type => ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })))
+    .sort((a, b) => a.value.localeCompare(b.value))
 
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
     ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
