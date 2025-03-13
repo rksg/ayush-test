@@ -340,12 +340,16 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
-            const { apInformation } = row
-            return (
-              <TenantLink to={`/devices/wifi/${apInformation.serialNumber}/details/overview`}>
-                {apInformation.name}
-              </TenantLink>
-            )
+            const { apInformation } = row 
+            if (apInformation.serialNumber === undefined) {
+              return apInformation.name
+            } else {
+              return (
+                <TenantLink to={`/devices/wifi/${apInformation.serialNumber}/details/overview`}>
+                  {apInformation.name}
+                </TenantLink>
+              )
+            }
           })
         }
       },
