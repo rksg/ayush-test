@@ -36,15 +36,21 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { useEnforcedStatus }                                                                                              from '../../configTemplates'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                                           from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                                                           from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionDrawer, NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                                                        from '../../NetworkTunnelActionModal/types'
-import { NetworkVenueScheduleDialog }                                                                                     from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                                                             from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                                                          from '../../useEdgeActions'
-import NetworkFormContext                                                                                                 from '../NetworkFormContext'
+import { useEnforcedStatus }                                                    from '../../configTemplates'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import {
+  NetworkTunnelActionDrawer,
+  NetworkTunnelActionModal,
+  NetworkTunnelActionModalProps,
+  useGetSoftGreScopeVenueMap,
+  useGetIpsecScopeVenueMap
+} from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                            from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                         from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                              from '../../useEdgeActions'
+import NetworkFormContext                                     from '../NetworkFormContext'
 
 import { useTunnelColumn }                                                       from './TunnelColumn/useTunnelColumn'
 import { handleIpsecAction, handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
@@ -206,11 +212,13 @@ export function Venues (props: VenuesProps) {
   // hooks for tunnel column - start
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const ipsecVenueMap = useGetIpsecScopeVenueMap()
   const tunnelColumn = useTunnelColumn({
     network: data,
     sdLanScopedNetworkVenues,
     softGreVenueMap,
-    setTunnelModalState
+    setTunnelModalState,
+    ipsecVenueMap
   })
   // hooks for tunnel column - end
 

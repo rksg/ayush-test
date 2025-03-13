@@ -1,4 +1,4 @@
-import { Key } from 'react'
+import { Key, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -75,6 +75,8 @@ interface AlarmsTableProps {
 export const AlarmsTable = (props: AlarmsTableProps) => {
   const params = useParams()
   const { $t } = useIntl()
+  const [selectedAlarmFilters, setSelectedAlarmFilters] = useState({})
+
   const { rbacOpsApiEnabled } = getUserProfile()
   const isClearAllAlarmsToggleEnabled = useIsSplitOn(Features.ALARM_CLEAR_ALL_ALARMS_TOGGLE)
 
@@ -337,15 +339,21 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     }
     tableQuery.handleFilterChange(_customFilters, customSearch)
     setSelectedFilters({ ...severityFilter, ...productFilter })
+    const alarmFilter = severityFilter.severity || productFilter.product
+      ? { ...severityFilter, ...productFilter } : undefined
+    setSelectedAlarmFilters(alarmFilter as {})
   }
 
   const actions: TableProps<Alarm>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Clear all alarms' }),
+      label: selectedAlarmFilters
+        ? $t({ defaultMessage: 'Clear filtered alarms' })
+        : $t({ defaultMessage: 'Clear all alarms' }),
       disabled: !hasPermission || tableQuery.data?.totalCount === 0,
       onClick: async () => {
         if (isClearAllAlarmsToggleEnabled) {
-          await clearAllAlarms({ params })
+          const filterPayload = selectedAlarmFilters ? { filters: selectedAlarmFilters } : undefined
+          await clearAllAlarms({ params, payload: filterPayload })
         } else {
           const venueNames: string[] = []
           const alarmIds: string[] = []
