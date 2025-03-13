@@ -14,8 +14,11 @@ export const Wrapper = styled.div`
   overflow-x: hidden;
 `
 
-export const FootnoteWrapper = styled.div<{ setPadding: boolean }>`
+export const FootnoteWrapper = styled.div`
   color: var(--acx-neutrals-50);
-  line-height: 1.5;
-  padding-top: ${({ setPadding }) => (setPadding ? '18px' : '0px')};
+  padding-top: 18px;
+
+  :only-child {
+    padding-top: 0px;
+  }
 `

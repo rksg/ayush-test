@@ -38,8 +38,6 @@ export const StatusTrail = () => {
   const shouldShowLimitedText = preventColdTier && query.data &&
     query.data?.total > query.data?.data.length
 
-  const setPadding = (query.data?.data?.length || 0) > 0
-
   return <DetailsSection data-testid='Status Trail'>
     <DetailsSection.Title>
       <FormattedMessage defaultMessage='Status Trail' />
@@ -61,7 +59,7 @@ export const StatusTrail = () => {
                 : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
             </div>
           ))}
-          {shouldShowLimitedText ? <UI.FootnoteWrapper setPadding={setPadding}>
+          {shouldShowLimitedText ? <UI.FootnoteWrapper>
             <FormattedMessage
               defaultMessage={`
             <i>Limited to the most recent {days, plural, one {# day} other {# days}} of status.</i>
