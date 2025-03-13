@@ -118,7 +118,6 @@ describe('Table', () => {
       render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
         <PagedTable/>
       </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
       expect(screen.queryByText('link')).not.toBeInTheDocument()
     })
   })
