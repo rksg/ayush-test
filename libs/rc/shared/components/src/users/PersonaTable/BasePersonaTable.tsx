@@ -57,7 +57,7 @@ function useColumns (
     payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
   },
   { skip: !venueId || !isMultipleIdentityUnits }
-  ).data?.data.map(identity => [identity.personaId, identity.unitId]))
+  ).data?.data?.map(identity => [identity.personaId, identity.unitId]))
 
   const units = new Map(useGetPropertyUnitListQuery({
     params: { venueId: venueId },
@@ -68,7 +68,7 @@ function useColumns (
       sortOrder: 'ASC'
     }
   },
-  { skip: !venueId || !isMultipleIdentityUnits }).data?.data.map(unit => [unit.id,unit.name]))
+  { skip: !venueId || !isMultipleIdentityUnits }).data?.data?.map(unit => [unit.id,unit.name]))
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -146,8 +146,9 @@ function useColumns (
           <PropertyUnitLink
             venueId={venueId}
             unitId={row.identityId ? row.identityId : identities.get(row.id)}
-            name={row.identityId ?
-              unitPool.get(row.identityId ?? '') : units.get(identities.get(row.id) as string)}
+            name={row.identityId
+              ? unitPool.get(row.identityId)
+              : units.get(identities.get(row.id) ?? '')}
           />
         ,
         ...props.identityId
