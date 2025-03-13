@@ -95,8 +95,6 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     // Step 1
-    // const hiddenGraph = await screen.findByTestId('hidden-graph')
-    // expect(hiddenGraph).toBeInTheDocument()
     expect(await screen.findByText('Benefits')).toBeVisible()
     expect(await screen.findByText('Projection')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
