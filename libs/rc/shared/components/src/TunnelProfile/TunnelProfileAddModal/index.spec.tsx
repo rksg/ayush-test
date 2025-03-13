@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features }                                                 from '@acx-ui/feature-toggle'
-import { TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                 from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }              from '@acx-ui/test-utils'
+import { Features }                                                         from '@acx-ui/feature-toggle'
+import { NetworkSegmentTypeEnum, TunnelProfileFormType, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                      from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -77,7 +77,7 @@ describe('PersonalIdentityNetwork - WirelessNetworkForm > TunnelProfileAddModal'
       render(
         <Provider>
           <TunnelProfileAddModal
-            initialValues={{ type: TunnelTypeEnum.VLAN_VXLAN } as TunnelProfileFormType} />
+            initialValues={{ type: NetworkSegmentTypeEnum.VLAN_VXLAN } as TunnelProfileFormType} />
         </Provider>
       )
 
