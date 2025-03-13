@@ -8,6 +8,7 @@ export interface CatchErrorDetails {
 export interface CatchErrorResponse {
   data: {
     errors: CatchErrorDetails[],
+    error?: CatchErrorDetails,
     requestId: string
   },
   status: number
