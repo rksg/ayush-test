@@ -59,7 +59,6 @@ import { AddRecCustomer }                          from './pages/MspRecCustomers
 import { NewDeviceInventory }                      from './pages/NewDeviceInventory'
 import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
-import { NewAssignMspLicense }                     from './pages/Subscriptions/NewAssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
 export function Init () {
@@ -202,11 +201,7 @@ function CustomersRoutes () {
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
         <Route path=':activeTab' element={<Subscriptions />} />
-        <Route path='assign'
-          element={
-            solutionTokenFFToggled
-              ? <NewAssignMspLicense />
-              : <AssignMspLicense />} />
+        <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>
   )
