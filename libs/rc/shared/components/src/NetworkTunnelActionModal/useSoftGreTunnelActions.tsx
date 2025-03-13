@@ -1,10 +1,11 @@
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useActivateIpsecMutation,
   useActivateSoftGreMutation,
   useDectivateIpsecMutation,
   useDectivateSoftGreMutation,
-  useGetSoftGreViewDataListQuery
+  useGetSoftGreViewDataListQuery,
+  useGetIpsecViewDataListQuery
 } from '@acx-ui/rc/services'
 
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
@@ -14,6 +15,13 @@ export interface SoftGreNetworkTunnel {
     networkIds: string[]
     profileId: string
     profileName: string
+}
+
+export interface IpSecInfo {
+  venueId: string
+  networkIds: string[]
+  profileId: string
+  profileName: string
 }
 
 export function useGetSoftGreScopeVenueMap () {
@@ -58,6 +66,69 @@ export function useGetSoftGreScopeNetworkMap (networkId?: string) {
     skip: !isSoftGreEnabled || !networkId,
     selectFromResult: ({ data }) => {
       const venuesMap = {} as Record<string, SoftGreNetworkTunnel[]>
+      data?.data?.forEach(item => {
+        item.activations?.forEach(activation => {
+          if (networkId && activation.wifiNetworkIds.includes(networkId)) {
+            const venueId = activation.venueId
+            const venuesMapItem = venuesMap[venueId]|| []
+            venuesMapItem.push({
+              venueId,
+              networkIds: activation.wifiNetworkIds,
+              profileId: item.id,
+              profileName: item.name
+            })
+            venuesMap[venueId] = venuesMapItem
+          }
+        })
+      })
+      return { venuesMap }
+    }
+  })
+  return venuesMap
+}
+
+export function useGetIpsecScopeVenueMap () {
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const { venuesMap } = useGetIpsecViewDataListQuery({
+    payload: {
+      page: 1,
+      pageSize: 10_000,
+      fields: ['name', 'id', 'activations'],
+      filters: {}
+    } }, {
+    skip: !isIpsecEnabled,
+    selectFromResult: ({ data }) => {
+      const venuesMap = {} as Record<string, IpSecInfo[]>
+      data?.data?.forEach(item => {
+        item.activations?.forEach(activation => {
+          const venuesMapItem = venuesMap[activation.venueId] || []
+          venuesMapItem.push({
+            venueId: activation.venueId,
+            networkIds: activation.wifiNetworkIds,
+            profileId: item.id,
+            profileName: item.name
+          })
+          venuesMap[activation.venueId] = venuesMapItem
+        })
+      })
+      return { venuesMap }
+    }
+  })
+  return venuesMap
+}
+
+export function useGetIpsecScopeNetworkMap (networkId?: string) {
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
+  const { venuesMap } = useGetSoftGreViewDataListQuery({
+    payload: {
+      page: 1,
+      pageSize: 10_000,
+      fields: ['name', 'id', 'activations'],
+      filters: {}
+    } }, {
+    skip: !isIpsecEnabled || !networkId,
+    selectFromResult: ({ data }) => {
+      const venuesMap = {} as Record<string, IpSecInfo[]>
       data?.data?.forEach(item => {
         item.activations?.forEach(activation => {
           if (networkId && activation.wifiNetworkIds.includes(networkId)) {
