@@ -113,7 +113,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     defaultPayload: { ...defaultPayload,
       filters: { alarmType: isNewAlarm ? ['new'] : ['clear'] } },
     sorter: {
-      sortField: 'startTime',
+      sortField: isNewAlarm ? 'startTime' : 'clearTime',
       sortOrder: 'DESC'
     },
     pagination: {
@@ -219,6 +219,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Generated on' }),
       key: 'startTime',
       dataIndex: 'startTime',
+      sorter: true,
       width: 140,
       render: function (_, row) {
         return (<UI.ListItem>
@@ -230,6 +231,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Cleared on' }),
       key: 'clearTime',
       dataIndex: 'clearTime',
+      sorter: true,
       width: 140,
       render: function (_: React.ReactNode, row: Alarm) {
         return (<UI.ListItem>
