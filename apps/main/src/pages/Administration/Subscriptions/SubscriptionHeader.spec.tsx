@@ -20,9 +20,6 @@ jest.mock('@acx-ui/components', () => ({
   StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />),
   showToast: jest.fn()
 }))
-jest.mock('./ConvertNonVARMSPButton', () => ({
-  ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
-}))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   isDelegationMode: jest.fn().mockReturnValue(false),
