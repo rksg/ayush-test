@@ -27,6 +27,7 @@ export interface PropertyUnitIdentityDrawerProps {
 
 export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerProps) {
   const { $t } = useIntl()
+  const MAX_IDENTITY_COUNT = 10
   const { visible, onClose, groupId, venueId, unitId, identityCount } = props
   const settingsId = 'property-units-identity-table'
   const identities = new Map(useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
@@ -52,7 +53,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
 
   const onSave = async () => {
     const identityLimit = (identityCount || 0) + selectedRows.length
-    if(identityLimit > 10)
+    if(identityLimit > MAX_IDENTITY_COUNT)
     {
       (showActionModal({
         type: 'error',
@@ -103,6 +104,10 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       dataIndex: 'email',
       searchable: true
     },{
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      dataIndex: 'phoneNumber'
+    },{
       key: 'revoked',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'revoked',
@@ -110,10 +115,11 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       render: (_, row) => row.revoked ? $t({ defaultMessage: 'Blocked' })
         : $t({ defaultMessage: 'Active' })
     },{
-      key: 'deviceCount',
-      title: $t({ defaultMessage: 'Devices' }),
-      dataIndex: 'deviceCount',
-      align: 'center'
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      searchable: true,
+      width: 200
     },{
       key: 'unit',
       title: $t({ defaultMessage: 'unit' }),
