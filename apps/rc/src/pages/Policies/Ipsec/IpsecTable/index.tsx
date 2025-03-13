@@ -22,7 +22,8 @@ import {
   IkeProposal,
   EspProposal,
   IpSecAuthEnum,
-  IpSecProposalTypeEnum
+  IpSecProposalTypeEnum,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -64,6 +65,7 @@ export default function IpsecTable () {
 
   const rowActions: TableProps<IpsecViewData>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
@@ -79,6 +81,7 @@ export default function IpsecTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
@@ -128,6 +131,7 @@ export default function IpsecTable () {
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
             scopeKey={getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add IPsec Profile' })}</Button>
           </TenantLink>
