@@ -91,7 +91,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
-        const targetIpsec = ipsecVenueMap[row.id]
+        const venueIpsec = ipsecVenueMap[row.id]
+        const targetIpsec = venueIpsec?.filter(sg => sg.networkIds.includes(networkId))
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
         // eslint-disable-next-line max-len

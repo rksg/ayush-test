@@ -100,7 +100,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanVenueMap[venueId]
         const venueSoftGre = softGreVenueMap[venueId]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
-        const targetIpsec = ipsecVenueMap[venueId]
+        const venueIpsec = ipsecVenueMap[venueId]
+        const targetIpsec = venueIpsec?.filter(sg => sg.networkIds.includes(row.id))
 
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
