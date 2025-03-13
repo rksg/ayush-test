@@ -34,6 +34,7 @@ import {
 import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
+  ConfigTemplateType,
   TableQuery,
   usePollingTableQuery,
   Venue,
@@ -288,7 +289,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
   const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const hasDeletePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])

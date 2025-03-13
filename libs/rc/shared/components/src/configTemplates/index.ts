@@ -7,7 +7,7 @@ export {
   ProtectedEnforceTemplateToggle,
   ProtectedEnforceTemplateToggleP1
 } from './EnforceTemplateToggle'
-export { useEnforcedStatus, ConfigTemplateEnforcementContext } from './useEnforcedStatus'
+export * from './useEnforcedStatus'
 
 export function useIsConfigTemplateBeta (): boolean {
   return useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE)

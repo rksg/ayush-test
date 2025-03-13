@@ -12,6 +12,7 @@ import {
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
   EditPropertyConfigMessages,
   PropertyConfigs,
   PropertyConfigStatus,
@@ -53,7 +54,7 @@ export const VenuePropertyManagementForm = (props: VenuePropertyManagementFormPr
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm(customForm)
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const [isPropertyEnable, setIsPropertyEnable] = useState<boolean>(false)
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()

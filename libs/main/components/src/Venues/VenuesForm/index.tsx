@@ -40,7 +40,8 @@ import {
   TableResult,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplatePageHeaderTitle,
-  CommonResult
+  CommonResult,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -195,7 +196,7 @@ export function VenuesForm (props: VenuesFormProps) {
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
   const { saveEnforcementConfig } = useConfigTemplate()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     if (data) {

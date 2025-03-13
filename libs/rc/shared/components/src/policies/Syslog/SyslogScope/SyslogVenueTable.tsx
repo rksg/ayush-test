@@ -7,6 +7,7 @@ import { showToast, Table, TableProps, Tooltip }                               f
 import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
   SyslogActionPayload,
   SyslogActionTypes,
   useConfigTemplate,
@@ -40,7 +41,7 @@ const SyslogVenueTable = () => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const activateVenue = (selectRows: VenueSyslogPolicyType[]) => {
     dispatch({

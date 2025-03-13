@@ -14,7 +14,8 @@ import {
   redirectPreviousPage,
   WifiRbacUrlsInfo,
   VenueConfigTemplateUrlsInfo,
-  useConfigTemplate
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { hasAllowedOperations }   from '@acx-ui/user'
@@ -64,7 +65,7 @@ export function NetworkingTab () {
   const { venueApCaps } = useContext(VenueUtilityContext)
 
   const [ getApList ] = useLazyApListQuery()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     if (venueApCaps) {
