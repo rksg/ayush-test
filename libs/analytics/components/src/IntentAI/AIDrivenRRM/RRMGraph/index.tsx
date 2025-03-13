@@ -16,7 +16,8 @@ import {
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
   Loader,
-  Tooltip
+  Tooltip,
+  categoryStyles
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { InformationOutlined }       from '@acx-ui/icons'
@@ -59,7 +60,6 @@ const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: st
       maxHeight: '100%'
     }}
   />}
-  <Legend />
 </>
 
 export function DataGraph (props: {
@@ -115,7 +115,6 @@ export function DataGraph (props: {
       zoomScale={props.zoomScale}
       backgroundColor='transparent'
     />}</AutoSizer></div>
-    <Legend />
   </>
 }
 
@@ -219,6 +218,7 @@ export const IntentAIRRMGraph = ({
     </div>}
     <Loader states={[queryResult]}>
       <Card>
+        <Legend {...categoryStyles}/>
         <UI.GraphWrapper data-testid='graph-wrapper'
           key={'graph-details'}
         >
