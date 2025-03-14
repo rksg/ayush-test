@@ -356,9 +356,7 @@ export default function AICanvas () {
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}
-                      disabled={aiBotLoading
-                        || searchText.length <= 1
-                        || searchText.length > maxSearchTextNumber}
+                      disabled={aiBotLoading || searchText.length <= 1}
                       onClick={()=> { handleSearch() }}
                     />
                   </div>
