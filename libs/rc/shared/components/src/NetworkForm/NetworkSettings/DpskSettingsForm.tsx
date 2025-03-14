@@ -151,9 +151,12 @@ function SettingsForm () {
 
     handleDpsk3NonProxyMode(dpskWlanSecurity, isCloudpathEnabled)
 
+  }, [dpskWlanSecurity, isCloudpathEnabled])
+
+  useEffect(() => {
     form.setFieldValue('wlanSecurity', dpskWlanSecurity)
     form.setFieldValue(['wlan', 'wlanSecurity'], dpskWlanSecurity)
-  }, [dpskWlanSecurity, isCloudpathEnabled])
+  }, [dpskWlanSecurity])
 
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
