@@ -262,6 +262,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
               row: DraggableRow
             }
           }}
+          // set defaultPageSize to 10000 (big number) to hide pagination for this table
           pagination={{ defaultPageSize: 10000 }}
           data-testid='AdminGroupTable'
         />
