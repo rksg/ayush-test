@@ -39,7 +39,8 @@ import { AdvancedPermissionsTab } from './AdvancedPermissionsTab'
 import { PermissionsTab }         from './PermissionsTab'
 
 const TandemFeatureList = [
-  'ai.ai_assurance.network_assurance'
+  'ai.business_insights.data_studio',
+  'ai.business_insights.reports'
 ]
 
 export function Flat (parent: ScopeTreeDataNode | undefined) {
