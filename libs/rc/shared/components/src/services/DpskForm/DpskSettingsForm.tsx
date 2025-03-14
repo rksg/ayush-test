@@ -43,11 +43,11 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   DpskSaveData,
   TableResult,
-  useConfigTemplate, RulesManagementUrlsInfo
+  useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation
 } from '@acx-ui/rc/utils'
 import { RolesEnum }                      from '@acx-ui/types'
 import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
-import { getIntl, getOpsApi }             from '@acx-ui/utils'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
 import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
@@ -341,7 +341,8 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
               </Form.Item>
               {
                 (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
-                  hasAllowedOperations([getOpsApi(RulesManagementUrlsInfo.createPolicySet)])) && <>
+                  // eslint-disable-next-line max-len
+                  hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) && <>
                   <Button
                     id={'AddPolicySetButton'}
                     type='link'
