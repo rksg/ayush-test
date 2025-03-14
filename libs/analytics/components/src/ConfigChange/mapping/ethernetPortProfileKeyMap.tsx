@@ -45,5 +45,16 @@ export const ethernetPortProfileKeyMap = [
   { id: 41, value: 'initialState.CcmEthernetPortProfile.dp_tunnel_nat_enabled', text: defineMessage({ defaultMessage: 'DP Tunnel NAT enabled' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 42, value: 'initialState.CcmEthernetPortProfile.mdu_profile_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 43, value: 'initialState.CcmEthernetPortProfile.user_side_port.user_side_port_downlink_limit', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 44, value: 'initialState.CcmEthernetPortProfile.user_side_port.user_side_port_uplink_limit', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} }
+  { id: 44, value: 'initialState.CcmEthernetPortProfile.user_side_port.user_side_port_uplink_limit', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 45, value: 'initialState.CcmEthernetPortProfile.client_isolation_auto_vrrp_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 46, value: 'initialState.CcmEthernetPortProfile.client_isolation_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 47, value: 'initialState.CcmEthernetPortProfile.client_isolation_multicast_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 48, value: 'initialState.CcmEthernetPortProfile.client_isolation_unicast_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 49, value: 'initialState.CcmEthernetPortProfile.client_isolation_whitelist_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 50, value: 'initialState.CcmEthernetPortProfile.dhcp_option_82', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 51, value: 'initialState.CcmEthernetPortProfile.dhcp_option_82_format', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 52, value: 'initialState.CcmEthernetPortProfile.dhcp_option_82_mac_format', text: 'TBD', textAlto: 'TBD', enumType: 'com.ruckuswireless.scg.protobuf.ccm.Wlan.CcmWlan.DhcpOption82MacFormat', incidents: {}, kpis: {} },
+  { id: 53, value: 'initialState.CcmEthernetPortProfile.key', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 54, value: 'initialState.CcmEthernetPortProfile.value', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 55, value: 'initialState.CcmEthernetPortProfile.vni', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} }
 ]
