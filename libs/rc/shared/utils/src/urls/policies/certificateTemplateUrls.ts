@@ -86,7 +86,7 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     newApi: true,
     url: '/certificateAuthorities/:caId/subCas/query',
-    opsApi: 'POST:/certificateAuthorities/:caId/subCas/query'
+    opsApi: 'POST:/certificateAuthorities/{id}/subCas/query'
   },
   addCA: {
     method: 'post',
