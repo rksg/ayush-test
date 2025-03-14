@@ -190,7 +190,7 @@ function SettingsForm () {
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
 
         {
-          (isWifiIdentityManagementEnable && !isTemplate) &&
+          (!useCertificateTemplate && isWifiIdentityManagementEnable && !isTemplate) &&
           <Form.Item>
             <IdentityGroup />
           </Form.Item>

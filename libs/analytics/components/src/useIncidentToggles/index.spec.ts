@@ -11,6 +11,7 @@ describe('useIncidentToggles', () => {
       [IncidentToggle.AirtimeIncidents]: true,
       [IncidentToggle.SwitchDDoSIncidents]: true,
       [IncidentToggle.SwitchLoopDetectionIncidents]: true,
+      [IncidentToggle.SwitchLLDPStatusIncidents]: true,
       [IncidentToggle.SwitchPortCongestionIncidents]: true,
       [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
     })
@@ -20,6 +21,7 @@ describe('useIncidentToggles', () => {
       [IncidentToggle.AirtimeIncidents]: false,
       [IncidentToggle.SwitchDDoSIncidents]: false,
       [IncidentToggle.SwitchLoopDetectionIncidents]: false,
+      [IncidentToggle.SwitchLLDPStatusIncidents]: false,
       [IncidentToggle.SwitchPortCongestionIncidents]: false,
       [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
     })

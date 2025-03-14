@@ -5,8 +5,8 @@ import { Features, useIsSplitOn }                                               
 import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteTunnelProfileMutation,
-  useGetEdgeSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
+  useGetEdgeSdLanViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
@@ -21,10 +21,10 @@ import {
   getTunnelTypeString, hasPolicyPermission,
   isDefaultTunnelProfile,
   MtuTypeEnum,
+  NetworkSegmentTypeEnum,
   PolicyOperation,
   PolicyType,
   TunnelProfileViewData,
-  TunnelTypeEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -128,7 +128,7 @@ const TunnelProfileTable = () => {
         key: 'type',
         dataIndex: 'type',
         sorter: true,
-        render: (_, row) => getTunnelTypeString($t, row.type || TunnelTypeEnum.VXLAN,
+        render: (_, row) => getTunnelTypeString($t, row.type || NetworkSegmentTypeEnum.VXLAN,
           isEdgeVxLanKaReady)
       }] as TableColumn<TunnelProfileViewData, 'text'>[]
       : []

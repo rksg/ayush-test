@@ -1,4 +1,4 @@
-import { ExpirationDateEntity, ExpirationType } from '../..'
+import { EnforceableFields, ExpirationDateEntity, ExpirationType } from '../..'
 import {
   PassphraseFormatEnum
 } from '../../constants'
@@ -25,7 +25,7 @@ export interface CreateDpskFormFields {
   policySetId?: string;
   identityId?: string;
 }
-export interface DpskSaveData {
+export interface DpskSaveData extends EnforceableFields {
   id?: string;
   name: string;
   passphraseLength: number;

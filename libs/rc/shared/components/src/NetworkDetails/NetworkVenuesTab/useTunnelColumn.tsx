@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
 
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Table }       from '@acx-ui/components'
+import {  Table }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeMvSdLanViewData,
@@ -23,6 +24,7 @@ import {
   getNetworkTunnelType,
   useDeactivateNetworkTunnelByType,
   useEdgePinScopedNetworkVenueMap,
+  useGetIpsecScopeNetworkMap,
   useGetSoftGreScopeNetworkMap
 } from '../../NetworkTunnelActionModal'
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
@@ -46,6 +48,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
   const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
+  const ipsecVenueMap = useGetIpsecScopeNetworkMap(networkId)
   const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
   const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
@@ -74,8 +77,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
-      width: 180,
-      align: 'center' as const,
+      width: 200,
+      align: 'left' as const,
       render: function (_: ReactNode, row: Venue) {
         if (!networkId || !row.activated?.isActivated) return null
 
@@ -88,12 +91,14 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
         const venueSoftGre = softGreVenueMap[row.id]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
+        const venueIpsec = ipsecVenueMap[row.id]
+        const targetIpsec = venueIpsec?.filter(sg => sg.networkIds.includes(networkId))
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
 
-        return <StepsForm.FieldLabel width='50px'>
+        return <Space>
           <div><NetworkTunnelSwitchBtn
             tunnelType={tunnelType}
             venueSdLanInfo={venueSdLanInfo}
@@ -119,8 +124,9 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             venueSdLan={venueSdLanInfo}
             venueSoftGre={targetSoftGre?.[0]}
             venuePin={venuePinInfo}
+            venueIpSec={targetIpsec?.[0]}
           />
-        </StepsForm.FieldLabel>
+        </Space>
       }
     }]
     : [...(((isEdgeMvSdLanReady || isSoftGreEnabled) && !isEdgePinHaReady) ? [{

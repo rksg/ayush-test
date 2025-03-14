@@ -1,11 +1,11 @@
 import { Col, Form, Row, Select, Tooltip } from 'antd'
 import { useIntl }                         from 'react-intl'
 
-import { TunnelProfileAddModal }                                    from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }                                   from '@acx-ui/types'
-import { hasPermission }                                            from '@acx-ui/user'
-import { getOpsApi }                                                from '@acx-ui/utils'
+import { TunnelProfileAddModal }                                            from '@acx-ui/rc/components'
+import { NetworkSegmentTypeEnum, TunnelProfileFormType, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                                           from '@acx-ui/types'
+import { hasPermission }                                                    from '@acx-ui/user'
+import { getOpsApi }                                                        from '@acx-ui/utils'
 
 export interface TunnelProfileFormItemProps {
   options: { label: string, value: string }[]
@@ -20,7 +20,7 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
   const { $t } = useIntl()
 
   const formInitValues = {
-    type: TunnelTypeEnum.VLAN_VXLAN,
+    type: NetworkSegmentTypeEnum.VLAN_VXLAN,
     disabledFields: ['type']
   }
 

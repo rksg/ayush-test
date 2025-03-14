@@ -142,7 +142,7 @@ const TopologyDiagram = (props: TopologyDiagramProps) => {
 
   useEffect(() => {
     graphElemRef.current.apLabel?.text(
-      $t({ defaultMessage: 'AP: {apCount}' },
+      $t({ defaultMessage: 'Access Point: {apCount}' },
         { apCount })
     )
   }, [apCount])

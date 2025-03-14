@@ -14,7 +14,7 @@ import {
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
-  TunnelTypeEnum
+  NetworkSegmentTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../messageMappings'
@@ -25,7 +25,7 @@ import { EdgeSdLanVenueNetworksTable } from './VenueNetworkTable'
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id', 'type', 'mtuType'],
-  filters: { type: [TunnelTypeEnum.VLAN_VXLAN] },
+  filters: { type: [NetworkSegmentTypeEnum.VLAN_VXLAN] },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -55,7 +55,7 @@ export const TunnelNetworkForm = () => {
   })
 
   // eslint-disable-next-line max-len
-  const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, TunnelTypeEnum.VLAN_VXLAN)
+  const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, NetworkSegmentTypeEnum.VLAN_VXLAN)
   const dcTunnelProfileOptions = (tunnelProfileData
     ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
   const isSdLanDefaultExist = dcTunnelProfileOptions

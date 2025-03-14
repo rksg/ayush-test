@@ -23,7 +23,7 @@ const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
   fields: [
     'id', 'name', 'city', 'country', 'switches', 'aggregatedApStatus', 'rogueDetection',
-    'syslogServer', 'status', 'isEnforced', 'isManagedByTemplate'
+    'syslogServer', 'status', 'isEnforced'
   ],
   sortField: 'name',
   sortOrder: 'ASC',
