@@ -394,6 +394,11 @@ export interface StackMemberList {
   venueName: string
 }
 
+export interface StackMembers {
+  activeSerial: string,
+  members: StackMember[]
+}
+
 export interface ConfigurationHistory {
   switchName: string
   startTime: string

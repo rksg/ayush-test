@@ -140,6 +140,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const navigate = useNavigate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isNewSwitchMemberApiEnabled = useIsSplitOn(Features.SWUTCH_MENBERS_QUERY_OPTIMIZATION)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -173,6 +174,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
     enableSelectAllExtraArg: {
       enableAggregateStackMember: false
+    },
+    customExtraArg: {
+      enableNewMemberApi: isNewSwitchMemberApiEnabled
     },
     pagination: { settingsId }
   })
