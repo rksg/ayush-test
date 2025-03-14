@@ -248,7 +248,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       }
     ]}>
       <DndProvider backend={HTML5Backend} >
-        <Table
+        <Table style={{ paddingBottom: '40px' }}
           columns={columns}
           dataSource={adminList}
           rowKey='id'
