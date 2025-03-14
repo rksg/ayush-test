@@ -395,6 +395,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getEntitlementsCompliances: {
     method: 'post',
     url: '/entitlements/compliances/query',
+    opsApi: 'POST:/entitlements/compliances/query',
     newApi: true
   },
   getSolutionTokenSettings: {

@@ -15,8 +15,8 @@ import {
   CommonUrlsInfo,
   EdgeSdLanFixtures,
   EdgeTunnelProfileFixtures,
-  TunnelProfileUrls,
-  TunnelTypeEnum
+  NetworkSegmentTypeEnum,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -91,7 +91,7 @@ const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: [],
       networkIds: ['network2'],
       sdLanIds: ['sdlan1', 'sdlan2'],
-      type: TunnelTypeEnum.VLAN_VXLAN
+      type: NetworkSegmentTypeEnum.VLAN_VXLAN
     },
     {
       id: 'tunnelProfileId_dmz',
@@ -104,7 +104,7 @@ const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN,
+      type: NetworkSegmentTypeEnum.VXLAN,
       natTraversalEnabled: false
     }
   ])
