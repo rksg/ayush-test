@@ -5,12 +5,12 @@ import { Checkbox, Col, Form, Row, Select, Space, Typography } from 'antd'
 import { CheckboxValueType }                                   from 'antd/lib/checkbox/Group'
 import { useIntl }                                             from 'react-intl'
 
-import { Button, Loader, StepsForm, useStepFormContext, defaultRichTextFormatValues }                                                from '@acx-ui/components'
-import { Features }                                                                                                                  from '@acx-ui/feature-toggle'
-import { TunnelProfileAddModal, useIsEdgeFeatureReady }                                                                              from '@acx-ui/rc/components'
-import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData, TunnelProfileUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { hasPermission }                                                                                                             from '@acx-ui/user'
-import { getOpsApi }                                                                                                                 from '@acx-ui/utils'
+import { Button, defaultRichTextFormatValues, Loader, StepsForm, useStepFormContext }                                                        from '@acx-ui/components'
+import { Features }                                                                                                                          from '@acx-ui/feature-toggle'
+import { TunnelProfileAddModal, useIsEdgeFeatureReady }                                                                                      from '@acx-ui/rc/components'
+import { NetworkSegmentTypeEnum, PersonalIdentityNetworkFormData, TunnelProfileFormType, TunnelProfileUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { hasPermission }                                                                                                                     from '@acx-ui/user'
+import { getOpsApi }                                                                                                                         from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
@@ -18,7 +18,7 @@ import { AddDpskModal } from './AddDpskModal'
 import * as UI          from './styledComponents'
 
 const tunnelProfileFormInitValues ={
-  type: TunnelTypeEnum.VXLAN,
+  type: NetworkSegmentTypeEnum.VXLAN,
   disabledFields: ['type', 'natTraversalEnabled']
 }
 
