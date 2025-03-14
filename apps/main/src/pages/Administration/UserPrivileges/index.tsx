@@ -16,9 +16,15 @@ import {
   useGetTenantAuthenticationsQuery,
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
-import { TenantAuthenticationType, TenantType } from '@acx-ui/rc/utils'
-import { useTenantLink }                        from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                from '@acx-ui/user'
+import {
+  AdministrationUrlsInfo,
+  AdminRbacUrlsInfo,
+  TenantAuthenticationType,
+  TenantType
+} from '@acx-ui/rc/utils'
+import { useTenantLink }                               from '@acx-ui/react-router-dom'
+import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                                   from '@acx-ui/utils'
 
 import DelegationsTable from '../Administrators/DelegationsTable'
 
@@ -97,7 +103,7 @@ const UserPrivileges = () => {
         isMspEc={isMspEc}
         tenantType={tenantType}
       />,
-      visible: true
+      visible: hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getAdministrators)])
     },
     ssoGroups: {
       title: $t({ defaultMessage: 'SSO Groups ({ssoGroupCount})' }, { ssoGroupCount }),
@@ -113,7 +119,8 @@ const UserPrivileges = () => {
       content: <DelegationsTable
         isMspEc={isMspEc}
         userProfileData={userProfileData}/>,
-      visible: isDelegationReady ? true : false
+      visible: (isDelegationReady ? true : false) &&
+        hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getDelegations)])
     },
     privilegeGroups: {
       title: $t({ defaultMessage: 'Privilege Groups ({privilegeGroupCount})' },
@@ -122,7 +129,7 @@ const UserPrivileges = () => {
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
       />,
-      visible: true
+      visible: hasAllowedOperations([getOpsApi(AdminRbacUrlsInfo.getPrivilegeGroups)])
     },
     customRoles: {
       title: $t({ defaultMessage: 'Roles ({customRoleCount})' }, { customRoleCount }),
@@ -130,7 +137,7 @@ const UserPrivileges = () => {
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
       />,
-      visible: true
+      visible: hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getCustomRoles)])
     }
   }
 
