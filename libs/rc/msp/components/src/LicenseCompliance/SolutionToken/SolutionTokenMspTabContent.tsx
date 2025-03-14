@@ -70,12 +70,10 @@ export default function SolutionTokenMspTabContent (props: TabContentProps
           <label>{row?.usedLicenseCount}</label>
         </UI.FieldLabelSubs>)
     }
-
-    { !myAccountTabSelected && <>
-      <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
-        <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
-        <label>{totalActivePaidLicenseCount}</label>
-        {totalActivePaidLicenseCount > 0 &&
+    <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
+      <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
+      <label>{totalActivePaidLicenseCount}</label>
+      {totalActivePaidLicenseCount > 0 &&
               <label style={{ textAlign: 'left',
                 marginLeft: '10px',
                 color: 'var(--acx-accents-orange-50)' }}>
@@ -83,12 +81,12 @@ export default function SolutionTokenMspTabContent (props: TabContentProps
                   count: nextTotalPaidExpiringLicenseCount,
                   date: nextPaidExpirationDate
                 })}</label>}
-      </UI.FieldLabelSubs2>
-      {trialType && <UI.FieldLabelSubs2 width='275px'>
-        {trialType === TrialType.EXTENDED_TRIAL &&
+    </UI.FieldLabelSubs2>
+    {trialType && <UI.FieldLabelSubs2 width='275px'>
+      {trialType === TrialType.EXTENDED_TRIAL &&
         <><label>{$t({ defaultMessage: 'Active Extended Trial Licenses' })}</label>
           <label>{totalActiveTrialLicenseCount}</label>
-          {totalActiveTrialLicenseCount && totalActiveTrialLicenseCount > 0 &&
+          {!!(totalActiveTrialLicenseCount && totalActiveTrialLicenseCount > 0) &&
               <label style={{ textAlign: 'left',
                 marginLeft: '10px',
                 color: 'var(--acx-accents-orange-50)' }}>
@@ -96,9 +94,9 @@ export default function SolutionTokenMspTabContent (props: TabContentProps
                   count: nextTotalTrialExpiringLicenseCount,
                   date: nextTrialExpirationDate
                 })}</label>} </>}
-      </UI.FieldLabelSubs2>} </> }
+    </UI.FieldLabelSubs2>}
 
-    <div>
+    { myAccountTabSelected && <div>
       <UI.FieldLabelSubs2 width='275px' style={myAccountTabSelected ? { marginTop: '15px' } : {}}>
         <label>{$t({ defaultMessage: 'Assigned Paid Licenses' })}</label>
         <label>{totalActivePaidAssignedLicenseCount}</label>
@@ -107,7 +105,7 @@ export default function SolutionTokenMspTabContent (props: TabContentProps
         <label>{$t({ defaultMessage: 'Assigned Trial Licenses' })}</label>
         <label>{totalActiveTrialAssignedLicenseCount}</label>
       </UI.FieldLabelSubs2>
-    </div>
+    </div>}
     <UI.FieldLabelSubs2 style={{ marginTop: '10px' }} width='275px'>
       <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
       <label>{licensesUsed}</label>

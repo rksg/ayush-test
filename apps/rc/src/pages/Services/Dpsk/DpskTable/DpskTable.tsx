@@ -12,7 +12,7 @@ import {
   TableColumn
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { SimpleListTooltip, useEnforcedStatus }     from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskMutation,
@@ -57,6 +57,7 @@ export default function DpskTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
@@ -95,6 +96,8 @@ export default function DpskTable () {
       rbacOpsIds: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {

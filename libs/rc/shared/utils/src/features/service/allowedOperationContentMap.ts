@@ -13,6 +13,7 @@ import {
   EdgeSdLanUrls,
   EthernetPortProfileUrls,
   IdentityProviderUrls,
+  IpsecUrls,
   LbsServerProfileUrls,
   MacRegListUrlsInfo,
   SoftGreUrls,
@@ -216,6 +217,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(SoftGreUrls.updateSoftGre)],
     [PolicyOperation.DELETE]: [getOpsApi(SoftGreUrls.deleteSoftGre)],
     [PolicyOperation.LIST]: [getOpsApi(SoftGreUrls.getSoftGreViewDataList)]
+  },
+  [PolicyType.IPSEC]: {
+    [PolicyOperation.CREATE]: [getOpsApi(IpsecUrls.createIpsec)],
+    [PolicyOperation.EDIT]: [getOpsApi(IpsecUrls.updateIpsec)],
+    [PolicyOperation.DELETE]: [getOpsApi(IpsecUrls.deleteIpsec)],
+    [PolicyOperation.LIST]: [getOpsApi(IpsecUrls.getIpsecViewDataList)]
   },
   [PolicyType.DIRECTORY_SERVER]: {
     [PolicyOperation.CREATE]: [getOpsApi(DirectoryServerUrls.createDirectoryServer)],
