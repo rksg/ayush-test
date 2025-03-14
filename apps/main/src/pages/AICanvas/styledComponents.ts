@@ -12,7 +12,7 @@ export const Input = styled(AntInput.TextArea)`
   background: var(--acx-neutrals-10);
   border-radius: 16px;
   border: none;
-  padding: 16px 60px 16px 16px;
+  padding: 16px 62px 16px 16px;
   .ant-input::placeholder {
     color: var(--acx-neutrals-50);
   }
@@ -297,12 +297,18 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         bottom: 0;
         width: 400px;
         padding: 10px 20px 20px 20px;
+        .text-counter {
+          position: absolute;
+          right: 35px;
+          bottom: 85px;
+          color: var(--acx-neutrals-60);
+        }
         button {
           min-width: 24px;
           width: 24px;
           height: 24px;
-          position: fixed;
-          left: 333px;
+          position: absolute;
+          right: 37px;
           bottom: 46px;
           border: 0px;
           background: var(--acx-accents-orange-50);

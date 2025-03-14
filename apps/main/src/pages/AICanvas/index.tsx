@@ -42,7 +42,7 @@ export default function AICanvas () {
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
 
-  const maxSearchTextNumber = 5
+  const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
@@ -349,7 +349,10 @@ export default function AICanvas () {
                         />}
                       />
                     </Form>
-                    <div>{searchText.length + ' / ' + maxSearchTextNumber}</div>
+                    {
+                      searchText.length > 0 && <div className='text-counter'>
+                        {searchText.length + '/' + maxSearchTextNumber}</div>
+                    }
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}

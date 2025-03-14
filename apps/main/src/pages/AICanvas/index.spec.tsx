@@ -210,6 +210,7 @@ describe('AICanvas', () => {
     expect(await screen.findByText('History Drawer')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
+    expect(await screen.findByText('5/300')).toBeVisible()
     fireEvent.keyDown(searchInput, { key: 'Enter' })
     expect(await screen.findByText('hello')).toBeVisible()
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
