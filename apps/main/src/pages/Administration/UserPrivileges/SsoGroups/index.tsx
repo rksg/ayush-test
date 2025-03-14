@@ -76,7 +76,6 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
       render: (_, row) => {
         return <Button
           size='small'
@@ -93,8 +92,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Group ID' }),
       key: 'groupId',
-      dataIndex: 'groupId',
-      sorter: { compare: sortProp('groupId', defaultSort) }
+      dataIndex: 'groupId'
     },
     {
       title: $t({ defaultMessage: 'Logged Members' }),
@@ -106,7 +104,6 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       title: $t({ defaultMessage: 'Privilege Group' }),
       key: 'role',
       dataIndex: 'role',
-      sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return roleStringMap[row.role as RolesEnum]
           ? $t(roleStringMap[row.role as RolesEnum]) : row.role
