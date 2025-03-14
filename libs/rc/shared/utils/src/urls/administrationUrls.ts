@@ -5,6 +5,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/tenants/self',
     oldUrl: '/api/tenant/:tenantId',
+    opsApi: 'GET:/tenants/self',
     newApi: true
   },
   updateTenantSelf: {
@@ -23,6 +24,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/admins',
     oldUrl: '/api/tenant/:tenantId/admin',
+    opsApi: 'GET:/admins',
     newApi: true
   },
   updateAdmin: {
@@ -75,6 +77,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/tenants/delegations?type=VAR',
     oldUrl: '/api/tenant/:tenantId/delegation?type=VAR',
+    opsApi: 'GET:/tenants/delegations',
     newApi: true
   },
   getTenantDelegation: {
@@ -125,6 +128,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/delegations/:delegationId',
     oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    opsApi: 'DELETE:/tenants/delegations/{id}',
     newApi: true
   },
   inviteVAR: {
@@ -144,6 +148,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/tenants/notificationRecipients',
     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    opsApi: 'GET:/tenants/notificationRecipients',
     newApi: true
   },
   addRecipient: {
@@ -188,6 +193,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getEntitlementsActivations: {
     method: 'post',
     url: '/entitlements/orders/query',
+    opsApi: 'POST:/entitlements/orders/query',
     newApi: true
   },
   patchEntitlementsActivations: {
@@ -277,6 +283,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getCustomRoles: {
     method: 'get',
     url: '/roleAuthentications/customRoles',
+    opsApi: 'GET:/roleAuthentications/customRoles',
     newApi: true
   },
   addCustomRole: {
@@ -375,6 +382,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getWebhooks: {
     method: 'post',
     url: '/webhooks/query',
+    opsApi: 'POST:/webhooks/query',
     newApi: true
   },
   getWebhookEntry: {
@@ -405,6 +413,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getPrivacySettings: {
     method: 'get',
     url: '/tenants/privacySettings',
+    opsApi: 'GET:/tenants/privacySettings',
     newApi: true
   },
   updatePrivacySettings: {
