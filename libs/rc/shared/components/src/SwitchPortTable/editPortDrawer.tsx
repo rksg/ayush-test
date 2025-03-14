@@ -241,10 +241,10 @@ export function EditPortDrawer ({
   const isSwitch785048CPortSpeedEnabled =
     useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
-  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE) || true
   const isSwitchRstpPtToPtMacEnabled = useIsSplitOn(Features.SWITCH_RSTP_PT_TO_PT_MAC_TOGGLE)
   const isSwitchErrorRecoveryEnabled = useIsSplitOn(Features.SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE)
-  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE) || true
 
   const hasCreatePermission = hasPermission({
     scopes: [SwitchScopes.CREATE],
@@ -491,6 +491,7 @@ export function EditPortDrawer ({
       return acc
     }, {} as Record<string, PortProfilesBySwitchId[]>)
 
+    console.log(groupedOptions)
     return getPortProfileOptions(groupedOptions)
   }
 

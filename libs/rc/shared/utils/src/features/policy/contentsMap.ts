@@ -12,6 +12,7 @@ export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescrip
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'RADIUS Server' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control' }),
+  [PolicyType.SWITCH_ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation' }),
   [PolicyType.WIFI_OPERATOR]: defineMessage({ defaultMessage: 'Wi-Fi Operator' }),
   [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Identity Provider' }),

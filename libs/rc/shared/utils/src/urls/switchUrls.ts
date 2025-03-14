@@ -798,6 +798,16 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
     newApi: true
   },
+  getAccessControls: {
+    method: 'post',
+    url: '/switchL2AclPolicies/query',
+    newApi: true
+  },
+  deleteAccessControl: {
+    method: 'delete',
+    url: '/switchL2AclPolicies/:l2AclId',
+    newApi: true
+  },
   getSwitchMacAcls: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/macAcls/query',

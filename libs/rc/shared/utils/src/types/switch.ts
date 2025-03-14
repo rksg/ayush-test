@@ -1084,6 +1084,11 @@ export enum PortProfileTabsEnum {
   SWITCH = 'switch',
 }
 
+export enum NetworkTypeTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+}
+
 export interface PortDisableRecoverySetting {
   bpduGuard: boolean,
   loopDetection: boolean,

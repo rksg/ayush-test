@@ -297,7 +297,7 @@ export enum Features {
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
-  SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle'
+  SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'removable-ff'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

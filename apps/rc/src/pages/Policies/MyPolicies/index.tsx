@@ -171,6 +171,7 @@ function useCardData (): PolicyCardData[] {
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   return [
     {
@@ -191,7 +192,21 @@ function useCardData (): PolicyCardData[] {
         }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })),
+      disabled: isSwitchMacAclEnabled
+    },
+    {
+      type: PolicyType.ACCESS_CONTROL,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      totalCount: useGetEnhancedAccessControlProfileListQuery({
+        params, payload: {
+          ...defaultPayload,
+          noDetails: true
+        }, enableRbac
+      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink('/policies/accessControl/wifi'),
+      disabled: !isSwitchMacAclEnabled
     },
     {
       type: PolicyType.CLIENT_ISOLATION,

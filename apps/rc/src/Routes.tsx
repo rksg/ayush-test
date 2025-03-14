@@ -91,6 +91,7 @@ import Wired                                        from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
+import CreateAccessControl                          from './pages/Policies/AccessControl/create'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
@@ -191,6 +192,7 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
+import AccessControl from './pages/Policies/AccessControl'
 
 
 export default function RcRoutes () {
@@ -895,6 +897,7 @@ function PolicyRoutes () {
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1039,30 +1042,35 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })}
         element={<VLANPoolTable/>}
       />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
-            <AccessControlForm editMode={false}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.EDIT}>
-            <AccessControlForm editMode={true}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
-        element={<AccessControlDetail />}
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
-        element={<AccessControlTable />}
-      />
+      {!isSwitchMacAclEnabled && <>
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
+              <AccessControlForm editMode={false}/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.EDIT}>
+              <AccessControlForm editMode={true}/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+          element={<AccessControlDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+          element={<AccessControlTable />}
+        />
+      </>
+      }
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
@@ -1603,6 +1611,56 @@ function PolicyRoutes () {
         />
       </>
       }
+      {isSwitchMacAclEnabled && <>
+        <Route
+          path='policies/accessControl/create'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/:activeTab/'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/:activeTab/:activeSubTab'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/wifi/create'
+          element={<AccessControlForm editMode={false}/>}
+        />
+        <Route
+          path='policies/accessControl/switch/add'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/edit'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
+              <SwitchPortProfileForm />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/detail'
+          element={
+          // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
+              <SwitchPortProfileDetail />
+            </AuthRoute>
+          }
+        />
+      </>}
       {isDirectoryServerEnabled && <>
         <Route
           path={getPolicyRoutePath({
