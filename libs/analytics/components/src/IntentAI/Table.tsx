@@ -111,7 +111,8 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
     >
       <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
-    {props.status === Statuses.new
+    {props.status === Statuses.new &&
+      hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] })
       ? <span>{props.aiFeature}</span>
       : <TenantLink to={get('IS_MLISA_SA')
         ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
