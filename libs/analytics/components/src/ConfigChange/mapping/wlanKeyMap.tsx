@@ -234,21 +234,5 @@ export const wlanKeyMap = [
   { id: 230, value: 'initialState.CcmWlan.multi_link_operation.mlo_enabled', text: defineMessage({ defaultMessage: 'Multi Link Operation' }), textAlto: defineMessage({ defaultMessage: 'Multi Link Operation' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1, clientThroughput: 1, apCapacity: 1, rss: 1 } },
   { id: 231, value: 'initialState.CcmWlan.multi_link_operation.radio_5g_enabled', text: defineMessage({ defaultMessage: 'Multi Link Operation (5 GHz)' }), textAlto: defineMessage({ defaultMessage: 'Multi Link Operation (5 GHz)' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1, clientThroughput: 1, apCapacity: 1, rss: 1 } },
   { id: 232, value: 'initialState.CcmWlan.multi_link_operation.radio_6g_enabled', text: defineMessage({ defaultMessage: 'Multi Link Operation (6 GHz)' }), textAlto: defineMessage({ defaultMessage: 'Multi Link Operation (6 GHz)' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1, clientThroughput: 1, apCapacity: 1, rss: 1 } },
-  { id: 233, value: 'initialState.CcmWlan.multi_link_operation.radio_24g_enabled', text: defineMessage({ defaultMessage: 'Multi Link Operation (2.4 GHz)' }), textAlto: defineMessage({ defaultMessage: 'Multi Link Operation (2.4 GHz)' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1 } },
-  { id: 234, value: 'initialState.CcmWlan.device_detection_method', text: 'TBD', textAlto: 'TBD', enumType: 'com.ruckuswireless.scg.protobuf.ccm.Wlan.DeviceDetectionMethod', incidents: {}, kpis: {} },
-  { id: 235, value: 'initialState.CcmWlan.redundant_dp_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 236, value: 'initialState.CcmWlan.dynamic_sae', text: 'TBD', textAlto: 'TBD', enumType: 'com.ruckuswireless.scg.protobuf.ccm.Wlan.DynamicSae', incidents: {}, kpis: {} },
-  { id: 237, value: 'initialState.CcmWlan.ideal_event_wlan_required', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 238, value: 'initialState.CcmWlan.key', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 239, value: 'initialState.CcmWlan.value', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 240, value: 'initialState.CcmWlan.key', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 241, value: 'initialState.CcmWlan.value', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 242, value: 'initialState.CcmWlan.mlo_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 243, value: 'initialState.CcmWlan.radio_24g_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 244, value: 'initialState.CcmWlan.radio_5g_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 245, value: 'initialState.CcmWlan.radio_6g_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 246, value: 'initialState.CcmWlan.owe_trans_wlan_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 247, value: 'initialState.CcmWlan.qos_mirroring', text: defineMessage({ defaultMessage: 'QOS Mirroring' }), textAlto: defineMessage({ defaultMessage: 'QOS Mirroring' }), enumType: 'com.ruckuswireless.scg.protobuf.ccm.Wlan.QOSMirroring', incidents: {}, kpis: {} },
-  { id: 248, value: 'initialState.CcmWlan.reserve_ssid_enabled', text: defineMessage({ defaultMessage: 'Reserve SSID' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 249, value: 'initialState.CcmWlan.profile_id', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} }
+  { id: 233, value: 'initialState.CcmWlan.multi_link_operation.radio_24g_enabled', text: defineMessage({ defaultMessage: 'Multi Link Operation (2.4 GHz)' }), textAlto: defineMessage({ defaultMessage: 'Multi Link Operation (2.4 GHz)' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1 } }
 ]

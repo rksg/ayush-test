@@ -16,7 +16,7 @@ export const Wrapper = styled.div`
 
 export const FootnoteWrapper = styled.div`
   color: var(--acx-neutrals-50);
-  padding-top: calc(var(--acx-body-4-font-size) * 1.5);
+  padding-top: 18px;
 
   :only-child {
     padding-top: 0px;
