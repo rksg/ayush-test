@@ -21,7 +21,7 @@ import {
   IncompatibilityFeatures,
   MtuRequestTimeoutUnit,
   MtuTypeEnum,
-  TunnelTypeEnum,
+  NetworkSegmentTypeEnum,
   getTunnelTypeOptions,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
@@ -112,7 +112,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   }
 
   const handleNetworkSegmentTypeChange = (e: RadioChangeEvent) => {
-    if (isEdgeNatTraversalP1Ready && e.target.value === TunnelTypeEnum.VXLAN) {
+    if (isEdgeNatTraversalP1Ready && e.target.value === NetworkSegmentTypeEnum.VXLAN) {
       form.setFieldsValue({ natTraversalEnabled: false })
     }
   }
@@ -151,7 +151,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           <Form.Item
             name='type'
             label={$t({ defaultMessage: 'Network Segment Type' })}
-            initialValue={TunnelTypeEnum.VLAN_VXLAN}
+            initialValue={NetworkSegmentTypeEnum.VLAN_VXLAN}
             tooltip={$t(MessageMapping.tunnel_type_tooltip)}
             children={
               <Radio.Group disabled={isDefaultTunnelProfile
@@ -159,11 +159,11 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               onChange={handleNetworkSegmentTypeChange}
               >
                 <Space direction='vertical'>
-                  <Radio value={TunnelTypeEnum.VLAN_VXLAN}>
+                  <Radio value={NetworkSegmentTypeEnum.VLAN_VXLAN}>
                     {$t({ defaultMessage: 'VLAN to VNI map' })}
                   </Radio>
                   { isEdgePinHaReady &&
-                    <Radio value={TunnelTypeEnum.VXLAN}>
+                    <Radio value={NetworkSegmentTypeEnum.VXLAN}>
                       {$t({ defaultMessage: 'VNI' })}
                     </Radio>
                   }
@@ -203,7 +203,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                   children={
                     <Switch disabled={isDefaultTunnelProfile ||
                       !!disabledFields?.includes('natTraversalEnabled') ||
-                      netSegType === TunnelTypeEnum.VXLAN}/>
+                      netSegType === NetworkSegmentTypeEnum.VXLAN}/>
                   }
                 />
               }}

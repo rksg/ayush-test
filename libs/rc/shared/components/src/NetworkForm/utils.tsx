@@ -67,7 +67,7 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   DpskWlanAdvancedCustomization,
-  TunnelTypeEnum,
+  NetworkSegmentTypeEnum,
   TunnelProfileViewData,
   useConfigTemplate,
   ConfigTemplateType,
@@ -209,7 +209,7 @@ export const useNetworkVxLanTunnelProfileInfo =
       { skip: !isEdgeEnabled || !data }
     )
 
-    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN
+    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN
       && item.personalIdentityNetworkIds.length > 0)
     const enableTunnel = !_.isEmpty(tunnelProfileData?.data)
     const enableVxLan = !_.isEmpty(vxLanTunnels)
