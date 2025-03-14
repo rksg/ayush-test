@@ -26,9 +26,9 @@ import {
   sortProp,
   SortResult
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                from '@acx-ui/types'
-import { filterByAccess, hasRoles } from '@acx-ui/user'
-import { getOpsApi }                from '@acx-ui/utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { filterByAccess, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                                      from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -177,7 +177,8 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       label: $t({ defaultMessage: 'Revoke access' }),
       visible: (selectedRows) => {
         if(selectedRows[0] &&
-          (selectedRows[0].status === AdministrationDelegationStatus.ACCEPTED )) {
+          (selectedRows[0].status === AdministrationDelegationStatus.ACCEPTED ) &&
+          hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.revokeInvitation)])) {
           return true
         }
         return false
@@ -201,7 +202,8 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       label: $t({ defaultMessage: 'Cancel invitation' }),
       visible: (selectedRows) => {
         if(selectedRows[0] &&
-          (selectedRows[0].status !== AdministrationDelegationStatus.ACCEPTED)) {
+          (selectedRows[0].status !== AdministrationDelegationStatus.ACCEPTED) &&
+          hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.revokeInvitation)])) {
           return true
         }
         return false
@@ -244,7 +246,9 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         }}
         actions={filterByAccess(tableActions)}
         rowActions={rowActions}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={
+          hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.revokeInvitation)]) &&
+          { type: 'radio' }}
       />
 
       <DelegationInviteDrawer
