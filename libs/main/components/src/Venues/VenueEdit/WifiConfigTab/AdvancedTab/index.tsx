@@ -2,9 +2,9 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }  from '@acx-ui/rc/components'
+import { AnchorLayout, StepsFormLegacy }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   redirectPreviousPage,
   useConfigTemplate,
@@ -46,6 +46,7 @@ export function AdvancedTab () {
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const isRebootTimeoutFFEnabled = useIsSplitOn(Features.WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE)
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const bssColoringOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueBssColoring,
@@ -162,6 +163,7 @@ export function AdvancedTab () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      {...getEnforcedStepsFormProps('StepsFormLegacy')}
     >
       <StepsFormLegacy.StepForm>
         <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />

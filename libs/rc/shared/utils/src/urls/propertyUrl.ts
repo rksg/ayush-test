@@ -12,7 +12,6 @@ type PropertyUrlType =
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
-  'addUnitLinkedIdentity' |
   'deletePropertyUnit' |
   'notifyPropertyUnits' |
   'getResidentPortalList' |
@@ -25,7 +24,10 @@ type PropertyUrlType =
   'getResidentPortalFavicon' |
   'deleteResidentPortalLogo' |
   'deleteResidentPortalFavicon' |
-  'bulkUpdateUnitProfile'
+  'bulkUpdateUnitProfile' |
+  'getUnitsLinkedIdentities' |
+  'removeUnitLinkedIdenity' |
+  'addUnitLinkedIdentity'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -43,22 +45,26 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   updatePropertyConfigs: {
     method: 'put',
     newApi: true,
-    url: '/venues/:venueId/propertyConfigs'
+    url: '/venues/:venueId/propertyConfigs',
+    opsApi: 'PUT:/venues/{id}/propertyConfigs'
   },
   patchPropertyConfigs: {
     method: 'PATCH',
     newApi: true,
-    url: '/venues/:venueId/propertyConfigs'
+    url: '/venues/:venueId/propertyConfigs',
+    opsApi: 'PATCH:/venues/{id}/propertyConfigs'
   },
   addPropertyUnit: {
     method: 'post',
     newApi: true,
-    url: '/venues/:venueId/units'
+    url: '/venues/:venueId/units',
+    opsApi: 'POST:/venues/{id}/units'
   },
   importPropertyUnits: {
     method: 'post',
     newApi: true,
-    url: '/venues/:venueId/units'
+    url: '/venues/:venueId/units',
+    opsApi: 'POST:/venues/{id}/units'
   },
   exportPropertyUnits: {
     method: 'post',
@@ -78,21 +84,14 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   updatePropertyUnit: {
     method: 'PATCH',
     newApi: true,
-    url: '/venues/:venueId/units/:unitId'
-  },
-  addUnitLinkedIdentity: {
-    method: 'PUT',
-    newApi: true,
-    url: '/venues/:venueId/units/:unitId/identities/:identityId',
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    url: '/venues/:venueId/units/:unitId',
+    opsApi: 'PATCH:/venues/{id}/units/{id}'
   },
   deletePropertyUnit: {
     method: 'delete',
     newApi: true,
     url: '/venues/:venueId/units/:unitId',
+    opsApi: 'DELETE:/venues/{id}/units/{id}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
@@ -101,7 +100,8 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   notifyPropertyUnits: {
     method: 'post',
     newApi: true,
-    url: '/venues/:venueId/units/notifications'
+    url: '/venues/:venueId/units/notifications',
+    opsApi: 'POST:/venues/{id}/units/notifications'
   },
   getResidentPortalList: {
     method: 'get',
@@ -156,6 +156,32 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   bulkUpdateUnitProfile: {
     method: 'put',
     newApi: true,
-    url: '/venues/:venueId/units/qosProfileAssignments/:profileId'
+    url: '/venues/:venueId/units/qosProfileAssignments/:profileId',
+    opsApi: 'PUT:/venues/{id}/units/qosProfileAssignments/{id}'
+  },
+  getUnitsLinkedIdentities: {
+    method: 'post',
+    url: '/venues/:venueId/units/identities/query',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  addUnitLinkedIdentity: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  removeUnitLinkedIdenity: {
+    method: 'delete',
+    url: '/venues/:venueId/units/:unitId/identities/:identityId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   }
 }

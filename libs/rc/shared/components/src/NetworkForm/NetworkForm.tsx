@@ -57,6 +57,7 @@ import {
   LocationExtended,
   Network,
   NetworkSaveData,
+  SocialIdentities,
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
@@ -68,13 +69,14 @@ import {
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
   NetworkTunnelSoftGreAction,
-  VlanPool
+  VlanPool,
+  NetworkTunnelIpsecAction
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { usePathBasedOnConfigTemplate } from '../configTemplates'
-import { useGetNetwork }                from '../NetworkDetails/services'
-import { useIsEdgeFeatureReady }        from '../useEdgeActions'
+import { usePathBasedOnConfigTemplate, useEnforcedStatus } from '../configTemplates'
+import { useGetNetwork }                                   from '../NetworkDetails/services'
+import { useIsEdgeFeatureReady }                           from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { DirectoryServerForm }     from './CaptivePortal/DirectoryServerForm'
@@ -101,7 +103,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance               from './PortalInstance'
+import PortalInstance         from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -113,7 +115,8 @@ import {
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
   useUpdateSoftGreActivations,
-  deriveWISPrFieldsFromServerData
+  deriveWISPrFieldsFromServerData,
+  useUpdateIpsecActivations
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -161,6 +164,38 @@ interface GuestMore {
   guestPortal?: GuestPortal,
   userConnection?: UserConnection
 }
+
+type Processor<NetworkSaveData> = (data: NetworkSaveData) => NetworkSaveData
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const process = (data: NetworkSaveData, ...processors: Processor<any>[]): NetworkSaveData =>
+  processors.reduce((acc, fn) => fn(acc), data)
+
+const mergeButDoNothing: Processor<NetworkSaveData> = (data:NetworkSaveData) => data
+
+const mergeSocialIdentities = (newIdentities?: SocialIdentities): Processor<NetworkSaveData> => {
+  if(newIdentities === undefined) return mergeButDoNothing
+  return (mergedData) => {
+    const cloneData = _.cloneDeep(mergedData)
+    if (cloneData.guestPortal?.socialIdentities && cloneData.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+      cloneData.guestPortal.socialIdentities = newIdentities
+    }
+    return cloneData
+  }
+}
+
+const mergeSocialEmails = (newEmails?: string[]): Processor<NetworkSaveData> => {
+  if(newEmails === undefined) return mergeButDoNothing
+  return (mergedData) => {
+    const cloneData = _.cloneDeep(mergedData)
+    if (cloneData.guestPortal?.hostGuestConfig && cloneData.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+      cloneData.guestPortal.hostGuestConfig.hostEmails = newEmails
+    }
+    return cloneData
+  }
+}
+
+
 export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
@@ -181,6 +216,7 @@ export function NetworkForm (props:{
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
 
@@ -243,6 +279,7 @@ export function NetworkForm (props:{
   const { updateAccessControl } = useAccessControlActivation()
   const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
   const updateSoftGreActivations = useUpdateSoftGreActivations()
+  const updateIpsecActivations = useUpdateIpsecActivations()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -262,6 +299,8 @@ export function NetworkForm (props:{
   const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
+
+  const { getEnforcedStepsFormProps } = useEnforcedStatus()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     updateSaveState((preState) => {
@@ -288,12 +327,16 @@ export function NetworkForm (props:{
         saveData.enableAccountingProxy = false
       }
 
-      const newSavedata = merge({}, updateSate, saveData)
-      newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
-      if(saveData.guestPortal?.walledGardens !== undefined && newSavedata.guestPortal){
-        newSavedata.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
+      const mergedData = merge({}, updateSate, saveData)
+      mergedData.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      if(saveData.guestPortal?.walledGardens !== undefined && mergedData.guestPortal){
+        mergedData.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
       }
-      return { ...saveState, ...newSavedata }
+      const processedData = process(mergedData,
+        mergeSocialIdentities(saveData.guestPortal?.socialIdentities),
+        mergeSocialEmails(saveData.guestPortal?.hostGuestConfig?.hostEmails)
+      )
+      return { ...saveState, ...processedData }
     })
   }
 
@@ -585,7 +628,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId'])
+      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
     }
     return data
   }
@@ -938,6 +981,11 @@ export function NetworkForm (props:{
         if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
         // eslint-disable-next-line max-len
           afterVenueActivationRequest.push(updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, false))
+
+          if (isIpsecEnabled && formData['ipsecAssociationUpdate']) {
+            // eslint-disable-next-line max-len
+            afterVenueActivationRequest.push(updateIpsecActivations(networkId, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, false))
+          }
         }
       }
 
@@ -1130,6 +1178,13 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
+
+        if (isIpsecEnabled && formData['ipsecAssociationUpdate'] && payload.id && payload.venues) {
+          afterVenueActivationRequest.push(
+            // eslint-disable-next-line max-len
+            updateIpsecActivations(payload.id, formData['ipsecAssociationUpdate'] as NetworkTunnelIpsecAction, payload.venues, cloneMode, true)
+          )
+        }
       }
 
       if (payload.id) {
@@ -1267,6 +1322,7 @@ export function NetworkForm (props:{
                 : redirectPreviousPage(navigate, previousPath, linkToNetworks)
               }
               onFinish={editMode ? handleEditNetwork : handleAddNetwork}
+              {...getEnforcedStepsFormProps('StepsForm', saveState.isEnforced)}
             >
               {
                 !isRuckusAiMode && <StepsForm.StepForm

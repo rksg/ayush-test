@@ -50,6 +50,7 @@ import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
 import { getIntl }                        from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
+import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'
 import { ExpirationDateSelector }           from '../../ExpirationDateSelector'
 import { hasCreateIdentityGroupPermission } from '../../useIdentityGroupUtils'
 import { IdentityGroupForm }                from '../../users/IdentityGroupForm'
@@ -164,6 +165,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
+        <ProtectedEnforceTemplateToggleP1 templateId={id} />
       </GridCol>
     </GridRow>
     {isCloudpathEnabled && <CloudpathFormItems editMode={editMode} />}
@@ -307,6 +309,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
                   visible={identityGroupModelVisible}
                   type={ModalType.ModalStepsForm}
                   children={<IdentityGroupForm
+                    modalMode={true}
                     callback={(identityGroupId?: string) => {
                       if (identityGroupId) {
                         form.setFieldValue('identityId', identityGroupId)

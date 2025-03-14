@@ -1016,9 +1016,12 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
-    getPrivacySettings: build.query<PrivacySettings[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.getPrivacySettings, params)
+    getPrivacySettings: build.query<PrivacySettings[], RequestPayload<
+    { ignoreDelegation?: boolean }>>({
+      query: ({ params, customHeaders, payload }) => {
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivacySettings, params, customHeaders,
+          payload?.ignoreDelegation)
         return {
           ...req
         }

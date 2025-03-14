@@ -154,6 +154,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               visible={identityGroupModelVisible}
               type={ModalType.ModalStepsForm}
               children={<IdentityGroupForm
+                modalMode={true}
                 callback={(identityGroupId?: string) => {
                   if (identityGroupId) {
                     form.setFieldValue('identityGroupId', identityGroupId)

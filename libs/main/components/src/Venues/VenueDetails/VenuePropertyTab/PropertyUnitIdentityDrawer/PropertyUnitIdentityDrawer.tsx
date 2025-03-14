@@ -2,10 +2,12 @@ import { useState } from 'react'
 
 import {  useIntl } from 'react-intl'
 
-import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { Drawer, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   useSearchPersonaListQuery,
-  useAddUnitLinkedIdentityMutation
+  useAddUnitLinkedIdentityMutation,
+  useGetUnitsLinkedIdentitiesQuery,
+  useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import {
   FILTER,
@@ -19,13 +21,27 @@ export interface PropertyUnitIdentityDrawerProps {
   onClose: () => void,
   groupId?: string,
   venueId?: string,
-  unitId?: string
+  unitId?: string,
+  identityCount?: number | 0
 }
 
 export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerProps) {
   const { $t } = useIntl()
-  const { visible, onClose, groupId, venueId, unitId } = props
+  const MAX_IDENTITY_COUNT = 10
+  const { visible, onClose, groupId, venueId, unitId, identityCount } = props
   const settingsId = 'property-units-identity-table'
+  const identities = new Map(useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
+    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
+  }).data?.data.map(identity => [identity.personaId,identity.unitId]))
+  const units = new Map(useGetPropertyUnitListQuery({
+    params: { venueId },
+    payload: {
+      page: 1,
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }).data?.data.map(unit => [unit.id,unit.name]))
 
   const [selectedRows, setSelectedRows] = useState<Persona[]>([])
   const [addUnitLinkedIdentity] = useAddUnitLinkedIdentityMutation()
@@ -36,17 +52,29 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
   }
 
   const onSave = async () => {
-    const allRequests = selectedRows.map(persona => {
-      return addUnitLinkedIdentity({
-        params: { venueId, unitId, identityId: persona.id },
-        payload: {}
-      }).unwrap()
-    })
-    try {
-      await Promise.all(allRequests)
-      clearSelectionAndClose()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+    const identityLimit = (identityCount || 0) + selectedRows.length
+    if(identityLimit > MAX_IDENTITY_COUNT)
+    {
+      (showActionModal({
+        type: 'error',
+        content: $t({
+          defaultMessage:
+            'Selection exceeding the maximum identity limit for unit'
+        })
+      }))
+    } else {
+      const allRequests = selectedRows.map(persona => {
+        return addUnitLinkedIdentity({
+          params: { venueId, unitId, identityId: persona.id },
+          payload: {}
+        }).unwrap()
+      })
+      try {
+        await Promise.all(allRequests)
+        clearSelectionAndClose()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
     }
   }
 
@@ -76,6 +104,10 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       dataIndex: 'email',
       searchable: true
     },{
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      dataIndex: 'phoneNumber'
+    },{
       key: 'revoked',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'revoked',
@@ -83,10 +115,15 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
       render: (_, row) => row.revoked ? $t({ defaultMessage: 'Blocked' })
         : $t({ defaultMessage: 'Active' })
     },{
-      key: 'deviceCount',
-      title: $t({ defaultMessage: 'Devices' }),
-      dataIndex: 'deviceCount',
-      align: 'center'
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      searchable: true,
+      width: 200
+    },{
+      key: 'unit',
+      title: $t({ defaultMessage: 'unit' }),
+      dataIndex: 'unit'
     }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
@@ -114,12 +151,17 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
             settingsId={settingsId}
             columns={columns}
             enableApiFilter
-            dataSource={personaListTableQuery.data?.data}
+            dataSource={personaListTableQuery.data?.data.map(identity => {
+              return { ...identity, unit: units.get(identities.get(identity.id) as string) }
+            })}
             pagination={personaListTableQuery.pagination}
             onChange={personaListTableQuery.handleTableChange}
             onFilterChange={handleFilterChange}
             rowSelection={{
               type: 'checkbox',
+              getCheckboxProps: (record: Persona) => ({
+                disabled: record.unit !== null && record.unit !== '' && record.unit !== undefined
+              }),
               onChange: (_, selRows) => setSelectedRows(selRows)
             }}
           />

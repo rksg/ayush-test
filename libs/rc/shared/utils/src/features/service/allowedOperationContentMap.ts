@@ -13,6 +13,7 @@ import {
   EdgeSdLanUrls,
   EthernetPortProfileUrls,
   IdentityProviderUrls,
+  IpsecUrls,
   LbsServerProfileUrls,
   MacRegListUrlsInfo, RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo,
   SoftGreUrls,
@@ -81,6 +82,12 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateEdgePin)],
     [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteEdgePin)],
     [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
+  },
+  [ServiceType.WEBAUTH_SWITCH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   }
 }
 
@@ -210,6 +217,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(SoftGreUrls.updateSoftGre)],
     [PolicyOperation.DELETE]: [getOpsApi(SoftGreUrls.deleteSoftGre)],
     [PolicyOperation.LIST]: [getOpsApi(SoftGreUrls.getSoftGreViewDataList)]
+  },
+  [PolicyType.IPSEC]: {
+    [PolicyOperation.CREATE]: [getOpsApi(IpsecUrls.createIpsec)],
+    [PolicyOperation.EDIT]: [getOpsApi(IpsecUrls.updateIpsec)],
+    [PolicyOperation.DELETE]: [getOpsApi(IpsecUrls.deleteIpsec)],
+    [PolicyOperation.LIST]: [getOpsApi(IpsecUrls.getIpsecViewDataList)]
   },
   [PolicyType.DIRECTORY_SERVER]: {
     [PolicyOperation.CREATE]: [getOpsApi(DirectoryServerUrls.createDirectoryServer)],

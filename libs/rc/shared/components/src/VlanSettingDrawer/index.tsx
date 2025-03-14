@@ -1,4 +1,4 @@
-import { Key, useEffect, useState } from 'react'
+import React, { Key, useEffect, useState } from 'react'
 
 import {
   Form,
@@ -10,8 +10,9 @@ import {
   Select,
   Switch
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { RuleObject } from 'antd/lib/form'
+import _              from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import { Drawer, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
@@ -25,11 +26,12 @@ import {
   validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
+  validateVlanRangeFormat,
   Vlan,
   versionAbove10020a
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess }              from '@acx-ui/user'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 
 import * as UI            from './styledComponents'
@@ -55,6 +57,7 @@ export interface VlanSettingDrawerProps {
   vlansList: Vlan[]
   isProfileLevel?: boolean
   enablePortModelConfigure?: boolean
+  enableVlanRangeConfigure?: boolean
   switchFamilyModel?: string
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
@@ -67,8 +70,8 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
     vlansList, isProfileLevel, switchFamilyModel,
-    enablePortModelConfigure = true, portSlotsData, portsUsedBy,
-    stackMember, gptObject, switchFirmware } = props
+    enablePortModelConfigure = true, enableVlanRangeConfigure = false,
+    portSlotsData, portsUsedBy, stackMember, gptObject, switchFirmware } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -94,6 +97,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           vlansList={vlansList || []}
           isProfileLevel={isProfileLevel}
           enablePortModelConfigure={enablePortModelConfigure}
+          enableVlanRangeConfigure={enableVlanRangeConfigure}
           switchFamilyModel={switchFamilyModel}
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}
@@ -135,9 +139,10 @@ interface VlanSettingFormProps {
   isProfileLevel?: boolean
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
+  enableVlanRangeConfigure?: boolean
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
-  stackMember?: StackMember[],
+  stackMember?: StackMember[]
   gptObject?: GptObjectProps
   switchFirmware?: string
 }
@@ -155,11 +160,13 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [hasPortsUsedByLag, setHasPortsUsedByLag] = useState(false)
 
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
-    switchFamilyModel, portSlotsData, enablePortModelConfigure = true,
+    switchFamilyModel, portSlotsData,
+    enablePortModelConfigure = true, enableVlanRangeConfigure,
     portsUsedBy, stackMember, gptObject, switchFirmware } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const is10020aSwitchOnlyRstpEnabled = useIsSplitOn(Features.SWITCH_UPDATE_RSTP_ABOVE_10020A)
+
   const isSwitchLevel = !!switchFamilyModel
   const isRuckusAiMode = !_.isEmpty(gptObject)
   const hideStp = is10020aSwitchOnlyRstpEnabled &&
@@ -322,23 +329,78 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         }}
       >
         <Form.Item
-          label={$t({ defaultMessage: 'VLAN ID' })}
+          label={<>
+            {$t({ defaultMessage: 'VLAN ID' })}
+            {enableVlanRangeConfigure &&
+              <Tooltip
+                title={$t({
+                  defaultMessage: `Type one or more VLAN IDs. Examples: {br}
+                  (1) 11, 21, 31 {br}
+                  (2) 11, 21, 31-40,100`
+                }, {
+                  br: <br />
+                })}
+                placement='top'
+              >
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            }
+          </>}
           name='vlanId'
           validateFirst
           initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
-            { validator: (_, value) => validateVlanExcludingReserved(value) },
-            {
-              validator: (_, value) => {
-                if (isRuckusAiMode) {return Promise.resolve()}
-                return validateDuplicateVlanId(
-                  value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
-                )
+            ...(enableVlanRangeConfigure ? [{
+              validator: (_: RuleObject, value: string) => validateVlanRangeFormat(value)
+            }, {
+              validator: (_: RuleObject, value: string) => {
+                const originalVlanId = vlan?.vlanId?.toString()
+                const {
+                  isValidRange, isVlanDuplicate, isIncludeOriginal, vlans
+                } = checkVlanRange(value, originalVlanId)
+                const isIncludeOriginalInEditMode
+                  = editMode && !isIncludeOriginal && vlans.length > 1
+
+                if (isIncludeOriginalInEditMode) {
+                  return Promise.reject($t(validationMessages.originalVlanNotIncluded))
+                }
+                if (!isValidRange || isVlanDuplicate) {
+                  return Promise.reject($t(validationMessages.invalidVlanRange))
+                }
+                return Promise.all(
+                  vlans.map(async (v: string) => {
+                    await validateVlanExcludingReserved(v)
+                    await validateDuplicateVlanId(
+                      Number(v),
+                      vlansList.filter(vlanItem =>
+                        (editMode ? vlanItem.vlanId !== vlan?.vlanId : true)
+                      )
+                    )
+                  })
+                ).then(() => Promise.resolve())
+                  .catch(err => Promise.reject(err))
               }
-            }
+            }] : [
+              { validator: (_: RuleObject, value: string) => validateVlanExcludingReserved(value) },
+              {
+                validator: (_: RuleObject, value: number) => {
+                  if (isRuckusAiMode) {return Promise.resolve()}
+                  return validateDuplicateVlanId(
+                    value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
+                  )
+                }
+              }
+            ])
           ]}
-          children={<Input style={{ width: '400px' }} disabled={isRuckusAiMode} />}
+          children={
+            <Input
+              style={{ width: '400px' }}
+              disabled={isRuckusAiMode}
+              placeholder={enableVlanRangeConfigure
+                ? $t({ defaultMessage: 'ex: 11, 21, 31-40, 100' }) : ''
+              }
+            />}
         />
         <Form.Item
           name='vlanName'
@@ -527,4 +589,31 @@ export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) 
       </VlanPortsUI.PortSpan>
     </div>
   </div>
+}
+
+export const checkVlanRange = (value: string, originalVlanId?: string) => {
+  let isValidRange = true
+  const vlans = value.toString().split(',').flatMap(v => {
+    if (v.includes('-')) {
+      const vlanRanges = v.split('-')
+      const startNum = Number(vlanRanges[0])
+      const endNum = Number(vlanRanges[vlanRanges.length - 1])
+      if (endNum - startNum > 4095 || endNum > 4095) {
+        isValidRange = false
+        return ''
+      }
+      if (endNum > startNum) {
+        return new Array(endNum - startNum + 1).fill(0).map((_, i) => (startNum + i).toString())
+      }
+    } else if (Number(v)) {
+      return v.trim()
+    }
+    isValidRange = false
+    return ''
+  })
+
+  const vlansSet = new Set(vlans)
+  const isVlanDuplicate = vlansSet.size !== vlans.length
+  const isIncludeOriginal = originalVlanId ? vlans.includes(originalVlanId) : true
+  return { isValidRange, isVlanDuplicate, isIncludeOriginal, vlans }
 }

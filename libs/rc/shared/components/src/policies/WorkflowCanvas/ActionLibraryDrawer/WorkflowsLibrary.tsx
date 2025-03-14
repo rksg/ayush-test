@@ -15,7 +15,7 @@ import {
   FILTER,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
-  getScopeKeyByPolicy, InitialEmptyStepsCount,
+  getScopeKeyByPolicy, InitialEmptyStepsCount, MaxTotalSteps,
   PolicyOperation,
   PolicyType,
   SEARCH,
@@ -72,7 +72,8 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
           }
         }).unwrap()
           .then((result) => {
-            if ((result?.paging?.totalCount ?? 0) <= InitialEmptyStepsCount) {
+            const totalCount = result?.paging?.totalCount ?? 0
+            if (totalCount <= InitialEmptyStepsCount) {
               showActionModal({
                 type: 'warning',
                 // eslint-disable-next-line max-len
@@ -82,9 +83,23 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
                 }
               })
             } else {
-              nestedCloneWorkflow(
-                { params: { id: workflowId, stepId, referencedWorkflowId } }
-              ).unwrap()
+              if ((stepsData?.paging?.totalCount ?? 0)
+                + (totalCount - InitialEmptyStepsCount ?? 0) // start and end steps will not be cloned
+                > MaxTotalSteps) {
+                showActionModal({
+                  type: 'warning',
+                  // eslint-disable-next-line max-len
+                  content: $t({ defaultMessage: 'You will exceed the maximum number of steps after importing this workflow.' }),
+                  customContent: {
+                    action: 'SHOW_ERRORS'
+                  }
+                })
+              } else {
+                nestedCloneWorkflow(
+                  { params: { id: workflowId, stepId, referencedWorkflowId } }
+                ).unwrap()
+                onClose()
+              }
             }
           }).catch((e) => {
           // eslint-disable-next-line no-console
@@ -116,7 +131,6 @@ export default function WorkflowsLibrary (props: WorkflowsLibraryProps) {
     const handleMenuClick: MenuProps['onClick'] = (e) => {
       if (e.key === 'as-independent-copy') {
         handleClone(referenceId)
-        onClose()
       }
     }
 
