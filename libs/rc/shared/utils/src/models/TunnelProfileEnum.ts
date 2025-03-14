@@ -9,7 +9,7 @@ export enum AgeTimeUnit {
   MINUTES='minutes'
 }
 
-export enum TunnelTypeEnum {
+export enum NetworkSegmentTypeEnum {
   VXLAN='VXLAN',
   VLAN_VXLAN='VLAN_VXLAN'
 }
