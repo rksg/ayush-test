@@ -4,6 +4,7 @@ export const IpsecUrls: { [key: string]: ApiInfo } = {
   createIpsec: {
     method: 'post',
     url: '/ipsecProfiles',
+    opsApi: 'POST:/ipsecProfiles',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -13,6 +14,7 @@ export const IpsecUrls: { [key: string]: ApiInfo } = {
   getIpsecViewDataList: {
     method: 'post',
     url: '/ipsecProfiles/query',
+    opsApi: 'POST:/ipsecProfiles/query',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -22,6 +24,7 @@ export const IpsecUrls: { [key: string]: ApiInfo } = {
   deleteIpsec: {
     method: 'delete',
     url: '/ipsecProfiles/:policyId',
+    opsApi: 'DELETE:/ipsecProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -40,6 +43,7 @@ export const IpsecUrls: { [key: string]: ApiInfo } = {
   updateIpsec: {
     method: 'put',
     url: '/ipsecProfiles/:policyId',
+    opsApi: 'PUT:/ipsecProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

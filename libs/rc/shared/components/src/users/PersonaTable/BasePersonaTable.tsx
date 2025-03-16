@@ -13,7 +13,9 @@ import {
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
   useLazyBatchGetPropertyUnitsByIdsQuery,
-  useSearchPersonaGroupListQuery
+  useSearchPersonaGroupListQuery,
+  useGetUnitsLinkedIdentitiesQuery,
+  useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
@@ -41,12 +43,32 @@ function useColumns (
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
+
+  const identities = new Map(useGetUnitsLinkedIdentitiesQuery
+  ({
+    params: { venueId: venueId },
+    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
+  },
+  { skip: !venueId || !isMultipleIdentityUnits }
+  ).data?.data?.map(identity => [identity.personaId, identity.unitId]))
+
+  const units = new Map(useGetPropertyUnitListQuery({
+    params: { venueId: venueId },
+    payload: {
+      page: 1,
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  },
+  { skip: !venueId || !isMultipleIdentityUnits }).data?.data?.map(unit => [unit.id,unit.name]))
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -123,8 +145,10 @@ function useColumns (
         render: (_, row) =>
           <PropertyUnitLink
             venueId={venueId}
-            unitId={row.identityId}
-            name={unitPool.get(row.identityId ?? '')}
+            unitId={row.identityId ? row.identityId : identities.get(row.id)}
+            name={row.identityId
+              ? unitPool.get(row.identityId)
+              : units.get(identities.get(row.id) ?? '')}
           />
         ,
         ...props.identityId
