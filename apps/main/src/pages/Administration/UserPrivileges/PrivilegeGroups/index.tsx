@@ -112,12 +112,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: { compare: sortProp('description', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'roleName',
       dataIndex: 'roleName',
+      sorter: { compare: sortProp('roleName', defaultSort) },
       filterable: customRoleOption?.map(role => ({
         key: role as string,
         value: roleStringMap[role as RolesEnum]
@@ -139,12 +141,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       title: $t({ defaultMessage: 'Group Type' }),
       key: 'type',
       dataIndex: 'type',
+      sorter: { compare: sortProp('type', defaultSort) },
       filterable: true
     },
     {
       title: $t({ defaultMessage: 'Members' }),
       key: 'memberCount',
       dataIndex: 'memberCount',
+      sorter: { compare: sortProp('memberCount', defaultSort) },
       align: 'center'
     }
   ]

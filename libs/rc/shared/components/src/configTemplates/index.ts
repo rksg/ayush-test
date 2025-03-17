@@ -3,7 +3,10 @@ import { ConfigTemplateType }                                     from '@acx-ui/
 
 export * from './ConfigTemplateLink'
 export * from './utils'
-export { ProtectedEnforceTemplateToggle } from './EnforceTemplateToggle'
+export {
+  ProtectedEnforceTemplateToggle,
+  ProtectedEnforceTemplateToggleP1
+} from './EnforceTemplateToggle'
 export { useEnforcedStatus, ConfigTemplateEnforcementContext } from './useEnforcedStatus'
 
 export function useIsConfigTemplateBeta (): boolean {
