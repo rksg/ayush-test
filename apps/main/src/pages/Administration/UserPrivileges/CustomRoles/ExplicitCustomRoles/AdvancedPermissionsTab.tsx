@@ -1,15 +1,13 @@
 import { useState } from 'react'
 
-import { TreeDataNode } from 'antd'
-
-import { Tabs }            from '@acx-ui/components'
-import { ScopePermission } from '@acx-ui/rc/utils'
+import { Tabs }                               from '@acx-ui/components'
+import { ScopePermission, ScopeTreeDataNode } from '@acx-ui/rc/utils'
 
 import { PermissionsTab } from './PermissionsTab'
 
 interface AdvancedPermissionsTabProps {
   updateSelected?: (key: string, permission: string, enabled: boolean) => void
-  scopes: TreeDataNode[]
+  scopes: ScopeTreeDataNode[]
   permissions: ScopePermission[]
 }
 
