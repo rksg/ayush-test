@@ -174,9 +174,6 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
               </Tooltip>
             </>}
             rules={readMode ? undefined : [
-              { type: 'string', required: true,
-                message: $t({ defaultMessage: 'Please enter FQDN / IP' })
-              },
               { validator: (_, value) => domainNameRegExp(value),
                 message: $t({ defaultMessage: 'Please enter a valid IP address or FQDN' })
               }

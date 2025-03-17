@@ -114,7 +114,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       key: 'processingPriority',
       dataIndex: 'processingPriority',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('processingPriority', defaultSort) }
+      sorter: { compare: sortProp('processingPriority', defaultSort) },
+      align: 'center'
     },
     {
       dataIndex: 'sort',
@@ -244,7 +245,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       }
     ]}>
       <DndProvider backend={HTML5Backend} >
-        <Table
+        <Table style={{ paddingBottom: '40px' }}
           columns={columns}
           dataSource={adminList}
           rowKey='id'
@@ -261,6 +262,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
               row: DraggableRow
             }
           }}
+          // set defaultPageSize to 10000 (big number) to hide pagination for this table
+          pagination={{ defaultPageSize: 10000 }}
           data-testid='AdminGroupTable'
         />
       </DndProvider>

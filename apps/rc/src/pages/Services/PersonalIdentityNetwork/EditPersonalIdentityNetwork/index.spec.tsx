@@ -218,16 +218,16 @@ describe('Test afterSubmitMessage', () => {
   it('afterSubmitMessage', async () => {
     const resError = [
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7] already has VXLAN config,
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      Distribution Switch c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7 will overwrite its existing VXLAN configuration,
+      Distribution Switch c8:03:f5:3a:95:c6 will reboot after set up forwarding profile,
       [forceOverwriteReboot] set true to overwrite config and reboot.` },
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] already has VXLAN config,
+      Distribution Switch c8:03:f5:3a:95:c6 will overwrite its existing VXLAN configuration,
       [forceOverwriteReboot] set true to overwrite config.` },
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      Distribution Switch c8:03:f5:3a:95:c6 will reboot after set up forwarding profile,
       [forceOverwriteReboot] set true to reboot.` },
-      { message: `The Access Switch [c0:c5:20:aa:35:fd] web auth VLAN not exist or uplink port not exist at VLAN,
+      { message: `The Access Switch c0:c5:20:aa:35:fd web auth VLAN not exist or uplink port not exist at VLAN,
       please create [WebAuth VLAN] and add uplink port or lag first.` },
       { message: '' }
     ]
@@ -238,16 +238,16 @@ describe('Test afterSubmitMessage', () => {
     ]
 
     const expectMessage= [
-      ['Distribution Switch [FMN4221R00H---DS---3, c8:03:f5:3a:95:c7] already has VXLAN config.',
-        'Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+      ['Distribution Switch FMN4221R00H---DS---3, c8:03:f5:3a:95:c7  will overwrite its existing VXLAN configuration.',
+        'Distribution Switch FMN4221R00H---DS---3  will reboot after set up forwarding profile.',
         'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] already has VXLAN config.',
+      ['Distribution Switch FMN4221R00H---DS---3  will overwrite its existing VXLAN configuration.',
         'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+      ['Distribution Switch FMN4221R00H---DS---3  will reboot after set up forwarding profile.',
         'Click Yes to proceed, No to cancel.'],
-      [`The Access Switch [FEK3224R09N---AS---3] web auth VLAN not exist or uplink port not exist at VLAN,
+      [`The Access Switch FEK3224R09N---AS---3 web auth VLAN not exist or uplink port not exist at VLAN,
       please create [WebAuth VLAN] and add uplink port or lag first.`],
-      []
+      ['']
     ]
 
     expect(afterSubmitMessage(
