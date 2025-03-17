@@ -44,7 +44,7 @@ export function useEnforcedStatus (type: AllowedEnforcedType) {
   ): GetStepsFormProps<T> | undefined => {
 
     const enforced = isEnforced ?? hasEnforcedFields()
-    if (!enforced) return undefined
+    if (!hasEnforcedItem([{ isEnforced: enforced }])) return undefined
 
     return (formType === 'StepsForm'
       ? { buttonProps: { apply: getEnforcedButtonProps() } }
