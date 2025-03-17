@@ -216,6 +216,8 @@ function useColumns (
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: function (_, row) {
         return (
           <>

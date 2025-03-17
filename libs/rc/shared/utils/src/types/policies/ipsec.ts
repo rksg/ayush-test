@@ -18,7 +18,7 @@ import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
 export interface Ipsec {
   id: string
   name: string
-  serverAddress: string
+  serverAddress?: string
   authType: IpSecAuthEnum
   preSharedKey?: string
   certificate?: string
