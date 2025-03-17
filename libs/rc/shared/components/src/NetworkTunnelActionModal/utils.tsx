@@ -141,13 +141,16 @@ export const useUpdateNetworkTunnelAction = () => {
     const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled ?? false
 
     const triggerSdLanOperations = async () => {
-      return await toggleNetwork(
+      return new Promise<void | boolean>((resolve, reject) => {
+        toggleNetwork(
         venueSdLanInfo?.id!,
         networkVenueId,
         networkId!,
         sdLanTunneled,
-        sdLanTunneled && sdLanTunnelGuest
-      )
+        sdLanTunneled && sdLanTunnelGuest,
+        () => resolve()
+        ).catch(() => reject())
+      })
     }
 
     // deactivate SDLAN tunneling
@@ -190,7 +193,18 @@ export const useUpdateNetworkTunnelAction = () => {
                 // has conflict and confirmed
                 const actions = [triggerSdLanOperations()]
                 actions.push(...impactVenueIds.map(impactVenueId =>
-                  toggleNetwork(venueSdLanInfo?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
+                  new Promise<void | boolean>((resolve, reject) => {
+                    toggleNetwork(
+                    venueSdLanInfo?.id!,
+                    impactVenueId,
+                    network?.id!,
+                    true,
+                    formValues.sdLan.isGuestTunnelEnabled,
+                    () => resolve()
+                    ).catch(() => reject())
+                  })
+                  // toggleNetwork(venueSdLanInfo?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)
+                ))
                 await Promise.all(actions)
               } else {
                 await triggerSdLanOperations()
@@ -214,7 +228,7 @@ export const useDeactivateNetworkTunnelByType = () => {
   const { dectivateSoftGreTunnel } = useSoftGreTunnelActions()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
 
-  const deactivateNetworkTunnelByType = (
+  const deactivateNetworkTunnelByType = async (
     tunnelType: NetworkTunnelTypeEnum,
     formValues: NetworkTunnelActionForm,
     network: NetworkTunnelActionModalProps['network'],
@@ -222,7 +236,7 @@ export const useDeactivateNetworkTunnelByType = () => {
   ) => {
     switch (tunnelType) {
       case NetworkTunnelTypeEnum.SdLan:
-        updateSdLanNetworkTunnel(
+        await updateSdLanNetworkTunnel(
           formValues,
           network,
           tunnelType,
@@ -230,7 +244,7 @@ export const useDeactivateNetworkTunnelByType = () => {
         )
         return
       case NetworkTunnelTypeEnum.SoftGre:
-        dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
+        await dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
         return
       case NetworkTunnelTypeEnum.Pin:
       default:

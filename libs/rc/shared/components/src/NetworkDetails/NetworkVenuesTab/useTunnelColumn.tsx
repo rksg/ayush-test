@@ -102,7 +102,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           <div><NetworkTunnelSwitchBtn
             tunnelType={tunnelType}
             venueSdLanInfo={venueSdLanInfo}
-            onClick={(checked) => {
+            onClick={async (checked) => {
               if (checked) {
                 handleClickNetworkTunnel(row, network)()
               } else {
@@ -114,7 +114,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                 } as NetworkTunnelActionForm
 
                 // deactivate depending on current tunnel type
-                deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                // eslint-disable-next-line max-len
+                await deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
               }
             }}
           /></div>

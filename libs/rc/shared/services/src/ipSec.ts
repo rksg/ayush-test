@@ -26,6 +26,7 @@ import { RequestPayload }    from '@acx-ui/types'
 import { CommonResult }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
 
+import { handleCallbackWhenActivityDone } from './utils'
 
 
 export const ipSecApi = baseIpSecApi.injectEndpoints({
@@ -307,13 +308,35 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(IpsecUrls.activateIpsec, params)
       },
-      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
+      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: 'ActivateIpsecProfileOnVenueWifiNetwork',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     dectivateIpsec: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(IpsecUrls.dectivateIpsec, params)
       },
-      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
+      invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: 'DeactivateIpsecProfileOnVenueWifiNetwork',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     activateIpsecOnVenueLanPort: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

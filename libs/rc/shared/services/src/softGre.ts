@@ -22,7 +22,8 @@ import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import consolidateActivations from './softGreUtils'
+import consolidateActivations             from './softGreUtils'
+import { handleCallbackWhenActivityDone } from './utils'
 
 export const softGreApi = baseSoftGreApi.injectEndpoints({
   endpoints: (build) => ({
@@ -299,13 +300,35 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.activateSoftGre, params)
       },
-      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: 'ActivateSoftGreProfileOnVenueWifiNetwork',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     dectivateSoftGre: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.dectivateSoftGre, params)
       },
-      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: 'DeactivateSoftGreProfileOnVenueWifiNetwork',
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     activateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

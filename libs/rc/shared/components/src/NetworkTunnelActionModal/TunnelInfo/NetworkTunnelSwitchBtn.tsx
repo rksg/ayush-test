@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 
@@ -7,9 +9,11 @@ import { messageMappings }       from '../messageMappings'
 import { usePermissionResult }   from '../NetworkTunnelActionModal'
 import { NetworkTunnelTypeEnum } from '../types'
 
+import { StyledSpinner } from './styledComponents'
+
 interface NetworkTunnelSwitchBtnProps {
   tunnelType: NetworkTunnelTypeEnum
-  onClick: (checked: boolean) => void
+  onClick: (checked: boolean) => Promise<void> | void
   venueSdLanInfo: EdgeMvSdLanViewData | undefined
   disabled?: boolean
   tooltip?: string
@@ -18,7 +22,9 @@ interface NetworkTunnelSwitchBtnProps {
 export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
   const { $t } = useIntl()
   const { tunnelType, onClick, venueSdLanInfo } = props
+  const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const hasPermission = usePermissionResult()
+
   // eslint-disable-next-line max-len
   const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
   // eslint-disable-next-line max-len
@@ -27,11 +33,31 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
     ? $t(messageMappings.disable_deactivate_last_network)
     : undefined
 
-  return<Tooltip title={props.tooltip || tooltip}>
-    <Switch
-      checked={tunnelType !== NetworkTunnelTypeEnum.None}
-      disabled={props.disabled || needDisabled}
-      onClick={onClick}
-    />
-  </Tooltip>
+  const handleOnClick = async (val: boolean) => {
+    // turn on case is handled in NetworkTunnelActionForm
+    if (val) {
+      onClick(val)
+      return
+    }
+
+    setIsUpdating(true)
+
+    try {
+      await onClick(val)
+    } catch {
+      // no-op
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  return <StyledSpinner size={'small'} spinning={isUpdating}>
+    <Tooltip title={props.tooltip || tooltip}>
+      <Switch
+        checked={tunnelType !== NetworkTunnelTypeEnum.None}
+        disabled={props.disabled || needDisabled}
+        onClick={handleOnClick}
+      />
+    </Tooltip>
+  </StyledSpinner>
 }

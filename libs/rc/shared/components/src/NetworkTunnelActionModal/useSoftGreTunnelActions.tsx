@@ -23,7 +23,6 @@ export interface IpSecInfo {
   profileId: string
   profileName: string
 }
-
 export function useGetSoftGreScopeVenueMap () {
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const { venuesMap } = useGetSoftGreViewDataListQuery({
@@ -158,32 +157,41 @@ export function useSoftGreTunnelActions () {
   const [ activateIpSec ] = useActivateIpsecMutation()
   const [ dectivateIpSec ] = useDectivateIpsecMutation()
 
-  const activateSoftGreTunnel = (
+  const activateSoftGreTunnel = async (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
     if (isSoftGreEnabled && formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
         formValues.softGre?.newProfileId &&
         formValues.softGre?.oldProfileId !== formValues.softGre?.newProfileId) {
-      return activateSoftGre({
-        params: {
-          venueId,
-          networkId,
-          policyId: formValues.softGre.newProfileId
-        } }).unwrap()
+      return new Promise<void | boolean>((resolve, reject) => {
+        activateSoftGre({
+          params: {
+            venueId,
+            networkId,
+            policyId: formValues.softGre.newProfileId
+          },
+          callback: () => resolve()
+        }).unwrap()
+          .catch(() => reject())
+      })
     }
     return Promise.resolve()
-
   }
 
   const dectivateSoftGreTunnel = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
     if (isSoftGreEnabled && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
       && formValues.softGre?.oldProfileId && !formValues.softGre?.newProfileId) {
-      return dectivateSoftGre({
-        params: {
-          venueId,
-          networkId,
-          policyId: formValues.softGre.oldProfileId
-        } }).unwrap()
+      return new Promise<void | boolean>((resolve, reject) => {
+        dectivateSoftGre({
+          params: {
+            venueId,
+            networkId,
+            policyId: formValues.softGre.oldProfileId
+          },
+          callback: () => resolve()
+        }).unwrap()
+          .catch(() => reject())
+      })
     }
     return Promise.resolve()
   }
@@ -195,13 +203,18 @@ export function useSoftGreTunnelActions () {
       formValues.ipsec?.enableIpsec === true &&
       formValues.ipsec?.newProfileId &&
       formValues.ipsec?.oldProfileId !== formValues.ipsec?.newProfileId) {
-      return activateIpSec({
-        params: {
-          venueId,
-          networkId,
-          softGreProfileId: formValues.softGre.newProfileId,
-          ipsecProfileId: formValues.ipsec.newProfileId
-        } }).unwrap()
+      return new Promise<void | boolean>((resolve, reject) => {
+        activateIpSec({
+          params: {
+            venueId,
+            networkId,
+            softGreProfileId: formValues.softGre.newProfileId,
+            ipsecProfileId: formValues.ipsec?.newProfileId
+          },
+          callback: () => resolve()
+        }).unwrap()
+          .catch(() => reject())
+      })
     }
     return Promise.resolve()
   }
@@ -211,13 +224,18 @@ export function useSoftGreTunnelActions () {
     if (isSoftGreEnabled && isIpSecEnabled
       && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
       && formValues.ipsec?.oldProfileId && !formValues.ipsec?.newProfileId) {
-      return dectivateIpSec({
-        params: {
-          venueId,
-          networkId,
-          softGreProfileId: formValues.softGre.newProfileId,
-          ipsecProfileId: formValues.ipsec.oldProfileId
-        } }).unwrap()
+      return new Promise<void | boolean>((resolve, reject) => {
+        dectivateIpSec({
+          params: {
+            venueId,
+            networkId,
+            softGreProfileId: formValues.softGre.newProfileId,
+            ipsecProfileId: formValues.ipsec?.oldProfileId
+          },
+          callback: () => resolve()
+        }).unwrap()
+          .catch(() => reject())
+      })
     }
     return Promise.resolve()
   }
