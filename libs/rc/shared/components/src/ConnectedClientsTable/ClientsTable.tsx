@@ -107,7 +107,6 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
   const { $t } = useIntl()
   const params = useParams()
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -711,7 +710,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
           enableApiFilter={true}
           floatRightFilters={true}
           rowKey='clientMac'
-          filterPersistence={enabledUXOptFeature}
+          filterPersistence={true}
         />
       </Loader>
     </UI.ClientTableDiv>

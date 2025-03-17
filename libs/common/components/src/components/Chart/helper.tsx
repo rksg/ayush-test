@@ -276,6 +276,9 @@ export const timeSeriesTooltipFormatter = (
             if (!color && data.show !== false) return null
 
             const formatter = dataFormatters[data.key] || dataFormatters.default
+            if(!data || !data.data || data.data[dataIndex as number] === undefined){
+              return null
+            }
             const [, value] = data.data[dataIndex as number] as [TimeStamp, number | null]
             if (value === undefined) return null
             let text = <FormattedMessage
