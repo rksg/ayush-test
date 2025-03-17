@@ -1,12 +1,12 @@
 import { Col, Form, Row, Select } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Tooltip }                                                               from '@acx-ui/components'
-import { TunnelProfileAddModal }                                                 from '@acx-ui/rc/components'
-import { MtuTypeEnum, TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }                                                from '@acx-ui/types'
-import { hasPermission }                                                         from '@acx-ui/user'
-import { getOpsApi }                                                             from '@acx-ui/utils'
+import { Tooltip }                                                                       from '@acx-ui/components'
+import { TunnelProfileAddModal }                                                         from '@acx-ui/rc/components'
+import { MtuTypeEnum, NetworkSegmentTypeEnum, TunnelProfileFormType, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                                                        from '@acx-ui/types'
+import { hasPermission }                                                                 from '@acx-ui/user'
+import { getOpsApi }                                                                     from '@acx-ui/utils'
 
 import { messageMappings } from '../messageMappings'
 
@@ -20,7 +20,7 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
 
   const formInitValues = {
     mtuType: MtuTypeEnum.MANUAL,
-    type: TunnelTypeEnum.VLAN_VXLAN,
+    type: NetworkSegmentTypeEnum.VLAN_VXLAN,
     disabledFields: ['mtuType', 'type', 'natTraversalEnabled']
   }
 

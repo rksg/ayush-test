@@ -35,6 +35,7 @@ import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
   ConfigTemplateType,
+  PropertyUrlsInfo,
   TableQuery,
   usePollingTableQuery,
   Venue,
@@ -301,7 +302,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
       getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+      getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+      getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
@@ -355,7 +358,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
             getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]
         }) && rowSelection}
       />

@@ -67,7 +67,8 @@ export const WifiCallingConfigureForm = () => {
     networkIds,
     networksName,
     epdgs,
-    oldNetworkIds
+    oldNetworkIds,
+    isEnforced: false
   })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
@@ -102,7 +103,7 @@ export const WifiCallingConfigureForm = () => {
         editMode={true}
         onCancel={() => navigate(previousPath)}
         onFinish={handleUpdateWifiCallingService}
-        {...getEnforcedStepsFormProps('StepsForm')}
+        {...getEnforcedStepsFormProps('StepsForm', state.isEnforced)}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='settings'
