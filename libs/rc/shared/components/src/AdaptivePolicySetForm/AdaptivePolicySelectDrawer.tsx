@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy, FILTER, filterByAccessForServicePolicyMutation,
-  getAdaptivePolicyDetailLink, getScopeKeyByPolicy,
+  getAdaptivePolicyDetailLink, getPolicyAllowedOperation, getScopeKeyByPolicy,
   PolicyOperation, PolicyType, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -176,6 +176,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
             onFilterChange={handleFilterChange}
             actions={filterByAccessForServicePolicyMutation([{
               scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
+              // eslint-disable-next-line max-len
+              rbacOpsIds: getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {
                 setAdaptivePolicyDrawerVisible(true)
