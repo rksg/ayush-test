@@ -329,7 +329,13 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         return isSupportAdminPassword
           ? <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
             <Tooltip title={getPasswordTooltip(row)}>{
-              getAdminPassword(row, isSupport8200AV, isSupport8100, isSupport8100X, PasswordInput)
+              getAdminPassword(row,
+                {
+                  isSupport8200AV: isSupport8200AV,
+                  isSupport8100: isSupport8100,
+                  isSupport8100X: isSupport8100X
+                },
+                PasswordInput)
             }</Tooltip>
           </div>
           : noDataDisplay

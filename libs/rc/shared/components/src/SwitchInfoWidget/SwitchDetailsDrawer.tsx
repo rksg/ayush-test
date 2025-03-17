@@ -91,7 +91,13 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         <Divider/>
         { isSupportAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
-          children={getAdminPassword(switchDetail,isSupport8200AV, isSupport8100, isSupport8100X,
+          children={getAdminPassword(
+            switchDetail,
+            {
+              isSupport8200AV: isSupport8200AV,
+              isSupport8100: isSupport8100,
+              isSupport8100X: isSupport8100X
+            },
             PasswordInput)}
         />}
         <Form.Item

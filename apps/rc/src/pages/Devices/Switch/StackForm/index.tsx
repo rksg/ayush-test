@@ -121,7 +121,11 @@ export const validatorSwitchModel = ( props: SwitchModelParams ) => {
   const { serialNumber, isSupport8200AV, isSupport8100, isSupport8100X, activeSerialNumber } = props
   const { $t } = getIntl()
 
-  const re = createSwitchSerialPattern(isSupport8200AV, isSupport8100, isSupport8100X)
+  const re = createSwitchSerialPattern({
+    isSupport8200AV: isSupport8200AV,
+    isSupport8100: isSupport8100,
+    isSupport8100X: isSupport8100X
+  })
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }

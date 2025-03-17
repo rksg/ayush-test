@@ -462,7 +462,11 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = createSwitchSerialPattern(isSupport8200AV, isSupport8100, isSupport8100X)
+    const re = createSwitchSerialPattern({
+      isSupport8200AV: isSupport8200AV,
+      isSupport8100: isSupport8100,
+      isSupport8100X: isSupport8100X
+    })
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }

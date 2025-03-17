@@ -386,16 +386,14 @@ export const isEmpty = (params?: unknown) => {
 }
 
 export const getSwitchModelInfo = (switchModel: string) => {
+  const [ family, model ] = getFamilyAndModel(switchModel)
 
-  const modelFamily = switchModel.split('-')[0]
-  const subModel = switchModel.substring(switchModel.indexOf('-')+1)
-
-  const modelFamilyInfo = ICX_MODELS_INFORMATION[modelFamily]
+  const modelFamilyInfo = ICX_MODELS_INFORMATION[family]
   if (!modelFamilyInfo) {
     return null
   }
 
-  const subModelInfo = modelFamilyInfo[subModel]
+  const subModelInfo = modelFamilyInfo[model]
   if (!subModelInfo) {
     return null
   }
@@ -716,19 +714,21 @@ export const getClientIpAddr = (data?: SwitchClient) => {
   return ipAddress.length > 0 ? ipAddress.join(' / ') : noDataDisplay
 }
 
-export const createSwitchSerialPattern = (
+export interface SupportModels {
   isSupport8200AV: boolean,
   isSupport8100: boolean,
   isSupport8100X: boolean
-) => {
+}
+
+export const createSwitchSerialPattern = (supportModels: SupportModels) => {
   let pattern = SWITCH_SERIAL_BASE
-  if (isSupport8200AV) {
+  if (supportModels.isSupport8200AV) {
     pattern += '|' + SWITCH_SERIAL_8200AV
   }
-  if (isSupport8100) {
+  if (supportModels.isSupport8100) {
     pattern += '|' + SWITCH_SERIAL_8100
   }
-  if (isSupport8100X) {
+  if (supportModels.isSupport8100X) {
     pattern += '|' + SWITCH_SERIAL_8100X
   }
 
@@ -737,13 +737,11 @@ export const createSwitchSerialPattern = (
 
 export const getAdminPassword = (
   data: SwitchViewModel | SwitchRow,
-  isSupport8200AV: boolean,
-  isSupport8100: boolean,
-  isSupport8100X: boolean,
+  supportModels: SupportModels,
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  const serialNumberRegExp = createSwitchSerialPattern(isSupport8200AV, isSupport8100, isSupport8100X)
+  const serialNumberRegExp = createSwitchSerialPattern(supportModels)
 
   // when switch id is the serial number
   // 1) pre-provision 2) migrate from alto
@@ -904,4 +902,10 @@ export const isBabyRodanXSubModel = (model: string) => {
     default:
       return false
   }
+}
+
+export const getFamilyAndModel = function (switchModel: string) {
+  const family = switchModel.split('-')[0]
+  const model = switchModel.substring(switchModel.indexOf('-')+1)
+  return [family, model]
 }

@@ -326,21 +326,33 @@ describe('switch.utils', () => {
         configReady: true,
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-      }, false , false, false)).toBe('--')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      })).toBe('--')
 
       expect(getAdminPassword({
         ...switchRow,
         configReady: true,
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
-      }, false , false, false)).toBe('--')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      })).toBe('--')
 
       expect(getAdminPassword({
         ...switchRow,
         configReady: false,
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD
-      }, false , false, false)).toBe('--')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      })).toBe('--')
 
       expect(getAdminPassword({
         ...switchRow,
@@ -348,7 +360,11 @@ describe('switch.utils', () => {
         configReady: true,
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.OPERATIONAL
-      }, false , false, false)).toBe('Custom')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      })).toBe('Custom')
 
       expect(getAdminPassword({
         ...switchRow,
@@ -358,7 +374,11 @@ describe('switch.utils', () => {
         syncedAdminPassword: true,
         adminPassword: 'test123',
         deviceStatus: SwitchStatusEnum.OPERATIONAL
-      }, false , false, false, Input.Password)).not.toBe('Custom')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      }, Input.Password)).not.toBe('Custom')
 
       expect(getAdminPassword({
         ...switchRow,
@@ -366,7 +386,11 @@ describe('switch.utils', () => {
         configReady: true,
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.DISCONNECTED
-      }, false , false, false)).toBe('Custom')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      })).toBe('Custom')
 
       expect(getAdminPassword({
         ...switchRow,
@@ -374,7 +398,11 @@ describe('switch.utils', () => {
         configReady: true,
         syncedSwitchConfig: true,
         deviceStatus: SwitchStatusEnum.FIRMWARE_UPD_START
-      }, false , false, false)).toBe('Custom')
+      },
+      { isSupport8200AV: false,
+        isSupport8100: false,
+        isSupport8100X: false
+      })).toBe('Custom')
 
     })
   })

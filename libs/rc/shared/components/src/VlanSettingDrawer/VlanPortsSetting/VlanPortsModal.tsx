@@ -15,7 +15,8 @@ import {
   SwitchSlot2,
   StackMember,
   SwitchPortViewModelQueryFields,
-  SwitchPortViewModel
+  SwitchPortViewModel,
+  getFamilyAndModel
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -87,8 +88,7 @@ export function VlanPortsModal (props: {
     setEditMode(open && !!editRecord)
 
     if (open && isSwitchLevel) {
-      const family = switchFamilyModel.split('-')[0]
-      const model = switchFamilyModel.substring(switchFamilyModel.indexOf('-')+1)
+      const [ family, model ] = getFamilyAndModel(switchFamilyModel)
       const initValues = {
         family, model,
         slots: portSlotsData as unknown as SwitchSlot2[],
@@ -116,8 +116,7 @@ export function VlanPortsModal (props: {
         setVlanSettingValues(initValues)
       }
     } else if (open && editRecord) {
-      const family = editRecord.model.split('-')[0]
-      const model = editRecord.model.substring(editRecord.model.indexOf('-')+1)
+      const [ family, model ] = getFamilyAndModel(editRecord.model)
       setVlanSettingValues({
         family, model, switchFamilyModels: editRecord, trustedPorts: [], stackMember
       })
