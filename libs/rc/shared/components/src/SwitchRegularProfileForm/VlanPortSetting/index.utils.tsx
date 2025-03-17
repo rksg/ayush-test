@@ -269,7 +269,7 @@ export const getUpdatedVlans = (
     const updatedVlan = vlanMap[vlan.vlanId]
     const updatedVlanSlots = formattedSlotConfig(updatedVlan?.slots)
     const existingModule = vlan.switchFamilyModels?.find(v =>
-      v.model === updatedVlan.model &&
+      v.model === updatedVlan?.model &&
       _.isEqual(_.sortBy(v.slots, 'slotNumber'), updatedVlanSlots)
     )
 

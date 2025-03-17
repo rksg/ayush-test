@@ -18,6 +18,36 @@ const currentData = {
   vlans: [{ arpInspection: true, switchFamilyModels: [] }]
 }
 
+const handleSetPort = async (
+  family: string, model: string,
+  enableModule2?: boolean, portTestId?: string, updatedUntagged?: boolean
+) => {
+  await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
+  const dialog = await screen.findByRole('dialog')
+  expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
+
+  await userEvent.click(await screen.findByText(family))
+  await userEvent.click(await screen.findByText(model))
+  if (enableModule2) {
+    await userEvent.click(await screen.findByText('Module 2:'))
+  }
+  await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
+
+  if (portTestId) {
+    await userEvent.click(await within(dialog).findByTestId(portTestId))
+    const comboboxes = await within(dialog).findAllByRole('combobox')
+    const combobox = updatedUntagged ? comboboxes[0] : comboboxes[1]
+    await userEvent.click(combobox)
+    let text = await screen.findAllByText('3')
+    await userEvent.click(text[text.length - 1])
+  }
+
+  await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
+  await waitFor(()=>{
+    expect(dialog).not.toBeVisible()
+  })
+}
+
 describe('Wired - VlanPortSetting', () => {
   const configureProfileContextValues = {
     editMode: false,
@@ -228,30 +258,7 @@ describe('Wired - VlanPortSetting', () => {
       })
 
     await screen.findByRole('heading', { level: 3, name: /Ports/ })
-    await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
-    const dialog = await screen.findByRole('dialog')
-    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
-
-    await userEvent.click(await screen.findByText('ICX-7650'))
-    await userEvent.click(await screen.findByText('48ZP'))
-    await userEvent.click(await screen.findByText('Module 2:'))
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
-
-    expect(await within(dialog).findByText(
-      /Select the ports to configure VLAN\(s\) for this model \(ICX7650-48ZP\)/
-    )).toBeVisible()
-    expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
-    expect(await within(dialog).findByText('1 X 40/100G')).toBeVisible()
-
-
-    await userEvent.click(await within(dialog).findByTestId('module1_1_3'))
-
-    const comboboxes = await within(dialog).findAllByRole('combobox')
-    await userEvent.click(comboboxes[0]) //untagged
-    const text3 = await screen.findAllByText('3')
-    expect(text3).toHaveLength(3)
-    await userEvent.click(text3[2])
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
+    await handleSetPort('ICX-7650', '48ZP', true, 'module1_1_3', true)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     expect(onFinishSpy).toBeCalledTimes(1)
@@ -394,27 +401,7 @@ describe('Wired - VlanPortSetting', () => {
       })
 
     await screen.findByRole('heading', { level: 3, name: /Ports/ })
-    await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
-    const dialog = await screen.findByRole('dialog')
-    expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()
-
-    await userEvent.click(await screen.findByText('ICX-7650'))
-    await userEvent.click(await screen.findByText('48ZP'))
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }) )
-
-    expect(await within(dialog).findByText(
-      /Select the ports to configure VLAN\(s\) for this model \(ICX7650-48ZP\)/
-    )).toBeVisible()
-    expect(await within(dialog).findByText('48 X 1/2.5/5/10G')).toBeVisible()
-
-    await userEvent.click(await within(dialog).findByTestId('module1_1_4'))
-    const comboboxes = await within(dialog).findAllByRole('combobox')
-    await userEvent.click(comboboxes[0]) //untagged
-    let text3 = await screen.findAllByText('3')
-    expect(text3).toHaveLength(3)
-    await userEvent.click(text3[2])
-
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Add' }) )
+    await handleSetPort('ICX-7650', '48ZP', false, 'module1_1_4', true)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     expect(onFinishSpy).toBeCalledTimes(1)
@@ -460,6 +447,107 @@ describe('Wired - VlanPortSetting', () => {
           vlanId: 3,
           vlanName: 'vlan-02'
         }]
+    })
+  })
+
+  it('should handle add multiple port correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans: [
+              vlans[0],
+              newVlan3
+            ]
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+
+    await handleSetPort('ICX-8200', '24', false, 'module1_1_2')
+    await handleSetPort('ICX-8200', '24P', false, 'module1_1_3')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(onFinishSpy).toBeCalledTimes(1)
+    const call = onFinishSpy.mock.calls[0]
+    expect(call[0]).toStrictEqual({
+      ...currentData,
+      vlans: [
+        vlans[0],
+        {
+          arpInspection: false,
+          igmpSnooping: 'none',
+          ipv4DhcpSnooping: false,
+          spanningTreePriority: 32768,
+          spanningTreeProtocol: 'none',
+          switchFamilyModels: [{
+            id: '9874453239bc479fac68bc050d0cf729',
+            model: 'ICX7550-24P',
+            slots: [
+              { slotNumber: 1, enable: true },
+              { slotNumber: 2, enable: true, option: '2X40G' },
+              { slotNumber: 3, enable: true, option: '2X40G' }
+            ],
+            taggedPorts: '1/2/2',
+            untaggedPorts: '1/1/20,1/3/2'
+          }, {
+            id: '9874453239bc479fac68bc050d0cf728',
+            model: 'ICX7650-48ZP',
+            slots: [
+              { slotNumber: 1, enable: true },
+              { slotNumber: 2, enable: true, option: '1X40/100G' }
+            ],
+            taggedPorts: '1/1/2',
+            untaggedPorts: '1/1/3'
+          }, {
+            id: '9874453239bc479fac68bc050d0cf727',
+            model: 'ICX7650-48ZP',
+            slots: [
+              { slotNumber: 1, enable: true }
+            ],
+            taggedPorts: '1/1/40',
+            untaggedPorts: '1/1/38'
+          }, {
+            id: '',
+            model: 'ICX8200-24',
+            slots: [
+              { slotNumber: 1, enable: true },
+              { slotNumber: 2, enable: true, option: '4X1/10/25G' }
+            ],
+            taggedPorts: '1/1/2',
+            untaggedPorts: ''
+          }, {
+            id: '',
+            model: 'ICX8200-24P',
+            slots: [
+              { slotNumber: 1, enable: true },
+              { slotNumber: 2, enable: true, option: '4X1/10/25G' }
+            ],
+            taggedPorts: '1/1/3',
+            untaggedPorts: ''
+          }],
+          vlanId: 3,
+          vlanName: 'vlan-02'
+        }
+      ]
     })
 
   })
@@ -600,10 +688,6 @@ describe('Wired - VlanPortSetting', () => {
           vlanName: 'vlan-02'
         }]
     })
-
-
-    // await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
-    // expect(dialog).not.toBeVisible()
   })
 
   it('should handle clear selection correctly', async () => {
