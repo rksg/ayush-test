@@ -2,12 +2,20 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                                            from '@acx-ui/test-utils'
-import { EdgeScopes, RolesEnum, WifiScopes }                                                                from '@acx-ui/types'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  ConnectionMeteringUrls,
+  Persona,
+  PersonaUrls,
+  PropertyUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { EdgeScopes, RolesEnum, WifiScopes }                     from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
@@ -17,14 +25,14 @@ import {
 import {
   mockPersonaGroupWithoutPin,
   mockPropertyUnit,
-  venueLanPorts,
   mockEnabledNoPinPropertyConfig,
   mockEnabledPinPropertyConfig,
   mockPersonaGroupWithPin,
   mockConnectionMeteringTableResult,
   replacePagination,
   mockConnectionMeterings,
-  mockPropertyUnitList
+  mockPropertyUnitList,
+  venueCaps
 } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
@@ -113,12 +121,12 @@ describe('Property Unit Drawer', () => {
         }
       ),
       rest.get(
-        CommonUrlsInfo.getVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json(venueLanPorts))
+        WifiUrlsInfo.getVenueApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))
       ),
       rest.get(
-        WifiRbacUrlsInfo.getVenueLanPorts.url,
-        (_, res, ctx) => res(ctx.json(venueLanPorts))
+        WifiRbacUrlsInfo.getVenueApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))
       ),
       rest.get(
         PersonaUrls.getPersonaById.url,
