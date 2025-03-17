@@ -388,7 +388,7 @@ export const isEmpty = (params?: unknown) => {
 export const getSwitchModelInfo = (switchModel: string) => {
 
   const modelFamily = switchModel.split('-')[0]
-  const subModel = switchModel.split('-')[1]
+  const subModel = switchModel.substring(switchModel.indexOf('-')+1)
 
   const modelFamilyInfo = ICX_MODELS_INFORMATION[modelFamily]
   if (!modelFamilyInfo) {

@@ -430,7 +430,8 @@ function transformData (vlans: Vlan[]) {
     if (!item.switchFamilyModels) return result
 
     item.switchFamilyModels.forEach((switchModel) => {
-      const [family, model] = switchModel.model.split('-')
+      const family = switchModel.model.split('-')[0]
+      const model = switchModel.model.substring(switchModel.model.indexOf('-')+1)
       const tagged = switchModel.taggedPorts ? switchModel.taggedPorts.split(',') : []
       const untagged = switchModel.untaggedPorts ? switchModel.untaggedPorts.split(',') : []
       const ports = [...tagged, ...untagged]

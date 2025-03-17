@@ -68,7 +68,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     }
     if(editRecord){
       const selectedFamily = editRecord.model.split('-')[0]
-      const selectedModel = editRecord.model.split('-')[1]
+      const selectedModel = editRecord.model.substring(editRecord.model.indexOf('-')+1)
       const selectedEnable2 = editRecord.slots.filter(
         (item: { slotNumber: number }) => item.slotNumber === 2)[0] || {}
       const selectedEnable3 = editRecord.slots.filter(

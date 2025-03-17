@@ -87,7 +87,8 @@ export function VlanPortsModal (props: {
     setEditMode(open && !!editRecord)
 
     if (open && isSwitchLevel) {
-      const [ family, model ] = switchFamilyModel.split('-')
+      const family = switchFamilyModel.split('-')[0]
+      const model = switchFamilyModel.substring(switchFamilyModel.indexOf('-')+1)
       const initValues = {
         family, model,
         slots: portSlotsData as unknown as SwitchSlot2[],
@@ -116,7 +117,7 @@ export function VlanPortsModal (props: {
       }
     } else if (open && editRecord) {
       const family = editRecord.model.split('-')[0]
-      const model = editRecord.model.split('-')[1]
+      const model = editRecord.model.substring(editRecord.model.indexOf('-')+1)
       setVlanSettingValues({
         family, model, switchFamilyModels: editRecord, trustedPorts: [], stackMember
       })

@@ -64,7 +64,8 @@ export function PortsModal (props: {
     setEditMode(open && !!editRecord)
 
     if (open && editRecord) {
-      const [family, model] = editRecord.familymodel?.split('-') ?? []
+      const family = editRecord.familymodel.split('-')[0]
+      const model = editRecord.familymodel.substring(editRecord.familymodel.indexOf('-')+1)
       const slots = editRecord?.slots
       const enableSlot = Array.from({ length: 2 }, (_, index) => {
         //for slot2, slot3
