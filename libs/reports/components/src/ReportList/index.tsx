@@ -1,3 +1,4 @@
+import {  Divider }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
@@ -64,6 +65,28 @@ export function ReportList () {
       disabled: !isEdgeAvReportReady
     }
   ]
+  const adhocReports = [
+    {
+      title: $t({ defaultMessage: 'Wireless : RSS and Traffic by Access Points' }),
+      description: $t({ defaultMessage: 'Details of signal strength and traffic by Access points' }),
+      path: 'rssTraffic'
+    },
+    {
+      title: $t({ defaultMessage: 'Wireless : RSS and Session by Access Points' }),
+      description: $t({ defaultMessage: 'Details of signal strength and session by Access points' }),
+      path: 'rssSession'
+    },
+    {
+      title: $t({ defaultMessage: 'Wireless : Airtime by Access Points' }),
+      description: $t({ defaultMessage: 'Details of Airtime by Access points' }),
+      path: 'wirelessAirtime'
+    },
+    {
+      title: $t({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' }),
+      description: $t({ defaultMessage: 'Details of Traffic by Applications and Access points' }),
+      path: 'trafficApplications'
+    }
+  ]
   /* eslint-enable */
 
   const navigate = useNavigate()
@@ -93,6 +116,28 @@ export function ReportList () {
               />
             </GridCol>
           )
+        ))
+        }
+      </GridRow>
+      <Divider />
+      <PageHeader
+        title={$t({ defaultMessage: 'Adhoc reports' })}
+      />
+      <GridRow>
+        {adhocReports.map(({ title, description, path }) => (
+          <GridCol key={path} col={{ span: 6 }}>
+            <RadioCard
+              type='button'
+              buttonText={viewText}
+              title={title}
+              description={description}
+              value={path}
+              onClick={() => navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/${path}`
+              })}
+            />
+          </GridCol>
         ))
         }
       </GridRow>
