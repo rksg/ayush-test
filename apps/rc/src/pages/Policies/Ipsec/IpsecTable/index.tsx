@@ -22,7 +22,9 @@ import {
   IkeProposal,
   EspProposal,
   IpSecAuthEnum,
-  IpSecProposalTypeEnum
+  IpSecProposalTypeEnum,
+  getPolicyAllowedOperation,
+  IpSecEncryptionAlgorithmEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -64,6 +66,7 @@ export default function IpsecTable () {
 
   const rowActions: TableProps<IpsecViewData>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
@@ -79,6 +82,7 @@ export default function IpsecTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
@@ -128,6 +132,7 @@ export default function IpsecTable () {
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.IPSEC, oper: PolicyOperation.CREATE })}
             scopeKey={getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add IPsec Profile' })}</Button>
           </TenantLink>
@@ -179,7 +184,8 @@ function useColumns () {
   const getIkeProposals = (proposals: IkeProposal[]) => {
     const retArr: string[] = []
     proposals.forEach((proposal: IkeProposal) => {
-      retArr.push(`${proposal.encAlg}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
+      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
     })
     return retArr
   }
@@ -187,7 +193,8 @@ function useColumns () {
   const getEspProposals = (proposals: EspProposal[]) => {
     const retArr: string[] = []
     proposals.forEach((proposal: EspProposal) => {
-      retArr.push(`${proposal.encAlg}-${proposal.authAlg}-${proposal.dhGroup}`)
+      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.dhGroup}`)
     })
     return retArr
   }
