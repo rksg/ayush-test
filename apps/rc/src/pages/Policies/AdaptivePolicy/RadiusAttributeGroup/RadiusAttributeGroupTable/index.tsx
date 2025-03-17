@@ -9,13 +9,14 @@ import {
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER, filterByAccessForServicePolicyMutation,
+  FILTER, filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink, getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroup, SEARCH,
+  PolicyType, RadiusAttributeGroup, RadiusAttributeGroupUrlsInfo, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -60,7 +61,8 @@ export default function RadiusAttributeGroupTable () {
           })
         })
       },
-      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -89,7 +91,9 @@ export default function RadiusAttributeGroupTable () {
           }
         )
       },
-      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE)
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE),
+      // eslint-disable-next-line max-len
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE)
     }]
 
     function useColumns () {
@@ -110,6 +114,7 @@ export default function RadiusAttributeGroupTable () {
                   oper: PolicyOperation.DETAIL,
                   policyId: row.id!
                 })}
+                rbacOpsIds={[getOpsApi(RadiusAttributeGroupUrlsInfo.getAttributeGroup)]}
               >{row.name}</TenantLink>
             )
           }
@@ -165,6 +170,8 @@ export default function RadiusAttributeGroupTable () {
           actions={filterByAccessForServicePolicyMutation([{
             // eslint-disable-next-line max-len
             scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
+            // eslint-disable-next-line max-len
+            rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({

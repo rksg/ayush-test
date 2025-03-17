@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CertTemplateLink, DpskPoolLink,
-  filterByAccessForServicePolicyMutation,
+  filterByAccessForServicePolicyMutation, getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy, IdentityGroupLink, MacRegistrationPoolLink,
   PolicyOperation,
   PolicyType,
@@ -215,6 +215,8 @@ export default function AdaptivePolicySetDetail () {
                 policyId: policyId as string
               })}
             scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
