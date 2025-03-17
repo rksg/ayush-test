@@ -149,15 +149,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           }
         })
 
-        const enableNewMemberApi
-          = (arg.customExtraArg as { enableNewMemberApi: boolean })?.enableNewMemberApi
-
+        const enableNewMemberApi = arg.payload.enableNewMemberApi
         if (enableNewMemberApi) {
           const stackActiveSerials = stacks.map(stack => stack.serialNumber)
           const allStacksMember = (enableAggregateStackMember && stackActiveSerials.length
             ? await fetchWithBQ({
               ...createHttpRequest(switchUrls.getSwitchMemberList, arg.params, headers),
               body: JSON.stringify({
+                pageSize: 9999,
                 filters: {
                   activeSerial: stackActiveSerials
                 }

@@ -47,7 +47,6 @@ export interface TABLE_QUERY <
       params: Params<string>,
       payload: Payload,
       customHeaders?: Record<string,unknown>
-      customExtraArg?: Record<string,unknown>
       enableRbac?: boolean
     }
   >
@@ -61,7 +60,6 @@ export interface TABLE_QUERY <
   enableSelectAllExtraArg?: Record<string,unknown>
   enableRbac?: boolean
   customHeaders?: Record<string,unknown> // api versioning
-  customExtraArg?: Record<string,unknown>
 }
 type PAGINATION = {
   page: number,
@@ -185,7 +183,6 @@ export function useTableQuery <
     params: { ...params, ...option.apiParams },
     payload: payload,
     customHeaders: option?.customHeaders,
-    customExtraArg: option?.customExtraArg,
     enableRbac: option?.enableRbac
   }, option.option)
 

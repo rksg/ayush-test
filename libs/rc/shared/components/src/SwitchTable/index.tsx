@@ -163,7 +163,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     enableRbac: isSwitchRbacEnabled,
     defaultPayload: {
       filters: getFilters(params),
-      ...defaultSwitchPayload
+      ...defaultSwitchPayload,
+      enableNewMemberApi: isNewSwitchMemberApiEnabled
     },
     search: {
       searchString: '',
@@ -174,9 +175,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
     enableSelectAllExtraArg: {
       enableAggregateStackMember: false
-    },
-    customExtraArg: {
-      enableNewMemberApi: isNewSwitchMemberApiEnabled
     },
     pagination: { settingsId }
   })
