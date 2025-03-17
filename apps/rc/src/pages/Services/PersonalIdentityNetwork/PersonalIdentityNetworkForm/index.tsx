@@ -238,13 +238,12 @@ export const afterSubmitMessage = (
   const { $t } = getIntl()
 
   const errorMsg = error.data.errors[0].message //TODO: for each errors
-  const webAuthVlanDNE = /\[WebAuth VLAN\]/.test(errorMsg)
   const forceOverwriteReboot = /\[forceOverwriteReboot\]/.test(errorMsg)
   const hasVXLAN = /VXLAN/i.test(errorMsg)
 
   const macRegexString = '([0-9a-fA-F][0-9a-fA-F]:){5}[0-9a-fA-F][0-9a-fA-F]'
   const macRegex = new RegExp(macRegexString, 'g')
-  const macGroupRegex = new RegExp('\\[('+macRegexString+',? ?){1,}\\]', 'g')
+  const macGroupRegex = new RegExp('('+macRegexString+',? ?){1,}', 'g')
 
   const switchIdList = errorMsg.match(macGroupRegex) as string[]
 
@@ -261,7 +260,7 @@ export const afterSubmitMessage = (
   if (forceOverwriteReboot && switchIdList.length > 0) {
     if (hasVXLAN) {
       message.push($t({ defaultMessage:
-        'Distribution Switch {switchName} already has VXLAN config.' },
+        'Distribution Switch {switchName} will overwrite its existing VXLAN configuration.' },
       { switchName: replaceMacWithName(switchIdList.shift()) }
       ))
     }
@@ -273,7 +272,7 @@ export const afterSubmitMessage = (
     }
 
     message.push($t({ defaultMessage: 'Click Yes to proceed, No to cancel.' }))
-  } else if (webAuthVlanDNE) {
+  } else {
     message.push(replaceMacWithName(errorMsg))
   }
   return message.map(m=><p>{m}</p>)
