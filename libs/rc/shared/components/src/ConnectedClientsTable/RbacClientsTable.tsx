@@ -341,11 +341,15 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
             const { apInformation } = row
-            return (
-              <TenantLink to={`/devices/wifi/${apInformation.serialNumber}/details/overview`}>
-                {apInformation.name}
-              </TenantLink>
-            )
+            if (apInformation.serialNumber === undefined) {
+              return apInformation.name
+            } else {
+              return (
+                <TenantLink to={`/devices/wifi/${apInformation.serialNumber}/details/overview`}>
+                  {apInformation.name}
+                </TenantLink>
+              )
+            }
           })
         }
       },

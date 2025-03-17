@@ -1,4 +1,4 @@
-import { TunnelTypeEnum } from '../../../../models'
+import { NetworkSegmentTypeEnum } from '../../../../models'
 
 export const mockedTunnelProfileViewData = {
   totalCount: 3,
@@ -15,7 +15,7 @@ export const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN,
+      type: NetworkSegmentTypeEnum.VXLAN,
       natTraversalEnabled: true
     },
     {
@@ -29,7 +29,7 @@ export const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN,
+      type: NetworkSegmentTypeEnum.VXLAN,
       natTraversalEnabled: false
     },
     {
@@ -43,7 +43,7 @@ export const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN
+      type: NetworkSegmentTypeEnum.VXLAN
     },
     {
       id: 'SLecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -56,7 +56,7 @@ export const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: [],
       networkIds: ['network1', 'network2'],
       sdLanIds: ['sdlan1', 'sdlan2'],
-      type: TunnelTypeEnum.VLAN_VXLAN
+      type: NetworkSegmentTypeEnum.VLAN_VXLAN
     }
   ]
 }
@@ -76,7 +76,7 @@ export const mockedDefaultTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN
+      type: NetworkSegmentTypeEnum.VXLAN
     }
   ]
 }
@@ -91,7 +91,7 @@ export const mockedDefaultVlanVxlanTunnelProfileViewData = {
       name: 'Default tunnel profile (SD-LAN)',
       personalIdentityNetworkIds: [],
       sdLanIds: ['sdlan1'],
-      type: TunnelTypeEnum.VLAN_VXLAN
+      type: NetworkSegmentTypeEnum.VLAN_VXLAN
     }
   ]
 }

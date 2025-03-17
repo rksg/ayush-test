@@ -104,7 +104,10 @@ export const getErrorContent = (action: ErrorAction) => {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
     if('data' in action.payload) {
-      errors = action.payload.data
+      const { data } = action.payload
+      errors = data?.error
+        ? { ...data, errors: [data.error] as CatchErrorDetails[] }
+        : data
     } else if ('error' in action.payload) {
       errors = action.payload.error
     } else if ('message' in action.payload) {

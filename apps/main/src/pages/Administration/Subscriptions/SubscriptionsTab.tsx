@@ -4,12 +4,14 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import {
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { LicenseCompliance, PendingActivations }                          from '@acx-ui/msp/components'
-import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
-import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
-import { useGetAccountTierQuery }                                         from '@acx-ui/user'
-import { AccountTier, AccountType, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { LicenseCompliance, PendingActivations }                                     from '@acx-ui/msp/components'
+import { MspRbacUrlsInfo }                                                           from '@acx-ui/msp/utils'
+import { SpaceWrapper }                                                              from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, LicenseUrlsInfo }                                   from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { hasAllowedOperations, useGetAccountTierQuery }                              from '@acx-ui/user'
+import { AccountTier, AccountType, getJwtTokenPayload, getOpsApi, isDelegationMode } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 // import MySubscriptions            from './MySubscriptions'
@@ -49,18 +51,20 @@ export const SubscriptionTabs = (props: { tenantType: string }) => {
           {isEntitlementRbacApiEnabled
             ? <RbacSubscriptionTable /> : <SubscriptionTable />}
         </SpaceWrapper>,
-        visible: true
+        visible: hasAllowedOperations([getOpsApi(LicenseUrlsInfo.getMspEntitlement)])
       },
       pendingActivations: {
         title: $t({ defaultMessage: 'Pending Activations' }),
         content: <PendingActivations />,
-        visible: (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC)
+        visible: (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC) &&
+          hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getEntitlementsActivations)])
       },
       compliance: {
         title: $t({ defaultMessage: 'Compliance' }),
         content: <LicenseCompliance isMsp={false}/>,
         visible: showCompliance &&
-          (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC)
+          (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC) &&
+          hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.getEntitlementsCompliances)])
       }
     }
 

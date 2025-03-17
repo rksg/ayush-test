@@ -81,6 +81,7 @@ export const LicenseUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/entitlements/query',
     oldUrl: '/mspEntitlements',
+    opsApi: 'POST:/entitlements/query',
     newApi: true
   },
   getMspEntitlementSummary: {

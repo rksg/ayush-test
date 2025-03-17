@@ -46,11 +46,10 @@ describe('CloudStorageForm', () => {
       data: {
         config: {
           connectionType: 'azure',
-          azureConnectionType: 'Azure Files',
+          azureConnectionType: 'azureFiles',
           azureAccountName: 'some name',
           azureAccountKey: 'key',
-          azureShareName: 'share name',
-          azureCustomerName: 'name'
+          azureShareName: 'share name'
         },
         id: 'id'
       }
@@ -66,11 +65,10 @@ describe('CloudStorageForm', () => {
       data: {
         config: {
           connectionType: 'azure',
-          azureConnectionType: 'Azure Files',
+          azureConnectionType: 'azureFiles',
           azureAccountName: 'some name',
           azureAccountKey: 'key',
           azureShareName: 'share name',
-          azureCustomerName: 'name',
           azureStoragePath: 'storage/path'
         },
         id: 'id'
@@ -110,8 +108,6 @@ describe('CloudStorageForm', () => {
     fireEvent.change(azureAccountKey, { target: { value: 'key' } })
     const azureShareName = await screen.findByTestId('azureShareName')
     fireEvent.change(azureShareName, { target: { value: 'share name' } })
-    const azureCustomerName = await screen.findByTestId('azureCustomerName')
-    fireEvent.change(azureCustomerName, { target: { value: 'name' } })
     const azureStoragePath = await screen.findByTestId('azureStoragePath')
     fireEvent.change(azureStoragePath, { target: { value: 'name' } })
 
@@ -140,11 +136,10 @@ describe('CloudStorageForm', () => {
       data: {
         config: {
           connectionType: 'azure',
-          azureConnectionType: 'Azure Files',
+          azureConnectionType: 'azureBlob',
           azureAccountName: 'some name',
           azureAccountKey: 'key',
-          azureShareName: 'share name',
-          azureCustomerName: 'name',
+          azureContainerName: 'name',
           azureStoragePath: 'some/path'
         },
         id: 'id'
