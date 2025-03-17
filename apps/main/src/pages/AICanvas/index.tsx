@@ -55,6 +55,13 @@ export default function AICanvas () {
     'Can you give me the trending network traffic from last week?'
   ] // Only support english default questions in phase 1
 
+  const welcomeMessage = {
+    id: 'welcomeMessage',
+    role: 'AI',
+    text: $t({ defaultMessage:
+      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
+  }
+
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
 
@@ -314,6 +321,9 @@ export default function AICanvas () {
               <Loader states={[{ isLoading: isChatsLoading }]}>
                 <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
                   <div className='messages-wrapper'>
+                    {
+                      !chats?.length && <Message key={welcomeMessage.id} chat={welcomeMessage} />
+                    }
                     {moreloading && <div className='loading'><Spin /></div>}
                     {chats?.map((i) => (
                       <Message key={i.id} chat={i} />

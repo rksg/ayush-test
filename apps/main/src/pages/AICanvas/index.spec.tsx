@@ -232,6 +232,8 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
     const suggestQuestion = await screen.findByText('Show me the top-consuming clients')
     expect(suggestQuestion).toBeVisible()
     fireEvent.click(suggestQuestion)
