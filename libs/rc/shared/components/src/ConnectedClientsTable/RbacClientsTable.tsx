@@ -117,7 +117,6 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const { rbacOpsApiEnabled } = getUserProfile()
   const disconnectRevokeClientOpsApi = getOpsApi(ClientUrlsInfo.disconnectClient)
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
@@ -752,7 +751,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
           enableApiFilter={true}
           floatRightFilters={true}
           rowKey='macAddress'
-          filterPersistence={enabledUXOptFeature}
+          filterPersistence={true}
         />
       </Loader>
     </UI.ClientTableDiv>
