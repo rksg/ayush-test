@@ -8,8 +8,8 @@ import { useIntl }   from 'react-intl'
 import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
 import {
-  useDeletePersonaAssociationMutation,
-  useGetPersonaIdentitiesQuery,
+  useRemoveUnitLinkedIdentityMutation,
+  useGetUnitsLinkedIdentitiesQuery,
   useGetPropertyConfigsQuery,
   useGetVenueQuery,
   useLazyGetPersonaByIdQuery,
@@ -37,8 +37,13 @@ export function PropertyUnitDetails () {
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [identitiesCount, setIdentitiesCount] = useState(0)
-  const identities = useGetPersonaIdentitiesQuery({ params: { venueId, unitId },
-    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' } })
+  const identities = useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
+    payload: {
+      pageSize: 10000, page: 1, sortOrder: 'ASC',
+      filters: {
+        unitId: unitId
+      }
+    } })
 
   const settingsId = 'property-units-identity-table'
   const identitiesList = useTableQuery({
@@ -62,7 +67,7 @@ export function PropertyUnitDetails () {
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const [updatePersona] = useUpdatePersonaMutation()
-  const [deletePersonaAssociation] = useDeletePersonaAssociationMutation()
+  const [deletePersonaAssociation] = useRemoveUnitLinkedIdentityMutation()
   const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
   const [residentPortalUrl, setResidentPortalUrl] = useState<string|undefined>(undefined)
   const [unitData, setUnitData] = useState<PropertyUnitFormFields>()
@@ -442,6 +447,7 @@ export function PropertyUnitDetails () {
         venueId={venueId}
         unitId={unitId}
         groupId={personaGroupId}
+        identityCount={identitiesCount}
         onClose={() => {
           setAddIdentityAssociationDrawerVisible(false)
           identities.refetch()

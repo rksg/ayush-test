@@ -18,6 +18,7 @@ import { Features, useIsSplitOn }                                               
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
+  useDeactivateIpsecOnAPLanPortMutation,
   useGetApLanPortsWithActivatedProfilesQuery,
   useGetDefaultApLanPortsQuery,
   useLazyGetDHCPProfileListViewModelQuery,
@@ -106,6 +107,7 @@ export function LanPorts (props: ApEditItemProps) {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
   const isSoftGREOnEthernetEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
@@ -114,6 +116,7 @@ export function LanPorts (props: ApEditItemProps) {
     enableRbac: isUseWifiRbacApi,
     enableEthernetProfile: isEthernetPortProfileEnabled,
     enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled,
+    enableIpsecOverNetwork: isIpSecOverNetworkEnabled,
     enableClientIsolationOnEthernet: isEthernetClientIsolationEnabled
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
@@ -134,6 +137,8 @@ export function LanPorts (props: ApEditItemProps) {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
   const [deactivateSoftGreProfileSettings, {
     isLoading: isSoftGreProfileDeactivting }] = useDeactivateSoftGreProfileOnAPMutation()
+  const [deactivateIpSecProfileSettings, {
+    isLoading: isIpSecProfileDeactivting }] = useDeactivateIpsecOnAPLanPortMutation()
   const [deactivateClientIsolationOnAp, {
     isLoading: isDeactivateClientIsolationOnAp
   }] = useDeactivateClientIsolationOnApMutation()
@@ -184,7 +189,8 @@ export function LanPorts (props: ApEditItemProps) {
           payload: {
             isEthernetPortProfileEnabled,
             isEthernetSoftgreEnabled: isSoftGREOnEthernetEnabled,
-            isEthernetClientIsolationEnabled
+            isEthernetClientIsolationEnabled,
+            isIpSecOverNetworkEnabled: isIpSecOverNetworkEnabled
           },
           enableRbac: isUseWifiRbacApi
         }
@@ -333,6 +339,10 @@ export function LanPorts (props: ApEditItemProps) {
           handleSoftGreDeactivate(values)
         }
 
+        if (isIpSecOverNetworkEnabled) {
+          handleIpSecDeactivate(values)
+        }
+
         if (isEthernetClientIsolationEnabled) {
           await handleClientIsolationDeactivate(values)
         }
@@ -376,6 +386,23 @@ export function LanPorts (props: ApEditItemProps) {
       ) {
         deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
+        }).unwrap()
+      }
+    })
+  }
+
+  const handleIpSecDeactivate = (values: WifiApSetting) => {
+    const { useVenueSettings } = values
+    values.lan?.forEach(lanPort => {
+      const originIpsecId = lanData.find(l => l.portId === lanPort.portId)?.ipsecProfileId
+      if (
+        originIpsecId &&
+        (!lanPort.enabled || !lanPort.ipsecEnabled || useVenueSettings)
+      ) {
+        deactivateIpSecProfileSettings({
+          params: {
+            venueId, serialNumber, portId: lanPort.portId,
+            softGreProfileId: lanPort.softGreProfileId, ipsecProfileId: originIpsecId }
         }).unwrap()
       }
     })
@@ -495,6 +522,7 @@ export function LanPorts (props: ApEditItemProps) {
       isApLanPortsResetting ||
       isEthernetPortProfileUpdating ||
       isSoftGreProfileDeactivting ||
+      isIpSecProfileDeactivting ||
       isDeactivateClientIsolationOnAp
   }]}>
     {selectedModel?.lanPorts

@@ -1,10 +1,10 @@
 import { ReactNode, useMemo } from 'react'
 
-import { Form }      from 'antd'
-import { cloneDeep } from 'lodash'
-import { useIntl }   from 'react-intl'
+import { Form, Space } from 'antd'
+import { cloneDeep }   from 'lodash'
+import { useIntl }     from 'react-intl'
 
-import { StepsForm, Table }          from '@acx-ui/components'
+import { Table }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   NetworkSaveData,
@@ -21,6 +21,7 @@ import {
   SoftGreNetworkTunnel,
   useEdgePinScopedNetworkVenueMap
 } from '../../../NetworkTunnelActionModal'
+import { IpSecInfo }                       from '../../../NetworkTunnelActionModal/useSoftGreTunnelActions'
 import { mergeSdLanCacheAct }              from '../../../NetworkTunnelActionModal/utils'
 import { useIsEdgeFeatureReady }           from '../../../useEdgeActions'
 import { TMP_NETWORK_ID }                  from '../../utils'
@@ -33,6 +34,7 @@ interface useTunnelColumnProps {
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
   softGreVenueMap: Record<string, SoftGreNetworkTunnel[]>
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
+  ipsecVenueMap?: Record<string, IpSecInfo[]>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
@@ -47,7 +49,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
     network,
     sdLanScopedNetworkVenues,
     softGreVenueMap,
-    setTunnelModalState
+    setTunnelModalState,
+    ipsecVenueMap
   } = props
   const form = Form.useFormInstance()
   const networkId = network?.id ?? TMP_NETWORK_ID
@@ -56,6 +59,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
   const softGreAssociationUpdate = Form.useWatch('softGreAssociationUpdate')
+  const ipsecAssociationUpdate = Form.useWatch('ipsecAssociationUpdate')
   // eslint-disable-next-line max-len
   const sdLanAssociationUpdate = Form.useWatch('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
 
@@ -100,6 +104,22 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
     return []
   }
 
+  const getCachedIpSec = (venueId: string, networkId: string) => {
+    const updateIpsec = ipsecAssociationUpdate && ipsecAssociationUpdate[venueId]
+    if (updateIpsec) {
+      if (updateIpsec.newProfileId === '') return []
+
+      return [{ venueId,
+        networkIds: [networkId],
+        profileId: updateIpsec.newProfileId,
+        profileName: updateIpsec.newProfileName }]
+    } else if (networkId !== TMP_NETWORK_ID) {
+      const ipsecVenue = ipsecVenueMap?.[venueId]?.find(i => i.networkIds.includes(networkId))
+      if (ipsecVenue) return [ipsecVenue]
+    }
+    return undefined
+  }
+
   const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: NetworkSaveData) => {
     const cachedActs = form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
     const venueId = currentVenue.id
@@ -127,8 +147,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
-      width: 180,
-      align: 'center' as const,
+      width: 200,
+      align: 'left' as const,
       render: function (_: ReactNode, row: Venue) {
         if (!network || !row.activated?.isActivated) return null
 
@@ -140,12 +160,13 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         }
 
         const cachedSoftGre = getCachedSoftGre(row.id, networkId)
+        const cachedIpSec = getCachedIpSec(row.id, networkId)
         const cachedVenueSdLanInfo = cachedSdLanNetworkVenues.sdLansVenueMap[row.id]?.[0]
         const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
         // eslint-disable-next-line max-len
         const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
 
-        return <StepsForm.FieldLabel width='50px'>
+        return <Space>
           <div><NetworkTunnelSwitch
             currentVenue={row}
             currentNetwork={{
@@ -163,9 +184,10 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             isVenueActivated={Boolean(row.activated?.isActivated)}
             venueSdLan={venueSdLanInfo}
             venueSoftGre={cachedSoftGre?.[0]}
+            venueIpSec={cachedIpSec?.[0]}
             venuePin={venuePinInfo}
           />
-        </StepsForm.FieldLabel>
+        </Space>
       }
     }]
     : [ ...(!isEdgePinHaEnabled && (isEdgeSdLanMvEnabled || isSoftGreEnabled) ? [{

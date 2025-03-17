@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { RuckusAiChatUrlInfo } from '@acx-ui/rc/utils'
 import { Provider }            from '@acx-ui/store'
@@ -83,6 +84,12 @@ jest.mock('@acx-ui/rc/services', () => {
               role: 'USER',
               text: 'what can you do?',
               created: '2025-02-10T11:05:26.365+00:00'
+            },
+            {
+              id: 'd259dc3cb138478c9c4bcc48f9270602',
+              role: 'SYSTEM',
+              text: 'Some older messages have been removed due to the 30-day retention policy',
+              created: '2025-03-06T02:10:46.264+00:00'
             }
           ] })
       }))
@@ -187,6 +194,9 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
+    expect(await screen.findByText(
+      'Older chat conversations have been deleted due to the 30-day retention policy.'))
+      .toBeVisible()
     expect(await screen.findByText('what can you do?')).toBeVisible()
     const newChatBtn = await screen.findByTestId('newChatIcon')
     expect(newChatBtn).toBeVisible()
@@ -199,9 +209,8 @@ describe('AICanvas', () => {
     fireEvent.click(historyBtn)
     expect(await screen.findByText('History Drawer')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
-    fireEvent.change(searchInput, { target: { value: 'hello' } })
-    const searchBtn = await screen.findByTestId('search-button')
-    fireEvent.click(searchBtn)
+    await userEvent.type(searchInput, 'hello')
+    fireEvent.keyDown(searchInput, { key: 'Enter' })
     expect(await screen.findByText('hello')).toBeVisible()
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
   })
@@ -222,7 +231,7 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
-    const suggestQuestion = await screen.findByText('Show me the top-consuming clients.')
+    const suggestQuestion = await screen.findByText('Show me the top-consuming clients')
     expect(suggestQuestion).toBeVisible()
     fireEvent.click(suggestQuestion)
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
@@ -238,6 +247,12 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
+    const searchInput = await screen.findByTestId('search-input')
+    await userEvent.type(searchInput, 'hello')
+    const searchBtn = await screen.findByTestId('search-button')
+    fireEvent.click(searchBtn)
+    expect(await screen.findByText('hello')).toBeVisible()
+    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
     const closeBtn = await screen.findByTestId('close-icon')
     fireEvent.click(closeBtn)
     expect(mockedNavigate).toBeCalled()

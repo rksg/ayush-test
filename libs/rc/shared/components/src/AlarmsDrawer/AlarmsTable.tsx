@@ -1,4 +1,4 @@
-import { Key } from 'react'
+import { Key, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -8,8 +8,9 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                             from '@acx-ui/formatter'
-import { eventAlarmApi, networkApi, useAlarmsListQuery, useClearAlarmByVenueMutation, useClearAlarmMutation, useGetVenuesQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                                                                                           from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                                                                                        from '@acx-ui/formatter'
+import { eventAlarmApi, networkApi, useAlarmsListQuery, useClearAlarmByVenueMutation, useClearAlarmMutation, useClearAllAlarmsMutation, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   Alarm,
   CommonRbacUrlsInfo,
@@ -74,7 +75,10 @@ interface AlarmsTableProps {
 export const AlarmsTable = (props: AlarmsTableProps) => {
   const params = useParams()
   const { $t } = useIntl()
+  const [selectedAlarmFilters, setSelectedAlarmFilters] = useState({})
+
   const { rbacOpsApiEnabled } = getUserProfile()
+  const isClearAllAlarmsToggleEnabled = useIsSplitOn(Features.ALARM_CLEAR_ALL_ALARMS_TOGGLE)
 
   const { isNewAlarm, venueId, serialNumber, selectedFilters, setSelectedFilters } = props
 
@@ -94,6 +98,11 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     clearAlarmByVenue,
     { isLoading: isAlarmByVenueCleaning }
   ] = useClearAlarmByVenueMutation()
+
+  const [
+    clearAllAlarms,
+    { isLoading: isAllAlarmsCleaning }
+  ] = useClearAllAlarmsMutation()
 
   const { data: venuesList } =
     useGetVenuesQuery({ params: useParams(), payload: venuesListPayload },
@@ -182,7 +191,8 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
 
   const hasPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.clearAlarm),
-      getOpsApi(CommonRbacUrlsInfo.clearAlarmByVenue)
+      getOpsApi(isClearAllAlarmsToggleEnabled ? CommonRbacUrlsInfo.clearAllAlarms
+        : CommonRbacUrlsInfo.clearAlarmByVenue)
     ])
     : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
@@ -329,40 +339,51 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
     }
     tableQuery.handleFilterChange(_customFilters, customSearch)
     setSelectedFilters({ ...severityFilter, ...productFilter })
+    const alarmFilter = severityFilter.severity || productFilter.product
+      ? { ...severityFilter, ...productFilter } : undefined
+    setSelectedAlarmFilters(alarmFilter as {})
   }
 
   const actions: TableProps<Alarm>['actions'] = [
     {
-      label: $t({ defaultMessage: 'Clear all alarms' }),
+      label: selectedAlarmFilters
+        ? $t({ defaultMessage: 'Clear filtered alarms' })
+        : $t({ defaultMessage: 'Clear all alarms' }),
       disabled: !hasPermission || tableQuery.data?.totalCount === 0,
       onClick: async () => {
-        const venueNames: string[] = []
-        const alarmIds: string[] = []
-        allAlarms?.data.forEach(alarm => {
-          if(alarm?.venueName) {
-            if (!venueNames.includes(alarm?.venueName)) {
-              venueNames.push(alarm?.venueName)
-            }
-          } else {
-            if (!alarmIds.includes(alarm.id)) {
-              alarmIds.push(alarm.id)
-            }
-          }})
+        if (isClearAllAlarmsToggleEnabled) {
+          const filterPayload = selectedAlarmFilters ? { filters: selectedAlarmFilters } : undefined
+          await clearAllAlarms({ params, payload: filterPayload })
+        } else {
+          const venueNames: string[] = []
+          const alarmIds: string[] = []
+          allAlarms?.data.forEach(alarm => {
+            if(alarm?.venueName) {
+              if (!venueNames.includes(alarm?.venueName)) {
+                venueNames.push(alarm?.venueName)
+              }
+            } else {
+              if (!alarmIds.includes(alarm.id)) {
+                alarmIds.push(alarm.id)
+              }
+            }})
 
-        if (venueNames.length) {
-          const venueIds = getVenueIdsOfAlarms(venueNames)
-          if (venueIds.length) {
-            await Promise.all(venueIds.map(async (venueId) => {
-              await clearAlarmByVenue({ params: { ...params,
-                venueId } })
+          if (venueNames.length) {
+            const venueIds = getVenueIdsOfAlarms(venueNames)
+            if (venueIds.length) {
+              await Promise.all(venueIds.map(async (venueId) => {
+                await clearAlarmByVenue({ params: { ...params,
+                  venueId } })
+              }))
+            }
+          }
+
+          if (alarmIds.length) {
+            await Promise.all(alarmIds.map(async (alarmId) => {
+              await clearAlarm({ params: { ...params, alarmId } })
             }))
           }
-        }
 
-        if (alarmIds.length) {
-          await Promise.all(alarmIds.map(async (alarmId) => {
-            await clearAlarm({ params: { ...params, alarmId } })
-          }))
         }
 
         //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
@@ -384,7 +405,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
 
   return <Loader states={[
     tableQuery,{ isLoading: false,
-      isFetching: isNewAlarm && (isAlarmCleaning || isAlarmByVenueCleaning) }
+      isFetching: isNewAlarm && (isAlarmCleaning || isAlarmByVenueCleaning || isAllAlarmsCleaning) }
   ]}>
     <UI.TableWrapper>
       <Table<Alarm>

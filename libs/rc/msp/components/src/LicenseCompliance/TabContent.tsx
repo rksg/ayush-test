@@ -86,7 +86,7 @@ export default function TabContent (props: TabContentProps
         ? $t({ defaultMessage: 'Active Extended Trial Licenses' })
         : $t({ defaultMessage: 'Active Trial Licenses' })}</label>
       <label>{totalActiveTrialLicenseCount}</label>
-      {totalActiveTrialLicenseCount && totalActiveTrialLicenseCount > 0 &&
+      {!!(totalActiveTrialLicenseCount && totalActiveTrialLicenseCount > 0) &&
               <label style={{ textAlign: 'left',
                 marginLeft: '10px',
                 color: 'var(--acx-accents-orange-50)' }}>

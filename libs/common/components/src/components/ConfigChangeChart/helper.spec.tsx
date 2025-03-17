@@ -560,7 +560,10 @@ describe('useLegendTableFilter', () => {
     renderHook(() => useLegendTableFilter(
       selectedLegend, sampleData, sampleData[3], setSelectedData, setLegend,
       pagination, setPagination))
-    expect(setPagination).toBeCalledWith(CONFIG_CHANGE_DEFAULT_PAGINATION)
+    expect(setPagination).toBeCalledWith({
+      current: CONFIG_CHANGE_DEFAULT_PAGINATION.current,
+      pageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+    })
   })
 })
 

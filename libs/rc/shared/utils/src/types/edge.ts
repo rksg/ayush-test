@@ -371,7 +371,7 @@ export interface EdgeCluster {
   }
 }
 
-interface EdgeFeatureRequirement {
+export interface EdgeFeatureRequirement {
   featureName: string
   requiredFw: string
 }
@@ -414,6 +414,7 @@ export interface EdgeSdLanApCompatibilitiesResponse {
   compatibilities?: EdgeSdLanApCompatibility[]
 }
 
+// Content-Type: application/vnd.ruckus.v1.1+json
 interface EdgeFeatureRequirementV1_1 {
   firmware: string
 }
@@ -444,6 +445,13 @@ export interface EntityCompatibilityV1_1 {
 }
 export interface VenueEdgeCompatibilitiesResponseV1_1 {
   compatibilities?: EntityCompatibilityV1_1[]
+}
+export interface EdgeServiceCompatibilityV1_1 {
+  serviceId?: string
+  clusterEdgeCompatibilities?: EntityCompatibilityV1_1[]
+}
+export interface EdgeServiceCompatibilitiesResponseV1_1 {
+  compatibilities?: EdgeServiceCompatibilityV1_1[]
 }
 
 // ap incompatibility by model

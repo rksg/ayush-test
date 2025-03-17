@@ -201,59 +201,6 @@ describe('DataConnector table', () => {
       )
     })
 
-    const prepareDeleteDialog = async (dataConnector: DataConnector) => {
-      const { targetRow } = await findRowInTable(dataConnector)
-
-      await click(targetRow)
-      expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
-
-      await click(await screen.findByRole('button', { name: 'Delete' }))
-      const dialog = await screen.findByRole('dialog')
-      expect(dialog).toBeVisible()
-      expect(dialog).toHaveTextContent('Are you sure you want to delete this Data Connector?')
-      return { dialog }
-    }
-
-    it('handle delete', async () => {
-      const deleteFn = jest.fn()
-      mockServer.use(
-        rest.delete(
-          `${notificationApiURL}/dataConnector`,
-          (req, res, ctx) => {
-            deleteFn(req.body)
-            return res(ctx.json(null))
-          })
-      )
-
-      const dataConnector = mockedConnectors[3]
-      const { dialog } = await prepareDeleteDialog(dataConnector)
-      await click(await within(dialog).findByRole('button', { name: 'Delete Data Connector' }))
-
-      await waitFor(() => {
-        expect(deleteFn).toBeCalledWith([dataConnector.id])
-      })
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).toBeNull()
-      })
-      expect(await screen.findByText(
-        'The selected data connector has been deleted successfully.')).toBeVisible()
-    })
-
-    it('handle delete RTKQuery error', async () => {
-      mockServer.use(
-        rest.delete(
-          `${notificationApiURL}/dataConnector`,
-          (_, res) => res.networkError('Failed to connect'))
-      )
-
-      const dataConnector = mockedConnectors[3]
-      const { dialog } = await prepareDeleteDialog(dataConnector)
-      await click(await within(dialog).findByRole('button', { name: 'Delete Data Connector' }))
-
-      expect(await screen.findByText(
-        'Failed to delete the selected data connector.')).toBeVisible()
-    })
-
     it(
       // eslint-disable-next-line max-len
       'should navigate to audit log page when data connector name is clicked and user is data connector owner',

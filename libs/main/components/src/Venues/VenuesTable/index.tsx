@@ -34,6 +34,7 @@ import {
 import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
+  PropertyUrlsInfo,
   TableQuery,
   usePollingTableQuery,
   Venue,
@@ -262,7 +263,6 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'isManagedByTemplate',
       'addressLine'
     ],
     searchTargetFields: ['name', 'addressLine'],
@@ -301,14 +301,14 @@ export const VenueTable = ({ settingsId = 'venues-table',
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
       getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+      getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+      getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    },
-    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
-    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -357,7 +357,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
             getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]
         }) && rowSelection}
       />

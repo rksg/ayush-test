@@ -1,9 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { PasswordInput, SummaryCard }                                                    from '@acx-ui/components'
-import { SimpleListTooltip }                                                             from '@acx-ui/rc/components'
-import { IpSecAuthEnum, IpsecViewData, EspProposal, IkeProposal, IpSecProposalTypeEnum } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                 from '@acx-ui/utils'
+import { PasswordInput, SummaryCard } from '@acx-ui/components'
+import { SimpleListTooltip }          from '@acx-ui/rc/components'
+import {
+  IpSecAuthEnum,
+  IpsecViewData,
+  EspProposal,
+  IkeProposal,
+  IpSecProposalTypeEnum,
+  IpSecEncryptionAlgorithmEnum
+} from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 
 interface IpsecDetailContentProps {
@@ -17,7 +24,8 @@ export default function IpsecDetailContent (props: IpsecDetailContentProps) {
   const getIkeProposals = (proposals: IkeProposal[]) => {
     const retArr: string[] = []
     proposals?.forEach((proposal: IkeProposal) => {
-      retArr.push(`${proposal.encAlg}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
+      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
     })
     return retArr
   }
@@ -25,7 +33,8 @@ export default function IpsecDetailContent (props: IpsecDetailContentProps) {
   const getEspProposals = (proposals: EspProposal[]) => {
     const retArr: string[] = []
     proposals?.forEach((proposal: EspProposal) => {
-      retArr.push(`${proposal.encAlg}-${proposal.authAlg}-${proposal.dhGroup}`)
+      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.dhGroup}`)
     })
     return retArr
   }

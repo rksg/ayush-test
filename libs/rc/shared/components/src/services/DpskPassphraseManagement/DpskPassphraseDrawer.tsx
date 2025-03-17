@@ -1,7 +1,6 @@
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Drawer }                    from '@acx-ui/components'
 import {
@@ -23,14 +22,14 @@ export interface DpskPassphraseEditMode {
 
 export interface DpskPassphraseDrawerProps {
   visible: boolean;
+  serviceId: string,
   setVisible: (v: boolean) => void;
   editMode: DpskPassphraseEditMode;
 }
 
 export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible, editMode } = props
-  const params = useParams()
+  const { visible, serviceId, setVisible, editMode } = props
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
   const [ updatePassphrases ] = useUpdateDpskPassphrasesMutation()
   const [ formInstance ] = Form.useForm<CreateDpskPassphrasesFormFields>()
@@ -46,12 +45,12 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
     if (editMode.isEdit) {
       await updatePassphrases({
-        params: { ...params, passphraseId: editMode.passphraseId },
+        params: { serviceId, passphraseId: editMode.passphraseId },
         payload
       }).unwrap()
     } else {
       await createPassphrases({
-        params: { ...params },
+        params: { serviceId },
         payload
       }).unwrap()
     }
@@ -76,7 +75,11 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
-      children={<AddDpskPassphrasesForm form={formInstance} editMode={editMode} />}
+      children={<AddDpskPassphrasesForm
+        serviceId={serviceId}
+        form={formInstance}
+        editMode={editMode}
+      />}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
