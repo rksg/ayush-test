@@ -11,40 +11,31 @@ import { Features,
 } from '@acx-ui/feature-toggle'
 import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
 import {
-  useGetAdminListQuery,
-  useGetDelegationsQuery,
-  useGetNotificationRecipientsQuery,
-  useGetWebhooksQuery
-} from '@acx-ui/rc/services'
-import {
   AdministrationUrlsInfo,
   AdminRbacUrlsInfo,
   LicenseUrlsInfo,
   hasAdministratorTab,
-  MigrationUrlsInfo,
-  transformDisplayNumber,
-  useTableQuery,
-  Webhook
+  MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { hasAllowedOperations, useUserProfileContext } from '@acx-ui/user'
 import { getOpsApi }                                   from '@acx-ui/utils'
 
-import AccountSettings   from './AccountSettings'
-import Administrators    from './Administrators'
-import FWVersionMgmt     from './FWVersionMgmt'
-import LocalRadiusServer from './LocalRadiusServer'
-import Notifications     from './Notifications'
-import OnpremMigration   from './OnpremMigration'
-import Privacy           from './Privacy'
-import Subscriptions     from './Subscriptions'
-import UserPrivileges    from './UserPrivileges'
-import R1Webhooks        from './Webhooks'
+import AccountSettings                                                                      from './AccountSettings'
+import Administrators                                                                       from './Administrators'
+import FWVersionMgmt                                                                        from './FWVersionMgmt'
+import LocalRadiusServer                                                                    from './LocalRadiusServer'
+import Notifications                                                                        from './Notifications'
+import OnpremMigration                                                                      from './OnpremMigration'
+import Privacy                                                                              from './Privacy'
+import Subscriptions                                                                        from './Subscriptions'
+import { AdminsTabTitleWithCount, NotificationTabTitleWithCount, WebhookTabTitleWithCount } from './TabTitleWithCount'
+import UserPrivileges                                                                       from './UserPrivileges'
+import R1Webhooks                                                                           from './Webhooks'
 
 const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
-  const params = useParams()
-  const { tenantId, venueId, serialNumber } = params
+
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
@@ -52,34 +43,6 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
   const isMspAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
-
-  const defaultPayload = {
-    filters: venueId ? { venueId: [venueId] } :
-      serialNumber ? { serialNumber: [serialNumber] } : {}
-  }
-  const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
-    skip: !isAdministratorAccessible,
-    pollingInterval: 30_000
-  })
-  const notificationList = useGetNotificationRecipientsQuery({
-    params: { tenantId },
-    payload: defaultPayload
-  }, {
-    pollingInterval: 30_000
-  })
-  const thirdPartyAdminList = useGetDelegationsQuery(
-    { params },
-    { skip: !isAdministratorAccessible }
-  )
-  const webhookData = useTableQuery<Webhook>({
-    useQuery: useGetWebhooksQuery,
-    defaultPayload: {},
-    option: { skip: !isWebhookToggleEnabled }
-  })
-
-  const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
-  const notificationCount = notificationList?.data?.length || 0
-  const webhookCount = transformDisplayNumber(webhookData?.data?.totalCount)
 
   return [
     ...(
@@ -104,7 +67,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
           key: 'administrators',
           title: isGroupBasedLoginEnabled
             ? $t({ defaultMessage: 'Administrators' })
-            : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount }),
+            : <AdminsTabTitleWithCount />,
           component: <Administrators />
         }]
       : []),
@@ -119,7 +82,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
       ] : []),
     ...(hasAllowedOperations([ getOpsApi(AdministrationUrlsInfo.getNotificationRecipients)]) ? [{
       key: 'notifications',
-      title: $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount }),
+      title: <NotificationTabTitleWithCount />,
       component: <Notifications />
     }] : []),
     ...(hasAllowedOperations([
@@ -141,10 +104,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
         isWebhookToggleEnabled
           ? {
             key: 'webhooks',
-            title: $t({
-              defaultMessage: 'Webhooks {webhookCount, select, null {} other {({webhookCount})}}',
-              description: 'Translation string - Webhooks'
-            }, { webhookCount }),
+            title: <WebhookTabTitleWithCount />,
             component: <R1Webhooks/>
           }
           : {
