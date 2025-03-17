@@ -892,7 +892,7 @@ export function MspCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
