@@ -64,3 +64,4 @@ Thumbs.db
 
 # RA dev env
 !/apps/ra/.env
+.qodo
