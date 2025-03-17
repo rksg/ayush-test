@@ -15,7 +15,10 @@ import {
   IdentityProviderUrls,
   IpsecUrls,
   LbsServerProfileUrls,
-  MacRegListUrlsInfo, RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo,
+  MacRegListUrlsInfo,
+  PropertyUrlsInfo,
+  RadiusAttributeGroupUrlsInfo,
+  RulesManagementUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -88,6 +91,12 @@ export const serviceAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
     [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
     [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+  },
+  [ServiceType.RESIDENT_PORTAL]: {
+    [ServiceOperation.CREATE]: [getOpsApi(PropertyUrlsInfo.addResidentPortal)],
+    [ServiceOperation.EDIT]: [getOpsApi(PropertyUrlsInfo.patchResidentPortal)],
+    [ServiceOperation.DELETE]: [getOpsApi(PropertyUrlsInfo.deleteResidentPortals)],
+    [ServiceOperation.LIST]: [getOpsApi(PropertyUrlsInfo.getResidentPortalsQuery)]
   }
 }
 
