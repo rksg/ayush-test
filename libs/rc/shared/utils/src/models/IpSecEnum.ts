@@ -30,7 +30,6 @@ export enum IpSecRetryDurationEnum {
 }
 
 export enum IpSecDhGroupEnum {
-  NONE = 'NONE',
   MODP768 = 'MODP768',
   MODP1024 = 'MODP1024',
   MODP1536 = 'MODP1536',
@@ -43,7 +42,6 @@ export enum IpSecDhGroupEnum {
 }
 
 export enum IpSecEncryptionAlgorithmEnum {
-  NONE = 'NONE',
   THREE_DES = 'THREE_DES',
   AES128 = 'AES128',
   AES192 = 'AES192',

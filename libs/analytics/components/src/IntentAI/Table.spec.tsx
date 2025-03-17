@@ -3,11 +3,12 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Tooltip }        from '@acx-ui/components'
-import { get }            from '@acx-ui/config'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { render, screen } from '@acx-ui/test-utils'
-import { type NodeType }  from '@acx-ui/utils'
+import { Tooltip }                           from '@acx-ui/components'
+import { get }                               from '@acx-ui/config'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { render, screen }                    from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { type NodeType }                     from '@acx-ui/utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithEquiFlex, aiFeatureWithEquiFlexWithNewStatus, aiFeatureWithEcoFlex, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { Icon }                                                                                                                                   from './common/IntentIcon'
@@ -157,7 +158,7 @@ describe('AIFeature component', () => {
 
   it('should not render link for AIFeature when status is new', async () => {
     mockGet.mockReturnValue('true')
-
+    setRaiPermissions({ WRITE_INTENT_AI: true } as RaiPermissions)
     expect(AIFeature(aiFeatureWithEquiFlexWithNewStatus)).toEqual(
       <UI.FeatureIcon>
         <Tooltip
@@ -170,7 +171,29 @@ describe('AIFeature component', () => {
         <span>{aiFeatureWithEquiFlex.aiFeature}</span>
       </UI.FeatureIcon>
     )
+  })
 
+  it('should render link for AIFeature when status is new & READ_ONLY user', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ WRITE_INTENT_AI: false } as RaiPermissions)
+    const root = aiFeatureWithEquiFlexWithNewStatus.root
+    const sliceId = aiFeatureWithEquiFlexWithNewStatus.sliceId
+    const code = aiFeatureWithEquiFlexWithNewStatus.code
+    expect(AIFeature(aiFeatureWithEquiFlexWithNewStatus)).toEqual(
+      <UI.FeatureIcon>
+        <Tooltip
+          placement='right'
+          title={iconTooltips[AiFeatures.EquiFlex]}
+          overlayInnerStyle={{ width: '345px' }}
+        >
+          <Icon feature={AiFeatures.EquiFlex} />
+        </Tooltip>
+        <TenantLink
+          to={`/analytics/intentAI/${root}/${sliceId}/${code}`}>
+          <span>{aiFeatureWithEquiFlexWithNewStatus.aiFeature}</span>
+        </TenantLink>
+      </UI.FeatureIcon>
+    )
   })
 
   describe('isVisibleByAction', () => {

@@ -334,7 +334,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getNetworkVenuesTemplateRbac: {
-    method: 'get',
+    method: 'post',
     url: '/templates/venues/wifiNetworks/query',
     newApi: true
   },
