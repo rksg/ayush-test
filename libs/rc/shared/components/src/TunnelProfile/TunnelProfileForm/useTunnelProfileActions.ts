@@ -1,15 +1,22 @@
 import { cloneDeep } from 'lodash'
 
-import { Features }                                                               from '@acx-ui/feature-toggle'
-import { useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation }         from '@acx-ui/rc/services'
-import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType } from '@acx-ui/rc/utils'
+import { Features }                                                                                                                                                                                       from '@acx-ui/feature-toggle'
+import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useDeleteTunnelProfileMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
+import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                                                       from '@acx-ui/rc/utils'
+import { CatchErrorDetails }                                                                                                                                                                              from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export const useTunnelProfileActions = () => {
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
-  const [create, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
-  const [update, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE)
+  // eslint-disable-next-line max-len
+  const [createTunnelProfile, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
+  // eslint-disable-next-line max-len
+  const [updateTunnelProfile, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
+  const [activateByEdgeCluster] = useActivateTunnelProfileByEdgeClusterMutation()
+  const [deleteTunnelProfile] = useDeleteTunnelProfileMutation()
+  const [deactivateByEdgeCluster] = useDeactivateTunnelProfileByEdgeClusterMutation()
 
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
@@ -45,34 +52,168 @@ export const useTunnelProfileActions = () => {
     }
 
     delete result.ageTimeUnit
-
+    //remove for acitvate api params
+    delete result.edgeClusterId
+    delete result.venueId
     // remove UI used data
     delete result.disabledFields
     return result
   }
 
-  const createTunnelProfile = async (data: TunnelProfileFormType) => {
+  const createTunnelProfileOperation = async (data: TunnelProfileFormType) => {
     try {
-      const payload = requestPreProcess(data)
-      return await create({ payload }).unwrap()
-    } catch (error) {
-      return Promise.reject(error)
+      await new Promise(async (resolve, reject) => {
+        await handleCreateTunnelProfile({
+          data,
+          callback: (result) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+          }
+        // need to catch basic service profile failed
+        }).catch(reject)
+      })
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
     }
   }
 
-  const updateTunnelProfile = async (id: string, data: TunnelProfileFormType) => {
+  const handleCreateTunnelProfile = async (req: {
+    data: TunnelProfileFormType,
+    callback?: (res: (CommonResult
+      | CommonErrorsResult<CatchErrorDetails> | void)) => void
+  }) => {
+    const { data, callback } = req
+    const venueId = data.venueId
+    const clusterId = data.edgeClusterId
+    const payload = requestPreProcess(data)
+    return await createTunnelProfile({
+      payload,
+      callback: async (addResponse: CommonResult) => {
+        const tunnelProfileId = addResponse.response?.id
+        if (!tunnelProfileId) {
+          // eslint-disable-next-line no-console
+          console.error('empty tunnel profile id')
+          callback?.()
+          return
+        }
+
+        if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
+          callback?.()
+          return
+        }
+
+        try {
+          // eslint-disable-next-line max-len
+          const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+          callback?.(reqResult)
+        } catch(error) {
+          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+        }
+      }
+    }).unwrap()
+  }
+
+  const updateTunnelProfileOperation = async (id:string, data: TunnelProfileFormType) => {
     try {
-      const payload = requestPreProcess(data)
-      let pathParams = { id }
-      return await update({ params: pathParams, payload }).unwrap()
-    } catch (error) {
-      return Promise.reject(error)
+      await new Promise(async (resolve, reject) => {
+        await handleUpdateTunnelProfile({
+          id,
+          data,
+          callback: (result) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+          }
+        // need to catch basic service profile failed
+        }).catch(reject)
+      })
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
     }
+  }
+
+  const handleUpdateTunnelProfile = async (req: {
+    id: string
+    data: TunnelProfileFormType,
+    callback?: (res: (CommonResult
+      | CommonErrorsResult<CatchErrorDetails> | void)) => void
+  }) => {
+    const { id, data, callback } = req
+    const pathParams = { id }
+    const venueId = data.venueId
+    const clusterId = data.edgeClusterId
+    const payload = requestPreProcess(data)
+    return await updateTunnelProfile({
+      params: pathParams,
+      payload,
+      callback: async () => {
+        const tunnelProfileId = id
+        if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
+          callback?.()
+          return
+        }
+        try {
+          // eslint-disable-next-line max-len
+          const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+          callback?.(reqResult)
+        } catch(error) {
+          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+        }
+      }
+    }).unwrap()
+  }
+
+  const associationWithEdgeCluster = async (
+    venueId?: string,
+    clusterId?: string,
+    tunnelProfileId?: string
+  ): Promise<CommonResult | CommonErrorsResult<CatchErrorDetails>> => {
+    try {
+      const response = await activateByEdgeCluster({
+        params: {
+          venueId: venueId,
+          clusterId: clusterId,
+          id: tunnelProfileId
+        }
+      }).unwrap()
+      return response
+    } catch (error) {
+      return error as CommonErrorsResult<CatchErrorDetails>
+    }
+  }
+
+  const deleteTunnelProfileOperation = async (tunnelProfileId : string,
+    activatedData:{ serviceId?: string,venueId?: string,clusterId?: string }[] | undefined) => {
+    if(isEdgeL2greReady === true && activatedData?.length) {
+      const deactivatePromises = activatedData?.filter(item => item.serviceId === tunnelProfileId)
+        .map(item => deactivateByEdgeCluster({
+          params: {
+            venueId: item.venueId,
+            clusterId: item.clusterId,
+            id: tunnelProfileId
+          }
+        }).unwrap())
+      if (deactivatePromises && deactivatePromises.length > 0) {
+        await Promise.all(deactivatePromises)
+      }
+    }
+
+    await deleteTunnelProfile ({ params: { id: tunnelProfileId } }).unwrap()
   }
 
   return {
-    createTunnelProfile,
-    updateTunnelProfile,
+    createTunnelProfileOperation,
+    updateTunnelProfileOperation,
+    deleteTunnelProfileOperation,
     isTunnelProfileCreating,
     isTunnelProfileUpdating
   }

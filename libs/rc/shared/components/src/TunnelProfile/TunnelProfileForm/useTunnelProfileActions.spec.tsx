@@ -33,9 +33,9 @@ describe('useTunnelProfileActions', () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
-    const { createTunnelProfile, isTunnelProfileCreating } = result.current
+    const { createTunnelProfileOperation, isTunnelProfileCreating } = result.current
     await act(async () => {
-      await createTunnelProfile({} as TunnelProfileFormType)
+      await createTunnelProfileOperation({} as TunnelProfileFormType)
     })
     await waitFor(() =>expect(isTunnelProfileCreating).toBeFalsy())
     await waitFor(() =>expect(mockedCreateTunnelApi).toBeCalledTimes(1))
@@ -45,9 +45,9 @@ describe('useTunnelProfileActions', () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
-    const { updateTunnelProfile, isTunnelProfileUpdating } = result.current
+    const { updateTunnelProfileOperation, isTunnelProfileUpdating } = result.current
     await act(async () => {
-      await updateTunnelProfile('testId', {} as TunnelProfileFormType)
+      await updateTunnelProfileOperation('testId', {} as TunnelProfileFormType)
     })
     await waitFor(() =>expect(isTunnelProfileUpdating).toBeFalsy())
     await waitFor(() =>expect(mockedUpdateTunnelApi).toBeCalledTimes(1))

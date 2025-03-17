@@ -61,7 +61,7 @@ export const getTunnelProfileOptsWithDefault = (
   return tunnelOpts
 }
 
-export const getTunnelTypeString = ($t: IntlShape['$t'], type: NetworkSegmentTypeEnum,
+export const getNetworkSegmentTypeString = ($t: IntlShape['$t'], type: NetworkSegmentTypeEnum,
   isEdgeVxLanKaReady?: boolean) => {
   switch (type) {
     case NetworkSegmentTypeEnum.VXLAN:
@@ -75,11 +75,11 @@ export const getTunnelTypeString = ($t: IntlShape['$t'], type: NetworkSegmentTyp
   }
 }
 
-export const getTunnelTypeOptions = ($t: IntlShape['$t'])
+export const getNetworkSegmentTypeOptions = ($t: IntlShape['$t'])
 : Array<{ label: string, value: NetworkSegmentTypeEnum }> => {
   return Object.keys(NetworkSegmentTypeEnum)
     .map(key => ({
-      label: getTunnelTypeString($t, key as NetworkSegmentTypeEnum),
+      label: getNetworkSegmentTypeString($t, key as NetworkSegmentTypeEnum),
       value: key as NetworkSegmentTypeEnum
     }))
 }

@@ -55,6 +55,10 @@ export enum EdgeServiceTypeEnum {
   MDNS_PROXY = 'MDNS_PROXY'
 }
 
+export enum EdgeClsuterProfileTypeEnum {
+  TUNNEL_PROFILE = 'TUNNEL_PROFILE'
+}
+
 export enum EdgeServiceStatusEnum {
   GOOD = 'GOOD',
   REQUIRES_ATTENTION = 'REQUIRES_ATTENTION',

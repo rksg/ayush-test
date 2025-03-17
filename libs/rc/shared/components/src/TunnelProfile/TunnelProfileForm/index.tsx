@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import {
   Col,
@@ -14,15 +14,19 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { getTitleWithBetaIndicator }                from '@acx-ui/components'
-import { Features, TierFeatures, useIsBetaEnabled } from '@acx-ui/feature-toggle'
+import { getTitleWithBetaIndicator }                                     from '@acx-ui/components'
+import { Features, TierFeatures, useIsBetaEnabled }                      from '@acx-ui/feature-toggle'
+import { useGetEdgeClusterListQuery, useGetEdgeClusterServiceListQuery } from '@acx-ui/rc/services'
 import {
   AgeTimeUnit,
+  EdgeClsuterProfileTypeEnum,
+  EdgeServiceTypeEnum,
   IncompatibilityFeatures,
   MtuRequestTimeoutUnit,
   MtuTypeEnum,
   NetworkSegmentTypeEnum,
-  getTunnelTypeOptions,
+  TunnelTypeEnum,
+  serverIpAddressRegExp,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -78,17 +82,19 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { isDefaultTunnelProfile = false } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const formId = form.getFieldValue('id')
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
-  const tunnelTypeOptions = getTunnelTypeOptions($t)
-
+  const tunnelType = Form.useWatch('tunnelType', form)
+  const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
@@ -107,6 +113,66 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     { label: $t({ defaultMessage: 'Milliseconds' }), value: MtuRequestTimeoutUnit.MILLISECONDS }
   ]
 
+  const { clusterServiceData, isLoading: isClusterServiceOptsLoading } =
+  useGetEdgeClusterServiceListQuery(
+    { payload: {
+      fields: [
+        'serviceId',
+        'edgeClusterId',
+        'serviceType'
+      ],
+      pageSize: 10000
+    } },
+    {
+      skip: !isEdgeL2greReady,
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterServiceData: data?.data
+          ,isLoading
+        }
+      }
+    })
+
+  const inValidClusterIds = clusterServiceData
+    ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
+    item.serviceType === EdgeServiceTypeEnum.MV_SD_LAN ||
+    // eslint-disable-next-line max-len
+    (item.serviceId !== formId && item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
+
+  clusterServiceData
+    // eslint-disable-next-line max-len
+    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)
+    .some(item => {
+      form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
+      return true
+    })
+
+  const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
+    { payload: {
+      fields: [
+        'name',
+        'venueId',
+        'clusterId',
+        'firmwareVersion'
+      ],
+      pageSize: 10000
+    } },
+    {
+      skip: !isEdgeL2greReady,
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterData: data?.data
+            .filter(item => !inValidClusterIds?.includes(item.clusterId!))
+          ,isLoading
+        }
+      }
+    })
+
+  const clusterOptions = clusterData?.map(item => ({
+    label: item.name,
+    value: item.clusterId
+  }))
+
   const handelMtuRequestTimeUnitChange = () => {
     form.validateFields(['mtuRequestTimeout'])
   }
@@ -117,7 +183,20 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     }
   }
 
+  const onEdgeClusterChange = useCallback((val: string) => {
+    const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
+    form.setFieldsValue({
+      venueId: edgeData?.venueId
+    })
+  }, [clusterData, form])
+
   const isNatTraversalBetaEnabled = useIsBetaEnabled(TierFeatures.EDGE_NAT_T)
+
+  useEffect(() => {
+    if (form.getFieldValue('edgeClusterId') && clusterData?.length) {
+      onEdgeClusterChange(form.getFieldValue('edgeClusterId'))
+    }
+  }, [form, clusterData, onEdgeClusterChange])
 
   return (
     <>
@@ -172,6 +251,82 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             }
           />
         </Col>
+        }
+        { isEdgeL2greReady &&
+          <Col span={24}>
+            <Form.Item
+              name='tunnelType'
+              label={$t({ defaultMessage: 'Tunnel Type' })}
+              initialValue={TunnelTypeEnum.VXLAN_GPE}
+              children={
+                <Radio.Group disabled={isDefaultTunnelProfile
+                    || !!disabledFields?.includes('tunnelType')}
+                onChange={handleNetworkSegmentTypeChange}
+                >
+                  <Space direction='vertical'>
+                    <Radio value={TunnelTypeEnum.VXLAN_GPE}>
+                      {$t({ defaultMessage: 'VxLAN GPE' })}
+                    </Radio>
+                    { isEdgePinHaReady &&
+                    <Radio value={TunnelTypeEnum.L2GRE}>
+                      {$t({ defaultMessage: 'L2GRE' })}
+                    </Radio>
+                    }
+                  </Space>
+                </Radio.Group>
+              }
+            />
+          </Col>
+        }
+        { isEdgeL2greReady && isL2greType &&
+          <Col span={14}>
+            <Form.Item
+              name='destinationIpAddress'
+              label={$t({ defaultMessage: 'Destination IP Address' })}
+              children={<Input />}
+              rules={[
+                {
+                  required: true,
+                  message: $t({ defaultMessage: 'Please enter a valid IP address' })
+                },
+                {
+                  validator: (_, value) => serverIpAddressRegExp(value) }
+              ]}
+            />
+          </Col>
+        }
+        { isEdgeL2greReady && !!!isL2greType &&
+          <Col span={14}>
+            <Row>
+              <Col>
+                <Form.Item
+                  name='edgeClusterId'
+                  label={<>
+                    { $t({ defaultMessage: 'Destination RUCKUS Edge cluster' }) }
+                  </>}
+                  rules={[{
+                    required: true,
+                    message: $t({ defaultMessage: 'Please select a Cluster' })
+                  }
+                  ]}
+                >
+                  <Select
+                    loading={isClusterServiceOptsLoading && isClusterOptsLoading}
+                    options={clusterOptions}
+                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    onChange={onEdgeClusterChange}
+                  />
+                </Form.Item>
+              </Col>
+              {/* {edgeClusterId &&
+            <Col span={24}>
+              <ClusterFirmwareInfo
+                clusterId={edgeClusterId}
+              />
+            </Col>
+              } */}
+            </Row>
+          </Col>
         }
         { isEdgeNatTraversalP1Ready &&
         <Col span={14}>
@@ -273,7 +428,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           />
         </Col>
         {
-          (isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) &&
+          (isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) && !!!isL2greType &&
         <Col span={24}>
           <Form.Item
             label={$t({ defaultMessage: 'Path MTU Request Timeout' })}
@@ -312,7 +467,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Form.Item>
         </Col>
         }
-        {(isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) &&
+        {(isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) && !!!isL2greType &&
         <Col span={24}>
           <Form.Item
             label={$t({ defaultMessage: 'Path MTU Request Retries' })}
@@ -364,57 +519,45 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             />
           </UI.StyledSpace>
         </Col>
-        <Col span={24}>
-          <Form.Item
-            label={$t({ defaultMessage: 'Tunnel Idle Timeout' })}
-            tooltip={$t(MessageMapping.idle_timeout_tooltip)}
-          >
-            <Space>
-              <Form.Item
-                name='ageTimeMinutes'
-                rules={[
-                  { required: true,
-                    message: $t({ defaultMessage: 'Please enter Tunnel Idle Timeout' })
-                  },
-                  { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
-                ]}
-                children={<InputNumber
-                  // eslint-disable-next-line max-len
-                  disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              <Form.Item
-                name='ageTimeUnit'
-                children={
-                  <Select
-                    options={ageTimeOptions}
-                    disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeUnit')}
-                    onChange={handelAgeTimeUnitChange}
-                  />
-                }
-                noStyle
-              />
-            </Space>
-          </Form.Item>
-        </Col>
-        { !isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
-        <Col span={14}>
-          <Form.Item
-            name='type'
-            label={$t({ defaultMessage: 'Tunnel Type' })}
-            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
-          >
-            <Select
-              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
-              options={tunnelTypeOptions}
-            />
-          </Form.Item>
-        </Col>
+        {!!!isL2greType &&
+          <Col span={24}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Tunnel Idle Timeout' })}
+              tooltip={$t(MessageMapping.idle_timeout_tooltip)}
+            >
+              <Space>
+                <Form.Item
+                  name='ageTimeMinutes'
+                  rules={[
+                    { required: true,
+                      message: $t({ defaultMessage: 'Please enter Tunnel Idle Timeout' })
+                    },
+                    { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
+                  ]}
+                  children={<InputNumber
+                    // eslint-disable-next-line max-len
+                    disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeMinutes')}/>}
+                  validateFirst
+                  noStyle
+                  hasFeedback
+                />
+                <Form.Item
+                  name='ageTimeUnit'
+                  children={
+                    <Select
+                      options={ageTimeOptions}
+                      disabled={isDefaultTunnelProfile || !!disabledFields?.includes('ageTimeUnit')}
+                      onChange={handelAgeTimeUnitChange}
+                    />
+                  }
+                  noStyle
+                />
+              </Space>
+            </Form.Item>
+          </Col>
         }
         {
-          isEdgeVxLanTunnelKaReady &&
+          isEdgeVxLanTunnelKaReady && !!!isL2greType &&
         <Col span={24}>
           <Form.Item
             label={$t({ defaultMessage: 'Tunnel Keep Alive Interval' })}
@@ -449,7 +592,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         </Col>
         }
         {
-          isEdgeVxLanTunnelKaReady &&
+          isEdgeVxLanTunnelKaReady && !!!isL2greType &&
         <Col span={24}>
           <Form.Item
             label={$t({ defaultMessage: 'Tunnel Keep Alive Retries' })}
