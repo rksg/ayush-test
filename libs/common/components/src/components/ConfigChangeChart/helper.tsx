@@ -456,7 +456,10 @@ export function useLegendTableFilter (
     const pageSize = pagination?.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
 
     if(isPaged){
-      setPagination?.(CONFIG_CHANGE_DEFAULT_PAGINATION)
+      setPagination?.({
+        current: CONFIG_CHANGE_DEFAULT_PAGINATION.current,
+        pageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+      })
     }
     else {
       setPagination?.({

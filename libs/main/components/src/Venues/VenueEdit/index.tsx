@@ -175,7 +175,7 @@ export function VenueEdit () {
       rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)]
     }) && activeTab === 'switch')
     || (!hasDetailsPermission && activeTab === 'details')
-    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'property')
+    || (!enablePropertyManagement && activeTab === 'property')
 
     if (hasNoPermissions) {
       navigate(notPermissions, { replace: true })
