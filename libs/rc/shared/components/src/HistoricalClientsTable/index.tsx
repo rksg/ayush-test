@@ -138,7 +138,6 @@ memo(({ searchString, setHistoricalClientCount } :
   }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
   const showDatePicker = useIsSplitOn(Features.ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT)
@@ -208,7 +207,7 @@ memo(({ searchString, setHistoricalClientCount } :
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
-            filterPersistence={enabledUXOptFeature}
+            filterPersistence={true}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',
