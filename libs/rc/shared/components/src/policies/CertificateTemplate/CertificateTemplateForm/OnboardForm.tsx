@@ -7,8 +7,8 @@ import { GridCol, GridRow, Modal, ModalType, Select, SelectionControl }         
 import { useAdaptivePolicySetListQuery, useLazyGetCertificateTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 import {
   CertificateUrls,
-  checkObjectNotExists,
-  PersonaGroup,
+  checkObjectNotExists, getPolicyAllowedOperation,
+  PersonaGroup, PolicyOperation, PolicyType,
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
@@ -186,7 +186,9 @@ export default function OnboardForm ({ editMode = false }) {
             />
           </GridCol>
           {
-            hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+            (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+              // eslint-disable-next-line max-len
+              hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) &&
             <>
               <Space align='center'>
                 <Button

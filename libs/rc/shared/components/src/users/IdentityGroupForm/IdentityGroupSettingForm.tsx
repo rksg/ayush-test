@@ -10,9 +10,13 @@ import {
   useAdaptivePolicySetListQuery,
   useLazySearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasRoles }                                       from '@acx-ui/user'
+import {
+  checkObjectNotExists,
+  getPolicyAllowedOperation, PolicyOperation, PolicyType,
+  trailingNorLeadingSpaces
+} from '@acx-ui/rc/utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
 
 import { AdaptivePolicySetForm } from '../../AdaptivePolicySetForm'
 
@@ -102,7 +106,9 @@ export function IdentityGroupSettingForm ({ modalMode }: { modalMode?: boolean }
                 />
               </Col>
               {
-                hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                  // eslint-disable-next-line max-len
+                  hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) &&
                 <Col span={2}>
                   <Button
                     type={'link'}
