@@ -43,11 +43,11 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   DpskSaveData,
   TableResult,
-  useConfigTemplate
+  useConfigTemplate, getPolicyAllowedOperation, PolicyType, PolicyOperation
 } from '@acx-ui/rc/utils'
-import { RolesEnum } from '@acx-ui/types'
-import { hasRoles }  from '@acx-ui/user'
-import { getIntl }   from '@acx-ui/utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../AdaptivePolicySetForm'
 import { ProtectedEnforceTemplateToggleP1 } from '../../configTemplates'
@@ -343,7 +343,9 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
                 />
               </Form.Item>
               {
-                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) && <>
+                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                  // eslint-disable-next-line max-len
+                  hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) && <>
                   <Button
                     id={'AddPolicySetButton'}
                     type='link'
