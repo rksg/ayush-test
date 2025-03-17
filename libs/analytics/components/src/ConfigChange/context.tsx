@@ -78,7 +78,7 @@ export function ConfigChangeProvider (props: {
   const paginationContext = {
     pagination, setPagination,
     applyPagination: (params: Partial<ConfigChangePaginationParams>) => {
-      setPagination({ ...pagination, ...params })
+      setPagination(preState => ({ ...preState, ...params }))
     }
   }
 
@@ -94,16 +94,16 @@ export function ConfigChangeProvider (props: {
     setDotSelect(params?.id ?? null)
     if(isPaged) {
       const index = sorter === SORTER_ABBR.DESC ? params.id! : pagination.total - params.id! -1
-      setPagination({
-        ...pagination,
-        current: Math.ceil((index + 1) / pagination.pageSize)
-      })
+      setPagination(preState => ({
+        ...preState,
+        current: Math.ceil((index + 1) / preState.pageSize)
+      }))
     }
     else  {
-      setPagination({
-        ...pagination,
-        current: Math.ceil((params.filterId! + 1) / pagination.pageSize)
-      })
+      setPagination(preState => ({
+        ...preState,
+        current: Math.ceil((params.filterId! + 1) / preState.pageSize)
+      }))
     }
   }
   const onRowClick = (params: ConfigChangeType) => {
@@ -121,6 +121,17 @@ export function ConfigChangeProvider (props: {
   }
 
   const timeRanges = defaultRanges()[props.dateRange]!
+
+  useEffect(() => {
+    if (initialZoom !== undefined && chartZoom !== undefined) {
+      const startDiff = initialZoom.start - chartZoom.start
+      const endDiff = initialZoom.end - chartZoom.end
+      if (startDiff !== 0 && startDiff === endDiff) {
+        setChartZoom(initialZoom)
+      }
+    }
+  }, [timeRanges])
+
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([
     [timeRanges[0].valueOf(), timeRanges[0].clone().add(brushPeriod, 'ms').valueOf()],
     [timeRanges[1].clone().subtract(brushPeriod, 'ms').valueOf(), timeRanges[1].valueOf()]
