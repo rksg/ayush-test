@@ -14,8 +14,9 @@ import {
   EdgeSdLanUrls,
   EthernetPortProfileUrls,
   IdentityProviderUrls,
+  IpsecUrls,
   LbsServerProfileUrls,
-  MacRegListUrlsInfo,
+  MacRegListUrlsInfo, RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -82,6 +83,12 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateEdgePin)],
     [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteEdgePin)],
     [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
+  },
+  [ServiceType.WEBAUTH_SWITCH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(EdgePinUrls.addWebAuthTemplate)],
+    [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
+    [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
+    [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
   }
 }
 
@@ -212,6 +219,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: [getOpsApi(SoftGreUrls.deleteSoftGre)],
     [PolicyOperation.LIST]: [getOpsApi(SoftGreUrls.getSoftGreViewDataList)]
   },
+  [PolicyType.IPSEC]: {
+    [PolicyOperation.CREATE]: [getOpsApi(IpsecUrls.createIpsec)],
+    [PolicyOperation.EDIT]: [getOpsApi(IpsecUrls.updateIpsec)],
+    [PolicyOperation.DELETE]: [getOpsApi(IpsecUrls.deleteIpsec)],
+    [PolicyOperation.LIST]: [getOpsApi(IpsecUrls.getIpsecViewDataList)]
+  },
   [PolicyType.DIRECTORY_SERVER]: {
     [PolicyOperation.CREATE]: [getOpsApi(DirectoryServerUrls.createDirectoryServer)],
     [PolicyOperation.EDIT]: [getOpsApi(DirectoryServerUrls.updateDirectoryServer)],
@@ -245,5 +258,32 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
+  },  
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
+    [PolicyOperation.EDIT]: [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)],
+    [PolicyOperation.DELETE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup)],
+    [PolicyOperation.LIST]: [getOpsApi(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery)]
+  },
+  [PolicyType.ADAPTIVE_POLICY]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions)],
+    [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions),
+      getOpsApi(RulesManagementUrlsInfo.deleteConditions),
+      getOpsApi(RulesManagementUrlsInfo.updateConditions)]],
+    [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
+    [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPoliciesByQuery)]
+  },
+  [PolicyType.ADAPTIVE_POLICY_SET]: {
+    [PolicyOperation.CREATE]: [[getOpsApi(RulesManagementUrlsInfo.createPolicySet),
+      getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority)
+    ]],
+    [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicySet),
+      getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority),
+      getOpsApi(RulesManagementUrlsInfo.removePrioritizedAssignment)
+    ]],
+    [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
+    [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPolicySetsByQuery)]
   }
 }

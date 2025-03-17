@@ -21,6 +21,7 @@ import { LoadSzCpuLoad }              from './Details/LoadSzCpuLoad'
 import { NetSzNetLatency }            from './Details/NetSzNetLatency'
 import { NetTime }                    from './Details/NetTime'
 import { RadiusFailure }              from './Details/RadiusFailure'
+import { SwitchLLDPStatus }           from './Details/SwitchLLDPStatus'
 import { SwitchLoopDetection }        from './Details/SwitchLoopDetection'
 import { SwitchMemoryHigh }           from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }                from './Details/SwitchPoePd'
@@ -51,6 +52,7 @@ export const incidentDetailsMap = {
   'i-switch-poe-pd': SwitchPoePd,
   'i-switch-vlan-mismatch': SwitchVlanMismatch,
   'i-switch-loop-detection': SwitchLoopDetection,
+  'i-switch-lldp-status': SwitchLLDPStatus,
   'p-channeldist-suboptimal-plan-24g': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist,

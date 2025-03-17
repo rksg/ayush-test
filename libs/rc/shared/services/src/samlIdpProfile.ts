@@ -1,3 +1,4 @@
+
 import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query'
 
 import {
@@ -6,13 +7,15 @@ import {
   SamlIdpProfileViewData,
   SamlIdpProfileUrls,
   TableResult,
+  SamlIdpProfileFormType,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  SamlIdpProfileFormType
+  downloadFile
 } from '@acx-ui/rc/utils'
 import { baseSamlIdpProfileApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
+
 
 export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
   endpoints: (build) => ({
@@ -146,6 +149,27 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         { type: 'SamlIdpProfile', id: 'LIST' },
         { type: 'SamlIdpProfile', id: 'Options' }
       ]
+    }),
+    downloadSamlServiceProviderMetadata: build.mutation<Blob, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SamlIdpProfileUrls.downloadSamlServiceProviderMetadata, params
+        )
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const date = new Date()
+            // eslint-disable-next-line max-len
+            const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
+            const filename = 'SAML Metadata - ' + nowTime + '.xml'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : filename
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -155,9 +179,11 @@ export const {
   useDeleteSamlIdpProfileMutation,
   useUpdateSamlIdpProfileMutation,
   useGetSamlIdpProfileByIdQuery,
+  useLazyGetSamlIdpProfileByIdQuery,
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useGetSamlIdpProfileViewDataListQuery,
   useLazyGetSamlIdpProfileViewDataListQuery,
   useActivateSamlIdpProfileCertificateMutation,
-  useDeactivateSamlIdpProfileCertificateMutation
+  useDeactivateSamlIdpProfileCertificateMutation,
+  useDownloadSamlServiceProviderMetadataMutation
 } = samlIdpProfileApi

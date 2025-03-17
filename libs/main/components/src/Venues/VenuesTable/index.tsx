@@ -34,10 +34,11 @@ import {
 import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
-  SwitchRbacUrlsInfo,
+  PropertyUrlsInfo,
   TableQuery,
   usePollingTableQuery,
-  Venue
+  Venue,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
@@ -262,7 +263,6 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'isManagedByTemplate',
       'addressLine'
     ],
     searchTargetFields: ['name', 'addressLine'],
@@ -300,14 +300,15 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
-      getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+      getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+      getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+      getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    },
-    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
-    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -355,7 +356,10 @@ export const VenueTable = ({ settingsId = 'venues-table',
           scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
-            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]
         }) && rowSelection}
       />

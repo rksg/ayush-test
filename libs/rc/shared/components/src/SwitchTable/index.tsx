@@ -171,6 +171,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
       'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
+    enableSelectAllExtraArg: {
+      enableAggregateStackMember: false
+    },
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
