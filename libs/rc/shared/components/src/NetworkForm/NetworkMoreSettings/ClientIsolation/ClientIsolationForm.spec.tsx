@@ -3,8 +3,8 @@ import { Form }         from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { rest }         from 'msw'
 
-import { ClientIsolationUrls, CommonUrlsInfo, DpskWlanAdvancedCustomization, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
+import { ClientIsolationUrls, CommonUrlsInfo, DpskWlanAdvancedCustomization, NetworkSegmentTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -18,10 +18,10 @@ import NetworkFormContext                   from '../../NetworkFormContext'
 import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
 
 import {
-  mockedVenues,
   mockedClientIsolationList,
+  mockedNetworkVenue,
   mockedTenantId,
-  mockedNetworkVenue
+  mockedVenues
 } from './__tests__/fixtures'
 import ClientIsolationForm from './ClientIsolationForm'
 
@@ -145,7 +145,7 @@ describe('ClientIsolationForm', () => {
 
     jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
       enableVxLan: true,
-      tunnelType: TunnelTypeEnum.VXLAN
+      type: NetworkSegmentTypeEnum.VXLAN
     })
 
     render(

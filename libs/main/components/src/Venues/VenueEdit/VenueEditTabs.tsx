@@ -9,7 +9,8 @@ import {
   CommonUrlsInfo,
   useConfigTemplate,
   WifiRbacUrlsInfo,
-  type LocationExtended
+  type LocationExtended,
+  PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -121,9 +122,16 @@ function VenueEditTabs () {
 export default VenueEditTabs
 
 export function usePropertyManagementEnabled () {
+  const { rbacOpsApiEnabled } = getUserProfile()
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
-  const hasPropertyManagementPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPropertyManagementPermission =
+    rbacOpsApiEnabled
+      ? hasAllowedOperations([
+        getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+        getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
+      ])
+      : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission
 }

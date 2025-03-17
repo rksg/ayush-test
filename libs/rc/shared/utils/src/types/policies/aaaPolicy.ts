@@ -1,6 +1,6 @@
 import { RadiusServer }      from '../../models/RadiusServer'
 import { EnforceableFields } from '../configTemplate'
-export interface AAAPolicyType{
+export interface AAAPolicyType extends EnforceableFields {
   id?: string,
   name: string,
   primary?: RadiusServer,

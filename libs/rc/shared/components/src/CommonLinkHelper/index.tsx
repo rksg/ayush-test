@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import {
   DpskDetailsTabKey,
@@ -169,10 +170,13 @@ export function PropertyUnitLink (props: {
   showNoData?: boolean
 }) {
   const { venueId, unitId, name, showNoData } = props
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   return (
     (venueId && unitId)
       ? <TenantLink
-        to={`venues/${venueId}/venue-details/units`}
+        to={!isMultipleIdentityUnits ?
+          `venues/${venueId}/venue-details/units` :
+          `/venues/${venueId}/${unitId}/property-units`}
       >
         {name ?? unitId}
       </TenantLink>

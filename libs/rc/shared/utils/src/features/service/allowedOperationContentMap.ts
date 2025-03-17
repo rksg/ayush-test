@@ -15,7 +15,7 @@ import {
   IdentityProviderUrls,
   IpsecUrls,
   LbsServerProfileUrls,
-  MacRegListUrlsInfo,
+  MacRegListUrlsInfo, RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -235,5 +235,32 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)],
     [PolicyOperation.DELETE]: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
     [PolicyOperation.LIST]: [getOpsApi(MacRegListUrlsInfo.getMacRegistrationPools)]
+  },
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
+    [PolicyOperation.EDIT]: [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)],
+    [PolicyOperation.DELETE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup)],
+    [PolicyOperation.LIST]: [getOpsApi(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery)]
+  },
+  [PolicyType.ADAPTIVE_POLICY]: {
+    [PolicyOperation.CREATE]: [getOpsApi(RulesManagementUrlsInfo.createPolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions)],
+    [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicy),
+      getOpsApi(RulesManagementUrlsInfo.addConditions),
+      getOpsApi(RulesManagementUrlsInfo.deleteConditions),
+      getOpsApi(RulesManagementUrlsInfo.updateConditions)]],
+    [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicy)],
+    [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPoliciesByQuery)]
+  },
+  [PolicyType.ADAPTIVE_POLICY_SET]: {
+    [PolicyOperation.CREATE]: [[getOpsApi(RulesManagementUrlsInfo.createPolicySet),
+      getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority)
+    ]],
+    [PolicyOperation.EDIT]: [[getOpsApi(RulesManagementUrlsInfo.updatePolicySet),
+      getOpsApi(RulesManagementUrlsInfo.assignPolicyPriority),
+      getOpsApi(RulesManagementUrlsInfo.removePrioritizedAssignment)
+    ]],
+    [PolicyOperation.DELETE]: [getOpsApi(RulesManagementUrlsInfo.deletePolicySet)],
+    [PolicyOperation.LIST]: [getOpsApi(RulesManagementUrlsInfo.getPolicySetsByQuery)]
   }
 }
