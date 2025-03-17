@@ -254,18 +254,22 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
   //   newApi: true
   // },
-  // deactivateMspEcAccount: {
-  //   // method: 'PATCH',
-  //   // url: /mspCustomers/:mspEcTenantId
-  //   method: 'post',
-  //   url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
-  // },
-  // reactivateMspEcAccount: {
-  //   // method: 'PATCH',
-  //   // url: /mspCustomers/:mspEcTenantId
-  //   method: 'post',
-  //   url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
-  // },
+  deactivateMspEcAccount: {
+    method: 'delete',
+    url: '/tenantActivations/:mspEcTenantId',
+    newApi: true,
+    opsApi: 'DELETE:/tenantActivations/{id}'
+    // method: 'post',
+    // url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
+  },
+  reactivateMspEcAccount: {
+    method: 'put',
+    url: '/tenantActivations/:mspEcTenantId',
+    newApi: true,
+    opsApi: 'PUT:/tenantActivations/{id}'
+    // method: 'post',
+    // url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
+  },
   getMspBaseURL: {
     method: 'get',
     url: '/brandings/suffix',
@@ -358,9 +362,9 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   mspEcFirmwareUpgradeSchedules: {
     method: 'post',
-    url: '/tenants/firmwareUpgradeSchedules',
+    url: '/firmwareUpgradeSchedules',
     oldUrl: '/mspCustomers/firmwareUpgradeSchedules',
-    opsApi: 'POST:/tenants/firmwareUpgradeSchedules',
+    opsApi: 'POST:/firmwareUpgradeSchedules',
     newApi: true
   },
   getAvailableMspRecCustomers: {
