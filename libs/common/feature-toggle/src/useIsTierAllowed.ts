@@ -7,6 +7,7 @@ import { useUserProfileContext }                            from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
 import { Features, TierFeatures } from './features'
+import { useIsAlphaUser }         from './useIsAlphaUser'
 import { useIsBetaEnabled }       from './useIsBetaEnabled'
 type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList' | 'alphaList'
 
@@ -25,7 +26,7 @@ export function useFFList (): {
   betaList?: string[],
   featureDrawerBetaList?: string[],
   alphaList?: string[] } {
-  const { data: userProfile, accountTier, betaEnabled } = useUserProfileContext()
+  const { accountTier, betaEnabled } = useUserProfileContext()
   const jwtPayload = getJwtTokenPayload()
   const acxAccountTier = accountTier?? jwtPayload?.acx_account_tier
 
@@ -84,8 +85,7 @@ export function useFFList (): {
       userFFConfig[featureKey] : _.union(userFFConfig[featureKey], userFFConfig[featureDefaultKey]),
     betaList: betaEnabled? userFFConfig['betaList'] : [],
     featureDrawerBetaList: userFFConfig['betaList'],
-    alphaList: ((betaEnabled && userProfile?.dogfood) || jwtPayload.isAlphaFlag)
-      ? userFFConfig['alphaList'] : []
+    alphaList: useIsAlphaUser() ? userFFConfig['alphaList'] : []
   }
 }
 
