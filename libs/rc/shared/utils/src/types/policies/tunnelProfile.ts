@@ -1,4 +1,4 @@
-import { MtuTypeEnum, TunnelTypeEnum } from '../../models'
+import { MtuTypeEnum, NetworkSegmentTypeEnum } from '../../models'
 
 export interface TunnelProfile {
   id: string
@@ -8,7 +8,7 @@ export interface TunnelProfile {
   mtuSize?: number
   forceFragmentation: boolean
   ageTimeMinutes: number
-  type: TunnelTypeEnum
+  type: NetworkSegmentTypeEnum
   mtuRequestRetry?: number
   mtuRequestTimeout?: number // unit is milliseconds
   keepAliveRetry?: number
@@ -27,7 +27,7 @@ export interface TunnelProfileViewData {
   personalIdentityNetworkIds: string[]
   networkIds: string[]
   sdLanIds?: string[]
-  type: TunnelTypeEnum
+  type: NetworkSegmentTypeEnum
   mtuRequestRetry: number
   mtuRequestTimeout: number // unit is seconds
   keepAliveRetry: number

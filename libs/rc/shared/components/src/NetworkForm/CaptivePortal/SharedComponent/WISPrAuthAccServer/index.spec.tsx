@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AaaUrls, CertificateUrls, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }              from '@acx-ui/test-utils'
+import { AaaUrls, CertificateUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                     from '@acx-ui/test-utils'
 
 import {
   mockAAAPolicyListResponse,
@@ -17,12 +17,6 @@ import NetworkFormContext from '../../../NetworkFormContext'
 import { statesCollection, WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
 
 import { WISPrAuthAccServer } from '.'
-
-const mockedUseConfigTemplate = jest.fn()
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useConfigTemplate: () => mockedUseConfigTemplate()
-}))
 
 describe('WISPRAuthACCServer', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
@@ -61,13 +55,6 @@ describe('WISPRAuthACCServer', () => {
     )
   })
 
-  beforeEach(() => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-  })
-
-  afterEach(() => {
-    mockedUseConfigTemplate.mockRestore()
-  })
   it('should render instance page', async () => {
     render(WISPRAuthACCServerNormalTestCase(),{ route: { params } })
 
@@ -97,9 +84,7 @@ describe('WISPRAuthACCServer', () => {
   })
 
   it('should render template page', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
-    render(WISPRAuthACCServerNormalTestCase(),{ route: { params } })
+    render(WISPRAuthACCServerNormalTestCase(true),{ route: { params } })
 
     await userEvent.click((await screen.findByRole('combobox')))
 
@@ -109,7 +94,7 @@ describe('WISPRAuthACCServer', () => {
   })
 })
 
-function WISPRAuthACCServerNormalTestCase () {
+function WISPRAuthACCServerNormalTestCase (isTemplate = false) {
   const data = {
     guestPortal: {
       enableSmsLogin: true,
@@ -119,17 +104,19 @@ function WISPRAuthACCServerNormalTestCase () {
   return (
     <Provider>
       <NetworkFormContext.Provider value={{
-        editMode: false, cloneMode: false, data: data
+        editMode: false, cloneMode: false, data: data, isRuckusAiMode: false
       }}>
-        <Form>
-          <WISPrAuthAccContext.Provider
-            value={{ state: statesCollection.useBypassCNAAndAuth, dispatch: ()=>{} }}>
-            <WISPrAuthAccServer
-              onClickAllAccept={()=>{}}
-              onClickAuth={()=>{}}
-            />
-          </WISPrAuthAccContext.Provider>
-        </Form>
+        <ConfigTemplateContext.Provider value={{ isTemplate }}>
+          <Form>
+            <WISPrAuthAccContext.Provider
+              value={{ state: statesCollection.useBypassCNAAndAuth, dispatch: ()=>{} }}>
+              <WISPrAuthAccServer
+                onClickAllAccept={()=>{}}
+                onClickAuth={()=>{}}
+              />
+            </WISPrAuthAccContext.Provider>
+          </Form>
+        </ConfigTemplateContext.Provider>
       </NetworkFormContext.Provider>
     </Provider>
   )
