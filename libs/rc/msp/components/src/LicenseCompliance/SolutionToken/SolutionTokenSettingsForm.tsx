@@ -8,6 +8,7 @@ import { useParams }                 from 'react-router-dom'
 import { Loader, showToast }                                                        from '@acx-ui/components'
 import { useGetSolutionTokenSettingsQuery, useUpdateSolutionTokenSettingsMutation } from '@acx-ui/msp/services'
 import { DeviceComplianceType, DeviceComplianceTypeLabels, SolutionTokenSettings }  from '@acx-ui/msp/utils'
+import { useUserProfileContext }                                                    from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -21,6 +22,12 @@ export default function SolutionTokenSettingsForm (props: {
   const params = useParams()
   const [formValues, setFormValues] = useState<FormValues>({} as FormValues)
   const [isLoading, setIsLoading] = useState(true)
+
+  const {
+    isPrimeAdmin
+  } = useUserProfileContext()
+
+  const isPrimeAdminUser = isPrimeAdmin()
 
   const queryData = useGetSolutionTokenSettingsQuery(
     { params })
@@ -120,7 +127,7 @@ export default function SolutionTokenSettingsForm (props: {
                   children={<>
                     <Switch
                       checked={capped}
-                      disabled={!enabled}
+                      disabled={!(isPrimeAdminUser && enabled)}
                       onChange={(ev) => handleSwitchChange(featureType, ev)}/>
                     <span>
                       { capped ? $t({ defaultMessage: 'Capped' })
@@ -144,7 +151,7 @@ export default function SolutionTokenSettingsForm (props: {
               children={<>
                 <InputNumber
                   controls={false}
-                  disabled={!enabled}
+                  disabled={!(isPrimeAdminUser && enabled)}
                   min={0}
                   defaultValue={maxQuantity}
                   value={maxQuantity}

@@ -91,11 +91,10 @@ describe('DataConnectorContent', () => {
         data: {
           config: {
             connectionType: 'azure',
-            azureConnectionType: 'Azure Files',
+            azureConnectionType: 'azureBlob',
             azureAccountName: 'some name',
             azureAccountKey: 'key',
-            azureShareName: 'share name',
-            azureCustomerName: 'name'
+            azureContainerName: 'name'
           },
           id: 'id'
         }
@@ -209,11 +208,10 @@ describe('DataConnectorContent', () => {
         data: {
           config: {
             connectionType: 'azure',
-            azureConnectionType: 'Azure Files',
+            azureConnectionType: 'azureFiles',
             azureAccountName: 'some name',
             azureAccountKey: 'key',
-            azureShareName: 'share name',
-            azureCustomerName: 'name'
+            azureShareName: 'share name'
           },
           id: 'id'
         }
