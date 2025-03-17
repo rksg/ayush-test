@@ -480,7 +480,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
               onChange: (items) => onChange?.(personaListQuery.data?.data
                 ?.find(p => p.id === items[0]))
             }
-            : hasCrossVenuesPermission({ needGlobalPermission: true })
+            : filterByAccess(rowActions).length !== 0
             && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={isSelectMode ? undefined : {
