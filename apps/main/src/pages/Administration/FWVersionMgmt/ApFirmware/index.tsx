@@ -1,7 +1,8 @@
 import { createContext } from 'react'
 
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsAlphaUser }         from '@acx-ui/feature-toggle'
+import { getJwtTokenPayload }     from '@acx-ui/utils'
 
 import { VenueFirmwareList }           from './VenueFirmwareList'
 import { VenueFirmwareListPerApModel } from './VenueFirmwareListPerApModel'
@@ -16,7 +17,7 @@ const ApFirmwareProvider = ({ children }) => {
   return (
     <ApFirmwareContext.Provider value={{
       // eslint-disable-next-line max-len
-      isAlphaFlag: (jwtPayload.isBetaFlag && jwtPayload.tenantType === AccountType.RUCKUS_DEV) || !!jwtPayload.isAlphaFlag,
+      isAlphaFlag: useIsAlphaUser(),
       isBetaFlag: !!jwtPayload.isBetaFlag
     }}>
       {children}
