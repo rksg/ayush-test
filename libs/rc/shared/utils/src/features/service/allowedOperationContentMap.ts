@@ -258,7 +258,7 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
     [PolicyOperation.DELETE]: [],
     [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
-  },  
+  },
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
     [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],
     [PolicyOperation.EDIT]: [getOpsApi(RadiusAttributeGroupUrlsInfo.updateAttributeGroup)],
