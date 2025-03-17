@@ -210,6 +210,7 @@ describe('AICanvas', () => {
     expect(await screen.findByText('History Drawer')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')
+    expect(await screen.findByText('5/300')).toBeVisible()
     fireEvent.keyDown(searchInput, { key: 'Enter' })
     expect(await screen.findByText('hello')).toBeVisible()
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
@@ -231,6 +232,8 @@ describe('AICanvas', () => {
     )
     expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
     const suggestQuestion = await screen.findByText('Show me the top-consuming clients')
     expect(suggestQuestion).toBeVisible()
     fireEvent.click(suggestQuestion)
