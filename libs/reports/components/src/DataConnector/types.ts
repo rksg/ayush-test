@@ -7,12 +7,17 @@ export type DataQuotaUsage = {
     allowed: number
 }
 
+export enum AzureConnectionType {
+  Blob = 'azureBlob',
+  Files = 'azureFiles'
+}
+
 type AzureStoragePayload = {
-  azureConnectionType: string,
+  azureConnectionType: AzureConnectionType,
   azureAccountName: string,
   azureAccountKey: string,
   azureShareName: string,
-  azureCustomerName: string
+  azureContainerName: string
 }
 
 type FTPStoragePayload = {
