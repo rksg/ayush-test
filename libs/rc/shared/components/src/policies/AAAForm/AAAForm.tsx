@@ -119,15 +119,14 @@ export const AAAForm = (props: AAAFormProps) => {
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
     const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
-    let entityId: string | undefined
+    let entityId: string | undefined = params?.policyId
 
     try {
       if (isEdit) {
-        const res = await updateInstance(requestPayload).unwrap()
+        await updateInstance(requestPayload).unwrap()
         if (supportRadsec) {
           updateRadSecActivations(data, requestPayload?.params?.policyId)
         }
-        entityId = res.id
       } else {
         await createInstance(requestPayload).unwrap().then(res => {
           entityId = res?.response?.id
@@ -279,7 +278,7 @@ export const AAAForm = (props: AAAFormProps) => {
         onCancel={onCancel}
         onFinish={handleAAAPolicy}
         editMode={isEdit}
-        {...getEnforcedStepsFormProps('StepsFormLegacy')}
+        {...getEnforcedStepsFormProps('StepsFormLegacy', data?.isEnforced)}
       >
         <StepsFormLegacy.StepForm
           name='settings'

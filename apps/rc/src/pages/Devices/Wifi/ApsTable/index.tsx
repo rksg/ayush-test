@@ -56,7 +56,6 @@ export default function useApsTable () {
   const { tenantId } = useParams()
   const apTableRef = useRef<ApTableRefType>(null)
   const [apsCount, setApsCount] = useApsCount()
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -127,7 +126,7 @@ export default function useApsTable () {
         rowSelection={{
           type: 'checkbox'
         }}
-        filterPersistence={enabledUXOptFeature}
+        filterPersistence={true}
       />
     </ApsTabContext.Provider>
 

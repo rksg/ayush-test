@@ -180,7 +180,7 @@ export function DpskForm (props: DpskFormProps) {
           onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
           onFinish={saveData}
           editMode={editMode}
-          {...getEnforcedStepsFormProps('StepsFormLegacy')}
+          {...getEnforcedStepsFormProps('StepsFormLegacy', dataFromServer?.isEnforced)}
         >
           <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'

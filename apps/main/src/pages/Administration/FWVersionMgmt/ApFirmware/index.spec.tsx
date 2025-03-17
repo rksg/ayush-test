@@ -15,6 +15,11 @@ jest.mock('./VenueFirmwareListPerApModel', () => ({
   ...jest.requireActual('./VenueFirmwareListPerApModel'),
   VenueFirmwareListPerApModel: () => <div>Venue Firmware List Per ApModel</div>
 }))
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsAlphaUser: () => false,
+  useIsSplitOn: jest.fn()
+}))
 
 describe('AP Firmware', () => {
 
