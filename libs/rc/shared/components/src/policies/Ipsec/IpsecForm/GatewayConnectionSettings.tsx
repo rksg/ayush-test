@@ -55,12 +55,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         setForceNATTEnabled(initIpSecData.advancedOption?.enforceNatt)
       }
       if (initIpSecData.advancedOption?.retryLimit
-          && initIpSecData.advancedOption?.retryLimit !== 5) {
+          && initIpSecData.advancedOption?.retryLimit !== 0) {
         setRetryLimitEnabled(true)
         form.setFieldValue('retryLimitEnabledCheckbox', true)
       }
       if (initIpSecData.advancedOption?.replayWindow
-        && initIpSecData.advancedOption?.replayWindow !== 32) {
+        && initIpSecData.advancedOption?.replayWindow !== 0) {
         setEspReplayWindowEnabled(true)
         form.setFieldValue('espReplayWindowEnabledCheckbox', true)
       }
@@ -70,7 +70,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
       }
       if (initIpSecData.advancedOption?.keepAliveInterval
-        && initIpSecData.advancedOption?.keepAliveInterval !== 20) {
+        && initIpSecData.advancedOption?.keepAliveInterval !== 0) {
         setNattKeepAliveIntervalEnabled(true)
         form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', true)
       }
@@ -101,12 +101,13 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
 
   return (
     <>
-      <Subtitle level={3}>
+      <Subtitle level={3} style={{ height: '40px' }}>
         { $t({ defaultMessage: 'Gateway' }) }
       </Subtitle>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
+            style={{ marginTop: 'px' }}
             label={
               <>
                 {$t({ defaultMessage: 'DHCP Option 43 Sub Code for Security Gateway' })}
@@ -127,10 +128,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           />
         </GridCol>
       </GridRow>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
-            style={{ lineHeight: '50px' }}
+            style={{ marginTop: '-5px' }}
             children={
               <>
                 <Checkbox
@@ -140,7 +141,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     setRetryLimitEnabled(e.target.checked)
                     form.setFieldValue('retryLimitEnabledCheckbox', e.target.checked)
                   }}
-                  children={$t({ defaultMessage: 'Retry Limit' })} />
+                  children={
+                    <div style={{ color: 'var(--acx-neutrals-60)' }}>
+                      {$t({ defaultMessage: 'Retry Limit' })}
+                    </div>
+                  } />
                 <Tooltip.Question
                   title={$t(messageMapping.gateway_retry_tooltip)}
                   placement='bottom' />
@@ -152,7 +157,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           {retryLimitEnabled &&
             <Form.Item
               initialValue={false}
-              style={{ lineHeight: '50px', marginTop: '-30px' }}
+              style={{ marginTop: '-27px' }}
               children={
                 <Space>
                   <Form.Item
@@ -169,15 +174,15 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           }
         </GridCol>
       </GridRow>
-      <Subtitle level={3}>
+      <Subtitle level={3} style={{ height: '40px' }}>
         { $t({ defaultMessage: 'Connection' }) }
       </Subtitle>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             valuePropName='checked'
             initialValue={false}
-            style={{ lineHeight: '50px' }}
+            // style={{ lineHeight: '50px' }}
             children={
               <>
                 <Checkbox data-testid='espReplayWindowEnabled'
@@ -186,7 +191,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     setEspReplayWindowEnabled(e.target.checked)
                     form.setFieldValue('espReplayWindowEnabledCheckbox', e.target.checked)
                   }}
-                  children={$t({ defaultMessage: 'ESP Replay Window' })} />
+                  children={
+                    <div style={{ color: 'var(--acx-neutrals-60)' }}>
+                      {$t({ defaultMessage: 'ESP Replay Window' })}
+                    </div>
+                  } />
                 <Tooltip.Question
                   title={$t(messageMapping.connection_esp_replay_window_tooltip)}
                   placement='bottom' />
@@ -197,7 +206,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {espReplayWindowEnabled &&
             <Form.Item
-              style={{ lineHeight: '50px', marginTop: '-30px' }}
+              style={{ marginTop: '-22px' }}
               children={
                 <Space>
                   <Form.Item
@@ -215,9 +224,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           }
         </GridCol>
       </GridRow>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
+            style={{ marginTop: '8px' }}
             label={
               <>
                 {$t({ defaultMessage: 'IP Compression' })}
@@ -234,7 +244,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           <Form.Item
             label={' '}
             name={['advancedOption','ipcompEnable']}
-            style={{ marginTop: '-28px' }}
+            style={{ marginTop: '-19px' }}
             initialValue={ipCompressionEnabled}
             children={
               <Switch
@@ -248,12 +258,12 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           />
         </GridCol>
       </GridRow>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             valuePropName='checked'
-            style={{ lineHeight: '50px' }}
             initialValue={false}
+            style={{ marginTop: '5px' }}
             children={
               <>
                 <Checkbox data-testid='deadPeerDetectionDelayEnabled'
@@ -262,7 +272,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     setDeadPeerDetectionDelayEnabled(e.target.checked)
                     form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', e.target.checked)
                   }}
-                  children={$t({ defaultMessage: 'Dead Peer Detection Delay' })} />
+                  children={
+                    <div style={{ color: 'var(--acx-neutrals-60)' }}>
+                      {$t({ defaultMessage: 'Dead Peer Detection Delay' })}
+                    </div>
+                  } />
                 <Tooltip.Question
                   title={$t(messageMapping.connection_dead_peer_detection_delay_tooltip)}
                   placement='bottom' />
@@ -273,7 +287,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {deadPeerDetectionDelayEnabled &&
             <Form.Item
-              style={{ lineHeight: '50px', marginTop: '-30px' }}
+              style={{ marginTop: '-17px' }}
               children={
                 <Space>
                   <Form.Item
@@ -289,9 +303,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           }
         </GridCol>
       </GridRow>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
+            style={{ marginTop: '10px' }}
             label={
               <>
                 {$t({ defaultMessage: 'Force NAT-T' })}
@@ -309,7 +324,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           <Form.Item
             label={' '}
             name={['advancedOption','enforceNatt']}
-            style={{ marginTop: '-28px' }}
+            style={{ marginTop: '-17px' }}
             initialValue={forceNATTEnabled}
             children={
               <Switch
@@ -322,11 +337,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             } />
         </GridCol>
       </GridRow>
-      <GridRow>
+      <GridRow style={{ height: '60px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
+            style={{ marginTop: '5px' }}
             valuePropName='checked'
-            style={{ lineHeight: '50px' }}
             children={
               <>
                 <Checkbox data-testid='nattKeepAliveIntervalEnabled'
@@ -335,7 +350,11 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     setNattKeepAliveIntervalEnabled(e.target.checked)
                     form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', e.target.checked)
                   }}
-                  children={$t({ defaultMessage: 'NAT-T Keep Alive Interval' })} />
+                  children={
+                    <div style={{ color: 'var(--acx-neutrals-60)' }}>
+                      {$t({ defaultMessage: 'NAT-T Keep Alive Interval' })}
+                    </div>
+                  } />
                 <Tooltip.Question
                   title={$t(messageMapping.connection_nat_keep_alive_interval_tooltip)}
                   placement='bottom' />
@@ -346,7 +365,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         <GridCol col={{ span: 12 }}>
           {nattKeepAliveIntervalEnabled &&
             <Form.Item
-              style={{ lineHeight: '50px', marginTop: '-30px' }}
+              style={{ marginTop: '-17px' }}
               children={
                 <Space>
                   <Form.Item
