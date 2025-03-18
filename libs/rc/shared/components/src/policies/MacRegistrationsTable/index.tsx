@@ -190,26 +190,21 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
       sorter: true
     },
     ...inIdentityPage ? []
-      : [{
-        title: isIdentityRequired
-          ? $t({ defaultMessage: 'Identity' })
-          : $t({ defaultMessage: 'Username' }),
+      : isIdentityRequired ? [{
+        title: $t({ defaultMessage: 'Identity' }),
         key: 'identityId',
         dataIndex: 'identityId',
         sorter: true,
         render: function (_, row) {
-          if (isIdentityRequired) {
-            const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
-            return (item ? <IdentityDetailsLink
-              name={item.name}
-              personaId={item.id}
-              personaGroupId={item.groupId}
-              revoked={item.revoked}
-            /> : row.username)
-          }
-          return row.username
+          const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+          return (item ? <IdentityDetailsLink
+            name={item.name}
+            personaId={item.id}
+            personaGroupId={item.groupId}
+            revoked={item.revoked}
+          /> : '')
         }
-      } as TableColumn<MacRegistration>],
+      } as TableColumn<MacRegistration>] : [],
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',

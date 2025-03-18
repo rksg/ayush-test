@@ -133,28 +133,22 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
       searchable: !disabledFeatures?.searchable
     },
     ...inIdentityPage ? []
-      : [{
+      : isIdentityGroupRequired ? [{
         key: 'identityId',
-        title: isIdentityGroupRequired
-          ? $t({ defaultMessage: 'Identity' })
-          : $t({ defaultMessage: 'User Name' }),
+        title: $t({ defaultMessage: 'Identity' }),
         dataIndex: 'identityId',
         sorter: true,
-        searchable: !disabledFeatures?.searchable,
         render: function (_, row) {
-          if (isIdentityGroupRequired) {
-            const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
-            return (item ? <IdentityDetailsLink
-              disableLink={isDpskRole}
-              name={item.name}
-              personaId={item.id}
-              personaGroupId={item.groupId}
-              revoked={item.revoked}
-            /> : row.username)
-          }
-          return row.username
+          const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+          return (item ? <IdentityDetailsLink
+            disableLink={isDpskRole}
+            name={item.name}
+            personaId={item.id}
+            personaGroupId={item.groupId}
+            revoked={item.revoked}
+          /> : '')
         }
-      } as TableColumn<NewDpskPassphrase>],
+      } as TableColumn<NewDpskPassphrase>] : [],
     {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
