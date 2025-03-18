@@ -85,7 +85,6 @@ export function ConfigTemplateList () {
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
-  const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -127,14 +126,14 @@ export function ConfigTemplateList () {
         }
       }
     },
-    ...(cloneEnabled ? [{
+    {
       visible: (selectedRows: ConfigTemplate[]) => canClone(selectedRows[0]?.type),
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setCloneModalVisible(true)
       }
-    }] : []),
+    },
     {
       rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
