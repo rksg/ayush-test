@@ -30,10 +30,11 @@ export interface useTunnelColumnProps {
   venueId: string
   sdLanScopedNetworks: SdLanScopedVenueNetworksData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
+  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
-  const { venueId, sdLanScopedNetworks, setTunnelModalState } = props
+  const { venueId, sdLanScopedNetworks, setTunnelModalState, refetchFnRef } = props
   const { isTemplate } = useConfigTemplate()
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -42,11 +43,14 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
-  const softGreVenueMap = useGetSoftGreScopeVenueMap()
-  const ipsecVenueMap = useGetIpsecScopeVenueMap()
+  const softGreVenueMap = useGetSoftGreScopeVenueMap(refetchFnRef)
+  const ipsecVenueMap = useGetIpsecScopeVenueMap(refetchFnRef)
+
   // eslint-disable-next-line max-len
   const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const allPins = useEdgeAllPinData({}, isTemplate)
+  const { venuePins: allPins, refetch } = useEdgeAllPinData({}, isTemplate)
+  refetchFnRef.current.pin = refetch
+
   const venuePinInfo = find(allPins, p => p.venueId === venueId)
   const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))
 

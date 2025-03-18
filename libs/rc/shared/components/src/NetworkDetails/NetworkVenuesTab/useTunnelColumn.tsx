@@ -33,10 +33,11 @@ interface useTunnelColumnProps {
   network: NetworkSaveData | null | undefined
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
+  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
-  const { network, sdLanScopedNetworkVenues, setTunnelModalState } = props
+  const { network, sdLanScopedNetworkVenues, setTunnelModalState, refetchFnRef } = props
   const { isTemplate } = useConfigTemplate()
 
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -47,9 +48,9 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const networkId = network?.id
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
-  const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
-  const ipsecVenueMap = useGetIpsecScopeNetworkMap(networkId)
-  const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
+  const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId, refetchFnRef)
+  const ipsecVenueMap = useGetIpsecScopeNetworkMap(networkId, refetchFnRef)
+  const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId, refetchFnRef)
   const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
   const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: NetworkSaveData) => () => {

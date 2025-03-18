@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState, useRef } from 'react'
 
 import { Form, Switch }           from 'antd'
 import { assign, cloneDeep, get } from 'lodash'
@@ -267,14 +267,17 @@ export function VenueNetworksTab () {
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   // hooks for tunnel column - start
-  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
+  // for tunnel type data refetching
+  const refetchFnRef = useRef({} as { [key: string]: () => void })
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id), refetchFnRef)
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const tunnelColumn = useTunnelColumn({
     venueId: venueId!,
     sdLanScopedNetworks,
-    setTunnelModalState
+    setTunnelModalState,
+    refetchFnRef
   })
   // hooks for tunnel column - end
 
@@ -325,6 +328,12 @@ export function VenueNetworksTab () {
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
   const linkToAddNetworkTemplate = useConfigTemplateTenantLink('networks/wireless/add')
+
+
+  const refetchTunnelInfoData = () => {
+    Object.keys(refetchFnRef.current)
+      .forEach(key => refetchFnRef.current[key]())
+  }
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -377,7 +386,11 @@ export function VenueNetworksTab () {
                 deleteRbacNetworkVenue({
                   params: apiParams,
                   enableRbac: true,
-                  callback: () => setIsActivateUpdating(false)
+                  callback: () => {
+                    // refetch all tunnel type data
+                    refetchTunnelInfoData()
+                    setIsActivateUpdating(false)
+                  }
                 })
               } else {
                 deleteNetworkVenue({

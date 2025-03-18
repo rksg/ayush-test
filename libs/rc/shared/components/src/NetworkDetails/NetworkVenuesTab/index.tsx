@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState, useRef } from 'react'
 
 import { Form, Switch }           from 'antd'
 import { assign, cloneDeep }      from 'lodash'
@@ -305,14 +305,17 @@ export function NetworkVenuesTab () {
   })
 
   // hooks for tunnel column - start
-  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
+  // for tunnel type data refetching
+  const refetchFnRef = useRef({} as { [key: string]: () => void })
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId, refetchFnRef)
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const tunnelColumn = useTunnelColumn({
     network: networkQuery.data,
     sdLanScopedNetworkVenues,
-    setTunnelModalState
+    setTunnelModalState,
+    refetchFnRef
   })
   // hooks for tunnel column - end
 
@@ -372,6 +375,11 @@ export function NetworkVenuesTab () {
   }, [tableQuery.data, networkQuery.data])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
+
+  const refetchTunnelInfoData = () => {
+    Object.keys(refetchFnRef.current)
+      .forEach(key => refetchFnRef.current[key]())
+  }
 
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
@@ -443,7 +451,10 @@ export function NetworkVenuesTab () {
             deleteRbacNetworkVenue({
               params: apiParams,
               enableRbac: true,
-              callback: () => setIsActivateUpdating(false)
+              callback: () => {
+                refetchTunnelInfoData()
+                setIsActivateUpdating(false)
+              }
             })
           } else {
             deleteNetworkVenue({ params: apiParams, enableRbac: false })
