@@ -31,12 +31,13 @@ import { MacAddressDrawer }                                from '../MacRegistrat
 
 interface MacRegistrationTableProps {
   tableQuery: TableQuery<MacRegistration, RequestPayload, unknown>,
-  policyId: string
+  policyId: string,
+  settingsId?: string
 }
 
 export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const { $t } = useIntl()
-  const { policyId, tableQuery } = props
+  const { policyId, tableQuery, settingsId } = props
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
@@ -282,7 +283,7 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
         onClose={() => setUploadCsvDrawerVisible(false)} />
       <Table
         enableApiFilter
-        settingsId={tableQuery.pagination.settingsId}
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
