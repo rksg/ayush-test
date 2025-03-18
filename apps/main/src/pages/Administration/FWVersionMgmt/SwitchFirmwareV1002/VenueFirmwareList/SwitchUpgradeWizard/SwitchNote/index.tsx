@@ -29,7 +29,7 @@ export function SwitchNote (props: NoteProps) {
     [NotesEnum.NOTE8100_1]:
     $t({
       // eslint-disable-next-line max-len
-      defaultMessage: 'The following switches will not be upgraded because the ICX8100-X models only support version 10.0.10g and 10.0.20c and above. You can still upgrade them to 10.0.10g and 10.0.20c and above by selecting the switches separately.'
+      defaultMessage: 'The following switches will not be upgraded because the ICX8100-X models only support FI version 10.0.10g and later or 10.0.20c and later. You can still upgrade them by selecting the switches individually.'
     }),
     [NotesEnum.NOTE8200_1]:
       $t({
