@@ -1,9 +1,9 @@
 import { cloneDeep } from 'lodash'
 
-import { Features }                                                                                                                                                                                       from '@acx-ui/feature-toggle'
-import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useDeleteTunnelProfileMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
-import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                                                       from '@acx-ui/rc/utils'
-import { CatchErrorDetails }                                                                                                                                                                              from '@acx-ui/utils'
+import { Features }                                                                                                                 from '@acx-ui/feature-toggle'
+import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation }            from '@acx-ui/rc/services'
+import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { CatchErrorDetails }                                                                                                        from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -15,8 +15,6 @@ export const useTunnelProfileActions = () => {
   // eslint-disable-next-line max-len
   const [updateTunnelProfile, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
   const [activateByEdgeCluster] = useActivateTunnelProfileByEdgeClusterMutation()
-  const [deleteTunnelProfile] = useDeleteTunnelProfileMutation()
-  const [deactivateByEdgeCluster] = useDeactivateTunnelProfileByEdgeClusterMutation()
 
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
@@ -191,29 +189,10 @@ export const useTunnelProfileActions = () => {
     }
   }
 
-  const deleteTunnelProfileOperation = async (tunnelProfileId : string,
-    activatedData:{ serviceId?: string,venueId?: string,clusterId?: string }[] | undefined) => {
-    if(isEdgeL2greReady === true && activatedData?.length) {
-      const deactivatePromises = activatedData?.filter(item => item.serviceId === tunnelProfileId)
-        .map(item => deactivateByEdgeCluster({
-          params: {
-            venueId: item.venueId,
-            clusterId: item.clusterId,
-            id: tunnelProfileId
-          }
-        }).unwrap())
-      if (deactivatePromises && deactivatePromises.length > 0) {
-        await Promise.all(deactivatePromises)
-      }
-    }
-
-    await deleteTunnelProfile ({ params: { id: tunnelProfileId } }).unwrap()
-  }
 
   return {
     createTunnelProfileOperation,
     updateTunnelProfileOperation,
-    deleteTunnelProfileOperation,
     isTunnelProfileCreating,
     isTunnelProfileUpdating
   }

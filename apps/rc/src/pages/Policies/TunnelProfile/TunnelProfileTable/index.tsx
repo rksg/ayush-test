@@ -2,10 +2,9 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useTunnelProfileActions }                              from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterListQuery,
-  useGetEdgeClusterServiceListQuery,
+  useDeleteTunnelProfileMutation,
   useGetEdgePinViewDataListQuery,
   useGetEdgeSdLanViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
@@ -13,9 +12,6 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeClsuterProfileTypeEnum,
-  EdgeClusterService,
-  EdgeClusterStatus,
   filterByAccessForServicePolicyMutation,
   getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
@@ -46,8 +42,6 @@ const TunnelProfileTable = () => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE)
-  const { deleteTunnelProfileOperation } = useTunnelProfileActions()
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -107,58 +101,7 @@ const TunnelProfileTable = () => {
     })
   })
 
-  const { clusterServiceData } = useGetEdgeClusterServiceListQuery({
-    payload: {
-      fields: [
-        'serviceId',
-        'edgeClusterId',
-        'serviceType'
-      ],
-      pageSize: 10000
-    } },
-  {
-    skip: !isEdgeL2greReady,
-    selectFromResult: ({ data }) => {
-      return {
-        clusterServiceData: data?.data
-          .filter(item => item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)
-      }
-    }
-  })
-
-  const { clusterData } = useGetEdgeClusterListQuery({ payload: {
-    fields: [
-      'name',
-      'venueId',
-      'clusterId',
-      'clusterStatus',
-      'firmwareVersion'
-    ],
-    pageSize: 10000
-  } },
-  {
-    skip: !isEdgeL2greReady,
-    selectFromResult: ({ data }) => {
-      return {
-        clusterData: data?.data
-      }
-    }
-  })
-
-  const combineServiceAndClusterData = (
-    clusterData: EdgeClusterStatus[] | undefined,
-    clusterServiceData: EdgeClusterService[] | undefined
-  ) => {
-    return clusterData?.map((cluster) => {
-      // eslint-disable-next-line max-len
-      const service = clusterServiceData?.find((service) => service.edgeClusterId === cluster.clusterId)
-      return {
-        serviceId: service?.serviceId,
-        venueId: cluster?.venueId,
-        clusterId: cluster?.clusterId
-      }
-    })
-  }
+  const [deleteTunnelProfile] = useDeleteTunnelProfileMutation()
 
   const columns: TableProps<TunnelProfileViewData>['columns'] = [
     {
@@ -290,8 +233,7 @@ const TunnelProfileTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            // eslint-disable-next-line max-len
-            Promise.all(rows.map(row => deleteTunnelProfileOperation(row.id, combineServiceAndClusterData(clusterData, clusterServiceData))))
+            Promise.all(rows.map(row => deleteTunnelProfile({ params: { id: row.id } })))
               .then(clearSelection)
           }
         })
