@@ -315,7 +315,12 @@ export const updateSwitchModel = (
   selectedVlan: VlanPortMap,
   existingModule: SwitchModel
 ) => {
-  if (model.id !== existingModule.id) return model
+  const isModelEqual = model.model === existingModule.model
+  const sortedModelSlots = _.sortBy(model.slots, 'slotNumber')
+  const sortedExistingModuleSlots = _.sortBy(existingModule.slots, 'slotNumber')
+  const isModuleEqual = _.isEqual(sortedModelSlots, sortedExistingModuleSlots)
+
+  if (!(isModelEqual && isModuleEqual)) return model
 
   const updatedTagged = _.difference(
     model.taggedPorts?.split(','), selectedVlan.taggedPorts?.split(',')).toString()
