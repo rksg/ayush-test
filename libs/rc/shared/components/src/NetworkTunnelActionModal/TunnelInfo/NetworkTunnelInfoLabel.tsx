@@ -14,7 +14,7 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
 import { NetworkTunnelTypeEnum }                          from '../types'
-import { SoftGreNetworkTunnel }                           from '../useSoftGreTunnelActions'
+import { IpSecInfo, SoftGreNetworkTunnel }                from '../useSoftGreTunnelActions'
 import { getNetworkTunnelType, getTunnelTypeDisplayText } from '../utils'
 
 import { StyledTunnelInfoLabel } from './styledComponents'
@@ -25,23 +25,38 @@ interface NetworkTunnelInfoLabelProps {
   venueSdLan?: EdgeMvSdLanViewData,
   venueSoftGre?: SoftGreNetworkTunnel,
   venuePin?: PersonalIdentityNetworksViewData
+  venueIpSec?: IpSecInfo
 }
 
 export const NetworkTunnelInfoLabel = (props: NetworkTunnelInfoLabelProps) => {
   const { $t } = useIntl()
-  const { network, isVenueActivated, venueSdLan, venueSoftGre, venuePin } = props
+  const { network, isVenueActivated, venueSdLan, venueSoftGre, venuePin, venueIpSec } = props
   // eslint-disable-next-line max-len
   const tunnelType = getNetworkTunnelType(network, venueSoftGre ? [venueSoftGre] : undefined, venueSdLan, venuePin)
 
   if (!isVenueActivated || tunnelType === NetworkTunnelTypeEnum.None)
     return null
 
-  return <StyledTunnelInfoLabel>
-    {$t({ defaultMessage: '{tunnelType} ({profileName})' },
-      {
-        tunnelType: getTunnelTypeDisplayText(tunnelType),
-        profileName: getProfileDetailLink(tunnelType, venueSdLan || venuePin || venueSoftGre)
-      })}</StyledTunnelInfoLabel>
+  return venueIpSec?.profileId ?
+    <StyledTunnelInfoLabel>
+      {$t({ defaultMessage: '{tunnelType} ({profileName}, IPSec {ipsecProfileName})' },
+        {
+          tunnelType: getTunnelTypeDisplayText(tunnelType),
+          profileName: getProfileDetailLink(tunnelType, venueSdLan || venuePin || venueSoftGre),
+          ipsecProfileName: <TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.IPSEC,
+            oper: PolicyOperation.DETAIL,
+            policyId: venueIpSec.profileId!
+          })}>
+            {venueIpSec.profileName}
+          </TenantLink>
+        })}</StyledTunnelInfoLabel>
+    : <StyledTunnelInfoLabel>
+      {$t({ defaultMessage: '{tunnelType} ({profileName})' },
+        {
+          tunnelType: getTunnelTypeDisplayText(tunnelType),
+          profileName: getProfileDetailLink(tunnelType, venueSdLan || venuePin || venueSoftGre)
+        })}</StyledTunnelInfoLabel>
 }
 
 const getProfileDetailLink = (

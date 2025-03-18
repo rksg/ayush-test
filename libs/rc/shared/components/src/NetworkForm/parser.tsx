@@ -513,7 +513,8 @@ export function updateClientIsolationAllowlist (data: NetworkSaveData): NetworkS
 
   let updatedVenues
 
-  if (clientIsolationEnabled && clientIsolationAllowlistEnabled) {
+  if (clientIsolationEnabled &&
+    (clientIsolationAllowlistEnabled || clientIsolationAllowlistEnabled === undefined)) {
     updatedVenues = updateVenueClientIsolationAllowlist(data.venues, clientIsolationVenues)
   } else {
     updatedVenues = cleanClientIsolationAllowlistId(data.venues)

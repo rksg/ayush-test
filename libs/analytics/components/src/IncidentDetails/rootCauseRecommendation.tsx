@@ -118,6 +118,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-apserv-downtime-high': 'ap-sz-conn-failure',
   'i-switch-vlan-mismatch': 'vlan-mismatch',
   'i-switch-loop-detection': 'loop-detection',
+  'i-switch-lldp-status': 'lldp-status',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
@@ -1214,6 +1215,20 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for the affected VLAN. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
+      })
+    }
+  },
+  'lldp-status': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>This incident is potentially triggered due to LLDP being detected as disabled on a device . LLDP is essential for AI as it enables devices to share information about themselves and their neighbors, allowing for accurate network mapping and management. LLDP may be disabled either intentionally by a user or due to a configuration change, which results in a lack of visibility into neighboring devices and their configurations. This can hinder the detection of network issues, such as configuration mismatches, VLAN inconsistencies, and topology changes.</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>Enable LLDP on the affected device to restore proper network visibility and functionality, especially for AI. This will ensure that neighboring device details are accurately captured and analyzed, facilitating better network management and enabling the detection of potential incidents.</p>
+<ul>
+  <li>If LLDP is disabled globally or at the port level, enable it accordingly also if LLDP is in transmit-only mode or receive-only mode, configure it to enable both transmit and receive.</li>
+  <li>If the maximum LLDP neighbor limit is reached, increase the neighbor limit to accommodate additional devices or reconfigure the scale as needed.</li>
+</ul>`
       })
     }
   },

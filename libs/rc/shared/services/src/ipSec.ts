@@ -55,8 +55,8 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
             'AddIpsecProfile',
             'UpdateIpsecProfile',
             'DeleteIpsecProfile',
-            'ActivateIpsecProfileOnVenueWifiNetwork',
-            'DeactivateIpsecProfileOnVenueWifiNetwork'
+            'ActivateSoftGreIpsecProfileOnVenueWifiNetwork',
+            'DeactivateSoftGreIpsecProfileOnVenueWifiNetwork'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(
@@ -126,8 +126,6 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
             }
           }
         })
-
-        if(networkIds.length === 0 && apSerialNumbers.length === 0) return emptyResponse
 
         // Collect network names by ids
         const networkIdsSet = Array.from(new Set(networkIds))

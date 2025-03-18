@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
-import { ReactElement }       from 'react'
+import React, { useCallback, useMemo } from 'react'
+import { ReactElement }                from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
@@ -9,8 +9,8 @@ import { useNavigate }                                                          
 import { getIntl  }                                                                          from '@acx-ui/utils'
 
 import { useSaveStorageMutation, useGetStorageQuery } from './services'
+import { AzureConnectionType }                        from './types'
 import { generateBreadcrumb }                         from './utils'
-
 
 export const StorageOptions = [
   { value: 'azure', label: 'Azure' },
@@ -21,7 +21,8 @@ export const StorageOptions = [
 type CloudStorageFormProps = {
   editMode?: boolean
 }
-const getStorageMap = () => {
+
+const getStorageMap = (azureConnectionType: AzureConnectionType) => {
   const { $t } = getIntl()
   return {
     azure: [
@@ -32,11 +33,11 @@ const getStorageMap = () => {
           <Select
             options={[
               {
-                value: 'azureFiles',
+                value: AzureConnectionType.Files,
                 label: $t({ defaultMessage: 'Azure Files' })
               },
               {
-                value: 'azureBlob',
+                value: AzureConnectionType.Blob,
                 label: $t({ defaultMessage: 'Azure Blob' })
               }
             ]}
@@ -53,16 +54,22 @@ const getStorageMap = () => {
         name: $t({ defaultMessage: 'Azure account key' }),
         component: <Input data-testid='azureAccountKey' />
       },
-      {
-        id: 'azureShareName',
-        name: $t({ defaultMessage: 'Azure share name' }),
-        component: <Input data-testid='azureShareName' />
-      },
-      {
-        id: 'azureCustomerName',
-        name: $t({ defaultMessage: 'Azure customer name' }),
-        component: <Input data-testid='azureCustomerName' />
-      },
+      ...(azureConnectionType === AzureConnectionType.Files
+        ? [{
+          id: 'azureShareName',
+          name: $t({ defaultMessage: 'Azure share name' }),
+          component: <Input data-testid='azureShareName' />
+        }]
+        : []
+      ),
+      ...(azureConnectionType === AzureConnectionType.Blob
+        ? [{
+          id: 'azureContainerName',
+          name: $t({ defaultMessage: 'Azure container name' }),
+          component: <Input data-testid='azureContainerName' />
+        }]
+        : []
+      ),
       {
         id: 'azureStoragePath',
         name: $t({ defaultMessage: 'Azure storage path' }),
@@ -134,10 +141,11 @@ const getStorageMap = () => {
 const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const storageMap = getStorageMap()
+  const [form] = Form.useForm()
+  const azureConnectionType = Form.useWatch('azureConnectionType', form)
+  const storageMap = useMemo(() => getStorageMap(azureConnectionType), [azureConnectionType])
   const storage = useGetStorageQuery({}, { skip: !editMode })
   const selectedCloudStorage = storage.data?.config
-  const [form] = Form.useForm()
   const selectedConnectionType: string = Form.useWatch('connectionType', form)
   const connectionType = selectedConnectionType || selectedCloudStorage?.connectionType
   const [updateStorage, { isLoading }] = useSaveStorageMutation()

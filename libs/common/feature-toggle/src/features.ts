@@ -26,6 +26,7 @@ export enum Features {
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
+  CONFIG_TEMPLATE_ENFORCED_P1 = 'acx-ui-config-template-enforcement-phase1',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
@@ -66,6 +67,7 @@ export enum Features {
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
+  EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -94,6 +96,7 @@ export enum Features {
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
   INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
   INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'acx-ui-loop-detection-toggle',
+  INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'acx-ui-lldp-status-toggle',
   INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'acx-ui-port-congestion-toggle',
   INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'acx-ui-uplink-port-congestion-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
@@ -147,6 +150,7 @@ export enum Features {
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE = 'ruckus-ai-lldp-status-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'ruckus-ai-port-congestion-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'ruckus-ai-uplink-port-congestion-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
@@ -279,6 +283,7 @@ export enum Features {
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
   ACX_UI_DATE_RANGE_RESET_MSG ='acx-ui-date-range-event-limit-90-days-toggle',
+  ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT ='acx-ui-historical-clients-date-range-limit-90-days-toggle',
   VENUE_TABLE_ADD_STATUS_COLUMN = 'acx-ui-venue-table-add-status-column-toggle',
   NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
@@ -304,6 +309,7 @@ export enum Features {
   SWITCH_ERROR_DISABLE_RECOVERY_TOGGLE = 'switch-error-disable-recovery-toggle',
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
+  RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
   WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle'
 }
 

@@ -192,7 +192,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -656,7 +655,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: exportCsv
         } : undefined}
-        filterPersistence={enabledUXOptFeature}
+        filterPersistence={true}
       />
       <SwitchCliSession
         modalState={cliModalState}

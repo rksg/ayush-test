@@ -7,6 +7,7 @@ import { usePathBasedOnConfigTemplate }                             from '@acx-u
 import { useVenueDetailsHeaderQuery }                               from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  PropertyUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader,
@@ -43,8 +44,10 @@ function DatePicker () {
 function VenuePageHeader () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { tenantId, venueId, activeTab } = useParams()
-  const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
+  const { tenantId, venueId, activeTab, activeSubTab, categoryTab } = useParams()
+  const isWifiReportView = (activeSubTab === 'wifi' && categoryTab === 'overview')
+  // eslint-disable-next-line max-len
+  const enableTimeFilter = () => !['clients', 'networks', 'services', 'units'].includes(activeTab as string)
 
   const { data } = useVenueDetailsHeaderQuery({
     params: { tenantId, venueId },
@@ -67,13 +70,16 @@ function VenuePageHeader () {
       title={data?.venue?.name || ''}
       breadcrumb={breadcrumb}
       extra={[
-        enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
+        // eslint-disable-next-line max-len
+        enableTimeFilter() || isWifiReportView ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
           rbacOpsIds={[
             getOpsApi(CommonUrlsInfo.updateVenue),
             getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>

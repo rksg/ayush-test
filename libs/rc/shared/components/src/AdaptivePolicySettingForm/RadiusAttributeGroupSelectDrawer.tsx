@@ -7,12 +7,14 @@ import { Card, Descriptions, Drawer, Loader, Table, TableProps } from '@acx-ui/c
 import { useRadiusAttributeGroupListByQueryQuery }               from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
-  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, PolicyOperation, PolicyType,
+  filterByAccessForServicePolicyMutation, getPolicyAllowedOperation, getScopeKeyByPolicy,
+  PolicyOperation, PolicyType,
   RadiusAttributeGroup,
   useTableQuery
 } from '@acx-ui/rc/utils'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
+
 
 interface RadiusAttributeDrawerProps {
   visible: boolean
@@ -143,6 +145,8 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             actions={filterByAccessForServicePolicyMutation([{
               // eslint-disable-next-line max-len
               scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
+              // eslint-disable-next-line max-len
+              rbacOpsIds: getPolicyAllowedOperation(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
               label: $t({ defaultMessage: 'Add Group' }),
               onClick: () => {
                 setRadiusAttributeGroupFormDrawerVisible(true)
