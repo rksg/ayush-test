@@ -292,6 +292,7 @@ export const AlarmsTable = (props: AlarmsTableProps) => {
       title: $t({ defaultMessage: 'Cleared By' }),
       key: 'clearedBy',
       dataIndex: 'clearedBy',
+      sorter: true,
       width: 100,
       render: function (_, row) {
         return (<UI.ListItem>
