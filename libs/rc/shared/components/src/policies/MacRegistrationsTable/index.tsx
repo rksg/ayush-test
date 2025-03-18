@@ -32,12 +32,13 @@ import { MacAddressDrawer }                                from '../MacRegistrat
 interface MacRegistrationTableProps {
   tableQuery: TableQuery<MacRegistration, RequestPayload, unknown>,
   policyId: string,
+  defaultIdentityId?: string,
   settingsId?: string
 }
 
 export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const { $t } = useIntl()
-  const { policyId, tableQuery, settingsId } = props
+  const { policyId, tableQuery, defaultIdentityId, settingsId } = props
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
@@ -257,7 +258,7 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
         identityGroupId={macRegistrationListQuery?.data?.identityGroupId}
-        defaultIdentityId={macRegistrationListQuery?.data?.identityId}
+        defaultIdentityId={macRegistrationListQuery?.data?.identityId ?? defaultIdentityId}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.DPSK}
