@@ -100,7 +100,6 @@ export const checkIfModuleFixed = (family: string, model: string): {
   enableSlot2?: boolean,
   enableSlot3?: boolean
 } => {
-  if (!family) return {}
   if (family === 'ICX7550') {
     return {
       moduleSelectionEnable: true,
