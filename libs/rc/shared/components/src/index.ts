@@ -147,8 +147,6 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
-export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
-export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
 export { EdgeHaSettingsForm } from './EdgeFormItem/EdgeHaSettingsForm'
 export type { EdgeHaSettingsFormType } from './EdgeFormItem/EdgeHaSettingsForm'
 export {
@@ -288,7 +286,6 @@ export type {
 } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
-export { EditContext } from './EdgeFormItem/EdgeEditContext'
 export type { EditEdgeFormControlType, EditEdgeContextType } from './EdgeFormItem/EdgeEditContext'
 export {
   getFieldFullPath,
