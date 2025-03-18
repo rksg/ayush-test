@@ -10,9 +10,8 @@ import { useIntl }             from 'react-intl'
 import { Loader, NoData, StepsForm } from '@acx-ui/components'
 import {
   EdgePortConfigFormType,
-  EdgePortTabEnum,
   EdgePortsGeneralBase,
-  EditContext,
+  EdgeEditContext,
   getFieldFullPath,
   transformApiDataToFormListData,
   useGetEdgeSdLanByEdgeOrClusterId
@@ -38,7 +37,7 @@ const Ports = () => {
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const [activeTab, setActiveTab] = useState<string>()
-  const editEdgeContext = useContext(EditContext)
+  const editEdgeContext = useContext(EdgeEditContext.EditContext)
   const {
     clusterInfo, portData, portStatus,
     lagData, isFetching, isCluster, clusterConfig
@@ -74,7 +73,7 @@ const Ports = () => {
     const formData = flatMap(form.getFieldsValue(true))
 
     editEdgeContext.setActiveSubTab({
-      key: EdgePortTabEnum.PORTS_GENERAL,
+      key: EdgeEditContext.EdgePortTabEnum.PORTS_GENERAL,
       title: $t({ defaultMessage: 'Ports General' })
     })
 
