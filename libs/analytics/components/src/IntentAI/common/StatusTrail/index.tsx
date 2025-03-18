@@ -59,12 +59,14 @@ export const StatusTrail = () => {
                 : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
             </div>
           ))}
-          {shouldShowLimitedText ? <FormattedMessage
-            defaultMessage={`
+          {shouldShowLimitedText ? <UI.FootnoteWrapper>
+            <FormattedMessage
+              defaultMessage={`
             <i>Limited to the most recent {days, plural, one {# day} other {# days}} of status.</i>
             `}
-            values={{ ...richTextFormatValues, days: coldTierDays }}
-          /> : null}
+              values={{ ...richTextFormatValues, days: coldTierDays }}
+            />
+          </UI.FootnoteWrapper> : null}
         </UI.Wrapper>
       </Card>
     </Loader>
