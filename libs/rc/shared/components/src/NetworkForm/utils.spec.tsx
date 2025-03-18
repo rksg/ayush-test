@@ -5,34 +5,41 @@ import { rest }         from 'msw'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { networkApi, policyApi, softGreApi }                      from '@acx-ui/rc/services'
 import {
+  AaaUrls,
   ClientIsolationUrls,
+  ConfigTemplateContext,
   ConfigTemplateType,
   DpskWlanAdvancedCustomization,
   GuestNetworkTypeEnum,
   NetworkSaveData,
+  NetworkSegmentTypeEnum,
   NetworkTypeEnum,
+  NetworkVenue,
   RadioEnum,
+  ServicesConfigTemplateUrlsInfo,
+  SoftGreUrls,
   TunnelProfileUrls,
-  TunnelTypeEnum,
-  WifiUrlsInfo,
   WifiCallingUrls,
   WifiRbacUrlsInfo,
-  ServicesConfigTemplateUrlsInfo,
-  ConfigTemplateContext,
-  AaaUrls,
-  NetworkVenue,
-  SoftGreUrls
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import {
-  hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations,
-  useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
-  useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings,
-  shouldSaveRadiusServerProfile, getRadiusIdFromFormData, hasRadiusProfileInFormData,
   deriveWISPrFieldsFromServerData,
-  isShowDynamicVlan
+  getDefaultMloOptions,
+  getRadiusIdFromFormData,
+  hasAccountingRadius, hasAuthRadius,
+  hasRadiusProfileInFormData,
+  hasVxLanTunnelProfile,
+  isShowDynamicVlan,
+  shouldSaveRadiusServerProfile,
+  shouldSaveRadiusServerSettings,
+  useClientIsolationActivations,
+  useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
+  useUpdateSoftGreActivations,
+  useWifiCalling
 } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
@@ -311,7 +318,7 @@ describe('Network utils test', () => {
                 personalIdentityNetworkIds: ['mocked_pin_1'],
                 sdLanIds: [],
                 networkIds: ['mocked_network_1'],
-                type: TunnelTypeEnum.VXLAN
+                type: NetworkSegmentTypeEnum.VXLAN
               }, {
                 id: 'mocked_tunnel_2',
                 name: 'tunnelProfile2',
@@ -321,7 +328,7 @@ describe('Network utils test', () => {
                 personalIdentityNetworkIds: [],
                 sdLanIds: ['mocked_sdlan_1'],
                 networkIds: ['mocked_network_1'],
-                type: TunnelTypeEnum.VLAN_VXLAN
+                type: NetworkSegmentTypeEnum.VLAN_VXLAN
               }]
             }))
           }

@@ -142,15 +142,21 @@ function SettingsForm () {
   },[data])
 
   useEffect(()=>{
-    supportRadsec && form.setFieldsValue({ ...data, wlanSecurity: dpskWlanSecurity })
-  },[data?.id, data?.wlanSecurity, dpskWlanSecurity])
+    supportRadsec && form.setFieldsValue({ ...data })
+  },[data?.id])
 
   useEffect(() => {
     if (!isSupportDpsk3NonProxyMode && dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed)
       form.setFieldValue('isCloudpathEnabled', false)
 
     handleDpsk3NonProxyMode(dpskWlanSecurity, isCloudpathEnabled)
+
   }, [dpskWlanSecurity, isCloudpathEnabled])
+
+  useEffect(() => {
+    form.setFieldValue('wlanSecurity', dpskWlanSecurity)
+    form.setFieldValue(['wlan', 'wlanSecurity'], dpskWlanSecurity)
+  }, [dpskWlanSecurity])
 
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)

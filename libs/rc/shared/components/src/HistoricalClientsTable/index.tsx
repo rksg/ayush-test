@@ -1,21 +1,34 @@
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useState } from 'react'
 
 import { Typography } from 'antd'
 import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
-import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
+import {
+  cssStr,
+  Subtitle,
+  RangePicker,
+  Table,
+  TableProps,
+  Loader
+} from '@acx-ui/components'
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }       from '@acx-ui/formatter'
+import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
   Client,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
-import { RequestPayload }                         from '@acx-ui/types'
-import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
+import { TenantLink, useParams }      from '@acx-ui/react-router-dom'
+import { RequestPayload }             from '@acx-ui/types'
+import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { encodeParameter,
+  getDatePickerValues,
+  getDateRangeFilter,
+  DateFilter,
+  DateRange
+} from '@acx-ui/utils'
 
 function GetCols (intl: ReturnType<typeof useIntl>) {
   const { networkId } = useParams()
@@ -125,15 +138,24 @@ memo(({ searchString, setHistoricalClientCount } :
   }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
+  const showDatePicker = useIsSplitOn(Features.ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT)
+
+  const [dateFilter, setDateFilter] = useState<DateFilter>(
+    getDateRangeFilter(DateRange.last24Hours)
+  )
+  const { startDate, endDate, range } = getDatePickerValues(dateFilter)
+
+  const filters = showDatePicker ? { ...defaultFilters, dateFilter } : defaultFilters
 
   defaultHistoricalClientPayload.searchString = searchString
   defaultHistoricalClientPayload.filters =
-    params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
-      params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
-        params.apId ? { ...defaultFilters, serialNumber: [params.apId] } :
-          params.networkId ? { ...defaultFilters, networkId: [params.networkId] } :
-            defaultFilters
+    params.venueId ? { ...filters, venueId: [params.venueId] } :
+      params.serialNumber ? { ...filters, serialNumber: [params.serialNumber] } :
+        params.apId ? { ...filters, serialNumber: [params.apId] } :
+          params.networkId ? { ...filters, networkId: [params.networkId] } :
+            filters
 
   const HistoricalClientsTable = () => {
     const settingsId = 'historical-clients-table'
@@ -142,6 +164,14 @@ memo(({ searchString, setHistoricalClientCount } :
       defaultPayload: defaultHistoricalClientPayload,
       pagination: { settingsId }
     })
+
+    useEffect(
+      () => tableQuery.setPayload({
+        ...tableQuery.payload,
+        filters: { ...(tableQuery.payload.filters as object), ...filters }
+      }),
+      [dateFilter]
+    )
 
     useEffect(() => {
       if (tableQuery.data?.data) {
@@ -157,6 +187,19 @@ memo(({ searchString, setHistoricalClientCount } :
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
+          { showDatePicker &&
+            <div style={{ textAlign: 'right' }}>
+              <RangePicker
+                key={getShowWithoutRbacCheckKey('range-picker')}
+                selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+                onDateApply={setDateFilter as CallableFunction}
+                showTimePicker
+                selectionType={range}
+                allowedMonthRange={showResetMsg ? 3 : undefined}
+                maxMonthRange={isDateRangeLimit ? 1 : 3}
+              />
+            </div>
+          }
           <Table
             settingsId={settingsId}
             columns={GetCols(useIntl())}
@@ -164,7 +207,7 @@ memo(({ searchString, setHistoricalClientCount } :
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
-            filterPersistence={enabledUXOptFeature}
+            filterPersistence={true}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',
