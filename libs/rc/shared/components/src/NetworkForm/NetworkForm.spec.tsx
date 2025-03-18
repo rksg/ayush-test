@@ -65,6 +65,9 @@ jest.mock('./Venues/TunnelColumn/useTunnelColumn', () => ({
   useTunnelColumn: jest.fn().mockReturnValue([])
 }))
 
+jest.mock('./NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
 describe('NetworkForm', () => {
 
   beforeEach(() => {
@@ -76,7 +79,9 @@ describe('NetworkForm', () => {
 
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation((ff) => (
-      ff !== Features.RBAC_SERVICE_POLICY_TOGGLE && ff !== Features.WIFI_RBAC_API
+      ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
+       && ff !== Features.WIFI_RBAC_API
+       && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
     ))
 
     networkDeepResponse.name = 'open network test'
