@@ -106,32 +106,38 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   getResidentPortalList: {
     method: 'get',
     newApi: true,
-    url: `/residentPortals${paginationParams}`
+    url: `/residentPortals${paginationParams}`,
+    opsApi: 'GET:/residentPortals'
   },
   getResidentPortalsQuery: {
     method: 'post',
     newApi: true,
-    url: '/residentPortals/query'
+    url: '/residentPortals/query',
+    opsApi: 'POST:/residentPortals/query'
   },
   addResidentPortal: {
     method: 'post',
     newApi: true,
-    url: '/residentPortals'
+    url: '/residentPortals',
+    opsApi: 'POST:/residentPortals'
   },
   getResidentPortal: {
     method: 'get',
     newApi: true,
-    url: '/residentPortals/:serviceId'
+    url: '/residentPortals/:serviceId',
+    opsApi: 'GET:/residentPortals/{id}'
   },
   patchResidentPortal: {
     method: 'PATCH',
     newApi: true,
-    url: '/residentPortals/:serviceId'
+    url: '/residentPortals/:serviceId',
+    opsApi: 'PATCH:/residentPortals/{id}'
   },
   deleteResidentPortals: {
     method: 'DELETE',
     newApi: true,
-    url: '/residentPortals'
+    url: '/residentPortals',
+    opsApi: 'DELETE:/residentPortals'
   },
   getResidentPortalLogo: {
     method: 'get',
@@ -146,12 +152,14 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   deleteResidentPortalLogo: {
     method: 'delete',
     newApi: true,
-    url: '/residentPortals/:serviceId/files/logo'
+    url: '/residentPortals/:serviceId/files/logo',
+    opsApi: 'DELETE:/residentPortals/{id}/files/{id}'
   },
   deleteResidentPortalFavicon: {
     method: 'delete',
     newApi: true,
-    url: '/residentPortals/:serviceId/files/favIcon'
+    url: '/residentPortals/:serviceId/files/favIcon',
+    opsApi: 'DELETE:/residentPortals/{id}/files/{id}'
   },
   bulkUpdateUnitProfile: {
     method: 'put',
