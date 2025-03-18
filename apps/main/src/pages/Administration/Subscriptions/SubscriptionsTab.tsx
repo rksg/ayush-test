@@ -13,7 +13,6 @@ import { useNavigate, useParams, useTenantLink }                                
 import { hasAllowedOperations, useGetAccountTierQuery }                              from '@acx-ui/user'
 import { AccountTier, AccountType, getJwtTokenPayload, getOpsApi, isDelegationMode } from '@acx-ui/utils'
 
-import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 // import MySubscriptions            from './MySubscriptions'
 import { RbacSubscriptionsTabHeader } from './RbacSubscriptionsTabHeader'
 import { RbacSubscriptionTable }      from './RbacSubscriptionTable'
@@ -86,7 +85,6 @@ export const SubscriptionTabs = (props: { tenantType: string }) => {
             }}
           />
         </Typography.Text>
-        <ConvertNonVARMSPButton />
       </SpaceWrapper>
       <Tabs
         defaultActiveKey='users'
