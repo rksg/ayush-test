@@ -156,7 +156,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             ? await fetchWithBQ({
               ...createHttpRequest(switchUrls.getSwitchMemberList, arg.params, headers),
               body: JSON.stringify({
-                pageSize: 9999,
+                pageSize: stackActiveSerials.length,
                 filters: {
                   activeSerial: stackActiveSerials
                 }
