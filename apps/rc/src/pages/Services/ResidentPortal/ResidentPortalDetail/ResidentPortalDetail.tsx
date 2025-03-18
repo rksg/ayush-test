@@ -5,16 +5,17 @@ import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }    from '@acx-ui/components'
-import { loadResidentPortalFavIcon, loadResidentPortalLogo, isValidColorHex } from '@acx-ui/rc/components'
+import { isValidColorHex, loadResidentPortalFavIcon, loadResidentPortalLogo } from '@acx-ui/rc/components'
 import { useGetResidentPortalQuery }                                          from '@acx-ui/rc/services'
 import {
-  ServiceOperation,
-  ServiceType,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -172,6 +173,10 @@ export default function ResidentPortalDetail () {
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
           })}
+          rbacOpsIds={getServiceAllowedOperation(
+            ServiceType.RESIDENT_PORTAL,
+            ServiceOperation.EDIT
+          )}
           scopeKey={getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.EDIT)}>
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
