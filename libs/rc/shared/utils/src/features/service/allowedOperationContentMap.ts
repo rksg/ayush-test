@@ -5,6 +5,7 @@ import { ServiceOperation, ServiceType } from '../../constants'
 import { PolicyOperation, PolicyType }   from '../../types'
 import {
   ApSnmpRbacUrls,
+  CertificateUrls,
   DirectoryServerUrls,
   EdgeDhcpUrls,
   EdgeHqosProfilesUrls,
@@ -15,7 +16,10 @@ import {
   IdentityProviderUrls,
   IpsecUrls,
   LbsServerProfileUrls,
-  MacRegListUrlsInfo, RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo,
+  MacRegListUrlsInfo,
+  PropertyUrlsInfo,
+  RadiusAttributeGroupUrlsInfo,
+  RulesManagementUrlsInfo,
   SoftGreUrls,
   SwitchUrlsInfo,
   TunnelProfileUrls,
@@ -88,6 +92,12 @@ export const serviceAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(EdgePinUrls.updateWebAuthTemplate)],
     [PolicyOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteWebAuthTemplate)],
     [PolicyOperation.LIST]: [getOpsApi(EdgePinUrls.getWebAuthTemplateList)]
+  },
+  [ServiceType.RESIDENT_PORTAL]: {
+    [ServiceOperation.CREATE]: [getOpsApi(PropertyUrlsInfo.addResidentPortal)],
+    [ServiceOperation.EDIT]: [getOpsApi(PropertyUrlsInfo.patchResidentPortal)],
+    [ServiceOperation.DELETE]: [getOpsApi(PropertyUrlsInfo.deleteResidentPortals)],
+    [ServiceOperation.LIST]: [getOpsApi(PropertyUrlsInfo.getResidentPortalsQuery)]
   }
 }
 
@@ -235,6 +245,28 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(MacRegListUrlsInfo.updateMacRegistrationPool)],
     [PolicyOperation.DELETE]: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrationPool)],
     [PolicyOperation.LIST]: [getOpsApi(MacRegListUrlsInfo.getMacRegistrationPools)]
+  },
+  [PolicyType.CERTIFICATE_TEMPLATE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.addCertificateTemplate)],
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificateTemplate)],
+    [PolicyOperation.DELETE]: [getOpsApi(CertificateUrls.deleteCertificateTemplate)],
+    [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateTemplates)]
+  },
+  [PolicyType.CERTIFICATE_AUTHORITY]: {
+    /* eslint-disable max-len */
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.addCA), getOpsApi(CertificateUrls.addSubCA), getOpsApi(CertificateUrls.uploadCAPrivateKey)],
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCA)],
+    /* eslint-disable max-len */
+    [PolicyOperation.DELETE]: [getOpsApi(CertificateUrls.deleteCA), getOpsApi(CertificateUrls.deleteCAPrivateKey)],
+    [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCAs), getOpsApi(CertificateUrls.getSubCAs)]
+  },
+  [PolicyType.CERTIFICATE]: {
+    /* eslint-disable max-len */
+    [PolicyOperation.CREATE]: [getOpsApi(CertificateUrls.generateCertificate), getOpsApi(CertificateUrls.generateCertificatesToIdentity), getOpsApi(CertificateUrls.uploadCertificate), getOpsApi(CertificateUrls.generateClientServerCertificate)],
+    /* eslint-disable max-len */
+    [PolicyOperation.EDIT]: [getOpsApi(CertificateUrls.editCertificate), getOpsApi(CertificateUrls.updateServerCertificate)],
+    [PolicyOperation.DELETE]: [],
+    [PolicyOperation.LIST]: [getOpsApi(CertificateUrls.getCertificateList)]
   },
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: {
     [PolicyOperation.CREATE]: [getOpsApi(RadiusAttributeGroupUrlsInfo.createAttributeGroup)],

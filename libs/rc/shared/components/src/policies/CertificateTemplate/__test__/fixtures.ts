@@ -599,14 +599,17 @@ export const mockPersonaGroupWithIdentity: PersonaGroup = {
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
   propertyId: 'propertyId-100',
-  certificateTemplateId: 'cert-template-1',
-  identities: [
-    {
-      id: 'b1d533e6-15b6-4168-8f5c-418198a7e3e7',
-      groupId: 'persona-group-id-1',
-      name: 'testccc-123'
-    }] as Persona[]
+  certificateTemplateId: 'cert-template-1'
 }
+
+export const mockPersonaList: Persona[] = [
+  {
+    id: 'b1d533e6-15b6-4168-8f5c-418198a7e3e7',
+    groupId: 'persona-group-id-1',
+    name: 'testccc-123',
+    revoked: false
+  }
+]
 
 export const serverCertificateList = {
   fields: null,
