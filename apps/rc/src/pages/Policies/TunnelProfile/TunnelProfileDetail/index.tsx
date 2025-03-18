@@ -16,11 +16,11 @@ import {
   getTunnelTypeString,
   mtuRequestTimeoutUnitConversion,
   MtuTypeEnum,
+  NetworkSegmentTypeEnum,
   PolicyOperation,
   PolicyType,
   transformDisplayOnOff,
-  TunnelProfileViewData,
-  TunnelTypeEnum
+  TunnelProfileViewData
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -64,7 +64,7 @@ const TunnelProfileDetail = () => {
     ...(isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN,
+        return getTunnelTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN,
           isEdgeVxLanKaReady)
       }
     }] : []),
@@ -114,7 +114,7 @@ const TunnelProfileDetail = () => {
     ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
+        return getTunnelTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
       }
     }] : []),
     ...(isEdgeVxLanKaReady ? [

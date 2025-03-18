@@ -2,8 +2,8 @@ import { IntlShape } from 'react-intl'
 
 import { getTenantId } from '@acx-ui/utils'
 
-import { AgeTimeUnit, MtuTypeEnum, TunnelTypeEnum, MtuRequestTimeoutUnit } from '../../models'
-import { TunnelProfile, TunnelProfileViewData, TunnelProfileFormType }     from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum } from '../../models'
+import { TunnelProfile, TunnelProfileFormType, TunnelProfileViewData }             from '../../types/policies/tunnelProfile'
 
 // eslint-disable-next-line max-len
 export const isDefaultTunnelProfile = (profile: TunnelProfileViewData | TunnelProfile | undefined) => {
@@ -40,7 +40,7 @@ export const getVlanVxlanDefaultTunnelProfileOpt = () => {
 
 export const getTunnelProfileOptsWithDefault = (
   profiles: TunnelProfileViewData[] | undefined,
-  targetType?: TunnelTypeEnum): { label: string, value: string }[] => {
+  targetType?: NetworkSegmentTypeEnum): { label: string, value: string }[] => {
   if (!profiles) return []
 
   const tenantId = getTenantId()
@@ -52,21 +52,21 @@ export const getTunnelProfileOptsWithDefault = (
   const vxlanDefault = getVxlanDefaultTunnelProfileOpt()
   const vlanVxLanDefault = getVlanVxlanDefaultTunnelProfileOpt()
 
-  if (vxLanProfile === -1 && (!targetType || targetType === TunnelTypeEnum.VXLAN))
+  if (vxLanProfile === -1 && (!targetType || targetType === NetworkSegmentTypeEnum.VXLAN))
     tunnelOpts.push(vxlanDefault)
 
-  if (vLanVxLanProfile === -1 && (!targetType || targetType === TunnelTypeEnum.VLAN_VXLAN))
+  if (vLanVxLanProfile === -1 && (!targetType || targetType === NetworkSegmentTypeEnum.VLAN_VXLAN))
     tunnelOpts.push(vlanVxLanDefault)
 
   return tunnelOpts
 }
 
-export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum,
+export const getTunnelTypeString = ($t: IntlShape['$t'], type: NetworkSegmentTypeEnum,
   isEdgeVxLanKaReady?: boolean) => {
   switch (type) {
-    case TunnelTypeEnum.VXLAN:
+    case NetworkSegmentTypeEnum.VXLAN:
       return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VNI' }) : $t({ defaultMessage: 'VxLAN' })
-    case TunnelTypeEnum.VLAN_VXLAN:
+    case NetworkSegmentTypeEnum.VLAN_VXLAN:
       return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VLAN to VNI map' })
         : $t({ defaultMessage: 'VLAN-VxLAN' })
 
@@ -76,11 +76,11 @@ export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum,
 }
 
 export const getTunnelTypeOptions = ($t: IntlShape['$t'])
-: Array<{ label: string, value: TunnelTypeEnum }> => {
-  return Object.keys(TunnelTypeEnum)
+: Array<{ label: string, value: NetworkSegmentTypeEnum }> => {
+  return Object.keys(NetworkSegmentTypeEnum)
     .map(key => ({
-      label: getTunnelTypeString($t, key as TunnelTypeEnum),
-      value: key as TunnelTypeEnum
+      label: getTunnelTypeString($t, key as NetworkSegmentTypeEnum),
+      value: key as NetworkSegmentTypeEnum
     }))
 }
 

@@ -12,7 +12,7 @@ export const diagramItemInfo = [{
   label: {
     id: 'identityLabel',
     text: defineMessage({ defaultMessage: 'Identity' }),
-    attr: { x: 15, y: 150 }
+    attr: { x: 13, y: 150 }
   }
 }, {
   id: 'network',
@@ -36,7 +36,7 @@ export const diagramItemInfo = [{
   label: {
     id: 'apLabel',
     text: defineMessage({ defaultMessage: 'AP' }),
-    attr: { x: 175, y: 150 }
+    attr: { x: 150, y: 150 }
   }
 }, {
   id: 'accessSwitch',

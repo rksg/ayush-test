@@ -17,11 +17,13 @@ import {
   useAllocatePersonaVniMutation,
   useGetConnectionMeteringByIdQuery,
   useGetEdgePinByIdQuery,
-  useGetPropertyUnitByIdQuery
+  useGetPropertyUnitByIdQuery,
+  useGetUnitsLinkedIdentitiesQuery
 } from '@acx-ui/rc/services'
 import { Persona, PersonaGroup, PersonaUrls } from '@acx-ui/rc/utils'
 import { hasAllowedOperations }               from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
+
 
 
 export function PersonaOverview (props:
@@ -34,18 +36,36 @@ export function PersonaOverview (props:
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const { data: pinData } = useGetEdgePinByIdQuery(
     { params: { serviceId: personaGroupData?.personalIdentityNetworkId } },
     { skip: !networkSegmentationEnabled || !personaGroupData?.personalIdentityNetworkId }
   )
+
+  const identities = useGetUnitsLinkedIdentitiesQuery(
+    {
+      params: { venueId: personaGroupData?.propertyId },
+      payload: {
+        pageSize: 1, page: 1, sortOrder: 'ASC',
+        filters: {
+          personaId: personaId
+        }
+      }
+    },
+    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits }
+  )
+
   const { data: unitData } = useGetPropertyUnitByIdQuery({
     params: {
       venueId: personaGroupData?.propertyId,
-      unitId: personaData?.identityId
+      unitId: personaData?.identityId ?? identities?.data?.data[0]?.unitId
     }
   },
-  { skip: !personaGroupData?.propertyId || !personaData?.identityId }
+  {
+    skip: !personaGroupData?.propertyId ||
+        (!personaData?.identityId && !identities?.data?.data[0]?.unitId)
+  }
   )
   const { data: connectionMetering } = useGetConnectionMeteringByIdQuery(
     { params: { id: personaData?.meteringProfileId } },
@@ -79,7 +99,7 @@ export function PersonaOverview (props:
             showNoData={true}
             name={unitData?.name}
             venueId={personaGroupData?.propertyId}
-            unitId={personaData?.identityId}
+            unitId={personaData?.identityId ?? unitData?.id}
           />
       }] : []
   ]

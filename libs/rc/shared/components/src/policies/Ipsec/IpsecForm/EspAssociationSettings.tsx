@@ -77,8 +77,12 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
     { label: $t({ defaultMessage: 'Custom' }), value: IpSecProposalTypeEnum.SPECIFIC }
   ]
 
-  const encryptionOptions = Object.entries(IpSecEncryptionAlgorithmEnum)
-    .map(([label, value]) => ({ label, value }))
+  const encryptionOptions = [
+    { label: $t({ defaultMessage: '3DES' }), value: IpSecEncryptionAlgorithmEnum.THREE_DES },
+    { label: $t({ defaultMessage: 'AES128' }), value: IpSecEncryptionAlgorithmEnum.AES128 },
+    { label: $t({ defaultMessage: 'AES192' }), value: IpSecEncryptionAlgorithmEnum.AES192 },
+    { label: $t({ defaultMessage: 'AES256' }), value: IpSecEncryptionAlgorithmEnum.AES256 }
+  ]
   const integrityOptions = Object.entries(IpSecIntegrityAlgorithmEnum)
     .map(([label, value]) => ({ label, value }))
   const dhGroupOptions = Object.entries(IpSecDhGroupEnum)

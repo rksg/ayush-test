@@ -9,7 +9,7 @@ import { mockServer, render, renderHook, screen, waitFor }                      
 import {
   certificateAuthorityList,
   certificateTemplateList,
-  mockPersonaGroupWithIdentity
+  mockPersonaGroupWithIdentity, mockPersonaList
 } from '../../__test__/fixtures'
 
 import { CertificateForm } from './CertificateForm'
@@ -46,6 +46,12 @@ describe('CertificateForm', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupWithIdentity))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({
+          content: mockPersonaList
+        }))
       )
     )
   })

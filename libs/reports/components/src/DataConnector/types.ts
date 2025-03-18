@@ -1,3 +1,5 @@
+import { MessageDescriptor } from 'react-intl'
+
 export type Response <T> = { data: T }
 
 export type DataQuotaUsage = {
@@ -5,12 +7,17 @@ export type DataQuotaUsage = {
     allowed: number
 }
 
+export enum AzureConnectionType {
+  Blob = 'azureBlob',
+  Files = 'azureFiles'
+}
+
 type AzureStoragePayload = {
-  azureConnectionType: string,
+  azureConnectionType: AzureConnectionType,
   azureAccountName: string,
   azureAccountKey: string,
   azureShareName: string,
-  azureCustomerName: string
+  azureContainerName: string
 }
 
 type FTPStoragePayload = {
@@ -50,6 +57,16 @@ export type StorageData = {
   id: string
 }
 
+type DataSource = { name: MessageDescriptor; value: string }
+export type DataSources = {
+  dataSource: DataSource,
+  cols: string[]
+} []
+
+export type DataSourceResult = {
+  dataSource: string,
+  columns: string[]
+}
 export type DataConnector = Omit<ConnectorPayload, 'id'> & {
   id: string
   status: boolean,

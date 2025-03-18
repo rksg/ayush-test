@@ -9,7 +9,8 @@ import {
   IpsecViewData,
   PolicyOperation,
   PolicyType,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -40,6 +41,7 @@ export default function IpsecDetail () {
         extra={
           params.policyId && filterByAccessForServicePolicyMutation([
             <TenantLink
+              rbacOpsIds={getPolicyAllowedOperation(PolicyType.IPSEC, PolicyOperation.EDIT)}
               scopeKey={getScopeKeyByPolicy(PolicyType.IPSEC, PolicyOperation.EDIT)}
               to={getPolicyDetailsLink({
                 type: PolicyType.IPSEC,
