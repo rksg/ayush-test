@@ -37,7 +37,6 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     description: 'Description 45',
     personalIdentityNetworkId: '856ae0a2-49eb-45be-bb2c-e72634fcac4f',
     createdAt: '2024-08-02T08:48:33.158904',
-    identities: [],
     identityCount: 7
   },
   {
@@ -67,7 +66,6 @@ export const mockPersonaGroupById: PersonaGroup = {
   description: 'Description 45',
   personalIdentityNetworkId: '856ae0a2-49eb-45be-bb2c-e72634fcac4f',
   createdAt: '2024-08-02T08:48:33.158904',
-  identities: [],
   identityCount: 7
 }
 
@@ -81,7 +79,7 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       id: 'persona-id-1',
       name: 'persona-name-1',
       groupId: 'persona-group-id-1',
-      meteringProfileId: null,
+      meteringProfileId: undefined,
       expirationEpoch: null,
       revoked: false
     },
@@ -89,7 +87,7 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       id: 'persona-id-2',
       name: 'persona-name-2',
       groupId: 'persona-group-id-1',
-      meteringProfileId: null,
+      meteringProfileId: undefined,
       expirationEpoch: null,
       revoked: false
     },
@@ -98,7 +96,7 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       name: 'persona-name-3',
       groupId: 'persona-group-id-1',
       identityId: 'persona-identity-id-1',
-      meteringProfileId: null,
+      meteringProfileId: undefined,
       expirationEpoch: null,
       revoked: false
     }
