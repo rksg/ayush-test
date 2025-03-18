@@ -724,7 +724,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'IMPORT_DPSK_PASSPHRASES',
             'CREATE_PASSPHRASE_DEVICES',
             'DELETE_PASSPHRASE_DEVICES',
-            'UpdatePersona'
+            'UpdatePersona' // for Identity details page > Block
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'DpskPassphrase', id: 'LIST' }

@@ -8,7 +8,9 @@ import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   doProfileDelete, getDisabledActionMessage,
-  useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
+  useDeleteMacRegistrationsMutation,
+  useDeletePersonaDevicesMutation,
+  useGetMacRegListQuery,
   useSearchPersonaListQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
@@ -22,7 +24,8 @@ import {
   toDateTimeString,
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
   PolicyType, PolicyOperation, IdentityDetailsLink, TableQuery,
-  MacRegListUrlsInfo
+  MacRegListUrlsInfo,
+  PersonaUrls
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 import { getOpsApi }      from '@acx-ui/utils'
@@ -39,7 +42,7 @@ interface MacRegistrationTableProps {
 
 export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const { $t } = useIntl()
-  const { personaId } = useParams()
+  const { personaGroupId, personaId } = useParams()
   const inIdentityPage = useMemo(() => personaId !== undefined, [personaId])
   const { policyId, tableQuery, defaultIdentityId, settingsId } = props
   const [visible, setVisible] = useState(false)
@@ -69,6 +72,21 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
     { isLoading: isDeleteMacRegistrationsUpdating }
   ] = useDeleteMacRegistrationsMutation()
 
+  const [
+    deletePersonaDevicesMutation,
+    { isLoading: isDeletePersonaDevicesUpdating }
+  ] = useDeletePersonaDevicesMutation()
+
+  const deleteMacRegistration = async (registration: MacRegistration) => {
+    return inIdentityPage
+      ? deletePersonaDevicesMutation({
+        params: { groupId: personaGroupId, id: personaId, macAddress: registration.macAddress }
+      })
+      : deleteMacRegistrations({
+        params: { policyId, registrationId: registration.id }, payload: [registration.id]
+      })
+  }
+
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
 
   const { data: identityList } = useSearchPersonaListQuery(
@@ -90,11 +108,13 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    disabled: ([selectedRow]) => !!selectedRow?.identityId,
-    tooltip: (selectedRow) => getDisabledActionMessage(
-      selectedRow,
-      [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
-      $t({ defaultMessage: 'delete' })),
+    disabled: ([selectedRow]) => !inIdentityPage && !!selectedRow?.identityId,
+    tooltip: (selectedRow) => (!inIdentityPage && !!selectedRow?.[0]?.identityId)
+      ? getDisabledActionMessage(
+        selectedRow,
+        [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
+        $t({ defaultMessage: 'delete' }))
+      : undefined,
     onClick: (selectedRows: MacRegistration[], clearSelection) => {
       doProfileDelete(
         selectedRows,
@@ -103,7 +123,7 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
         isIdentityRequired ? [] :
           [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
         // eslint-disable-next-line max-len
-        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
+        async () => deleteMacRegistration(selectedRows[0])
           .then(() => {
             clearSelection()
           }).catch((error) => {
@@ -112,7 +132,10 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
       )
     },
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
-    rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.deleteMacRegistrations)]
+    rbacOpsIds: [inIdentityPage
+      ? getOpsApi(PersonaUrls.deletePersonaDevices)
+      : getOpsApi(MacRegListUrlsInfo.deleteMacRegistrations)
+    ]
   },
   {
     label: $t({ defaultMessage: 'Revoke' }),
@@ -257,7 +280,10 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: false, isFetching: isDeleteMacRegistrationsUpdating }
+      {
+        isLoading: false,
+        isFetching: isDeleteMacRegistrationsUpdating || isDeletePersonaDevicesUpdating
+      }
     ]}>
       <MacAddressDrawer
         visible={visible}

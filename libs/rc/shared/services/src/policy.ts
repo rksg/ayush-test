@@ -1128,7 +1128,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UPDATE_REGISTRATION',
             'DELETE_REGISTRATION',
             'CREATE_DEVICE',
-            'UpdatePersona'
+            'UpdatePersona', // for Identity details page > Block.
+            'DeleteDevice' // for Identity Details page > Mac Tab > Delete.
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'MacRegistration', id: 'LIST' }
@@ -3595,7 +3596,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'GENERATE_CERT',
             'DELETE_CA',
             'DELETE_TEMPLATE',
-            'UpdatePersona'
+            'UpdatePersona' // for Identity details page > Block
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'Certificate', id: 'LIST' }
