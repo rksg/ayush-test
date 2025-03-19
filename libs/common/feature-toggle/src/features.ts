@@ -69,6 +69,7 @@ export enum Features {
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
+  EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -294,7 +295,6 @@ export enum Features {
   RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
   ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE='entitlement-adaptive-policy-toggle',
-  ENTITLEMENT_PERSONAL_IDENTITY_NETWORK_TOGGLE='entitlement-personal-identity-network-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE='entitlement-pms-integration-toggle',
   ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
   ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle',
@@ -311,7 +311,9 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
   RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
-  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle'
+  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
+  PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
+  ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -16,8 +16,8 @@ const userProfileContextValues = {
 
 const list = [
   {
-    featureType: 'SLTN_PI_NET',
-    featureName: 'Personal Identity Network',
+    featureType: 'SLTN_PIN_FOR_IDENTITY',
+    featureName: 'PIN for RUCKUS One Identity',
     maxQuantity: 0,
     enabled: false,
     capped: false,
@@ -71,8 +71,8 @@ describe('SolutionTokenLicenses', () => {
           path: '/:tenantId/t/administration/subscriptions/compliance' }
       })
 
-    expect(await screen.findByText('Personal Identity Network')).toBeVisible()
-    await userEvent.click(screen.getByRole('checkbox', { name: 'Personal Identity Network' }))
-    expect(await screen.findByText('Personal Identity Network is Enabled')).toBeVisible()
+    expect(await screen.findByText('PIN for RUCKUS One Identity')).toBeVisible()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'PIN for RUCKUS One Identity' }))
+    expect(await screen.findByText('PIN for RUCKUS One Identity is Enabled')).toBeVisible()
   })
 })

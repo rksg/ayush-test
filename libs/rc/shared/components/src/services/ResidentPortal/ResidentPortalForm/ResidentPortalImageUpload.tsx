@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { Upload, Space } from 'antd'
 
-import { showToast }          from '@acx-ui/components'
-import { PlusCircleOutlined } from '@acx-ui/icons'
-import { getIntl }            from '@acx-ui/utils'
+import { showToast }            from '@acx-ui/components'
+import { PlusCircleOutlined }   from '@acx-ui/icons'
+import { PropertyUrlsInfo }     from '@acx-ui/rc/utils'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getIntl, getOpsApi }   from '@acx-ui/utils'
 
 import { HelpText, HelpTextButton } from './styledComponents'
 
@@ -39,6 +41,11 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
   } = props
 
   const { $t } = getIntl()
+
+  const hasDeleteImagePermissionByType = hasAllowedOperations([
+    getOpsApi(PropertyUrlsInfo.deleteResidentPortalLogo),
+    getOpsApi(PropertyUrlsInfo.deleteResidentPortalFavicon)
+  ])
 
   const [imageName, setImageName] = useState<string>('')
   const [imageUrl, setImageUrl] = useState('')
@@ -153,6 +160,7 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
             </HelpTextButton>
             : ''}
           {(imageUrl) ?
+            hasDeleteImagePermissionByType &&
             <HelpTextButton type='link' size='small' onClick={removeImage}>
               {$t({ defaultMessage: 'Remove' })}
             </HelpTextButton>
