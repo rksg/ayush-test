@@ -7,6 +7,7 @@ import { Features, useIsSplitOn }                          from '@acx-ui/feature
 import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
 import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
+  ConfigTemplateType,
   redirectPreviousPage,
   VenueConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
@@ -28,7 +29,7 @@ export function RadioTab () {
   const params = useParams()
   const { venueId } = params
   const navigate = useNavigate()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const radioSettingsOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueRadioCustomization,

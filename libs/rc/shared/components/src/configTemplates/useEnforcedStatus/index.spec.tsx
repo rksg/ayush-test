@@ -1,17 +1,23 @@
 
 import React from 'react'
 
-import { useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { ConfigTemplateContext } from '@acx-ui/rc/utils'
-import { renderHook }            from '@acx-ui/test-utils'
+import { useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { ConfigTemplateContext, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { renderHook }                                from '@acx-ui/test-utils'
 
-import { ConfigTemplateEnforcementContext, useEnforcedStatus } from '.'
+import { ConfigTemplateEnforcementContext } from './constants'
+
+import { useEnforcedStatus } from '.'
 
 describe('useEnforcedStatus', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
   it('should return false when enforcement FF is false', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
     })
@@ -19,9 +25,7 @@ describe('useEnforcedStatus', () => {
   })
 
   it('should return false when isTemplate is true', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: true }} children={children}/>
     })
@@ -30,9 +34,7 @@ describe('useEnforcedStatus', () => {
   })
 
   it('should return true for a single object with isEnforced true', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
     })
@@ -41,9 +43,7 @@ describe('useEnforcedStatus', () => {
   })
 
   it('should return true if any item in the array has isEnforced true', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
     })
@@ -53,9 +53,7 @@ describe('useEnforcedStatus', () => {
   })
 
   it('should return false if all items in the array have isEnforced false', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
     })
@@ -65,9 +63,7 @@ describe('useEnforcedStatus', () => {
   })
 
   it('should return the enforced action message if condition is met', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
     })
@@ -77,9 +73,7 @@ describe('useEnforcedStatus', () => {
   })
 
   it('should return empty string if condition is not met', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    const { result } = renderHook(() => useEnforcedStatus(), {
+    const { result } = renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
       // eslint-disable-next-line max-len
       wrapper: ({ children }) => <ConfigTemplateContext.Provider value={{ isTemplate: false }} children={children}/>
     })
@@ -92,10 +86,6 @@ describe('useEnforcedStatus', () => {
       disabled: true,
       tooltip: 'Action is disabled due to enforcement from the template'
     }
-
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
-    })
 
     type WrapperProps = {
       enforcedFromContext?: boolean,
@@ -116,7 +106,7 @@ describe('useEnforcedStatus', () => {
     }
 
     const renderUseEnforcedStatus = (enforcedFromContext?: boolean) => {
-      return renderHook(() => useEnforcedStatus(), {
+      return renderHook(() => useEnforcedStatus(ConfigTemplateType.NETWORK), {
         // eslint-disable-next-line max-len
         wrapper: ({ children }) => <Wrapper enforcedFromContext={enforcedFromContext} children={children} />
       })

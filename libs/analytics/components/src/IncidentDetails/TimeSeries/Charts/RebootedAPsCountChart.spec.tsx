@@ -85,7 +85,7 @@ describe('rebootedAPsCountQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentHighReboot,
         charts: [TimeSeriesChartTypes.RebootedApsCountChart],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

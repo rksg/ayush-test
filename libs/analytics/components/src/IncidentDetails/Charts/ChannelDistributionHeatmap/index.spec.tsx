@@ -101,7 +101,7 @@ describe('ChannelDistributionHeatMap', () => {
           heatMapConfig={config2}
           incident={fakeIncident1}
           buffer={buffer}
-          minGranularity='PT3M'
+          minGranularity='PT15M'
         />
       </Provider>
     )
@@ -120,7 +120,7 @@ describe('ChannelDistributionHeatMap', () => {
           heatMapConfig={{ ...config,key: 'rogueDistribution' }}
           incident={fakeIncident1}
           buffer={buffer}
-          minGranularity='PT3M'
+          minGranularity='PT15M'
         />
       </Provider>
     )
@@ -152,7 +152,7 @@ describe('ChannelDistributionHeatMap', () => {
           heatMapConfig={config}
           incident={fakeIncident1}
           buffer={buffer}
-          minGranularity='PT3M'
+          minGranularity='PT15M'
         />
       </Provider>
     )
@@ -171,7 +171,7 @@ describe('ChannelDistributionHeatMap', () => {
           heatMapConfig={config2}
           incident={fakeIncident1}
           buffer={buffer}
-          minGranularity='PT3M'
+          minGranularity='PT15M'
         />
       </Provider>
     )

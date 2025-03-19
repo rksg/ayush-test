@@ -36,6 +36,9 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
 
   const parserUnitDetialsData = (count = 0) => {
     const unitDetails = switchDetail?.unitDetails && switchDetail?.unitDetails[count]
@@ -88,7 +91,14 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         <Divider/>
         { isSupportAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
-          children={getAdminPassword(switchDetail, PasswordInput)}
+          children={getAdminPassword(
+            switchDetail,
+            {
+              isSupport8200AV: isSupport8200AV,
+              isSupport8100: isSupport8100,
+              isSupport8100X: isSupport8100X
+            },
+            PasswordInput)}
         />}
         <Form.Item
           label={$t({ defaultMessage: 'MAC Address' })}
