@@ -93,7 +93,6 @@ export const ChannelDist = (incident: Incident) => {
               heatMapConfig={heatMap}
               incident={incident}
               buffer={buffer}
-              minGranularity='PT3M'
             />
           }
         </GridCol>
@@ -102,7 +101,6 @@ export const ChannelDist = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity='PT3M'
           buffer={buffer}
         />
       </GridCol>
