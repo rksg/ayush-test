@@ -1,21 +1,21 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isNil } from 'lodash'
 
-import { Features }                                                                                                                 from '@acx-ui/feature-toggle'
-import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation }            from '@acx-ui/rc/services'
-import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { CatchErrorDetails }                                                                                                        from '@acx-ui/utils'
+import { Features }                                                                                                                                                       from '@acx-ui/feature-toggle'
+import { useActivateTunnelProfileByEdgeClusterMutation, useCreateTunnelProfileMutation, useDeactivateTunnelProfileByEdgeClusterMutation, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
+import { AgeTimeUnit, CommonErrorsResult, CommonResult, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum }                                       from '@acx-ui/rc/utils'
+import { CatchErrorDetails }                                                                                                                                              from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export const useTunnelProfileActions = () => {
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
   // eslint-disable-next-line max-len
   const [createTunnelProfile, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
   // eslint-disable-next-line max-len
   const [updateTunnelProfile, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
   const [activateByEdgeCluster] = useActivateTunnelProfileByEdgeClusterMutation()
-
+  const [deactivateByEdgeCluster] = useDeactivateTunnelProfileByEdgeClusterMutation()
   const requestPreProcess = (data: TunnelProfileFormType) => {
     const result = cloneDeep(data)
     if (data.ageTimeUnit === AgeTimeUnit.WEEK) {
@@ -49,6 +49,20 @@ export const useTunnelProfileActions = () => {
       delete result.mtuSize
     }
 
+    if (isEdgeL2greReady) {
+      if(data.tunnelType === TunnelTypeEnum.L2GRE) {
+        data.mtuType = MtuTypeEnum.MANUAL
+        data.natTraversalEnabled = false
+        delete result.mtuRequestRetry
+        delete result.mtuRequestTimeout
+        delete result.mtuRequestTimeoutUnit
+        delete result.keepAliveInterval
+        delete result.keepAliveRetry
+      } else {
+        delete result.destinationIpAddress
+      }
+    }
+
     delete result.ageTimeUnit
     //remove for acitvate api params
     delete result.edgeClusterId
@@ -65,14 +79,18 @@ export const useTunnelProfileActions = () => {
           data,
           callback: (result) => {
             // callback is after all RBAC related APIs sent
-            if (Array.isArray(result)) {
-              resolve(true)
-            } else {
+            if (
+              isNil(result) ||
+            (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0)
+            {
               reject(result)
+            } else {
+              resolve(true)
             }
           }
         // need to catch basic service profile failed
         }).catch(reject)
+
       })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -156,8 +174,19 @@ export const useTunnelProfileActions = () => {
       callback: async () => {
         const tunnelProfileId = id
         if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
-          callback?.()
-          return
+          if(clusterId && venueId) {
+            try {
+              // eslint-disable-next-line max-len
+              const reqResult = await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+              callback?.(reqResult)
+            } catch(error) {
+              callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+            }
+            return
+          } else {
+            callback?.()
+            return
+          }
         }
         try {
           // eslint-disable-next-line max-len
@@ -189,6 +218,24 @@ export const useTunnelProfileActions = () => {
     }
   }
 
+  const deassociationWithEdgeCluster = async (
+    venueId?: string,
+    clusterId?: string,
+    tunnelProfileId?: string
+  ): Promise<CommonResult | CommonErrorsResult<CatchErrorDetails>> => {
+    try {
+      const response = await deactivateByEdgeCluster({
+        params: {
+          venueId: venueId,
+          clusterId: clusterId,
+          id: tunnelProfileId
+        }
+      }).unwrap()
+      return response
+    } catch (error) {
+      return error as CommonErrorsResult<CatchErrorDetails>
+    }
+  }
 
   return {
     createTunnelProfileOperation,

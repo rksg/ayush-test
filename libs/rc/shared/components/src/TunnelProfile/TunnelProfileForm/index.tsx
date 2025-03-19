@@ -88,12 +88,14 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
-  const tunnelType = Form.useWatch('tunnelType', form)
+  const tunnelType = useWatch('tunnelType')
+  const networkSegementType = useWatch('type')
+  const isVniType = networkSegementType === NetworkSegmentTypeEnum.VXLAN
   const isL2greType = tunnelType === TunnelTypeEnum.L2GRE
   // eslint-disable-next-line max-len
   const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
@@ -113,8 +115,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     { label: $t({ defaultMessage: 'Milliseconds' }), value: MtuRequestTimeoutUnit.MILLISECONDS }
   ]
 
-  const { clusterServiceData, isLoading: isClusterServiceOptsLoading } =
-  useGetEdgeClusterServiceListQuery(
+  // eslint-disable-next-line max-len
+  const { clusterServiceData, isLoading: isClusterServiceOptsLoading } = useGetEdgeClusterServiceListQuery(
     { payload: {
       fields: [
         'serviceId',
@@ -178,8 +180,13 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   }
 
   const handleNetworkSegmentTypeChange = (e: RadioChangeEvent) => {
-    if (isEdgeNatTraversalP1Ready && e.target.value === NetworkSegmentTypeEnum.VXLAN) {
-      form.setFieldsValue({ natTraversalEnabled: false })
+    if (e.target.value === NetworkSegmentTypeEnum.VXLAN) {
+      if (isEdgeNatTraversalP1Ready) {
+        form.setFieldsValue({ natTraversalEnabled: false })
+      }
+      if (isEdgeL2greReady) {
+        form.setFieldsValue({ tunnelType: TunnelTypeEnum.VXLAN_GPE })
+      }
     }
   }
 
@@ -197,6 +204,28 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       onEdgeClusterChange(form.getFieldValue('edgeClusterId'))
     }
   }, [form, clusterData, onEdgeClusterChange])
+
+  const mduSizeFormItem = <Form.Item
+    name='mtuSize'
+    rules={[
+      {
+        required: mtuType === MtuTypeEnum.MANUAL,
+        message: 'Please enter Path MTU size'
+      },
+      {
+        type: 'number',
+        min: 576,
+        max: 1450,
+        message: $t({
+          defaultMessage: 'Path MTU size must be between 576 and 1450'
+        })
+      }
+    ]}
+    children={<InputNumber
+      disabled={!!disabledFields?.includes('mtuSize')}/>}
+    validateFirst
+    noStyle
+  />
 
   return (
     <>
@@ -268,7 +297,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                       {$t({ defaultMessage: 'VxLAN GPE' })}
                     </Radio>
                     { isEdgePinHaReady &&
-                    <Radio value={TunnelTypeEnum.L2GRE}>
+                    <Radio value={TunnelTypeEnum.L2GRE} disabled={isVniType} >
                       {$t({ defaultMessage: 'L2GRE' })}
                     </Radio>
                     }
@@ -329,6 +358,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Col>
         }
         { isEdgeNatTraversalP1Ready &&
+        (!isEdgeL2greReady || !!!isL2greType) &&
         <Col span={14}>
           <UI.StyledSpace align='center'>
             <UI.FormItemWrapper>
@@ -367,65 +397,59 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         </Col>
         }
         <Col span={24}>
-          <Form.Item
-            name='mtuType'
-            label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
-            tooltip={$t(MessageMapping.mtu_tooltip)}
-            extra={
-              <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
-                {
-                  mtuType === MtuTypeEnum.MANUAL
-                    ? (<><UI.InfoIcon />
-                      { $t(MessageMapping.mtu_help_msg) }</>)
-                    : null
-                }
-              </Space>
-            }
-            children={
-              // eslint-disable-next-line max-len
-              <Radio.Group disabled={isDefaultTunnelProfile || !!disabledFields?.includes('mtuType')}>
-                <Space direction='vertical'>
-                  <Radio value={MtuTypeEnum.AUTO}>
-                    {$t({ defaultMessage: 'Auto' })}
-                  </Radio>
-                  <Radio value={MtuTypeEnum.MANUAL}>
-                    <Space>
-                      <div>
-                        {$t({ defaultMessage: 'Manual' })}
-                      </div>
+          <Form.Item noStyle dependencies={['tunnelType']}>
+            {({ getFieldValue }) => {
+              return (isEdgeL2greReady && getFieldValue('tunnelType') === TunnelTypeEnum.L2GRE) ?
+                <Form.Item
+                  name='mtuType'
+                  label={$t({ defaultMessage: 'Gateway Path MTU' })}>
+                  <Space>
+                    {mduSizeFormItem}
+                    <div>{$t({ defaultMessage: 'bytes' })}</div>
+                  </Space>
+                </Form.Item>
+                : <Form.Item
+                  name='mtuType'
+                  label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
+                  tooltip={$t(MessageMapping.mtu_tooltip)}
+
+                  extra={
+                    <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
                       {
-                        mtuType === MtuTypeEnum.MANUAL &&
-                      <Space>
-                        <Form.Item
-                          name='mtuSize'
-                          rules={[
-                            {
-                              required: mtuType === MtuTypeEnum.MANUAL,
-                              message: 'Please enter Path MTU size'
-                            },
-                            {
-                              type: 'number',
-                              min: 576,
-                              max: 1450,
-                              message: $t({
-                                defaultMessage: 'Path MTU size must be between 576 and 1450'
-                              })
-                            }
-                          ]}
-                          children={<InputNumber
-                            disabled={!!disabledFields?.includes('mtuSize')}/>}
-                          validateFirst
-                          noStyle
-                        />
-                        <div>{$t({ defaultMessage: 'bytes' })}</div>
-                      </Space>
+                        mtuType === MtuTypeEnum.MANUAL
+                          ? (<><UI.InfoIcon />
+                            { $t(MessageMapping.mtu_help_msg) }</>)
+                          : null
                       }
                     </Space>
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            }
-          />
+                  }
+                  children={
+                    // eslint-disable-next-line max-len
+                    <Radio.Group disabled={isDefaultTunnelProfile || !!disabledFields?.includes('mtuType')}>
+                      <Space direction='vertical'>
+                        <Radio value={MtuTypeEnum.AUTO}>
+                          {$t({ defaultMessage: 'Auto' })}
+                        </Radio>
+                        <Radio value={MtuTypeEnum.MANUAL}>
+                          <Space>
+                            <div>
+                              {$t({ defaultMessage: 'Manual' })}
+                            </div>
+                            {
+                              mtuType === MtuTypeEnum.MANUAL &&
+                      <Space>
+                        {mduSizeFormItem}
+                        <div>{$t({ defaultMessage: 'bytes' })}</div>
+                      </Space>
+                            }
+                          </Space>
+                        </Radio>
+                      </Space>
+                    </Radio.Group>
+                  }
+                />
+            }}
+          </Form.Item>
         </Col>
         {
           (isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) && !!!isL2greType &&
