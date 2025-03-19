@@ -258,7 +258,19 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
           {!readMode &&
             <>
               <Tabs type='third'
-                onChange={(key) => setActiveSecurityTabKey(key)}
+                onChange={async (key) => {
+                  try {
+                    await form.validateFields([
+                    ['ikeSecurityAssociation',
+                      'ikeProposals', 'combinationValidator'],
+                    ['espSecurityAssociation',
+                      'espProposals', 'combinationValidator']])
+                    setActiveSecurityTabKey(key)
+                  } catch(e) {
+                    // eslint-disable-next-line no-console
+                    console.error(e)
+                  }
+                }}
                 activeKey={activeSecurityTabKey}
               >
                 {secAssociationTabsInfo.map(({ key, display }) =>
