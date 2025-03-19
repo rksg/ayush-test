@@ -8,7 +8,7 @@ import { useNavigate, useParams }                                               
 
 import { useGetConnectorQuery, useSaveConnectorMutation, useGetDataSourcesQuery } from './services'
 import { DataSources, Frequency }                                                 from './types'
-import { frequencyMap, getUserName, generateBreadcrumb }                          from './utils'
+import { frequencyMap, getUserName, generateBreadcrumb, connectorNameRegExp }     from './utils'
 
 type DataConnectorFormProps = {
   editMode?: boolean
@@ -81,6 +81,8 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
               rules={[{
                 required: true,
                 message: $t({ defaultMessage: 'Connector name is required!' })
+              }, {
+                validator: (_, value) => connectorNameRegExp(value)
               }]}
             >
               <Input data-testid='name' />

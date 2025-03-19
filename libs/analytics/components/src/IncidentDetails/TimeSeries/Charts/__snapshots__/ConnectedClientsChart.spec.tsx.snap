@@ -30,7 +30,7 @@ Object {
     "i-apserv-continuous-reboots",
   ],
   "end": "2022-10-04T16:30:00.000Z",
-  "granularity": "PT180S",
+  "granularity": "PT15M",
   "path": Array [
     Object {
       "name": "vishnu_11ac",
