@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import { showActionModal, showToast, Table, TableProps, Tooltip }        from '@acx-ui/components'
 import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes, useConfigTemplate,
   useTableQuery,
@@ -34,7 +35,7 @@ export const RogueVenueTable = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
     if (selectRows.filter(row =>
