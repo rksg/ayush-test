@@ -29,10 +29,12 @@ import { useGetNetwork }     from './services'
 
 function NetworkPageHeader ({
   setSelectedVenues,
-  selectedVenues
+  selectedVenues,
+  noConfig
 }: {
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
+  noConfig?: boolean
 }) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
@@ -47,7 +49,7 @@ function NetworkPageHeader ({
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const enableTimeFilter = () => !['aps', 'clients', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   const GenBreadcrumb = () => {
@@ -101,7 +103,7 @@ function NetworkPageHeader ({
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]: []),
-        ...(hasUpdateNetworkPermission ? [
+        ...((hasUpdateNetworkPermission && !noConfig) ? [
           <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'

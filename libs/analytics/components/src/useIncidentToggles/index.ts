@@ -15,6 +15,10 @@ export function useIncidentToggles () {
       useIsSplitOn(Features.INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE),
       useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE)
     ].some(Boolean),
+    [IncidentToggle.SwitchLLDPStatusIncidents]: [
+      useIsSplitOn(Features.INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE),
+      useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LLDP_STATUS_TOGGLE)
+    ].some(Boolean),
     [IncidentToggle.SwitchPortCongestionIncidents]: [
       useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
       useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE)

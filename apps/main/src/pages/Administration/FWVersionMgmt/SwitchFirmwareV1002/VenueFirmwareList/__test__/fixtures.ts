@@ -734,8 +734,36 @@ export const icx8200AvGroupedData = [
       switchName: 'FPG4324V00H Switch - test',
       isStack: false,
       model: 'ICX8200_24PV',
-      // Change to real firmware version when 10010f release
       currentFirmware: '10010f',
+      preDownload: true,
+      isSwitchLevelSchedule: false
+    }
+  ]
+]
+
+export const icx8100XGroupedData = [
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue',
+      switchId: '5c:83:6c:3f:bc:70',
+      switchName: 'FPR4830V018',
+      isStack: false,
+      model: 'ICX8100_48_X',
+      currentFirmware: '10010g',
+      preDownload: false,
+      isSwitchLevelSchedule: false
+    }
+  ],
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce36453',
+      venueName: 'My-Venue2',
+      switchId: '80:f0:cf:34:9a:12',
+      switchName: 'FPA4828V01P Switch - test',
+      isStack: false,
+      model: 'ICX8100_24',
+      currentFirmware: '10010f_cd2',
       preDownload: true,
       isSwitchLevelSchedule: false
     }

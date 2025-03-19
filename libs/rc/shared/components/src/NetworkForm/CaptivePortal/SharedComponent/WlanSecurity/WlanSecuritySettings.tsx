@@ -113,6 +113,9 @@ export const WlanSecurityFormItems = () => {
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
   const onOweTransitionChange = (checked: boolean) => {
+    form.setFieldValue(['wlan', 'wlanSecurity'],
+      checked ? WlanSecurityEnum.OWETransition : WlanSecurityEnum.OWE
+    )
     setData && setData({
       ...data,
       wlan: {

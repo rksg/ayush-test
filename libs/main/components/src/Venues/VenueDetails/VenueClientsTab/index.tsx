@@ -93,7 +93,7 @@ export function VenueClientsTab () {
     && personaGroupData?.id ? [{
         label: $t(
           { defaultMessage: 'Identity ({count})' },
-          { count: personaGroupData?.identities?.length ?? 0 }
+          { count: personaGroupData?.identities?.length ?? personaGroupData?.identityCount?? 0 }
         ),
         value: 'identity',
         children: <BasePersonaTable

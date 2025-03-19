@@ -105,6 +105,7 @@ describe('constants', () => {
         [IncidentToggle.AirtimeIncidents]: false,
         [IncidentToggle.SwitchDDoSIncidents]: false,
         [IncidentToggle.SwitchLoopDetectionIncidents]: false,
+        [IncidentToggle.SwitchLLDPStatusIncidents]: false,
         [IncidentToggle.SwitchPortCongestionIncidents]: false,
         [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
       }
@@ -142,6 +143,7 @@ describe('constants', () => {
         [IncidentToggle.AirtimeIncidents]: false,
         [IncidentToggle.SwitchDDoSIncidents]: true,
         [IncidentToggle.SwitchLoopDetectionIncidents]: true,
+        [IncidentToggle.SwitchLLDPStatusIncidents]: true,
         [IncidentToggle.SwitchPortCongestionIncidents]: true,
         [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
       }
@@ -152,6 +154,7 @@ describe('constants', () => {
           'i-switch-poe-pd',
           's-switch-tcp-syn-ddos',
           'i-switch-loop-detection',
+          'i-switch-lldp-status',
           'p-switch-port-congestion',
           'p-switch-uplink-port-congestion'
         ],
