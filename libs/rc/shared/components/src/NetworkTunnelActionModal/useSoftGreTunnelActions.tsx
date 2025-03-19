@@ -2,7 +2,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useActivateIpsecMutation,
   useActivateSoftGreMutation,
-  useDectivateIpsecMutation,
+  useDeactivateIpsecMutation,
   useDectivateSoftGreMutation,
   useGetSoftGreViewDataListQuery,
   useGetIpsecViewDataListQuery
@@ -119,7 +119,7 @@ export function useGetIpsecScopeVenueMap () {
 
 export function useGetIpsecScopeNetworkMap (networkId?: string) {
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
-  const { venuesMap } = useGetSoftGreViewDataListQuery({
+  const { venuesMap } = useGetIpsecViewDataListQuery({
     payload: {
       page: 1,
       pageSize: 10_000,
@@ -156,13 +156,12 @@ export function useSoftGreTunnelActions () {
   const [ activateSoftGre ] = useActivateSoftGreMutation()
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
   const [ activateIpSec ] = useActivateIpsecMutation()
-  const [ dectivateIpSec ] = useDectivateIpsecMutation()
+  const [ deactivateIpSec ] = useDeactivateIpsecMutation()
 
   const activateSoftGreTunnel = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
     if (isSoftGreEnabled && formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
-        formValues.softGre?.newProfileId &&
-        formValues.softGre?.oldProfileId !== formValues.softGre?.newProfileId) {
+        formValues.softGre?.newProfileId) {
       return activateSoftGre({
         params: {
           venueId,
@@ -211,11 +210,11 @@ export function useSoftGreTunnelActions () {
     if (isSoftGreEnabled && isIpSecEnabled
       && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
       && formValues.ipsec?.oldProfileId && !formValues.ipsec?.newProfileId) {
-      return dectivateIpSec({
+      return deactivateIpSec({
         params: {
           venueId,
           networkId,
-          softGreProfileId: formValues.softGre.newProfileId,
+          softGreProfileId: formValues.softGre.oldProfileId,
           ipsecProfileId: formValues.ipsec.oldProfileId
         } }).unwrap()
     }

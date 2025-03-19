@@ -309,9 +309,9 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
     }),
-    dectivateIpsec: build.mutation<CommonResult, RequestPayload>({
+    deactivateIpsec: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(IpsecUrls.dectivateIpsec, params)
+        return createHttpRequest(IpsecUrls.deactivateIpsec, params)
       },
       invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
     }),
@@ -362,7 +362,7 @@ export const {
   useGetIpsecOptionsQuery,
   useLazyGetIpsecOptionsQuery,
   useActivateIpsecMutation,
-  useDectivateIpsecMutation,
+  useDeactivateIpsecMutation,
   useActivateIpsecOnVenueLanPortMutation,
   useDeactivateIpsecOnVenueLanPortMutation,
   useActivateIpsecOnAPLanPortMutation,

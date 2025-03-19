@@ -16,7 +16,11 @@ import { CommonResult,
   VenueApModelLanPortSettingsV1,
   VenueTableSoftGreActivation,
   CommonRbacUrlsInfo,
-  NewAPModel
+  NewAPModel,
+  IpsecUrls,
+  Ipsec,
+  IpsecViewData,
+  IpsecActivation
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -270,6 +274,49 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           gatewayIps: Array.from(gatewayIps),
           gatewayIpMaps,
           activationProfiles
+        }
+
+        if (venueTotal > 0) {
+          const ipsecQueryPayload = {
+            fields: ['id', 'activations', 'venueActivations', 'apActivations'],
+            filters: {},
+            page: 1,
+            pageSize: 10_000
+          }
+          const ipsecReq = createHttpRequest(IpsecUrls.getIpsecViewDataList)
+          // eslint-disable-next-line max-len
+          const ipsecRes = await fetchWithBQ({ ...ipsecReq, body: JSON.stringify(ipsecQueryPayload) })
+          const { data: ipsecData } = ipsecRes.data as TableResult<IpsecViewData>
+          let bindSoftGreId = ''
+          const ipsec = ipsecData.find(i => i.activations.find(a => a.venueId === venueId)
+            || i.apActivations.find(a => a.venueId === venueId)
+            || i.venueActivations.find(a => a.venueId === venueId))
+          if (ipsec) {
+            if (ipsec.activations.length > 0) {
+              bindSoftGreId = ipsec.activations[0].softGreProfileId || ''
+            }
+            if (bindSoftGreId.length === 0 && ipsec.apActivations.length > 0) {
+              bindSoftGreId = ipsec.apActivations[0].softGreProfileId || ''
+            }
+            if (bindSoftGreId.length === 0&& ipsec.venueActivations.length > 0) {
+              bindSoftGreId = ipsec.venueActivations[0].softGreProfileId || ''
+            }
+          }
+          if (bindSoftGreId.length > 0) {
+            options.forEach(op => {
+              if (op.value !== bindSoftGreId) {
+                op.disabled = true
+              }
+            })
+            return {
+              data: {
+                options: options,
+                id: bindSoftGreId,
+                isLockedOptions: true,
+                ...commonData
+              } as SoftGreOptionsData
+            }
+          }
         }
 
         if (venueTotal >= 3) {

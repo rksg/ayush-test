@@ -119,6 +119,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
               <Select.Option value={''}>{$t({ defaultMessage: 'Select...' })}</Select.Option>
               <Select.Option
                 data-testid='softgre-option'
+                hidden={hiddenSoftGre}
                 value={NetworkTunnelTypeEnum.SoftGre}
                 disabled={isDisabledAll || noChangePermission}>
                 <Tooltip
