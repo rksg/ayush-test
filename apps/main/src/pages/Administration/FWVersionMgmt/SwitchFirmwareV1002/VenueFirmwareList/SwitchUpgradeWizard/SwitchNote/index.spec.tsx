@@ -8,7 +8,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  icx8200AvGroupedData
+  icx8200AvGroupedData,
+  icx8100XGroupedData
 } from '../../__test__/fixtures'
 
 import { NotesEnum, SwitchNote } from '.'
@@ -17,7 +18,7 @@ import { NotesEnum, SwitchNote } from '.'
 describe('SwitchNote', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
-  it('render SwitchNote', async () => {
+  it('render SwitchNote of Rodan AV', async () => {
     render(
       <Provider>
         <Form>
@@ -31,5 +32,22 @@ describe('SwitchNote', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
     expect(screen.getByText(/10.0.10f/i)).toBeInTheDocument()
+  })
+
+  it('render SwitchNote of Baby Rodan X', async () => {
+    render(
+      <Provider>
+        <Form>
+          <SwitchNote
+            type={NotesEnum.NOTE8100_1}
+            data={icx8100XGroupedData as SwitchFirmwareV1002[][]}
+          />
+        </Form>
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+    expect(screen.getByText(/10.0.10g/i)).toBeInTheDocument()
+    expect(screen.getByText(/10.0.20c/i)).toBeInTheDocument()
   })
 })

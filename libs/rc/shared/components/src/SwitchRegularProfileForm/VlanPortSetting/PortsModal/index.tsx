@@ -8,7 +8,8 @@ import { Features, useIsSplitOn }                       from '@acx-ui/feature-to
 import {
   SwitchSlot2,
   Vlan,
-  ICX_MODELS_MODULES
+  ICX_MODELS_MODULES,
+  getFamilyAndModel
 } from '@acx-ui/rc/utils'
 
 import {
@@ -64,7 +65,7 @@ export function PortsModal (props: {
     setEditMode(open && !!editRecord)
 
     if (open && editRecord) {
-      const [family, model] = editRecord.familymodel?.split('-') ?? []
+      const [ family, model ] = getFamilyAndModel(editRecord.familymodel) ?? []
       const slots = editRecord?.slots
       const enableSlot = Array.from({ length: 2 }, (_, index) => {
         //for slot2, slot3
