@@ -314,7 +314,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           await handleCallbackWhenActivityDone({
             api,
             activityData: msg,
-            useCase: 'ActivateIpsecProfileOnVenueWifiNetwork',
+            useCase: 'ActivateSoftGreIpsecProfileOnVenueWifiNetwork',
             callback: requestArgs.callback,
             failedCallback: requestArgs.failedCallback
           })
@@ -331,7 +331,7 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
           await handleCallbackWhenActivityDone({
             api,
             activityData: msg,
-            useCase: 'DeactivateIpsecProfileOnVenueWifiNetwork',
+            useCase: 'DeactivateSoftGreIpsecProfileOnVenueWifiNetwork',
             callback: requestArgs.callback,
             failedCallback: requestArgs.failedCallback
           })
