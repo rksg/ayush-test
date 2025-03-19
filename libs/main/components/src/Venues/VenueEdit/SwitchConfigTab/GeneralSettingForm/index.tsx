@@ -100,7 +100,7 @@ export function GeneralSettingForm () {
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
   const selectedProfiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
   const isCliProfile = getProfilesByType(selectedProfiles, ProfileTypeEnum.CLI).length > 0
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     // set default data when switching sub tab

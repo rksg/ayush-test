@@ -23,6 +23,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/aaaServers',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
+    opsApi: 'POST:/venues/{id}/aaaServers',
     newApi: true
   },
   updateAaaServer: {
