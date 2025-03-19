@@ -1,4 +1,3 @@
-
 import { DefaultOptionType } from 'antd/lib/select'
 import _, { cloneDeep }      from 'lodash'
 
@@ -25,6 +24,8 @@ import { baseIpSecApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { CommonResult }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
+
+import { softGreApi } from './softGre'
 
 
 
@@ -59,6 +60,11 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
             'DeactivateSoftGreIpsecProfileOnVenueWifiNetwork'
           ]
           onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              softGreApi.util.invalidateTags([
+                { type: 'SoftGre', id: 'LIST' }
+              ])
+            )
             api.dispatch(
               ipSecApi.util.invalidateTags([
                 { type: 'IpSec', id: 'LIST' },

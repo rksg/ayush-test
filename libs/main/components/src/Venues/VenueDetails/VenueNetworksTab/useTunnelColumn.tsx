@@ -128,7 +128,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   },
                   ipsec: {
                     enableIpsec: targetIpsec && targetIpsec.length > 0,
-                    oldProfileId: targetIpsec?.[0].profileId
+                    oldProfileId: (targetIpsec && targetIpsec.length > 0) ?
+                      targetIpsec?.[0]?.profileId: undefined
                   }
                 } as NetworkTunnelActionForm
 
