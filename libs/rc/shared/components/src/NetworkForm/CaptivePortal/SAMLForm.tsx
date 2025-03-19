@@ -1,7 +1,8 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
-import { Button, Form, Space } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Button, Form, Input, Space } from 'antd'
+import { DefaultOptionType }          from 'antd/lib/select'
+import { useIntl }                    from 'react-intl'
 
 import { GridCol, GridRow, Select, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
@@ -18,8 +19,8 @@ import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { IdentityGroup }           from '../NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup'
 
-import { DhcpCheckbox }                    from './DhcpCheckbox'
-import { RedirectUrlInput }                from './RedirectUrlInput'
+import { DhcpCheckbox }                   from './DhcpCheckbox'
+import { RedirectUrlInput }               from './RedirectUrlInput'
 import {
   BypassCaptiveNetworkAssistantCheckbox
 } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
@@ -47,6 +48,21 @@ export const SAMLForm = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
+  useEffect(() => {
+    const setData = async () => {
+      if ((editMode || cloneMode) && data) {
+        const idp = idpViewDataList.data?.data.find((idp) => {
+          return idp.wifiNetworkIds.includes(data.id ?? '')
+        })
+        if (idp) {
+          form.setFieldValue('samlIdpProfilesId', idp.id)
+          form.setFieldValue('samlIdpProfilesName', idp.name)
+        }
+      }
+    }
+    setData()
+  }, [])
+
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
@@ -55,19 +71,23 @@ export const SAMLForm = () => {
           <Form.Item
             label={$t({ defaultMessage: 'Select Identity Provider (IdP) via SAML' })}
             name={['samlIdpProfilesId']}
-            required={true}
+            rules={
+              [{ required: true }]
+            }
             children={
               <Select
                 data-testid={'saml-idp-profile-select'}
                 style={{ width: '400px' }}
                 placeholder={'Select...'}
+                onChange={(value, option) => {
+                  form.setFieldValue('samlIdpProfilesName', (option as DefaultOptionType).label)
+                }}
                 options={idpViewDataList.data?.data?.map(item => ({
                   label: item.name, value: item.id
                 }))}
               />
             }
           />
-
           <Space split='|'>
             <Button
               type='link'
@@ -83,6 +103,12 @@ export const SAMLForm = () => {
             </Button>
           </Space>
         </Space>
+        <Form.Item
+          noStyle
+          name={'samlIdpProfilesName'}
+          hidden
+          children={<Input hidden />}
+        />
         {
           (isWifiIdentityManagementEnable && !isTemplate) &&
             <IdentityGroup />

@@ -13,7 +13,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -47,7 +47,8 @@ import {
   useDeleteRbacNetworkVenueMutation,
   useActivateDirectoryServerMutation,
   useBindingPersonaGroupWithNetworkMutation,
-  useBindingSpecificIdentityPersonaGroupWithNetworkMutation
+  useBindingSpecificIdentityPersonaGroupWithNetworkMutation,
+  useActivateIdentityProviderProfileOnNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -220,6 +221,7 @@ export function NetworkForm (props:{
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupportDVlanWithPskMacAuth = useIsSplitOn(Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
   const isSupportDpsk3NonProxyMode = useIsSplitOn(Features.WIFI_DPSK3_NON_PROXY_MODE_TOGGLE)
+  const isSSOSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
 
 
   const { modalMode, createType, modalCallBack, defaultValues } = props
@@ -272,6 +274,7 @@ export function NetworkForm (props:{
   const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
   const [ activateDirectoryServer ] = useActivateDirectoryServerMutation()
+  const [ activateSAMLIdpProfile ] = useActivateIdentityProviderProfileOnNetworkMutation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const activateIdentityGroupOnNetwork = useIdentityGroupOnNetworkActivation()
@@ -634,6 +637,14 @@ export function NetworkForm (props:{
     return data
   }
 
+  const handleWlanSAMLProfile = (data: NetworkSaveData, SAMLFlag: boolean) => {
+    if ((data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SAML)
+      && SAMLFlag) {
+      return omit(data, ['samlIdpProfilesId', 'samlIdpProfilesName'])
+    }
+    return data
+  }
+
   const handlePortalWebPage = async (data: NetworkSaveData) => {
     if(!data.guestPortal?.socialIdentities?.facebook){
       delete data.guestPortal?.socialIdentities?.facebook
@@ -906,12 +917,14 @@ export function NetworkForm (props:{
     // eslint-disable-next-line max-len
     const processClientIsolationAllowlist = (data: NetworkSaveData) => updateClientIsolationAllowlist(data)
     const processBindingIdentityGroup = (data: NetworkSaveData) => handleWlanIdentityGroup(data, isWifiIdentityManagementEnable)
+    const processSAMLProfile = (data: NetworkSaveData) => handleWlanSAMLProfile(data, isSSOSamlEnabled)
     const processFns = [
       processWlanAdvanced3MLO,
       processGuestMoreSetting,
       processCloneMode,
       processClientIsolationAllowlist,
-      processBindingIdentityGroup
+      processBindingIdentityGroup,
+      processSAMLProfile
     ]
     return processFns.reduce((tempData, processFn) => processFn(tempData), data)
   }
@@ -960,6 +973,18 @@ export function NetworkForm (props:{
       if (!isTemplate && isWifiIdentityManagementEnable) {
         beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, networkId))
       }
+
+      if(!isTemplate && isSSOSamlEnabled && formData.samlIdpProfilesId) {
+        beforeVenueActivationRequest.push(
+          activateSAMLIdpProfile({
+            params: {
+              wifiNetworkId: networkId,
+              samlIdpProfileId: formData.samlIdpProfilesId
+            }
+          })
+        )
+      }
+
 
       await Promise.all(beforeVenueActivationRequest)
       if (networkResponse?.response && payload.venues) {
@@ -1013,7 +1038,8 @@ export function NetworkForm (props:{
 
     const dataWlan = handleWlanAdvanced3MLO(data, wifi7Mlo3LinkFlag)
     const dataRemoveIdentity = handleWlanIdentityGroup(dataWlan, isWifiIdentityManagementEnable)
-    const dataMore = handleGuestMoreSetting(dataRemoveIdentity)
+    const dataRemoveSAMLProfile = handleWlanSAMLProfile(dataRemoveIdentity, isSSOSamlEnabled)
+    const dataMore = handleGuestMoreSetting(dataRemoveSAMLProfile)
 
     if(isPortalWebRender(dataMore)){
       handlePortalWebPage(dataMore)
@@ -1137,6 +1163,17 @@ export function NetworkForm (props:{
 
       if (!isTemplate && isWifiIdentityManagementEnable) {
         beforeVenueActivationRequest.push(activateIdentityGroupOnNetwork(formData, payload.id))
+      }
+
+      if(!isTemplate && isSSOSamlEnabled && formData.samlIdpProfilesId) {
+        beforeVenueActivationRequest.push(
+          activateSAMLIdpProfile({
+            params: {
+              wifiNetworkId: payload.id,
+              samlIdpProfileId: formData.samlIdpProfilesId
+            }
+          })
+        )
       }
 
       if (formData.type !== NetworkTypeEnum.HOTSPOT20 &&
@@ -1492,7 +1529,11 @@ function useIdentityGroupOnNetworkActivation () {
     if(
       network &&
       networkId &&
-      (network.type === NetworkTypeEnum.HOTSPOT20 || network.type === NetworkTypeEnum.PSK || network.type === NetworkTypeEnum.AAA)
+      (network.type === NetworkTypeEnum.HOTSPOT20 ||
+        network.type === NetworkTypeEnum.PSK ||
+        network.type === NetworkTypeEnum.AAA ||
+        network.type === NetworkTypeEnum.CAPTIVEPORTAL
+      )
     ) {
       const identityGroupId = network?.identityGroupId
       const identityId = network?.identityId
