@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
 import { ReactElement }                from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input }   from 'antd'
+import { FormItemProps } from 'antd/lib/form'
+import { useIntl }       from 'react-intl'
 
 import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast } from '@acx-ui/components'
 import { useNavigate }                                                                       from '@acx-ui/react-router-dom'
@@ -22,7 +23,11 @@ type CloudStorageFormProps = {
   editMode?: boolean
 }
 
-const getStorageMap = (azureConnectionType: AzureConnectionType) => {
+type StorageFieldProps = { id: string, name: string, component: ReactElement } &
+Pick<FormItemProps, 'dependencies' | 'rules'>
+
+const getStorageMap = (azureConnectionType: AzureConnectionType):
+Record<string, StorageFieldProps[]> => {
   const { $t } = getIntl()
   return {
     azure: [
@@ -122,12 +127,38 @@ const getStorageMap = (azureConnectionType: AzureConnectionType) => {
       {
         id: 'sftpPassword',
         name: $t({ defaultMessage: 'SFTP password' }),
-        component: <Input type='password' />
+        component: <Input type='password' />,
+        dependencies: ['sftpPrivateKey'],
+        rules: [
+          ({ getFieldValue }) => ({
+            validator (_, value:string) {
+              if (!value && !getFieldValue('sftpPrivateKey')) {
+                return Promise.reject(
+                  $t({ defaultMessage: 'Please enter SFTP private key or password' })
+                )
+              }
+              return Promise.resolve()
+            }
+          })
+        ]
       },
       {
         id: 'sftpPrivateKey',
         name: $t({ defaultMessage: 'SFTP private key' }),
-        component: <Input.TextArea rows={5} />
+        component: <Input.TextArea rows={5} />,
+        dependencies: ['sftpPassword'],
+        rules: [
+          ({ getFieldValue }) => ({
+            validator (_, value:string) {
+              if (!value && !getFieldValue('sftpPassword')) {
+                return Promise.reject(
+                  $t({ defaultMessage: 'Please enter SFTP private key or password' })
+                )
+              }
+              return Promise.resolve()
+            }
+          })
+        ]
       },
       {
         id: 'sftpStoragePath',
@@ -197,12 +228,13 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
               />
             </Form.Item>
             {storageMap[connectionType as keyof typeof storageMap]
-              ?.map((item: { id: string, name: string, component: ReactElement }) =>
+              ?.map((item: StorageFieldProps) =>
                 <Form.Item
                   key={item.id}
                   name={item.id}
                   label={item.name}
-                  rules={[{
+                  dependencies={item.dependencies}
+                  rules={item.rules ?? [{
                     required: true,
                     message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
                   }]}

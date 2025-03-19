@@ -131,6 +131,22 @@ describe('CloudStorageForm', () => {
       expect(mockNavigate).not.toHaveBeenCalled()
     })
   })
+  it('should trigger password and private key validation for SFTP', async () => {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'post', {
+      data: { id: 'id' }
+    }, false, true)
+    render(<CloudStorageForm />, {
+      route: {},
+      wrapper: Provider
+    })
+    expect(await screen.findByText('New Cloud Storage')).toBeVisible()
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Connection type' }))
+    await userEvent.click(await screen.findByText('SFTP'))
+    const applyBtn = await screen.findByRole('button', { name: 'Save' })
+    expect(applyBtn).toBeVisible()
+    fireEvent.click(applyBtn)
+    expect(await screen.findAllByText('Please enter SFTP private key or password')).toHaveLength(2)
+  })
   it('should show error on apply click', async () => {
     mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
       data: {
