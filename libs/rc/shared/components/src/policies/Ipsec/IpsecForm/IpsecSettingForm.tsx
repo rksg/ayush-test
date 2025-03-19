@@ -261,10 +261,10 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
                 onChange={async (key) => {
                   try {
                     await form.validateFields([
-                    ['ikeSecurityAssociation',
-                      'ikeProposals', 'combinationValidator'],
-                    ['espSecurityAssociation',
-                      'espProposals', 'combinationValidator']])
+                      ['ikeSecurityAssociation',
+                        'ikeProposals', 'combinationValidator'],
+                      ['espSecurityAssociation',
+                        'espProposals', 'combinationValidator']])
                     setActiveSecurityTabKey(key)
                   } catch(e) {
                     // eslint-disable-next-line no-console
