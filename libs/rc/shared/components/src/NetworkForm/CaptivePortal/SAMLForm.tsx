@@ -1,17 +1,25 @@
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Button, Form, Space } from 'antd'
+import { useIntl }             from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, Select, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useGetSamlIdpProfileViewDataListQuery }     from '@acx-ui/rc/services'
+import {
+  GuestNetworkTypeEnum,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { IdentityGroup }           from '../NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup'
 
-import { DhcpCheckbox }                   from './DhcpCheckbox'
-import { RedirectUrlInput }               from './RedirectUrlInput'
+import { DhcpCheckbox }                    from './DhcpCheckbox'
+import { RedirectUrlInput }                from './RedirectUrlInput'
 import {
   BypassCaptiveNetworkAssistantCheckbox
 } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
@@ -27,13 +35,58 @@ export const SAMLForm = () => {
     isRuckusAiMode,
     cloneMode
   } = useContext(NetworkFormContext)
-  const intl = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  const idpViewDataList = useGetSamlIdpProfileViewDataListQuery({
+    payload: {
+      page: 1, pageSize: 10000, sortOrder: 'ASC'
+    }
+  })
+
+  const { $t } = useIntl()
   const form = Form.useFormInstance()
 
   return (<>
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Onboarding' })} />
+        <StepsFormLegacy.Title children={$t({ defaultMessage: 'Onboarding' })} />
+        <Space>
+          <Form.Item
+            label={$t({ defaultMessage: 'Select Identity Provider (IdP) via SAML' })}
+            name={['samlIdpProfilesId']}
+            required={true}
+            children={
+              <Select
+                data-testid={'saml-idp-profile-select'}
+                style={{ width: '400px' }}
+                placeholder={'Select...'}
+                options={idpViewDataList.data?.data?.map(item => ({
+                  label: item.name, value: item.id
+                }))}
+              />
+            }
+          />
+
+          <Space split='|'>
+            <Button
+              type='link'
+              disabled={false}
+              onClick={() => {}}>
+              {$t({ defaultMessage: 'View Details' })}
+            </Button>
+            <Button
+              type='link'
+              onClick={() => {}}
+            >
+              {$t({ defaultMessage: 'Add' })}
+            </Button>
+          </Space>
+        </Space>
+        {
+          (isWifiIdentityManagementEnable && !isTemplate) &&
+            <IdentityGroup />
+        }
         <WlanSecurityFormItems />
         <RedirectUrlInput></RedirectUrlInput>
         <DhcpCheckbox />
