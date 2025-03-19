@@ -18,9 +18,7 @@ import { CommonResult,
   CommonRbacUrlsInfo,
   NewAPModel,
   IpsecUrls,
-  Ipsec,
-  IpsecViewData,
-  IpsecActivation
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -207,7 +205,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSoftGreOptions: build.query<SoftGreOptionsData, RequestPayload>({
-      queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
+      queryFn: async ( { params, payload, enableIpsec }, _api, _extraOptions, fetchWithBQ) => {
         const { venueId, networkId } = params as { venueId: string, networkId?: string }
         const gatewayIps = new Set<string>()
         const gatewayIpMaps:Record<string, string[]> = {}
@@ -276,7 +274,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           activationProfiles
         }
 
-        if (venueTotal > 0) {
+        if (enableIpsec && venueTotal > 0) {
           const ipsecQueryPayload = {
             fields: ['id', 'activations', 'venueActivations', 'apActivations'],
             filters: {},
