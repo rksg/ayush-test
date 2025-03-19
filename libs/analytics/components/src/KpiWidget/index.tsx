@@ -1,7 +1,7 @@
 import { useIntl, IntlShape } from 'react-intl'
 
 import { healthApi }                                         from '@acx-ui/analytics/services'
-import { kpiConfig, getSparklineGranularity }                from '@acx-ui/analytics/utils'
+import { kpiConfig, calculateGranularity }                   from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader, Tooltip } from '@acx-ui/components'
 import { intlFormats, formatter }                            from '@acx-ui/formatter'
 import type { AnalyticsFilter }                              from '@acx-ui/utils'
@@ -105,7 +105,7 @@ export function KpiWidget ({
     ...filters,
     kpi: name,
     threshold: (threshold ?? '') as string,
-    granularity: getSparklineGranularity(startDate,endDate),
+    granularity: calculateGranularity(startDate,endDate),
     enableSwitchFirmwareFilter
   }, {
     selectFromResult: (response) => {
