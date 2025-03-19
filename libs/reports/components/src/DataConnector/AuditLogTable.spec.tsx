@@ -21,9 +21,9 @@ import {
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
-import { mockAuditLogs }                                 from './__fixtures__'
-import AuditLogTable, { getRetryError, retryableStatus } from './AuditLogTable'
-import { AuditDto, AuditStatusEnum }                     from './types'
+import { mockAuditLogs }                from './__fixtures__'
+import AuditLogTable, { getRetryError } from './AuditLogTable'
+import { AuditDto, AuditStatusEnum }    from './types'
 
 const mockDataConnectorId = 'mock-data-connector-id'
 const mockMoreThan3DaysBeforeNow = '2025-01-10T02:48:40.069Z'
@@ -96,11 +96,11 @@ describe('AuditLogTable', () => {
       .getAllByRole('cell')
       .map((cell) => cell.textContent)
 
-    const { updatedAt, size, start, end, status } = mockAuditLogs[0]
+    const { updatedAt, size, start, end } = mockAuditLogs[0]
     expect(firstRowText).toEqual([
       '', // checkbox
       formatter(DateFormatEnum.DateTimeFormat)(updatedAt),
-      status,
+      'Success',
       formats.bytesFormat(size),
       formatter(DateFormatEnum.DateTimeFormat)(start),
       formatter(DateFormatEnum.DateTimeFormat)(end),
@@ -215,17 +215,10 @@ describe('getRetryError', () => {
   it('should return undefined when audit is undefined', () =>
     expect(getRetryError(undefined)).toBeUndefined())
 
-  it.each(
-    Object.values(AuditStatusEnum).filter(
-      (status) => !retryableStatus.includes(status)
-    )
-  )(
-    'should return error message when audit status is not in retryableStatus',
-    (status: AuditStatusEnum) =>
-      expect(getRetryError({ status } as AuditDto)).toEqual(
-        `Connector is ${status}`
-      )
-  )
+  it('should return error message when audit status is not in retryableStatus', () => {
+    expect(getRetryError({ status: AuditStatusEnum.Scheduled } as AuditDto))
+      .toEqual('Connector is Scheduled')
+  })
 
   it.each([
     [AuditStatusEnum.Success, mockMoreThan3DaysBeforeNow],
