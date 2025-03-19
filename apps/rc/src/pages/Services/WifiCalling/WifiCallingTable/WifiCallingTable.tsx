@@ -26,7 +26,8 @@ import {
   QosPriorityEnum,
   wifiCallingQosPriorityLabelMapping,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByService
+  getScopeKeyByService,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -54,7 +55,8 @@ export default function WifiCallingTable () {
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  // eslint-disable-next-line max-len
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.WIFI_CALLING)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedWifiCallingServiceListQuery,
