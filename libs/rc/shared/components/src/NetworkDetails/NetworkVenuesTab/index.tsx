@@ -58,7 +58,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   ConfigTemplateUrlsInfo,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams }  from '@acx-ui/react-router-dom'
 import { WifiScopes } from '@acx-ui/types'
@@ -328,7 +329,7 @@ export function NetworkVenuesTab () {
     enableRbac: isPolicyRbacEnabled
   })
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     if (instanceListResult?.data) {
