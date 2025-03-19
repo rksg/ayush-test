@@ -12,9 +12,9 @@ import {
   PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchAccessControl }                               from '@acx-ui/switch/components'
 import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 
+import { SwitchAccessControl } from '../SwitchAccessControl'
 
 const AccessControlTabs = () => {
   const { $t } = useIntl()

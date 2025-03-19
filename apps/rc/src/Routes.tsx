@@ -91,6 +91,7 @@ import Wired                                        from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControl                                from './pages/Policies/AccessControl'
 import CreateAccessControl                          from './pages/Policies/AccessControl/create'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
@@ -134,6 +135,7 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
+import { SwitchAccessControlForm }                                      from './pages/Policies/SwitchAccessControl/SwitchAccessControlForm'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -192,7 +194,6 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
-import AccessControl from './pages/Policies/AccessControl'
 
 
 export default function RcRoutes () {
@@ -1637,8 +1638,8 @@ function PolicyRoutes () {
           path='policies/accessControl/switch/add'
           element={
             // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}>
-              <SwitchPortProfileForm />
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <SwitchAccessControlForm editMode={false} />
             </AuthRoute>
           }
         />
@@ -1646,8 +1647,8 @@ function PolicyRoutes () {
           path='policies/accessControl/switch/:accessControlId/edit'
           element={
             // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}>
-              <SwitchPortProfileForm />
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>
+              <SwitchAccessControlForm editMode={true} />
             </AuthRoute>
           }
         />

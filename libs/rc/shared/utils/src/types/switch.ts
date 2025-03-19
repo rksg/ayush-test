@@ -1118,6 +1118,7 @@ export interface MacAclRule {
 export interface MacAcl {
 	id: string,
 	name: string,
-	switchMacAclRules: MacAclRule[]
+	switchMacAclRules?: MacAclRule[]
+  macAclRules?: MacAclRule[]
 	switchId?: string
 }

@@ -492,5 +492,50 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/rearDetails?unitid=:unitId',
     newApi: true
+  },
+  getAccessControls: {
+    method: 'post',
+    url: '/switchL2AclPolicies/query',
+    newApi: true
+  },
+  addAccessControl: {
+    method: 'post',
+    url: '/switchL2AclPolicies',
+    newApi: true
+  },
+  updateAccessControl: {
+    method: 'put',
+    url: '/switchL2AclPolicies/:l2AclId',
+    newApi: true
+  },
+  deleteAccessControl: {
+    method: 'delete',
+    url: '/switchL2AclPolicies/:l2AclId',
+    newApi: true
+  },
+  getSwitchMacAcls: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/macAcls/query',
+    newApi: true
+  },
+  addSwitchMacAcl: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/macAcls',
+    newApi: true
+  },
+  updateSwitchMacAcl: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/macAcls/:macAclId',
+    newApi: true
+  },
+  deleteSwitchMacAcl: {
+    method: 'delete',
+    url: '/venues/:venueId/switches/:switchId/macAcls',
+    newApi: true
+  },
+  getSwitchStickyMacAcls: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/stickyMacAcls',
+    newApi: true
   }
 }

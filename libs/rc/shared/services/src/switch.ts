@@ -1965,6 +1965,38 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
     }),
+    getAccessControlRules: build.query<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getAccessControl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    addAccessControl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addAccessControl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+    }),
+    updateAccessControl: build.mutation<MacAcl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.updateAccessControl, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+    }),
     deleteAccessControl: build.mutation<MacAcl, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -2327,6 +2359,10 @@ export const {
   usePortDisableRecoverySettingQuery,
   useUpdatePortDisableRecoverySettingMutation,
   useGetAccessControlsQuery,
+  useLazyGetAccessControlsQuery,
+  useLazyGetAccessControlRulesQuery,
+  useAddAccessControlMutation,
+  useUpdateAccessControlMutation,
   useDeleteAccessControlMutation,
   useGetSwitchMacAclsQuery,
   useLazyGetSwitchMacAclsQuery,

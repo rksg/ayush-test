@@ -491,7 +491,6 @@ export function EditPortDrawer ({
       return acc
     }, {} as Record<string, PortProfilesBySwitchId[]>)
 
-    console.log(groupedOptions)
     return getPortProfileOptions(groupedOptions)
   }
 

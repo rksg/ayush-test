@@ -803,6 +803,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchL2AclPolicies/query',
     newApi: true
   },
+  getAccessControl: {
+    method: 'post',
+    url: '/switchL2AclPolicies/l2AclPolicyRules/:l2AclPolicyId',
+    newApi: true
+  },
+  addAccessControl: {
+    method: 'post',
+    url: '/switchL2AclPolicies',
+    newApi: true
+  },
+  updateAccessControl: {
+    method: 'put',
+    url: '/switchL2AclPolicies/:l2AclId',
+    newApi: true
+  },
   deleteAccessControl: {
     method: 'delete',
     url: '/switchL2AclPolicies/:l2AclId',
