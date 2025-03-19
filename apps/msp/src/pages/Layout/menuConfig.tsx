@@ -52,9 +52,8 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE), tenantType)
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasPortalSettingPermission = rbacOpsApiEnabled
-    ?(isOnboardMsp && hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspLabel)]) ||
-      !isOnboardMsp && hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspLabel)])
-    )
+    ? ( (isOnboardMsp && hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspLabel)])) ||
+        (!isOnboardMsp && hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspLabel)])) )
     : isPrimeAdmin
 
   const {
