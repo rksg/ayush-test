@@ -39,13 +39,10 @@ export function VoiceVlan () {
         {
           config.voiceVlans
             .sort((a, b) => Number(a.vlanId) - Number(b.vlanId))
-            .map(vlan => vlan.taggedPorts?.length
-              ? <div key={vlan.vlanId}>
-                {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
-                <span style={{ paddingLeft: '5px' }}>({vlan.taggedPorts.join(', ')})</span>
-              </div>
-              : noDataDisplay
-            )
+            .map(vlan => <div key={vlan.vlanId}>
+              {$t( { defaultMessage: 'VLAN-ID: {id}' }, { id: vlan.vlanId })}
+              <span style={{ paddingLeft: '5px' }}>({vlan.taggedPorts.join(', ')})</span>
+            </div>)
         }
       </>
     }
