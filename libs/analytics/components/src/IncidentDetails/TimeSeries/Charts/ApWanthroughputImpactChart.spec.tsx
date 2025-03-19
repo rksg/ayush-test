@@ -78,7 +78,7 @@ describe('apWanthroughputImpactQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentApInfraWanthroughput,
         charts: [TimeSeriesChartTypes.ApWanThroughputImpactChart],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

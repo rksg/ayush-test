@@ -83,7 +83,7 @@ describe('clientCountChartQuery', () => {
         buffer: buffer6hr,
         incident: fakeIncident1,
         charts: [TimeSeriesChartTypes.ClientCountChart],
-        minGranularity: 'PT180S'
+        minGranularity: 'PT15M'
       })
     )
     expect(status).toBe('fulfilled')

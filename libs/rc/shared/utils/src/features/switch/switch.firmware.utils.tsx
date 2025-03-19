@@ -47,6 +47,19 @@ export const invalidVersionFor82Av = (version: string): boolean => {
   }
 }
 
+export const invalidVersionFor81X = (version: string): boolean => {
+  if (_.isEmpty(version)) {
+    return false
+  }
+  if (_.isString(version) && version.startsWith('10010')) {
+    return !isVerGEVer(version, '10010g', false)
+  } else if (_.isString(version) && version.startsWith('10020')) {
+    return !isVerGEVer(version, '10020c', false)
+  } else {
+    return true
+  }
+}
+
 export const versionAbove10020a = (version: string): boolean => {
   return !!version && _.isString(version) && isVerGEVer(version, '10020a', false)
 }
