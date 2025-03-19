@@ -1,25 +1,9 @@
 import { storiesOf } from '@storybook/react'
 
+import { nodeSize, sampleData } from './__tests__/fixtures'
+
 import { Graph } from '.'
 
-const sampleData = {
-  nodes: [
-    { name: 'AP', value: 5, category: 'center', key: 'AP' },
-    { name: 'Non-Interfering AP', value: 12, category: 'non-interfering', key: '12' },
-    { name: 'Co-Channel Interfering AP', value: 5, category: 'co-channel', key: '5' },
-    { name: 'Rogue AP', value: 10, category: 'rogue', key: '10' }
-  ],
-  links: [
-    { source: 'AP', target: 'Non-Interfering AP' },
-    { source: 'AP', target: 'Co-Channel Interfering AP' },
-    { source: 'AP', target: 'Rogue AP' }
-  ]
-}
-
-const nodeSize = {
-  max: 150,
-  min: 20
-}
 
 storiesOf('Neighbor APGraph', module)
   .add('Default Graph', () => (
@@ -43,3 +27,12 @@ storiesOf('Neighbor APGraph', module)
       nodeSize={nodeSize}
     />
   })
+  .add('Graph with Subtext', () => (
+    <Graph
+      title='Default Graph'
+      subtext='Subtext'
+      data={sampleData}
+      nodeSize={nodeSize}
+      chartRef={() => {}}
+    />
+  ))

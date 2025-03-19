@@ -32,7 +32,7 @@ const categoryColors: Record<string, string> = {
   'rogue': cssStr('--acx-neutrals-80')
 }
 
-interface ProcessedNeighborAPGraph {
+export interface ProcessedNeighborAPGraph {
   nodes: Node[]
   links: Link[]
 }
@@ -103,7 +103,7 @@ export const Graph = (props: NeighborAPGraphProps) => {
           ...node,
           symbolSize: Math.max(Math.min(node.value * 10, nodeSize.max), nodeSize.min),
           itemStyle: {
-            color: categoryColors[node.category] || '#888888'
+            color: categoryColors[node.category]
           },
           label: {
             show: true,
