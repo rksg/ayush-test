@@ -61,7 +61,7 @@ describe('Timeseries component', () => {
         <TimeSeries
           incident={fakeIncident1}
           charts={charts}
-          minGranularity='PT180S'
+          minGranularity='PT15M'
           buffer={buffer6hr}
         />
       </Provider>
@@ -82,7 +82,7 @@ describe('Timeseries component', () => {
         <TimeSeries
           incident={fakeIncidentImpactedStartEnd}
           charts={charts}
-          minGranularity='PT180S'
+          minGranularity='PT15M'
           buffer={noBuffer}
         />
       </Provider>

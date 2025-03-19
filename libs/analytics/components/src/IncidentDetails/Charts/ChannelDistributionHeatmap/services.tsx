@@ -29,7 +29,6 @@ export interface ChannelDistributionHeatMapProps {
   heatMapConfig: HeatmapConfig;
   incident: Incident;
   buffer: BufferType;
-  minGranularity: string;
 }
 export type heatmapType = 'apDistribution' | 'rogueDistribution' | 'dfsEvents'
 export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
@@ -114,8 +113,7 @@ export const api = dataApi.injectEndpoints({
             path: payload.incident.path,
             granularity: calculateGranularity(
               payload.incident.startTime,
-              payload.incident.endTime,
-              payload.minGranularity
+              payload.incident.endTime
             )
           }
         }
