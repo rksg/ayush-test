@@ -6,6 +6,7 @@ import { AnchorLayout, StepsFormLegacy }                   from '@acx-ui/compone
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
+  ConfigTemplateType,
   redirectPreviousPage,
   useConfigTemplate,
   VenueConfigTemplateUrlsInfo,
@@ -46,7 +47,7 @@ export function AdvancedTab () {
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
   const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const isRebootTimeoutFFEnabled = useIsSplitOn(Features.WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE)
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const bssColoringOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateVenueBssColoring,

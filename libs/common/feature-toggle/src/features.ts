@@ -25,8 +25,10 @@ export enum Features {
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
+  CONFIG_TEMPLATE_CLONE_VENUE = 'acx-ui-config-template-clone-venue',
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_ENFORCED_P1 = 'acx-ui-config-template-enforcement-phase1',
+  CONFIG_TEMPLATE_ENFORCED_VENUE = 'acx-ui-config-template-enforcement-venue',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
@@ -310,6 +312,7 @@ export enum Features {
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
   RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
   WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
+  SWITCH_SUPPORT_ICX8100X = 'switch-support-icx8100x-toggle',
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
   ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle'
 }
