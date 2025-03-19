@@ -39,7 +39,7 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       venueId,
       start: dateFilter?.startDate,
       end: dateFilter?.endDate,
-      granularity: calculateGranularity(dateFilter?.startDate, dateFilter?.endDate, 'PT15M'),
+      granularity: calculateGranularity(dateFilter?.startDate, dateFilter?.endDate),
       direction
     } }, {
       skip: !firewallData?.statefulAclEnabled
