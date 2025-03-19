@@ -1,5 +1,5 @@
 /* eslint-disable align-import/align-import */
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input } from 'antd'
 import moment                             from 'moment'
@@ -77,7 +77,7 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
   const intl = useIntl()
   const { $t } = intl
   const { personaId } = useParams()
-  const inIdentityPage = useMemo(() => personaId !== undefined, [personaId])
+  const inIdentityPage = personaId !== undefined
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ manageDevicesVisible, setManageDevicesVisible ] = useState(false)
   const [ managePassphraseInfo, setManagePassphraseInfo ] = useState({} as NewDpskPassphrase)

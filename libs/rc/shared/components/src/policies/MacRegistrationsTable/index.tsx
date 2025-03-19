@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -43,7 +43,7 @@ interface MacRegistrationTableProps {
 export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
-  const inIdentityPage = useMemo(() => personaId !== undefined, [personaId])
+  const inIdentityPage = personaId !== undefined
   const { policyId, tableQuery, defaultIdentityId, settingsId } = props
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
