@@ -2877,3 +2877,83 @@ export const mockIdentityGroupQuery = {
   numberOfElements: 4,
   empty: false
 }
+
+export const mockSAMLIdpQuery = {
+  fields: null,
+  totalCount: 9,
+  page: 1,
+  data: [
+    {
+      id: 'cbe337e7917f48878f6feb1982199430',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A7',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'c55f0a3bc2e44db5b3e55641dcbb0bfc',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A4',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '846c1033256b4bd98e513193f415a0f2',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-1',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'eb9b1b54aaa646dda2f457b54d645b22',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A1',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '5e75c9ae21a64ac78e067c6076d0bc43',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A5',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'f71491f6164448d986e9d1defbb0b584',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A6',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '571f87b3bb3344c59d13102de7b0f376',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-2',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'a7bc844b82724af5bfad3586f82d74b1',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A2',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '07977919a7a34e29a1c2169c2bd2d044',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A6',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    }
+  ]
+}

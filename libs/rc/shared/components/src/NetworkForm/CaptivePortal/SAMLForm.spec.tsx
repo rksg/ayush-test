@@ -1,67 +1,96 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { StepsFormLegacy }    from '@acx-ui/components'
+import { directoryServerApi } from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  CommonUrlsInfo,
+  GuestNetworkTypeEnum,
+  WifiUrlsInfo,
+  SamlIdpProfileUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
+
 import {
   cloudPathDataNone,
   mockAAAPolicyListResponse,
   mockedCloudPathAcctRadius,
   mockedCloudPathAuthRadius,
-  mockedDirectoryServerProfiles,
   networkDeepResponse,
   networksResponse,
   successResponse,
   venueListResponse,
-  venuesResponse
-} from '../__tests__/fixtures';
-import { AaaUrls, CommonUrlsInfo, DirectoryServerUrls, GuestNetworkTypeEnum, WifiUrlsInfo } from '@acx-ui/rc/utils';
-import { Provider, store } from '@acx-ui/store';
-import { directoryServerApi } from '@acx-ui/rc/services';
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils';
-import { rest } from 'msw';
-import { UserUrlsInfo } from '@acx-ui/user';
-import NetworkFormContext from '../NetworkFormContext';
-import { MLOContext } from '@acx-ui/rc/components';
-import { StepsFormLegacy } from '@acx-ui/components';
-import {SAMLForm} from './SAMLForm';
+  venuesResponse,
+  mockSAMLIdpQuery
+} from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
+import NetworkFormContext from '../NetworkFormContext'
 
-describe('CaptiveNetworkForm-SAML', () => {
-  const directoryServerAPI = jest.fn()
 
+import { SAMLForm } from './SAMLForm'
+
+describe('CaptiveNetworkForm - SAML', () => {
+  const SAMLQueryAPI = jest.fn()
   beforeEach(() => {
-    networkDeepResponse.name = 'Directory network test'
-    directoryServerAPI.mockClear()
-    const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
+    networkDeepResponse.name = 'SAML network test'
+    SAMLQueryAPI.mockClear()
+    const wisprRes = {
+      ...networkDeepResponse,
+      enableDhcp: true,
+      type: 'guest',
       guestPortal: {
         ...cloudPathDataNone.guestPortal,
-        guestNetworkType: GuestNetworkTypeEnum.Directory
+        guestNetworkType: GuestNetworkTypeEnum.SAML
       },
-      wlan: { ...networkDeepResponse.wlan, ...cloudPathDataNone.wlan } }
+      wlan: { ...networkDeepResponse.wlan, ...cloudPathDataNone.wlan }
+    }
     store.dispatch(directoryServerApi.util.resetApiState())
     mockServer.use(
-      rest.get(UserUrlsInfo.getAllUserSettings.url,
-        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
-        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(wisprRes))),
-      rest.get(AaaUrls.getAAAPolicy.url,
-        (req, res, ctx) => {
-          // eslint-disable-next-line max-len
-          return res(ctx.json(req.params.venueId === '21' ? mockedCloudPathAuthRadius : mockedCloudPathAcctRadius))
-        }
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+        res(ctx.json({ COMMON: '{}' }))
       ),
-      rest.post(DirectoryServerUrls.getDirectoryServerViewDataList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
+        res(ctx.json(venuesResponse))
+      ),
+      rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
+        res(ctx.json(venueListResponse))
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+        res(ctx.json(networksResponse))
+      ),
+      rest.post(
+        WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => res(ctx.json(successResponse))
+      ),
+      rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
+        res(ctx.json(venueListResponse))
+      ),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url, (_, res, ctx) =>
+        res(ctx.json(mockAAAPolicyListResponse))
+      ),
+      rest.get(WifiUrlsInfo.getNetwork.url, (_, res, ctx) =>
+        res(ctx.json(wisprRes))
+      ),
+      rest.get(AaaUrls.getAAAPolicy.url, (req, res, ctx) => {
+        // eslint-disable-next-line max-len
+        return res(
+          ctx.json(
+            req.params.venueId === '21'
+              ? mockedCloudPathAuthRadius
+              : mockedCloudPathAcctRadius
+          )
+        )
+      }),
+      rest.post(
+        SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (_, res, ctx) => {
-          directoryServerAPI()
-          return res(ctx.json(mockedDirectoryServerProfiles))
-        })
+          SAMLQueryAPI()
+          return res(ctx.json(mockSAMLIdpQuery))
+        }
+      )
     )
   })
 
@@ -72,7 +101,6 @@ describe('CaptiveNetworkForm-SAML', () => {
   }
 
   it('should test edit network successfully', async () => {
-    const directoryServerDataRef = { current: { id: '', name: '' } }
     render(
       <Provider>
         <NetworkFormContext.Provider
@@ -83,10 +111,12 @@ describe('CaptiveNetworkForm-SAML', () => {
             isRuckusAiMode: false
           }}
         >
-          <MLOContext.Provider value={{
-            isDisableMLO: false,
-            disableMLO: jest.fn()
-          }}>
+          <MLOContext.Provider
+            value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}
+          >
             <StepsFormLegacy>
               <StepsFormLegacy.StepForm>
                 <SAMLForm />
@@ -94,7 +124,15 @@ describe('CaptiveNetworkForm-SAML', () => {
             </StepsFormLegacy>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
-      </Provider>, { route: { params } })
-    await waitFor(() => expect(directoryServerAPI).toBeCalled())
+      </Provider>,
+      { route: { params } }
+    )
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
+    const saml = screen.getByTestId('saml-idp-profile-select')
+    expect(saml).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('combobox'))
+    expect(
+      await screen.findByRole('option', { name: /SAML-A7/ })
+    ).toBeInTheDocument()
   })
 })
