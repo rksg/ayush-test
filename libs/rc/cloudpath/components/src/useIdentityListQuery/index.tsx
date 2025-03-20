@@ -147,7 +147,7 @@ export const useIdentityListQuery = (props: UsePersonaListQueryProps) => {
     }))
 
     setDataSource(result ?? [] as Persona[])
-  }, [deviceCountMap, certCountMap])
+  }, [deviceCountMap, certCountMap, clientCountMap, personaListTableQuery.data?.data])
 
   return {
     data: dataSource.length === 0
