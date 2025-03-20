@@ -61,9 +61,6 @@ export const History = styled.div`
       &.active {
         background: var(--acx-neutrals-80);
         color: var(--acx-primary-white);
-        .action {
-          display: flex;
-        }
       }
       &.edit {
         display: grid;

@@ -14,6 +14,7 @@ import { BarChart, cssNumber, cssStr, DonutChart, Loader, showToast, StackedArea
 import { DateFormatEnum, formatter }                                                                           from '@acx-ui/formatter'
 import { useGetWidgetQuery }                                                                                   from '@acx-ui/rc/services'
 import { WidgetListData }                                                                                      from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                       from '@acx-ui/utils'
 
 import { Group } from '../Canvas'
 import * as UI   from '../styledComponents'
@@ -265,10 +266,24 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         tooltipFormatter={tooltipFormatter}
       />
     } else if(type === 'table') {
+      const formatterType = {
+        MILLISECONDS: formatter('longDurationFormat'),
+        BYTES: formatter('bytesFormat')
+      }
       return <Table
         style={{ width: width-30, height: height-5 }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
-          .map(i => ({ ...i, searchable: true })) || []}
+          .map(i => ({
+            ...i,
+            searchable: true,
+            // @ts-ignore
+            ...(i?.unit ? {
+              render: (value) => {
+                // @ts-ignore
+                return value ? formatterType[i.unit](value) : noDataDisplay
+              }
+            } : [])
+          })) || []}
         dataSource={chartData?.chartOption?.dataSource}
         type='compactWidget'
         rowKey='index' // API support 'index' column

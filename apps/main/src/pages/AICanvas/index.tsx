@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
 import { Divider, Form, Spin } from 'antd'
 import { debounce }            from 'lodash'
@@ -19,6 +19,61 @@ import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
+
+const Message = (props:{ chat: ChatMessage, sessionId:string, groups: Group[] }) => {
+  const { chat, sessionId, groups } = props
+  const { $t } = useIntl()
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations have been deleted due to the 30-day retention policy.' })
+  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+    : <div className='message'>
+      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
+        <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
+      </div>
+      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+        ...chat.widgets[0],
+        sessionId,
+        id: chat.id,
+        chatId: chat.id
+      }}
+      groups={groups}
+      /> }
+      {
+        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+          {moment(chat.created).format('hh:mm A')}
+        </div>
+      }
+    </div>
+}
+
+const Messages = memo((props:{
+  moreloading: boolean,
+  aiBotLoading: boolean,
+  chats: ChatMessage[],
+  sessionId:string,
+  groups: Group[]
+})=> {
+  const { $t } = useIntl()
+  const welcomeMessage = {
+    id: 'welcomeMessage',
+    role: 'AI',
+    text: $t({ defaultMessage:
+      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
+  }
+  const { moreloading, aiBotLoading, chats, sessionId, groups } = props
+  return <div className='messages-wrapper'>
+    {
+      !chats?.length && <Message key={welcomeMessage.id}
+        chat={welcomeMessage}
+        sessionId={sessionId}
+        groups={groups} />
+    }
+    {moreloading && <div className='loading'><Spin /></div>}
+    {chats?.map((i) => (
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} />
+    ))}
+    {aiBotLoading && <div className='loading'><Spin /></div>}
+  </div>})
 
 export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
@@ -46,8 +101,6 @@ export default function AICanvas () {
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
-  const deletedHint = $t({ defaultMessage:
-    'Older chat conversations have been deleted due to the 30-day retention policy.' })
   const questions = [
     'What can you do?',
     'Show me the top-consuming clients',
@@ -55,12 +108,7 @@ export default function AICanvas () {
     'Can you give me the trending network traffic from last week?'
   ] // Only support english default questions in phase 1
 
-  const welcomeMessage = {
-    id: 'welcomeMessage',
-    role: 'AI',
-    text: $t({ defaultMessage:
-      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
-  }
+
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
@@ -206,17 +254,17 @@ export default function AICanvas () {
             type: 'default',
             key: 'cancel'
           }, {
-            text: $t({ defaultMessage: 'Save Canvas' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: handleSaveCanvas
-          }, {
             text: $t({ defaultMessage: 'Discard Changes' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
             handler: onClose
+          }, {
+            text: $t({ defaultMessage: 'Save Canvas' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true,
+            handler: handleSaveCanvas
           }]
         }
       })
@@ -258,29 +306,6 @@ export default function AICanvas () {
     setChats([])
   }
 
-  const Message = (props:{ chat: ChatMessage }) => {
-    const { chat } = props
-    return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
-      : <div className='message'>
-        <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-          <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
-        </div>
-        { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
-          ...chat.widgets[0],
-          sessionId,
-          id: chat.id,
-          chatId: chat.id
-        }}
-        groups={groups}
-        /> }
-        {
-          chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-            {moment(chat.created).format('hh:mm A')}
-          </div>
-        }
-      </div>
-  }
-
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
@@ -311,7 +336,7 @@ export default function AICanvas () {
               </div>
               <div className='title'>
                 <RuckusAiDog size='lg' />
-                <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
+                <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
                 <Close data-testid='close-icon' onClick={onClickClose}/>
@@ -320,16 +345,12 @@ export default function AICanvas () {
             <div className='content'>
               <Loader states={[{ isLoading: isChatsLoading }]}>
                 <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <div className='messages-wrapper'>
-                    {
-                      !chats?.length && <Message key={welcomeMessage.id} chat={welcomeMessage} />
-                    }
-                    {moreloading && <div className='loading'><Spin /></div>}
-                    {chats?.map((i) => (
-                      <Message key={i.id} chat={i} />
-                    ))}
-                    {aiBotLoading && <div className='loading'><Spin /></div>}
-                  </div>
+                  <Messages
+                    moreloading={moreloading}
+                    aiBotLoading={aiBotLoading}
+                    chats={chats}
+                    sessionId={sessionId}
+                    groups={groups} />
                   {
                     !chats?.length && <div className='placeholder'>
                       {
