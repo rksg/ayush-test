@@ -32,6 +32,7 @@ import {
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
   NetworkTunnelSoftGreAction,
+  ConfigTemplateType,
   ConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -249,7 +250,7 @@ export function Venues (props: VenuesProps) {
   })
   // hooks for tunnel column - end
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     // need to make sure table data is ready.

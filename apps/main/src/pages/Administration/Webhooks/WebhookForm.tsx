@@ -45,6 +45,7 @@ export function WebhookForm (props: {
   const [activities, setActivities] = useState<string[]>([])
   const [events, setEvents] = useState<string[]>([])
   const [enabled, setEnabled] = useState<boolean>(true)
+  const [touched, setTouched] = useState<boolean>(false)
   const webhook = props.selected ?? undefined
   const [addWebhook] = useAddWebhookMutation()
   const [updateWebhook] = useUpdateWebhookMutation()
@@ -88,39 +89,45 @@ export function WebhookForm (props: {
 
   const onSave = async () => {
     try {
+      setTouched(true)
+      const hasError = enabled &&
+        incidents.length === 0 && activities.length === 0 && events.length === 0
       await form.validateFields()
-      const values = form.getFieldsValue(['name','url','secret','payload'])
-      const payload: Webhook = {
-        ...values,
-        payload: Object.keys(WebhookPayloadEnum)[Object.values(WebhookPayloadEnum)
-          .indexOf(values.payload as WebhookPayloadEnum)],
-        status: enabled ? 'ON' : 'OFF',
-        incident: {},
-        activity: {},
-        event: {}
+      if (!hasError) {
+        const values = form.getFieldsValue(['name','url','secret','payload'])
+        const payload: Webhook = {
+          ...values,
+          payload: Object.keys(WebhookPayloadEnum)[Object.values(WebhookPayloadEnum)
+            .indexOf(values.payload as WebhookPayloadEnum)],
+          status: enabled ? 'ON' : 'OFF',
+          incident: {},
+          activity: {},
+          event: {}
+        }
+        const incidentEnumKeys = incidents.map(value => value.slice(value.indexOf('_') + 1))
+        const activityEnumKeys = activities.map(value => value.slice(value.indexOf('_') + 1))
+        const eventEnumKeys = events.map(value => value.slice(value.indexOf('_') + 1))
+        incidentProps.forEach(prop => {
+          payload.incident[prop.toLowerCase()] = incidentEnumKeys
+            .filter(key => key.split('_')[0] === prop).map(key => key.split('_')[1])
+        })
+        activityProps.forEach(prop => {
+          payload.activity[prop.toLowerCase()] = activityEnumKeys
+            .filter(key => key.split('_')[0] === prop).map(key => key.split('_')[1])
+        })
+        eventProps.forEach(prop => {
+          payload.event[prop.toLowerCase()] = eventEnumKeys.filter(key =>
+            key.split('_')[0] === prop).map(key => key.split('_')[1])
+        })
+        if (props.selected) {
+          await updateWebhook({ params: { webhookId: props.selected.id },
+            payload: payload }).unwrap()
+        }
+        else {
+          await addWebhook({ payload: payload }).unwrap()
+        }
+        onClose()
       }
-      const incidentEnumKeys = incidents.map(value => value.slice(value.indexOf('_') + 1))
-      const activityEnumKeys = activities.map(value => value.slice(value.indexOf('_') + 1))
-      const eventEnumKeys = events.map(value => value.slice(value.indexOf('_') + 1))
-      incidentProps.forEach(prop => {
-        payload.incident[prop.toLowerCase()] = incidentEnumKeys
-          .filter(key => key.split('_')[0] === prop).map(key => key.split('_')[1])
-      })
-      activityProps.forEach(prop => {
-        payload.activity[prop.toLowerCase()] = activityEnumKeys
-          .filter(key => key.split('_')[0] === prop).map(key => key.split('_')[1])
-      })
-      eventProps.forEach(prop => {
-        payload.event[prop.toLowerCase()] = eventEnumKeys.filter(key => key.split('_')[0] === prop)
-          .map(key => key.split('_')[1])
-      })
-      if (props.selected) {
-        await updateWebhook({ params: { webhookId: props.selected.id }, payload: payload }).unwrap()
-      }
-      else {
-        await addWebhook({ payload: payload }).unwrap()
-      }
-      onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -209,6 +216,13 @@ export function WebhookForm (props: {
             <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
         {ActiveTabPane}
+        <div role='alert'
+          className='ant-form-item-explain-error'
+          style={{ position: 'absolute', bottom: '72px' }}
+          hidden={!(touched && enabled &&
+            incidents.length === 0 && activities.length === 0 && events.length === 0)}>
+          {$t({ defaultMessage: 'Please select at least one Incident, Activity, or Event' })}
+        </div>
       </Form>
     </UI.WebhookFormWrapper>
   </Drawer>

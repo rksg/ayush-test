@@ -295,7 +295,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
                     initialValue={1}
-                    children={<InputNumber min={0} max={65536} />} />
+                    children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
               }

@@ -67,6 +67,8 @@ export function VenueFirmwareList () {
   const intl = useIntl()
   const params = useParams()
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport81Or81X = isSupport8100 || isSupport8100X
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenueV1002>({
     useQuery: useGetSwitchVenueVersionListV1001Query,
@@ -153,7 +155,7 @@ export function VenueFirmwareList () {
           SwitchFirmwareModelGroup.ICX71,
           SwitchFirmwareModelGroup.ICX7X,
           SwitchFirmwareModelGroup.ICX82,
-          ...(isSupport8100 ? [SwitchFirmwareModelGroup.ICX81] : [])
+          ...(isSupport81Or81X ? [SwitchFirmwareModelGroup.ICX81] : [])
         ]
 
         const getRecommendedVersion = (modelGroup: SwitchFirmwareModelGroup) => {

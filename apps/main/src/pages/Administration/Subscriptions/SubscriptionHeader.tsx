@@ -22,7 +22,6 @@ import { useParams }                                         from '@acx-ui/react
 import { useGetAccountTierQuery }                            from '@acx-ui/user'
 import { getJwtTokenPayload, isDelegationMode, AccountTier } from '@acx-ui/utils'
 
-import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
 enum SubscriptionTierType {
   Platinum = 'Professional',
@@ -107,7 +106,6 @@ export const SubscriptionHeader = () => {
                   }}
                 />
               </Typography.Text>
-              <ConvertNonVARMSPButton />
             </SpaceWrapper>
           </Col>
         </Row>
