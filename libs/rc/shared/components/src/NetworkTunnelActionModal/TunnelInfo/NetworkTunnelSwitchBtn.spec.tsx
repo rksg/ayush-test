@@ -14,15 +14,6 @@ import { NetworkTunnelSwitchBtn } from './NetworkTunnelSwitchBtn'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
-jest.mock('antd', () => ({
-  ...jest.requireActual('antd'),
-  Spin: ({ children, spinning }: React.PropsWithChildren<{ spinning: boolean }>) =>
-    <div data-testid='mock-spinner'>
-      <span data-testid='spinner-state'>{''+spinning}</span>
-      {children}
-    </div>
-}))
-
 describe('NetworkTunnelSwitchBtn', () => {
   const mockOnClick = jest.fn()
 
@@ -142,7 +133,7 @@ describe('NetworkTunnelSwitchBtn', () => {
   })
 
   // eslint-disable-next-line max-len
-  it('should call onClick with false when the button is clicked and NOT show spinner', async () => {
+  it('should call onClick with false when the button is clicked and NOT greyout', async () => {
     const mockOnClick = jest.fn()
 
     render(<NetworkTunnelSwitchBtn
@@ -153,12 +144,11 @@ describe('NetworkTunnelSwitchBtn', () => {
 
     const button = screen.getByRole('switch')
     await userEvent.click(button)
-    const spinnerState = screen.getByTestId('spinner-state')
-    expect(spinnerState).toHaveTextContent('false')
+    expect(screen.getByRole('switch')).not.toBeDisabled()
     expect(mockOnClick).toHaveBeenCalledWith(false)
   })
 
-  it('should show spinner until onClick is resolved(Promise)', async () => {
+  it('should greyout until onClick is resolved(Promise)', async () => {
     const mockOnClick = jest.fn().mockImplementation(() =>
       new Promise<void>(resolve => setTimeout(() => resolve(), 1000)))
 
@@ -170,13 +160,12 @@ describe('NetworkTunnelSwitchBtn', () => {
 
     const button = screen.getByRole('switch')
     await userEvent.click(button)
-    const spinnerState = screen.getByTestId('spinner-state')
-    expect(spinnerState).toHaveTextContent('true')
+    expect(screen.getByRole('switch')).toBeDisabled()
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000))
-    await waitFor(() => expect(screen.getByTestId('spinner-state')).toHaveTextContent('false'))
+    await waitFor(() => expect(screen.getByRole('switch')).not.toBeDisabled())
   })
 
-  it('should show spinner until onClick is rejected(Promise)', async () => {
+  it('should greyout until onClick is rejected(Promise)', async () => {
     const mockOnClick = jest.fn().mockImplementation(() =>
       new Promise<void>((_, reject) => setTimeout(() => reject(), 1000)))
 
@@ -188,9 +177,8 @@ describe('NetworkTunnelSwitchBtn', () => {
 
     const button = screen.getByRole('switch')
     await userEvent.click(button)
-    const spinnerState = screen.getByTestId('spinner-state')
-    expect(spinnerState).toHaveTextContent('true')
+    expect(screen.getByRole('switch')).toBeDisabled()
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000))
-    await waitFor(() => expect(screen.getByTestId('spinner-state')).toHaveTextContent('false'))
+    await waitFor(() => expect(screen.getByRole('switch')).not.toBeDisabled())
   })
 })
