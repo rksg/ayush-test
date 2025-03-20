@@ -1,4 +1,6 @@
-import styled from 'styled-components'
+
+import { Typography } from 'antd'
+import styled         from 'styled-components/macro'
 
 export const SubTitle = styled.div`
   font-size: var(--acx-headline-5-font-size);
@@ -27,4 +29,18 @@ export const MacACLsWrapper = styled.div`
 [data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
   border: 1px solid #434343;
 }
+`
+
+export const TooltipTitle = styled(Typography)`
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--acx-neutrals-40);
+`
+
+export const TooltipContainer = styled.div`
+  padding: 5px;
+`
+
+export const RowSpace = styled.div`
+  margin-top: 10px;
 `

@@ -28,7 +28,8 @@ import {
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
   useGetDirectoryServerViewDataListQuery,
-  useSwitchPortProfilesCountQuery
+  useSwitchPortProfilesCountQuery,
+  useAccessControlsCountQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -198,12 +199,13 @@ function useCardData (): PolicyCardData[] {
     {
       type: PolicyType.ACCESS_CONTROL,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
-      totalCount: useGetEnhancedAccessControlProfileListQuery({
+      totalCount: Number(useGetEnhancedAccessControlProfileListQuery({
         params, payload: {
           ...defaultPayload,
           noDetails: true
         }, enableRbac
-      }).data?.totalCount,
+      }).data?.totalCount ?? 0) + Number(useAccessControlsCountQuery({
+        params }).data ?? 0),
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/accessControl/wifi'),
       disabled: !isSwitchMacAclEnabled

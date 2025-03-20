@@ -68,7 +68,9 @@ import {
   SwitchPortProfilesAppliedTargets,
   PortProfilesForMultiSwitches,
   PortDisableRecoverySetting,
-  MacAcl
+  MacAcl,
+  MacAclOverview,
+  MacAclRule
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1954,7 +1956,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getAccessControls: build.query<TableResult<MacAcl>, RequestPayload>({
+    getAccessControlsList: build.query<TableResult<MacAcl>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getAccessControls, params, customHeaders.v1)
@@ -1965,10 +1967,20 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
     }),
-    getAccessControlRules: build.query<MacAcl, RequestPayload>({
+    getAccessControlRules: build.query<MacAclRule, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getAccessControl, params, customHeaders.v1)
+          SwitchUrlsInfo.getAccessControlRules, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getAccessControlOverview: build.query<TableResult<MacAclOverview>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getAccessControlOverview, params, customHeaders.v1)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2007,6 +2019,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
+    }),
+    accessControlsCount: build.query<MacAcl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getAccessControlsCount, params, customHeaders.v1)
+        return { ...req }
+      }
     }),
     getSwitchMacAcls: build.query<TableResult<MacAcl>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2358,12 +2377,15 @@ export const {
   usePortProfilesListBySwitchIdQuery,
   usePortDisableRecoverySettingQuery,
   useUpdatePortDisableRecoverySettingMutation,
-  useGetAccessControlsQuery,
-  useLazyGetAccessControlsQuery,
+  useGetAccessControlsListQuery,
+  useLazyGetAccessControlsListQuery,
+  useGetAccessControlRulesQuery,
   useLazyGetAccessControlRulesQuery,
+  useAccessControlsCountQuery,
   useAddAccessControlMutation,
   useUpdateAccessControlMutation,
   useDeleteAccessControlMutation,
+  useGetAccessControlOverviewQuery,
   useGetSwitchMacAclsQuery,
   useLazyGetSwitchMacAclsQuery,
   useAddSwitchMacAclMutation,

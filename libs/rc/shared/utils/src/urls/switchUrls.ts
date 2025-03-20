@@ -803,9 +803,19 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchL2AclPolicies/query',
     newApi: true
   },
-  getAccessControl: {
+  getAccessControlRules: {
     method: 'post',
-    url: '/switchL2AclPolicies/l2AclPolicyRules/:l2AclPolicyId',
+    url: '/switchL2AclPolicies/l2AclPolicyRules/:accessControlId',
+    newApi: true
+  },
+  getAccessControlOverview: {
+    method: 'post',
+    url: '/switchL2AclPolicies/:accessControlId/appliedSwitches/query',
+    newApi: true
+  },
+  getAccessControlsCount: {
+    method: 'get',
+    url: '/switchL2AclPolicies/totalAmount',
     newApi: true
   },
   addAccessControl: {

@@ -1122,3 +1122,14 @@ export interface MacAcl {
   macAclRules?: MacAclRule[]
 	switchId?: string
 }
+
+export interface MacAclOverview {
+	id: string,
+	switchId: string,
+  switchName: string,
+  serialNumber: string,
+  model: string,
+  venueId: string,
+  venueName: string,
+  ports: string
+}

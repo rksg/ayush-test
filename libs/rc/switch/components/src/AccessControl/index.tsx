@@ -9,8 +9,8 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { useDeleteAccessControlMutation, useGetAccessControlsQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { useDeleteAccessControlMutation, useGetAccessControlsListQuery } from '@acx-ui/rc/services'
 import {
   MacAcl,
   SwitchRbacUrlsInfo,
@@ -35,7 +35,7 @@ export function SwitchAccessControl () {
   const [deleteSwitchMacAcl] = useDeleteAccessControlMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: useGetAccessControlsQuery,
+    useQuery: useGetAccessControlsListQuery,
     defaultPayload: {},
     enableRbac: isSwitchRbacEnabled,
     sorter: {

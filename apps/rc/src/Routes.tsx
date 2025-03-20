@@ -135,6 +135,7 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
+import { SwitchAccessControlDetail }                                    from './pages/Policies/SwitchAccessControl/SwitchAccessControlDetail'
 import { SwitchAccessControlForm }                                      from './pages/Policies/SwitchAccessControl/SwitchAccessControlForm'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
@@ -1653,11 +1654,11 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path='policies/accessControl/switch/:accessControlId/detail'
+          path='policies/accessControl/switch/:accessControlId/:activeTab'
           element={
           // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DETAIL)}>
-              <SwitchPortProfileDetail />
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.DETAIL)}>
+              <SwitchAccessControlDetail />
             </AuthRoute>
           }
         />

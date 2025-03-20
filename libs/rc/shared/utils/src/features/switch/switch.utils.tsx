@@ -13,7 +13,8 @@ import {
   SwitchStatusEnum,
   SwitchViewModel,
   SWITCH_TYPE,
-  SWITCH_SERIAL_PATTERN
+  SWITCH_SERIAL_PATTERN,
+  MacAclRule
 } from '../../types'
 import { FlexibleAuthentication } from '../../types'
 
@@ -822,4 +823,19 @@ export const checkSwitchUpdateFields = function (
     }
     return result
   }, [])
+}
+
+export const macAclRulesParser = (macAclRules: MacAclRule[]) => {
+  if (!macAclRules || macAclRules.length === 0) {
+    return { permit: 0, deny: 0 }
+  }
+
+  return macAclRules.reduce((acc, rule) => {
+    if (rule.action === 'permit') {
+      acc.permit += 1
+    } else if (rule.action === 'deny') {
+      acc.deny += 1
+    }
+    return acc
+  }, { permit: 0, deny: 0 })
 }

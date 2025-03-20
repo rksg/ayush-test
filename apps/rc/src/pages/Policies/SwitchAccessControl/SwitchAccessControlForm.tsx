@@ -10,7 +10,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
-  useLazyGetAccessControlsQuery,
+  useLazyGetAccessControlsListQuery,
   useAddAccessControlMutation,
   useUpdateAccessControlMutation
 } from '@acx-ui/rc/services'
@@ -67,7 +67,7 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
 
   const [addAccessControl] = useAddAccessControlMutation()
   const [updateAccessControl] = useUpdateAccessControlMutation()
-  const [getAccessControls] = useLazyGetAccessControlsQuery()
+  const [getAccessControls] = useLazyGetAccessControlsListQuery()
 
   useEffect(() => {
     if(accessControlId) {
