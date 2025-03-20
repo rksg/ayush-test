@@ -21,7 +21,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useActivateSoftGreMutation: jest.fn().mockImplementation(() => [mockedActivateSoftGre]),
   useDectivateSoftGreMutation: jest.fn().mockImplementation(() => [mockedDeactivateSoftGre]),
   useActivateIpsecMutation: jest.fn().mockImplementation(() => [mockedActivateIpsec]),
-  useDectivateIpsecMutation: jest.fn().mockImplementation(() => [mockedDeactivateIpsec])
+  useDeactivateIpsecMutation: jest.fn().mockImplementation(() => [mockedDeactivateIpsec])
 }))
 
 describe('useSoftGreTunnelActions', () => {
