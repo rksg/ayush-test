@@ -65,7 +65,7 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   }),
   [GuestNetworkTypeEnum.SAML]: defineMessage({
     defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.',
-    description: 'SSO via SAML Identity Provider (IdP)'
+    description: 'Description for SAML'
   })
 }
 

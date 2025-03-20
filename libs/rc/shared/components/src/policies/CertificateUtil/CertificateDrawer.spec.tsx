@@ -4,10 +4,8 @@ import { CertificateUrls, ExtendedKeyUsages } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen }         from '@acx-ui/test-utils'
 
-import { caList, certList } from '../__test__/fixtures'
-
-import CertificateDrawer from './CertificateDrawer'
-
+import { caList, certList } from './__test__/fixtures'
+import CertificateDrawer    from './CertificateDrawer'
 
 describe('Add Certificate Drawer', () => {
   beforeEach(() => {
