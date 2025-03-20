@@ -1,4 +1,3 @@
-
 import { DefaultOptionType } from 'antd/lib/select'
 import _, { cloneDeep }      from 'lodash'
 
@@ -25,6 +24,8 @@ import { baseIpSecApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { CommonResult }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
+
+import { softGreApi } from './softGre'
 
 
 
@@ -59,6 +60,11 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
             'DeactivateSoftGreIpsecProfileOnVenueWifiNetwork'
           ]
           onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              softGreApi.util.invalidateTags([
+                { type: 'SoftGre', id: 'LIST' }
+              ])
+            )
             api.dispatch(
               ipSecApi.util.invalidateTags([
                 { type: 'IpSec', id: 'LIST' },
@@ -242,6 +248,45 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
 
         let { data: listData } = ipsecListRes.data as TableResult<IpsecViewData>
 
+        const softGreQueryPayload = {
+          fields: ['id', 'activations', 'venueActivations', 'apActivations'],
+          filters: {},
+          page: 1,
+          pageSize: 10_000
+        }
+        const softGreReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+        // eslint-disable-next-line max-len
+        const softGreRes = await fetchWithBQ({ ...softGreReq, body: JSON.stringify(softGreQueryPayload) })
+        const { data: softGreData } = softGreRes.data as TableResult<SoftGreViewData>
+        const softGreIds = new Set<string>()
+        softGreData?.forEach((softGre: SoftGreViewData) => {
+          softGre.activations?.forEach(activation => {
+            if (activation.venueId === venueId) {
+              softGreIds.add(softGre.id)
+            }
+          })
+          softGre.apActivations?.forEach(activation => {
+            if (activation.venueId === venueId) {
+              softGreIds.add(softGre.id)
+            }
+          })
+          softGre.venueActivations?.forEach(activation => {
+            if (activation.venueId === venueId) {
+              softGreIds.add(softGre.id)
+            }
+          })
+        })
+        if (softGreIds.size > 1) {
+          return {
+            data: {
+              options: listData.map((item) =>
+                ({ value: item.id, label: item.name, disabled: true })) ,
+              id: '',
+              isLockedOptions: true
+            } as IpSecOptionsData
+          }
+        }
+
         let venueTotal = 0
         let ipsecProfileId = ''
 
@@ -309,9 +354,9 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
     }),
-    dectivateIpsec: build.mutation<CommonResult, RequestPayload>({
+    deactivateIpsec: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(IpsecUrls.dectivateIpsec, params)
+        return createHttpRequest(IpsecUrls.deactivateIpsec, params)
       },
       invalidatesTags: [{ type: 'IpSec', id: 'LIST' }, { type: 'IpSec', id: 'Options' }]
     }),
@@ -362,7 +407,7 @@ export const {
   useGetIpsecOptionsQuery,
   useLazyGetIpsecOptionsQuery,
   useActivateIpsecMutation,
-  useDectivateIpsecMutation,
+  useDeactivateIpsecMutation,
   useActivateIpsecOnVenueLanPortMutation,
   useDeactivateIpsecOnVenueLanPortMutation,
   useActivateIpsecOnAPLanPortMutation,

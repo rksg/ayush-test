@@ -35,7 +35,7 @@ export default function SolutionTokenMspTabContent (props: TabContentProps
   useEffect(() => {
     const rows =
     deviceCompliances.filter(item => [DeviceComplianceType.SLTN_ADAPT_POLICY,
-      DeviceComplianceType.SLTN_PI_NET,
+      DeviceComplianceType.SLTN_PIN_FOR_IDENTITY,
       DeviceComplianceType.SLTN_PMS_INT,
       DeviceComplianceType.SLTN_SIS_INT,
       DeviceComplianceType.SLTN_HYBRID_CLOUD_SEC

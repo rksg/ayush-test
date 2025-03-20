@@ -20,9 +20,6 @@ jest.mock('@acx-ui/components', () => ({
   StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />),
   showToast: jest.fn()
 }))
-jest.mock('./ConvertNonVARMSPButton', () => ({
-  ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
-}))
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   isDelegationMode: jest.fn().mockReturnValue(false),
@@ -111,7 +108,7 @@ describe('SubscriptionHeader', () => {
     expect(await screen.findByText('Essentials')).toBeVisible()
   })
 
-  it('should filter edge data when edge FF is not denabled', async () => {
+  it('should filter edge data when edge FF is not enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_TOGGLE)
 
     render(
@@ -123,6 +120,23 @@ describe('SubscriptionHeader', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(2)
+    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
+    expect(await screen.findByText('Essentials')).toBeVisible()
+  })
+
+  it('should filter edge data when virtual samrt edge FF is not enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+
+    render(
+      <Provider>
+        <SubscriptionHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
     expect(screen.queryAllByText('SmartEdge').length).toBe(0)
     expect(await screen.findByText('Essentials')).toBeVisible()
   })

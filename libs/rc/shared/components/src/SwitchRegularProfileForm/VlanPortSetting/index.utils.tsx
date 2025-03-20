@@ -100,7 +100,6 @@ export const checkIfModuleFixed = (family: string, model: string): {
   enableSlot2?: boolean,
   enableSlot3?: boolean
 } => {
-  if (!family) return {}
   if (family === 'ICX7550') {
     return {
       moduleSelectionEnable: true,
@@ -238,7 +237,7 @@ export const getUpdatedVlans = (
   updatedValues?: PortsModalSetting
 ) => {
   return selectedRows.reduce((result, selectedRow) => {
-    if (!selectedRow) return vlans
+    if (!selectedRow?.ports) return vlans
 
     // remove existing vlans
     const vlanMap = getVlanMap(selectedRow?.ports, selectedRow.familymodel, selectedRow.slots)
@@ -247,8 +246,9 @@ export const getUpdatedVlans = (
       if (!selectedVlan) return vlan
 
       const selectedVlanSlots = formattedSlotConfig(selectedVlan?.slots)
-      const existingModule = vlan.switchFamilyModels?.find(
-        v => _.isEqual(_.sortBy(v.slots, 'slotNumber'), selectedVlanSlots)
+      const existingModule = vlan.switchFamilyModels?.find(v =>
+        v.model === selectedVlan.model &&
+        _.isEqual(_.sortBy(v.slots, 'slotNumber'), selectedVlanSlots)
       )
 
       if (!existingModule) return vlan
@@ -267,8 +267,9 @@ export const getUpdatedVlans = (
     const vlanMap = getVlanMap(updatedValues.portSettings, familymodel, updatedValues.slots)
     const updatedVlan = vlanMap[vlan.vlanId]
     const updatedVlanSlots = formattedSlotConfig(updatedVlan?.slots)
-    const existingModule = vlan.switchFamilyModels?.find(
-      v => _.isEqual(_.sortBy(v.slots, 'slotNumber'), updatedVlanSlots)
+    const existingModule = vlan.switchFamilyModels?.find(v =>
+      v.model === updatedVlan?.model &&
+      _.isEqual(_.sortBy(v.slots, 'slotNumber'), updatedVlanSlots)
     )
 
     return {
@@ -313,7 +314,12 @@ export const updateSwitchModel = (
   selectedVlan: VlanPortMap,
   existingModule: SwitchModel
 ) => {
-  if (model.id !== existingModule.id) return model
+  const isModelEqual = model.model === existingModule.model
+  const sortedModelSlots = _.sortBy(model.slots, 'slotNumber')
+  const sortedExistingModuleSlots = _.sortBy(existingModule.slots, 'slotNumber')
+  const isModuleEqual = _.isEqual(sortedModelSlots, sortedExistingModuleSlots)
+
+  if (!(isModelEqual && isModuleEqual)) return model
 
   const updatedTagged = _.difference(
     model.taggedPorts?.split(','), selectedVlan.taggedPorts?.split(',')).toString()

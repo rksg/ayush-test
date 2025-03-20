@@ -1,3 +1,4 @@
+
 import { type Incident }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -10,8 +11,8 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import { IncidentHeader }                     from './IncidentHeader'
-import { getTimeseriesBuffer, granularities } from './portCountTimeseriesHelper'
+import { IncidentHeader }      from './IncidentHeader'
+import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
 export const SwitchTcpSynDDoS = (incident: Incident) => {
   const attributeList = [
@@ -58,8 +59,6 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={'PT180S'}
-          granularities={granularities}
           buffer={buffer}
         />
       </GridCol>

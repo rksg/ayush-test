@@ -103,7 +103,7 @@ export function SecurityTab () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
   const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const venueDosProtectionOpsApi = useVenueConfigTemplateOpsApiSwitcher(
     WifiRbacUrlsInfo.updateDenialOfServiceProtection,

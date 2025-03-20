@@ -411,6 +411,10 @@ export const validationMessages = {
     defaultMessage: 'The VLAN ID already exists',
     description: 'Validation - validate vlan id'
   }),
+  vlanIdSetAsDeaultVlan: defineMessage({
+    defaultMessage: 'The VLAN ID {defaultVlan} has been set as Default VLAN',
+    description: 'Validation - validate vlan id'
+  }),
   vlanNameInvalidWithDefaultVlans: defineMessage({
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'

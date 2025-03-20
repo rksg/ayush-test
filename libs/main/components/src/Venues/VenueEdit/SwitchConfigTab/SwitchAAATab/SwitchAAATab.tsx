@@ -12,6 +12,7 @@ import {
   useVenueSwitchSettingQuery
 }  from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
   redirectPreviousPage, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, VenueMessages, VenueSwitchConfiguration
 } from '@acx-ui/rc/utils'
@@ -48,7 +49,7 @@ export function SwitchAAATab () {
   const settingsTitle = $t({ defaultMessage: 'Settings' })
 
   const formRef = useRef<StepsFormLegacyInstance>()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const handleUpdate = async () => {
     const values = formRef?.current?.getFieldsValue()

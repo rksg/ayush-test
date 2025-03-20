@@ -11,8 +11,8 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import { IncidentHeader }                     from './IncidentHeader'
-import { getTimeseriesBuffer, granularities } from './portCountTimeseriesHelper'
+import { IncidentHeader }      from './IncidentHeader'
+import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
 export const SwitchPortCongestion = (incident: Incident) => {
   const attributeList = [
@@ -59,8 +59,6 @@ export const SwitchPortCongestion = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={'PT5M'}
-          granularities={granularities}
           buffer={buffer}
         />
       </GridCol>
