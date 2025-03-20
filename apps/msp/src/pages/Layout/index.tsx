@@ -43,6 +43,7 @@ function Layout () {
   const [tenantType, setTenantType] = useState('')
   const [hasLicense, setHasLicense] = useState(false)
   const [isDogfood, setDogfood] = useState(false)
+  const [isOnboardMsp, setOnboardMsp] = useState(false)
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -123,6 +124,7 @@ function Layout () {
         setTenantType(data.tenantType)
       }
       setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
+      setOnboardMsp(data.msp?.mspLabel ? true : false)
     }
     if (_.isEmpty(mspEntitlement) || _.isEmpty(rbacMspEntitlement?.data)) {
       setHasLicense(true)
@@ -140,7 +142,7 @@ function Layout () {
           width={180}
           height={60}
         />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, isOnboardMsp)}
       content={
         <>
           <CloudMessageBanner />

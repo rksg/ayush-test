@@ -82,11 +82,6 @@ const getKPIMetric = (kpi: string, threshold?: string) : string => {
     : apiMetric
 }
 
-const getGranularity = (start: string, end: string, kpi: string) => {
-  const config = kpiConfig[kpi as keyof typeof kpiConfig]
-  const { timeseries: { minGranularity } } = config
-  return calculateGranularity(start, end, minGranularity)
-}
 export const getHistogramQuery =
 ({ kpi, enableSwitchFirmwareFilter }: KpiPayload) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
@@ -201,7 +196,7 @@ export const healthApi = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
-            getGranularity(payload.startDate, payload.endDate, payload.kpi),
+            calculateGranularity(payload.startDate, payload.endDate),
           ...getHealthFilter(payload)
         }
       }),

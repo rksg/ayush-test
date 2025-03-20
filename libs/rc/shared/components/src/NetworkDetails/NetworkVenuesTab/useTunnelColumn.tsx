@@ -110,6 +110,10 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   tunnelType: NetworkTunnelTypeEnum.None,
                   softGre: {
                     oldProfileId: targetSoftGre?.[0].profileId
+                  },
+                  ipsec: {
+                    enableIpsec: targetIpsec && targetIpsec.length > 0,
+                    oldProfileId: targetIpsec?.[0].profileId
                   }
                 } as NetworkTunnelActionForm
 
