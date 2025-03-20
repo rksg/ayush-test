@@ -144,7 +144,6 @@ export enum Features {
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
   RBAC_OPERATIONS_API_TOGGLE = 'acx-ui-rbac-allow-operations-api-toggle',
   RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
-  REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
