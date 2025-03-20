@@ -51,8 +51,8 @@ export const useTunnelProfileActions = () => {
 
     if (isEdgeL2greReady) {
       if(data.tunnelType === TunnelTypeEnum.L2GRE) {
-        data.mtuType = MtuTypeEnum.MANUAL
-        data.natTraversalEnabled = false
+        result.mtuType = MtuTypeEnum.MANUAL
+        result.natTraversalEnabled = false
         delete result.mtuRequestRetry
         delete result.mtuRequestTimeout
         delete result.mtuRequestTimeoutUnit

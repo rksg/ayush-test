@@ -190,6 +190,12 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     }
   }
 
+  const handleTunnelTypeChange = (e: RadioChangeEvent) => {
+    if (e.target.value === TunnelTypeEnum.L2GRE) {
+      form.setFieldsValue({ mtuType: MtuTypeEnum.MANUAL })
+    }
+  }
+
   const onEdgeClusterChange = useCallback((val: string) => {
     const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
     form.setFieldsValue({
@@ -288,9 +294,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               label={$t({ defaultMessage: 'Tunnel Type' })}
               initialValue={TunnelTypeEnum.VXLAN_GPE}
               children={
-                <Radio.Group disabled={isDefaultTunnelProfile
-                    || !!disabledFields?.includes('tunnelType')}
-                onChange={handleNetworkSegmentTypeChange}
+                <Radio.Group disabled={isDefaultTunnelProfile}
+                  onChange={handleTunnelTypeChange}
                 >
                   <Space direction='vertical'>
                     <Radio value={TunnelTypeEnum.VXLAN_GPE}>
@@ -402,7 +407,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               return (isEdgeL2greReady && getFieldValue('tunnelType') === TunnelTypeEnum.L2GRE) ?
                 <Form.Item
                   name='mtuType'
-                  label={$t({ defaultMessage: 'Gateway Path MTU' })}>
+                  label={$t({ defaultMessage: 'Gateway Path MTU' })}
+                >
                   <Space>
                     {mduSizeFormItem}
                     <div>{$t({ defaultMessage: 'bytes' })}</div>
