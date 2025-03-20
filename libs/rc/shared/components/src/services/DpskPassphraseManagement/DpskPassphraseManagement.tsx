@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Modal as AntModal, Form, Input } from 'antd'
 import moment                             from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Loader,
@@ -11,6 +12,7 @@ import {
   ModalRef,
   ModalType,
   Table,
+  TableColumn,
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
@@ -74,6 +76,8 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
   const { serviceId, tableQuery, disabledFeatures } = props
   const intl = useIntl()
   const { $t } = intl
+  const { personaId } = useParams()
+  const inIdentityPage = personaId !== undefined
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ manageDevicesVisible, setManageDevicesVisible ] = useState(false)
   const [ managePassphraseInfo, setManagePassphraseInfo ] = useState({} as NewDpskPassphrase)
@@ -123,14 +127,18 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
     },
     {
       key: 'username',
-      title: isIdentityGroupRequired
-        ? $t({ defaultMessage: 'Identity' })
-        : $t({ defaultMessage: 'User Name' }),
+      title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      searchable: !disabledFeatures?.searchable,
-      render: function (_, row) {
-        if (isIdentityGroupRequired) {
+      searchable: !disabledFeatures?.searchable
+    },
+    ...inIdentityPage ? []
+      : isIdentityGroupRequired ? [{
+        key: 'identityId',
+        title: $t({ defaultMessage: 'Identity' }),
+        dataIndex: 'identityId',
+        sorter: true,
+        render: function (_, row) {
           const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
           return (item ? <IdentityDetailsLink
             disableLink={isDpskRole}
@@ -138,11 +146,9 @@ export function DpskPassphraseManagement (props: DpskPassphraseManagementProps) 
             personaId={item.id}
             personaGroupId={item.groupId}
             revoked={item.revoked}
-          /> : row.username)
+          /> : '')
         }
-        return row.username
-      }
-    },
+      } as TableColumn<NewDpskPassphrase>] : [],
     {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),

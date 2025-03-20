@@ -75,7 +75,8 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
 
   const optionsDataQuery = useGetSoftGreOptionsQuery(
     { params: { venueId, networkId },
-      payload: { ...defaultPayload }
+      payload: { ...defaultPayload },
+      enableIpsec: true
     },
     { skip: !venueId || !networkId }
   )
@@ -195,7 +196,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
     let isValid = true
     if (value) {
       const queryData = await getSoftGreOptions(
-        { params: { venueId, networkId }, payload: { ...defaultPayload } }
+        { params: { venueId, networkId }, payload: { ...defaultPayload }, enableIpsec: true }
       ).unwrap()
       if (queryData) {
         const { id, gatewayIps, activationProfiles } = queryData

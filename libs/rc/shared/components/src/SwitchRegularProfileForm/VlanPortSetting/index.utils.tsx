@@ -100,7 +100,6 @@ export const checkIfModuleFixed = (family: string, model: string): {
   enableSlot2?: boolean,
   enableSlot3?: boolean
 } => {
-  if (!family) return {}
   if (family === 'ICX7550') {
     return {
       moduleSelectionEnable: true,
@@ -315,7 +314,12 @@ export const updateSwitchModel = (
   selectedVlan: VlanPortMap,
   existingModule: SwitchModel
 ) => {
-  if (model.id !== existingModule.id) return model
+  const isModelEqual = model.model === existingModule.model
+  const sortedModelSlots = _.sortBy(model.slots, 'slotNumber')
+  const sortedExistingModuleSlots = _.sortBy(existingModule.slots, 'slotNumber')
+  const isModuleEqual = _.isEqual(sortedModelSlots, sortedExistingModuleSlots)
+
+  if (!(isModelEqual && isModuleEqual)) return model
 
   const updatedTagged = _.difference(
     model.taggedPorts?.split(','), selectedVlan.taggedPorts?.split(',')).toString()

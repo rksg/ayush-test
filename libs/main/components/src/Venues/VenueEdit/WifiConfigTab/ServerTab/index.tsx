@@ -53,7 +53,7 @@ export function ServerTab () {
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
   const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const syslogApiUrlInfo = (!isTemplate)? SyslogUrls : PoliciesConfigTemplateUrlsInfo
 

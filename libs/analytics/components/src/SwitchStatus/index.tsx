@@ -55,7 +55,7 @@ export function SwitchStatusByTime ({ filters, refreshInterval }:
             inclusiveDataPoint[2] = moment(dataPoint?.[2])
               .add(
                 moment
-                  .duration(calculateGranularity(filters.startDate, filters.endDate, 'PT15M'))
+                  .duration(calculateGranularity(filters.startDate, filters.endDate))
                   .asSeconds(),
                 'seconds'
               )
