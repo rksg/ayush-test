@@ -123,7 +123,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       >
         <StepsForm.StepForm>
           <Row>
-            <Col span={12}>
+            <Col span={isEmbedded ? 20: 12}>
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Profile Name' })}
