@@ -1,8 +1,14 @@
 
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Button, PageHeader, Tabs }                                                       from '@acx-ui/components'
+import { useGetAccessControlByIdQuery }                                                   from '@acx-ui/rc/services'
+import { getPolicyAllowedOperation, PolicyType, PolicyOperation, getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink }                              from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                   from '@acx-ui/types'
+import { hasCrossVenuesPermission, filterByAccess }                                       from '@acx-ui/user'
 
 import AccessControlOverview from './AccessControlOverview'
 import AccessControlRules    from './AccessControlRules'
@@ -10,7 +16,7 @@ import AccessControlRules    from './AccessControlRules'
 const AccessControlDetailTabs = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { accessControlId } = useParams()
+  const { accessControlId, activeTab } = useParams()
   const basePath = useTenantLink('/policies/accessControl/switch')
 
   const onTabChange = (tab: string) => {
@@ -19,8 +25,15 @@ const AccessControlDetailTabs = () => {
       pathname: `${basePath.pathname}/${accessControlId}/${tab}`
     }, { replace: true })
   }
+
+  useEffect(() => {
+    if (activeTab) {
+      onTabChange(activeTab)
+    }
+  }, [activeTab])
+
   return (
-    <Tabs type='card' onChange={onTabChange} activeKey='overview'>
+    <Tabs type='card' onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview' />
@@ -37,11 +50,42 @@ const tabs = {
 }
 
 export function SwitchAccessControlDetail () {
-  const { activeTab } = useParams()
+  const { $t } = useIntl()
+  const { accessControlId, activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
+  const accessControlRoute = getPolicyListRoutePath(true) + '/accessControl/switch'
+  const { data } = useGetAccessControlByIdQuery({ params: { accessControlId } })
+
+  const getConfigureButton = () => {
+    return (
+      <TenantLink
+        scopeKey={[SwitchScopes.UPDATE]}
+        rbacOpsIds={getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}
+        to={`/policies/accessControl/switch/${accessControlId}/edit`}
+      >
+        <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+      </TenantLink>
+    )
+  }
 
   return (
     <>
+      <PageHeader
+        title={data?.name}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'Access Control' }),
+            link: accessControlRoute
+          }
+        ]}
+
+        extra={hasCrossVenuesPermission() && filterByAccess([getConfigureButton()])}
+      />
       <AccessControlDetailTabs />
       { Tab && <Tab /> }
     </>

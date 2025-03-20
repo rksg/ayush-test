@@ -1967,7 +1967,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchMacAcl', id: 'ACCESSCONTROLLIST' }]
     }),
-    getAccessControlRules: build.query<MacAclRule, RequestPayload>({
+    getAccessControlById: build.query<MacAcl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getAccessControlById, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
+    getAccessControlRules: build.query<TableResult<MacAclRule>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getAccessControlRules, params, customHeaders.v1)
@@ -2377,6 +2386,7 @@ export const {
   usePortProfilesListBySwitchIdQuery,
   usePortDisableRecoverySettingQuery,
   useUpdatePortDisableRecoverySettingMutation,
+  useGetAccessControlByIdQuery,
   useGetAccessControlsListQuery,
   useLazyGetAccessControlsListQuery,
   useGetAccessControlRulesQuery,

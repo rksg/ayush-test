@@ -803,6 +803,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchL2AclPolicies/query',
     newApi: true
   },
+  getAccessControlById: {
+    method: 'get',
+    url: '/switchL2AclPolicies/:accessControlId',
+    newApi: true
+  },
   getAccessControlRules: {
     method: 'post',
     url: '/switchL2AclPolicies/l2AclPolicyRules/:accessControlId',
