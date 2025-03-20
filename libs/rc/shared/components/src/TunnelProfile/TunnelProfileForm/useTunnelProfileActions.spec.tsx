@@ -1,55 +1,126 @@
-import { rest } from 'msw'
+import { act, renderHook, waitFor } from '@testing-library/react'
+import { Provider }                 from 'react-redux'
 
-import { TunnelProfileFormType, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
-import { act, mockServer, renderHook, waitFor }     from '@acx-ui/test-utils'
+import { MtuTypeEnum, NetworkSegmentTypeEnum, TunnelProfileFormType } from '@acx-ui/rc/utils'
+import { store }                                                      from '@acx-ui/store'
+import { RequestPayload }                                             from '@acx-ui/types'
 
 import { useTunnelProfileActions } from './useTunnelProfileActions'
 
-const mockedCreateTunnelApi = jest.fn()
-const mockedUpdateTunnelApi = jest.fn()
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useCreateTunnelProfileMutation: jest.fn()
+}))
+
+const mockedAddFn = jest.fn()
+const mockedUpdateFn = jest.fn()
+
+
+jest.mock('@acx-ui/rc/services', () => {
+  const originalModule = jest.requireActual('@acx-ui/rc/services')
+  return {
+    ...originalModule,
+    useCreateTunnelProfileMutation: () => {
+      let isCreating = false
+
+      return [
+        (req: RequestPayload) => {
+          isCreating = true
+          return {
+            unwrap: () => new Promise((resolve) => {
+              mockedAddFn(req.payload)
+              resolve(true)
+              setTimeout(() => {
+                isCreating = false;
+                (req.callback as Function)({
+                  response: { id: 'mock_tunnel_id' }
+                })
+              }, 300)
+            })
+          }
+        },
+        { isLoading: isCreating }
+      ]
+    },
+    useUpdateTunnelProfileMutation: () => {
+      let isUpdating = false
+
+      return [
+        (req: RequestPayload) => {
+          isUpdating = true
+          return {
+            unwrap: () => new Promise((resolve) => {
+              mockedUpdateFn(req.payload)
+              resolve(true)
+              setTimeout(() => {
+                isUpdating = false;
+                (req.callback as Function)({
+                  response: { id: 'mock_tunnel_id' }
+                })
+              }, 300)
+            })
+          }
+        },
+        { isLoading: isUpdating }
+      ]
+    }
+  }
+})
+
 
 describe('useTunnelProfileActions', () => {
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        TunnelProfileUrls.createTunnelProfile.url,
-        (req, res, ctx) => {
-          mockedCreateTunnelApi()
-          return res(ctx.status(202))
-        }
-      ),
-      rest.put(
-        TunnelProfileUrls.updateTunnelProfile.url,
-        (req, res, ctx) => {
-          mockedUpdateTunnelApi()
-          return res(ctx.status(202))
-        }
-      )
-    )
+  const mockData: TunnelProfileFormType = {
+    id: 'mock_tunnel_id',
+    name: 'testTunnel',
+    tags: '',
+    mtuType: MtuTypeEnum.AUTO,
+    forceFragmentation: false,
+    ageTimeMinutes: 0,
+    type: NetworkSegmentTypeEnum.VXLAN
+  }
+
+  it('should render useTunnelProfileActions without errors', () => {
+    const { result } = renderHook(() => useTunnelProfileActions(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
+    })
+
+    expect(result.current).toBeDefined()
+    expect(result.current.createTunnelProfileOperation).toBeDefined()
+    expect(result.current.updateTunnelProfileOperation).toBeDefined()
   })
 
-  it('should create tunnel profile successful', async () => {
+  it('should call createTunnelProfile with correct payload and handle callback', async () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
-      wrapper: ({ children }) => <Provider children={children} />
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
     })
+
     const { createTunnelProfileOperation, isTunnelProfileCreating } = result.current
     await act(async () => {
-      await createTunnelProfileOperation({} as TunnelProfileFormType)
+      await createTunnelProfileOperation(mockData)
     })
+
+    await waitFor(() => {
+      expect(mockedAddFn).toHaveBeenCalledWith(mockData)
+    })
+
     await waitFor(() =>expect(isTunnelProfileCreating).toBeFalsy())
-    await waitFor(() =>expect(mockedCreateTunnelApi).toBeCalledTimes(1))
   })
 
-  it('should update tunnel profile successful', async () => {
+  it('should call updateTunnelProfile with correct payload and handle callback', async () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
-      wrapper: ({ children }) => <Provider children={children} />
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
     })
+
     const { updateTunnelProfileOperation, isTunnelProfileUpdating } = result.current
     await act(async () => {
-      await updateTunnelProfileOperation('testId', {} as TunnelProfileFormType)
+      await updateTunnelProfileOperation('mock_tunnel_id', mockData)
     })
+
+    await waitFor(() => {
+      expect(mockedUpdateFn).toHaveBeenCalledWith(mockData)
+    })
+
     await waitFor(() =>expect(isTunnelProfileUpdating).toBeFalsy())
-    await waitFor(() =>expect(mockedUpdateTunnelApi).toBeCalledTimes(1))
   })
+
 })
