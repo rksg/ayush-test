@@ -142,10 +142,13 @@ export const useTunnelProfileActions = () => {
           data,
           callback: (result) => {
             // callback is after all RBAC related APIs sent
-            if (Array.isArray(result)) {
-              resolve(true)
-            } else {
+            if (
+              isNil(result) ||
+            (result as CommonErrorsResult<CatchErrorDetails>)?.data?.errors.length > 0)
+            {
               reject(result)
+            } else {
+              resolve(true)
             }
           }
         // need to catch basic service profile failed
@@ -173,21 +176,23 @@ export const useTunnelProfileActions = () => {
       payload,
       callback: async () => {
         const tunnelProfileId = id
-        if(!isEdgeL2greReady || data?.tunnelType === TunnelTypeEnum.L2GRE) {
-          if(clusterId && venueId) {
-            try {
-              // eslint-disable-next-line max-len
-              const reqResult = await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
-              callback?.(reqResult)
-            } catch(error) {
-              callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-            }
-            return
-          } else {
-            callback?.()
-            return
-          }
+
+        if(!isEdgeL2greReady) {
+          callback?.()
+          return
         }
+
+        if(clusterId && venueId && data?.tunnelType === TunnelTypeEnum.L2GRE) {
+          try {
+            // eslint-disable-next-line max-len
+            const reqResult = await deassociationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
+            callback?.(reqResult)
+          } catch(error) {
+            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+          }
+          return
+        }
+
         try {
           // eslint-disable-next-line max-len
           const reqResult = await associationWithEdgeCluster(venueId, clusterId, tunnelProfileId)
