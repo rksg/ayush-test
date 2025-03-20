@@ -147,15 +147,15 @@ const SamlIdpTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Require SAML requests to be signed' }),
-      key: 'authnRequestSignedEnabled',
-      dataIndex: 'authnRequestSignedEnabled',
-      render: (_, row) => transformDisplayOnOff(row.authnRequestSignedEnabled)
+      key: 'signingCertificateEnabled',
+      dataIndex: 'signingCertificateEnabled',
+      render: (_, row) => transformDisplayOnOff(row.signingCertificateEnabled)
     },
     {
       title: $t({ defaultMessage: 'SAML Response Encryption' }),
-      key: 'responseEncryptionEnabled',
-      dataIndex: 'responseEncryptionEnabled',
-      render: (_, row) => transformDisplayOnOff(row.responseEncryptionEnabled)
+      key: 'encryptionCertificateEnabled',
+      dataIndex: 'encryptionCertificateEnabled',
+      render: (_, row) => transformDisplayOnOff(row.encryptionCertificateEnabled)
     },
     {
       title: $t({ defaultMessage: 'Server sertificate' }),
