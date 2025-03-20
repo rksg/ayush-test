@@ -303,6 +303,18 @@ export interface TenantDetail {
   updatedDate?: string;
   upgradeGroup?: string;
   mspEc?: TenantMspEc;
+  msp?: MspTenantData
+}
+
+export interface MspTenantData {
+  mspLabel?: string;
+  myOpenCaseUrl?: string;
+  openCaseUrl?: string;
+  contactSupportUrl?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  isDisableNotification?: boolean
 }
 
 export interface MspProfile {
