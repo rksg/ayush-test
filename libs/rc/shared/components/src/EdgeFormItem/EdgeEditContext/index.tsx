@@ -3,6 +3,12 @@ import { createContext, Dispatch, SetStateAction } from 'react'
 import { CustomButtonProps, showActionModal } from '@acx-ui/components'
 import { getIntl }                            from '@acx-ui/utils'
 
+export enum EdgePortTabEnum {
+  PORTS_GENERAL = 'ports-general',
+  LAG = 'lag',
+  SUB_INTERFACE = 'sub-interface'
+}
+
 export interface EditEdgeContextType {
   activeSubTab: { key: string, title: string }
   setActiveSubTab: Dispatch<SetStateAction<{ key: string, title: string }>>

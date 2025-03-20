@@ -8,8 +8,8 @@ import {
 import { store }                            from '@acx-ui/store'
 import { mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
 
-import { renderForm, renderFormHook }                from '../../__tests__/fixtures'
-import { authMethodsByClientType }                   from '../../authMethods'
+import { renderForm, renderFormHook }                 from '../../__tests__/fixtures'
+import { authMethodsByClientType }                    from '../../authMethods'
 import {
   ClientType,
   AuthenticationMethod as AuthenticationMethodEnum

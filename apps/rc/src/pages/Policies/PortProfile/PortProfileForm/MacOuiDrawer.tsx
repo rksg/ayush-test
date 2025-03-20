@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, Tooltip }                   from '@acx-ui/components'
+import { Drawer, Tooltip }                    from '@acx-ui/components'
 import {
   useAddSwitchPortProfileMacOuiMutation, useEditSwitchPortProfileMacOuiMutation,
   useLazySwitchPortProfileMacOuisListQuery

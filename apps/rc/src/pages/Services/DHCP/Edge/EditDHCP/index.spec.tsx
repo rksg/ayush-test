@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { edgeDhcpApi }        from '@acx-ui/rc/services'
-import { EdgeDhcpUrls }       from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { edgeDhcpApi }         from '@acx-ui/rc/services'
+import { EdgeDhcpUrls }        from '@acx-ui/rc/utils'
+import { Provider, store }     from '@acx-ui/store'
 import {
   mockServer,
   render,

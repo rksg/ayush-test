@@ -3,10 +3,10 @@ import React, { useState } from 'react'
 import { Form, Input, Select, Switch, Space, Button } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
-import { GridRow, GridCol, Modal, ModalType, SelectionControl }   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { GridRow, GridCol, Modal, ModalType, SelectionControl }    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import {
-  useAdaptivePolicySetListByQueryQuery, useGetPersonaGroupByIdQuery,
+  useAdaptivePolicySetListByQueryQuery, useSearchPersonaListQuery,
   useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -50,11 +50,13 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
 
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
 
-  const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
-    // eslint-disable-next-line max-len
-    { params: { groupId: identityGroupId } },
-    { skip: !identityGroupId }
-  )
+  const {
+    data: identityList,
+    isLoading: isIdentityLoading,
+    isFetching: isIdentityFetching
+  } = useSearchPersonaListQuery({
+    payload: { page: 1, pageSize: 10000, groupId: identityGroupId }
+  }, { skip: !identityGroupId })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
@@ -191,10 +193,11 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
             ]}
           >
             <Select
+              loading={isIdentityLoading || isIdentityFetching}
               placeholder={$t({ defaultMessage: 'Choose ...' })}
               options={
                 // eslint-disable-next-line max-len
-                personaGroupData?.identities?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
+                identityList?.data?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
             />
           </Form.Item>
         </GridCol>

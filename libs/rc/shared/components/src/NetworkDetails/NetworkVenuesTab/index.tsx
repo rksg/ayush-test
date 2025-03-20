@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -58,7 +58,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   ConfigTemplateUrlsInfo,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams }  from '@acx-ui/react-router-dom'
 import { WifiScopes } from '@acx-ui/types'
@@ -70,8 +71,8 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
-import { useEnforcedStatus }                from '../../configTemplates'
-import { useGetNetworkTunnelInfo }          from '../../EdgeSdLan/edgeSdLanUtils'
+import { useEnforcedStatus }                 from '../../configTemplates'
+import { useGetNetworkTunnelInfo }           from '../../EdgeSdLan/edgeSdLanUtils'
 import {
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction
@@ -331,7 +332,7 @@ export function NetworkVenuesTab () {
     enableRbac: isPolicyRbacEnabled
   })
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     if (instanceListResult?.data) {
@@ -885,8 +886,13 @@ export function NetworkVenuesTab () {
       await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
-      await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
-      await softGreTunnelActions.activateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+
+      if (isIpsecEnabled && formValues.ipsec?.enableIpsec) {
+        await softGreTunnelActions.activateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+      } else {
+        await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
+      }
+
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
 

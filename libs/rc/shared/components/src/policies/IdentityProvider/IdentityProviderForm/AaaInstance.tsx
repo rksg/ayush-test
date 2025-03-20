@@ -11,8 +11,8 @@ import { Features, useIsSplitOn }                                  from '@acx-ui
 import { AAAViewModalType, AaaServerOrderEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 
-import AAAPolicyModal           from '../../../NetworkForm/AAAInstance/AAAPolicyModal'
-import { aaaServerTypes }       from '../../../NetworkForm/contentsMap'
+import AAAPolicyModal            from '../../../NetworkForm/AAAInstance/AAAPolicyModal'
+import { aaaServerTypes }        from '../../../NetworkForm/contentsMap'
 import {
   useGetAAAPolicyInstanceList,
   useLazyGetAAAPolicyInstance

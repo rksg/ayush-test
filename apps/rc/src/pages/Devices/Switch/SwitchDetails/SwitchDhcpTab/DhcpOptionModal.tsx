@@ -4,7 +4,7 @@ import { Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
 import { Rule }                                                from 'antd/lib/form'
 import { useIntl }                                             from 'react-intl'
 
-import { Modal }             from '@acx-ui/components'
+import { Modal }              from '@acx-ui/components'
 import {
   DHCP_OPTION_TYPE,
   getDhcpOptionList,

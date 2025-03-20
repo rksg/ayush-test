@@ -5,7 +5,7 @@ import { Form,  Switch, Space } from 'antd'
 import _                        from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Tooltip }                                    from '@acx-ui/components'
+import { Tooltip }                                     from '@acx-ui/components'
 import {
   useLazyGetSoftGreProfileConfigurationOnAPQuery,
   useLazyGetSoftGreProfileConfigurationOnVenueQuery

@@ -2,8 +2,8 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, cssStr }                           from '@acx-ui/components'
-import { LocationExtended }                       from '@acx-ui/rc/utils'
+import { Tabs, cssStr }                            from '@acx-ui/components'
+import { LocationExtended }                        from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,

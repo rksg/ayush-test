@@ -8,8 +8,8 @@ import {
   mockedIntentCRRM,
   mockedIntentCRRMKPIs
 }                   from './AIDrivenRRM/__tests__/fixtures'
-import { kpis }     from './AIDrivenRRM/common'
-import { Statuses } from './states'
+import { kpis }      from './AIDrivenRRM/common'
+import { Statuses }  from './states'
 import {
   api,
   getGraphKPIs,

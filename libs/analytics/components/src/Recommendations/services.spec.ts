@@ -11,8 +11,8 @@ import {
   aiOpsListResult,
   recommendationListResult
 } from './__tests__/fixtures'
-import { crrmStates, priorities }   from './config'
-import { mockedRecommendationCRRM } from './RecommendationDetails/__tests__/fixtures'
+import { crrmStates, priorities }    from './config'
+import { mockedRecommendationCRRM }  from './RecommendationDetails/__tests__/fixtures'
 import {
   api,
   getCrrmOptimizedState,

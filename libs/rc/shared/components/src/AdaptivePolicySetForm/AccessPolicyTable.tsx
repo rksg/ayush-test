@@ -5,8 +5,8 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Loader, Table, TableProps }  from '@acx-ui/components'
-import { Drag }                       from '@acx-ui/icons'
+import { Loader, Table, TableProps }   from '@acx-ui/components'
+import { Drag }                        from '@acx-ui/icons'
 import {
   useAdaptivePolicyListByQueryQuery,
   useGetPrioritizedPoliciesQuery,

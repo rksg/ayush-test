@@ -5,7 +5,7 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }      from '@acx-ui/components'
+import { Drawer }       from '@acx-ui/components'
 import {
   DHCPPool,
   LeaseUnit,

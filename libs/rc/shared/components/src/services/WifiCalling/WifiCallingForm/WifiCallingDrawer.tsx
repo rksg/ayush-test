@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }          from '@acx-ui/components'
+import { Drawer }           from '@acx-ui/components'
 import {
   domainNameRegExp,
   serverIpAddressRegExp,

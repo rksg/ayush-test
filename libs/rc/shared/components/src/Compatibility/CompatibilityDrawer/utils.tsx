@@ -11,7 +11,7 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }    from '@acx-ui/utils'
 
-import { messageMapping } from './messageMapping'
+import { messageMapping }  from './messageMapping'
 import {
   StyledApModelFamilyTypeWIFI11AC1,
   StyledApModelFamilyTypeWIFI11AC2,

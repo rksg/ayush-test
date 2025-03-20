@@ -26,7 +26,7 @@ import { getVenueTimeZone, transformTimezoneDifference } from '@acx-ui/utils'
 import { Button }            from '../Button'
 import { ScheduleTipsModal } from '../ScheduleTipsModal'
 
-import * as UI     from './styledComponents'
+import * as UI      from './styledComponents'
 import {
   dayIndex,
   genTimeTicks,

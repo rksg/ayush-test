@@ -1,9 +1,9 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, PageHeader }             from '@acx-ui/components'
-import { MdnsProxyServiceInfo }           from '@acx-ui/rc/components'
-import { useGetEdgeMdnsProxyQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader }              from '@acx-ui/components'
+import { MdnsProxyServiceInfo }            from '@acx-ui/rc/components'
+import { useGetEdgeMdnsProxyQuery }        from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,

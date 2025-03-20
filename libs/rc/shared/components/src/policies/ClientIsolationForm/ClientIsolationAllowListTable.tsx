@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { showActionModal, Table, TableProps }    from '@acx-ui/components'
+import { showActionModal, Table, TableProps }     from '@acx-ui/components'
 import {
   CLIENT_ISOLATION_LIMIT_NUMBER,
   ClientIsolationClient, defaultSort, sortProp

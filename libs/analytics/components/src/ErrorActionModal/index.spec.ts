@@ -1,8 +1,8 @@
 import { AnyAction } from '@reduxjs/toolkit'
 import userEvent     from '@testing-library/user-event'
 
-import * as components  from '@acx-ui/components'
-import { screen }       from '@acx-ui/test-utils'
+import * as components   from '@acx-ui/components'
+import { screen }        from '@acx-ui/test-utils'
 import {
   getIntl,
   setUpIntl,

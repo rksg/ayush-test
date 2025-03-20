@@ -13,8 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { PoeUsage }                                from '@acx-ui/icons'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { PoeUsage }                                 from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -346,6 +346,9 @@ export function EditPortDrawer ({
     skip: !switchDetail?.venueId
   })
 
+  const switchDefaultVlanIds
+    = switchesDefaultVlan?.map(v => v.defaultVlanId).toString()
+
   const getVlans = async () => {
     if (isSwitchLevelVlanEnabled) {
       return await getSwitchUnionVlans()
@@ -567,7 +570,7 @@ export function EditPortDrawer ({
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchDefaultVlanIds, visible])
 
   const getSinglePortValue = async (
     portSpeed: string[],

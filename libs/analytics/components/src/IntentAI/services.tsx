@@ -29,7 +29,7 @@ import {
   Metadata,
   IntentWlan
 } from './config'
-import { DisplayStates } from './states'
+import { DisplayStates }  from './states'
 import {
   Actions,
   parseTransitionGQLByAction,

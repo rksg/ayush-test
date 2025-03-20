@@ -1,7 +1,7 @@
 
 import { rest } from 'msw'
 
-import { useIsTierAllowed }          from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,

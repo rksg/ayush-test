@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { softGreApi }  from '@acx-ui/rc/services'
+import { softGreApi }   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, PolicyOperation, PolicyType,
   SoftGreUrls,
   getPolicyRoutePath

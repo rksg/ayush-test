@@ -4,7 +4,7 @@ import { Form }        from 'antd'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { Loader, StepsForm }          from '@acx-ui/components'
+import { Loader, StepsForm }           from '@acx-ui/components'
 import {
   EdgeHaSettingsForm,
   EdgeHaSettingsFormType,

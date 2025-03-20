@@ -17,7 +17,7 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useGetNotificationSmsQuery }                      from '@acx-ui/rc/services'
+import { useGetNotificationSmsQuery }                       from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType

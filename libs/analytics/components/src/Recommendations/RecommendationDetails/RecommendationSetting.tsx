@@ -8,8 +8,8 @@ import { get }                                    from '@acx-ui/config'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { DetailsActions }         from '../../DetailsActions'
-import { RecommendationActions }  from '../RecommendationActions'
+import { DetailsActions }          from '../../DetailsActions'
+import { RecommendationActions }   from '../RecommendationActions'
 import {
   useDeleteRecommendationMutation,
   useMuteRecommendationMutation

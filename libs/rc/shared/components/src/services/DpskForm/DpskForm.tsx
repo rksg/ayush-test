@@ -9,7 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useCreateDpskTemplateMutation,
@@ -36,7 +36,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   useServicePreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -99,7 +100,7 @@ export function DpskForm (props: DpskFormProps) {
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { saveEnforcementConfig } = useConfigTemplate()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.DPSK)
 
   function isModalMode (): boolean {
     return modalMode && !editMode

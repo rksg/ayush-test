@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { policyApi }   from '@acx-ui/rc/services'
+import { policyApi }    from '@acx-ui/rc/services'
 import {
   LbsServerProfileUrls,
   PolicyOperation,

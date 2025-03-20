@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory }   from '@acx-ui/components'
+import { RadioCardCategory }    from '@acx-ui/components'
 import {
   ServiceType,
   getServiceRoutePath,

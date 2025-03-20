@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { ipSecApi }    from '@acx-ui/rc/services'
+import { ipSecApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo, PolicyOperation, PolicyType,
   IpsecUrls,
   getPolicyRoutePath

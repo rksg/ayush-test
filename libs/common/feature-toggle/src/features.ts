@@ -25,8 +25,10 @@ export enum Features {
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
+  CONFIG_TEMPLATE_CLONE_VENUE = 'acx-ui-config-template-clone-venue',
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_ENFORCED_P1 = 'acx-ui-config-template-enforcement-phase1',
+  CONFIG_TEMPLATE_ENFORCED_VENUE = 'acx-ui-config-template-enforcement-venue',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CONFIG_TEMPLATE_NAME_DRAWER = 'acx-ui-config-template-name-drawer',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
@@ -67,6 +69,7 @@ export enum Features {
   EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
   EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE = 'edge-eng-compatibility-check-enhancement-toggle',
+  EDGE_DUAL_WAN_TOGGLE = 'edge-dual-wan-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -140,7 +143,6 @@ export enum Features {
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
   RBAC_OPERATIONS_API_TOGGLE = 'acx-ui-rbac-allow-operations-api-toggle',
   RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
-  REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
@@ -167,6 +169,7 @@ export enum Features {
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
   SWITCH_LEVEL_VLAN = 'switch-level-vlan',
+  SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_PORT_HYPERLINK = 'switch-port-hyperlink-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
@@ -292,7 +295,6 @@ export enum Features {
   RUCKUS_AI_DATA_SUBSCRIPTIONS_TOGGLE = 'ruckus-ai-data-subscriptions-toggle',
   ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
   ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE='entitlement-adaptive-policy-toggle',
-  ENTITLEMENT_PERSONAL_IDENTITY_NETWORK_TOGGLE='entitlement-personal-identity-network-toggle',
   ENTITLEMENT_PMS_INTEGRATION_TOGGLE='entitlement-pms-integration-toggle',
   ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
   ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle',
@@ -309,7 +311,10 @@ export enum Features {
   WIFI_CAPTIVE_PORTAL_OWE_TRANSITION = 'wifi-captive-portal-owe-transition',
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
   RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
-  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle'
+  WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
+  SWITCH_SUPPORT_ICX8100X = 'switch-support-icx8100x-toggle',
+  PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
+  ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

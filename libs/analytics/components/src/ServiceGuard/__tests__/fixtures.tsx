@@ -8,7 +8,7 @@ import { createStepsFormContext }             from '@acx-ui/components'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, within, renderHook } from '@acx-ui/test-utils'
 
-import { stages }       from '../contents'
+import { stages }        from '../contents'
 import {
   Band,
   ClientType,

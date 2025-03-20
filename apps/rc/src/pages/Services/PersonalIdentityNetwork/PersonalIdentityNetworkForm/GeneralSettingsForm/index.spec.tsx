@@ -2,9 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { pinApi }                from '@acx-ui/rc/services'
+import { StepsForm }              from '@acx-ui/components'
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
+import { pinApi }                 from '@acx-ui/rc/services'
 import {
   EdgePinFixtures, EdgePinUrls
 } from '@acx-ui/rc/utils'

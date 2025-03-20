@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { baseUrlFor }                        from '@acx-ui/config'
+import { baseUrlFor }                         from '@acx-ui/config'
 import { defaultComDisplay, PortalUrlsInfo
 }     from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'

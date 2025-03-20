@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
 import { get, isNil }        from 'lodash'
 
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetDhcpEdgeCompatibilitiesQuery,

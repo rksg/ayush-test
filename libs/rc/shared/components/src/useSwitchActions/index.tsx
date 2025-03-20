@@ -2,8 +2,8 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { showActionModal }              from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { showActionModal }               from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   useDeleteSwitchesMutation,
   useRebootSwitchMutation,

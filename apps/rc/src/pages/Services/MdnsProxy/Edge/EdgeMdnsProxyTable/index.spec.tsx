@@ -2,7 +2,7 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { edgeApi }            from '@acx-ui/rc/services'
+import { edgeApi }             from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,

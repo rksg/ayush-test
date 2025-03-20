@@ -19,7 +19,7 @@ import {
   TooltipComponentOption,
   connect
 } from 'echarts'
-import ReactECharts        from 'echarts-for-react'
+import ReactECharts         from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'

@@ -14,7 +14,7 @@ import {
   CertificateUrls,
   EdgePinFixtures
 } from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { Provider }            from '@acx-ui/store'
 import {
   fireEvent,
   within,

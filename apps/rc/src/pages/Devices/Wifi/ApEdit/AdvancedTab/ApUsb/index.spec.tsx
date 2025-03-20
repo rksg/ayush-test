@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }    from '@acx-ui/rc/services'
-import { WifiRbacUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { apApi, venueApi }     from '@acx-ui/rc/services'
+import { WifiRbacUrlsInfo }    from '@acx-ui/rc/utils'
+import { Provider, store }     from '@acx-ui/store'
 import {
   mockServer,
   render,

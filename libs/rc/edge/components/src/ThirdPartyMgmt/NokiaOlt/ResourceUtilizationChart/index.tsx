@@ -4,7 +4,7 @@ import { renderToString }                             from 'react-dom/server'
 import { RawIntlProvider, useIntl, FormattedMessage } from 'react-intl'
 import AutoSizer                                      from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }        from '@acx-ui/analytics/utils'
+import { getSeriesData }         from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,

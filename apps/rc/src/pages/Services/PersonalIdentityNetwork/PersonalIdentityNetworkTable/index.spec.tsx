@@ -18,7 +18,7 @@ import {
   VenueFixtures,
   EdgeCompatibilityFixtures
 } from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
+import { Provider, store }                              from '@acx-ui/store'
 import {
   mockServer, render,
   screen, waitFor, waitForElementToBeRemoved, within

@@ -2,7 +2,7 @@ import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { ReactElement, useEffect, useRef } from 'react'
 
-import { useIntl }      from 'react-intl'
+import { useIntl }       from 'react-intl'
 import ReactFlow, {
   Panel,
   Background,

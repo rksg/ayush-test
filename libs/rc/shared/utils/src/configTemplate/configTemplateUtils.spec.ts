@@ -1,7 +1,7 @@
 import { renderHook }     from '@acx-ui/test-utils'
 import { UseQueryResult } from '@acx-ui/types'
 
-import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
+import { CONFIG_TEMPLATE_LIST_PATH }  from './configTemplateRouteUtils'
 import {
   generateConfigTemplateBreadcrumb,
   hasConfigTemplateAccess,

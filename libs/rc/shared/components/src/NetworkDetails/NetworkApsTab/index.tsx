@@ -1,7 +1,7 @@
 
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   useGetApCompatibilitiesNetworkQuery,
   useGetNetworkApCompatibilitiesQuery

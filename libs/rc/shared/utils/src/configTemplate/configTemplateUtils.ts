@@ -10,7 +10,7 @@ import { hasPolicyPermission, hasServicePermission } from '../features'
 import { ConfigTemplateType }                        from '../types'
 import { ConfigTemplateUrlsInfo }                    from '../urls'
 
-import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
+import { CONFIG_TEMPLATE_LIST_PATH }                                          from './configTemplateRouteUtils'
 import {
   configTemplateApGroupOperationMap,
   configTemplateNetworkOperationMap, ConfigTemplateOperation, configTemplatePolicyOperationMap,

@@ -3,8 +3,8 @@ import React from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, PageHeader }  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useGetAccessControlProfileTemplateListQuery,
   useGetEnhancedAccessControlProfileListQuery

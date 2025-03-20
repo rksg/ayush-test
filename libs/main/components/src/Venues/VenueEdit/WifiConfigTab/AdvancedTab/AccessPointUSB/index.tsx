@@ -14,7 +14,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DeleteOutlinedIcon }         from '@acx-ui/icons'
+import { DeleteOutlinedIcon }          from '@acx-ui/icons'
 import {
   useGetVenueApModelsQuery,
   useGetVenueApUsbStatusQuery,

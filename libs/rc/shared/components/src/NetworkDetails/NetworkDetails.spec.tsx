@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { get }   from '@acx-ui/config'
+import { get }    from '@acx-ui/config'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,

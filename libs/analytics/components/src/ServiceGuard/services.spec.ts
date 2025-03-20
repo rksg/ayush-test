@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen, mockServer } from '@acx-ui/test-utils'
 
-import * as fixtures  from './__tests__/fixtures'
+import * as fixtures   from './__tests__/fixtures'
 import {
   specToDto,
   useServiceGuardSpec,

@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }  from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Tabs,

@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { pinApi }   from '@acx-ui/rc/services'
+import { pinApi }    from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CatchErrorDetails,

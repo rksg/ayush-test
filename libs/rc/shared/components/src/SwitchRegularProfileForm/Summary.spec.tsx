@@ -8,7 +8,7 @@ import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
 
-import { venues }            from './__tests__/fixtures'
+import { venues }             from './__tests__/fixtures'
 import {
   ConfigurationProfileFormContext,
   ConfigurationProfileType

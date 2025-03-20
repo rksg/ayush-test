@@ -6,8 +6,8 @@ import {
   DirectoryServerProfileEnum,
   DirectoryServerUrls
 } from '@acx-ui/rc/utils'
-import { Path }               from '@acx-ui/react-router-dom'
-import { Provider, store }    from '@acx-ui/store'
+import { Path }                from '@acx-ui/react-router-dom'
+import { Provider, store }     from '@acx-ui/store'
 import {
   mockServer,
   render,

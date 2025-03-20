@@ -1,7 +1,7 @@
 import { Radio, Space, Form } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { StepsForm }        from '@acx-ui/components'
+import { StepsForm }         from '@acx-ui/components'
 import {
   ClusterHighAvailabilityModeEnum,
   IncompatibilityFeatures

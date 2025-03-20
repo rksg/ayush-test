@@ -6,8 +6,8 @@ import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 import styled             from 'styled-components/macro'
 
-import { AnchorContext, Loader }    from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { AnchorContext, Loader }     from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,

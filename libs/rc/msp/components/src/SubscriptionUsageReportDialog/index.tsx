@@ -5,7 +5,7 @@ import moment                                                        from 'momen
 import { useIntl }                                                   from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 
-import { Subtitle, Modal }  from '@acx-ui/components'
+import { Subtitle, Modal }   from '@acx-ui/components'
 import {
   useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery

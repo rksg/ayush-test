@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-import ReactECharts    from 'echarts-for-react'
+import ReactECharts     from 'echarts-for-react'
 import {
   TooltipFormatterCallback,
   CallbackDataParams

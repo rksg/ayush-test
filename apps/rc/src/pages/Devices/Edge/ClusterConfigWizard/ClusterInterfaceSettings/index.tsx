@@ -5,7 +5,7 @@ import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 import { useNavigate, useParams }            from 'react-router-dom'
 
-import { Loader, StepsForm }   from '@acx-ui/components'
+import { Loader, StepsForm }    from '@acx-ui/components'
 import {
   NodesTabs,
   TypeForm,

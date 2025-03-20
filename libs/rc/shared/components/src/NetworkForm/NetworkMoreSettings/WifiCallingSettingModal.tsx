@@ -7,8 +7,8 @@ import {
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, Transfer }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Button, Modal, Transfer }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedWifiCallingServiceListQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery

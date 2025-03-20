@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 
 import { difference, flatMap, uniq, groupBy, intersection, isNil, isEqual, pick } from 'lodash'
 
-import { showActionModal }              from '@acx-ui/components'
-import { Features }                     from '@acx-ui/feature-toggle'
+import { showActionModal }               from '@acx-ui/components'
+import { Features }                      from '@acx-ui/feature-toggle'
 import {
   useActivateEdgeMvSdLanNetworkMutation,
   useActivateEdgeSdLanDmzClusterMutation,

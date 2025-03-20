@@ -4,7 +4,7 @@ import { Form, Row, Space, Switch, Typography } from 'antd'
 import { isNil }                                from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { cssStr }   from '@acx-ui/components'
+import { cssStr }    from '@acx-ui/components'
 import {
   EdgeMvSdLanViewData,
   NetworkTypeEnum,

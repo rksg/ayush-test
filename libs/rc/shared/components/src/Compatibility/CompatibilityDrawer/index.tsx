@@ -12,7 +12,7 @@ import {
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady }              from '../../useEdgeActions'
+import { useIsEdgeFeatureReady }               from '../../useEdgeActions'
 import {
   apCompatibilityDataGroupByFeatureDeviceType,
   compatibilityDataGroupByFeatureDeviceType

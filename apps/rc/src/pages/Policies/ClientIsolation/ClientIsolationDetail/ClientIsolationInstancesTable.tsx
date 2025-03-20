@@ -3,9 +3,9 @@ import { ReactNode } from 'react'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Card, Table, TableProps }         from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }               from '@acx-ui/rc/components'
+import { Card, Table, TableProps }          from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                from '@acx-ui/rc/components'
 import {
   useGetVenueUsageByClientIsolationQuery
 } from '@acx-ui/rc/services'
