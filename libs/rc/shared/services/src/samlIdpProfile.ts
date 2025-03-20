@@ -1,4 +1,6 @@
 
+import { Buffer } from 'buffer'
+
 import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query'
 
 import {
@@ -83,18 +85,25 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
 
         const idPListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
         let idPList = idPListQuery.data as TableResult<SamlIdpProfileViewData>
+
         const samlIdpProfile = await fetchWithBQ(
           createHttpRequest(SamlIdpProfileUrls.getSamlIdpProfile, params)
         )
         const samlIdpProfileData = samlIdpProfile.data as SamlIdpProfileFormType
 
+        samlIdpProfileData.metadataContent =
+          Buffer.from(samlIdpProfileData.metadata, 'base64').toString('ascii')
+
         if (samlIdpProfileData && idPList?.data) {
           const viewData = idPList.data.find(item => item.id === params.id)
+
           if(viewData) {
             samlIdpProfileData.signingCertificateEnabled = viewData.signingCertificateEnabled
             samlIdpProfileData.signingCertificateId = viewData.signingCertificateId
             samlIdpProfileData.encryptionCertificateEnabled = viewData.encryptionCertificateEnabled
             samlIdpProfileData.encryptionCertificateId = viewData.encryptionCertificateId
+
+            samlIdpProfileData.wifiNetworkIds = viewData.wifiNetworkIds
           }
         }
 
@@ -134,24 +143,47 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         },
         extraOptions: { maxRetries: 5 }
       }),
-    activateSamlIdpProfileCertificate: build.mutation<CommonResult, RequestPayload>({
+
+    activateSamlEncryptionCertificate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(SamlIdpProfileUrls.activateSamlIdpProfileCertificate, params)
+        return createHttpRequest(SamlIdpProfileUrls.activateEncryptionCertificate, params)
       },
       invalidatesTags: [
         { type: 'SamlIdpProfile', id: 'LIST' },
         { type: 'SamlIdpProfile', id: 'Options' }
       ]
     }),
-    deactivateSamlIdpProfileCertificate: build.mutation<CommonResult, RequestPayload>({
+
+    deactivateSamlEncryptionCertificate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(SamlIdpProfileUrls.deactivateSamlIdpProfileCertificate, params)
+        return createHttpRequest(SamlIdpProfileUrls.deactivateEncryptionCertificate, params)
       },
       invalidatesTags: [
         { type: 'SamlIdpProfile', id: 'LIST' },
         { type: 'SamlIdpProfile', id: 'Options' }
       ]
     }),
+
+    activateSamlSigningCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SamlIdpProfileUrls.activateSigningCertificate, params)
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'Options' }
+      ]
+    }),
+
+    deactivateSamlSigningCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SamlIdpProfileUrls.deactivateSigningCertificate, params)
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'Options' }
+      ]
+    }),
+
     downloadSamlServiceProviderMetadata: build.mutation<Blob, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -185,7 +217,9 @@ export const {
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useGetSamlIdpProfileViewDataListQuery,
   useLazyGetSamlIdpProfileViewDataListQuery,
-  useActivateSamlIdpProfileCertificateMutation,
-  useDeactivateSamlIdpProfileCertificateMutation,
+  useActivateSamlEncryptionCertificateMutation,
+  useDeactivateSamlEncryptionCertificateMutation,
+  useActivateSamlSigningCertificateMutation,
+  useDeactivateSamlSigningCertificateMutation,
   useDownloadSamlServiceProviderMetadataMutation
 } = samlIdpProfileApi

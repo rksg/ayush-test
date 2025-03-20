@@ -2,13 +2,12 @@ import { useState } from 'react'
 
 import { Buffer } from 'buffer'
 
-import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                    from '@acx-ui/feature-toggle'
-import {  CodeDocument }                                             from '@acx-ui/icons'
-import { CertificateToolTip, SimpleListTooltip }                     from '@acx-ui/rc/components'
+import { Button, Loader, Table, TableProps, showActionModal }           from '@acx-ui/components'
+import { useIsSplitOn, Features }                                       from '@acx-ui/feature-toggle'
+import {  CodeDocument }                                                from '@acx-ui/icons'
+import { CertificateInfoItem, SamlIdpMetadataModal, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteSamlIdpProfileMutation,
   useDownloadSamlServiceProviderMetadataMutation,
@@ -29,10 +28,7 @@ import {
   useTableQuery,
   Network,
   KeyValue,
-  ServerCertificate,
-  CertificateStatusType,
-  getPolicyRoutePath,
-  transformDisplayOnOff
+  ServerCertificate
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -148,41 +144,28 @@ const SamlIdpTable = () => {
       title: $t({ defaultMessage: 'SAML Request Signature' }),
       key: 'signingCertificateEnabled',
       dataIndex: 'signingCertificateEnabled',
-      render: (_, row) => transformDisplayOnOff(row.signingCertificateEnabled)
+      render: (_, row) => {
+        return (
+          <CertificateInfoItem
+            certificateNameMap={certificateNameMap}
+            certificatFlag={row.signingCertificateEnabled ?? false}
+            certificatId={row.signingCertificateId ?? ''}
+          />
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'SAML Response Encryption' }),
       key: 'encryptionCertificateEnabled',
       dataIndex: 'encryptionCertificateEnabled',
-      render: (_, row) => transformDisplayOnOff(row.encryptionCertificateEnabled)
-    },
-    {
-      title: $t({ defaultMessage: 'Server sertificate' }),
-      key: 'encryptionCertificateId',
-      dataIndex: 'encryptionCertificateId',
-      filterKey: 'encryptionCertificateId',
-      filterable: certificateNameMap,
-      sorter: false,
       render: (_, row) => {
-        const serverCert = certificateNameMap.find(
-          cert => cert.key === row.encryptionCertificateId)
-        return (!row.encryptionCertificateId)
-          ? ''
-          : (<>
-            <TenantLink
-              to={getPolicyRoutePath({
-                type: PolicyType.SERVER_CERTIFICATES,
-                oper: PolicyOperation.LIST
-              })}>
-              {serverCert?.value || ''}
-            </TenantLink>
-            {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
-              <CertificateToolTip
-                placement='bottom'
-                policyType={PolicyType.SERVER_CERTIFICATES}
-                status={serverCert.status} /> : []}
-          </>
-          )
+        return (
+          <CertificateInfoItem
+            certificateNameMap={certificateNameMap}
+            certificatFlag={row.encryptionCertificateEnabled ?? false}
+            certificatId={row.encryptionCertificateId ?? ''}
+          />
+        )
       }
     },
     {
@@ -262,27 +245,11 @@ const SamlIdpTable = () => {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
       />
-      <Modal
-        title={$t({ defaultMessage: 'IdP Metadata' })}
+      <SamlIdpMetadataModal
+        metadata={idpMetadata}
         visible={idpMetadataModalVisible}
-        // onCancel={handleCancel}
-        width={800}
-        footer={
-          <Button
-            type='primary'
-            onClick={() => {
-              setIdpMetadataModalVisible(false)
-            }}
-          >
-            {$t({ defaultMessage: 'OK' })}
-          </Button>
-        }
-      >
-        <TextArea
-          style={{ width: '100%', height: 500 }}
-          value={idpMetadata}
-        ></TextArea>
-      </Modal>
+        setVisible={setIdpMetadataModalVisible}
+      />
     </Loader>
   )
 }

@@ -1,6 +1,6 @@
 export * from './AAAForm'
 export * from './AAADetail'
-export * from './AAAUtil'
+export * from './CertificateUtil'
 export * from './AccessControlForm'
 export * from './ClientIsolationForm/ClientIsolationForm'
 export { MacRegistrationListForm } from './MacRegistrationListForm'

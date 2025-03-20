@@ -1,32 +1,51 @@
+import { useState } from 'react'
 
-import { Card, Space } from 'antd'
-import { useIntl }     from 'react-intl'
-import { useParams }   from 'react-router-dom'
+import { Space }     from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, SummaryCard }                                           from '@acx-ui/components'
-import { useGetSamlIdpProfileWithRelationsByIdQuery, useGetServerCertificatesQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader, SummaryCard, Tooltip } from '@acx-ui/components'
 import {
-  CertificateStatusType,
+  useDownloadSamlServiceProviderMetadataMutation,
+  useGetSamlIdpProfileWithRelationsByIdQuery,
+  useGetServerCertificatesQuery
+} from '@acx-ui/rc/services'
+import {
   PolicyOperation,
   PolicyType,
+  SamlIdpMessages,
   ServerCertificate,
   filterByAccessForServicePolicyMutation,
-  getPolicyRoutePath,
   getScopeKeyByPolicy,
-  transformDisplayOnOff,
   usePolicyListBreadcrumb,
   useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
-import { CertificateToolTip }               from '../../AAAUtil'
+import { CertificateInfoItem }              from '../CertificateInfoItem'
+import { SamlIdpMetadataModal }             from '../SamlIdpMetadataModal'
+
+import { SamlIdpInstanceTable } from './SamlIdpInstanceTable'
 
 export const SamlIdpDetail = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
-  const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({ id: policyId })
+  const [samlIdpMetadataModalVisible, setSamlIdpMetadataModalVisible] = useState(false)
+  const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
+    payload: {
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: {
+        id: [policyId]
+      }
+    },
+    params: {
+      id: policyId
+    }
+  })
+
+  const [downloadSamlServiceProviderMetadata] = useDownloadSamlServiceProviderMetadataMutation()
 
   const { certificateNameMap } = useGetServerCertificatesQuery({
     payload: {
@@ -44,86 +63,89 @@ export const SamlIdpDetail = () => {
     })
   })
 
-  const getCertificateFieldContent = (certificatFlag: boolean, certificatId: string) => {
-    let content = transformDisplayOnOff(certificatFlag)
-
-    const serverCert = certificateNameMap.find(
-      cert => cert.key === certificatId)
-
-    let certContent = (!certificatId)
-      ? ''
-      : (<>
-        <TenantLink
-          to={getPolicyRoutePath({
-            type: PolicyType.SERVER_CERTIFICATES,
-            oper: PolicyOperation.LIST
-          })}>
-          {serverCert?.value || ''}
-        </TenantLink>
-        {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
-          <CertificateToolTip
-            placement='bottom'
-            policyType={PolicyType.SERVER_CERTIFICATES}
-            status={serverCert.status} /> : []}
-      </>
-      )
-    return content + (certContent)? ' (' + certContent + ')' : ''
-  }
-
   const samlIdpProfileInfo =[
     {
       title: $t({ defaultMessage: 'Identity Provider (IdP) Metadata' }),
       content: () => {
         return (
-          <Button type='link' size={'small'}>{$t({ defaultMessage: 'View Metadata' })}</Button>
+          <Button
+            type='link'
+            size={'small'}
+            onClick={() => setSamlIdpMetadataModalVisible(true)}
+          >
+            {$t({ defaultMessage: 'View Metadata' })}
+          </Button>
         )
       }
     }, {
       title: $t({ defaultMessage: 'SAML Request Signature' }),
       content: () => {
-        return getCertificateFieldContent(
-          samlIdpData?.signingCertificateEnabled ?? false,
-          samlIdpData?.signingCertificateId ?? ''
+        return (
+          <CertificateInfoItem
+            certificateNameMap={certificateNameMap}
+            certificatFlag={samlIdpData?.signingCertificateEnabled ?? false}
+            certificatId={samlIdpData?.signingCertificateId ?? ''}
+          />
         )
       }
     }, {
       title: $t({ defaultMessage: 'SAML Response Encryption' }),
       content: () => {
-        return getCertificateFieldContent(
-          samlIdpData?.encryptionCertificateEnabled ?? false,
-          samlIdpData?.encryptionCertificateId ?? ''
+        return (
+          <CertificateInfoItem
+            certificateNameMap={certificateNameMap}
+            certificatFlag={samlIdpData?.encryptionCertificateEnabled ?? false}
+            certificatId={samlIdpData?.encryptionCertificateId ?? ''}
+          />
         )
       }
     }
   ]
+
   return (<>
     <PageHeader
       title={samlIdpData?.name}
       breadcrumb={breadcrumb}
-      extra={filterByAccessForServicePolicyMutation([
-        <PolicyConfigTemplateLinkSwitcher
-          // eslint-disable-next-line max-len
-          rbacOpsIds={
-            useTemplateAwarePolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.EDIT)
+      extra={[
+        <Button
+          type='primary'
+          onClick={() =>
+            downloadSamlServiceProviderMetadata({ params: { id: samlIdpData?.id } })
           }
-          scopeKey={getScopeKeyByPolicy(PolicyType.SAML_IDP, PolicyOperation.EDIT)}
-          type={PolicyType.SAML_IDP}
-          oper={PolicyOperation.EDIT}
-          policyId={policyId!}
-          children={
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button>
-          }
-        />
-      ])}
+        >
+          <Tooltip title={$t(SamlIdpMessages.DOWNLOAD_SAML_METADATA)}>
+            {$t({ defaultMessage: 'Download SAML Metadata' })}
+          </Tooltip>
+        </Button>,
+        ...filterByAccessForServicePolicyMutation([
+          <PolicyConfigTemplateLinkSwitcher
+            rbacOpsIds={
+              useTemplateAwarePolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.EDIT)
+            }
+            scopeKey={getScopeKeyByPolicy(PolicyType.SAML_IDP, PolicyOperation.EDIT)}
+            type={PolicyType.SAML_IDP}
+            oper={PolicyOperation.EDIT}
+            policyId={policyId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
+        ])
+      ]}
     />
     <Space direction='vertical' size={30}>
-      <SummaryCard data={samlIdpProfileInfo} colPerRow={6} />
-      <Card>
-        abc
-      </Card>
+      <SummaryCard data={samlIdpProfileInfo} colPerRow={4} />
+      <SamlIdpInstanceTable
+        networkIds={samlIdpData?.wifiNetworkIds ?? []}
+      />
     </Space>
+    <SamlIdpMetadataModal
+      metadata={samlIdpData?.metadataContent ?? ''}
+      visible={samlIdpMetadataModalVisible}
+      setVisible={setSamlIdpMetadataModalVisible}
+    />
   </>
   )
 }
