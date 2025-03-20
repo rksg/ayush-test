@@ -15,7 +15,7 @@ import {
   SamlIdpProfileViewData
 } from '@acx-ui/rc/utils'
 
-import { IdentityProviderDrawer }  from '../../policies/SamlIdp/SamlDrawer/IdentityProviderDrawer'
+import { SAMLDrawer }              from '../../policies/SamlIdp/SamlDrawer'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -140,7 +140,7 @@ export const SAMLForm = () => {
           />
         </GridCol>
       </GridRow>
-      <IdentityProviderDrawer
+      <SAMLDrawer
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
         readMode={false}
@@ -151,7 +151,7 @@ export const SAMLForm = () => {
           }
         }}
       />
-      <IdentityProviderDrawer
+      <SAMLDrawer
         visible={detailDrawerVisible}
         setVisible={setDetailDrawerVisible}
         policy={selectedIdpProfile}

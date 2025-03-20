@@ -134,7 +134,9 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 ]}
                 validateFirst
               >
-                <Input />
+                <Input
+                  data-testid='saml-profile-name-input'
+                />
               </Form.Item>
             </Col>
           </Row>
