@@ -140,6 +140,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const navigate = useNavigate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isNewSwitchMemberApiEnabled = useIsSplitOn(Features.SWUTCH_MENBERS_QUERY_OPTIMIZATION)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -162,7 +166,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     enableRbac: isSwitchRbacEnabled,
     defaultPayload: {
       filters: getFilters(params),
-      ...defaultSwitchPayload
+      ...defaultSwitchPayload,
+      enableNewMemberApi: isNewSwitchMemberApiEnabled
     },
     search: {
       searchString: '',
@@ -326,7 +331,13 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         return isSupportAdminPassword
           ? <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
             <Tooltip title={getPasswordTooltip(row)}>{
-              getAdminPassword(row, PasswordInput)
+              getAdminPassword(row,
+                {
+                  isSupport8200AV: isSupport8200AV,
+                  isSupport8100: isSupport8100,
+                  isSupport8100X: isSupport8100X
+                },
+                PasswordInput)
             }</Tooltip>
           </div>
           : noDataDisplay
@@ -570,6 +581,26 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
+  const isNotSupportStackModel = (model: string) => {
+    switch(model) {
+      case 'ICX7150-C08P':
+      case 'ICX7150-C08PT':
+      case 'ICX8100-24':
+      case 'ICX8100-24P':
+      case 'ICX8100-48':
+      case 'ICX8100-48P':
+      case 'ICX8100-C08PF':
+      case 'ICX8100-24-X':
+      case 'ICX8100-24P-X':
+      case 'ICX8100-48-X':
+      case 'ICX8100-48P-X':
+      case 'ICX8100-C08PF-X':
+        return true
+      default:
+        return false
+    }
+  }
+
   const checkSelectedRowsStatus = (rows: SwitchRow[]) => {
     const modelFamily = rows[0]?.model?.split('-')[0]
     const venueId = rows[0]?.venueId
@@ -577,7 +608,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     const notOperational = rows.find(i =>
       !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
     const invalid = rows.find(i =>
-      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId)
+      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId || (isSupport8100X && isNotSupportStackModel(i?.model)))
     const hasStack = rows.find(i => i.isStack || i.formStacking)
 
     return {
