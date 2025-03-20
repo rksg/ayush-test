@@ -269,7 +269,7 @@ export function Integrators () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Tech Partners' })}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
