@@ -90,7 +90,7 @@ export const useIdentityListQuery = (props: UsePersonaListQueryProps) => {
         getIdentityClients({
           payload: {
             identityIds,
-            sortField: 'username',
+            sortField: 'identityId',
             sortOrder: 'ASC',
             pageSize: 100000
           }
