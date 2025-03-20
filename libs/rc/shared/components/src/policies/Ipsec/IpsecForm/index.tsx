@@ -62,7 +62,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
           replayWindow: 32,
           ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
           enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
-          dpdDelay: 0,
+          dpdDelay: 1,
           keepAliveInterval: 20,
           failoverRetryInterval: 1,
           failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
