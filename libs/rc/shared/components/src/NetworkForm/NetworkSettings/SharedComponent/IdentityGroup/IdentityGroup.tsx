@@ -175,7 +175,7 @@ export function IdentityGroup () {
                 }}
                 data-testid={'add-identity-button'}
               >
-                {$t({ defaultMessage: 'Add Identity' })}
+                {$t({ defaultMessage: 'Associate Identity' })}
               </Button>
             )}
           </div>
