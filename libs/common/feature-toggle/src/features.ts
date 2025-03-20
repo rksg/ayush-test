@@ -171,6 +171,7 @@ export enum Features {
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
   SWITCH_LEVEL_VLAN = 'switch-level-vlan',
+  SWUTCH_MENBERS_QUERY_OPTIMIZATION = 'acx-ui-switch-members-query-optimization-toggle',
   SWITCH_PORT_HYPERLINK = 'switch-port-hyperlink-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle',
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
