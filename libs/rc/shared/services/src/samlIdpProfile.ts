@@ -91,8 +91,8 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         if (samlIdpProfileData && idPList?.data) {
           const viewData = idPList.data.find(item => item.id === params.id)
           if(viewData) {
-            samlIdpProfileData.responseEncryptionEnabled = viewData.responseEncryptionEnabled
-            samlIdpProfileData.encryptionCertificateId = viewData.encryptionCertificateId
+            samlIdpProfileData.responseEncryptionEnabled = viewData.encryptionCertificateEnabled
+            samlIdpProfileData.encryptionCertificateId = viewData.encryptionCertificateId ?? ''
           }
         }
 
@@ -170,6 +170,12 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           }
         }
       }
+    }),
+    activateIdentityProviderProfileOnNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(SamlIdpProfileUrls.activateIdentityProviderProfileOnNetwork, params)
+      }
     })
   })
 })
@@ -185,5 +191,6 @@ export const {
   useLazyGetSamlIdpProfileViewDataListQuery,
   useActivateSamlIdpProfileCertificateMutation,
   useDeactivateSamlIdpProfileCertificateMutation,
-  useDownloadSamlServiceProviderMetadataMutation
+  useDownloadSamlServiceProviderMetadataMutation,
+  useActivateIdentityProviderProfileOnNetworkMutation
 } = samlIdpProfileApi

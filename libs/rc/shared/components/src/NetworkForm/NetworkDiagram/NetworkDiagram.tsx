@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }       from '@acx-ui/components'
+import { Button }        from '@acx-ui/components'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -40,6 +40,9 @@ import Hotspot20Diagram                from '../assets/images/network-wizard-dia
 import DefaultDiagram                  from '../assets/images/network-wizard-diagrams/none.png'
 import OpenDiagram                     from '../assets/images/network-wizard-diagrams/open.png'
 import PskDiagram                      from '../assets/images/network-wizard-diagrams/psk.png'
+import SAMLWithOweDiagram              from '../assets/images/network-wizard-diagrams/saml-owe.png'
+import SAMLWithPskDiagram              from '../assets/images/network-wizard-diagrams/saml-psk.png'
+import SAMLDiagram                     from '../assets/images/network-wizard-diagrams/saml.png'
 import SelfSignInWithOweDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-owe.png'
 import SelfSignInWithPskDiagram        from '../assets/images/network-wizard-diagrams/self-sign-in-psk.png'
 import SelfSignInDiagram               from '../assets/images/network-wizard-diagrams/self-sign-in.png'
@@ -178,7 +181,9 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
         (wisprWithOwe ? WISPrWithAlwaysAcceptOweDiagram : WISPrWithAlwaysAcceptDiagram)) :
       (wisprWithPsk ? WISPrWithPskDiagram : (wisprWithOwe ? WISPrWithOweDiagram : WISPrDiagram)),
     [GuestNetworkTypeEnum.Directory]: wisprWithOwe ? DirectoryServerWithOweDiagram
-      : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram)
+      : ( wisprWithPsk ? DirectoryServerWithPskDiagram : DirectoryServerDiagram),
+    [GuestNetworkTypeEnum.SAML]: wisprWithOwe ? SAMLWithOweDiagram
+      : (wisprWithPsk ? SAMLWithPskDiagram : SAMLDiagram)
   }
   return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }

@@ -17,6 +17,8 @@ export const portalViewTypes: Record<PortalViewEnum, MessageDescriptor> = {
     defineMessage({ defaultMessage: 'Host Approval - Register/Confirm' }),
   [PortalViewEnum.Directory]:
     defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
+  [PortalViewEnum.SAML]:
+    defineMessage({ defaultMessage: 'SSO via SAML Identity Provider (IdP)' }),
   [PortalViewEnum.ConnectionConfirmed]: defineMessage({ defaultMessage: 'Connection confirmed' }),
   [PortalViewEnum.TermCondition]: defineMessage({ defaultMessage: 'Terms & Conditions' })
 }
@@ -60,6 +62,10 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   [GuestNetworkTypeEnum.Directory]: defineMessage({
     defaultMessage: 'Users are required to enter an organizational username and password to gain access to the network',
     description: 'Description for Active Directory/ LDAP Server'
+  }),
+  [GuestNetworkTypeEnum.SAML]: defineMessage({
+    defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.',
+    description: 'SSO via SAML Identity Provider (IdP)'
   })
 }
 

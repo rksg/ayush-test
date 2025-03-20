@@ -1,9 +1,10 @@
 export interface SamlIdpProfileViewData {
     id: string
     name: string
-    authnRequestSignedEnabled: boolean
-    responseEncryptionEnabled: boolean
-    encryptionCertificateId: string
+    signingCertificateEnabled: boolean
+    signingCertificateId?: string
+    encryptionCertificateEnabled: boolean
+    encryptionCertificateId?: string
     wifiNetworkIds: string[]
 }
 

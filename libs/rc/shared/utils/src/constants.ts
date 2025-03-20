@@ -20,7 +20,8 @@ export enum GuestNetworkTypeEnum {
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
   Cloudpath = 'Cloudpath',
-  Directory = 'Directory'
+  Directory = 'Directory',
+  SAML = 'SAML'
 }
 
 export enum WlanSecurityEnum {
@@ -530,7 +531,8 @@ export enum PortalViewEnum{
   HostApproval = 'HostApproval',
   Directory = 'Directory',
   ConnectionConfirmed = 'ConnectionConfirmed',
-  TermCondition = 'TermCondition'
+  TermCondition = 'TermCondition',
+  SAML = 'SAML'
 }
 export enum PortalLanguageEnum{
   zh_TW = 'zh-hant',
