@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { policyApi }                                       from '@acx-ui/rc/services'
+import { policyApi }                                      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,

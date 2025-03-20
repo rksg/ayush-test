@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { Form, Input, Select, Switch, Space, Button } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
-import { GridRow, GridCol, Modal, ModalType, SelectionControl }    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { GridRow, GridCol, Modal, ModalType, SelectionControl }   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListByQueryQuery, useSearchPersonaListQuery,
   useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery

@@ -4,7 +4,7 @@ import ReactECharts from 'echarts-for-react'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { cssStr }           from '../../theme/helper'
+import { cssStr }          from '../../theme/helper'
 import {
   legendTextStyleOptions,
   tooltipOptions,

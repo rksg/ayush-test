@@ -1,4 +1,4 @@
-import { EdgeAlarmSummary }       from '../..'
+import { EdgeAlarmSummary }      from '../..'
 import {
   EdgeHqosTrafficClass,
   EdgeHqosTrafficClassPriority

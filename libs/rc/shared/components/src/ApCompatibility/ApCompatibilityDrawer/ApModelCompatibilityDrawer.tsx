@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { Form }                      from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer,  Loader }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Drawer,  Loader }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetApModelFamiliesQuery,
   useGetVenueQuery,

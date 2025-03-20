@@ -4,7 +4,7 @@ import { Form, Radio, RadioProps, Row, Space, Switch, Tooltip, Typography } from
 import { isNil }                                                            from 'lodash'
 import { useIntl }                                                          from 'react-intl'
 
-import { cssStr }    from '@acx-ui/components'
+import { cssStr }   from '@acx-ui/components'
 import {
   EdgeMvSdLanViewData,
   NetworkTypeEnum,

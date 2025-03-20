@@ -1,7 +1,7 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, showToast }        from '@acx-ui/components'
+import { Drawer, showToast }       from '@acx-ui/components'
 import {
   useAddAdaptivePolicyMutation,
   useAddPolicyConditionsMutation

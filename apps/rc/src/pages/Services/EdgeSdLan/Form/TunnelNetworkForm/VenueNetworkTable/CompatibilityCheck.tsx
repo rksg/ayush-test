@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import {
   ApCompatibilityToolTip,
   ApGeneralCompatibilityDrawer,

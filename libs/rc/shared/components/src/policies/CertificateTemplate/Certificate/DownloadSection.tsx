@@ -1,7 +1,7 @@
 import { Row, Col, Divider, Typography, Checkbox, Modal, Form, Input } from 'antd'
 import { MessageDescriptor, defineMessage, useIntl }                   from 'react-intl'
 
-import { Button, ModalRef }                from '@acx-ui/components'
+import { Button, ModalRef }               from '@acx-ui/components'
 import {
   useDeleteCaPrivateKeyMutation,
   useLazyDownloadCertificateAuthorityChainsQuery,

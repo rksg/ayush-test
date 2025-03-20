@@ -1,6 +1,6 @@
 import { Form } from 'antd'
 
-import { FlexibleAuthenticationForm }           from '@acx-ui/rc/components'
+import { FlexibleAuthenticationForm }          from '@acx-ui/rc/components'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useUpdateFlexAuthenticationProfileMutation

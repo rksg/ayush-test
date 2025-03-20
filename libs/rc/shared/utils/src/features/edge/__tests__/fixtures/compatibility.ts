@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 
-import { IncompatibilityFeatures }        from '../../../../models/CompatibilityEnum'
-import { CompatibilityEntityTypeEnum }    from '../../../../models/EdgeEnum'
+import { IncompatibilityFeatures }       from '../../../../models/CompatibilityEnum'
+import { CompatibilityEntityTypeEnum }   from '../../../../models/EdgeEnum'
 import {
   EdgeFeatureSets,
   EdgeFeatureSetsV1_1,

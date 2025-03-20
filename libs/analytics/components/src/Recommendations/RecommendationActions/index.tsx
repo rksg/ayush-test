@@ -18,7 +18,7 @@ import {
 import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                    from '@acx-ui/rc/utils'
 
-import { codes }                       from '../config'
+import { codes }                      from '../config'
 import {
   Recommendation,
   RecommendationListItem,

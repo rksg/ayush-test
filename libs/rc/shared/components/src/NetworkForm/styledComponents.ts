@@ -3,7 +3,7 @@ import {
 } from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import { Drawer as UIDrawer, Alert as UIAlert }   from '@acx-ui/components'
+import { Drawer as UIDrawer, Alert as UIAlert }  from '@acx-ui/components'
 import {
   ConfigurationSolid as UIConfigurationSolid,
   SMSToken as UISMSToken, Google as UIGoogle,

@@ -39,7 +39,7 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { createDefaultEthPort }       from '../ethernetPortProfile'
+import { createDefaultEthPort }      from '../ethernetPortProfile'
 import {
   addRoguePolicyFn,
   commonQueryFn,
@@ -62,7 +62,7 @@ import {
 } from '../servicePolicy.utils'
 
 
-import { configTemplateApi }              from './common'
+import { configTemplateApi }             from './common'
 import {
   AccessControlTemplateUseCases, ApplicationTemplateUseCases,
   DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,

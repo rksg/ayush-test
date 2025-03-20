@@ -19,7 +19,7 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockApModelFamilies }                         from '../../ApCompatibility/__test__/fixtures'
+import { mockApModelFamilies }                        from '../../ApCompatibility/__test__/fixtures'
 import {
   mockedTunnelProfileViewData,
   devicePolicyListResponse,

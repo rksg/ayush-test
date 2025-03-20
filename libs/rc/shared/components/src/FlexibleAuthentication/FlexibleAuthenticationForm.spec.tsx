@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }    from '@acx-ui/rc/services'
+import { switchApi }   from '@acx-ui/rc/services'
 import {
   SwitchUrlsInfo,
   PolicyOperation,

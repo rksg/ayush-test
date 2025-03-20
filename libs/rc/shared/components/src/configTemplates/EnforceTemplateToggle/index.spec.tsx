@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import {
   ConfigTemplate, ConfigTemplateContext, ConfigTemplateType, ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'

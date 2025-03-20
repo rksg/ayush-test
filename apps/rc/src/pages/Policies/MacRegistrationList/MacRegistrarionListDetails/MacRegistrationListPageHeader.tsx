@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                from '@acx-ui/components'
-import { useGetMacRegListQuery }             from '@acx-ui/rc/services'
+import { Button, PageHeader }               from '@acx-ui/components'
+import { useGetMacRegListQuery }            from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,

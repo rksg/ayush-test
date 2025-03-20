@@ -4,7 +4,7 @@ import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch, Typography } 
 import { useIntl }                                                              from 'react-intl'
 import { useParams }                                                            from 'react-router-dom'
 
-import { Loader, Button, PasswordInput }      from '@acx-ui/components'
+import { Loader, Button, PasswordInput }     from '@acx-ui/components'
 import {
   useGetDirectoryServerByIdQuery,
   useLazyGetDirectoryServerViewDataListQuery,

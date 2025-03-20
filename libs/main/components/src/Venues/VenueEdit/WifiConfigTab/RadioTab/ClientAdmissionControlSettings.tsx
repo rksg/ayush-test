@@ -4,8 +4,8 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { AnchorContext, Loader }     from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { AnchorContext, Loader }    from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl, useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }                from '../..'
+import { VenueEditContext }               from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher

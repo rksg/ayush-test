@@ -6,7 +6,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }       from '@acx-ui/components'
+import { Drawer, Select }      from '@acx-ui/components'
 import {
   EdgeIpModeEnum,
   EdgeStatus,

@@ -5,9 +5,9 @@ import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow }                      from '@acx-ui/components'
-import { StepsFormLegacy }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { GridCol, GridRow }                     from '@acx-ui/components'
+import { StepsFormLegacy }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
   useGetAccessControlProfileQuery,
   useGetAccessControlProfileTemplateQuery,

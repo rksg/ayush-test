@@ -1,7 +1,7 @@
 import { message } from 'antd'
 import moment      from 'moment-timezone'
 
-import { BrowserRouter }       from '@acx-ui/react-router-dom'
+import { BrowserRouter }      from '@acx-ui/react-router-dom'
 import {
   act,
   screen,

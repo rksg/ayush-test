@@ -7,7 +7,7 @@ import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm }  from '@acx-ui/components'
+import { Loader, NoData, StepsForm } from '@acx-ui/components'
 import {
   EdgePortConfigFormType,
   EdgePortsGeneralBase,

@@ -1,6 +1,6 @@
 import { Form } from 'antd'
 
-import { StepsForm }         from '@acx-ui/components'
+import { StepsForm }        from '@acx-ui/components'
 import {
   EdgeHqosProfileFixtures
 } from '@acx-ui/rc/utils'

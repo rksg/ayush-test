@@ -3,7 +3,7 @@ import {
   VlanPoolUrls, VLANPoolViewModelRbacType, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 
-import { mockQueryApi }                                    from './__tests__/fixtures'
+import { mockQueryApi }                                   from './__tests__/fixtures'
 import {
   createVLANPoolVenuesHttpRequest, createVLANPoolListHttpRequest,
   getVLANPoolPolicyViewModelListFn, getVLANPoolVenuesFn

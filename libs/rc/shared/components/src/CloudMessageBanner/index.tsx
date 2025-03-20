@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }      from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext }     from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery,
   useLazyGetVenueEdgeFirmwareListQuery,

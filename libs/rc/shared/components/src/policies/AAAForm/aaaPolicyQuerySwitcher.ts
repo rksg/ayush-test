@@ -1,4 +1,4 @@
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetAAAPolicyTemplateListQuery,
   useGetAAAPolicyViewModelListQuery,

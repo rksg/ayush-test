@@ -3,8 +3,8 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { policyApi }                                       from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { policyApi }                                      from '@acx-ui/rc/services'
 import {
   RogueAPDetectionContextType,
   RogueApUrls,

@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -71,8 +71,8 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
-import { useEnforcedStatus }                 from '../../configTemplates'
-import { useGetNetworkTunnelInfo }           from '../../EdgeSdLan/edgeSdLanUtils'
+import { useEnforcedStatus }                from '../../configTemplates'
+import { useGetNetworkTunnelInfo }          from '../../EdgeSdLan/edgeSdLanUtils'
 import {
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction

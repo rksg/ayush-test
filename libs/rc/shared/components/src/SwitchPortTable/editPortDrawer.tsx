@@ -13,8 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { PoeUsage }                                 from '@acx-ui/icons'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { PoeUsage }                                from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,

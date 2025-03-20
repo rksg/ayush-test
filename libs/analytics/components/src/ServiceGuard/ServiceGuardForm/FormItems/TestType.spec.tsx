@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { screen, within } from '@acx-ui/test-utils'
 
-import { renderForm }         from '../../__tests__/fixtures'
+import { renderForm }        from '../../__tests__/fixtures'
 import {
   ScheduleFrequency,
   TestTypeWithSchedule,

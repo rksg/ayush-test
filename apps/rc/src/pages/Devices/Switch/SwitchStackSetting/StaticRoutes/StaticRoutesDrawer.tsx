@@ -5,8 +5,8 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { Drawer }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Drawer }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddSwitchStaticRouteMutation,
   useUpdateSwitchStaticRouteMutation

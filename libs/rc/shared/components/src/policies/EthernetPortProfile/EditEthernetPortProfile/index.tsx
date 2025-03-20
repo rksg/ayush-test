@@ -4,7 +4,7 @@ import { Form }      from 'antd'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Loader }                                 from '@acx-ui/components'
+import { Loader }                                from '@acx-ui/components'
 import {
   useDeleteEthernetPortProfileRadiusIdMutation,
   useGetEthernetPortProfileTemplateQuery,

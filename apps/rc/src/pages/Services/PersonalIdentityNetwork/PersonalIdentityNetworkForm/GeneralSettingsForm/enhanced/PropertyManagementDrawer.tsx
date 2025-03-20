@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useMemo } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Drawer }                from '@acx-ui/components'
+import { Drawer }               from '@acx-ui/components'
 import {
   getInitialPropertyFormValues,
   PropertyManagementForm,

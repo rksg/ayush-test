@@ -9,7 +9,7 @@ import {
   showActionModal,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
 import {
   useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation,
   useDeleteVenueTemplateSwitchAAAServerMutation, useBulkDeleteVenueTemplateSwitchAAAServerMutation

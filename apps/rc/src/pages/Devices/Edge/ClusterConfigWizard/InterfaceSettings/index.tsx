@@ -19,9 +19,9 @@ import { getOpsApi }                                                            
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { LagForm }             from './LagForm'
-import { PortForm }            from './PortForm'
-import { Summary }             from './Summary'
+import { LagForm }            from './LagForm'
+import { PortForm }           from './PortForm'
+import { Summary }            from './Summary'
 import {
   CompatibilityCheckResult,
   InterfacePortFormCompatibility,

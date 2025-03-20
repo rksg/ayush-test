@@ -4,7 +4,7 @@ import { Form, Input, Space } from 'antd'
 import TextArea               from 'antd/lib/input/TextArea'
 import { useIntl }            from 'react-intl'
 
-import { GridCol,GridRow }                    from '@acx-ui/components'
+import { GridCol,GridRow }                   from '@acx-ui/components'
 import {
   useLazySearchInProgressWorkflowListQuery
 } from '@acx-ui/rc/services'

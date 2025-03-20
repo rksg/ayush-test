@@ -1,7 +1,7 @@
 import { Form, Input, InputNumber } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { PasswordInput }       from '@acx-ui/components'
+import { PasswordInput }      from '@acx-ui/components'
 import {
   checkObjectNotExists,
   lbsServerVenueNameRegExp,

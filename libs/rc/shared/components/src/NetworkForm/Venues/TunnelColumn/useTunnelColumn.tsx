@@ -4,8 +4,8 @@ import { Form, Space } from 'antd'
 import { cloneDeep }   from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Table }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Table }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   NetworkSaveData,
   NetworkTunnelSdLanAction,

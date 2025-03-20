@@ -2,7 +2,7 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }         from '@acx-ui/components'
+import { Loader, PageHeader }        from '@acx-ui/components'
 import {
   useActivateHqosOnEdgeClusterMutation,
   useDeactivateHqosOnEdgeClusterMutation,

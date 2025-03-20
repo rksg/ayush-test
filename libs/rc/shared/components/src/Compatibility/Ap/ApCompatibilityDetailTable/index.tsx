@@ -5,8 +5,8 @@ import { Space, Typography } from 'antd'
 import { sumBy }             from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Table, TableProps, Tooltip }    from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip }   from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetApModelFamiliesQuery,
   useGetVenueApModelFirmwareListQuery
@@ -30,9 +30,9 @@ import {
   useChangeScheduleVisiblePerApModel,
   useUpdateNowPerApModel
 } from '../../../ApFirmware/VenueFirmwareListPerApModel'
-import { SimpleListTooltip }     from '../../../SimpleListTooltip'
-import { ApModelFamiliesItem }   from '../../CompatibilityDrawer/CompatibilityItem/ApModelFamiliesItem'
-import { getFeatureTypeTag }     from '../../CompatibilityDrawer/utils'
+import { SimpleListTooltip }    from '../../../SimpleListTooltip'
+import { ApModelFamiliesItem }  from '../../CompatibilityDrawer/CompatibilityItem/ApModelFamiliesItem'
+import { getFeatureTypeTag }    from '../../CompatibilityDrawer/utils'
 import {
   ApInfoWrapper,
   MinReqVersionTooltipWrapper

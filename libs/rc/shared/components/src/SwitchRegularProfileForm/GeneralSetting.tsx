@@ -4,8 +4,8 @@ import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import { useIntl }               from 'react-intl'
 
-import { StepsFormLegacy }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   useLazyValidateUniqueProfileNameQuery,
   useLazyValidateUniqueSwitchProfileTemplateNameQuery

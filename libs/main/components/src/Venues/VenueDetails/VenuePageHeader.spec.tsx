@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { venueApi }            from '@acx-ui/rc/services'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { venueApi }           from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   CommonRbacUrlsInfo,

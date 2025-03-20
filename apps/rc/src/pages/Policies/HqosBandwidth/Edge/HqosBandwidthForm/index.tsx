@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { FormInstance } from 'antd'
 import _                from 'lodash'
 
-import { StepsForm }                from '@acx-ui/components'
+import { StepsForm }               from '@acx-ui/components'
 import {
   EdgeHqosViewData,
   getDefaultTrafficClassListData

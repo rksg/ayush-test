@@ -29,7 +29,7 @@ import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { networkApi }     from '../network'
+import { networkApi }    from '../network'
 import {
   fetchEnhanceRbacNetworkVenueList,
   fetchNetworkVlanPoolList,

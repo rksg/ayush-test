@@ -11,8 +11,8 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                       from '@acx-ui/icons'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                      from '@acx-ui/icons'
 import {
   GoogleMapWithPreference, ProtectedEnforceTemplateToggleVenue,
   usePlacesAutocomplete, wifiCountryCodes, useEnforcedStatus

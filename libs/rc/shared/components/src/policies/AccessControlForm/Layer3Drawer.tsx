@@ -21,8 +21,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { Drag }                           from '@acx-ui/icons'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Drag }                          from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
   useAddL3AclPolicyTemplateMutation,

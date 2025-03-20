@@ -4,7 +4,7 @@ import { Checkbox, Form, Input } from 'antd'
 import useFormInstance           from 'antd/es/form/hooks/useFormInstance'
 import { useIntl }               from 'react-intl'
 
-import { Card, Select }             from '@acx-ui/components'
+import { Card, Select }            from '@acx-ui/components'
 import {
   useLazyGetDpskQuery,
   useLazyNetworkListQuery,

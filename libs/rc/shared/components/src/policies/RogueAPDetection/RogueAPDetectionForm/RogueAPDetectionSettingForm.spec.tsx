@@ -3,8 +3,8 @@ import React from 'react'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { policyApi }                from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { policyApi }               from '@acx-ui/rc/services'
 import {
   ConfigTemplateContext,
   RogueAPDetectionContextType,

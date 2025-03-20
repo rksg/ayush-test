@@ -2,7 +2,7 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer }                     from '@acx-ui/components'
+import { Drawer }                    from '@acx-ui/components'
 import {
   useCreateDpskPassphrasesMutation,
   useUpdateDpskPassphrasesMutation

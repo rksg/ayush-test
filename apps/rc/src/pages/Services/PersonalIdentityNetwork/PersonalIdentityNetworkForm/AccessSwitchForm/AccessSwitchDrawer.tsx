@@ -12,9 +12,9 @@ import { useIntl }           from 'react-intl'
 import {
   Button, Drawer, Subtitle, Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
-import { isLAGMemberPort }               from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
+import { isLAGMemberPort }              from '@acx-ui/rc/components'
 import {
   useSwitchPortlistQuery,
   useGetSwitchVlanQuery,

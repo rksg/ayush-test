@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery,

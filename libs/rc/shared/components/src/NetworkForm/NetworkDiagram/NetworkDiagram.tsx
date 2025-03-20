@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }        from '@acx-ui/components'
+import { Button }       from '@acx-ui/components'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,

@@ -12,7 +12,7 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
@@ -67,8 +67,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }             from '../..'
-import DefaultApModelDiagram               from '../../../../assets/images/aps/ap-model-placeholder.png'
+import { VenueUtilityContext }            from '../..'
+import DefaultApModelDiagram              from '../../../../assets/images/aps/ap-model-placeholder.png'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher

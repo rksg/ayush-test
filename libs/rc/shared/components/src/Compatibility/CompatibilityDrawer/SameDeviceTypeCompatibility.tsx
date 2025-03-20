@@ -1,8 +1,8 @@
 import { Form }               from 'antd'
 import { intersection, omit } from 'lodash'
 
-import { Tabs }                            from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Tabs }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   ApIncompatibleFeature,
   CompatibilityDeviceEnum,

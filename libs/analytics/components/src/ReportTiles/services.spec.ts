@@ -3,7 +3,7 @@ import { Provider, dataApiURL }                                   from '@acx-ui/
 import { mockGraphqlQuery, renderHook, waitFor }                  from '@acx-ui/test-utils'
 import { PathFilter, DateRange, NetworkPath, NodeType, PathNode } from '@acx-ui/utils'
 
-import { networkSummaryInfo }   from './__tests__/fixtures'
+import { networkSummaryInfo }  from './__tests__/fixtures'
 import {
   getAttributes,
   getSummaryAttributes,

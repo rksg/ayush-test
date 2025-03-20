@@ -5,7 +5,7 @@ import _                      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { Tooltip }                       from '@acx-ui/components'
+import { Tooltip }                      from '@acx-ui/components'
 import {
   useGetAllApModelFirmwareListQuery,
   useGetUpgradePreferencesQuery,

@@ -10,8 +10,8 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { baseUrlFor }                    from '@acx-ui/config'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { baseUrlFor }                   from '@acx-ui/config'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetPortalQuery,
   useGetPortalTemplateQuery,

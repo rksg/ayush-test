@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Node }    from 'reactflow'
 
-import { Loader }                            from '@acx-ui/components'
-import { ListSolid }                         from '@acx-ui/icons'
+import { Loader }                           from '@acx-ui/components'
+import { ListSolid }                        from '@acx-ui/icons'
 import {
   useGetActionByIdQuery,
   useGetUIConfigurationQuery,

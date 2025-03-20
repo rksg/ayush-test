@@ -4,8 +4,8 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, PageHeader, Loader, showActionModal }    from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { StepsForm, PageHeader, Loader, showActionModal }   from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import {
   useAddSwitchConfigProfileMutation, // wait
   useUpdateSwitchConfigProfileMutation, //wait

@@ -18,7 +18,7 @@ import {
   DayTimeDropdown
 } from '@acx-ui/components'
 
-import * as contents      from '../../contents'
+import * as contents     from '../../contents'
 import {
   ServiceGuardFormDto,
   Schedule as ScheduleType,

@@ -35,10 +35,10 @@ import {
   Alert,
   showToast
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
-import { Drag }                            from '@acx-ui/icons'
-import { DeleteOutlined }                  from '@acx-ui/icons-new'
-import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
+import { Drag }                           from '@acx-ui/icons'
+import { DeleteOutlined }                 from '@acx-ui/icons-new'
+import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   switchApi,
   useGetSwitchQuery,

@@ -14,7 +14,7 @@ import {
   Features,
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
-import { LeafSolidIcon }  from '@acx-ui/icons'
+import { LeafSolidIcon } from '@acx-ui/icons'
 import {
   ApDeviceStatusEnum,
   APExtended,

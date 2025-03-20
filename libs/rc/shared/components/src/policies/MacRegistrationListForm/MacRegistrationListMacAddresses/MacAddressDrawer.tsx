@@ -4,8 +4,8 @@ import { Form, Input } from 'antd'
 import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Drawer }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
   useUpdateMacRegistrationMutation

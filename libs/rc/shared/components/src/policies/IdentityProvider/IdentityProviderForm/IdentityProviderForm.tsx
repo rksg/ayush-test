@@ -5,7 +5,7 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }       from '@acx-ui/components'
+import { PageHeader, StepsForm }      from '@acx-ui/components'
 import {
   useActivateIdentityProviderRadiusMutation,
   useAddIdentityProviderMutation,

@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { Loader, PageHeader, StepsForm, showToast } from '@acx-ui/components'
 import { useNavigateToPath }                        from '@acx-ui/react-router-dom'
 
-import * as contents           from '../contents'
+import * as contents          from '../contents'
 import {
   specToDto,
   useServiceGuardSpecMutation,
