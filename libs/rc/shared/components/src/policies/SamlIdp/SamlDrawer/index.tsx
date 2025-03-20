@@ -26,7 +26,7 @@ import { AddSamlIdp } from '../AddSamlIdp'
 
 
 
-interface IdentityProviderProps {
+interface SAMLDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   readMode?: boolean
@@ -34,7 +34,7 @@ interface IdentityProviderProps {
   callbackFn?: (createId: string) => void
 }
 
-export function IdentityProviderDrawer (props: IdentityProviderProps) {
+export function SAMLDrawer (props: SAMLDrawerProps) {
   const {
     visible,
     setVisible,
@@ -130,13 +130,13 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
             <Form.Item
               label={$t({ defaultMessage: 'Require SAML requests to be signed' })}
               children={
-                transformDisplayOnOff(policy.authnRequestSignedEnabled)
+                transformDisplayOnOff(policy.signingCertificateEnabled)
               }
             />
             <Form.Item
               label={$t({ defaultMessage: 'SAML Response Encryption' })}
               children={
-                transformDisplayOnOff(policy.responseEncryptionEnabled)
+                transformDisplayOnOff(policy.encryptionCertificateEnabled)
               }
             />
             <Form.Item
