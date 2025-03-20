@@ -9,8 +9,6 @@ import { messageMappings }       from '../messageMappings'
 import { usePermissionResult }   from '../NetworkTunnelActionModal'
 import { NetworkTunnelTypeEnum } from '../types'
 
-import { StyledSpinner } from './styledComponents'
-
 interface NetworkTunnelSwitchBtnProps {
   tunnelType: NetworkTunnelTypeEnum
   onClick: (checked: boolean) => Promise<void> | void
@@ -51,13 +49,11 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
     }
   }
 
-  return <StyledSpinner size={'small'} spinning={isUpdating}>
-    <Tooltip title={props.tooltip || tooltip}>
-      <Switch
-        checked={tunnelType !== NetworkTunnelTypeEnum.None}
-        disabled={props.disabled || needDisabled}
-        onClick={handleOnClick}
-      />
-    </Tooltip>
-  </StyledSpinner>
+  return <Tooltip title={props.tooltip || tooltip}>
+    <Switch
+      checked={tunnelType !== NetworkTunnelTypeEnum.None}
+      disabled={isUpdating || props.disabled || needDisabled}
+      onClick={handleOnClick}
+    />
+  </Tooltip>
 }
