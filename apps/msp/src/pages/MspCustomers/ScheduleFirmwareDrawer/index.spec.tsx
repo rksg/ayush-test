@@ -4,7 +4,7 @@ import moment    from 'moment'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                    from '@acx-ui/msp/utils'
+import { MspRbacUrlsInfo, MspUrlsInfo }                   from '@acx-ui/msp/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -82,6 +82,10 @@ describe('ScheduleFirmwareDrawer', () => {
     mockServer.use(
       rest.post(
         MspUrlsInfo.mspEcFirmwareUpgradeSchedules.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.mspEcFirmwareUpgradeSchedules.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )

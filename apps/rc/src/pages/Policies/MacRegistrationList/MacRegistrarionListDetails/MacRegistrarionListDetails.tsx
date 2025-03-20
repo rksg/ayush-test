@@ -30,8 +30,7 @@ export default function MacRegistrationListDetails () {
       searchCriteriaList: [
         { ...filter }
       ]
-    },
-    pagination: { settingsId }
+    }
   })
 
   const getTabComp = (activeTab?: string) => {
@@ -41,6 +40,7 @@ export default function MacRegistrationListDetails () {
       return <MacRegistrationsTable
         policyId={policyId!}
         tableQuery={tableQuery as unknown as TableQuery<MacRegistration, RequestPayload, unknown>}
+        settingsId={settingsId}
       />
     } else {
       return goToNotFound()

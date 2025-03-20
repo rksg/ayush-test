@@ -251,6 +251,7 @@ export function AddExplicitCustomRole () {
   }
 
   useEffect(() => {
+    form.setFieldValue('permissions', initialPermissionList)
     if (location && (isEditMode || isClone)) {
       form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
