@@ -67,7 +67,7 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isAssignMultipleEcEnabled =
-    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
+    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
   const MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE = 100
 
@@ -76,7 +76,7 @@ export function MspCustomers () {
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
   const isUpgradeMultipleEcEnabled =
-    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
+    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
