@@ -7,7 +7,7 @@ import { render, screen, waitFor, mockServer, renderHook }                      
 
 import { mockedConfigTemplateList } from '../../__tests__/fixtures'
 
-import { ConfigTemplateCloneModal, useCloneConfigTemplate } from '.'
+import { checkTemplateTypeValidity, ConfigTemplateCloneModal, useCloneConfigTemplate } from '.'
 
 
 describe('ConfigTemplateCloneModal', () => {
@@ -76,6 +76,30 @@ describe('ConfigTemplateCloneModal', () => {
     })
   })
 
+  describe('checkTemplateTypeValidity', () => {
+    const availabilityMap = {
+      [ConfigTemplateType.NETWORK]: true,
+      [ConfigTemplateType.VENUE]: false
+    }
+
+    it('should return false when templateType is undefined', () => {
+      expect(checkTemplateTypeValidity(undefined, availabilityMap)).toBe(false)
+    })
+
+    it('should return false when templateType is not in allowed list', () => {
+      // eslint-disable-next-line max-len
+      expect(checkTemplateTypeValidity(ConfigTemplateType.WIFI_CALLING, availabilityMap)).toBe(false)
+    })
+
+    it('should return false when templateType is allowed but feature flag is off', () => {
+      expect(checkTemplateTypeValidity(ConfigTemplateType.VENUE, availabilityMap)).toBe(false)
+    })
+
+    it('should return true when templateType is allowed and feature flag is on', () => {
+      expect(checkTemplateTypeValidity(ConfigTemplateType.NETWORK, availabilityMap)).toBe(true)
+    })
+  })
+
   describe('useCloneConfigTemplate', () => {
     it('should return initial state correctly', () => {
       const { result } = renderHook(() => useCloneConfigTemplate())
@@ -83,20 +107,6 @@ describe('ConfigTemplateCloneModal', () => {
       expect(result.current.visible).toBe(false)
       expect(typeof result.current.setVisible).toBe('function')
       expect(typeof result.current.canClone).toBe('function')
-    })
-
-    it('should return true for allowed template types', () => {
-      const { result } = renderHook(() => useCloneConfigTemplate())
-
-      expect(result.current.canClone(ConfigTemplateType.NETWORK)).toBe(true)
-      expect(result.current.canClone(ConfigTemplateType.VENUE)).toBe(true)
-    })
-
-    it('should return false for disallowed template types', () => {
-      const { result } = renderHook(() => useCloneConfigTemplate())
-
-      expect(result.current.canClone(ConfigTemplateType.WIFI_CALLING)).toBe(false)
-      expect(result.current.canClone(undefined)).toBe(false)
     })
   })
 })

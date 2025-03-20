@@ -629,6 +629,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Deactivate' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deactivateMspEcAccount)],
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' &&
@@ -653,13 +654,15 @@ export function MspCustomers () {
               `
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Deactivate' }),
-            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
       },
       {
         label: $t({ defaultMessage: 'Reactivate' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.reactivateMspEcAccount)],
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
             (selectedRows[0].status === 'Active' ||
@@ -682,7 +685,8 @@ export function MspCustomers () {
               { formattedName: name }
             ),
             okText: $t({ defaultMessage: 'Reactivate' }),
-            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }

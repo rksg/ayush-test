@@ -121,7 +121,7 @@ export const NetworkTunnelActionDrawer = (props: NetworkTunnelActionModalProps) 
                 data-testid='softgre-option'
                 hidden={hiddenSoftGre}
                 value={NetworkTunnelTypeEnum.SoftGre}
-                disabled={isDisabledAll || noChangePermission}>
+                disabled={isDisabledAll || noChangePermission || hiddenSoftGre}>
                 <Tooltip
                   title={isDisabledAll
                     ? $t(messageMappings.disable_deactivate_last_network)
