@@ -33,7 +33,7 @@ const AccessControlDetailTabs = () => {
   }, [activeTab])
 
   return (
-    <Tabs type='card' onChange={onTabChange} activeKey={activeTab}>
+    <Tabs onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview' />
