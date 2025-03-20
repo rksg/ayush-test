@@ -206,6 +206,7 @@ export function IdentityGroup () {
           identityId={selectedIdentityId}
           identityGroupId={selectedIdentityGroupId}
           disableAddDevices={true}
+          useByIdentityGroup={true}
         />
       )}
     </>

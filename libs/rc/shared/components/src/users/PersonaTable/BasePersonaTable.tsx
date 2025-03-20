@@ -223,7 +223,8 @@ export interface PersonaTableProps {
   personaGroupId?: string,
   colProps: PersonaTableColProps,
   settingsId?: string,
-  disableAddDevices?: boolean
+  disableAddDevices?: boolean,
+  useByIdentityGroup?: boolean
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
@@ -231,7 +232,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const {
     mode, personaGroupId,
     colProps, settingsId = 'base-persona-table', onChange,
-    disableAddDevices
+    disableAddDevices, useByIdentityGroup = false
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
