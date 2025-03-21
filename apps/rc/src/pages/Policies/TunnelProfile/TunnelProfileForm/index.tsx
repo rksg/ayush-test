@@ -9,11 +9,11 @@ import {
 } from '@acx-ui/rc/components'
 import {
   CommonResult,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
   LocationExtended,
   PolicyOperation,
   PolicyType,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   redirectPreviousPage,
   TunnelProfileFormType as TunnelProfileFormTypeBase
 } from '@acx-ui/rc/utils'
@@ -22,14 +22,16 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 interface TunnelProfileFormProps {
   title: string
   submitButtonLabel: string
-  onFinish: (values: TunnelProfileFormTypeBase) => Promise<CommonResult>
+  onFinish: (values: TunnelProfileFormTypeBase) => Promise<CommonResult | void> | void
   form?: FormInstance
   isDefaultTunnel?: boolean
   initialValues?: TunnelProfileFormTypeBase
+  editMode?: boolean
 }
 
 export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
-  const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues } = props
+  // eslint-disable-next-line max-len
+  const { title, submitButtonLabel, onFinish, form, isDefaultTunnel, initialValues, editMode } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -71,6 +73,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
         buttonLabel={{ submit: submitButtonLabel }}
         initialValues={initialValues}
+        editMode={editMode}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
