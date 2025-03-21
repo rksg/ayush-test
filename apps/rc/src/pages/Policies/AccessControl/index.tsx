@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs }                   from '@acx-ui/components'
+import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
 import { AccessControlTabs as WifiAccessControlTabs } from '@acx-ui/rc/components'
 import {
   filterByAccessForServicePolicyMutation,
@@ -14,13 +15,14 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
 
-import { SwitchAccessControl } from '../SwitchAccessControl'
+import { SwitchAccessControl } from '../SwitchAccessControl/index'
 
 const AccessControlTabs = () => {
   const { $t } = useIntl()
   const { activeTab } = useParams()
   const basePath = useTenantLink('/policies/accessControl')
   const navigate = useNavigate()
+
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
@@ -49,6 +51,7 @@ export default function AccessControl () {
   const { $t } = useIntl()
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   const getAddButton = () => {
     return activeTab === PortProfileTabsEnum.WIFI ? filterByAccessForServicePolicyMutation([
@@ -86,15 +89,16 @@ export default function AccessControl () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            text: $t({ defaultMessage: 'Policies & Profiles1' }),
             link: getPolicyListRoutePath(true)
           }
         ]}
 
         extra={getAddButton()}
-        footer={<AccessControlTabs/>}
+        footer={isSwitchMacAclEnabled && <AccessControlTabs/>}
       />
-      { Tab && <Tab /> }
+      { isSwitchMacAclEnabled && Tab && <Tab /> }
+      { !isSwitchMacAclEnabled && <WifiAccessControlTabs /> }
     </>
   )
 }

@@ -1,6 +1,8 @@
+import React from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                    from '@acx-ui/components'
+import { Button, PageHeader }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import {
@@ -10,8 +12,7 @@ import {
   getPolicyRoutePath, useTableQuery, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation,
   getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { MacACLs }                                from '@acx-ui/switch/components'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
 
@@ -25,49 +26,17 @@ const defaultPayload = {
   ]
 }
 
-const PoliciesAccessControlTabs = () => {
-  const { $t } = useIntl()
-  const basePath = useTenantLink('/policies/accessControl/wifi/list')
-  const activeTab = 'wifi'
-  const navigate = useNavigate()
-  const onTabChange = (tab: string) => {
-    if (tab === 'switch') tab = `${tab}/profiles`
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    }, { replace: true })
-  }
-
-  return (
-    <Tabs onChange={onTabChange} activeKey={activeTab}>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Wi-Fi' })}
-        key='wifi'/>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Switch' })}
-        key='switch' />
-    </Tabs>
-  )
-}
-
-const tabs = {
-  wifi: () => <AccessControlTabs />,
-  switch: () => <MacACLs />
-}
-
 export function AccessControlTable () {
   const { $t } = useIntl()
-  // const { activeTab } = useParams()
-  const Tab = tabs['wifi' as keyof typeof tabs]
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE) || true
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
     defaultPayload,
     enableRbac
   })
+
   return (<>
     <PageHeader
       title={
@@ -98,10 +67,8 @@ export function AccessControlTable () {
           </Button>
         </TenantLink>
       ])}
-      footer={<PoliciesAccessControlTabs />}
+
     />
-    {!isSwitchMacAclEnabled && <AccessControlTabs />}
-    {isSwitchMacAclEnabled && <Tab />}
+    <AccessControlTabs />
   </>)
 }
-
