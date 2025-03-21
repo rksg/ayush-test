@@ -12,7 +12,8 @@ import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 import {
   useAvailableFactsQuery,
   useFactsQuery
-} from './services'
+}                          from './services'
+import { CarouselWrapper } from './styledComponent'
 
 export { DidYouKnowWidget as DidYouKnow }
 
@@ -86,15 +87,17 @@ function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
     <Loader states={[factsQuery, factListQuery]}>
       <AutoSizer>
         {({ height, width }) => (
-          <Carousel contentList={contentList}
-            title={title}
-            subTitle={!hasData && dataLoaded ? subTitle : undefined}
-            {...carouselProps}
-            classList={'carousel-card'}
-            beforeChange={onChange}
-            offset={offset}
-            style={{ height, width }}
-          />
+          <CarouselWrapper>
+            <Carousel contentList={contentList}
+              title={title}
+              subTitle={!hasData && dataLoaded ? subTitle : undefined}
+              {...carouselProps}
+              classList={'carousel-card'}
+              beforeChange={onChange}
+              offset={offset}
+              style={{ height, width }}
+            />
+          </CarouselWrapper>
         )}
       </AutoSizer>
     </Loader>
