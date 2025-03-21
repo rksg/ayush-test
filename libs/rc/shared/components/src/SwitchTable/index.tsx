@@ -140,6 +140,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const navigate = useNavigate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isNewSwitchMemberApiEnabled = useIsSplitOn(Features.SWUTCH_MENBERS_QUERY_OPTIMIZATION)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
@@ -166,7 +167,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     enableRbac: isSwitchRbacEnabled,
     defaultPayload: {
       filters: getFilters(params),
-      ...defaultSwitchPayload
+      ...defaultSwitchPayload,
+      enableNewMemberApi: isNewSwitchMemberApiEnabled
     },
     search: {
       searchString: '',

@@ -82,7 +82,7 @@ describe('RssQualityByClientsChart', () => {
         buffer: noBuffer,
         incident: fakeIncidentRss,
         charts: [TimeSeriesChartTypes.RssQualityByClientsChart],
-        minGranularity: 'PT180S'
+        minGranularity: 'PT15M'
       })
     )
     expect(status).toBe('fulfilled')
