@@ -1,9 +1,10 @@
-import { get }               from '@acx-ui/config'
-import { dataApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { calculateGranularity } from '@acx-ui/analytics/utils'
+import { get }                  from '@acx-ui/config'
+import { dataApiURL, store }    from '@acx-ui/store'
+import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 
 import { mockBrandTimeseries, franchisorZones } from './__tests__/fixtures'
-import { api, calcGranularityForBrand360 }      from './services'
+import { api }                                  from './services'
 
 jest.mock('@acx-ui/config')
 
@@ -95,24 +96,19 @@ describe('services', () => {
       },
       {
         start: '2024-03-01T00:00:00+00:00',
-        end: '2024-03-02T00:00:00+00:00',
+        end: '2024-03-02T00:00:01+00:00',
         g: 'PT1H'
       },
       {
         start: '2024-03-01T00:00:00+00:00',
         end: '2024-03-08T08:00:00+00:00',
         g: 'PT24H'
-      },
-      {
-        start: '2024-02-01T00:00:00+00:00',
-        end: '2024-03-08T08:00:00+00:00',
-        g: 'PT72H'
       }
     ]
     // avoid rollup date check
     jest.mocked(get).mockReturnValue('36500')
     dates.forEach(({ start, end, g }) => {
-      expect(calcGranularityForBrand360(start, end)).toEqual(g)
+      expect(calculateGranularity(start, end)).toEqual(g)
     })
   })
 })

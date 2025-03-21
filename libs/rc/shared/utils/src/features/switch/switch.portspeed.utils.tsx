@@ -780,6 +780,61 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
       start: '1/2/1', end: '1/2/2',
       capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL']
     }
+  ],
+
+  'ICX8100-24-X': [
+    {
+      start: '1/1/1', end: '1/1/24',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-24P-X': [
+    {
+      start: '1/1/1', end: '1/1/24',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-48-X': [
+    {
+      start: '1/1/1', end: '1/1/48',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-48P-X': [
+    {
+      start: '1/1/1', end: '1/1/48',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-C08PF-X': [
+    {
+      start: '1/1/1', end: '1/1/8',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/2',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
   ]
 }
 /* eslint-enable */

@@ -332,6 +332,14 @@ describe('MspCustomers', () => {
         MspRbacUrlsInfo.deleteMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
       ),
+      rest.put(
+        MspRbacUrlsInfo.reactivateMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.delete(
+        MspRbacUrlsInfo.deactivateMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
       rest.post(
         MspUrlsInfo.deactivateMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))

@@ -81,6 +81,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addGuestPass: {
     method: 'post',
     url: '/wifiNetworks/:networkId/guestUsers',
+    opsApi: 'POST:/wifiNetworks/{id}/guestUsers',
     newApi: true
   },
   getExternalProviders: {

@@ -211,7 +211,7 @@ export const useUpdateNetworkTunnelAction = () => {
 }
 
 export const useDeactivateNetworkTunnelByType = () => {
-  const { dectivateSoftGreTunnel } = useSoftGreTunnelActions()
+  const { dectivateSoftGreTunnel, deactivateIpSecOverSoftGre } = useSoftGreTunnelActions()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
 
   const deactivateNetworkTunnelByType = (
@@ -230,7 +230,11 @@ export const useDeactivateNetworkTunnelByType = () => {
         )
         return
       case NetworkTunnelTypeEnum.SoftGre:
-        dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
+        if (formValues.ipsec && formValues.ipsec.enableIpsec) {
+          deactivateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+        } else {
+          dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
+        }
         return
       case NetworkTunnelTypeEnum.Pin:
       default:
