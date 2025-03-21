@@ -120,7 +120,7 @@ export function ReportList () {
         }
       </GridRow>
       <Divider />
-      <Subtitle level={2}>{$t({ defaultMessage: 'Adhoc reports' })}</Subtitle>
+      <Subtitle level={2}>{$t({ defaultMessage: 'Adhoc Reports' })}</Subtitle>
       <GridRow>
         {adhocReports.map(({ title, description, path }) => (
           <GridCol key={path} col={{ span: 6 }}>
