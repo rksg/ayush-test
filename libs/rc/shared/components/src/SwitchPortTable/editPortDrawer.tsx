@@ -820,7 +820,7 @@ export function EditPortDrawer ({
           flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       // Flex auth
       case 'flexibleAuthenticationEnabled':
-        return (isMultipleEdit && !checkboxEnabled)
+        return (isMultipleEdit && !checkboxEnabled) || portSecurity
           || !!getFlexAuthButtonStatus(commonRequiredProps)
       case 'authenticationProfileId':
         return isMultipleEdit && !(checkboxEnabled && flexibleAuthenticationEnabledCheckbox)
