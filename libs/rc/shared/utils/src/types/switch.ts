@@ -1131,5 +1131,5 @@ export interface MacAclOverview {
   model: string,
   venueId: string,
   venueName: string,
-  ports: string
+  ports: string[]
 }

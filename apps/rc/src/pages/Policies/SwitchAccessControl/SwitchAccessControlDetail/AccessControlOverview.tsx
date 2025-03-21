@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow, Loader, Table, TableProps } from '@acx-ui/components'
-import { useGetAccessControlOverviewQuery }                  from '@acx-ui/rc/services'
+import { Card, GridCol, GridRow, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { useGetAccessControlOverviewQuery }                           from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MacAclOverview
@@ -72,9 +72,18 @@ export default function AccessControlOverview () {
         }
       },
       {
-        key: 'port',
+        key: 'ports',
         title: $t({ defaultMessage: 'Ports' }),
-        dataIndex: 'port'
+        dataIndex: 'ports',
+        render: (_, row) => {
+          return <Tooltip
+            title={row.ports ? row.ports?.map((p: string) => p).join('\n') : ''}
+            dottedUnderline={row.ports?.length ? true : false}
+            placement='bottom'
+          >
+            {row.ports ? row.ports.length : 0}
+          </Tooltip>
+        }
       },
       {
         key: 'venueName',
