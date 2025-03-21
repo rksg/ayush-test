@@ -7,6 +7,7 @@ import { useIntl }   from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
+import { usePersonaListQuery }                                                                                    from '@acx-ui/rc/components'
 import {
   useRemoveUnitLinkedIdentityMutation,
   useGetUnitsLinkedIdentitiesQuery,
@@ -14,11 +15,10 @@ import {
   useGetVenueQuery,
   useLazyGetPersonaByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
-  useSearchPersonaListQuery,
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useParams
@@ -37,6 +37,9 @@ export function PropertyUnitDetails () {
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [identitiesCount, setIdentitiesCount] = useState(0)
+  const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
+  const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+
   const identities = useGetUnitsLinkedIdentitiesQuery({ params: { venueId },
     payload: {
       pageSize: 10000, page: 1, sortOrder: 'ASC',
@@ -45,12 +48,14 @@ export function PropertyUnitDetails () {
       }
     } })
 
+  useEffect(() => {
+    if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
+      const groupId = propertyConfigsQuery.data.personaGroupId
+      setPersonaGroupId(groupId)
+    }
+  }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading])
   const settingsId = 'property-units-identity-table'
-  const identitiesList = useTableQuery({
-    useQuery: useSearchPersonaListQuery,
-    pagination: { pageSize: 10, settingsId },
-    defaultPayload: { keyword: '' }
-  })
+  const identitiesList = usePersonaListQuery({ personaGroupId, settingsId })
   useEffect(() => {
     setIdentitiesCount(identitiesList.data?.totalCount || 0)
   }, [identitiesList.data])
@@ -63,12 +68,11 @@ export function PropertyUnitDetails () {
     identitiesList.setPayload(payload)
   }, [identities.data])
 
-  const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const [updatePersona] = useUpdatePersonaMutation()
   const [deletePersonaAssociation] = useRemoveUnitLinkedIdentityMutation()
-  const [personaGroupId, setPersonaGroupId] = useState<string|undefined>(undefined)
   const [residentPortalUrl, setResidentPortalUrl] = useState<string|undefined>(undefined)
   const [unitData, setUnitData] = useState<PropertyUnitFormFields>()
   const [configurePropertyUnitDrawerVisible, setConfigurePropertyUnitDrawerVisible] =
@@ -80,12 +84,6 @@ export function PropertyUnitDetails () {
   const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
   const [ guestCopyButtonTooltip, setGuestCopyTooltip ] = useState(copyButtonTooltipDefaultText)
 
-  useEffect(() => {
-    if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
-      const groupId = propertyConfigsQuery.data.personaGroupId
-      setPersonaGroupId(groupId)
-    }
-  }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading ])
 
   const updateDetails = () => {
     getUnitById({ params: { venueId, unitId } })

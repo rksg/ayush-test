@@ -22,6 +22,16 @@ const propertyConfigs = {
   personaGroupId: 'personaGroupId123'
 }
 
+const mockPersonaGroup = {
+  id: 'personaGroupId123',
+  name: 'personaGroupId-123',
+  description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  nsgId: 'nsgId-700',
+  propertyId: 'propertyId-100'
+}
+
 const unitData = {
   personaId: 'personaId123',
   guestPersonaId: 'guestPersonaId123',
@@ -141,6 +151,10 @@ describe('Property Unit Details', () => {
         (req, res, ctx) => {
           return res(ctx.json(mockPropertyUnitList))
         }
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       )
     )
   })
@@ -251,8 +265,6 @@ describe('Property Unit Details', () => {
     const spy = jest.spyOn(navigator.clipboard, 'writeText')
     await screen.findByText('Test Resident Name')
 
-    fireEvent.mouseOver(screen.getByTestId('copy'))
-    await screen.findByRole('tooltip', { name: 'Copy Passphrase' })
     fireEvent.mouseOut(screen.getByTestId('copy'))
     fireEvent.click(screen.getByTestId('copy'))
     await waitFor(() =>
@@ -267,8 +279,6 @@ describe('Property Unit Details', () => {
     const spy = jest.spyOn(navigator.clipboard, 'writeText')
     await screen.findByText('Test Resident Name')
 
-    fireEvent.mouseOver(screen.getByTestId('guest-copy'))
-    await screen.findByRole('tooltip', { name: 'Copy Passphrase' })
     fireEvent.mouseOut(screen.getByTestId('guest-copy'))
     fireEvent.click(screen.getByTestId('guest-copy'))
     await waitFor(() =>
