@@ -1115,14 +1115,6 @@ export interface MacAclRule {
 	destinationMask?: string
 }
 
-export interface MacAcl {
-	id: string,
-	name: string,
-	switchMacAclRules?: MacAclRule[]
-  macAclRules?: MacAclRule[]
-	switchId?: string
-}
-
 export interface MacAclOverview {
 	id: string,
 	switchId: string,
@@ -1132,4 +1124,12 @@ export interface MacAclOverview {
   venueId: string,
   venueName: string,
   ports: string[]
+}
+
+export interface MacAcl {
+	id: string,
+	name: string,
+	appliedSwitchesInfo?: MacAclOverview[]
+  macAclRules?: MacAclRule[]
+	switchId?: string
 }

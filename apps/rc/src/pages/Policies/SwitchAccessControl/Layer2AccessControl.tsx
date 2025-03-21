@@ -107,12 +107,46 @@ export function Layer2AccessControl () {
     {
       key: 'switches',
       title: $t({ defaultMessage: 'Switches' }),
-      dataIndex: 'switches'
+      dataIndex: 'switches',
+      render: (_, row) => {
+        if (!row.appliedSwitchesInfo || row.appliedSwitchesInfo.length === 0) return 0
+
+        const tooltipItems = Array.from(
+          new Set(row.appliedSwitchesInfo.map(item => item.switchName))
+        )
+
+        return (
+          <Tooltip
+            title={tooltipItems.map((p: string) => p).join('\n')}
+            dottedUnderline={tooltipItems.length > 0}
+            placement='bottom'
+          >
+            {tooltipItems.length}
+          </Tooltip>
+        )
+      }
     },
     {
       key: 'venues',
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      dataIndex: 'venues'
+      dataIndex: 'venues',
+      render: (_, row) => {
+        if (!row.appliedSwitchesInfo || row.appliedSwitchesInfo.length === 0) return 0
+
+        const uniqueVenues = Array.from(
+          new Set(row.appliedSwitchesInfo.map(item => item.venueName))
+        )
+
+        return (
+          <Tooltip
+            title={uniqueVenues.map((p: string) => p).join('\n')}
+            dottedUnderline={uniqueVenues.length > 0}
+            placement='bottom'
+          >
+            {uniqueVenues.length}
+          </Tooltip>
+        )
+      }
     }
   ]
 
