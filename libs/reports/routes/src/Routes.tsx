@@ -31,7 +31,11 @@ export default function ReportsRoutes () {
     applications: <Report type={ReportType.APPLICATION} />,
     edgeApplications: <Report type={ReportType.EDGE_APPLICATION} />,
     wlans: <Report type={ReportType.WLAN} />,
-    airtime: <Report type={ReportType.AIRTIME_UTILIZATION} />
+    airtime: <Report type={ReportType.AIRTIME_UTILIZATION} />,
+    rssTraffic: <Report type={ReportType.RSS_TRAFFIC} />,
+    rssSession: <Report type={ReportType.RSS_SESSION} />,
+    wirelessAirtime: <Report type={ReportType.WIRELESS_AIRTIME} />,
+    trafficApplications: <Report type={ReportType.TRAFFIC_APPLICTION} />
   }
 
   const routes = rootRoutes(
@@ -48,6 +52,10 @@ export default function ReportsRoutes () {
       <Route path='reports/edgeApplications' element={reports.edgeApplications} />
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
+      <Route path='reports/rssTraffic' element={reports.rssTraffic} />
+      <Route path='reports/rssSession' element={reports.rssSession} />
+      <Route path='reports/wirelessAirtime' element={reports.wirelessAirtime} />
+      <Route path='reports/trafficApplications' element={reports.trafficApplications} />
       <Route path='dataStudio' element={<DataStudio />} />
       <Route path='dataConnector' element={<DataConnectorContent />} />
       <Route path='dataConnector/create' element={<ConnectorForm />} />

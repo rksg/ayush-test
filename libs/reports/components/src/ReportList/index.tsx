@@ -1,10 +1,10 @@
 import {  Divider }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
-import { Features }                                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
-import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
+import { PageHeader, GridRow, GridCol, RadioCard, Subtitle } from '@acx-ui/components'
+import { Features }                                          from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
+import { useNavigate, useTenantLink }                        from '@acx-ui/react-router-dom'
 
 export function ReportList () {
   const { $t } = useIntl()
@@ -120,9 +120,7 @@ export function ReportList () {
         }
       </GridRow>
       <Divider />
-      <PageHeader
-        title={$t({ defaultMessage: 'Adhoc reports' })}
-      />
+      <Subtitle level={2}>{$t({ defaultMessage: 'Adhoc reports' })}</Subtitle>
       <GridRow>
         {adhocReports.map(({ title, description, path }) => (
           <GridCol key={path} col={{ span: 6 }}>
