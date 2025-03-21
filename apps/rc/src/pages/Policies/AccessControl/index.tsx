@@ -89,7 +89,7 @@ export default function AccessControl () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
-            text: $t({ defaultMessage: 'Policies & Profiles1' }),
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           }
         ]}
