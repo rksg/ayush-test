@@ -20,8 +20,8 @@ import { SwitchScopes }   from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getOpsApi }      from '@acx-ui/utils'
 
-import { MacACLDetail } from './macACLDetail'
-import { MacACLDrawer } from './macACLDrawer'
+import { MacACLDetail } from './MacACLDetail'
+import { MacACLDrawer } from './MacACLDrawer'
 
 export function SwitchAccessControl () {
   const { $t } = useIntl()
