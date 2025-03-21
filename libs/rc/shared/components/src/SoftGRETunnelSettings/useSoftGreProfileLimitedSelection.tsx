@@ -4,12 +4,13 @@ import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { omit, isEqual }     from 'lodash'
 
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { useLazyGetIpsecViewDataListQuery, useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
   SoftGreOptionCandidate,
+  SoftGreViewData,
   useConfigTemplate,
   Voter,
   VoteTallyBoard
@@ -23,10 +24,12 @@ export const useSoftGreProfileLimitedSelection = (
   const params = useParams()
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isWifiIpsecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const form = Form.useFormInstance()
 
   const [ softGREProfileOptionList, setSoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
+  const [ ipsecProfileOptionList, setIpsecProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ voteTallyBoard, setVoteTallyBoard ] = useState<VoteTallyBoard[]>([])
   const [ isTheOnlyVoter, setIsTheOnlyVoter] = useState<boolean>(false)
 
@@ -34,7 +37,47 @@ export const useSoftGreProfileLimitedSelection = (
     && isEthernetSoftgreEnabled
     && isEthernetPortProfileEnabled
 
+  const allowIpsecGetPorfiles = allowSoftGetGrePorfiles && isWifiIpsecOverNetworkEnabled
+
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
+  const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
+
+  const getIpsecData = async (softGreList: SoftGreViewData[]) => {
+    if (!allowIpsecGetPorfiles) return
+
+    const ipsecProfileList = (await getIpsecViewDataList({
+      params,
+      payload: {}
+    }).unwrap()).data
+
+    const softGreIds = new Set<string>()
+    softGreList.forEach(softGre => {
+      softGre.activations?.forEach(act => {
+        if (act.venueId === venueId) softGreIds.add(softGre.id)
+      })
+      softGre.venueActivations?.forEach(act => {
+        if (act.venueId === venueId) softGreIds.add(softGre.id)
+      })
+      softGre.apActivations?.forEach(act => {
+        if (act.venueId === venueId) softGreIds.add(softGre.id)
+      })
+    })
+
+    if (softGreIds.size > 1) {
+      setIpsecProfileOptionList(ipsecProfileList.map((ipsecProfile) => {
+        return { label: ipsecProfile.name, value: ipsecProfile.id, disabled: true }
+      }))
+      return
+    }
+
+    ipsecProfileList.forEach((ipsecProfile) => {
+      
+    })
+
+    setIpsecProfileOptionList(ipsecProfileList.map((ipsecProfile) => {
+      return { label: ipsecProfile.name, value: ipsecProfile.id }
+    }))
+  }
 
   useEffect(() => {
     const setData = async () => {
@@ -43,6 +86,8 @@ export const useSoftGreProfileLimitedSelection = (
           params,
           payload: {}
         }).unwrap()).data : [])
+      await getIpsecData(softGreProfileList)
+
       if(softGreProfileList.length > 0) {
         setSoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
           return { label: softGreProfile.name, value: softGreProfile.id }

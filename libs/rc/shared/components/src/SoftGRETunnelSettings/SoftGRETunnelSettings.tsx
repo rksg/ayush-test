@@ -10,9 +10,12 @@ import {
   SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 
-import { IPSecProfileSettings }   from './IPSecProfileSettings'
-import { SoftGREProfileSettings } from './SoftGREProfileSettings'
-import { FieldLabel }             from './styledComponents'
+import { Label } from '../policies'
+
+import { IPSecProfileSettings }                 from './IPSecProfileSettings'
+import { BoundSoftGreIpsec, SoftGreIpSecState } from './SoftGreIpSecState'
+import { SoftGREProfileSettings }               from './SoftGREProfileSettings'
+import { FieldLabel }                           from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   index: number;
@@ -25,7 +28,14 @@ interface SoftGRETunnelSettingsProps {
   serialNumber?: string
   isUnderAPNetworking: boolean
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
-  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean,
+  isVenueBoundIpsec?: boolean,
+  boundSoftGreIpsecList?: BoundSoftGreIpsec[],
+  softGreIpsecProfileValidator: (
+    enabledSoftGre: boolean,
+    softGreId: string,
+    enabledIpsec: boolean,
+    ipsecId: string) => Promise<void>
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -41,7 +51,10 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     serialNumber,
     isUnderAPNetworking,
     optionDispatch,
-    validateIsFQDNDuplicate
+    validateIsFQDNDuplicate,
+    isVenueBoundIpsec,
+    boundSoftGreIpsecList,
+    softGreIpsecProfileValidator
   } = props
 
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -111,19 +124,43 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })
             }
           />
-          {isIpSecOverNetworkEnabled && <Alert
-            data-testid={'enable-ipsec-banner'}
-            showIcon={true}
-            style={{ verticalAlign: 'middle' }}
-            message={
-              <FormattedMessage
+          {isIpSecOverNetworkEnabled &&
+          <>
+            <Alert
+              data-testid={'enable-ipsec-banner'}
+              showIcon={true}
+              style={{ verticalAlign: 'middle' }}
+              message={
+                <FormattedMessage
                 // eslint-disable-next-line max-len
-                defaultMessage={'A <venueSingular></venueSingular> supports <b>up to 3 SoftGRE activated profiles without IPsec</b> or <b>1 SoftGRE with IPsec.</b>'}
-                values={{
-                  b: chunks => <b>{chunks}</b>
-                }}
-              />}
-          />}
+                  defaultMessage={'A <venueSingular></venueSingular> supports <b>up to 3 SoftGRE activated profiles without IPsec</b> or <b>1 SoftGRE with IPsec.</b>'}
+                  values={{
+                    b: chunks => <b>{chunks}</b>
+                  }}
+                />}
+            />
+            {(boundSoftGreIpsecList && boundSoftGreIpsecList.length > 0) &&
+              boundSoftGreIpsecList.map(boundProfile => {
+                return <><Label style={{ width: '220px' }}>{
+                  // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'SoftGRE: {softGreName}, IPsec: {ipsecName}, ActionLevel: {actionLevel}' },
+                    {
+                      softGreName: boundProfile.softGreName,
+                      ipsecName: boundProfile.ipsecName,
+                      actionLevel: boundProfile.actionLevel
+                    })}</Label><br /></>
+              })
+            }
+            <Form.Item
+              style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
+              name={['lan', index, 'softGreIpsecValidator']}
+              rules={[{ validator: () => softGreIpsecProfileValidator(
+                form.getFieldValue(['lan', index, 'softGreEnabled']),
+                form.getFieldValue(['lan', index, 'softGreProfileId']),
+                form.getFieldValue(['lan', index, 'ipsecEnabled']),
+                form.getFieldValue(['lan', index, 'ipsecProfileId'])
+              ) }]}></Form.Item>
+          </>}
           <SoftGREProfileSettings
             index={index}
             softGreProfileId={softGreProfileId}

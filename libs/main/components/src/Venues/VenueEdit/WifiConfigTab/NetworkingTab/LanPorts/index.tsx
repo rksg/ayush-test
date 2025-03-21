@@ -12,12 +12,13 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileLimitedSelection
+  useSoftGreProfileLimitedSelection,
+  SoftGreIpSecState
 }
   from '@acx-ui/rc/components'
 import {
@@ -223,11 +224,17 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
+  const [lanPortIdx, setLanPortIdx] = useState(0)
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    isVenueBoundIpsec,
+    boundSoftGreIpsecList,
+    softGreIpsecProfileValidator
+  } = SoftGreIpSecState(venueId!, true)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -279,10 +286,17 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }, [apPoeMode, lanPoeOut, lanPorts])
 
-  const onTabChange = (tab: string) => {
+  const onTabChange = async (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
-    setActiveTabIndex(tabIndex)
-    setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    try {
+      await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
+      setActiveTabIndex(tabIndex)
+      setLanPortIdx(tabIndex)
+      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
   }
 
   const handleModelChange = async (value: string) => {
@@ -840,6 +854,9 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
                     validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+                    isVenueBoundIpsec={isVenueBoundIpsec}
+                    boundSoftGreIpsecList={boundSoftGreIpsecList}
+                    softGreIpsecProfileValidator={softGreIpsecProfileValidator}
                   />
                 </Col>
               </Row>

@@ -69,7 +69,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
 
     if (queryData) {
       const { options } = queryData
-      setIpsecOptions(options)
+      setIpsecOptions(options.map(opt => ({ ...opt, disabled: false })))
     }
   }
 

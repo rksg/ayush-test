@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                             from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, SoftGreIpSecState, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,
@@ -161,6 +161,11 @@ export function LanPorts (props: ApEditItemProps) {
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    isVenueBoundIpsec,
+    boundSoftGreIpsecList,
+    softGreIpsecProfileValidator
+  } = SoftGreIpSecState(venueId!, false)
 
   const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
@@ -602,6 +607,9 @@ export function LanPorts (props: ApEditItemProps) {
                           softGREProfileOptionList={softGREProfileOptionList}
                           optionDispatch={duplicationChangeDispatch}
                           validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+                          isVenueBoundIpsec={isVenueBoundIpsec}
+                          boundSoftGreIpsecList={boundSoftGreIpsecList}
+                          softGreIpsecProfileValidator={softGreIpsecProfileValidator}
                         />
                       </Col>
                     </Row>
