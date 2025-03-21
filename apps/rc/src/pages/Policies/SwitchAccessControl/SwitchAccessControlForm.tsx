@@ -12,7 +12,8 @@ import {
 import {
   useLazyGetAccessControlsListQuery,
   useAddAccessControlMutation,
-  useUpdateAccessControlMutation
+  useUpdateAccessControlMutation,
+  useGetAccessControlByIdQuery
 } from '@acx-ui/rc/services'
 import {
   MacAclRule,
@@ -68,23 +69,23 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
   const [addAccessControl] = useAddAccessControlMutation()
   const [updateAccessControl] = useUpdateAccessControlMutation()
   const [getAccessControls] = useLazyGetAccessControlsListQuery()
+  const { data } = useGetAccessControlByIdQuery(
+    { params: { accessControlId }, skip: !accessControlId })
 
   useEffect(() => {
-    if(accessControlId) {
-      const payload = { ...defaultPayload, filters: { id: [accessControlId] } }
-      getAccessControls({ payload }).unwrap().then(response => {
-        if(response.data[0] && response.data[0].macAclRules){
-          form.setFieldValue('name', response.data[0].name)
-          setDataSource(response.data[0].macAclRules.map((rule: MacAclRule) => {
-            return {
-              ...rule,
-              key: rule.id
-            }
-          }))
-        }
-      })
+    if(data) {
+      if(data && data.macAclRules){
+        form.setFieldValue('name', data.name)
+        setDataSource(data.macAclRules.map((rule: MacAclRule) => {
+          return {
+            ...rule,
+            key: rule.id
+          }
+        }))
+      }
     }
-  }, [accessControlId])
+  }, [data])
+
   const columns: TableProps<MacAclRule>['columns'] = [
     {
       key: 'action',
@@ -165,6 +166,33 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validateMacAclName = async (_: any, value: string) => {
+    if (!value) return Promise.resolve()
+
+    const response = await getAccessControls({
+      payload: {
+        ...defaultPayload,
+        searchString: value,
+        searchTargetFields: ['name']
+      }
+    }).unwrap()
+
+    const existingACLs = response.data
+
+    const duplicateACL = existingACLs.find(acl =>
+      acl.name === value && (!editMode || acl.id !== accessControlId)
+    )
+
+    if (duplicateACL) {
+      return Promise.reject($t({
+        defaultMessage: 'MAC ACL name is duplicated.'
+      }))
+    }
+
+    return Promise.resolve()
+  }
+
   return (
     <>
       <PageHeader
@@ -200,9 +228,12 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
           <Form.Item
             name='name'
             label={$t({ defaultMessage: 'MAC ACL Name' })}
-            rules={[{ required: true, message: 'Please enter MAC ACL name' }]}
+            rules={[
+              { required: true, message: 'Please enter MAC ACL name' },
+              { validator: validateMacAclName }
+            ]}
           >
-            <Input style={{ width: '400px' }} />
+            <Input disabled={editMode} style={{ width: '400px' }} />
           </Form.Item>
           <Table
             dataSource={dataSource}

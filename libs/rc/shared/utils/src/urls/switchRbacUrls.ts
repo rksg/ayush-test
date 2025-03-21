@@ -515,22 +515,22 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchMacAcls: {
     method: 'post',
-    url: '/venues/:venueId/switches/:switchId/macAcls/query',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls/query',
     newApi: true
   },
   addSwitchMacAcl: {
     method: 'post',
-    url: '/venues/:venueId/switches/:switchId/macAcls',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls',
     newApi: true
   },
   updateSwitchMacAcl: {
     method: 'put',
-    url: '/venues/:venueId/switches/:switchId/macAcls/:macAclId',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls/:macAclId',
     newApi: true
   },
   deleteSwitchMacAcl: {
     method: 'delete',
-    url: '/venues/:venueId/switches/:switchId/macAcls',
+    url: '/venues/:venueId/switches/:switchId/switchL2Acls',
     newApi: true
   },
   getSwitchStickyMacAcls: {

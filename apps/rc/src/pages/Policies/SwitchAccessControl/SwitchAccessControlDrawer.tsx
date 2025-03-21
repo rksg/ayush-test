@@ -5,8 +5,8 @@ import { Form, Input, Radio, Space } from 'antd'
 import { useWatch }                  from 'antd/lib/form/Form'
 import { useIntl }                   from 'react-intl'
 
-import { Drawer, Select } from '@acx-ui/components'
-import { MacAclRule }     from '@acx-ui/rc/utils'
+import { Drawer, Select }                     from '@acx-ui/components'
+import { MacAclRule, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
 
 interface SwitchAccessControlDrawerProps {
   visible: boolean
@@ -49,6 +49,31 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
 
   const isAnySrcAddress = sourceMacType === 'any'
   const isAnyDestAddress = destinationMacType === 'any'
+
+  const validateMacAndSetMask = (value: string, isAny: boolean, maskField: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return async (_: any, value: string) => {
+      if (!value || isAny) return Promise.resolve()
+
+      await MacAddressFilterRegExp(value)
+
+      let mask = ''
+      if (value.includes(':')) {
+        mask = 'ff:ff:ff:ff:ff:ff'
+      } else if (value.includes('-')) {
+        mask = 'ff-ff-ff-ff-ff-ff'
+      } else if (value.includes('.')) {
+        mask = 'ffff.ffff.ffff'
+      } else {
+        mask = 'ffffffffffff'
+      }
+
+      // Set the mask field
+      form.setFieldValue(maskField, mask)
+
+      return Promise.resolve()
+    }
+  }
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Route' },
@@ -94,32 +119,9 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
       }
       handleClose()
     }).catch(() => {
-      //do nothing...
-    })
+      // eslint-disable-next-line no-console
+      console.log('error')})
   }
-
-  // const handleFinish = (formData: MacAclRule) => {
-  //   const payload = formData
-  //   console.log(payload)
-
-  // const params = {
-  //   tenantId,
-  //   switchId,
-  //   staticRouteId: formData.id
-  // }
-  // if(data) {
-  //   updateSwitchStaticRoute({ params, payload, enableRbac: isSwitchRbacEnabled }).unwrap()
-  //     .catch((error) => {
-  //       console.log(error) // eslint-disable-line no-console
-  //     })
-  // } else {
-  //   addSwitchStaticRoute({ params, payload, enableRbac: isSwitchRbacEnabled }).unwrap()
-  //     .catch((error) => {
-  //       console.log(error) // eslint-disable-line no-console
-  //     })
-  // }
-  // form.resetFields()
-  // }
 
   const drawerContent = <Form layout='vertical' form={form}>
     <Form.Item
@@ -158,9 +160,15 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                 name='sourceAddress'
                 label={$t({ defaultMessage: 'Source Mac Address' })}
                 rules={[
-                  { required: !isAnySrcAddress }
+                  { required: !isAnySrcAddress },
+                  { validator: validateMacAndSetMask(
+                    'sourceAddress', isAnySrcAddress, 'sourceMask') }
                 ]}
-                children={<Input disabled={isAnySrcAddress} style={{ width: '300px' }} />}
+                children={<Input
+                  disabled={isAnySrcAddress}
+                  placeholder={'HHHH.HHHH.HHHH'}
+                  style={{ width: '300px' }}
+                />}
                 validateFirst
               />
               <Form.Item
@@ -168,8 +176,9 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                 label={$t({ defaultMessage: 'Mask' })}
                 rules={[
                   { required: !isAnySrcAddress }
+
                 ]}
-                children={<Input disabled={isAnySrcAddress} />}
+                children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnySrcAddress} />}
                 validateFirst
               />
             </Radio>
@@ -199,9 +208,15 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                 name='destinationAddress'
                 label={$t({ defaultMessage: 'Destination MAC Address' })}
                 rules={[
-                  { required: !isAnyDestAddress }
+                  { required: !isAnyDestAddress },
+                  { validator: validateMacAndSetMask(
+                    'destinationAddress', isAnyDestAddress, 'destinationMask') }
                 ]}
-                children={<Input disabled={isAnyDestAddress} style={{ width: '300px' }} />}
+                children={<Input
+                  disabled={isAnyDestAddress}
+                  placeholder={'HHHH.HHHH.HHHH'}
+                  style={{ width: '300px' }}
+                />}
                 validateFirst
               />
               <Form.Item
@@ -210,7 +225,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                 rules={[
                   { required: !isAnyDestAddress }
                 ]}
-                children={<Input disabled={isAnyDestAddress} />}
+                children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnyDestAddress} />}
                 validateFirst
               />
             </Radio>
