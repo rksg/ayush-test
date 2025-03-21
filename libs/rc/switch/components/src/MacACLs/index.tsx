@@ -70,6 +70,13 @@ export function MacACLs (props: {
         >
           {row.name}
         </Button>
+    },
+    {
+      key: 'sharedWithPolicyAndProfile',
+      title: $t({ defaultMessage: 'Type' }),
+      dataIndex: 'sharedWithPolicyAndProfile',
+      render: (_, row) => row.customized ?
+        $t({ defaultMessage: 'Customized' }) : $t({ defaultMessage: 'Shared' })
     }
   ]
 

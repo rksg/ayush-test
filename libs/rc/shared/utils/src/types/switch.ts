@@ -1129,8 +1129,10 @@ export interface MacAclOverview {
 export interface MacAcl {
 	id: string,
 	name: string,
-	appliedSwitchesInfo?: MacAclOverview[]
-	switchMacAclRules?: MacAclRule[]
-  macAclRules?: MacAclRule[]
-	switchId?: string
+	appliedSwitchesInfo?: MacAclOverview[],
+	switchMacAclRules?: MacAclRule[],
+  macAclRules?: MacAclRule[],
+	switchId?: string,
+  customized?: boolean,
+  sharedWithPolicyAndProfile?: boolean
 }

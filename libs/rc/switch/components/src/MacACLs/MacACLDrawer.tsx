@@ -1,253 +1,161 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Form, Input, Space, FormInstance, InputRef } from 'antd'
-import { Rule }                                       from 'antd/lib/form'
-import { useIntl }                                    from 'react-intl'
+import { Button, Drawer, Form, Input, Space } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import {
-  Button,
-  Drawer,
-  Select,
   Table,
   TableProps
 } from '@acx-ui/components'
 import {
+  useLazyGetAccessControlsListQuery,
   useAddSwitchMacAclMutation,
   useUpdateSwitchMacAclMutation
 } from '@acx-ui/rc/services'
-import { MacAcl, MacAclRule, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
+import {
+  MacAclRule,
+  PolicyType,
+  usePolicyListBreadcrumb,
+  SwitchRbacUrlsInfo,
+  MacAcl
+} from '@acx-ui/rc/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { SwitchScopes } from '@acx-ui/types'
+import { getOpsApi }    from '@acx-ui/utils'
 
-// Interfaces
-interface MacACLDrawerProps {
+import { SwitchAccessControlDrawer } from './SwitchAccessControlDrawer'
+
+interface SwitchAccessControlFormProps {
+  editMode: boolean
   visible: boolean
   setVisible: (visible: boolean) => void
-  editMode: boolean
   macACLData?: MacAcl
   venueId: string
 }
 
-interface EditableRowProps {
-  index: number;
-  [key: string]: any;
+const defaultPayload ={
+  fields: [
+    'id',
+    'name'
+  ],
+  page: 1,
+  pageSize: 10,
+  defaultPageSize: 10,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC',
+  searchString: '',
+  searchTargetFields: [
+    'name'
+  ],
+  filters: { id: [] as string[] }
 }
 
-interface EditableCellProps {
-  title: string;
-  children: React.ReactNode;
-  dataIndex: string;
-  record: MacAclRule;
-  handleSave: (record: MacAclRule) => void;
-  [key: string]: any;
-}
-
-const EditableContext = React.createContext<FormInstance<any> | null>(null)
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, record, ...props }) => {
-  const [form] = Form.useForm()
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  )
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-  title,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
+export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
+  const { editMode, visible, setVisible, macACLData, venueId } = props
   const { $t } = useIntl()
-  const inputRef = useRef<InputRef>(null)
-  const form = useContext(EditableContext)
-
-  useEffect(() => {
-    if (form && record && dataIndex) {
-      form.setFieldsValue({ [dataIndex]: record[dataIndex as keyof MacAclRule] })
-    }
-  }, [form, record, dataIndex])
-
-  const save = async () => {
-    try {
-      const values = form?.getFieldsValue()
-      if ((dataIndex === 'sourceAddress' || dataIndex === 'destinationAddress')) {
-        const macAddress = values[dataIndex]
-
-        try {
-          await MacAddressFilterRegExp(macAddress)
-
-          let mask = ''
-          if (macAddress.includes(':')) {
-            mask = 'ff:ff:ff:ff:ff:ff'
-          } else if (macAddress.includes('-')) {
-            mask = 'ff-ff-ff-ff-ff-ff'
-          } else if (macAddress.includes('.')) {
-            mask = 'ffff.ffff.ffff'
-          } else {
-            mask = 'ffffffffffff'
-          }
-
-          // Update the corresponding mask field
-          const maskField = dataIndex === 'sourceAddress' ? 'sourceMask' : 'destinationMask'
-          const shouldUpdateMask = values[dataIndex] !== 'any' && values[dataIndex] !== ''
-          if (shouldUpdateMask) {
-            const updatedValues = { ...values, [maskField]: mask }
-            handleSave({ ...record, ...updatedValues })
-          }
-          return
-        } catch {
-        }
-      }
-      handleSave({ ...record, ...values })
-    } catch (errInfo) {
-      // eslint-disable-next-line no-console
-      console.log('Save failed:', errInfo)
-    }
-  }
-
-  const isFieldDisabled = () => {
-    const values = form?.getFieldsValue()
-    if ((dataIndex === 'sourceMask')) {
-      return values['sourceAddress'] === 'any'
-    }
-    if(dataIndex === 'destinationMask') {
-      return values['destinationAddress'] === 'any'
-    }
-    return false
-  }
-
-  const stopPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
-
-  let childNode = children
-
-  childNode = (
-    <Form.Item
-      style={{ margin: 0 }}
-      name={dataIndex}
-      initialValue={dataIndex === 'action' ? 'permit' : ''}
-      validateFirst
-      rules={[
-        ...(dataIndex === 'sourceAddress' || dataIndex === 'destinationAddress' ? [
-          {
-            validator: (_: Rule, value: string) => value === 'any' ? Promise.resolve()
-              : MacAddressFilterRegExp(value)
-          }
-        ] : [])
-      ]}
-    >
-      {dataIndex !== undefined ? dataIndex === 'action' ? (
-        <Select
-          options={[
-            { label: $t({ defaultMessage: 'Permit' }), value: 'permit' },
-            { label: $t({ defaultMessage: 'Deny' }), value: 'deny' }
-          ]}
-          defaultValue={'permit'}
-          onBlur={save}
-          onClick={stopPropagation}
-          style={{ width: '100%' }}
-        />
-      ) : (
-        <Input
-          ref={inputRef}
-          onBlur={save}
-          onClick={stopPropagation}
-          disabled={isFieldDisabled()}
-        />
-      ) : children }
-    </Form.Item>
-  )
-
-  return <td {...restProps}>{childNode}</td>
-}
-
-export const MacACLDrawer: React.FC<MacACLDrawerProps> = ({
-  visible,
-  setVisible,
-  editMode,
-  macACLData,
-  venueId
-}) => {
-  const { $t } = useIntl()
-  const { switchId } = useParams()
   const [form] = Form.useForm()
+  const { accessControlId, switchId } = useParams()
   const [dataSource, setDataSource] = useState<MacAclRule[]>()
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<MacAclRule>()
 
+  const switchAccessControlPage = '/policies/accessControl/switch'
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
+  breadcrumb[2].link = switchAccessControlPage
+
+  const [getAccessControls] = useLazyGetAccessControlsListQuery()
   const [addSwitchMacAcl] = useAddSwitchMacAclMutation()
   const [updateSwitchMacAcl] = useUpdateSwitchMacAclMutation()
 
-  const defaultColumns = useMemo(() => [
+  useEffect(() => {
+    if(macACLData) {
+      console.log(macACLData)
+      if(macACLData && macACLData.switchMacAclRules){
+        form.setFieldValue('name', macACLData.name)
+        setDataSource(macACLData.switchMacAclRules.map((rule: MacAclRule) => {
+          return {
+            ...rule,
+            key: rule.id
+          }
+        }))
+      }
+    }
+  }, [macACLData])
+
+  const columns: TableProps<MacAclRule>['columns'] = [
     {
+      key: 'action',
       title: $t({ defaultMessage: 'Action' }),
       dataIndex: 'action'
     },
     {
+      key: 'sourceAddress',
       title: $t({ defaultMessage: 'Source MAC Address' }),
       dataIndex: 'sourceAddress'
     },
     {
+      key: 'sourceMask',
       title: $t({ defaultMessage: 'Mask' }),
       dataIndex: 'sourceMask'
     },
     {
+      key: 'destinationAddress',
       title: $t({ defaultMessage: 'Dest. MAC Address' }),
       dataIndex: 'destinationAddress'
     },
     {
+      key: 'destinationMask',
       title: $t({ defaultMessage: 'Dest. Mask' }),
       dataIndex: 'destinationMask'
     }
-  ], [dataSource])
+  ]
 
-  useEffect(() => {
-    if (editMode && macACLData) {
-      form.setFieldValue('name', macACLData.name)
 
-      if (macACLData.switchMacAclRules && macACLData.switchMacAclRules.length > 0) {
-        const formattedRules = macACLData.switchMacAclRules.map((rule, index) => ({
-          key: `${index}`,
-          action: rule.action || 'permit',
-          sourceAddress: rule.sourceAddress || '',
-          sourceMask: rule.sourceMask || '',
-          destinationAddress: rule.destinationAddress || '',
-          destinationMask: rule.destinationMask || ''
+  const rowActions: TableProps<MacAclRule>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateAccessControl)],
+      onClick: (selectedRows, clearSelection) => {
+        if (selectedRows.length === 1) {
+          setSelectedRow(selectedRows[0])
+          setDrawerVisible(true)
+        }
+        clearSelection()
+      },
+      disabled: (selectedRows) => selectedRows.length > 1
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteAccessControl)],
+      onClick: (selectedRows, clearSelection) => {
+        setDataSource(dataSource?.filter(option=>{
+          return !selectedRows.map(r=>r.key).includes(option?.key)
         }))
-        setDataSource(formattedRules)
+        clearSelection()
       }
     }
-  }, [editMode, macACLData, form])
+  ]
 
-  const handleAdd = () => {
-    const newKey = `${Date.now()}`
-    const newRow = {
-      key: newKey,
-      action: 'permit',
-      sourceAddress: '',
-      sourceMask: '',
-      destinationAddress: '',
-      destinationMask: ''
-    }
-    const rows = Array.isArray(dataSource) ? [...dataSource, newRow] : [newRow]
-    setDataSource(rows)
+  const handleAddRule = () => {
+    setSelectedRow({} as MacAclRule)
+    setDrawerVisible(true)
   }
 
-  const handleSave = (row: MacAclRule) => {
+  const handleSaveRule = (row: MacAclRule) => {
     setDataSource(prevData => {
       if (!prevData) return [row]
-      const index = prevData.findIndex(item => row.key === item.key)
+      const index = prevData.findIndex(
+        item => (row.key && row.key === item.key))
       if (index > -1) {
         const newData = [...prevData]
         newData.splice(index, 1, { ...prevData[index], ...row })
         return newData
+      }else{
+        return [...prevData, row]
       }
-      return prevData
     })
   }
 
@@ -297,25 +205,6 @@ export const MacACLDrawer: React.FC<MacACLDrawerProps> = ({
     }
   }
 
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell
-    }
-  }
-
-  const columns = defaultColumns.map(col => {
-    return {
-      ...col,
-      onCell: (record: MacAclRule) => ({
-        record,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave
-      })
-    }
-  })
-
   const footer = (
     <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
       <Button key='cancelBtn' onClick={onClose}>
@@ -331,81 +220,80 @@ export const MacACLDrawer: React.FC<MacACLDrawerProps> = ({
     </Space>
   )
 
-  const rowActions: TableProps<MacAclRule>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows, clearSelection) => {
-        setDataSource(dataSource?.filter(option=>{
-          return !selectedRows.map(r=>r.key).includes(option?.key)
-        }))
-        clearSelection()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validateMacAclName = async (_: any, value: string) => {
+    if (!value) return Promise.resolve()
+
+    const response = await getAccessControls({
+      payload: {
+        ...defaultPayload,
+        searchString: value,
+        searchTargetFields: ['name']
       }
+    }).unwrap()
+
+    const existingACLs = response.data
+
+    const duplicateACL = existingACLs.find(acl =>
+      acl.name === value && (!editMode || acl.id !== accessControlId)
+    )
+
+    if (duplicateACL) {
+      return Promise.reject($t({
+        defaultMessage: 'MAC ACL name is duplicated.'
+      }))
     }
-  ]
+
+    return Promise.resolve()
+  }
 
   return (
-    <Drawer
-      title={editMode
-        ? $t({ defaultMessage: 'Edit MAC ACL' })
-        : $t({ defaultMessage: 'Add MAC ACL' })}
-      visible={visible}
-      onClose={onClose}
-      width={1000}
-      footer={footer}
-    >
-      <Form
-        layout='vertical'
-        form={form}
-        onFinish={onApply}
+    <>
+      <Drawer
+        title={editMode
+          ? $t({ defaultMessage: 'Edit MAC ACL' })
+          : $t({ defaultMessage: 'Add MAC ACL' })}
+        visible={visible}
+        onClose={onClose}
+        width={1000}
+        footer={footer}
       >
-        <Form.Item
-          name='name'
-          label={$t({ defaultMessage: 'MAC ACL Name' })}
-          rules={[{ required: true, message: 'Please enter MAC ACL name' }]}
+        <Form
+          layout='vertical'
+          form={form}
         >
-          <Input style={{ width: '400px' }} />
-        </Form.Item>
-        <Form.Item
-          name='switchMacAclRules'
-          label={$t({ defaultMessage: 'Rules' })}
-          rules={[{ required: true ,
-            validator: () => {
-              if (!dataSource || dataSource.length === 0) {
-                return Promise.reject($t({ defaultMessage: 'At least one rule must be added' }))
-              }
+          <Form.Item
+            name='name'
+            label={$t({ defaultMessage: 'MAC ACL Name' })}
+            rules={[
+              { required: true, message: 'Please enter MAC ACL name' },
+              { validator: validateMacAclName }
+            ]}
+          >
+            <Input disabled={editMode} style={{ width: '400px' }} />
+          </Form.Item>
+        </Form>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          rowActions={rowActions}
+          rowSelection={{
+            type: 'checkbox'
+          }}
+          actions={[{
+            label: $t({ defaultMessage: 'Add Rule' }),
+            onClick: () => handleAddRule()
+          }]}
+          pagination={{ pageSize: 10000 }}
+          rowKey='key' />
+      </Drawer>
 
-              const invalidRule = dataSource.find(rule =>
-                !rule.sourceAddress || rule.sourceAddress.trim() === '' ||
-                !rule.destinationAddress || rule.destinationAddress.trim() === ''
-              )
-
-              if (invalidRule) {
-                return Promise.reject($t({
-                  defaultMessage: 'Source MAC Address and Destination MAC Address cannot be empty'
-                }))
-              }
-
-              return Promise.resolve()
-            } }]}
-        >
-          <Table
-            components={components}
-            dataSource={dataSource}
-            columns={columns as any}
-            rowActions={rowActions}
-            rowSelection={{
-              type: 'checkbox'
-            }}
-            actions={[{
-              label: $t({ defaultMessage: 'Add Rule' }),
-              onClick: () => handleAdd()
-            }]}
-            pagination={{ pageSize: 10000 }}
-            rowKey='key'
-          />
-        </Form.Item>
-      </Form>
-
-    </Drawer>
+      <SwitchAccessControlDrawer
+        visible={drawerVisible}
+        setVisible={setDrawerVisible}
+        data={selectedRow}
+        handleSaveRule={handleSaveRule}
+      />
+    </>
   )
 }
