@@ -68,22 +68,22 @@ export function ReportList () {
   const adhocReports = [
     {
       title: $t({ defaultMessage: 'Wireless : RSS and Traffic by Access Points' }),
-      description: $t({ defaultMessage: 'Details of signal strength and traffic by Access points' }),
+      description: $t({ defaultMessage: 'Details of signal strength and traffic by access points' }),
       path: 'rssTraffic'
     },
     {
       title: $t({ defaultMessage: 'Wireless : RSS and Session by Access Points' }),
-      description: $t({ defaultMessage: 'Details of signal strength and session by Access points' }),
+      description: $t({ defaultMessage: 'Details of signal strength and session by access points' }),
       path: 'rssSession'
     },
     {
       title: $t({ defaultMessage: 'Wireless : Airtime by Access Points' }),
-      description: $t({ defaultMessage: 'Details of Airtime by Access points' }),
+      description: $t({ defaultMessage: 'Details of airtime by access points' }),
       path: 'wirelessAirtime'
     },
     {
       title: $t({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' }),
-      description: $t({ defaultMessage: 'Details of Traffic by Applications and Access points' }),
+      description: $t({ defaultMessage: 'Details of traffic by applications and access points' }),
       path: 'trafficApplications'
     }
   ]
