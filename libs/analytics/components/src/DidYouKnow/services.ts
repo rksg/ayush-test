@@ -87,8 +87,17 @@ export const api = dataApi.injectEndpoints({
             }
           },
           transformResponse: (response: Response<string[][]>) => {
+            const matchArray = [
+              'topIncidentsZones',
+              'l3AuthFailure',
+              'topApplicationsByClients',
+              'busiestSsidByClients',
+              'airtimeUtilization'
+            ]
             const items = response.network.hierarchyNode.availableFacts
-            return _(items).chunk(2).shuffle().value()
+            return _(items)
+              .filter(item => matchArray.includes(item))
+              .chunk(1).value()
           }
         })
   })
