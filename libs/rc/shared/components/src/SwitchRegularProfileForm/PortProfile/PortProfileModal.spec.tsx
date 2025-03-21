@@ -76,10 +76,15 @@ describe('PortProfileModal', () => {
     render(
       <IntlProvider locale='en'>
         <Provider>
-          <PortProfileModal
-            visible={true}
-            onSave={onSave}
-          />
+          <PortProfileContext.Provider value={{
+            portProfileList: [],
+            setPortProfileSettingValues: jest.fn()
+          }}>
+            <PortProfileModal
+              visible={true}
+              onSave={onSave}
+            />
+          </PortProfileContext.Provider>
         </Provider>
       </IntlProvider>
     )
@@ -175,6 +180,7 @@ describe('PortProfileModal', () => {
       <IntlProvider locale='en'>
         <Provider>
           <PortProfileContext.Provider value={{
+            portProfileList: [],
             portProfileSettingValues: portProfileSettingValues ?? {} as PortProfileUI,
             setPortProfileSettingValues: onSave,
             editMode: true

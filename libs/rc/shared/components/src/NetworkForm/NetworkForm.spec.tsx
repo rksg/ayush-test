@@ -7,6 +7,7 @@ import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui
 import { networkApi, policyApi, serviceApi, softGreApi, venueApi } from '@acx-ui/rc/services'
 import {
   AccessControlUrls,
+  AdministrationUrlsInfo,
   CommonUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
@@ -19,6 +20,7 @@ import {
   NetworkTypeEnum,
   NewDpskBaseUrl,
   AaaUrls,
+  IpsecUrls,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -133,7 +135,11 @@ describe('NetworkForm', () => {
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
-        (req, res, ctx) => res(ctx.json([])))
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
