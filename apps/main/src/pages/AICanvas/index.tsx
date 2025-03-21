@@ -10,7 +10,7 @@ import { v4 as uuidv4 }        from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
@@ -335,7 +335,6 @@ export default function AICanvas () {
                 }
               </div>
               <div className='title'>
-                <RuckusAiDog size='lg' />
                 <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>

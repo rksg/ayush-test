@@ -154,12 +154,12 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     .actions{
       display: flex;
       align-items: center;
-      width: 48px;
+      width: 56px;
       justify-content: space-between;
       color: #000;
       svg {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
       }
       .newChat {
@@ -265,8 +265,8 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         font-weight: 400;
       }
       .chat-bubble {
-        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%,
-          #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
+        background: linear-gradient(264deg, #0CC3EC -25.46%,
+           #A560FF 39.27%, #EC4C9A 88.67%, #F65650 119.35%);
         color: var(--acx-primary-white);
         width: fit-content;
         max-width: 90%;
