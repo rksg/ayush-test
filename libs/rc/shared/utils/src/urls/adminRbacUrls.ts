@@ -277,6 +277,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getPrivilegeGroups: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups',
+    opsApi: 'GET:/roleAuthentications/privilegeGroups',
     newApi: true
   },
   addPrivilegeGroup: {
