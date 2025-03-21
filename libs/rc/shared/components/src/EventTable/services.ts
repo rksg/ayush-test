@@ -66,7 +66,8 @@ const defaultPayload = {
     'profileName',
     'action',
     'macOui',
-    'lldpTlv'
+    'lldpTlv',
+    'macAclName'
   ]
 }
 
