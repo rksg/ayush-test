@@ -23,7 +23,8 @@ import {
   EspProposal,
   IpSecAuthEnum,
   IpSecProposalTypeEnum,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  IpSecEncryptionAlgorithmEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -183,7 +184,8 @@ function useColumns () {
   const getIkeProposals = (proposals: IkeProposal[]) => {
     const retArr: string[] = []
     proposals.forEach((proposal: IkeProposal) => {
-      retArr.push(`${proposal.encAlg}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
+      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.prfAlg}-${proposal.dhGroup}`)
     })
     return retArr
   }
@@ -191,7 +193,8 @@ function useColumns () {
   const getEspProposals = (proposals: EspProposal[]) => {
     const retArr: string[] = []
     proposals.forEach((proposal: EspProposal) => {
-      retArr.push(`${proposal.encAlg}-${proposal.authAlg}-${proposal.dhGroup}`)
+      retArr.push(`${(proposal.encAlg === IpSecEncryptionAlgorithmEnum.THREE_DES ?
+        '3DES' : proposal.encAlg)}-${proposal.authAlg}-${proposal.dhGroup}`)
     })
     return retArr
   }

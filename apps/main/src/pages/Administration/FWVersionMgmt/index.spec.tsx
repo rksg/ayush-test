@@ -78,6 +78,12 @@ jest.mock('@acx-ui/rc/services', () => ({
   })
 }))
 
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsAlphaUser: () => false,
+  useIsSplitOn: jest.fn()
+}))
+
 describe('Firmware Version Management', () => {
   const params: { tenantId: string, activeTab: string, activeSubTab: string } = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',

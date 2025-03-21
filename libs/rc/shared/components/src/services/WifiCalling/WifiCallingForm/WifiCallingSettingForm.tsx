@@ -124,7 +124,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             description: data.description,
             qosPriority: data.qosPriority,
             networkIds: [...data.networkIds ?? []],
-            oldNetworkIds: data.networkIds ?? []
+            oldNetworkIds: data.networkIds ?? [],
+            isEnforced: data.isEnforced
           }
         }
       })

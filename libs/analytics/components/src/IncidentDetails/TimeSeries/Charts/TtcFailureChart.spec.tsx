@@ -100,7 +100,7 @@ describe('ttcFailureChartQuery', () => {
         buffer: buffer6hr,
         incident: fakeIncidentTtc,
         charts: [TimeSeriesChartTypes.TtcFailureChart],
-        minGranularity: 'PT180S'
+        minGranularity: 'PT15M'
       })
     )
     expect(status).toBe('fulfilled')

@@ -5,7 +5,7 @@ import { Form }  from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeEditContext, EdgePortTabEnum, EditEdgeContextType, EditEdgeFormControlType }                                                                           from '@acx-ui/rc/components'
+import { EdgeEditContext, EditEdgeContextType, EditEdgeFormControlType }                                                                                            from '@acx-ui/rc/components'
 import { edgeSdLanApi }                                                                                                                                             from '@acx-ui/rc/services'
 import { EdgeGeneralFixtures, EdgeIpModeEnum, EdgeLagFixtures, EdgePort, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                                                          from '@acx-ui/store'
@@ -65,7 +65,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 const defaultContextData = {
   activeSubTab: {
-    key: EdgePortTabEnum.PORTS_GENERAL,
+    key: EdgeEditContext.EdgePortTabEnum.PORTS_GENERAL,
     title: 'Ports General'
   },
   formControl: {
@@ -111,7 +111,7 @@ describe('EditEdge - Ports', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '0000000030',
       activeTab: 'ports',
-      activeSubTab: EdgePortTabEnum.PORTS_GENERAL
+      activeSubTab: EdgeEditContext.EdgePortTabEnum.PORTS_GENERAL
     }
     store.dispatch(edgeSdLanApi.util.resetApiState())
     updateRequestSpy.mockClear()
@@ -387,7 +387,7 @@ describe('api fail', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000',
       activeTab: 'ports',
-      activeSubTab: EdgePortTabEnum.PORTS_GENERAL
+      activeSubTab: EdgeEditContext.EdgePortTabEnum.PORTS_GENERAL
     }
 
     mockServer.use(

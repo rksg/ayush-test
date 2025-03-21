@@ -97,6 +97,15 @@ jest.mock('../Charts/ImpactedSwitchesDonut', () => ({
   ImpactedSwitchesDonut: () => <div data-testid='impactedSwitchesDonut' />
 }))
 
+jest.mock('../Charts/ImpactedSwitchesDonut/byParam', () => ({
+  ImpactedSwitchesByParamDonut: () => <div data-testid='ImpactedSwitchesByParamDonut' />
+}))
+
+jest.mock('../Charts/ImpactedSwitchPortCongestion', () => ({
+  SwitchDetail: () => <div data-testid='SwitchDetail' />,
+  ImpactedSwitchPortConjestionTable: () => <div data-testid='ImpactedSwitchPortConjestionTable' />
+}))
+
 jest.mock('../Charts/ImpactedSwitchLoopDetection', () => ({
   ImpactedVlanTable: () => <div data-testid='impactedVlanTable' />
 }))

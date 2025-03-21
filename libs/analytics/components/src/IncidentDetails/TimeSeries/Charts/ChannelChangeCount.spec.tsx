@@ -89,7 +89,7 @@ describe('apDisconnectionCountChartQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentChannelDist,
         charts: [TimeSeriesChartTypes.ChannelChangeCount],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

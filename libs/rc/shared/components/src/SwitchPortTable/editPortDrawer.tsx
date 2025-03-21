@@ -346,6 +346,9 @@ export function EditPortDrawer ({
     skip: !switchDetail?.venueId
   })
 
+  const switchDefaultVlanIds
+    = switchesDefaultVlan?.map(v => v.defaultVlanId).toString()
+
   const getVlans = async () => {
     if (isSwitchLevelVlanEnabled) {
       return await getSwitchUnionVlans()
@@ -567,7 +570,7 @@ export function EditPortDrawer ({
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchDefaultVlanIds, visible])
 
   const getSinglePortValue = async (
     portSpeed: string[],
