@@ -226,7 +226,8 @@ export function VenueNetworksTab () {
   const tableQuery = useVenueNetworkList({ settingsId, venueId })
 
   const [tableData, setTableData] = useState(defaultArray)
-  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
+  // controlling loading icon on top of table
+  const [isTableUpdating, setIsTableUpdating] = useState<boolean>(false)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
   })
@@ -277,7 +278,8 @@ export function VenueNetworksTab () {
     venueId: venueId!,
     sdLanScopedNetworks,
     setTunnelModalState,
-    refetchFnRef
+    refetchFnRef,
+    setIsTableUpdating
   })
   // hooks for tunnel column - end
 
@@ -356,12 +358,12 @@ export function VenueNetworksTab () {
           }
 
           if (resolvedRbacEnabled) {
-            setIsActivateUpdating(true)
+            setIsTableUpdating(true)
             addRbacNetworkVenue({
               params: apiParams,
               payload: newNetworkVenue,
               enableRbac: true,
-              callback: () => setIsActivateUpdating(false)
+              callback: () => setIsTableUpdating(false)
             })
           } else {
             addNetworkVenue({
@@ -382,14 +384,14 @@ export function VenueNetworksTab () {
               }
 
               if (resolvedRbacEnabled) {
-                setIsActivateUpdating(true)
+                setIsTableUpdating(true)
                 deleteRbacNetworkVenue({
                   params: apiParams,
                   enableRbac: true,
                   callback: () => {
-                    // refetch all tunnel type data
+                    // refetch all tunnel type data because the tunnel type should be reset after network is deactivated
                     refetchTunnelInfoData()
-                    setIsActivateUpdating(false)
+                    setIsTableUpdating(false)
                   }
                 })
               } else {
@@ -728,7 +730,7 @@ export function VenueNetworksTab () {
     }
   }
 
-  const isFetching = isActivateUpdating
+  const isFetching = isTableUpdating
     || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
     || isAddNetworkUpdating || isDeleteNetworkUpdating
   return (

@@ -239,7 +239,7 @@ export function NetworkVenuesTab () {
   const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
-  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
+  const [isTableUpdating, setIsTableUpdating] = useState<boolean>(false)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
   })
@@ -316,7 +316,8 @@ export function NetworkVenuesTab () {
     network: networkQuery.data,
     sdLanScopedNetworkVenues,
     setTunnelModalState,
-    refetchFnRef
+    refetchFnRef,
+    setIsTableUpdating
   })
   // hooks for tunnel column - end
 
@@ -416,12 +417,12 @@ export function NetworkVenuesTab () {
         }
 
         if (resolvedRbacEnabled) {
-          setIsActivateUpdating(true)
+          setIsTableUpdating(true)
           addRbacNetworkVenue({
             params: apiParams,
             payload: newNetworkVenue,
             enableRbac: true,
-            callback: () => setIsActivateUpdating(false)
+            callback: () => setIsTableUpdating(false)
           })
         } else {
           addNetworkVenue({
@@ -448,13 +449,13 @@ export function NetworkVenuesTab () {
           }
 
           if (resolvedRbacEnabled) {
-            setIsActivateUpdating(true)
+            setIsTableUpdating(true)
             deleteRbacNetworkVenue({
               params: apiParams,
               enableRbac: true,
               callback: () => {
                 refetchTunnelInfoData()
-                setIsActivateUpdating(false)
+                setIsTableUpdating(false)
               }
             })
           } else {
@@ -468,7 +469,7 @@ export function NetworkVenuesTab () {
   const handleAddNetworkVenues = async (networkVenues: NetworkVenue[], clearSelection: () => void) => {
     if (networkVenues.length > 0) {
       if (resolvedRbacEnabled) {
-        setIsActivateUpdating(true)
+        setIsTableUpdating(true)
         const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
           const params = {
             venueId: networkVenue.venueId,
@@ -478,7 +479,7 @@ export function NetworkVenuesTab () {
             params,
             payload: networkVenue,
             enableRbac: true,
-            callback: () => setIsActivateUpdating(false)
+            callback: () => setIsTableUpdating(false)
           })
         })
 
@@ -497,7 +498,7 @@ export function NetworkVenuesTab () {
       if (resolvedRbacEnabled) {
         const network = networkQuery.data
         const networkId = (network && network?.id) ? network.id : ''
-        setIsActivateUpdating(true)
+        setIsTableUpdating(true)
         const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
           const curParams = {
             venueId: networkVenueId,
@@ -506,7 +507,7 @@ export function NetworkVenuesTab () {
           return deleteRbacNetworkVenue({
             params: curParams,
             enableRbac: true,
-            callback: () => setIsActivateUpdating(false)
+            callback: () => setIsTableUpdating(false)
           })
         })
 
@@ -903,7 +904,7 @@ export function NetworkVenuesTab () {
     }
   }
 
-  const isFetching = isActivateUpdating
+  const isFetching = isTableUpdating
     || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
     || isAddNetworkUpdating || isDeleteNetworkUpdating
 

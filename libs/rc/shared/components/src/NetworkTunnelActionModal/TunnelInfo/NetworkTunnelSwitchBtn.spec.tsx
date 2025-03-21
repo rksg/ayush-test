@@ -4,8 +4,7 @@ import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import { EdgeSdLanFixtures } from '@acx-ui/rc/utils'
 import {
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import { NetworkTunnelTypeEnum } from '../types'
@@ -146,39 +145,5 @@ describe('NetworkTunnelSwitchBtn', () => {
     await userEvent.click(button)
     expect(screen.getByRole('switch')).not.toBeDisabled()
     expect(mockOnClick).toHaveBeenCalledWith(false)
-  })
-
-  it('should greyout until onClick is resolved(Promise)', async () => {
-    const mockOnClick = jest.fn().mockImplementation(() =>
-      new Promise<void>(resolve => setTimeout(() => resolve(), 1000)))
-
-    render(<NetworkTunnelSwitchBtn
-      tunnelType={NetworkTunnelTypeEnum.SoftGre}
-      onClick={mockOnClick}
-      venueSdLanInfo={undefined}
-    />)
-
-    const button = screen.getByRole('switch')
-    await userEvent.click(button)
-    expect(screen.getByRole('switch')).toBeDisabled()
-    await new Promise<void>(resolve => setTimeout(() => resolve(), 1000))
-    await waitFor(() => expect(screen.getByRole('switch')).not.toBeDisabled())
-  })
-
-  it('should greyout until onClick is rejected(Promise)', async () => {
-    const mockOnClick = jest.fn().mockImplementation(() =>
-      new Promise<void>((_, reject) => setTimeout(() => reject(), 1000)))
-
-    render(<NetworkTunnelSwitchBtn
-      tunnelType={NetworkTunnelTypeEnum.SoftGre}
-      onClick={mockOnClick}
-      venueSdLanInfo={undefined}
-    />)
-
-    const button = screen.getByRole('switch')
-    await userEvent.click(button)
-    expect(screen.getByRole('switch')).toBeDisabled()
-    await new Promise<void>(resolve => setTimeout(() => resolve(), 1000))
-    await waitFor(() => expect(screen.getByRole('switch')).not.toBeDisabled())
   })
 })

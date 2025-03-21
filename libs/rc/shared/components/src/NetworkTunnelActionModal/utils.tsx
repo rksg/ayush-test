@@ -234,25 +234,29 @@ export const useDeactivateNetworkTunnelByType = () => {
     network: NetworkTunnelActionModalProps['network'],
     venueSdLanInfo?: EdgeMvSdLanViewData
   ) => {
-    switch (tunnelType) {
-      case NetworkTunnelTypeEnum.SdLan:
-        await updateSdLanNetworkTunnel(
-          formValues,
-          network,
-          tunnelType,
-          venueSdLanInfo
-        )
-        return
-      case NetworkTunnelTypeEnum.SoftGre:
-        if (formValues.ipsec && formValues.ipsec.enableIpsec) {
-          await deactivateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
-        } else {
-          await dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
-        }
-        return
-      case NetworkTunnelTypeEnum.Pin:
-      default:
-        return
+    try {
+      switch (tunnelType) {
+        case NetworkTunnelTypeEnum.SdLan:
+          await updateSdLanNetworkTunnel(
+            formValues,
+            network,
+            tunnelType,
+            venueSdLanInfo
+          )
+          return
+        case NetworkTunnelTypeEnum.SoftGre:
+          if (formValues.ipsec && formValues.ipsec.enableIpsec) {
+            await deactivateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+          } else {
+            await dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
+          }
+          return
+        case NetworkTunnelTypeEnum.Pin:
+        default:
+          return
+      }
+    } catch(err) {
+      // mute error
     }
   }
 

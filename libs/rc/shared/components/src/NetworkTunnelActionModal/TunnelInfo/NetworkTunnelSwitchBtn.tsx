@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 
@@ -20,7 +18,6 @@ interface NetworkTunnelSwitchBtnProps {
 export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
   const { $t } = useIntl()
   const { tunnelType, onClick, venueSdLanInfo } = props
-  const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const hasPermission = usePermissionResult()
 
   // eslint-disable-next-line max-len
@@ -32,27 +29,17 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
     : undefined
 
   const handleOnClick = async (val: boolean) => {
-    // turn on case is handled in NetworkTunnelActionForm
-    if (val) {
-      onClick(val)
-      return
-    }
-
-    setIsUpdating(true)
-
     try {
       await onClick(val)
     } catch {
       // no-op
-    } finally {
-      setIsUpdating(false)
     }
   }
 
   return <Tooltip title={props.tooltip || tooltip}>
     <Switch
       checked={tunnelType !== NetworkTunnelTypeEnum.None}
-      disabled={isUpdating || props.disabled || needDisabled}
+      disabled={props.disabled || needDisabled}
       onClick={handleOnClick}
     />
   </Tooltip>

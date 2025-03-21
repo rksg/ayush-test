@@ -33,11 +33,16 @@ interface useTunnelColumnProps {
   network: NetworkSaveData | null | undefined
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
-  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>
+  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>,
+  setIsTableUpdating: React.Dispatch<React.SetStateAction<boolean>>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
-  const { network, sdLanScopedNetworkVenues, setTunnelModalState, refetchFnRef } = props
+  const {
+    network, sdLanScopedNetworkVenues, setTunnelModalState,
+    refetchFnRef,
+    setIsTableUpdating
+  } = props
   const { isTemplate } = useConfigTemplate()
 
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -118,9 +123,11 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   }
                 } as NetworkTunnelActionForm
 
+                setIsTableUpdating(true)
                 // deactivate depending on current tunnel type
                 // eslint-disable-next-line max-len
                 await deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                setIsTableUpdating(false)
               }
             }}
           /></div>
