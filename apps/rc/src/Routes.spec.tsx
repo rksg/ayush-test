@@ -268,7 +268,12 @@ jest.mock('@acx-ui/rc/components', () => ({
   SsoSamlDetail: () => <div data-testid='SsoSamlDetail' />,
   IpsecForm: () => <div data-testid='IpsecForm' />,
   ConnectionMeteringFormMode: {},
-  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
+  AddSamlIdp: () => <div data-testid='AddSamlIdp' />,
+  SamlIdpDetail: () => <div data-testid='SamlIdpDetail' />,
+  EditSamlIdp: () => <div data-testid='EditSamlIdp' />,
+  IdentityForm: () => <div data-testid='IdentityForm' />,
+  IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />
 }))
 
 jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {
