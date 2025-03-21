@@ -301,11 +301,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                     <Radio value={TunnelTypeEnum.VXLAN_GPE}>
                       {$t({ defaultMessage: 'VxLAN GPE' })}
                     </Radio>
-                    { isEdgePinHaReady &&
                     <Radio value={TunnelTypeEnum.L2GRE} disabled={isVniType} >
                       {$t({ defaultMessage: 'L2GRE' })}
                     </Radio>
-                    }
                   </Space>
                 </Radio.Group>
               }
