@@ -14,7 +14,7 @@ import {
   ContentSwitcherProps
 } from '@acx-ui/components'
 import { get }                                                  from '@acx-ui/config'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useSplitOverride }             from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }                               from '@acx-ui/formatter'
 import { useGetPrivacySettingsQuery }                           from '@acx-ui/rc/services'
 import { PrivacyFeatureName }                                   from '@acx-ui/rc/utils'
@@ -34,16 +34,23 @@ export function TopApplicationsByTraffic ({
   const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
   const isRA = Boolean(get('IS_MLISA_SA'))
   const { tenantId } = getJwtTokenPayload()
+
+  // Use Split override only for privacy feature flag
+  const { treatments, isReady: isSplitClientReady } = useSplitOverride(tenantId, [
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE
+  ])
+
+  const isAppPrivacyFFOn = treatments[Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE] === 'on'
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { data: privacySettings } = useGetPrivacySettingsQuery({
     params: { tenantId },
     customHeaders: { 'x-rks-tenantid': tenantId },
     payload: { ignoreDelegation: true } })
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
-  const isAppPrivacyFeatureEnabled = useIsSplitOn(
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
 
   useEffect(() => {
-    if(!isAppPrivacyFeatureEnabled || isRA){
+    if(isSplitClientReady && (!isAppPrivacyFFOn || isRA)){
       setIsAppVisibilityEnabled(true)
     }
     else if (privacySettings) {
@@ -53,9 +60,8 @@ export function TopApplicationsByTraffic ({
         setIsAppVisibilityEnabled(true)
       }
     }
-  }, [isAppPrivacyFeatureEnabled, isRA, privacySettings])
-  const queryResults = useTopApplicationsByTrafficQuery(filters)
-  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  }, [isAppPrivacyFFOn, isRA, isSplitClientReady, privacySettings])
+
 
   const columns=[
     {

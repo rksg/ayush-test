@@ -10,15 +10,15 @@ import {
   DonutChart,
   qualitativeColorSet
 } from '@acx-ui/components'
-import type { DonutChartData }              from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { formatter }                        from '@acx-ui/formatter'
-import { useGetPrivacySettingsQuery }       from '@acx-ui/rc/services'
-import { PrivacyFeatureName }               from '@acx-ui/rc/utils'
-import { getJwtTokenPayload }               from '@acx-ui/utils'
-import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import type { DonutChartData }                      from '@acx-ui/components'
+import { get }                                      from '@acx-ui/config'
+import { Features, useIsSplitOn, useSplitOverride } from '@acx-ui/feature-toggle'
+import { formatter }                                from '@acx-ui/formatter'
+import { useGetPrivacySettingsQuery }               from '@acx-ui/rc/services'
+import { PrivacyFeatureName }                       from '@acx-ui/rc/utils'
+import { getJwtTokenPayload }                       from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping }         from '@acx-ui/utils'
+import type { AnalyticsFilter }                     from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
 
@@ -52,16 +52,22 @@ export function TopAppsByTraffic ({
   const isRA = Boolean(get('IS_MLISA_SA'))
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { tenantId } = getJwtTokenPayload()
+
+  // Use Split override only for privacy feature flag
+  const { treatments, isReady: isSplitClientReady } = useSplitOverride(tenantId, [
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE
+  ])
+
+  const isAppPrivacyFFOn = treatments[Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE] === 'on'
+
   const { data: privacySettings } = useGetPrivacySettingsQuery({
     params: { tenantId },
     customHeaders: { 'x-rks-tenantid': tenantId },
     payload: { ignoreDelegation: true } })
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
-  const isAppPrivacyFeatureEnabled = useIsSplitOn(
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
 
   useEffect(() => {
-    if(!isAppPrivacyFeatureEnabled || isRA){
+    if(isSplitClientReady && (!isAppPrivacyFFOn || isRA)){
       setIsAppVisibilityEnabled(true)
     }
     else if (privacySettings) {
@@ -71,7 +77,7 @@ export function TopAppsByTraffic ({
         setIsAppVisibilityEnabled(true)
       }
     }
-  }, [isAppPrivacyFeatureEnabled, isRA, privacySettings])
+  }, [isAppPrivacyFFOn, isRA, isSplitClientReady, privacySettings])
 
   const queryResults = useTopAppsByTrafficQuery(filters,{
     selectFromResult: ({ data, ...rest }) => ({
