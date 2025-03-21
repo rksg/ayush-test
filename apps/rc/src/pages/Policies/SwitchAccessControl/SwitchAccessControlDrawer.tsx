@@ -63,8 +63,9 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
   const handleSave = async () => {
     form.validateFields().then(() => {
       form.submit()
-      let key, {
+      let {
         id,
+        key,
         action,
         sourceMacType,
         destinationMacType,
@@ -84,13 +85,13 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         destinationMask = ''
       }
 
-      if(!id){
-        key = `${Date.now()}`
-      }
-
       const payload = {
-        key, id, action, sourceAddress, sourceMask, destinationAddress, destinationMask }
-      handleSaveRule(payload)
+        id, key, action, sourceAddress, sourceMask, destinationAddress, destinationMask }
+      if(data && Object.values(data).length > 0){
+        handleSaveRule(payload)
+      }else{
+        handleSaveRule({ ...payload, key: Date.now().toString() })
+      }
       handleClose()
     }).catch(() => {
       //do nothing...
@@ -217,6 +218,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         </Radio.Group>
       }
     />
+    <Form.Item name='key' />
   </Form>
 
   const footer = (

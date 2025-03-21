@@ -73,9 +73,14 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
     if(accessControlId) {
       const payload = { ...defaultPayload, filters: { id: [accessControlId] } }
       getAccessControls({ payload }).unwrap().then(response => {
-        if(response.data[0]){
+        if(response.data[0] && response.data[0].macAclRules){
           form.setFieldValue('name', response.data[0].name)
-          setDataSource(response.data[0].macAclRules)
+          setDataSource(response.data[0].macAclRules.map((rule: MacAclRule) => {
+            return {
+              ...rule,
+              key: rule.id
+            }
+          }))
         }
       })
     }
@@ -149,10 +154,7 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
     setDataSource(prevData => {
       if (!prevData) return [row]
       const index = prevData.findIndex(
-        item => (row.id && row.id === item.id) || (
-          row.sourceAddress === item.sourceAddress &&
-        row.destinationAddress === item.destinationAddress)
-      )
+        item => (row.key && row.key === item.key))
       if (index > -1) {
         const newData = [...prevData]
         newData.splice(index, 1, { ...prevData[index], ...row })
@@ -214,7 +216,7 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
               onClick: () => handleAddRule()
             }]}
             pagination={{ pageSize: 10000 }}
-            rowKey='id' />
+            rowKey='key' />
         </StepsForm.StepForm>
       </StepsForm>
       <SwitchAccessControlDrawer
