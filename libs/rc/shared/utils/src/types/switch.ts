@@ -11,6 +11,7 @@ export const SWITCH_SERIAL_BASE = '(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|
 export const SWITCH_SERIAL_8100 = '(FNX|FNY|FNZ|FPA|FPB)'
 export const SWITCH_SERIAL_8200AV = '(FPG|FPF)'
 export const SWITCH_SERIAL_8100X = '(FPP|FPQ|FPR|FPS|FPT)'
+export const SWITCH_SERIAL_7550Zippy = '(FPH)'
 export const SWITCH_SERIAL_SUFFIX = '([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})'
 
 export const SwitchPortViewModelQueryFields = [
