@@ -113,17 +113,16 @@ const AsyncLoadingInColumn = (
 }
 
 export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boolean) {
-  const { $t } = useIntl()
   const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
 
   const { tenantId, venueId, apId, networkId } = useParams()
 
   const clientStatuses = () => [
-    { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
-    { key: 'Poor', text: $t({ defaultMessage: 'Poor' }) },
-    { key: 'Average', text: $t({ defaultMessage: 'Average' }) },
-    { key: 'Good', text: $t({ defaultMessage: 'Good' }) }
+    { key: null, text: intl.$t({ defaultMessage: 'All Health Levels' }) },
+    { key: 'Poor', text: intl.$t({ defaultMessage: 'Poor' }) },
+    { key: 'Average', text: intl.$t({ defaultMessage: 'Average' }) },
+    { key: 'Good', text: intl.$t({ defaultMessage: 'Good' }) }
   ] as Array<{ key: string, text: string }>
 
   const statusFilterOptions = clientStatuses().map(({ key, text }) => ({
@@ -324,7 +323,7 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
       title: intl.$t({ defaultMessage: 'Network Type' }),
       dataIndex: 'networkInformation.type',
       sorter: { compare: sortProp('networkInformation.type', defaultSort) },
-      filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: $t(value) }}),
+      filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: intl.$t(value) }}),
       render: (_: React.ReactNode, row: ClientInfo) => {
         return AsyncLoadingInColumn(row, () => {
           return networkDisplayTransformer(intl, row?.networkInformation?.type)
