@@ -4,6 +4,7 @@ import { Form }        from 'antd'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
+import { useIdentityListQuery }                                               from '@acx-ui/cloudpath/components'
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
@@ -25,7 +26,6 @@ import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }    
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
 import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
-import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
@@ -260,7 +260,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
   const isSelectMode = mode === 'selectable'
 
-  const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
+  const personaListQuery = useIdentityListQuery({ personaGroupId, settingsId })
 
   useEffect(() => {
     if (!propertyEnabled || personaGroupQuery.isLoading) return

@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, Compatibility, FirmwareCategory, IncompatibleFeatureTypeEnum, SkippedVersion }                                                                                                                                                                                                                       from '..'
-import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import { ApCompatibility, Compatibility, FirmwareCategory, IncompatibleFeatureTypeEnum, SkippedVersion }                                                                                                                                                                                                                                                   from '..'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeClsuterProfileTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -248,6 +248,15 @@ export interface EdgeService {
   currentVersion: string
   targetVersion: string
   edgeAlarmSummary?: EdgeAlarmSummary[]
+}
+
+export interface EdgeClusterService {
+  edgeClusterId: string
+  serviceId: string
+  serviceName: string
+  serviceType: EdgeServiceTypeEnum | EdgeClsuterProfileTypeEnum
+  currentVersion: string
+  targetVersion: string
 }
 
 export interface PingEdge {
