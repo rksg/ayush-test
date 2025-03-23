@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { useApListQuery } from '@acx-ui/rc/services'
+import { useIdentityListQuery } from '@acx-ui/cloudpath/components'
+import { useApListQuery }       from '@acx-ui/rc/services'
 import {
   EdgePinFixtures,
   useTableQuery,
@@ -11,7 +12,7 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { usePersonaListQuery } from '../../identityGroup'
+
 
 import { defaultApPayload } from './ApsTable'
 
@@ -23,8 +24,8 @@ jest.mock('@acx-ui/rc/services', () => ({
     data: { totalCount: 2 }
   })
 }))
-jest.mock('../../identityGroup', () => ({
-  usePersonaListQuery: jest.fn().mockReturnValue({
+jest.mock('@acx-ui/cloudpath/components', () => ({
+  useIdentityListQuery: jest.fn().mockReturnValue({
     data: {}
   })
 }))
@@ -56,7 +57,7 @@ describe('PersonalIdentityNetwork DetailTableGroup', () => {
     { wrapper: ({ children }) => <Provider children={children} /> })
 
   const { result: personaTableQueryResult } = renderHook(
-    () => usePersonaListQuery({
+    () => useIdentityListQuery({
       personaGroupId: 'mock-persona-group-id'
     }),
     { wrapper: ({ children }) => <Provider children={children} /> })
