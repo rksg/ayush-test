@@ -4,14 +4,15 @@ import { Form, Switch, Button, Space, Input } from 'antd'
 import { useIntl }                            from 'react-intl'
 
 
+import { Modal, ModalType }       from '@acx-ui/components'
 import {
   useLazySearchPersonaGroupListQuery,
   useLazySearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Persona } from '@acx-ui/rc/utils'
 
+import { IdentityGroupForm }   from '../../../../users/IdentityGroupForm'
 import { SelectPersonaDrawer } from '../../../../users/IdentitySelector/SelectPersonaDrawer'
-import { PersonaGroupDrawer }  from '../../../../users/PersonaGroupDrawer'
 import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import NetworkFormContext      from '../../../NetworkFormContext'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
@@ -24,8 +25,8 @@ export function IdentityGroup () {
   const selectedIdentityGroupId = Form.useWatch('identityGroupId', form)
   const enableIdentityAssociation = Form.useWatch('enableIdentityAssociation', form)
   const [display, setDisplay] = useState({ display: 'none' })
-  const [personaGroupVisible, setPersonaGroupVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
+  const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
   const [identityListTrigger] = useLazySearchPersonaListQuery()
@@ -118,7 +119,7 @@ export function IdentityGroup () {
             style={{ fontSize: '12px' }}
             type='link'
             onClick={() => {
-              setPersonaGroupVisible(true)
+              setIdentityGroupModelVisible(true)
             }}
           >
             {$t({ defaultMessage: 'Add' })}
@@ -187,18 +188,23 @@ export function IdentityGroup () {
         hidden
         children={<Input hidden />}
       />
-      <PersonaGroupDrawer
-        requiredDpsk
-        isEdit={false}
-        visible={personaGroupVisible}
-        onClose={(result) => {
-          if (result) {
-            form.setFieldValue('identityGroupId', result?.id)
-          }
-          setPersonaGroupVisible(false)
-        }}
+      <Modal
+        title={$t({ defaultMessage: 'Add Identity Group' })}
+        visible={identityGroupModelVisible}
+        type={ModalType.ModalStepsForm}
+        children={<IdentityGroupForm
+          modalMode={true}
+          callback={(identityGroupId?: string) => {
+            if (identityGroupId) {
+              form.setFieldValue('identityGroupId', identityGroupId)
+            }
+            setIdentityGroupModelVisible(false)
+          }}
+        />}
+        onCancel={() => setIdentityGroupModelVisible(false)}
+        width={1200}
+        destroyOnClose={true}
       />
-
       {identitySelectorDrawerVisible && (
         <SelectPersonaDrawer
           onSubmit={handleClose}
