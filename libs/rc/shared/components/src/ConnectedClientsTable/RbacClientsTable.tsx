@@ -38,7 +38,8 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
-import { ClientHealthIcon } from '../ClientHealthIcon'
+import { ClientHealthIcon }    from '../ClientHealthIcon'
+import { IdentityDetailsLink } from '../CommonLinkHelper'
 
 import * as UI from './styledComponents'
 
@@ -115,8 +116,9 @@ const AsyncLoadingInColumn = (
 export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boolean) {
   const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
+  const identityClientToggle = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
-  const { tenantId, venueId, apId, networkId } = useParams()
+  const { tenantId, venueId, apId, networkId, personaId } = useParams()
 
   const clientStatuses = () => [
     { key: null, text: intl.$t({ defaultMessage: 'All Health Levels' }) },
@@ -237,6 +239,19 @@ export function useRbacClientTableColumns (intl: IntlShape, showAllColumns?: boo
         })
       }
     },
+    ...((personaId || !identityClientToggle) ? [] :[{
+      key: 'identityId',
+      title: intl.$t({ defaultMessage: 'Identity' }),
+      dataIndex: 'identityId',
+      sorter: { compare: sortProp('identityId', defaultSort) },
+      render: (_: React.ReactNode, row: ClientInfo) => {
+        return <IdentityDetailsLink
+          personaId={row.identityId}
+          personaGroupId={row.identityGroupId}
+          name={row.identityName}
+        />
+      }
+    }]),
     ...(venueId ? [] : [{
       key: 'venueInformation.id',
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),

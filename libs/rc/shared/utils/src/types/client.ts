@@ -141,6 +141,10 @@ export interface ClientInfo {
   ipAddress: string
   username: string
   hostname: string
+  identityId?: string
+  identityName?: string
+  identityGroupId?: string
+  identityGroupName?: string
   authenticationStatus: number
   connectedTime: string
   lastUpdatedTime: string
