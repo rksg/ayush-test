@@ -335,12 +335,12 @@ export function LanPorts (props: ApEditItemProps) {
       if (isEthernetPortProfileEnabled) {
 
         // Must deactivate existing SoftGre relation before add new
-        if (isSoftGREOnEthernetEnabled) {
+        if (isSoftGREOnEthernetEnabled && !isIpSecOverNetworkEnabled) {
           handleSoftGreDeactivate(values)
         }
 
         if (isIpSecOverNetworkEnabled) {
-          handleIpSecDeactivate(values)
+          handleSoftGreIpSecDeactivate(values)
         }
 
         if (isEthernetClientIsolationEnabled) {
@@ -391,18 +391,26 @@ export function LanPorts (props: ApEditItemProps) {
     })
   }
 
-  const handleIpSecDeactivate = (values: WifiApSetting) => {
+  const handleSoftGreIpSecDeactivate = (values: WifiApSetting) => {
     const { useVenueSettings } = values
     values.lan?.forEach(lanPort => {
+      const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
       const originIpsecId = lanData.find(l => l.portId === lanPort.portId)?.ipsecProfileId
       if (
         originIpsecId &&
-        (!lanPort.enabled || !lanPort.ipsecEnabled || useVenueSettings)
+        (!lanPort.enabled || !lanPort.softGreEnabled || !lanPort.ipsecEnabled || useVenueSettings)
       ) {
         deactivateIpSecProfileSettings({
           params: {
             venueId, serialNumber, portId: lanPort.portId,
             softGreProfileId: lanPort.softGreProfileId, ipsecProfileId: originIpsecId }
+        }).unwrap()
+      } else if (
+        originSoftGreId &&
+        (!lanPort.enabled || !lanPort.softGreEnabled || lanPort.ipsecEnabled || useVenueSettings)
+      ) {
+        deactivateSoftGreProfileSettings({
+          params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
       }
     })

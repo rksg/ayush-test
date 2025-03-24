@@ -32,6 +32,7 @@ import {
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
   NetworkTunnelSoftGreAction,
+  ConfigTemplateType,
   ConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -176,7 +177,7 @@ export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
   const { isTemplate } = useConfigTemplate()
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
   const { rbacOpsApiEnabled } = getUserProfile()
 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -216,11 +217,11 @@ export function Venues (props: VenuesProps) {
 
   const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([updateNetworkVenueOpsAPi])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   // AP group form
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -249,7 +250,7 @@ export function Venues (props: VenuesProps) {
   })
   // hooks for tunnel column - end
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     // need to make sure table data is ready.

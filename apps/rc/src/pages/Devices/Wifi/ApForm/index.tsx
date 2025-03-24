@@ -473,7 +473,7 @@ export function ApForm () {
         { params: { venueId: value } })).data
       if (targetVenueMgmtVlan?.keepAp) {
         setChangeMgmtVlan(false)
-      } else {
+      } else if (apDetails?.venueId) {
         const apMgmtVlan = (await getApMgmtVlan(
           { params: { venueId: apDetails?.venueId, serialNumber } })).data
         setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)

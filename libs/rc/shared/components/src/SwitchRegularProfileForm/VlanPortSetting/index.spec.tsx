@@ -21,7 +21,7 @@ const currentData = {
 
 const handleSetPort = async (
   family: string, model: string,
-  enableModule2?: boolean, portTestId?: string, updatedUntagged?: boolean
+  enableModule2?: boolean, portTestId?: string, updatedUntagged?: boolean, vlanId = 3
 ) => {
   await userEvent.click(await screen.findByRole('button', { name: 'Set Ports' }))
   const dialog = await screen.findByRole('dialog')
@@ -39,7 +39,7 @@ const handleSetPort = async (
     const comboboxes = await within(dialog).findAllByRole('combobox')
     const combobox = updatedUntagged ? comboboxes[0] : comboboxes[1]
     await userEvent.click(combobox)
-    let text = await screen.findAllByText('3')
+    let text = await screen.findAllByText(vlanId)
     await userEvent.click(text[text.length - 1])
   }
 
@@ -63,7 +63,7 @@ describe('Wired - VlanPortSetting', () => {
     spanningTreePriority: 32768,
     spanningTreeProtocol: 'none',
     vlanId: 2,
-    vlanName: 'vlan-01'
+    vlanName: 'vlan-02'
   }, {
     arpInspection: false,
     id: '1af3d29b5dcc46a5a20a651fda55e2df',
@@ -83,7 +83,7 @@ describe('Wired - VlanPortSetting', () => {
       untaggedPorts: '1/1/20,1/3/2'
     }],
     vlanId: 3,
-    vlanName: 'vlan-02'
+    vlanName: 'vlan-03'
   }, {
     arpInspection: false,
     id: '545d08c0e7894501846455233ad60cc6',
@@ -204,7 +204,7 @@ describe('Wired - VlanPortSetting', () => {
           untaggedPorts: '1/1/20,1/3/2'
         }],
         vlanId: 3,
-        vlanName: 'vlan-02'
+        vlanName: 'vlan-03'
       }]
   }
 
@@ -450,7 +450,7 @@ describe('Wired - VlanPortSetting', () => {
               untaggedPorts: '1/1/4'
             }],
             vlanId: 3,
-            vlanName: 'vlan-02'
+            vlanName: 'vlan-03'
           }
         } else if (i === 3) {
           return {
@@ -525,7 +525,7 @@ describe('Wired - VlanPortSetting', () => {
               untaggedPorts: '1/1/20,1/3/2'
             }],
             vlanId: 3,
-            vlanName: 'vlan-02'
+            vlanName: 'vlan-03'
           }
         }
         return v
@@ -619,8 +619,106 @@ describe('Wired - VlanPortSetting', () => {
             untaggedPorts: '1/1/38,1/1/4'
           }],
           vlanId: 3,
-          vlanName: 'vlan-02'
+          vlanName: 'vlan-03'
         }]
+    })
+  })
+
+  it('should handle add port to new module correctly', async () => {
+    const onFinishSpy = jest.fn()
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'edit'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans: vlans
+          } as unknown as SwitchConfigurationProfile
+        }}>
+          <StepsForm onFinish={onFinishSpy}>
+            <StepsForm.StepForm>
+              <VlanPortSetting />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/:action' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /Ports/ })
+
+    // await handleSetPort('ICX-7550', '48', false, 'module1_1_2', false, 2)
+    await handleSetPort('ICX-7550', '48', false, 'module1_1_2', false, 4)
+    // await handleSetPort('ICX-8200', '24', false, 'module1_1_2', false, 4)
+    await handleSetPort('ICX-8200', '24P', false, 'module1_1_2', false, 4)
+
+    await userEvent.click(await screen.findByText('ICX7550-48'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }) )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(onFinishSpy).toBeCalledTimes(1)
+    const call = onFinishSpy.mock.calls[0]
+    expect(call[0]).toStrictEqual({
+      ...currentData,
+      vlans: vlans.map(vlan => {
+        if (vlan.vlanId === 2) {
+          return vlan
+          // return {
+          //   ..._.omit(vlan, 'id'),
+          //   switchFamilyModels: [{
+          //     id: '',
+          //     model: 'ICX7550-48',
+          //     slots: [
+          //       { slotNumber: 1, enable: true },
+          //       { slotNumber: 2, enable: true, option: '2X40G' }
+          //     ],
+          //     taggedPorts: '1/1/2',
+          //     untaggedPorts: ''
+          //   }]
+          // }
+        } else if (vlan.vlanId === 4) {
+          return {
+            ..._.omit(vlan, 'id'),
+            switchFamilyModels: [{
+            //   id: '',
+            //   model: 'ICX8200-24',
+            //   slots: [
+            //     { slotNumber: 1, enable: true },
+            //     { slotNumber: 2, enable: true, option: '4X1/10/25G' }
+            //   ],
+            //   taggedPorts: '1/1/2',
+            //   untaggedPorts: ''
+            // }, {
+              id: '',
+              model: 'ICX8200-24P',
+              slots: [
+                { slotNumber: 1, enable: true },
+                { slotNumber: 2, enable: true, option: '4X1/10/25G' }
+              ],
+              taggedPorts: '1/1/2',
+              untaggedPorts: ''
+            }, {
+              id: '',
+              model: 'ICX7550-48',
+              slots: [
+                { slotNumber: 1, enable: true },
+                { slotNumber: 2, enable: true, option: '2X40G' }
+              ],
+              taggedPorts: '1/1/2',
+              untaggedPorts: ''
+            }]
+          }
+        }
+        return vlan
+      })
     })
   })
 
@@ -719,7 +817,7 @@ describe('Wired - VlanPortSetting', () => {
             untaggedPorts: ''
           }],
           vlanId: 3,
-          vlanName: 'vlan-02'
+          vlanName: 'vlan-03'
         }
       ]
     })
@@ -759,7 +857,6 @@ describe('Wired - VlanPortSetting', () => {
     await screen.findByRole('heading', { level: 3, name: /Ports/ })
     await userEvent.click(await screen.findByText('ICX7550-24P'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-
 
     const dialog = await screen.findByRole('dialog')
     expect(await within(dialog).findByText(/Select Ports By Model/)).toBeVisible()

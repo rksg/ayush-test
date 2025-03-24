@@ -23,7 +23,8 @@ import {
   WifiNetwork,
   WifiRbacUrlsInfo,
   useConfigTemplate,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes } from '@acx-ui/types'
@@ -347,7 +348,7 @@ export function NetworkTable ({
   const { rbacOpsApiEnabled } = getUserProfile()
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.NETWORK)
 
   const addNetworkOpsApi = getOpsApi(isTemplate
     ? ConfigTemplateUrlsInfo.addNetworkTemplateRbac

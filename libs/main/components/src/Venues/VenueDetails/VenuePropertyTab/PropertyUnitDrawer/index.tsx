@@ -4,7 +4,7 @@ import { Checkbox, Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { useWatch }                                                  from 'antd/lib/form/Form'
 import _                                                             from 'lodash'
 import moment                                                        from 'moment-timezone'
-import { FormattedMessage, useIntl }                                 from 'react-intl'
+import { defineMessage, FormattedMessage, useIntl }                  from 'react-intl'
 
 import { Drawer, Loader, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
@@ -46,6 +46,8 @@ import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 import { ConnectionMeteringSettingForm } from '../ConnectionMeteringSettingForm'
 
+// eslint-disable-next-line max-len
+const pinDisableVlanMsg = defineMessage({ defaultMessage: 'VLAN is not supported in a PIN <venueSingular></venueSingular>. ' })
 
 function AccessPointLanPortSelector (props: { venueId: string }) {
   const { $t } = useIntl()
@@ -596,35 +598,42 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 children={<Input />}
               />
             }
+
             <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
-              <Form.Item
-                noStyle
-                name={['unitPersona', 'vlan']}
-                rules={[{
-                  type: 'number',
-                  min: 1,
-                  max: 4094,
-                  message: $t(validationMessages.vlanRange)
-                }]}
-              >
-                <InputNumber />
-              </Form.Item>
+              <Tooltip title={withPin && $t(pinDisableVlanMsg)} placement='bottomLeft'><span>
+                <Form.Item
+                  noStyle
+                  name={['unitPersona', 'vlan']}
+                  rules={[{
+                    type: 'number',
+                    min: 1,
+                    max: 4094,
+                    message: $t(validationMessages.vlanRange)
+                  }]}
+                >
+                  <InputNumber disabled={withPin} />
+                </Form.Item>
+              </span></Tooltip>
             </Form.Item>
+
 
             {enableGuestUnit &&
               <StepsForm.FieldLabel width={'160px'}>
                 {$t({ defaultMessage: 'Separate VLAN for guests' })}
-                <Form.Item
-                  style={{ marginBottom: '10px' }}
-                  name={'enableGuestVlan'}
-                  valuePropName={'checked'}
-                  initialValue={isEdit}
-                  children={<Switch />}
-                />
+                <Tooltip title={withPin && $t(pinDisableVlanMsg)} placement='bottomLeft'>
+                  <Form.Item
+                    style={{ marginBottom: '10px' }}
+                    name={'enableGuestVlan'}
+                    valuePropName={'checked'}
+                    initialValue={isEdit}
+                    children={<Switch disabled={withPin} />}
+                  />
+                </Tooltip>
               </StepsForm.FieldLabel>
             }
 
             {enableGuestUnit && enableGuestVlan &&
+            <Tooltip title={withPin && $t(pinDisableVlanMsg)} placement='bottomLeft'>
               <Form.Item
                 name={['guestPersona', 'vlan']}
                 rules={[{
@@ -634,8 +643,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   message: $t(validationMessages.vlanRange)
                 }]}
               >
-                <InputNumber />
+                <InputNumber disabled={withPin} />
               </Form.Item>
+            </Tooltip>
             }
 
             {withPin && withPinForm}

@@ -158,4 +158,23 @@ describe('SubscriptionsTab', () => {
       search: ''
     })
   })
+  it('should navigate correctly on tab click for MSP REC', async () => {
+    render(
+      <Provider>
+        <SubscriptionTabs tenantType={AccountType.MSP_REC} />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getByText('Current Subscription Tier:')).toBeVisible()
+    expect(screen.getByText('Professional')).toBeVisible()
+    expect(screen.getByText('My Subscriptions')).toBeVisible()
+    await userEvent.click(screen.getByText('Pending Activations'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/administration/subscriptions/pendingActivations`,
+      hash: '',
+      search: ''
+    })
+  })
 })
