@@ -1,15 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react'
 
-import { Form, Switch, Button, Space, Input } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Form, Switch, Button, Space, Input, Col, Row } from 'antd'
+import { useIntl }                                      from 'react-intl'
 
 
-import { Modal, ModalType }       from '@acx-ui/components'
+import { Modal, ModalType, Drawer } from '@acx-ui/components'
 import {
+  useGetEnhancedDpskListQuery,
   useLazySearchPersonaGroupListQuery,
-  useLazySearchPersonaListQuery
+  useLazySearchPersonaListQuery,
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Persona } from '@acx-ui/rc/utils'
+
+import {
+  DpskPoolLink,
+  IdentityGroupLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupDrawer,
+  useIsEdgeFeatureReady,
+  VenueLink,
+  CertTemplateLink
+} from '@acx-ui/rc/components'
 
 import { IdentityGroupForm }   from '../../../../users/IdentityGroupForm'
 import { SelectPersonaDrawer } from '../../../../users/IdentitySelector/SelectPersonaDrawer'
@@ -25,6 +38,7 @@ export function IdentityGroup () {
   const selectedIdentityGroupId = Form.useWatch('identityGroupId', form)
   const enableIdentityAssociation = Form.useWatch('enableIdentityAssociation', form)
   const [display, setDisplay] = useState({ display: 'none' })
+  const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
@@ -115,15 +129,24 @@ export function IdentityGroup () {
         />
 
         <Space>
-          <Button
-            style={{ fontSize: '12px' }}
-            type='link'
-            onClick={() => {
-              setIdentityGroupModelVisible(true)
-            }}
-          >
-            {$t({ defaultMessage: 'Add' })}
-          </Button>
+
+          <Space split='|'>
+            <Button
+              type='link'
+              disabled={!selectedIdentityId}
+              onClick={() => {
+                setDetailDrawerVisible(true)
+              }}
+            >
+              {$t({ defaultMessage: 'View Details' })}
+            </Button>
+            <Button type='link'
+              onClick={() => {
+                setIdentityGroupModelVisible(true)
+              }}>
+              {$t({ defaultMessage: 'Add' })}
+            </Button>
+          </Space>
         </Space>
       </Space>
       {selectedIdentityGroupId && noDisplayUnderSpecificNetwork && (
@@ -217,3 +240,111 @@ export function IdentityGroup () {
       )}
     </>
   )}
+
+interface IdentityGroupDrawerProps {
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  persona :Persona
+}
+
+const macRegSearchDefaultPayload = {
+  dataOption: 'all',
+  searchCriteriaList: [
+    {
+      filterKey: 'name',
+      operation: 'cn',
+      value: ''
+    }
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
+
+export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
+
+  const {
+    visible,
+    setVisible,
+    persona
+  } = props
+
+  const { $t } = useIntl()
+
+  const handleClose = () => {
+    setVisible(false)
+  }
+  const { data: dpskPool } = useGetEnhancedDpskListQuery({
+    payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
+  })
+  const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
+
+
+  return (
+    <Drawer
+      title={$t({ defaultMessage: 'Identity Group: {name}' }, { name: persona.name })}
+      visible={visible}
+      width={450}
+      children={
+        <Form layout='vertical'>
+          <Row gutter={20}>
+            <Col span={24}>
+              <Form.Item
+                label={$t({ defaultMessage: 'Description' })}
+                children={
+                  <Button
+                    data-testid={'display-metadata-button'}
+                    style={{ borderStyle: 'none' }}
+                    type='link'
+                    onClick={()=>{handleDisplayMetadata(policy.id)}}
+                  >
+                    {$t({ defaultMessage: 'View metadata' })}
+                  </Button>
+                }
+              />
+              <Form.Item
+                label={$t({ defaultMessage: 'DPSK Service' })}
+                children={
+                  <DpskPoolLink
+                    name={dpskPools.get(row.dpskPoolId ?? '')}
+                    dpskPoolId={row.dpskPoolId}
+                  />
+                }
+              />
+              <Form.Item
+                label={$t({ defaultMessage: 'MAC Registration' })}
+                children={
+                  <MacRegistrationPoolLink
+                    name={macRegistrationPools.get(row.macRegistrationPoolId ?? '')}
+                    macRegistrationPoolId={row.macRegistrationPoolId}
+                  />
+                }
+              />
+              <Form.Item
+                label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                children={
+                  (policy.encryptionCertificateId ? '' :
+                    <TenantLink
+                      to={getPolicyRoutePath({
+                        type: PolicyType.SERVER_CERTIFICATES,
+                        oper: PolicyOperation.LIST
+                      })}>
+                      {
+                        certificateNameMap.find(cert => {
+                          return cert.key === policy.encryptionCertificateId
+                        })?.value || ''
+                      }
+                    </TenantLink>
+                  )
+                }
+              />
+            </Col>
+          </Row>
+        </Form>
+      }
+      onClose={handleClose}
+      destroyOnClose={true}
+    />
+  )
+}
