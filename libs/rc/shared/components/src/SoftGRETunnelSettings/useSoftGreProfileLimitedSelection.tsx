@@ -36,7 +36,6 @@ export const useSoftGreProfileLimitedSelection = (
 
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
 
-
   useEffect(() => {
     const setData = async () => {
       const softGreProfileList = ((allowSoftGetGrePorfiles) ?
@@ -44,7 +43,6 @@ export const useSoftGreProfileLimitedSelection = (
           params,
           payload: {}
         }).unwrap()).data : [])
-
       if(softGreProfileList.length > 0) {
         setSoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
           return { label: softGreProfile.name, value: softGreProfile.id }
