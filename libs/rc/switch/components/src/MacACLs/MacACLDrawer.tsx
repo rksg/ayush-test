@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Drawer, Form, Input, Space } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Button, Form, Input, Space } from 'antd'
+import { useIntl }                    from 'react-intl'
 
 import {
   Table,
-  TableProps
+  TableProps,
+  Drawer,
+  showActionModal
 } from '@acx-ui/components'
 import {
   useLazyGetAccessControlsListQuery,
@@ -177,14 +179,28 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
       const payload = { ...formValues, switchMacAclRules }
 
       if (editMode) {
-        await updateSwitchMacAcl({
-          payload,
-          params: {
-            switchId,
-            venueId: venueId,
-            macAclId: macACLData?.id
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Apply New Settings?' }),
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'This ACL is being actively used on some ports in the network. Updating this will result in the MAC ACL settings getting updated for such ports. Are you sure you want to apply these changes?' }),
+          okText: $t({ defaultMessage: 'Apply' }),
+          cancelText: $t({ defaultMessage: 'Cancel' }),
+          onOk: async () => {
+            await updateSwitchMacAcl({
+              payload,
+              params: {
+                switchId,
+                venueId: venueId,
+                macAclId: macACLData?.id
+              }
+            }).unwrap()
+
+            form.resetFields()
+            setDataSource([])
+            setVisible(false)
           }
-        }).unwrap()
+        })
       } else {
         await addSwitchMacAcl({
           payload: [payload],
@@ -193,11 +209,11 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
             venueId: venueId
           }
         }).unwrap()
-      }
 
-      form.resetFields()
-      setDataSource([])
-      setVisible(false)
+        form.resetFields()
+        setDataSource([])
+        setVisible(false)
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Form validation failed or API error:', error)
