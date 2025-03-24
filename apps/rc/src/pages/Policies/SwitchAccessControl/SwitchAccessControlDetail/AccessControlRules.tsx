@@ -25,21 +25,6 @@ export default function AccessControlOverview () {
     pagination: { settingsId }
   }
 
-  // const { venueFilterOptions } = useVenuesListQuery({
-  //   payload: {
-  //     fields: ['name', 'country', 'latitude', 'longitude', 'id'],
-  //     pageSize: 10000,
-  //     sortField: 'name',
-  //     sortOrder: 'ASC'
-  //   }
-  // }, {
-  //   selectFromResult: ({ data }) => ({
-  //     venueFilterOptions: data?.data
-  //       .map(v => ({ key: v.id, value: v.name }))
-  //       .sort((a, b) => a.value.localeCompare(b.value)) || true
-  //   })
-  // })
-
   const tableQuery = useTableQuery<MacAclRule>({
     useQuery: useGetAccessControlRulesQuery,
     defaultPayload,

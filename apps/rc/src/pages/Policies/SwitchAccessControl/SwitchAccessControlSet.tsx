@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Col }     from 'antd'
 import Row         from 'antd/lib/row'
@@ -24,20 +24,26 @@ import { SwitchScopes }               from '@acx-ui/types'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-export function Layer2AccessControl () {
+
+interface AccessControlSetProps {
+    setAccessControlCount: React.Dispatch<React.SetStateAction<number>>
+}
+
+export function SwitchAccessControlSet (props: AccessControlSetProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/accessControl/switch')
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
-  const switchAccessControlPage = '/policies/accessControl/switch'
-  const switchAccessControlLink = useTenantLink(switchAccessControlPage)
+  const { setAccessControlCount } = props
+  const settingsId = 'switch-access-control-set'
 
   const [deleteAccessControl] = useDeleteAccessControlMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetAccessControlsListQuery,
-    defaultPayload: {},
+    defaultPayload: {
+      pagination: { settingsId }
+    },
     enableRbac: isSwitchRbacEnabled,
     sorter: {
       sortField: 'name',
@@ -45,12 +51,17 @@ export function Layer2AccessControl () {
     }
   })
 
+  useEffect(() => {
+    setAccessControlCount(tableQuery.data?.data.length || 0)
+  }, [tableQuery.data?.data.length, setAccessControlCount])
+
   const columns: TableProps<MacAcl>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'ACL Name' }),
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
+      searchable: true,
       sorter: true,
       fixed: 'left',
       width: 500,
@@ -157,7 +168,7 @@ export function Layer2AccessControl () {
       rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
-          navigate(switchAccessControlLink.pathname + `/${selectedRows[0].id}/edit`, {
+          navigate(basePath.pathname + `/${selectedRows[0].id}/edit`, {
             replace: true
           })
         }
@@ -201,6 +212,7 @@ export function Layer2AccessControl () {
       states={[tableQuery]}
     >
       <Table
+        settingsId={settingsId}
         rowKey='id'
         columns={columns}
         type={'tall'}
