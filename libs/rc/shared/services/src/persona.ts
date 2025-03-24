@@ -433,5 +433,6 @@ export const {
 } = personaApi
 
 export const {
-  useSearchIdentityClientsQuery
+  useSearchIdentityClientsQuery,
+  useLazySearchIdentityClientsQuery
 } = personaApi
