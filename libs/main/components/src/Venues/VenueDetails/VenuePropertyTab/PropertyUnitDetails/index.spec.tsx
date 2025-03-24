@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }                                                                                   from '@acx-ui/react-router-dom'
-import { Provider }                                                                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen,  waitFor, within }                                                   from '@acx-ui/test-utils'
+import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }                                                                     from '@acx-ui/react-router-dom'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen,  waitFor, within }                                     from '@acx-ui/test-utils'
 
 
 import { mockPropertyUnitList } from '../../../__tests__/fixtures'
@@ -20,16 +20,6 @@ const personaIds = { data: [
 const propertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'personaGroupId123'
-}
-
-const mockPersonaGroup = {
-  id: 'personaGroupId123',
-  name: 'personaGroupId-123',
-  description: '',
-  macRegistrationPoolId: 'mac-id-1',
-  dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
-  propertyId: 'propertyId-100'
 }
 
 const unitData = {
@@ -151,20 +141,6 @@ describe('Property Unit Details', () => {
         (req, res, ctx) => {
           return res(ctx.json(mockPropertyUnitList))
         }
-      ),
-      rest.get(
-        PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
-      ),
-      rest.post(
-        PersonaUrls.searchIdentityClients.url.split('?')[0],
-        (_, res, ctx) => {
-          return res(ctx.json({}))
-        }
-      ),
-      rest.get(
-        WifiUrlsInfo.getVenueApCapabilities.url,
-        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -275,6 +251,8 @@ describe('Property Unit Details', () => {
     const spy = jest.spyOn(navigator.clipboard, 'writeText')
     await screen.findByText('Test Resident Name')
 
+    fireEvent.mouseOver(screen.getByTestId('copy'))
+    await screen.findByRole('tooltip', { name: 'Copy Passphrase' })
     fireEvent.mouseOut(screen.getByTestId('copy'))
     fireEvent.click(screen.getByTestId('copy'))
     await waitFor(() =>
@@ -289,6 +267,8 @@ describe('Property Unit Details', () => {
     const spy = jest.spyOn(navigator.clipboard, 'writeText')
     await screen.findByText('Test Resident Name')
 
+    fireEvent.mouseOver(screen.getByTestId('guest-copy'))
+    await screen.findByRole('tooltip', { name: 'Copy Passphrase' })
     fireEvent.mouseOut(screen.getByTestId('guest-copy'))
     fireEvent.click(screen.getByTestId('guest-copy'))
     await waitFor(() =>
