@@ -18,3 +18,8 @@ export enum MtuRequestTimeoutUnit {
   SECONDS='seconds',
   MILLISECONDS='milliseconds'
 }
+
+export enum TunnelTypeEnum {
+  VXLAN_GPE='VXLAN_GPE',
+  L2GRE='L2GRE'
+}

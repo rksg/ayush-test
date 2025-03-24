@@ -3,6 +3,14 @@ import { baseTunnelProfileApi }                                                 
 import { RequestPayload }                                                                                                                         from '@acx-ui/types'
 import { createHttpRequest }                                                                                                                      from '@acx-ui/utils'
 
+import { handleCallbackWhenActivityDone } from './utils'
+
+enum TunnelProfileActivityEnum {
+  ADD = 'AddTunnelServiceProfile',
+  UPDATE = 'UpdateTunnelServiceProfile',
+  DELETE = 'DeleteTunnelServiceProfile',
+}
+
 export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
   endpoints: (build) => ({
     createTunnelProfile: build.mutation<CommonResult, RequestPayload>({
@@ -13,7 +21,18 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
+      invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: TunnelProfileActivityEnum.ADD,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
     }),
     getTunnelProfileViewDataList: build.query<TableResult<TunnelProfileViewData>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -69,7 +88,32 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
+      invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivityDone({
+            api,
+            activityData: msg,
+            useCase: TunnelProfileActivityEnum.UPDATE,
+            callback: requestArgs.callback,
+            failedCallback: requestArgs.failedCallback
+          })
+        })
+      }
+    }),
+    activateTunnelProfileByEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(TunnelProfileUrls.activateTunnelProfileByEdgeCluster, params)
+        }
+      }
+    }),
+    deactivateTunnelProfileByEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(TunnelProfileUrls.deactivateTunnelProfileByEdgeCluster, params)
+        }
+      }
     })
   })
 })
@@ -79,5 +123,7 @@ export const {
   useGetTunnelProfileViewDataListQuery,
   useDeleteTunnelProfileMutation,
   useGetTunnelProfileByIdQuery,
-  useUpdateTunnelProfileMutation
+  useUpdateTunnelProfileMutation,
+  useActivateTunnelProfileByEdgeClusterMutation,
+  useDeactivateTunnelProfileByEdgeClusterMutation
 } = tunnelProfileApi

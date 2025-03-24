@@ -8,12 +8,12 @@ import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/servic
 import {
   filterByAccessForServicePolicyMutation,
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
+  getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
-  getTunnelTypeString,
   mtuRequestTimeoutUnitConversion,
   MtuTypeEnum,
   NetworkSegmentTypeEnum,
@@ -64,7 +64,8 @@ const TunnelProfileDetail = () => {
     ...(isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN,
+        // eslint-disable-next-line max-len
+        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN,
           isEdgeVxLanKaReady)
       }
     }] : []),
@@ -114,7 +115,8 @@ const TunnelProfileDetail = () => {
     ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
+        // eslint-disable-next-line max-len
+        return getNetworkSegmentTypeString($t, tunnelProfileData.type || NetworkSegmentTypeEnum.VXLAN)
       }
     }] : []),
     ...(isEdgeVxLanKaReady ? [

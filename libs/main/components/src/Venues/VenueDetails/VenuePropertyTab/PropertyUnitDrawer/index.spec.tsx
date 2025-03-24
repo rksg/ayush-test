@@ -251,6 +251,9 @@ describe('Property Unit Drawer', () => {
     await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
 
+    // VLAN input field
+    expect(screen.getByRole('spinbutton')).toBeDisabled()
+
     await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
     await userEvent.click(await screen.findByText(mockConnectionMeterings[1].name))
     const saveBtn = await screen.findByRole('button', { name: /Apply/i })
