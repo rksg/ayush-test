@@ -5,10 +5,12 @@ import { Col, Row, Switch, Typography } from 'antd'
 import { useIntl }                      from 'react-intl'
 import { useParams }                    from 'react-router-dom'
 
-import { showToast }                                                    from '@acx-ui/components'
-import { useGetPrivacySettingsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
-import { PrivacyFeatureName }                                           from '@acx-ui/rc/utils'
-import { useUserProfileContext }                                        from '@acx-ui/user'
+import { showToast }                                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { useGetPrivacySettingsQuery, useGetTenantDetailsQuery, useUpdatePrivacySettingsMutation } from '@acx-ui/rc/services'
+import { PrivacyFeatureName }                                                                     from '@acx-ui/rc/utils'
+import { useUserProfileContext }                                                                  from '@acx-ui/user'
+import { AccountType }                                                                            from '@acx-ui/utils'
 
 import { MessageMapping } from './MessageMapping'
 
@@ -31,6 +33,12 @@ export default function Privacy () {
     = useState<boolean>(false)
   const [isAppVisibilitySettingsEnabled, setIsAppVisibilitySettingsEnabled]
     = useState<boolean>(false)
+
+  const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
+
+  const isAppVisibilityEnabled = useIsSplitOn(Features.MSP_APP_VISIBILITY)
+
+  const tenantType = tenantDetails?.tenantType
 
   const { data } = useGetPrivacySettingsQuery({ params })
 
@@ -108,7 +116,9 @@ export default function Privacy () {
 
   return (
     <>
-      <div>
+      { isAppVisibilityEnabled
+      && (tenantType === AccountType.MSP || tenantType === AccountType.MSP_NON_VAR)
+      && <div>
         <Row gutter={24}
           style={{
             marginBottom: '6px'
@@ -149,6 +159,7 @@ export default function Privacy () {
           </Col>
         </Row>
       </div>
+      }
       <div style={{
         marginTop: '20px'
       }}>

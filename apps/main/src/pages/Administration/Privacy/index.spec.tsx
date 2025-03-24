@@ -7,7 +7,8 @@ import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen }                  from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
-import { fakeUserProfile } from '../Administrators/__tests__/fixtures'
+import { fakeTenantDetails } from '../AccountSettings/__tests__/fixtures'
+import { fakeUserProfile }   from '../Administrators/__tests__/fixtures'
 
 import Privacy from '.'
 
@@ -40,7 +41,11 @@ describe('Privacy settings', () => {
       rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
         (req, res, ctx) => res(ctx.json(settings))),
       rest.patch(AdministrationUrlsInfo.updatePrivacySettings.url,
-        (_, res, ctx) => res(ctx.json(settings)))
+        (_, res, ctx) => res(ctx.json(settings))),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json({ ...fakeTenantDetails, tenantType: 'MSP' }))
+      )
     )
   })
   afterEach(() => {
@@ -49,6 +54,7 @@ describe('Privacy settings', () => {
 
   it('Should show ARC privacy settings', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_VISIBILITY)
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -69,6 +75,7 @@ describe('Privacy settings', () => {
 
   it('Should show Application Visibility privacy settings', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_VISIBILITY)
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -91,6 +98,7 @@ describe('Privacy settings', () => {
 
   it('Should show correct privacy settings for non prime admin', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_VISIBILITY)
     render(
       <Provider>
         <UserProfileContext.Provider
