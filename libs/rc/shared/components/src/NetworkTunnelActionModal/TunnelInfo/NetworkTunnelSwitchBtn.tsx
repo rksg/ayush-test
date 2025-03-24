@@ -9,7 +9,7 @@ import { NetworkTunnelTypeEnum } from '../types'
 
 interface NetworkTunnelSwitchBtnProps {
   tunnelType: NetworkTunnelTypeEnum
-  onClick: (checked: boolean) => void
+  onClick: (checked: boolean) => Promise<void> | void
   venueSdLanInfo: EdgeMvSdLanViewData | undefined
   disabled?: boolean
   tooltip?: string
@@ -19,6 +19,7 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
   const { $t } = useIntl()
   const { tunnelType, onClick, venueSdLanInfo } = props
   const hasPermission = usePermissionResult()
+
   // eslint-disable-next-line max-len
   const isTheLastSdLanWlan = (venueSdLanInfo?.tunneledWlans?.length ?? 0) === 1 && tunnelType === NetworkTunnelTypeEnum.SdLan
   // eslint-disable-next-line max-len
@@ -27,11 +28,19 @@ export const NetworkTunnelSwitchBtn = (props: NetworkTunnelSwitchBtnProps) => {
     ? $t(messageMappings.disable_deactivate_last_network)
     : undefined
 
-  return<Tooltip title={props.tooltip || tooltip}>
+  const handleOnClick = async (val: boolean) => {
+    try {
+      await onClick(val)
+    } catch {
+      // no-op
+    }
+  }
+
+  return <Tooltip title={props.tooltip || tooltip}>
     <Switch
       checked={tunnelType !== NetworkTunnelTypeEnum.None}
       disabled={props.disabled || needDisabled}
-      onClick={onClick}
+      onClick={handleOnClick}
     />
   </Tooltip>
 }

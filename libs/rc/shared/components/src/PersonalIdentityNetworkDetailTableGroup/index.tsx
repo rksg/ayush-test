@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+import { useIdentityListQuery }                                       from '@acx-ui/cloudpath/components'
 import { Loader, Tabs }                                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetEdgePinByIdQuery }                     from '@acx-ui/rc/services'
 import { Persona, TableQuery, transformDisplayNumber, useTableQuery } from '@acx-ui/rc/utils'
 
-import { usePersonaListQuery } from '../usePersonaListQuery'
 
 import { AccessSwitchTable, AccessSwitchTableDataType } from './AccessSwitchTable'
 import { ApsTable, defaultApPayload }                   from './ApsTable'
@@ -44,7 +44,7 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     option: { skip: !isApPayloadReady },
     enableRbac: isWifiRbacEnabled
   })
-  const personaListTableQuery = usePersonaListQuery({
+  const personaListTableQuery = useIdentityListQuery({
     personaGroupId: pinData?.personaGroupId
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 
