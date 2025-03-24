@@ -15,14 +15,14 @@ import {
   PolicyType,
   SamlIdpProfileFormType,
   SamlIdpMessages,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
-  redirectPreviousPage
+  redirectPreviousPage,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
-import CertificateDrawer                                   from '../../CertificateTemplate/Certificate/CertificateDrawer'
+import CertificateDrawer                                   from '../../CertificateUtil/CertificateDrawer'
 
 interface SamlIdpFormProps {
     title: string
@@ -53,8 +53,13 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const linkToTableView = useTenantLink(tablePath)
-  const [certFormVisible, setCertFormVisible] = useState(false)
-  const isResponseEncryptionEnabled = useWatch('responseEncryptionEnabled', formRef)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
+
+  const [encryptCertFormVisible, setEncryptCertFormVisible] = useState(false)
+  const [signingCertFormVisible, setSigningCertFormVisible] = useState(false)
+
+  const isSigningCertificateEnabled = useWatch('signingCertificateEnabled', formRef)
+  const isEncryptionCertificateEnabled = useWatch('encryptionCertificateEnabled', formRef)
   const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
 
   const { serverCertificateOptions } =
@@ -88,13 +93,18 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   }
 
   const handleImportRequest = (formData: FormData, values: object, content?: string)=> {
-    formRef.setFieldsValue({ metadata: content })
+    formRef.setFieldsValue({ metadataContent: content })
     setUploadXmlDrawerVisible(false)
   }
 
-  const handleCertificateSave = (createdCertId?:string) => {
+  const handleEncryptCertificateSave = (createdCertId?:string) => {
     formRef.setFieldsValue({ encryptionCertificateId: createdCertId })
-    setCertFormVisible(false)
+    setEncryptCertFormVisible(false)
+  }
+
+  const handleSigningCertificateSave = (createdCertId?:string) => {
+    formRef.setFieldsValue({ signingCertificateId: createdCertId })
+    setSigningCertFormVisible(false)
   }
 
   return (
@@ -102,17 +112,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
       {!isEmbedded &&
         <PageHeader
           title={title}
-          breadcrumb={[
-            { text: $t({ defaultMessage: 'Network Control' }) },
-            {
-              text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true)
-            },
-            {
-              text: $t({ defaultMessage: 'Identity Provider' }),
-              link: tablePath
-            }
-          ]}
+          breadcrumb={breadcrumb}
         />
       }
       <StepsForm
@@ -164,7 +164,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                     |
                     <Button
                       type='link'
-                      onClick={() => formRef.setFieldsValue({ metadata: '' })}
+                      onClick={() => formRef.setFieldsValue({ metadataContent: '' })}
                     >
                       {$t({ defaultMessage: 'Clear' })}
                     </Button>
@@ -172,7 +172,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 </Space>
               </StepsForm.FieldLabel>
               <Form.Item
-                name='metadata'
+                name='metadataContent'
                 style={{ width: '400px' }}
                 rules={[
                   { required: true }
@@ -202,20 +202,39 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
             <Col span={12}>
               <StepsForm.FieldLabel width={'280px'}>
                 <Space>
-                  {$t({ defaultMessage: 'Require SAML requests to be signed' })}
+                  {$t({ defaultMessage: 'Enable SAML Request Signature' })}
                   <Tooltip.Question
-                    title={$t(SamlIdpMessages.AUTHN_REQUEST_TOGGLE)}
+                    title={$t(SamlIdpMessages.SAML_REQUEST_SIGNATURE_TOGGLE)}
                     placement='bottom'
                     iconStyle={{ width: 16, height: 16 }}
                   />
                 </Space>
                 <Form.Item
-                  name='authnRequestSignedEnabled'
+                  name='signingCertificateEnabled'
                   valuePropName={'checked'}
                 >
                   <Switch />
                 </Form.Item>
               </StepsForm.FieldLabel>
+              {isSigningCertificateEnabled &&
+              <>
+                <Form.Item
+                  name='signingCertificateId'
+                  label={<>
+                    {$t({ defaultMessage: 'Select Signing Certificate' })}
+                  </>
+                  }
+                  required
+                >
+                  <Select
+                    options={serverCertificateOptions}
+                  />
+                </Form.Item>
+                <Button type='link' onClick={()=>setSigningCertFormVisible(true)}>
+                  {$t({ defaultMessage: 'Generate a signing certificate' })}
+                </Button>
+              </>
+              }
             </Col>
           </Row>
           <Row>
@@ -224,48 +243,53 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 <Space >
                   {$t({ defaultMessage: 'Enable SAML Response Encryption' })}
                   <Tooltip.Question
-                    title={$t(SamlIdpMessages.RESPONSE_ENCRYPTION_TOGGLE)}
+                    title={$t(SamlIdpMessages.SAML_RESPONSE_ENCRYPTION_TOGGLE)}
                     placement='bottom'
                     iconStyle={{ width: 16, height: 16 }}
                   />
                 </Space>
                 <Form.Item
-                  name='responseEncryptionEnabled'
+                  name='encryptionCertificateEnabled'
                   valuePropName={'checked'}
                 >
                   <Switch />
                 </Form.Item>
               </StepsForm.FieldLabel>
-              {isResponseEncryptionEnabled &&
+              {isEncryptionCertificateEnabled &&
               <>
                 <Form.Item
                   name='encryptionCertificateId'
                   label={<>
-                    {$t({ defaultMessage: 'Server Certificate' })}
+                    {$t({ defaultMessage: 'Select Encryption Certificate' })}
                   </>
                   }
                   required
                 >
                   <Select
                     options={serverCertificateOptions}
-                    placeholder={$t({ defaultMessage: 'Select ...' })}
                   />
                 </Form.Item>
-                <Button type='link' onClick={()=>setCertFormVisible(true)}>
-                  {$t({ defaultMessage: 'Generate a server certificate' })}
+                <Button type='link' onClick={()=>setEncryptCertFormVisible(true)}>
+                  {$t({ defaultMessage: 'Generate an encryption certificate' })}
                 </Button>
-                <CertificateDrawer
-                  visible={certFormVisible}
-                  setVisible={setCertFormVisible}
-                  handleSave={handleCertificateSave}
-                  width={1000}
-                />
               </>
               }
             </Col>
           </Row>
         </StepsForm.StepForm>
       </StepsForm>
+      <CertificateDrawer
+        visible={encryptCertFormVisible}
+        setVisible={setEncryptCertFormVisible}
+        handleSave={handleEncryptCertificateSave}
+        width={1000}
+      />
+      <CertificateDrawer
+        visible={signingCertFormVisible}
+        setVisible={setSigningCertFormVisible}
+        handleSave={handleSigningCertificateSave}
+        width={1000}
+      />
     </>
   )
 }
@@ -274,7 +298,8 @@ export const requestPreProcess = (data: SamlIdpProfileFormType) => {
   const { ...result } = cloneDeep(data)
 
   // Convert metadata to base64 format
-  result.metadata = Buffer.from(result.metadata).toString('base64')
+  result.metadata = Buffer.from(result.metadataContent?? '').toString('base64')
+  delete result.metadataContent
 
   return result
 }

@@ -1,8 +1,8 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useActivateSamlIdpProfileCertificateMutation, useCreateSamlIdpProfileMutation } from '@acx-ui/rc/services'
-import { SamlIdpProfileFormType }                                                        from '@acx-ui/rc/utils'
+import { useActivateSamlEncryptionCertificateMutation, useActivateSamlSigningCertificateMutation, useCreateSamlIdpProfileMutation } from '@acx-ui/rc/services'
+import { SamlIdpProfileFormType }                                                                                                   from '@acx-ui/rc/utils'
 
 import { SamlIdpForm, requestPreProcess } from '../SamlIdpForm'
 
@@ -15,7 +15,8 @@ interface AddSamlIdpProps {
 export const AddSamlIdp = (props: AddSamlIdpProps) => {
   const { $t } = useIntl()
   const [ createSamlIdpProfile ] = useCreateSamlIdpProfileMutation()
-  const [ activateCertificate ] = useActivateSamlIdpProfileCertificateMutation()
+  const [ activateSamlEncryptionCertificate ] = useActivateSamlEncryptionCertificateMutation()
+  const [ activateSamlSigningCertificate ] = useActivateSamlSigningCertificateMutation()
   const [form] = Form.useForm()
   const { onClose, isEmbedded, updateInstance } = props
 
@@ -26,10 +27,17 @@ export const AddSamlIdp = (props: AddSamlIdpProps) => {
           await createSamlIdpProfile({ payload }).unwrap()
       const createId = createResult.response?.id
       if (createId) {
-        if (payload.responseEncryptionEnabled) {
-          activateCertificate({ params: {
+        if (payload.encryptionCertificateEnabled) {
+          activateSamlEncryptionCertificate({ params: {
             id: createId,
             certificateId: payload.encryptionCertificateId
+          } })
+        }
+
+        if (payload.signingCertificateEnabled) {
+          activateSamlSigningCertificate({ params: {
+            id: createId,
+            certificateId: payload.signingCertificateId
           } })
         }
 

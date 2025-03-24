@@ -459,9 +459,7 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall' || !!enablePagination) {
     pagination = { ...defaultPaginationMemo, ...props.pagination || {} } as TablePaginationConfig
-    // eslint-disable-next-line max-len
-    const currentPageSize = (props.pagination && props.pagination.pageSize) || pagination.defaultPageSize!
-    if (((pagination.total || dataSource?.length) || 0) <= currentPageSize!) {
+    if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
   }
