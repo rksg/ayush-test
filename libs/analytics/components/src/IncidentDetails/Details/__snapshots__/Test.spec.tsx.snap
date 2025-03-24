@@ -18863,10 +18863,6 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
   font-weight: var(--acx-subtitle-6-font-weight-bold);
 }
 
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <div
     class="c0"
   >
@@ -18990,49 +18986,6 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
   display: block;
 }
 
-.c5 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-  background-color: var(--acx-neutrals-10);
-}
-
-.c6 {
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: 5;
-  background-color: var(--acx-primary-white);
-  opacity: 0.8;
-}
-
 .c0 {
   display: -webkit-box;
   display: -webkit-flex;
@@ -19084,15 +19037,6 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
 
 .c2 {
   position: fixed;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-  .c6 {
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
-    background: none;
-    opacity: 1;
-  }
 }
 
 <div
@@ -19461,41 +19405,8 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
         style="min-height: 249px;"
       >
         <div
-          class="c5"
-        >
-          <div
-            class="c6"
-          >
-            <span
-              aria-label="loader"
-              class=""
-              role="img"
-            >
-              <div
-                aria-busy="true"
-                aria-live="polite"
-                class="ant-spin ant-spin-lg ant-spin-spinning"
-              >
-                <span
-                  class="ant-spin-dot ant-spin-dot-spin"
-                >
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                </span>
-              </div>
-            </span>
-          </div>
-        </div>
+          data-testid="ImpactedSwitchesByParamDonut"
+        />
       </div>
     </div>
     <div
@@ -19507,41 +19418,8 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
         style="min-height: 249px;"
       >
         <div
-          class="c5"
-        >
-          <div
-            class="c6"
-          >
-            <span
-              aria-label="loader"
-              class=""
-              role="img"
-            >
-              <div
-                aria-busy="true"
-                aria-live="polite"
-                class="ant-spin ant-spin-lg ant-spin-spinning"
-              >
-                <span
-                  class="ant-spin-dot ant-spin-dot-spin"
-                >
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                </span>
-              </div>
-            </span>
-          </div>
-        </div>
+          data-testid="ImpactedSwitchesByParamDonut"
+        />
       </div>
     </div>
   </div>
