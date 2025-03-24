@@ -149,7 +149,7 @@ export function SwitchStackSetting (props: {
         title: $t({ defaultMessage: 'Delete Sticky MAC Allow List?' }),
         content: $t({
           // eslint-disable-next-line max-len
-          defaultMessage: 'The value you have set is lower than some of the values configured in the port\'s Sticky MAC List Size Limit. To proceed, the system will need to delete all the current Sticky MAC Allow List entries on the ports. Are you sure you want to delete them?'
+          defaultMessage: 'The limit you entered is lower than the limit set on some of the ports in this switch. If you proceed, the system will need to delete the current sticky MAC addresses on those ports. Are you sure you want to proceed?'
         }),
         okText: $t({ defaultMessage: 'Delete' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
