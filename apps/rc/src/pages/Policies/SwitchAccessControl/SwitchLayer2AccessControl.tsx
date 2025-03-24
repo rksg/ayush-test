@@ -174,28 +174,50 @@ export function SwitchLayer2AccessControl () {
       scopeKey: [SwitchScopes.DELETE],
       rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: $t({ defaultMessage: 'Delete {macAclTitle}?' },
-            { macAclTitle: selectedRows.length === 1 ?
-              selectedRows[0].name : $t({ defaultMessage: '{totalCount} Mac ACLs' },
-                { totalCount: selectedRows.length }) }),
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'Are you sure you want to delete {count, plural, one {} other {these}}?' }, { count: selectedRows.length }),
-          okText: $t({ defaultMessage: 'Delete' }),
-          cancelText: $t({ defaultMessage: 'Cancel' }),
-          onOk: () => {
-            Promise.all(
-              selectedRows.map(row =>
-                deleteAccessControl({
-                  params: {
-                    l2AclId: row.id
-                  }
-                })
-              )
-            ).then(clearSelection)
-          }
-        })
+        const appliedSwitchesCount = selectedRows.reduce(
+          (count, row) => count + (row.appliedSwitchesInfo?.length || 0), 0)
+
+        if(appliedSwitchesCount > 0) {
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete MAC ACL(s)?' }),
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Deleting this MAC ACL(s) will cause the associated ports to lose the configuration. Are you sure you want to delete this MAC ACL(s)? ' }),
+            okText: $t({ defaultMessage: 'Delete' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: () => {
+              Promise.all(
+                selectedRows.map(row =>
+                  deleteAccessControl({
+                    params: {
+                      l2AclId: row.id
+                    }
+                  })
+                )).then(clearSelection)
+            }
+          })
+        }else{
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete {macAclTitle}?' },
+              { macAclTitle: selectedRows.length === 1 ?
+                selectedRows[0].name : $t({ defaultMessage: 'Mac ACLs' }) }),
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Are you sure you want to delete {count, plural, one {this MAC ACL} other {these MAC ACLs}}?' }, { count: selectedRows.length }),
+            okText: $t({ defaultMessage: 'Delete' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: () => {
+              Promise.all(
+                selectedRows.map(row =>
+                  deleteAccessControl({
+                    params: {
+                      l2AclId: row.id
+                    }
+                  })
+                )).then(clearSelection)
+            }
+          })
+        }
       }
     }
   ]
