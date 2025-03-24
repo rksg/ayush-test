@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Drawer }            from '@acx-ui/components'
 import { ExtendedKeyUsages } from '@acx-ui/rc/utils'
 
-import { ServerClientCertificateForm } from '../ServerClientCertificateForm'
+import { ServerClientCertificateForm } from '../CertificateTemplate/ServerClientCertificateForm'
 
 interface CertificateDrawerProps {
     visible: boolean,

@@ -15,7 +15,7 @@ export const mockCertId2 = '__certId_2__'
 export const mockCertName1 = '__certName_1__'
 export const mockCertName2 = '__certName_2__'
 
-export const moeckedNetworkId = '__networkId__'
+export const mockedNetworkId = '__networkId__'
 
 export const mockedSamlIdpProfile = {
   name: mockSamlIdpProfileName,
@@ -33,7 +33,7 @@ export const mockedSamlIpdProfileList = {
       authenticationRequestSignedEnabled: true,
       responseEncryptionEnabled: true,
       encryptionCertificateId: mockCertId1,
-      wifiNetworkIds: [moeckedNetworkId]
+      wifiNetworkIds: [mockedNetworkId]
     },
     {
       id: mockSamlIdpProfileId2,
@@ -41,7 +41,7 @@ export const mockedSamlIpdProfileList = {
       authenticationRequestSignedEnabled: false,
       responseEncryptionEnabled: true,
       encryptionCertificateId: mockCertId2,
-      wifiNetworkIds: [moeckedNetworkId]
+      wifiNetworkIds: [mockedNetworkId]
     },
     {
       id: mockSamlIdpProfileId3,
