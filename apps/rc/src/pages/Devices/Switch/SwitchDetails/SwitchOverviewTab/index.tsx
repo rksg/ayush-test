@@ -112,6 +112,13 @@ export function SwitchOverviewTab () {
     })
   }
 
+  const onCategoryTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${params.activeSubTab}/${tab}`
+    })
+  }
+
 
   return <>
     <GridRow>
@@ -154,13 +161,20 @@ export function SwitchOverviewTab () {
       }
       {switchDetail &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
-          <SwitchOverviewACLs switchDetail={switchDetail} />
-        </Tabs.TabPane>
-      }
-      {switchDetail && switchMacAclEnabled &&
-      isFirmwareVersionAbove10010g2Or10020b(switchDetail.firmware) &&
-        <Tabs.TabPane tab={$t({ defaultMessage: 'MAC ACLs' })} key='macacls'>
-          <MacACLs switchDetail={switchDetail} />
+          {switchMacAclEnabled &&
+            isFirmwareVersionAbove10010g2Or10020b(switchDetail.firmware) ?
+            <Tabs onChange={onCategoryTabChange}
+              activeKey={params.categoryTab}
+              type='third'
+            >
+              <Tabs.TabPane tab={$t({ defaultMessage: 'Layer 2' })} key='layer2'>
+                <MacACLs switchDetail={switchDetail} />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab={$t({ defaultMessage: 'Layer 3' })} key='layer3'>
+                <SwitchOverviewACLs switchDetail={switchDetail} />
+              </Tabs.TabPane>
+            </Tabs> :
+            <SwitchOverviewACLs switchDetail={switchDetail} />}
         </Tabs.TabPane>
       }
       {switchDetail && switchPortProfileEnabled &&
