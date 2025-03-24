@@ -59,7 +59,7 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     dataIndex: 'reasonCodes',
     title: $t({ defaultMessage: 'Impacted Reason' }),
     fixed: 'left',
-    width: 90,
+    width: 100,
     sorter: { compare: sortProp('reasonCodes', defaultSort) },
     searchable: true
   }, {
@@ -67,7 +67,7 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
     dataIndex: 'portNumbers',
     title: $t({ defaultMessage: 'Port Numbers' }),
     fixed: 'left',
-    width: 250,
+    width: 240,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
     searchable: true
   }, {
