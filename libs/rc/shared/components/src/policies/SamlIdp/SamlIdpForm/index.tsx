@@ -226,7 +226,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 >
                   <Select
                     options={serverCertificateOptions}
-                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    // placeholder={$t({ defaultMessage: 'Select ...' })}
                   />
                 </Form.Item>
                 <Button type='link' onClick={()=>setSigningCertFormVisible(true)}>
@@ -266,7 +266,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 >
                   <Select
                     options={serverCertificateOptions}
-                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    // placeholder={$t({ defaultMessage: 'Select ...' })}
                   />
                 </Form.Item>
                 <Button type='link' onClick={()=>setEncryptCertFormVisible(true)}>
