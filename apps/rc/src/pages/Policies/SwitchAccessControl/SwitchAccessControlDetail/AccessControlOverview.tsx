@@ -77,7 +77,7 @@ export default function AccessControlOverview () {
         dataIndex: 'ports',
         render: (_, row) => {
           return <Tooltip
-            title={row.ports ? row.ports?.map((p: string) => p).join('\n') : ''}
+            title={row.ports ? row.ports?.map((p: string) => p).join(', ') : ''}
             dottedUnderline={row.ports?.length ? true : false}
             placement='bottom'
           >
