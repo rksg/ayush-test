@@ -6,24 +6,19 @@ import { useIntl }                                      from 'react-intl'
 
 import { Modal, ModalType, Drawer } from '@acx-ui/components'
 import {
-  useGetEnhancedDpskListQuery,
+  useLazyGetAdaptivePolicySetQuery,
+  useLazyGetDpskQuery,
+  useLazyGetMacRegListQuery,
   useLazySearchPersonaGroupListQuery,
-  useLazySearchPersonaListQuery,
-  useSearchMacRegListsQuery
+  useLazySearchPersonaListQuery
 } from '@acx-ui/rc/services'
-import { NetworkTypeEnum, Persona } from '@acx-ui/rc/utils'
+import { NetworkTypeEnum, Persona, PersonaGroup } from '@acx-ui/rc/utils'
 
 import {
   DpskPoolLink,
-  IdentityGroupLink,
   MacRegistrationPoolLink,
-  NetworkSegmentationLink,
-  PersonaGroupDrawer,
-  useIsEdgeFeatureReady,
-  VenueLink,
-  CertTemplateLink
-} from '@acx-ui/rc/components'
-
+  PolicySetLink
+} from '../../../../CommonLinkHelper'
 import { IdentityGroupForm }   from '../../../../users/IdentityGroupForm'
 import { SelectPersonaDrawer } from '../../../../users/IdentitySelector/SelectPersonaDrawer'
 import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
@@ -31,17 +26,23 @@ import NetworkFormContext      from '../../../NetworkFormContext'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
 
 export function IdentityGroup () {
+
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+
   const form = Form.useFormInstance()
-  const selectedIdentityId = Form.useWatch('identityId', form)
-  const selectedIdentityGroupId = Form.useWatch('identityGroupId', form)
+  const formFieldIdentityId = Form.useWatch('identityId', form)
+  const formFieldIdentityGroupId = Form.useWatch('identityGroupId', form)
   const enableIdentityAssociation = Form.useWatch('enableIdentityAssociation', form)
+
   const [display, setDisplay] = useState({ display: 'none' })
-  const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
+  const [detailDrawerVisible, setDetailDrawerVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
+  const [identityGroups, setIdentityGroups] = useState<PersonaGroup[]>([])
+  const [selectedIdentityGroup, setSelectedIdentityGroup] = useState<PersonaGroup>()
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
+
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
   const [identityListTrigger] = useLazySearchPersonaListQuery()
   const noDisplayUnderSpecificNetwork = ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20]
@@ -57,10 +58,14 @@ export function IdentityGroup () {
   }
   useEffect(() => {
     setSelectedIdentity(undefined)
-    if (selectedIdentityId) {
+    if (formFieldIdentityId) {
       form.setFieldValue('identityId', '')
     }
-  }, [selectedIdentityGroupId])
+    const selected = identityGroups.find((ig) => ig.id === formFieldIdentityGroupId)
+    if (selected) {
+      setSelectedIdentityGroup(selected)
+    }
+  }, [formFieldIdentityGroupId])
 
   useEffect(() => {
     const setData = async () => {
@@ -77,6 +82,7 @@ export function IdentityGroup () {
           const boundIdentityGroups = retrievedIdentityGroupsData?.data
           if (boundIdentityGroups && boundIdentityGroups.totalCount > 0) {
             form.setFieldValue('identityGroupId', boundIdentityGroups.data[0].id)
+            setSelectedIdentityGroup(boundIdentityGroups.data[0])
           }
         }
         // Only PSK can bind identity
@@ -124,6 +130,7 @@ export function IdentityGroup () {
               data-testid={'identity-group-select'}
               style={{ width: '400px' }}
               placeholder={'Select...'}
+              setIdentityGroups={setIdentityGroups}
             />
           }
         />
@@ -133,7 +140,7 @@ export function IdentityGroup () {
           <Space split='|'>
             <Button
               type='link'
-              disabled={!selectedIdentityId}
+              disabled={!formFieldIdentityGroupId}
               onClick={() => {
                 setDetailDrawerVisible(true)
               }}
@@ -149,7 +156,7 @@ export function IdentityGroup () {
           </Space>
         </Space>
       </Space>
-      {selectedIdentityGroupId && noDisplayUnderSpecificNetwork && (
+      {formFieldIdentityGroupId && noDisplayUnderSpecificNetwork && (
         <>
           <UI.FieldLabel width={'400px'}>
             {$t({
@@ -228,12 +235,17 @@ export function IdentityGroup () {
         width={1200}
         destroyOnClose={true}
       />
+      <IdentityGroupDrawer
+        visible={detailDrawerVisible}
+        setVisible={setDetailDrawerVisible}
+        personaGroup={selectedIdentityGroup}
+      />
       {identitySelectorDrawerVisible && (
         <SelectPersonaDrawer
           onSubmit={handleClose}
           onCancel={() => setIdentitySelectorDrawerVisible(false)}
-          identityId={selectedIdentityId}
-          identityGroupId={selectedIdentityGroupId}
+          identityId={formFieldIdentityId}
+          identityGroupId={formFieldIdentityGroupId}
           disableAddDevices={true}
           useByIdentityGroup={true}
         />
@@ -244,22 +256,7 @@ export function IdentityGroup () {
 interface IdentityGroupDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  persona :Persona
-}
-
-const macRegSearchDefaultPayload = {
-  dataOption: 'all',
-  searchCriteriaList: [
-    {
-      filterKey: 'name',
-      operation: 'cn',
-      value: ''
-    }
-  ],
-  sortField: 'name',
-  sortOrder: 'ASC',
-  page: 1,
-  pageSize: 10000
+  personaGroup?: PersonaGroup
 }
 
 export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
@@ -267,23 +264,53 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
   const {
     visible,
     setVisible,
-    persona
+    personaGroup
   } = props
 
   const { $t } = useIntl()
 
+  const [getDpskById] = useLazyGetDpskQuery()
+  const [getMacRegistrationById] = useLazyGetMacRegListQuery()
+  const [getPolicySetById] = useLazyGetAdaptivePolicySetQuery()
+
+
+  const [DPSKName, setDPSKName] = useState('')
+  const [macRegistrationName, setMacRegistrationName] = useState('')
+  const [policySetName, setPolicySetName] = useState('')
+
   const handleClose = () => {
     setVisible(false)
   }
-  const { data: dpskPool } = useGetEnhancedDpskListQuery({
-    payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
-  })
-  const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
 
+
+  useEffect(() => {
+
+    if (personaGroup?.macRegistrationPoolId) {
+      getMacRegistrationById({ params: { policyId: personaGroup?.macRegistrationPoolId } })
+        .then(result => {
+          if (result.data) setMacRegistrationName(result.data.name)
+        })
+    }
+
+    if (personaGroup?.dpskPoolId) {
+      getDpskById({ params: { serviceId: personaGroup?.dpskPoolId } })
+        .then(result => {
+          if (result.data) setDPSKName(result.data.name)
+        })
+    }
+
+    if(personaGroup?.policySetId) {
+      getPolicySetById({ params: { policySetId: personaGroup?.policySetId } })
+        .then(result => {
+          if(result?.data) setPolicySetName(result.data.name)
+        })
+    }
+
+  }, [personaGroup])
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Identity Group: {name}' }, { name: persona.name })}
+      title={$t({ defaultMessage: 'Identity Group: {name}' }, { name: personaGroup?.name })}
       visible={visible}
       width={450}
       children={
@@ -292,23 +319,15 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
             <Col span={24}>
               <Form.Item
                 label={$t({ defaultMessage: 'Description' })}
-                children={
-                  <Button
-                    data-testid={'display-metadata-button'}
-                    style={{ borderStyle: 'none' }}
-                    type='link'
-                    onClick={()=>{handleDisplayMetadata(policy.id)}}
-                  >
-                    {$t({ defaultMessage: 'View metadata' })}
-                  </Button>
-                }
+                children={personaGroup?.description ?? '--'}
               />
               <Form.Item
                 label={$t({ defaultMessage: 'DPSK Service' })}
                 children={
                   <DpskPoolLink
-                    name={dpskPools.get(row.dpskPoolId ?? '')}
-                    dpskPoolId={row.dpskPoolId}
+                    name={DPSKName}
+                    dpskPoolId={personaGroup?.dpskPoolId}
+                    showNoData={true}
                   />
                 }
               />
@@ -316,27 +335,20 @@ export function IdentityGroupDrawer (props: IdentityGroupDrawerProps) {
                 label={$t({ defaultMessage: 'MAC Registration' })}
                 children={
                   <MacRegistrationPoolLink
-                    name={macRegistrationPools.get(row.macRegistrationPoolId ?? '')}
-                    macRegistrationPoolId={row.macRegistrationPoolId}
+                    name={macRegistrationName}
+                    macRegistrationPoolId={personaGroup?.macRegistrationPoolId}
+                    showNoData={true}
                   />
                 }
               />
               <Form.Item
                 label={$t({ defaultMessage: 'Adaptive Policy Set' })}
                 children={
-                  (policy.encryptionCertificateId ? '' :
-                    <TenantLink
-                      to={getPolicyRoutePath({
-                        type: PolicyType.SERVER_CERTIFICATES,
-                        oper: PolicyOperation.LIST
-                      })}>
-                      {
-                        certificateNameMap.find(cert => {
-                          return cert.key === policy.encryptionCertificateId
-                        })?.value || ''
-                      }
-                    </TenantLink>
-                  )
+                  <PolicySetLink
+                    name={policySetName}
+                    id={personaGroup?.policySetId}
+                    showNoData={true}
+                  />
                 }
               />
             </Col>
