@@ -263,12 +263,17 @@ jest.mock('@acx-ui/rc/components', () => ({
   WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
   WifiOperatorForm: () => <div data-testid='WifiOperatorForm' />,
   DirectoryServerForm: () => <div data-testid='DirectoryServerForm' />,
-  AddSsoSaml: () => <div data-testid='AddSsoSaml' />,
-  EditSsoSaml: () => <div data-testid='EditSsoSaml' />,
-  SsoSamlDetail: () => <div data-testid='SsoSamlDetail' />,
+  AddSamlIdp: () => <div data-testid='AddSamlIdp' />,
+  EditSamlIdp: () => <div data-testid='EditSamlIdp' />,
+  SamlIdpDetail: () => <div data-testid='SamlIdpDetail' />,
   IpsecForm: () => <div data-testid='IpsecForm' />,
   ConnectionMeteringFormMode: {},
-  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff),
+  AddSamlIdp: () => <div data-testid='AddSamlIdp' />,
+  SamlIdpDetail: () => <div data-testid='SamlIdpDetail' />,
+  EditSamlIdp: () => <div data-testid='EditSamlIdp' />,
+  IdentityForm: () => <div data-testid='IdentityForm' />,
+  IdentityGroupForm: () => <div data-testid='IdentityGroupForm' />
 }))
 
 jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {
