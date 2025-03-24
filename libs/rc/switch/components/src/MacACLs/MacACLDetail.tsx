@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   Drawer,
-  Table
+  Table,
+  TableProps
 } from '@acx-ui/components'
 import { MacAcl, MacAclRule } from '@acx-ui/rc/utils'
 
@@ -25,33 +25,37 @@ export const MacACLDetail: React.FC<MacACLDrawerProps> = ({
   const [form] = Form.useForm()
   const [dataSource, setDataSource] = useState<MacAclRule[]>()
 
-  const columns = useMemo(() => [
-    {
-      title: $t({ defaultMessage: 'Action' }),
-      dataIndex: 'action',
-      width: '15%'
-    },
-    {
-      title: $t({ defaultMessage: 'Source MAC Address' }),
-      dataIndex: 'sourceAddress',
-      width: '25%'
-    },
-    {
-      title: $t({ defaultMessage: 'Mask' }),
-      dataIndex: 'sourceMask',
-      width: '15%'
-    },
-    {
-      title: $t({ defaultMessage: 'Dest. MAC Address' }),
-      dataIndex: 'destinationAddress',
-      width: '25%'
-    },
-    {
-      title: $t({ defaultMessage: 'Dest. Mask' }),
-      dataIndex: 'destinationMask',
-      width: '15%'
-    }
-  ], [])
+
+  function useColumns () {
+    const columns: TableProps<MacAclRule>['columns'] = [
+      {
+        key: 'action',
+        title: $t({ defaultMessage: 'Action' }),
+        dataIndex: 'action'
+      },
+      {
+        key: 'sourceAddress',
+        title: $t({ defaultMessage: 'Source MAC Address' }),
+        dataIndex: 'sourceAddress'
+      },
+      {
+        key: 'sourceMask',
+        title: $t({ defaultMessage: 'Mask' }),
+        dataIndex: 'sourceMask'
+      },
+      {
+        key: 'destinationAddress',
+        title: $t({ defaultMessage: 'Dest.  MAC Address' }),
+        dataIndex: 'destinationAddress'
+      },
+      {
+        key: 'destinationMask',
+        title: $t({ defaultMessage: 'Dest. Mask' }),
+        dataIndex: 'destinationMask'
+      }
+    ]
+    return columns
+  }
 
   useEffect(() => {
     if (macACLData) {
@@ -101,7 +105,7 @@ export const MacACLDetail: React.FC<MacACLDrawerProps> = ({
         >
           <Table
             dataSource={dataSource}
-            columns={columns as any}
+            columns={useColumns()}
             rowKey='key'
           />
         </Form.Item>

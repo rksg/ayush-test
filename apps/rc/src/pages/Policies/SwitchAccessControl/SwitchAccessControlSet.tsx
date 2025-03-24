@@ -217,6 +217,7 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
         columns={columns}
         type={'tall'}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         pagination={tableQuery.pagination}
         dataSource={tableQuery.data?.data}
         rowActions={rowActions}

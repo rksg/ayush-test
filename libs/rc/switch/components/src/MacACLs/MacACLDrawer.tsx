@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Button, Form, Input, Space } from 'antd'
-import { useIntl }                    from 'react-intl'
+import { Button, Col, Form, Input, Row, Space } from 'antd'
+import { useWatch }                             from 'antd/lib/form/Form'
+import { useIntl }                              from 'react-intl'
 
 import {
   Table,
@@ -10,16 +11,18 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import {
-  useLazyGetAccessControlsListQuery,
   useAddSwitchMacAclMutation,
-  useUpdateSwitchMacAclMutation
+  useUpdateSwitchMacAclMutation,
+  useGetAccessControlsListQuery,
+  useLazyGetSwitchMacAclsQuery
 } from '@acx-ui/rc/services'
 import {
   MacAclRule,
   PolicyType,
   usePolicyListBreadcrumb,
   SwitchRbacUrlsInfo,
-  MacAcl
+  MacAcl,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }    from '@acx-ui/react-router-dom'
 import { SwitchScopes } from '@acx-ui/types'
@@ -57,8 +60,9 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   const { editMode, visible, setVisible, macACLData, venueId } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { accessControlId, switchId } = useParams()
+  const { switchId } = useParams()
   const [dataSource, setDataSource] = useState<MacAclRule[]>()
+  const [globalDataSource, setGlobalDataSource] = useState<MacAclRule[]>()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selectedRow, setSelectedRow] = useState<MacAclRule>()
 
@@ -66,14 +70,26 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
   breadcrumb[2].link = switchAccessControlPage
 
-  const [getAccessControls] = useLazyGetAccessControlsListQuery()
+  const { customized } = (useWatch([], form) ?? {})
+
+  const [getSwitchMacAcls] = useLazyGetSwitchMacAclsQuery()
   const [addSwitchMacAcl] = useAddSwitchMacAclMutation()
   const [updateSwitchMacAcl] = useUpdateSwitchMacAclMutation()
+  const tableQuery = useTableQuery({
+    useQuery: useGetAccessControlsListQuery,
+    defaultPayload: {
+      filters: {
+        name: [macACLData?.name]
+      }
+    },
+    option: { skip: !macACLData?.sharedWithPolicyAndProfile }
+  })
 
   useEffect(() => {
     if(macACLData) {
-      if(macACLData && macACLData.switchMacAclRules){
-        form.setFieldValue('name', macACLData.name)
+      form.setFieldValue('name', macACLData.name)
+      form.setFieldValue('customized', customized)
+      if(macACLData.switchMacAclRules){
         setDataSource(macACLData.switchMacAclRules.map((rule: MacAclRule) => {
           return {
             ...rule,
@@ -81,8 +97,16 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           }
         }))
       }
+      if(tableQuery?.data?.data[0] && tableQuery.data.data[0].macAclRules){
+        setGlobalDataSource(tableQuery.data.data[0].macAclRules.map((rule: MacAclRule) => {
+          return {
+            ...rule,
+            key: rule.id
+          }
+        }))
+      }
     }
-  }, [macACLData])
+  }, [macACLData, tableQuery.data, form])
 
   const columns: TableProps<MacAclRule>['columns'] = [
     {
@@ -239,7 +263,11 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   const validateMacAclName = async (_: any, value: string) => {
     if (!value) return Promise.resolve()
 
-    const response = await getAccessControls({
+    const response = await getSwitchMacAcls({
+      params: {
+        switchId,
+        venueId: venueId
+      },
       payload: {
         ...defaultPayload,
         searchString: value,
@@ -250,7 +278,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     const existingACLs = response.data
 
     const duplicateACL = existingACLs.find(acl =>
-      acl.name === value && (!editMode || acl.id !== accessControlId)
+      acl.name === value && (!editMode || acl.id !== macACLData?.id)
     )
 
     if (duplicateACL) {
@@ -277,30 +305,50 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           layout='vertical'
           form={form}
         >
-          <Form.Item
-            name='name'
-            label={$t({ defaultMessage: 'MAC ACL Name' })}
-            rules={[
-              { required: true, message: 'Please enter MAC ACL name' },
-              { validator: validateMacAclName }
-            ]}
-          >
-            <Input disabled={editMode} style={{ width: '400px' }} />
-          </Form.Item>
+          <Row align='middle' gutter={24}>
+            <Col><Form.Item
+              name='name'
+              label={$t({ defaultMessage: 'MAC ACL Name' })}
+              rules={[
+                { required: true, message: 'Please enter MAC ACL name' },
+                { validator: validateMacAclName }
+              ]}
+            >
+              <Input disabled={editMode} style={{ width: '400px' }} />
+            </Form.Item></Col>
+            <Col>
+              {macACLData?.sharedWithPolicyAndProfile &&
+              <Button
+                type='link'
+                onClick={() => {
+                  form.setFieldValue('customized', !customized)
+                }}>
+                {customized ?
+                  $t({ defaultMessage: 'Use \'Policies & Profiles\' Level Settings' })
+                  :$t({ defaultMessage: 'Customize' })}
+              </Button>
+              }
+            </Col>
+          </Row>
+          <label style={{ color: 'var(--acx-neutrals-60)' }}>{
+          // eslint-disable-next-line max-len
+            customized && $t({ defaultMessage: 'By customizing here, changes to the same ACL under the \'Policies & Profiles\' level settings\' will no longer be applied to this switch.' })}</label>
+          <Form.Item name='customized' />
         </Form>
         <Table
-          dataSource={dataSource}
+          dataSource={customized? dataSource : globalDataSource}
           columns={columns}
-          rowActions={rowActions}
-          rowSelection={{
+          rowActions={customized ? rowActions : undefined}
+          rowSelection={customized ? {
             type: 'checkbox'
-          }}
-          actions={[{
+          } : undefined}
+          actions={customized ? [{
             label: $t({ defaultMessage: 'Add Rule' }),
             onClick: () => handleAddRule()
-          }]}
+          }] : undefined}
           pagination={{ pageSize: 10000 }}
-          rowKey='key' />
+          rowKey='key'
+        />
       </Drawer>
 
       <SwitchAccessControlDrawer
