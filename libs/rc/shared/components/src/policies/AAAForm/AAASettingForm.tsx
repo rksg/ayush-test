@@ -28,12 +28,12 @@ import { hasAllowedOperations } from '@acx-ui/user'
 import { getOpsApi }            from '@acx-ui/utils'
 
 import { ProtectedEnforceTemplateToggleP1 }                       from '../../configTemplates'
-import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
-import CertificateDrawer                                          from '../CertificateTemplate/Certificate/CertificateDrawer'
+import { CertificateWarning }                                     from '../CertificateUtil'
+import CertificateAuthorityDrawer                                 from '../CertificateUtil/CertificateAuthorityDrawer'
+import CertificateDrawer                                          from '../CertificateUtil/CertificateDrawer'
 
 import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
-import CertificateAuthorityDrawer      from './CertificateAuthorityDrawer'
 import { MessageMapping }              from './messageMapping'
 import * as UI                         from './styledComponents'
 
