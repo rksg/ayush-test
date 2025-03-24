@@ -24,7 +24,7 @@ import { SwitchScopes }               from '@acx-ui/types'
 import { getOpsApi }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-export function SwitchLayer2AccessControl () {
+export function SwitchLayer2ACL () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/accessControl/switch')

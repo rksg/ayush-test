@@ -10,10 +10,10 @@ import { TenantLink, useNavigate, useParams, useTenantLink }                    
 import { SwitchScopes }                                                                   from '@acx-ui/types'
 import { hasCrossVenuesPermission, filterByAccess }                                       from '@acx-ui/user'
 
-import AccessControlOverview from './AccessControlOverview'
-import AccessControlRules    from './AccessControlRules'
+import Layer2ACLOverview from './Layer2ACLOverview'
+import Layer2ACLRules    from './Layer2ACLRules'
 
-const AccessControlDetailTabs = () => {
+const SwitchLayer2DetailTabs = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { accessControlId, activeTab } = useParams()
@@ -45,11 +45,11 @@ const AccessControlDetailTabs = () => {
 }
 
 const tabs = {
-  overview: () => <AccessControlOverview />,
-  rules: () => <AccessControlRules />
+  overview: () => <Layer2ACLOverview />,
+  rules: () => <Layer2ACLRules />
 }
 
-export function SwitchAccessControlDetail () {
+export function SwitchLayer2Detail () {
   const { $t } = useIntl()
   const { accessControlId, activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
@@ -86,7 +86,7 @@ export function SwitchAccessControlDetail () {
 
         extra={hasCrossVenuesPermission() && filterByAccess([getConfigureButton()])}
       />
-      <AccessControlDetailTabs />
+      <SwitchLayer2DetailTabs />
       { Tab && <Tab /> }
     </>
   )

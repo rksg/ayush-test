@@ -8,14 +8,14 @@ import { useIntl }                   from 'react-intl'
 import { Drawer, Select }                     from '@acx-ui/components'
 import { MacAclRule, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
 
-interface SwitchAccessControlDrawerProps {
+interface SwitchLayer2ACLDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: MacAclRule,
   handleSaveRule: (data: MacAclRule) => void
 }
 
-export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps) => {
+export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
   const { Option } = Select
   const { $t } = useIntl()
   const { visible, setVisible, data, handleSaveRule } = props

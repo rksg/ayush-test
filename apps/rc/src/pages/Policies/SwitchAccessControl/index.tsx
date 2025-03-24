@@ -7,7 +7,7 @@ import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // import { SwitchAccessControlSet }    from './SwitchAccessControlSet'
-import { SwitchLayer2AccessControl } from './SwitchLayer2AccessControl'
+import { SwitchLayer2ACL } from './SwitchLayer2ACL'
 
 export function SwitchAccessControl () {
   const { activeSubTab } = useParams()
@@ -46,7 +46,7 @@ export function SwitchAccessControl () {
 
   const tabs = {
     list: () => <></>,
-    layer2: () => <SwitchLayer2AccessControl />
+    layer2: () => <SwitchLayer2ACL />
   }
 
   const Tab = tabs[(activeSubTab || 'list') as keyof typeof tabs]

@@ -7,7 +7,7 @@ import {
   MacAclRule
 } from '@acx-ui/rc/utils'
 
-export default function AccessControlOverview () {
+export default function Layer2ACLRules () {
   const { $t } = useIntl()
 
   const settingsId = 'switch-access-control-overview'

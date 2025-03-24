@@ -135,8 +135,8 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
-import { SwitchAccessControlDetail }                                    from './pages/Policies/SwitchAccessControl/SwitchAccessControlDetail'
-import { SwitchAccessControlForm }                                      from './pages/Policies/SwitchAccessControl/SwitchAccessControlForm'
+import { SwitchLayer2ACLForm }                                          from './pages/Policies/SwitchAccessControl/SwitchLayer2ACLForm'
+import { SwitchLayer2Detail }                                           from './pages/Policies/SwitchAccessControl/SwitchLayer2Detail'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -1640,7 +1640,7 @@ function PolicyRoutes () {
           element={
             // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)}>
-              <SwitchAccessControlForm editMode={false} />
+              <SwitchLayer2ACLForm editMode={false} />
             </AuthRoute>
           }
         />
@@ -1649,7 +1649,7 @@ function PolicyRoutes () {
           element={
             // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>
-              <SwitchAccessControlForm editMode={true} />
+              <SwitchLayer2ACLForm editMode={true} />
             </AuthRoute>
           }
         />
@@ -1658,7 +1658,7 @@ function PolicyRoutes () {
           element={
           // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.DETAIL)}>
-              <SwitchAccessControlDetail />
+              <SwitchLayer2Detail />
             </AuthRoute>
           }
         />

@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-export default function AccessControlOverview () {
+export default function Layer2ACLOverview () {
   const { $t } = useIntl()
   const settingsId = 'switch-access-control-overview'
 

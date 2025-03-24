@@ -4,6 +4,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import {
+  Loader,
   PageHeader,
   StepsForm,
   Table,
@@ -25,9 +26,9 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }                          from '@acx-ui/types'
 import { getOpsApi }                             from '@acx-ui/utils'
 
-import { SwitchAccessControlDrawer } from './SwitchAccessControlDrawer'
+import { SwitchLayer2ACLDrawer } from './SwitchLayer2ACLDrawer'
 
-interface SwitchAccessControlFormProps {
+interface SwitchLayer2ACLFormProps {
   editMode: boolean
 }
 
@@ -49,7 +50,7 @@ const defaultPayload ={
   filters: { id: [] as string[] }
 }
 
-export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
+export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   const { editMode } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -59,7 +60,7 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selectedRow, setSelectedRow] = useState<MacAclRule>()
 
-  const switchAccessControlPage = '/policies/accessControl/switch'
+  const switchAccessControlPage = '/policies/accessControl/switch/layer2'
   const switchAccessControlLink = useTenantLink(switchAccessControlPage)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
   breadcrumb[2].link = switchAccessControlPage
@@ -69,7 +70,7 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
   const [addAccessControl] = useAddAccessControlMutation()
   const [updateAccessControl] = useUpdateAccessControlMutation()
   const [getAccessControls] = useLazyGetAccessControlsListQuery()
-  const { data } = useGetAccessControlByIdQuery(
+  const { data, isLoading, isFetching } = useGetAccessControlByIdQuery(
     { params: { accessControlId }, skip: !accessControlId })
 
   useEffect(() => {
@@ -198,59 +199,61 @@ export const SwitchAccessControlForm = (props:SwitchAccessControlFormProps) => {
       <PageHeader
         title={pageTitle}
         breadcrumb={breadcrumb} />
-      <StepsForm
-        form={form}
-        editMode={editMode}
-        onCancel={onCancel}
-        onFinish={async (data) => {
+      <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
+        <StepsForm
+          form={form}
+          editMode={editMode}
+          onCancel={onCancel}
+          onFinish={async (data) => {
 
-          const formValues = data
+            const formValues = data
 
-          const macAclRules = dataSource?.map(row => {
-            const { key, ...rowData } = row
-            return rowData
-          })
+            const macAclRules = dataSource?.map(row => {
+              const { key, ...rowData } = row
+              return rowData
+            })
 
-          const payload = { ...formValues, macAclRules }
+            const payload = { ...formValues, macAclRules }
 
-          if (editMode) {
-            await updateAccessControl({ params: { l2AclId: accessControlId }, payload }).unwrap()
-          } else {
-            await addAccessControl({ payload }).unwrap()
-          }
-          navigate(switchAccessControlLink, { replace: true })
-        }}
-      >
-        <StepsForm.StepForm
-          name='settings'
-          title={$t({ defaultMessage: 'Settings' })}
+            if (editMode) {
+              await updateAccessControl({ params: { l2AclId: accessControlId }, payload }).unwrap()
+            } else {
+              await addAccessControl({ payload }).unwrap()
+            }
+            navigate(switchAccessControlLink, { replace: true })
+          }}
         >
-          <Form.Item
-            name='name'
-            label={$t({ defaultMessage: 'MAC ACL Name' })}
-            rules={[
-              { required: true, message: 'Please enter MAC ACL name' },
-              { validator: validateMacAclName }
-            ]}
+          <StepsForm.StepForm
+            name='settings'
+            title={$t({ defaultMessage: 'Settings' })}
           >
-            <Input disabled={editMode} style={{ width: '400px' }} />
-          </Form.Item>
-          <Table
-            dataSource={dataSource}
-            columns={columns}
-            rowActions={rowActions}
-            rowSelection={{
-              type: 'checkbox'
-            }}
-            actions={[{
-              label: $t({ defaultMessage: 'Add Rule' }),
-              onClick: () => handleAddRule()
-            }]}
-            pagination={{ pageSize: 10000 }}
-            rowKey='key' />
-        </StepsForm.StepForm>
-      </StepsForm>
-      <SwitchAccessControlDrawer
+            <Form.Item
+              name='name'
+              label={$t({ defaultMessage: 'MAC ACL Name' })}
+              rules={[
+                { required: true, message: 'Please enter MAC ACL name' },
+                { validator: validateMacAclName }
+              ]}
+            >
+              <Input disabled={editMode} style={{ width: '400px' }} />
+            </Form.Item>
+            <Table
+              dataSource={dataSource}
+              columns={columns}
+              rowActions={rowActions}
+              rowSelection={{
+                type: 'checkbox'
+              }}
+              actions={[{
+                label: $t({ defaultMessage: 'Add Rule' }),
+                onClick: () => handleAddRule()
+              }]}
+              pagination={{ pageSize: 10000 }}
+              rowKey='key' />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Loader>
+      <SwitchLayer2ACLDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         data={selectedRow}
