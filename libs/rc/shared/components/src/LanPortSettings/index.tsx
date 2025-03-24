@@ -76,10 +76,7 @@ export function LanPortSettings (props: {
   isVenueBoundIpsec?: boolean,
   boundSoftGreIpsecList?: BoundSoftGreIpsec[],
   softGreIpsecProfileValidator: (
-    enabledSoftGre: boolean,
-    softGreId: string,
-    enabledIpsec: boolean,
-    ipsecId: string) => Promise<void>
+    softGreEditable: boolean, index: number) => Promise<void>
 }) {
   const { $t } = useIntl()
   const {
@@ -176,6 +173,11 @@ export function LanPortSettings (props: {
       }
     }
   }, [currentEthernetPortData])
+
+  const [isSoftGreEditable, setIsSoftGreEditable] = useState(true)
+  useEffect(() => {
+    setIsSoftGreEditable(!!!selectedModel.lanPorts![index].softGreEnabled)
+  }, [])
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
@@ -283,6 +285,7 @@ export function LanPortSettings (props: {
             isVenueBoundIpsec={isVenueBoundIpsec}
             boundSoftGreIpsecList={boundSoftGreIpsecList}
             softGreIpsecProfileValidator={softGreIpsecProfileValidator}
+            softGreEditable={isSoftGreEditable}
           />
           {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
             <DhcpOption82Settings

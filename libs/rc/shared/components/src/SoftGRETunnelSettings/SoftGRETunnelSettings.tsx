@@ -6,16 +6,17 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
+  appPolicyInfoType,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 
 import { Label } from '../policies'
 
-import { IPSecProfileSettings }                 from './IPSecProfileSettings'
-import { BoundSoftGreIpsec, SoftGreIpSecState } from './SoftGreIpSecState'
-import { SoftGREProfileSettings }               from './SoftGREProfileSettings'
-import { FieldLabel }                           from './styledComponents'
+import { IPSecProfileSettings }   from './IPSecProfileSettings'
+import { BoundSoftGreIpsec }      from './SoftGreIpSecState'
+import { SoftGREProfileSettings } from './SoftGREProfileSettings'
+import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   index: number;
@@ -32,10 +33,8 @@ interface SoftGRETunnelSettingsProps {
   isVenueBoundIpsec?: boolean,
   boundSoftGreIpsecList?: BoundSoftGreIpsec[],
   softGreIpsecProfileValidator: (
-    enabledSoftGre: boolean,
-    softGreId: string,
-    enabledIpsec: boolean,
-    ipsecId: string) => Promise<void>
+    softGreEditable: boolean, index: number, apModel?: string) => Promise<void>,
+  softGreEditable?: boolean
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -54,7 +53,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     validateIsFQDNDuplicate,
     isVenueBoundIpsec,
     boundSoftGreIpsecList,
-    softGreIpsecProfileValidator
+    softGreIpsecProfileValidator,
+    softGreEditable
   } = props
 
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -114,6 +114,14 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           />
         </FieldLabel>
       </StepsForm.StepForm>
+      {isIpSecOverNetworkEnabled && <Form.Item
+        style={{ textAlign: 'left', marginTop: '-20px', minHeight: '1px' }}
+        name={['lan', index, 'softGreIpsecValidator']}
+        // eslint-disable-next-line react/jsx-no-useless-fragment
+        children={<></>}
+        rules={[{ validator: () => softGreIpsecProfileValidator(
+          softGreEditable || false, index, apModel
+        ) }]}></Form.Item>}
       {
         isSoftGreTunnelToggleEnabled && <>
           <Alert
@@ -151,21 +159,12 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
                     })}</Label><br /></>
               })
             }
-            <Form.Item
-              style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
-              name={['lan', index, 'softGreIpsecValidator']}
-              rules={[{ validator: () => softGreIpsecProfileValidator(
-                form.getFieldValue(['lan', index, 'softGreEnabled']),
-                form.getFieldValue(['lan', index, 'softGreProfileId']),
-                form.getFieldValue(['lan', index, 'ipsecEnabled']),
-                form.getFieldValue(['lan', index, 'ipsecProfileId'])
-              ) }]}></Form.Item>
           </>}
           <SoftGREProfileSettings
             index={index}
             softGreProfileId={softGreProfileId}
             onGUIChanged={onGUIChanged}
-            readonly={readonly}
+            readonly={readonly || !softGreEditable}
             portId={portId}
             softGREProfileOptionList={softGREProfileOptionList}
             apModel={apModel}
@@ -193,7 +192,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               children={
                 <Switch
                   data-testid={'ipsec-switch'}
-                  disabled={readonly}
+                  disabled={readonly || !softGreEditable}
                   onChange={() => {
                     onGUIChanged?.('ipsecEnabled')
                   }}
@@ -206,7 +205,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             index={index}
             ipsecProfileId={ipsecProfileId}
             onGUIChanged={onGUIChanged}
-            readonly={readonly}
+            readonly={readonly || !softGreEditable}
             softGreProfileId={softGreProfileId}
           />}
         </>

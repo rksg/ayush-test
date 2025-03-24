@@ -225,6 +225,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
   const [lanPortIdx, setLanPortIdx] = useState(0)
+  const [lanPortModel, setLanPortModel] = useState('')
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
@@ -300,6 +301,17 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   }
 
   const handleModelChange = async (value: string) => {
+    try {
+      await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
+      setLanPortModel(value)
+      form.setFieldValue('model', value)
+    } catch (error) {
+      form.setFieldValue('model', lanPortModel)
+      // eslint-disable-next-line no-console
+      console.error(error)
+      return
+    }
+
     const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
     const lanPortsCap = modelCaps?.lanPorts || []
     // eslint-disable-next-line max-len

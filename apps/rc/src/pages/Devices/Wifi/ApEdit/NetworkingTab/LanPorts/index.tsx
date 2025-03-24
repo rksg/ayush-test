@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
+import useFormInstance                          from 'antd/lib/form/hooks/useFormInstance'
 import { cloneDeep, isObject }                  from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
@@ -155,6 +156,7 @@ export function LanPorts (props: ApEditItemProps) {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const [lanPortIdx, setLanPortIdx] = useState(0)
   const isResetClick = useRef(false)
   const {
     softGREProfileOptionList,
@@ -249,10 +251,20 @@ export function LanPorts (props: ApEditItemProps) {
     })
   }, [lanData])
 
-  const onTabChange = (tab: string) => {
+  const form = useFormInstance()
+  const onTabChange = async (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
-    setActiveTabIndex(tabIndex)
-    setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    try {
+      // eslint-disable-next-line no-console
+      console.log('onTabChange:', tabIndex)
+      await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
+      setActiveTabIndex(tabIndex)
+      setLanPortIdx(tabIndex)
+      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
   }
   const handleCustomize = async (useVenueSettings: boolean) => {
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
