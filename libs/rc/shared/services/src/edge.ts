@@ -13,6 +13,7 @@ import {
   CommonResult,
   EdgeAllPortTrafficData,
   EdgeCluster,
+  EdgeClusterService,
   EdgeClusterStatus,
   EdgeClusterTableDataType,
   EdgeDnsServers,
@@ -1215,6 +1216,27 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'MDNS_EDGE_COMPATIBILITY' }]
+    }),
+    getEdgeClusterServiceList: build.query<TableResult<EdgeClusterService>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterServiceList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Remove Services'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -1326,6 +1348,7 @@ export const {
   useGetEdgeResourceUtilizationQuery,
   useGetEdgePortTrafficQuery,
   useGetEdgeServiceListQuery,
+  useGetEdgeClusterServiceListQuery,
   useGetEdgesTopTrafficQuery,
   useGetEdgesTopResourcesQuery,
   useDeleteEdgeServicesMutation,
