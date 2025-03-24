@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { caList }                 from './__tests__/fixtures'
+import { caList }                 from './__test__/fixtures'
 import CertificateAuthorityDrawer from './CertificateAuthorityDrawer'
 
 
