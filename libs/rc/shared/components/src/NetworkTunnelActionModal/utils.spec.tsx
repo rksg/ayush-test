@@ -14,7 +14,17 @@ jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
 }))
 describe('useUpdateNetworkTunnelAction', () => {
   beforeEach(() => {
-    mockedToggleNetworkFn.mockReset()
+    mockedToggleNetworkFn.mockClear()
+    mockedToggleNetworkFn.mockImplementation((
+      _id,
+      _networkVenueId,
+      _networkId,
+      _sdLanTunneled,
+      _isGuestTunnelEnabled,
+      callback) => {
+      (callback as Function)()
+      return Promise.resolve()
+    })
   })
 
   it('should correctly activate SDLAN tunneling', async () => {
@@ -40,7 +50,8 @@ describe('useUpdateNetworkTunnelAction', () => {
       mockNetwork.venueId,
       mockNetwork.id,
       true,
-      false
+      false,
+      expect.any(Function)
     )
   })
 
@@ -67,7 +78,8 @@ describe('useUpdateNetworkTunnelAction', () => {
       mockNetwork.venueId,
       mockNetwork.id,
       true,
-      false
+      false,
+      expect.any(Function)
     )
   })
 
@@ -94,7 +106,8 @@ describe('useUpdateNetworkTunnelAction', () => {
       mockNetwork.venueId,
       mockNetwork.id,
       false,
-      false
+      false,
+      expect.any(Function)
     )
     expect(mockedToggleNetworkFn).toBeCalledTimes(1)
   })

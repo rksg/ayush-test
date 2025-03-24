@@ -48,6 +48,9 @@ jest.mock('../../ApCompatibility', () => ({
   ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
+jest.mock('./SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
 jest.mocked(useIsSplitOn).mockReturnValue(true) // mock AAA policy
 
 async function fillInBeforeSettings (networkName: string) {
