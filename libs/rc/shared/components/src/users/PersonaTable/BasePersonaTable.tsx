@@ -318,6 +318,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
+  // eslint-disable-next-line max-len
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId, useByIdentityGroup)
   const isSelectMode = mode === 'selectable'
 
