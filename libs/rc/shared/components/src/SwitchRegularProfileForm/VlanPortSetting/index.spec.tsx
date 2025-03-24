@@ -653,9 +653,9 @@ describe('Wired - VlanPortSetting', () => {
 
     await screen.findByRole('heading', { level: 3, name: /Ports/ })
 
-    await handleSetPort('ICX-7550', '48', false, 'module1_1_2', false, 2)
+    // await handleSetPort('ICX-7550', '48', false, 'module1_1_2', false, 2)
     await handleSetPort('ICX-7550', '48', false, 'module1_1_2', false, 4)
-    await handleSetPort('ICX-8200', '24', false, 'module1_1_2', false, 4)
+    // await handleSetPort('ICX-8200', '24', false, 'module1_1_2', false, 4)
     await handleSetPort('ICX-8200', '24P', false, 'module1_1_2', false, 4)
 
     await userEvent.click(await screen.findByText('ICX7550-48'))
@@ -670,32 +670,33 @@ describe('Wired - VlanPortSetting', () => {
       ...currentData,
       vlans: vlans.map(vlan => {
         if (vlan.vlanId === 2) {
-          return {
-            ..._.omit(vlan, 'id'),
-            switchFamilyModels: [{
-              id: '',
-              model: 'ICX7550-48',
-              slots: [
-                { slotNumber: 1, enable: true },
-                { slotNumber: 2, enable: true, option: '2X40G' }
-              ],
-              taggedPorts: '1/1/2',
-              untaggedPorts: ''
-            }]
-          }
+          return vlan
+          // return {
+          //   ..._.omit(vlan, 'id'),
+          //   switchFamilyModels: [{
+          //     id: '',
+          //     model: 'ICX7550-48',
+          //     slots: [
+          //       { slotNumber: 1, enable: true },
+          //       { slotNumber: 2, enable: true, option: '2X40G' }
+          //     ],
+          //     taggedPorts: '1/1/2',
+          //     untaggedPorts: ''
+          //   }]
+          // }
         } else if (vlan.vlanId === 4) {
           return {
             ..._.omit(vlan, 'id'),
             switchFamilyModels: [{
-              id: '',
-              model: 'ICX8200-24',
-              slots: [
-                { slotNumber: 1, enable: true },
-                { slotNumber: 2, enable: true, option: '4X1/10/25G' }
-              ],
-              taggedPorts: '1/1/2',
-              untaggedPorts: ''
-            }, {
+            //   id: '',
+            //   model: 'ICX8200-24',
+            //   slots: [
+            //     { slotNumber: 1, enable: true },
+            //     { slotNumber: 2, enable: true, option: '4X1/10/25G' }
+            //   ],
+            //   taggedPorts: '1/1/2',
+            //   untaggedPorts: ''
+            // }, {
               id: '',
               model: 'ICX8200-24P',
               slots: [

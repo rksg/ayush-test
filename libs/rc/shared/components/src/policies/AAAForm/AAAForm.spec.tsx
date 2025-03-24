@@ -74,7 +74,11 @@ describe('AAAForm', () => {
         AaaUrls.getServerCertificateOnRadius.url.replace('?certType=SERVER', ''),
         (_, res, ctx) => {
           return res(ctx.json(radiusServerCertRef))
-        })
+        }),
+      rest.post(
+        ConfigTemplateUrlsInfo.getConfigTemplates.url,
+        (_, res, ctx) => res(ctx.json([]))
+      )
     )
   })
 
