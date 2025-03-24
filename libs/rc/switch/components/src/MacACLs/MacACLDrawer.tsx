@@ -70,7 +70,6 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
 
   useEffect(() => {
     if(macACLData) {
-      console.log(macACLData)
       if(macACLData && macACLData.switchMacAclRules){
         form.setFieldValue('name', macACLData.name)
         setDataSource(macACLData.switchMacAclRules.map((rule: MacAclRule) => {
