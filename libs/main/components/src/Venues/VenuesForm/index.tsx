@@ -181,6 +181,7 @@ export function VenuesForm (props: VenuesFormProps) {
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [countryCode, setCountryCode] = useState('')
+  const [validating, setValidating] = useState(false)
 
   const action = specifiedAction ?? params.action ?? 'add'
   const { data = dataFromParent } = useGetVenueInstance()
@@ -352,14 +353,23 @@ export function VenuesForm (props: VenuesFormProps) {
   }
 
   const handleAddVenue = async (values: VenueExtended) => {
+    await checkNameExists(values.name)
+    if (checkFormIsValid())
+      return
     await handleSubmit(values, addVenue)
   }
 
   const handleEditVenue = async (values: VenueExtended) => {
+    await checkNameExists(values.name)
+    if (checkFormIsValid())
+      return
     await handleSubmit(values, updateVenue, false)
   }
 
   const handleOverrideVenue = async (values: VenueExtended) => {
+    await checkNameExists(values.name)
+    if (checkFormIsValid())
+      return
     await handleSubmit(values, undefined, false)
   }
 
@@ -376,6 +386,34 @@ export function VenuesForm (props: VenuesFormProps) {
   const isHeaderVisible = (): boolean => {
     return action !== 'edit' && !modalMode
   }
+
+  const checkFormIsValid = () => {
+    const errors = formRef.current?.getFieldsError()
+    const hasErrors = errors?.some((field) => field.errors.length > 0)
+    return hasErrors
+  }
+
+  const onBlurNameHandling = async (ev: React.FocusEvent<HTMLInputElement, Element>) => {
+    if (checkFormIsValid())
+      return
+    checkNameExists(ev.target.value)
+  }
+
+  const checkNameExists = async (name: string) => {
+    setValidating(true)
+    formRef.current?.setFields([{ name: 'name', validating: true }])
+    try {
+      await nameValidator(name)
+      formRef.current?.setFields([{ name: 'name', errors: [],
+        validating: false }])
+    } catch (error: unknown | string) {
+      formRef.current?.setFields([{ name: 'name', errors: [error as string],
+        validating: false }])
+    } finally {
+      setValidating(false)
+    }
+  }
+
 
   return (
     <>
@@ -402,19 +440,17 @@ export function VenuesForm (props: VenuesFormProps) {
                 <Form.Item
                   name='name'
                   label={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
+                  validateStatus={validating ? 'validating' : undefined}
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
                     { max: 63, transform: (value) => value.trim() },
-                    { validator: (_, value) => whitespaceOnlyRegExp(value) },
-                    {
-                      validator: (_, value) => nameValidator(value)
-                    }
+                    { validator: (_, value) => whitespaceOnlyRegExp(value) }
                   ]}
                   validateFirst
                   hasFeedback
-                  children={<Input />}
-                  validateTrigger={'onBlur'}
+                  validateTrigger={'onChange'}
+                  children={<Input onBlur={onBlurNameHandling}/>}
                 />
                 <Form.Item
                   name='description'

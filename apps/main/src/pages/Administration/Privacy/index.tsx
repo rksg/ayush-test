@@ -29,6 +29,8 @@ export default function Privacy () {
   const isPrimeAdminUser = isPrimeAdmin()
   const [isPrivacyMonitoringSettingsEnabled, setIsPrivacyMonitoringSettingsEnabled]
     = useState<boolean>(false)
+  const [isAppVisibilitySettingsEnabled, setIsAppVisibilitySettingsEnabled]
+    = useState<boolean>(false)
 
   const { data } = useGetPrivacySettingsQuery({ params })
 
@@ -52,6 +54,7 @@ export default function Privacy () {
       const privacyVisibilitySetting =
         data.filter(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)[0]
       setIsPrivacyMonitoringSettingsEnabled(privacyMonitoringSetting.isEnabled)
+      setIsAppVisibilitySettingsEnabled(privacyVisibilitySetting.isEnabled)
 
       payload.privacyFeatures.forEach(item => {
         if (item.featureName === PrivacyFeatureName.ARC)
@@ -78,6 +81,9 @@ export default function Privacy () {
     if (privacyFeatureName === PrivacyFeatureName.ARC)
       setIsPrivacyMonitoringSettingsEnabled(isChecked)
 
+    if (privacyFeatureName === PrivacyFeatureName.APP_VISIBILITY)
+      setIsAppVisibilitySettingsEnabled(isChecked)
+
     await updatePrivacySettings({
       params,
       payload
@@ -102,48 +108,91 @@ export default function Privacy () {
 
   return (
     <>
-      <Row gutter={24}
-        style={{
-          marginBottom: '6px'
-        }}>
-        { isPrimeAdminUser ? <>
-          <Col span={6}>
-            <Typography.Text>
-              { $t(MessageMapping.arc_privacy_settings_label) }
-            </Typography.Text>
-          </Col>
-          <Col span={1}>
-            <Switch
-              checked={isPrivacyMonitoringSettingsEnabled}
-              onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.ARC, ev)}/>
-          </Col>
-        </>
-          : <Col span={6}>
-            <Typography.Text>
-              {
-                $t(MessageMapping.arc_privacy_settings_label_non_prime_admin)
-              }
-              {
-                ` ${isPrivacyMonitoringSettingsEnabled ? $t({
-                  defaultMessage: 'Enabled'
-                }) : $t({
-                  defaultMessage: 'Disabled'
-                })}`
-              }
-            </Typography.Text>
-          </Col> }
-      </Row>
-      <Row gutter={24}>
-        <Col span={10}>
-          <Typography.Text style={{
-            color: 'var(--acx-neutrals-50)'
+      <div>
+        <Row gutter={24}
+          style={{
+            marginBottom: '6px'
           }}>
-            {
-              $t(MessageMapping.arc_privacy_settings_description)
-            }
-          </Typography.Text>
-        </Col>
-      </Row>
+          { isPrimeAdminUser ? <Col span={9}>
+            <Typography.Text>
+              { $t(MessageMapping.app_visibility_privacy_settings_label) }
+            </Typography.Text>
+            <Switch
+              style={{ marginLeft: '24px' }}
+              checked={isAppVisibilitySettingsEnabled}
+              onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.APP_VISIBILITY, ev)}/>
+          </Col>
+            : <Col span={8}>
+              <Typography.Text>
+                {
+                  $t(MessageMapping.app_visibility_privacy_settings_label_non_prime_admin)
+                }
+                {
+                  ` ${isAppVisibilitySettingsEnabled ? $t({
+                    defaultMessage: 'Enabled'
+                  }) : $t({
+                    defaultMessage: 'Disabled'
+                  })}`
+                }
+              </Typography.Text>
+            </Col> }
+        </Row>
+        <Row gutter={24}>
+          <Col span={10}>
+            <Typography.Text style={{
+              color: 'var(--acx-neutrals-50)'
+            }}>
+              {
+                $t(MessageMapping.app_visibility_privacy_settings_description)
+              }
+            </Typography.Text>
+          </Col>
+        </Row>
+      </div>
+      <div style={{
+        marginTop: '20px'
+      }}>
+        <Row gutter={24}
+          style={{
+            marginBottom: '6px'
+          }}>
+          { isPrimeAdminUser ?
+            <Col span={7}>
+              <Typography.Text>
+                { $t(MessageMapping.arc_privacy_settings_label) }
+              </Typography.Text>
+              <Switch
+                style={{ marginLeft: '24px' }}
+                checked={isPrivacyMonitoringSettingsEnabled}
+                onChange={(ev) => onPrivacySettingsToggle(PrivacyFeatureName.ARC, ev)}/>
+            </Col>
+            : <Col span={7}>
+              <Typography.Text>
+                {
+                  $t(MessageMapping.arc_privacy_settings_label_non_prime_admin)
+                }
+                {
+                  ` ${isPrivacyMonitoringSettingsEnabled ? $t({
+                    defaultMessage: 'Enabled'
+                  }) : $t({
+                    defaultMessage: 'Disabled'
+                  })}`
+                }
+              </Typography.Text>
+            </Col> }
+        </Row>
+        <Row gutter={24}>
+          <Col span={10}>
+            <Typography.Text style={{
+              color: 'var(--acx-neutrals-50)'
+            }}>
+              {
+                $t(MessageMapping.arc_privacy_settings_description)
+              }
+            </Typography.Text>
+          </Col>
+        </Row>
+      </div>
     </>
   )
 }

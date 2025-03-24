@@ -60,10 +60,50 @@ describe('Privacy settings', () => {
       { route: { params } })
 
     expect(screen.getByText(/Enable application-recognition and control/i)).toBeVisible()
-    const switchBtn = screen.getByRole('switch')
+    const switchBtn = screen.getAllByRole('switch')[1]
     expect(switchBtn).toBeVisible()
     await userEvent.click(switchBtn)
     expect(switchBtn.getAttribute('aria-checked')).toBe('true')
     expect(await screen.findByText('Application-recognition and control is enabled')).toBeVisible()
+  })
+
+  it('Should show Application Visibility privacy settings', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Privacy/>
+        </UserProfileContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Enable application visibility for all MSP customer tenants/i)).toBeVisible()
+    const switchBtn = screen.getAllByRole('switch')[0]
+    expect(switchBtn).toBeVisible()
+    await userEvent.click(switchBtn)
+    expect(switchBtn.getAttribute('aria-checked')).toBe('true')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Application visibility is enabled')).toBeVisible()
+  })
+
+  it('Should show correct privacy settings for non prime admin', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ ...userProfileContextValues, isPrimeAdmin: () => false }}
+        >
+          <Privacy/>
+        </UserProfileContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Application visibility for all MSP customer tenants is Disabled/i)).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Application-recognition and control is Disabled/i)).toBeVisible()
   })
 })
