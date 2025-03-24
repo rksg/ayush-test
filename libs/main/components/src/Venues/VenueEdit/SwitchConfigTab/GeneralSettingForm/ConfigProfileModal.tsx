@@ -149,12 +149,14 @@ export function ConfigProfileModal (props: {
             </Radio>
           </Radio.Group>
         </Picker>
-        <Button type='link'
-          size='small'
-          onClick={() => { navigate(addRegularProfilePath) }}
-          disabled={!hasAllowedOperations([getOpsApi(SwitchUrlsInfo.addSwitchConfigProfile)])}>
-          {$t({ defaultMessage: 'Add Configuration Profile' })}
-        </Button>
+        {
+          hasAllowedOperations([getOpsApi(SwitchUrlsInfo.addSwitchConfigProfile)]) &&
+          <Button type='link'
+            size='small'
+            onClick={() => { navigate(addRegularProfilePath) }}>
+            {$t({ defaultMessage: 'Add Configuration Profile' })}
+          </Button>
+        }
       </Tabs.TabPane>
 
       <Tabs.TabPane tab={$t({ defaultMessage: 'CLI Profiles' })} key={ProfileTypeEnum.CLI}>
