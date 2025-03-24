@@ -38,7 +38,8 @@ function useColumns (
   groupData: PersonaGroup | undefined,
   props: PersonaTableColProps,
   unitPool: Map<string, string>,
-  venueId: string
+  venueId: string,
+  useByIdentityGroup: boolean
 ) {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -69,6 +70,65 @@ function useColumns (
     }
   },
   { skip: !venueId || !isMultipleIdentityUnits }).data?.data?.map(unit => [unit.id,unit.name]))
+
+  const shrinkedColumns: TableProps<Persona>['columns'] = [
+    {
+      key: 'name',
+      dataIndex: 'name',
+      title: $t({ defaultMessage: 'Identity Name' }),
+      render: (_, row) =>
+        <IdentityDetailsLink
+          name={row.name}
+          personaId={row.id}
+          personaGroupId={row.groupId}
+        />
+      ,
+      sorter: true,
+      ...props.name
+    },
+    {
+      key: 'revoked',
+      dataIndex: 'revoked',
+      title: $t({ defaultMessage: 'Status' }),
+      align: 'center',
+      sorter: true,
+      render: (_, row) => {
+        return (row.revoked) ? $t({ defaultMessage: 'Inactive' }) : $t({ defaultMessage: 'Active' })
+      },
+      ...props.revoked
+    },
+    {
+      key: 'email',
+      dataIndex: 'email',
+      title: $t({ defaultMessage: 'Email' }),
+      sorter: true,
+      ...props.email
+    },
+    {
+      key: 'deviceCount',
+      dataIndex: 'deviceCount',
+      title: $t({ defaultMessage: 'Devices' }),
+      align: 'center',
+      ...props.deviceCount
+    },
+    {
+      key: 'identityId',
+      dataIndex: 'identityId',
+      title: $t({ defaultMessage: 'Unit' }),
+      sorter: true,
+      render: (_, row) =>
+        <PropertyUnitLink
+          venueId={venueId}
+          unitId={row.identityId ? row.identityId : identities.get(row.id)}
+          name={row.identityId
+            ? unitPool.get(row.identityId)
+            : units.get(identities.get(row.id) ?? '')}
+        />
+      ,
+      ...props.identityId
+    }
+  ]
+
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -207,7 +267,7 @@ function useColumns (
     }] : [])
   ]
 
-  return columns
+  return useByIdentityGroup ? shrinkedColumns : columns
 }
 
 interface PersonaTableCol extends
@@ -258,7 +318,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
-  const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
+  const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId, useByIdentityGroup)
   const isSelectMode = mode === 'selectable'
 
   const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
