@@ -196,7 +196,7 @@ interface schedule {
 }
 
 export function NetworkVenuesTab () {
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
   const params = useParams()
   const networkId = params.networkId
   const { $t } = useIntl()
@@ -217,11 +217,11 @@ export function NetworkVenuesTab () {
 
   const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([updateNetworkVenueOpsAPi])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
