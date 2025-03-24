@@ -5,9 +5,9 @@ import { Col, Form } from 'antd'
 import Paragraph     from 'antd/lib/typography/Paragraph'
 import { useIntl }   from 'react-intl'
 
+import { useIdentityListQuery }                                                                                   from '@acx-ui/cloudpath/components'
 import { Button, Card, Loader, PageHeader, PasswordInput, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CopyOutlined }                                                                                           from '@acx-ui/icons'
-import { usePersonaListQuery }                                                                                    from '@acx-ui/rc/components'
 import {
   useRemoveUnitLinkedIdentityMutation,
   useGetUnitsLinkedIdentitiesQuery,
@@ -55,7 +55,7 @@ export function PropertyUnitDetails () {
     }
   }, [propertyConfigsQuery.data, propertyConfigsQuery.isLoading])
   const settingsId = 'property-units-identity-table'
-  const identitiesList = usePersonaListQuery({ personaGroupId, settingsId })
+  const identitiesList = useIdentityListQuery({ personaGroupId, settingsId })
   useEffect(() => {
     setIdentitiesCount(identitiesList.data?.totalCount || 0)
   }, [identitiesList.data])

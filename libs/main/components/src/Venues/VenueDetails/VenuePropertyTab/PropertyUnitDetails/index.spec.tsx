@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }                                                                     from '@acx-ui/react-router-dom'
-import { Provider }                                                                                    from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen,  waitFor, within }                                     from '@acx-ui/test-utils'
+import { PersonaUrls, PropertyConfigStatus, ConnectionMetering, PropertyUrlsInfo, PropertyUnitStatus, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }                                                                                   from '@acx-ui/react-router-dom'
+import { Provider }                                                                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen,  waitFor, within }                                                   from '@acx-ui/test-utils'
 
 
 import { mockPropertyUnitList } from '../../../__tests__/fixtures'
@@ -155,6 +155,16 @@ describe('Property Unit Details', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+      ),
+      rest.post(
+        PersonaUrls.searchIdentityClients.url.split('?')[0],
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueApCapabilities.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
