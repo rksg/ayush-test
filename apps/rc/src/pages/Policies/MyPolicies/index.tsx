@@ -205,7 +205,7 @@ function useCardData (): PolicyCardData[] {
           noDetails: true
         }, enableRbac
       }).data?.totalCount ?? 0) + Number(useAccessControlsCountQuery({
-        params }).data ?? 0),
+        params }, { skip: !isSwitchMacAclEnabled }).data ?? 0),
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/accessControl/wifi'),
       disabled: !isSwitchMacAclEnabled
