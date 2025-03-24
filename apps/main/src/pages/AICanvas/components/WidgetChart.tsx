@@ -218,7 +218,45 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
       params[0].data[xIndex] : ''
     const color = Array.isArray(params) ? params[0].color : ''
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
-    return renderToString(
+    let maps = [] as {
+      y: string,
+      x: string,
+      value: string,
+      color: string }[]
+    if(Array.isArray(params)) {
+      //@ts-ignore
+      maps =params.map(p => {
+        const yIndex = p?.encode?.y?.length ? p.encode.y[0] : 0
+        const xIndex = p?.encode?.x?.length ? p.encode.x[0] : 1
+        return {
+          y: Array.isArray(p.data) ? p.data[yIndex] : '',
+          x: Array.isArray(p.dimensionNames) ? p.dimensionNames[xIndex] : '',
+          value: Array.isArray(p.data) ? p.data[xIndex] : '',
+          color: p.color
+        }})
+    }
+
+    return Array.isArray(params) ? renderToString(
+      <TooltipWrapper>
+        <div>
+          {
+            maps.map(i => <>
+              <b>{chartData?.axisType === 'time' ?
+                formatter(DateFormatEnum.DateTimeFormat)(i.y) : i.y as string}</b>
+              <p>
+                {
+                  i.color ? <UI.Badge
+                    className='acx-chart-tooltip'
+                    color={i.color as string}
+                    text={i.x}
+                  />: i.x
+                } : <b> {formatter(unit)(i.value) as string}</b>
+              </p>
+            </>)
+          }
+        </div>
+      </TooltipWrapper>
+    ) : renderToString(
       <TooltipWrapper>
         <div>
           <b>{chartData?.axisType === 'time' ?

@@ -103,9 +103,9 @@ export default function AICanvas () {
 
   const questions = [
     'What can you do?',
-    'Show me the top-consuming clients',
-    'Generate a graph of my APs usage over the past 24 hours',
-    'Can you give me the trending network traffic from last week?'
+    'Give me a table for the Top 10 clients based on traffic.',
+    'Show me the trending of the network traffic for last week.',
+    'How many clients were connected to my network yesterday?'
   ] // Only support english default questions in phase 1
 
 
