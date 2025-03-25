@@ -119,9 +119,9 @@ export function ReportList () {
         ))
         }
       </GridRow>
-      <Divider />
+      <Divider style={{ margin: '24px 0px 20px 0px' }} />
       <Subtitle level={2}>{$t({ defaultMessage: 'Adhoc Reports' })}</Subtitle>
-      <GridRow>
+      <GridRow style={{ marginTop: '12px' }}>
         {adhocReports.map(({ title, description, path }) => (
           <GridCol key={path} col={{ span: 6 }}>
             <RadioCard
