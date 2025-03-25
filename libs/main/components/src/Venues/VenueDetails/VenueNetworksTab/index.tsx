@@ -207,18 +207,18 @@ export function VenueNetworksTab () {
     ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
     : WifiRbacUrlsInfo.deleteNetworkVenue)
 
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
   const hasAddNetworkPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([addNetworkOpsApi])
     : (hasPermission({ scopes: [WifiScopes.CREATE] }) && hasCrossVenuesPermission())
 
   const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([updateNetworkVenueOpsAPi])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const { venueId } = params
   const settingsId = 'venue-networks-table'
