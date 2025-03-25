@@ -208,7 +208,9 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
             {fields.length === MAX_PROPOSALS &&
               <Form.Item name='combinationValidator'
                 style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
-                rules={[{ validator: () => algorithmValidator() }]} />
+                rules={[{ validator: () => algorithmValidator() }]}
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                children={<></>} />
             }
           </>
         )}
