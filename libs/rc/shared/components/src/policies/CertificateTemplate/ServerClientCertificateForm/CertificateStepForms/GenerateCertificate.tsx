@@ -13,12 +13,14 @@ import { SettingsSectionTitle, Description, Section }                  from '../
 
 
 type GenerateCertificateFormProps = {
+  keyUsages?: KeyUsages[]
   extendedKeyUsages?: ExtendedKeyUsages[]
 }
 
 export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { keyUsages, extendedKeyUsages } = props
   const { isCaNameListLoading, caNameList } = useGetCertificateAuthoritiesQuery({
     payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
   }, {
@@ -193,17 +195,22 @@ export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
             <Form.Item
               name={'keyUsages'}
               label={$t({ defaultMessage: 'Key Usage' })}
+              initialValue={keyUsages}
               children={
                 <Checkbox.Group>
                   <Space direction={'vertical'}>
                     <Checkbox
                       value={KeyUsages.DIGITAL_SIGNATURE}
                       key={KeyUsages.DIGITAL_SIGNATURE}
-                      children={$t(KeyUsagesLabels[KeyUsages.DIGITAL_SIGNATURE])} />
+                      children={$t(KeyUsagesLabels[KeyUsages.DIGITAL_SIGNATURE])}
+                      disabled={keyUsages?.includes(KeyUsages.DIGITAL_SIGNATURE)}
+                    />
                     <Checkbox
                       value={KeyUsages.KEY_ENCIPHERMENT}
                       key={KeyUsages.KEY_ENCIPHERMENT}
-                      children={$t(KeyUsagesLabels[KeyUsages.KEY_ENCIPHERMENT])} />
+                      children={$t(KeyUsagesLabels[KeyUsages.KEY_ENCIPHERMENT])}
+                      disabled={keyUsages?.includes(KeyUsages.KEY_ENCIPHERMENT)}
+                    />
                   </Space>
                 </Checkbox.Group>
               }
@@ -215,7 +222,7 @@ export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
             <Form.Item
               name={'extendedKeyUsages'}
               label={$t({ defaultMessage: 'Extended Key Usage' })}
-              initialValue={props?.extendedKeyUsages}
+              initialValue={extendedKeyUsages}
               children={
                 <Checkbox.Group>
                   <Space direction={'vertical'}>
@@ -223,13 +230,13 @@ export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
                       value={ExtendedKeyUsages.CLIENT_AUTH}
                       key={ExtendedKeyUsages.CLIENT_AUTH}
                       children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.CLIENT_AUTH])}
-                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.CLIENT_AUTH)}
+                      disabled={extendedKeyUsages?.includes(ExtendedKeyUsages.CLIENT_AUTH)}
                     />
                     <Checkbox
                       value={ExtendedKeyUsages.SERVER_AUTH}
                       key={ExtendedKeyUsages.SERVER_AUTH}
                       children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.SERVER_AUTH])}
-                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.SERVER_AUTH)}
+                      disabled={extendedKeyUsages?.includes(ExtendedKeyUsages.SERVER_AUTH)}
                     />
                   </Space>
                 </Checkbox.Group>
