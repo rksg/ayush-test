@@ -119,7 +119,7 @@ describe('IdentityForm', () => {
 
     await waitFor(() => expect(getPersonaByIdFn).toBeCalled())
 
-    const nameInput = screen.getByLabelText('Identity Name')
+    const nameInput = await screen.findByLabelText('Identity Name')
     expect(nameInput).toHaveValue(mockPersonaList.content[0].name)
     await userEvent.type(nameInput, 'Change Name')  // change some fields
 

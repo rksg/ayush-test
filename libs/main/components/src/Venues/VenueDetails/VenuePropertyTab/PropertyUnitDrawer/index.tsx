@@ -4,7 +4,7 @@ import { Checkbox, Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { useWatch }                                                  from 'antd/lib/form/Form'
 import _                                                             from 'lodash'
 import moment                                                        from 'moment-timezone'
-import { FormattedMessage, useIntl }                                 from 'react-intl'
+import { defineMessage, FormattedMessage, useIntl }                  from 'react-intl'
 
 import { Drawer, Loader, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
@@ -15,14 +15,14 @@ import {
   useAddPropertyUnitMutation,
   useApListQuery,
   useLazyGetPropertyUnitByIdQuery,
-  useGetVenueLanPortsQuery,
   useLazyGetPersonaByIdQuery,
   useGetPropertyConfigsQuery,
   useUpdatePropertyUnitMutation,
   useUpdatePersonaMutation,
   useLazyGetPersonaGroupByIdQuery,
   useGetConnectionMeteringListQuery,
-  useLazyGetPropertyUnitListQuery
+  useLazyGetPropertyUnitListQuery,
+  useGetVenueApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -36,16 +36,18 @@ import {
   PropertyUnitFormFields,
   PropertyUnitStatus,
   UnitPersonaConfig,
-  VenueLanPorts,
   ConnectionMetering,
   PropertyDpskSetting,
-  trailingNorLeadingSpaces
+  trailingNorLeadingSpaces,
+  CapabilitiesApModel
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 import { ConnectionMeteringSettingForm } from '../ConnectionMeteringSettingForm'
 
+// eslint-disable-next-line max-len
+const pinDisableVlanMsg = defineMessage({ defaultMessage: 'VLAN is not supported in a PIN <venueSingular></venueSingular>. ' })
 
 function AccessPointLanPortSelector (props: { venueId: string }) {
   const { $t } = useIntl()
@@ -53,10 +55,10 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venueId } = props
   const form = Form.useFormInstance()
-  const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
+  const [selectedModel, setSelectedModel] = useState({} as CapabilitiesApModel)
   const accessAp = Form.useWatch('accessAp')
 
-  const { data: venueLanPorts } = useGetVenueLanPortsQuery({
+  const { data: apCapabilities } = useGetVenueApCapabilitiesQuery({
     params: { tenantId, venueId },
     enableRbac: isWifiRbacEnabled
   })
@@ -79,16 +81,17 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
   })
 
   useEffect(() => {
-    if (!venueLanPorts || !apListResult?.data || !accessAp) return
+    if (!apCapabilities || !apListResult?.data || !accessAp) return
     onSelectApChange(accessAp)
-  }, [apListResult, venueLanPorts, accessAp])
+  }, [apListResult, apCapabilities, accessAp])
 
   const apOptions = apListResult?.data
     ?.filter((ap: APExtended) => ap.apMac && ap.model)
     ?.map((ap: APExtended) => ({
       value: ap.apMac,
       label: ap.name,
-      model: ap.model
+      model: ap.model,
+      serialNumber: ap.serialNumber
     })) || []
 
   const onSelectApChange = (macAddress: string) => {
@@ -100,9 +103,9 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
       form.setFieldValue('ports', undefined)
     }
 
-    const lanPort = venueLanPorts
-      ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
-    setSelectedModel(lanPort)
+    const apModel = apCapabilities?.apModels
+      ?.find(capability => capability.model === selectedAp?.model) ?? {} as CapabilitiesApModel
+    setSelectedModel(apModel)
     form.setFieldValue('apName', selectedAp?.label)
   }
 
@@ -140,17 +143,23 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
             <Space direction={'vertical'}>
               {
                 selectedModel?.lanPorts.map((port, index) =>
-                  <Checkbox
-                    key={index}
-                    value={
-                      port?.portId
-                        ? parseInt(port.portId, 10)
-                        : index
-                    }
-                    // disabled={port.type === 'TRUNK'}
+                  <Tooltip
+                    title={port.isPoePort
+                      ? $t({ defaultMessage: 'POE port can not be assigned' })
+                      : ''}
                   >
-                    {`LAN${port.portId}`}
-                  </Checkbox>
+                    <Checkbox
+                      key={index}
+                      value={
+                        port?.id
+                          ? parseInt(port.id, 10)
+                          : index
+                      }
+                      disabled={port.isPoePort} // POE port can not be assigned
+                    >
+                      {`LAN${port.id}`}
+                    </Checkbox>
+                  </Tooltip>
                 )
               }
             </Space>
@@ -589,35 +598,42 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 children={<Input />}
               />
             }
+
             <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
-              <Form.Item
-                noStyle
-                name={['unitPersona', 'vlan']}
-                rules={[{
-                  type: 'number',
-                  min: 1,
-                  max: 4094,
-                  message: $t(validationMessages.vlanRange)
-                }]}
-              >
-                <InputNumber />
-              </Form.Item>
+              <Tooltip title={withPin && $t(pinDisableVlanMsg)} placement='bottomLeft'><span>
+                <Form.Item
+                  noStyle
+                  name={['unitPersona', 'vlan']}
+                  rules={[{
+                    type: 'number',
+                    min: 1,
+                    max: 4094,
+                    message: $t(validationMessages.vlanRange)
+                  }]}
+                >
+                  <InputNumber disabled={withPin} />
+                </Form.Item>
+              </span></Tooltip>
             </Form.Item>
+
 
             {enableGuestUnit &&
               <StepsForm.FieldLabel width={'160px'}>
                 {$t({ defaultMessage: 'Separate VLAN for guests' })}
-                <Form.Item
-                  style={{ marginBottom: '10px' }}
-                  name={'enableGuestVlan'}
-                  valuePropName={'checked'}
-                  initialValue={isEdit}
-                  children={<Switch />}
-                />
+                <Tooltip title={withPin && $t(pinDisableVlanMsg)} placement='bottomLeft'>
+                  <Form.Item
+                    style={{ marginBottom: '10px' }}
+                    name={'enableGuestVlan'}
+                    valuePropName={'checked'}
+                    initialValue={isEdit}
+                    children={<Switch disabled={withPin} />}
+                  />
+                </Tooltip>
               </StepsForm.FieldLabel>
             }
 
             {enableGuestUnit && enableGuestVlan &&
+            <Tooltip title={withPin && $t(pinDisableVlanMsg)} placement='bottomLeft'>
               <Form.Item
                 name={['guestPersona', 'vlan']}
                 rules={[{
@@ -627,8 +643,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   message: $t(validationMessages.vlanRange)
                 }]}
               >
-                <InputNumber />
+                <InputNumber disabled={withPin} />
               </Form.Item>
+            </Tooltip>
             }
 
             {withPin && withPinForm}

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState, memo } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -233,4 +233,4 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
   )
 })
 
-export default Canvas
+export default memo(Canvas)

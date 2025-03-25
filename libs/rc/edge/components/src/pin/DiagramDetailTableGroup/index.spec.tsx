@@ -1,11 +1,11 @@
 
 import userEvent from '@testing-library/user-event'
 
+import { useIdentityListQuery }            from '@acx-ui/cloudpath/components'
 import { useGetEdgePinByIdQuery }          from '@acx-ui/rc/services'
 import { useTableQuery }                   from '@acx-ui/rc/utils'
 import { render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { usePersonaListQuery }                          from '../../identityGroup'
 import { PersonalIdentityNetworkDetailTableGroupProps } from '../PersonalIdentityNetworkDetailTableGroup'
 import { TopologyDiagramProps }                         from '../TopologyDiagram'
 import { PinDetailTableGroupTabType }                   from '../type'
@@ -25,8 +25,8 @@ jest.mock('@acx-ui/rc/utils', () => ({
   })
 }))
 
-jest.mock('../../identityGroup', () => ({
-  usePersonaListQuery: jest.fn()
+jest.mock('@acx-ui/cloudpath/components', () => ({
+  useIdentityListQuery: jest.fn()
 }))
 
 jest.mock('../PersonalIdentityNetworkDetailTableGroup', () => {
@@ -76,7 +76,7 @@ describe('DiagramDetailTableGroup', () => {
       // eslint-disable-next-line max-len
       return { data: apListTableQueryResult, payload: {}, setPayload: (params: unknown) => mockedTableSetPayload(params) }
     })
-    jest.mocked(usePersonaListQuery).mockImplementation(() => {
+    jest.mocked(useIdentityListQuery).mockImplementation(() => {
       return { data: personaListTableQueryResult, refetch: jest.fn() }
     })
   })
@@ -103,7 +103,7 @@ describe('DiagramDetailTableGroup', () => {
     jest.mocked(useTableQuery).mockImplementation(() => {
       return { data: undefined, setPayload: jest.fn() }
     })
-    jest.mocked(usePersonaListQuery).mockImplementation(() => {
+    jest.mocked(useIdentityListQuery).mockImplementation(() => {
       return { data: undefined, refetch: jest.fn() }
     })
 

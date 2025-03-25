@@ -236,6 +236,10 @@ describe('MacRegistrationListForm', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(identityGroup))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
     jest.clearAllMocks()

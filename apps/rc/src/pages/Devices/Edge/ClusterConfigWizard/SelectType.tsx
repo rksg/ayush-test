@@ -32,6 +32,7 @@ export const SelectType = () => {
   const [selected, setSelected] = useState<string | undefined>(undefined)
   const [hasGateway, setHasGateway] = useState(false)
   const isEdgeHaSubInterfaceReady = useIsEdgeFeatureReady(Features.EDGE_HA_SUB_INTERFACE_TOGGLE)
+  const isDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
 
   useEffect(() => {
     if(!clusterNetworkSettings?.portSettings) return
@@ -43,7 +44,8 @@ export const SelectType = () => {
         try {
           await validateEdgeGateway(
             portSetting.ports,
-            lagSetting?.lags ?? []
+            lagSetting?.lags ?? [],
+            isDualWanEnabled
           )
         } catch (error) {
           break

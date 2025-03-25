@@ -55,6 +55,9 @@ jest.mock('../../ApCompatibility', () => ({
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
 
+jest.mock('./SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -262,7 +265,8 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff !== Features.WIFI_RBAC_API
       && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
-      && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+      && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+      && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
     mockServer.use(
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
@@ -353,7 +357,9 @@ describe('NetworkForm', () => {
   }, 20000)
 
   it('should create PSK network with WEP security protocol', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_WLAN_DEPRECATE_WEP)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.WIFI_WLAN_DEPRECATE_WEP
+      && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
     render(<Provider><Form><NetworkForm /></Form></Provider>, { route: { params } })
 
