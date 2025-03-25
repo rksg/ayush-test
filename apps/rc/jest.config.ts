@@ -20,5 +20,14 @@ module.exports = {
       lines: 85
     }
   },
-  collectCoverageFrom: []
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/*.stories.{ts,tsx}',
+    '!src/**/*.test.{ts,tsx}',
+    '!src/**/*.spec.{ts,tsx}',
+    '!src/test-setup.ts',
+    '!src/**/index.ts',
+    '!src/**/types.ts'
+  ]
 }
