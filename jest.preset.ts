@@ -25,6 +25,7 @@ module.exports = {
     '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`,
     '\\.(png|jpg|jpeg|webp)$': `${__dirname}/tools/tests/imagerTransformer.js`
   },
+  collectCoverage: true,
   coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
