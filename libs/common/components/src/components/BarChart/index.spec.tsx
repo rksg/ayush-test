@@ -95,6 +95,19 @@ describe('BarChart',()=>{
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
     expect(screen.getAllByText('Switch', { exact: false })).toHaveLength(5)
+    expect(screen.queryByText('Received')).not.toBeNull()
+  })
+
+  it('should not render legend if disabled', () => {
+    const onClick = jest.fn()
+    const { asFragment } = render(<BarChart
+      data={data(true)}
+      onClick={onClick}
+      disableLegend
+    />)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(screen.queryByText('Received')).toBeNull()
   })
 
   describe('onChartClick', () => {
