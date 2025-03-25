@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest }        from 'msw'
+import { DndProvider } from 'react-dnd'
+import { TestBackend } from 'react-dnd-test-backend'
 
 import { RuckusAiChatUrlInfo } from '@acx-ui/rc/utils'
 import { Provider }            from '@acx-ui/store'
@@ -13,8 +14,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import AICanvas from '.'
-import { DndProvider } from 'react-dnd'
-import { TestBackend } from 'react-dnd-test-backend'
 
 
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
