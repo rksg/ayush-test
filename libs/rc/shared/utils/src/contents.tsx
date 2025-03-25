@@ -596,20 +596,24 @@ export const ClientIsolationMessages = {
   })
 }
 
-
-
-export const SsoSamlMessages = {
+export const SamlIdpMessages = {
   /* eslint-disable max-len */
   METADATA_TEXTAREA: defineMessage({
     defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
                     'Note: Importing metadata from a file will overwrite any existing configuration.'
   }),
   /* eslint-disable max-len */
-  AUTHN_REQUEST_TOGGLE: defineMessage({
-    defaultMessage: 'If this option is enabled, the public certificate for IDP needs to be configured with adding the R1 SAML metadata, which can be found on the SSO/SAML list page.'
+  SAML_REQUEST_SIGNATURE_TOGGLE: defineMessage({
+    defaultMessage: 'When enabled, SAML authentication requests from RUCKUS One will be digitally signed for enhanced security.'
   }),
   /* eslint-disable max-len */
-  RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
+  SAML_RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
     defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
+  }),
+  DOWNLOAD_SAML_METADATA: defineMessage({
+    defaultMessage: 'Download SAML metadata'
+  }),
+  UPLOAD_SAML_METADATA: defineMessage({
+    defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
   })
 }

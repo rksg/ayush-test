@@ -85,7 +85,6 @@ export function ConfigTemplateList () {
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
-  const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -127,14 +126,14 @@ export function ConfigTemplateList () {
         }
       }
     },
-    ...(cloneEnabled ? [{
+    {
       visible: (selectedRows: ConfigTemplate[]) => canClone(selectedRows[0]?.type),
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setCloneModalVisible(true)
       }
-    }] : []),
+    },
     {
       rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
@@ -263,9 +262,9 @@ function useColumns (props: TemplateColumnProps) {
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
-  ))
+  const typeFilterOptions = Object.entries(ConfigTemplateType)
+    .map((type => ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })))
+    .sort((a, b) => a.value.localeCompare(b.value))
 
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
     ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })

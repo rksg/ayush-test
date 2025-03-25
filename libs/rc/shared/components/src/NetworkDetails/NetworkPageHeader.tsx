@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { Button, getDefaultEarliestStart, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import {
-  ConfigTemplateType,
   ConfigTemplateUrlsInfo,
   generateConfigTemplateBreadcrumb,
   useConfigTemplate,
@@ -24,18 +23,18 @@ import {
 } from '@acx-ui/user'
 import { getOpsApi, useDateFilter } from '@acx-ui/utils'
 
-import { EnforcedButton } from '../configTemplates/EnforcedButton'
-
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
 import { useGetNetwork }     from './services'
 
 function NetworkPageHeader ({
   setSelectedVenues,
-  selectedVenues
+  selectedVenues,
+  noConfig
 }: {
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
+  noConfig?: boolean
 }) {
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG)
@@ -50,7 +49,7 @@ function NetworkPageHeader ({
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
+  const enableTimeFilter = () => !['aps', 'clients', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
   const GenBreadcrumb = () => {
@@ -104,10 +103,8 @@ function NetworkPageHeader ({
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]: []),
-        ...(hasUpdateNetworkPermission ? [
-          <EnforcedButton
-            configTemplateType={ConfigTemplateType.NETWORK}
-            instanceId={networkId}
+        ...((hasUpdateNetworkPermission && !noConfig) ? [
+          <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'
             hidden={disableConfigure}
@@ -122,7 +119,7 @@ function NetworkPageHeader ({
                 }
               })
             }
-          >{$t({ defaultMessage: 'Configure' })}</EnforcedButton>
+          >{$t({ defaultMessage: 'Configure' })}</Button>
         ] : [])
       ]}
       footer={<NetworkTabs />}

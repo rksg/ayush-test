@@ -15,10 +15,12 @@ import {
   QosPriorityEnum, ServiceOperation, ServiceType,
   useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
+import { useEnforcedStatus }                   from '../../../configTemplates'
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
 import WifiCallingScopeForm                    from '../WifiCallingScope/WifiCallingScopeForm'
@@ -31,7 +33,8 @@ export const WifiCallingConfigureForm = () => {
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.WIFI_CALLING)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
@@ -64,7 +67,8 @@ export const WifiCallingConfigureForm = () => {
     networkIds,
     networksName,
     epdgs,
-    oldNetworkIds
+    oldNetworkIds,
+    isEnforced: false
   })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
@@ -77,6 +81,11 @@ export const WifiCallingConfigureForm = () => {
         payload: WifiCallingFormValidate(state),
         enableRbac
       }).unwrap()
+
+      if (params?.serviceId) {
+        await saveEnforcementConfig(params.serviceId)
+      }
+
       navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -94,6 +103,7 @@ export const WifiCallingConfigureForm = () => {
         editMode={true}
         onCancel={() => navigate(previousPath)}
         onFinish={handleUpdateWifiCallingService}
+        {...getEnforcedStepsFormProps('StepsForm', state.isEnforced)}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='settings'

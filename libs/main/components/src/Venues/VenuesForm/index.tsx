@@ -11,10 +11,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                                                            from '@acx-ui/icons'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                      from '@acx-ui/icons'
 import {
-  GoogleMapWithPreference, ProtectedEnforceTemplateToggle, usePlacesAutocomplete, wifiCountryCodes
+  GoogleMapWithPreference, ProtectedEnforceTemplateToggleVenue,
+  usePlacesAutocomplete, wifiCountryCodes, useEnforcedStatus
 } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
@@ -39,7 +40,8 @@ import {
   TableResult,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplatePageHeaderTitle,
-  CommonResult
+  CommonResult,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -194,6 +196,7 @@ export function VenuesForm (props: VenuesFormProps) {
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
   const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     if (data) {
@@ -391,6 +394,7 @@ export function VenuesForm (props: VenuesFormProps) {
           buttonLabel={{ submit: action === 'edit' ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Add' }) }}
+          {...getEnforcedStepsFormProps('StepsFormLegacy')}
         >
           <StepsFormLegacy.StepForm>
             <Row gutter={20}>
@@ -496,7 +500,7 @@ export function VenuesForm (props: VenuesFormProps) {
             {!modalMode &&
               <Row gutter={20}>
                 <Col span={8}>
-                  <ProtectedEnforceTemplateToggle templateId={data?.id} />
+                  <ProtectedEnforceTemplateToggleVenue templateId={data?.id} />
                 </Col>
               </Row>
             }

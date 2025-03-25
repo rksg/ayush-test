@@ -14,6 +14,7 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
+  ConfigTemplateType,
   Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
   useTableQuery,
   WifiCallingActionPayload,
@@ -26,10 +27,7 @@ import WifiCallingFormContext from '../WifiCallingFormContext'
 
 const defaultPayload = {
   searchString: '',
-  fields: [
-    'name', 'nwSubType', 'venues', 'id', 'venueApGroups',
-    'isEnforced', 'isManagedByTemplate'
-  ]
+  fields: ['name', 'nwSubType', 'venues', 'id', 'venueApGroups', 'isEnforced']
 }
 
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
@@ -42,7 +40,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.NETWORK)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,

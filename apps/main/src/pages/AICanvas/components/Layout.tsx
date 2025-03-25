@@ -107,9 +107,9 @@ export default function Layout (props: LayoutProps) {
       })
     })
 
-    const shadowCardTmp = { ...shadowCard, gridx: gridX, gridy: gridY }
-
     let groupIndex = hoverItem.index
+    const shadowCardTmp = { ...shadowCard, gridx: gridX, gridy: gridY, groupIndex }
+
     if(typeof groupIndex == 'number') {
       // Add the shadowed card
       groupsTmp[groupIndex].cards.push(shadowCard)
@@ -146,26 +146,55 @@ export default function Layout (props: LayoutProps) {
     const groupsTmp = _.cloneDeep(groups)
     const { compactType } = props
     if(!shadowCard.widgetId) {
-      const response = await createWidget({
+      await createWidget({
         params: {
           canvasId
         },
         payload: {
           messageId: shadowCard.chatId
         }
-      }).unwrap()
-
-
-      groupsTmp.forEach(g => {
-        g.cards.forEach(c => {
-          if(c.id == shadowCard.id) {
-            c.widgetId = response.id
-            c.canvasId = canvasId
-          }
-        })
+      }).then((response)=> {
+        if(response?.data?.id) {
+          groupsTmp.forEach(g => {
+            g.cards.forEach(c => {
+              if(c.id == shadowCard.id) {
+                c.widgetId = response.data.id
+                c.canvasId = canvasId
+              }
+            })
+          })
+        }else {
+          groupsTmp[shadowCard.groupIndex].cards = groupsTmp[shadowCard.groupIndex].cards
+            .filter((item) => item.id !== shadowCard.id)
+        }
       })
     }
     // Remove shadows from all cards within all groups.
+    utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
+    // Recompress the layout horizontally within the target group, and due to cross-group dependencies,
+    // all groups must be compressed.
+    _.forEach(groupsTmp, (g, i) => {
+      if (compactType === 'horizontal') {
+        let compactedLayout = compactLayoutHorizontal(
+          groupsTmp[i].cards,
+          layout.col, null
+        )
+        g.cards = compactedLayout
+      } else if (compactType === 'vertical') {
+        let compactedLayout = compactLayout(groupsTmp[i].cards)
+        g.cards = compactedLayout
+      }
+    })
+    setGroups(groupsTmp)
+    setShadowCard({} as CardInfo)
+  }
+
+  const removeShadowCard = (groupIndex: number) => {
+    const groupsTmp = _.cloneDeep(groups)
+    const { compactType } = props
+    groupsTmp[groupIndex].cards = groupsTmp[groupIndex].cards
+      .filter((item) => item.id !== shadowCard.id)
+      // Remove shadows from all cards within all groups.
     utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
     // Recompress the layout horizontally within the target group, and due to cross-group dependencies,
     // all groups must be compressed.
@@ -247,6 +276,7 @@ export default function Layout (props: LayoutProps) {
               updateGroupList={setGroups}
               handleLoad={handleLoad}
               deleteCard={deleteCard}
+              removeShadowCard={removeShadowCard}
             /> : <></>)
           }
           {/* </>

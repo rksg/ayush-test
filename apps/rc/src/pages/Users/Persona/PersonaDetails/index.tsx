@@ -1,83 +1,100 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 
-import { Col, Row, Space, Tag, Typography } from 'antd'
-import { useIntl }                          from 'react-intl'
-import { useParams }                        from 'react-router-dom'
+import { Tag }       from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { EditOutlined }                                                        from '@acx-ui/icons-new'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { PersonaDrawer }                                             from '@acx-ui/rc/components'
 import {
-  CertificateTable,
-  ConnectionMeteringLink,
-  DpskPoolLink,
-  IdentityGroupLink,
-  MacRegistrationPoolLink,
-  NetworkSegmentationLink,
-  PassphraseViewer,
-  PersonaDrawer,
-  PassphraseDrawer,
-  PropertyUnitLink,
-  useIsEdgeFeatureReady
-} from '@acx-ui/rc/components'
-import {
-  useAllocatePersonaVniMutation,
-  useGetCertificatesByIdentityIdQuery,
-  useGetCertificateTemplateQuery,
   useGetPersonaByIdQuery,
-  useLazyGetConnectionMeteringByIdQuery,
-  useLazyGetDpskQuery,
-  useLazyGetMacRegListQuery,
-  useLazyGetEdgePinByIdQuery,
-  useLazyGetPersonaGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery,
-  useUpdatePersonaMutation
+  useUpdatePersonaMutation,
+  useGetPersonaGroupByIdQuery,
+  useGetCertificatesByIdentityIdQuery,
+  useLazyGetEnhancedDpskPassphraseListQuery,
+  useSearchMacRegistrationsQuery,
+  useSearchIdentityClientsQuery
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup, PersonaUrls, useTableQuery }       from '@acx-ui/rc/utils'
-import { filterByOperations, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getOpsApi, noDataDisplay }                                           from '@acx-ui/utils'
+import {
+  MacRegistration,
+  PersonaUrls,
+  TableQuery,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { RequestPayload }                               from '@acx-ui/types'
+import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                    from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
-import { PersonaDevicesTable } from './PersonaDevicesTable'
+import CertificateTab       from './CertificateTab'
+import DpskPassphraseTab    from './DpskPassphraseTab'
+import IdentityClientTable  from './IdentityClientTable'
+import LegacyPersonaDetails from './LegacyPersonaDetails'
+import MacAddressTab        from './MacAddressTab'
+import { PersonaOverview }  from './PersonaOverview'
 
-export const IdentityDeviceContext = createContext({} as {
-  setDeviceCount: (data: number) => void
+export const IdentityDetailsContext = createContext({} as {
+  setDeviceCount: (count: number) => void,
+  setCertCount: (count: number) => void,
+  setDpskCount: (count: number) => void,
+  setMacAddressCount: (count: number) => void
 })
+
+enum IdentityTabKey {
+  OVERVIEW = 'overview',
+  DEVICE = 'devices',
+  CERTIFICATE = 'certificates',
+  DPSK = 'passphrases',
+  MAC = 'macAddresses'
+}
+
+const identityClientDefaultSorter = {
+  sortField: 'username',
+  sortOrder: 'ASC'
+}
+
+const dpskDefaultSorter = {
+  sortField: 'createdDate',
+  sortOrder: 'DESC'
+}
+
+const macRegDefaultSorter = {
+  sortField: 'macAddress',
+  sortOrder: 'ASC'
+}
 
 function PersonaDetails () {
   const { $t } = useIntl()
-  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const { personaId, personaGroupId, activeTab } = useParams()
+  const navigate = useNavigate()
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
-  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const { tenantId, personaGroupId, personaId } = useParams()
-  const [activeTab, setActiveTab] = useState('device')
-  const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
-  const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
-  const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
-  const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
-  const [pinData, setPinData] = useState({} as { id?: string, name?: string } | undefined)
-  const [unitData, setUnitData] =
-    useState({} as { venueId?: string, unitId?: string, name?: string } | undefined)
+  const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
+
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
-  const [editPassphraseDrawerVisible, setEditPassphraseDrawerVisible] = useState(false)
 
-  const [deviceCount, setDeviceCount] = useState(0)
-
-  // TODO: isLoading state?
-  const [updatePersona] = useUpdatePersonaMutation()
-  const [allocatePersonaVni, { isLoading: isVniAllocating }] = useAllocatePersonaVniMutation()
-  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
-  const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [getDpskPoolById] = useLazyGetDpskQuery()
-  const [getPinById] = useLazyGetEdgePinByIdQuery()
-  const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
-  const personaDetailsQuery = useGetPersonaByIdQuery({
+  const { data: personaData, isLoading: isPersonaLoading } = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
-  })
-  const { data: certTemplateData } = useGetCertificateTemplateQuery({
-    params: { policyId: personaGroupData?.certificateTemplateId! }
-  }, { skip: !personaGroupData?.certificateTemplateId || !isCertTemplateEnabled })
+  }, { skip: !personaId })
+  const { data: personaGroupData, isLoading: isPersonaGroupLoading } = useGetPersonaGroupByIdQuery({
+    params: { groupId: personaGroupId }
+  }, { skip: !personaGroupId })
+
+  const title = personaData?.name ?? personaId
+  const revokedStatus = personaData?.revoked ?? false
+
+  const identityClientsQuery = useSearchIdentityClientsQuery({
+    params: { size: '1', page: '1' },
+    payload: {
+      ...identityClientDefaultSorter,
+      identityIds: [personaId],
+      page: 1,
+      pageSize: 1
+    }
+  }, { skip: !personaId || !isIdentityRefactorEnabled })
+
   const certTableQuery = useTableQuery({
     useQuery: useGetCertificatesByIdentityIdQuery,
     apiParams: {
@@ -85,338 +102,79 @@ function PersonaDetails () {
       personaId: personaId!
     },
     defaultPayload: {},
+    option:
+      { skip: !isCertTemplateEnabled || !personaGroupData?.certificateTemplateId || !personaId }
+  })
+
+  const macRegistrationTableQuery = useTableQuery({
+    useQuery: useSearchMacRegistrationsQuery,
+    sorter: macRegDefaultSorter,
+    defaultPayload: {
+      dataOption: 'all',
+      searchCriteriaList: [
+        {
+          filterKey: 'identityId',
+          operation: 'eq',
+          value: personaId ?? '--'
+        }
+      ]
+    },
+    pagination: { settingsId: 'identity-macregistration-table' },
+    apiParams: { policyId: personaGroupData?.macRegistrationPoolId ?? '' },
     option: {
-      skip: !isCertTemplateEnabled || !personaGroupData?.certificateTemplateId || !personaId
-    } })
+      skip: !personaGroupData?.macRegistrationPoolId || !personaId
+    }
+  }) as unknown as TableQuery<MacRegistration, RequestPayload, unknown>
 
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
-  const [vniRetryable, setVniRetryable] = useState<boolean>(false)
+  const [ getDpskPassphraseList ] = useLazyGetEnhancedDpskPassphraseListQuery()
+
+  const fetchDpskCount = useCallback(async () => {
+    if (!personaGroupData?.dpskPoolId || !personaData?.dpskGuid) return
+
+    try {
+      const result = await getDpskPassphraseList({
+        params: { serviceId: personaGroupData.dpskPoolId },
+        payload: {
+          ...dpskDefaultSorter,
+          searchTargetFields: ['id'],
+          searchString: personaData.dpskGuid
+        }
+      }).unwrap()
+
+      setDpskCount(result.totalCount ?? 0)
+    } catch (error) {
+      setDpskCount(0)
+    }
+  }, [personaGroupData?.dpskPoolId, personaData?.dpskGuid, getDpskPassphraseList])
 
   useEffect(() => {
-    if (personaDetailsQuery.isLoading) return
-    if (!personaDetailsQuery.data?.groupId) return
+    fetchDpskCount()
+  }, [fetchDpskCount])
 
-    getPersonaGroupById({ params: { groupId: personaDetailsQuery.data?.groupId } })
-      .then(result => {
-        if (!result.data) return
-        setPersonaGroupData(result.data)
-      })
-    if (isConnectionMeteringEnabled && personaDetailsQuery.data?.meteringProfileId) {
-      getConnectionMeteringById({ params: { id: personaDetailsQuery.data.meteringProfileId } })
-        .then(result => {
-          if (result.data) {
-            setConnectionMetering(result.data)
-          }
-        })
-    }
-  }, [personaDetailsQuery.data])
+  const [ updatePersona ] = useUpdatePersonaMutation()
+
+  const [ deviceCount, setDeviceCount ] = useState(0)
+  const [ certCount, setCertCount ] = useState(0)
+  const [ dpskCount, setDpskCount ] = useState(0)
+  const [ macAddressCount, setMacAddressCount ] = useState(0)
 
   useEffect(() => {
-    if (!personaGroupData) return
-
-    if (personaGroupData.macRegistrationPoolId) {
-      let name: string | undefined
-      getMacRegistrationById({
-        params: { policyId: personaGroupData.macRegistrationPoolId }
-      })
-        .then(result => name = result.data?.name)
-        .finally(() => setMacPoolData({ id: personaGroupData.macRegistrationPoolId, name }))
+    if (identityClientsQuery?.data) {
+      setDeviceCount(identityClientsQuery.data?.totalCount ?? 0)
     }
-
-    if (personaGroupData.dpskPoolId) {
-      let name: string | undefined
-      getDpskPoolById({
-        params: { serviceId: personaGroupData.dpskPoolId }
-      })
-        .then(result => name = result.data?.name)
-        .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
-    }
-
-    if (personaGroupData.personalIdentityNetworkId && networkSegmentationEnabled) {
-      let name: string | undefined
-      getPinById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
-        .then(result => name = result.data?.name)
-        .finally(() => setPinData({ id: personaGroupData.personalIdentityNetworkId, name }))
-    }
-
-    if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
-      const venueId = personaGroupData.propertyId
-      const unitId = personaDetailsQuery.data.identityId
-      let name: string | undefined
-
-      getUnitById({ params: { venueId , unitId } })
-        .then(result => name = result.data?.name)
-        .finally(() => setUnitData({ venueId, unitId, name }))
-    }
-  }, [personaGroupData])
+  }, [identityClientsQuery.data])
 
   useEffect(() => {
-    if (!personaGroupData || !personaDetailsQuery.data) return
-    const { primary = true, revoked } = personaDetailsQuery.data
-    const hasPin = !!personaGroupData?.personalIdentityNetworkId
-
-    setVniRetryable(hasPin && primary && !revoked)
-  }, [personaGroupData, personaDetailsQuery])
-
-  const revokePersona = async () => {
-    return await updatePersona({
-      params: { groupId: personaGroupId, id: personaId },
-      payload: { revoked: !personaDetailsQuery.data?.revoked }
-    })
-  }
-
-  const allocateVni = async () => {
-    return await allocatePersonaVni({
-      params: { groupId: personaGroupId, id: personaId }
-    })
-  }
-
-  const details = [
-    { label: $t({ defaultMessage: 'Email' }), value: personaDetailsQuery.data?.email },
-    { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
-    { label: $t({ defaultMessage: 'Identity Group' }),
-      value:
-      <IdentityGroupLink
-        name={personaGroupData?.name}
-        personaGroupId={personaGroupData?.id}
-      />
-    },
-    { label: $t({ defaultMessage: 'VLAN' }), value: personaDetailsQuery.data?.vlan },
-    { label: $t({ defaultMessage: 'DPSK Service' }),
-      value:
-        <DpskPoolLink
-          showNoData={true}
-          name={dpskPoolData?.name}
-          dpskPoolId={dpskPoolData?.id}
-        />
-    },
-    { label: $t({ defaultMessage: 'DPSK Passphrase' }),
-      value:
-        <>
-          {
-            personaDetailsQuery.data?.dpskPassphrase
-              ? <PassphraseViewer
-                passphrase={personaDetailsQuery.data?.dpskPassphrase ?? ''}
-              />
-              : noDataDisplay
-          }
-          {
-            hasAllowedOperations([getOpsApi(PersonaUrls.updatePersona)]) &&
-              <Button
-                ghost
-                icon={<EditOutlined size='sm' />}
-                onClick={() => setEditPassphraseDrawerVisible(true)}
-              />
-          }
-        </>
-    },
-    { label: $t({ defaultMessage: 'MAC Registration List' }),
-      value:
-      <MacRegistrationPoolLink
-        showNoData={true}
-        name={macPoolData?.name}
-        macRegistrationPoolId={personaGroupData?.macRegistrationPoolId}
-      />
-    },
-    ...propertyEnabled
-      ? [{ label: $t({ defaultMessage: 'Unit' }),
-        value:
-        <PropertyUnitLink
-          showNoData={true}
-          {...unitData}
-        />
-      }] : []
-  ]
-
-  const netSeg = [
-    { label: $t({ defaultMessage: 'Assigned Segment No.' }),
-      value: personaDetailsQuery.data?.vni ??
-        ((hasAllowedOperations([getOpsApi(PersonaUrls.allocateVni)]) && vniRetryable) ?
-          <Space size={'middle'} align={'center'}>
-            <Typography.Text>{noDataDisplay}</Typography.Text>
-            <Button
-              size={'small'}
-              type={'default'}
-              onClick={allocateVni}
-              loading={isVniAllocating}
-            >
-              {$t({ defaultMessage: 'Retry Segment No.' })}
-            </Button>
-          </Space> : undefined)
-    },
-    { label: $t({ defaultMessage: 'Personal Identity Network' }),
-      value:
-      personaGroupData?.personalIdentityNetworkId
-        && <NetworkSegmentationLink
-          showNoData={true}
-          name={pinData?.name}
-          id={personaGroupData?.personalIdentityNetworkId}
-        />
-    },
-    // TODO: API Integration - Fetch AP(get AP by port.macAddress?)
-    { label: $t({ defaultMessage: 'Assigned AP' }),
-      value:
-        personaDetailsQuery.data?.ethernetPorts?.length !== 0
-          ? [...new Set(personaDetailsQuery.data?.ethernetPorts?.map(port => port.name))].join(', ')
-          : undefined
-    },
-    { label: $t({ defaultMessage: 'Ethernet Ports Assigned' }),
-      value:
-        personaDetailsQuery.data?.ethernetPorts?.length !== 0
-          ? personaDetailsQuery.data?.ethernetPorts?.map(port => {
-            return `LAN ${port.portIndex}`
-          }).join(', ')
-          : undefined
+    if (certTableQuery?.data) {
+      setCertCount(certTableQuery.data?.totalCount ?? 0)
     }
-  ]
+  }, [certTableQuery?.data])
 
-  return (
-    <Loader
-      states={[personaDetailsQuery]}
-    >
-      <PersonaDetailsPageHeader
-        title={personaDetailsQuery.data?.name ?? personaId}
-        revoked={{
-          status: personaDetailsQuery.data?.revoked ?? false,
-          allowed: !personaDetailsQuery.data?.identityId,
-          onRevoke: revokePersona
-        }}
-        onClick={() => setEditDrawerVisible(true)}
-      />
-      <Space direction={'vertical'} size={24}>
-        <Row gutter={[0, 8]}>
-          <Col span={12}>
-            <Subtitle level={4}>
-              {$t({ defaultMessage: 'Identity Details' })}
-            </Subtitle>
-          </Col>
-          <Col span={12}>
-            {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
-              <Subtitle level={4}>
-                {$t({ defaultMessage: 'Personal Identity Network' })}
-              </Subtitle>
-            }
-          </Col>
-          <Col span={12}>
-            <Loader >
-              {details.map(item =>
-                <Row key={item.label} align={'middle'}>
-                  <Col span={7}>
-                    <Typography.Paragraph
-                      style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
-                    >
-                      {item.label}:
-                    </Typography.Paragraph>
-                  </Col>
-                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
-                </Row>
-              )}
-            </Loader>
-          </Col>
-          {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
-            <Col span={12}>
-              {netSeg.map(item =>
-                <Row key={item.label} align={'middle'}>
-                  <Col span={7}>
-                    <Typography.Paragraph
-                      style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
-                    >
-                      {item.label}:
-                    </Typography.Paragraph>
-                  </Col>
-                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
-                </Row>
-              )}
-              {
-                isConnectionMeteringEnabled &&
-                <Row key={'Data Usage Metering'} align={'middle'}>
-                  <Col span={7}>
-                    <Typography.Paragraph
-                      style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
-                    >
-                      {$t({ defaultMessage: 'Data Usage Metering' })}:
-                    </Typography.Paragraph>
-                  </Col>
-                  <Col span={12}>{connectionMetering ?
-                    <ConnectionMeteringLink
-                      id={connectionMetering.id}
-                      name={connectionMetering.name}/> :
-                    noDataDisplay}
-                  </Col>
-                </Row>
-              }
-            </Col>
-          }
-        </Row>
-
-        <Tabs onChange={setActiveTab} activeKey={activeTab}>
-          <Tabs.TabPane
-            key={'device'}
-            tab={$t(
-              { defaultMessage: 'Devices ({deviceCount})' },
-              { deviceCount }
-            )}
-          >
-            <IdentityDeviceContext.Provider value={{ setDeviceCount }}>
-              <PersonaDevicesTable
-                disableAddButton={!personaGroupData?.macRegistrationPoolId}
-                persona={personaDetailsQuery.data}
-                dpskPoolId={personaGroupData?.dpskPoolId}
-              />
-            </IdentityDeviceContext.Provider>
-          </Tabs.TabPane>
-          {(isCertTemplateEnabled && personaGroupData?.certificateTemplateId && certTemplateData) &&
-            <Tabs.TabPane
-              key={'certificate'}
-              tab={$t(
-                { defaultMessage: 'Certificates ({certificateCount})' },
-                { certificateCount: certTableQuery?.data?.totalCount ?? 0 }
-              )}
-            >
-              <CertificateTable
-                showGenerateCert={!personaDetailsQuery.data?.revoked ?? false}
-                templateData={certTemplateData}
-                tableQuery={certTableQuery}
-                specificIdentity={personaId}
-              />
-            </Tabs.TabPane>
-          }
-        </Tabs>
-      </Space>
-
-      {personaDetailsQuery.data &&
-        <PersonaDrawer
-          isEdit
-          visible={editDrawerVisible}
-          onClose={() => setEditDrawerVisible(false)}
-          data={personaDetailsQuery.data}
-        />
-      }
-      { (personaDetailsQuery.data && editPassphraseDrawerVisible) &&
-        <PassphraseDrawer
-          visible={editPassphraseDrawerVisible}
-          onClose={()=>{
-            setEditPassphraseDrawerVisible(false)
-          }}
-          persona={personaDetailsQuery.data}
-        />
-      }
-    </Loader>
-  )
-}
-
-function PersonaDetailsPageHeader (props: {
-  title?: string,
-  revoked: {
-    allowed: boolean,
-    status?: boolean
-    onRevoke: () => void
-  }
-  onClick: () => void
-}) {
-  const { $t } = useIntl()
-  const { title, revoked: { allowed, status: revokedStatus, onRevoke }, onClick } = props
+  useEffect(() => {
+    if (macRegistrationTableQuery?.data) {
+      setMacAddressCount(macRegistrationTableQuery.data?.totalCount ?? 0)
+    }
+  }, [macRegistrationTableQuery?.data])
 
   const getRevokedTitle = () => {
     return $t({
@@ -444,6 +202,13 @@ function PersonaDetailsPageHeader (props: {
     })
   }
 
+  const revokePersona = async () => {
+    return await updatePersona({
+      params: { groupId: personaGroupId, id: personaId },
+      payload: { revoked: !personaData?.revoked }
+    })
+  }
+
   const showRevokedModal = () => {
     showActionModal({
       type: 'confirm',
@@ -457,7 +222,7 @@ function PersonaDetailsPageHeader (props: {
       }, { revokedStatus }),
       okType: 'primary',
       cancelText: $t({ defaultMessage: 'Cancel' }),
-      onOk: () => onRevoke()
+      onOk: () => revokePersona()
     })
   }
 
@@ -465,7 +230,7 @@ function PersonaDetailsPageHeader (props: {
     type='primary'
     rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
     onClick={showRevokedModal}
-    disabled={!allowed}
+    disabled={!!personaData?.identityId}
   >
     {$t({
       defaultMessage: `{revokedStatus, select,
@@ -476,16 +241,64 @@ function PersonaDetailsPageHeader (props: {
   </Button>,
   <Button
     type={'primary'}
-    onClick={onClick}
+    onClick={() => {
+      if (isIdentityRefactorEnabled) {
+        navigate(basePath.pathname.concat('/edit'))
+      } else {
+        setEditDrawerVisible(true)
+      }
+    }}
     rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
   >
     {$t({ defaultMessage: 'Configure' })}
   </Button>] : []
 
+  // eslint-disable-next-line max-len
+  const basePath = useTenantLink(`/users/identity-management/identity-group/${personaGroupId}/identity/${personaId}/`)
+  const onTabChange = (tab: string) =>
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+
+  const getTabComp = (activeTab?: IdentityTabKey) => {
+    switch (activeTab) {
+      case IdentityTabKey.CERTIFICATE:
+        return personaGroupData?.certificateTemplateId
+          ? <CertificateTab
+            personaData={personaData}
+            personaGroupData={personaGroupData}
+          />
+          : <></>
+      case IdentityTabKey.DPSK:
+        return personaGroupData?.dpskPoolId
+          ? <DpskPassphraseTab
+            personaData={personaData}
+            personaGroupData={personaGroupData}
+          />: <></>
+      case IdentityTabKey.MAC:
+        return personaGroupData?.macRegistrationPoolId
+          ? <MacAddressTab
+            personaGroupData={personaGroupData}
+          /> : <></>
+      case IdentityTabKey.DEVICE:
+        return <IdentityClientTable
+          personaId={personaId}
+          personaGroupId={personaGroupId}
+        />
+      default:
+        return <PersonaOverview
+          personaData={personaData}
+          personaGroupData={personaGroupData}
+        />
+    }
+  }
+
   return (
-    <PageHeader
-      title={title}
-      titleExtra={revokedStatus
+    <>
+      <PageHeader
+        title={title}
+        titleExtra={revokedStatus
         && <>
           <PersonaBlockedIcon />
           <Tag
@@ -495,20 +308,96 @@ function PersonaDetailsPageHeader (props: {
             {$t({ defaultMessage: 'Blocked' })}
           </Tag>
         </>}
-      extra={filterByOperations(extra)}
-      breadcrumb={[
-        {
-          text: $t({ defaultMessage: 'Clients' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identity Management' })
-        },
-        {
-          text: $t({ defaultMessage: 'Identities' }),
-          link: 'users/identity-management/identity'
+        extra={filterByOperations(extra)}
+        breadcrumb={[
+          {
+            text: $t({ defaultMessage: 'Clients' })
+          },
+          {
+            text: $t({ defaultMessage: 'Identity Management' })
+          },
+          {
+            text: $t({ defaultMessage: 'Identities' }),
+            link: 'users/identity-management/identity'
+          }
+        ]}
+        footer={isIdentityRefactorEnabled &&
+            <Tabs onChange={onTabChange} activeKey={activeTab}>
+              <Tabs.TabPane
+                key={IdentityTabKey.OVERVIEW}
+                tab={$t(
+                  { defaultMessage: 'Overview' }
+                )}
+              />
+              <Tabs.TabPane
+                key={IdentityTabKey.DEVICE}
+                tab={$t(
+                  { defaultMessage: 'Devices({count})' },
+                  { count: deviceCount }
+                )}
+              />
+              {personaGroupData?.certificateTemplateId
+                && <Tabs.TabPane
+                  key={IdentityTabKey.CERTIFICATE}
+                  tab={$t(
+                    { defaultMessage: 'Certificates({count})' },
+                    { count: certCount }
+                  )}
+                />
+              }
+              {personaGroupData?.dpskPoolId
+                && <Tabs.TabPane
+                  key={IdentityTabKey.DPSK}
+                  tab={$t(
+                    { defaultMessage: 'DPSK Passphrases({count})' },
+                    { count: dpskCount }
+                  )}
+                />
+              }
+              {personaGroupData?.macRegistrationPoolId
+                && <Tabs.TabPane
+                  key={IdentityTabKey.MAC}
+                  tab={$t(
+                    { defaultMessage: 'Mac Addresses({count})' },
+                    { count: macAddressCount }
+                  )}
+                />
+              }
+            </Tabs>
         }
-      ]}
-    />
+      />
+      <Loader
+        states={[
+          { isLoading: false, isFetching: isPersonaLoading },
+          { isLoading: false, isFetching: isPersonaGroupLoading }
+        ]}
+      >
+        {
+          isIdentityRefactorEnabled
+            ? <IdentityDetailsContext.Provider
+              value={{
+                setDeviceCount,
+                setCertCount,
+                setDpskCount,
+                setMacAddressCount
+              }}
+            >
+              {getTabComp(activeTab as IdentityTabKey)}
+            </IdentityDetailsContext.Provider>
+            : <LegacyPersonaDetails />
+        }
+      </Loader>
+
+      {personaData &&
+        <PersonaDrawer
+          isEdit
+          visible={editDrawerVisible}
+          onClose={() => setEditDrawerVisible(false)}
+          data={personaData}
+        />
+      }
+
+    </>
   )
 }
 

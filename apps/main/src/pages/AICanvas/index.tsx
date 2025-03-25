@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
-import { Spin }         from 'antd'
-import { debounce }     from 'lodash'
-import moment           from 'moment'
-import { DndProvider }  from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useIntl }      from 'react-intl'
-import { v4 as uuidv4 } from 'uuid'
+import { Divider, Form, Spin } from 'antd'
+import { debounce }            from 'lodash'
+import moment                  from 'moment'
+import { DndProvider }         from 'react-dnd'
+import { HTML5Backend }        from 'react-dnd-html5-backend'
+import { useIntl }             from 'react-intl'
+import { v4 as uuidv4 }        from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
@@ -20,14 +20,69 @@ import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
 
+const Message = (props:{ chat: ChatMessage, sessionId:string, groups: Group[] }) => {
+  const { chat, sessionId, groups } = props
+  const { $t } = useIntl()
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations have been deleted due to the 30-day retention policy.' })
+  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+    : <div className='message'>
+      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
+        <div className='chat-bubble' dangerouslySetInnerHTML={{ __html: chat.text }} />
+      </div>
+      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+        ...chat.widgets[0],
+        sessionId,
+        id: chat.id,
+        chatId: chat.id
+      }}
+      groups={groups}
+      /> }
+      {
+        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+          {moment(chat.created).format('hh:mm A')}
+        </div>
+      }
+    </div>
+}
+
+const Messages = memo((props:{
+  moreloading: boolean,
+  aiBotLoading: boolean,
+  chats: ChatMessage[],
+  sessionId:string,
+  groups: Group[]
+})=> {
+  const { $t } = useIntl()
+  const welcomeMessage = {
+    id: 'welcomeMessage',
+    role: 'AI',
+    text: $t({ defaultMessage:
+      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
+  }
+  const { moreloading, aiBotLoading, chats, sessionId, groups } = props
+  return <div className='messages-wrapper'>
+    {
+      !chats?.length && <Message key={welcomeMessage.id}
+        chat={welcomeMessage}
+        sessionId={sessionId}
+        groups={groups} />
+    }
+    {moreloading && <div className='loading'><Spin /></div>}
+    {chats?.map((i) => (
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} />
+    ))}
+    {aiBotLoading && <div className='loading'><Spin /></div>}
+  </div>})
+
 export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
+  const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
-
   const [getChats] = useGetChatsMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
@@ -42,15 +97,18 @@ export default function AICanvas () {
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
 
+  const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
   const questions = [
     'What can you do?',
-    'Design custom metrics widget',
-    'Generate alerts widget',
-    'Generate device health widget'
+    'Give me a table for the Top 10 clients based on traffic.',
+    'Show me the trending of the network traffic for last week.',
+    'How many clients were connected to my network yesterday?'
   ] // Only support english default questions in phase 1
+
+
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
@@ -59,7 +117,10 @@ export default function AICanvas () {
     if(page === 1 || aiBotLoading) {
       setTimeout(()=>{
         // @ts-ignore
-        scrollRef?.current?.scrollTo({ top: scrollRef.current.scrollHeight })
+        if(scrollRef?.current?.scrollTo){
+          // @ts-ignore
+          scrollRef?.current?.scrollTo({ top: scrollRef.current.scrollHeight })
+        }
       }, 100)
     }
   }, [chats])
@@ -129,14 +190,15 @@ export default function AICanvas () {
   }
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    if(event.key === 'Enter'){
+    if(event.key === 'Enter' && !event.shiftKey){
       event.preventDefault()
       handleSearch()
     }
   }
   const handleSearch = async (suggestion?: string) => {
     if ((!suggestion && searchText.length <= 1) || aiBotLoading) return
-    const question = suggestion || searchText
+    let question = suggestion || searchText
+    question = question.replaceAll('\n', '<br/>')
     const newMessage = {
       id: uuidv4(),
       role: 'USER',
@@ -145,6 +207,7 @@ export default function AICanvas () {
     setChats([...chats, newMessage])
     setAiBotLoading(true)
     setSearchText('')
+    form.setFieldValue('searchInput', '')
     await chatAi({
       payload: {
         question,
@@ -191,17 +254,17 @@ export default function AICanvas () {
             type: 'default',
             key: 'cancel'
           }, {
-            text: $t({ defaultMessage: 'Save Canvas' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: handleSaveCanvas
-          }, {
             text: $t({ defaultMessage: 'Discard Changes' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
             handler: onClose
+          }, {
+            text: $t({ defaultMessage: 'Save Canvas' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true,
+            handler: handleSaveCanvas
           }]
         }
       })
@@ -243,30 +306,6 @@ export default function AICanvas () {
     setChats([])
   }
 
-  const Message = (props:{ chat: ChatMessage }) => {
-    const { chat } = props
-    return <div className='message'>
-      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        <div className='chat-bubble'>
-          {chat.text}
-        </div>
-      </div>
-      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
-        ...chat.widgets[0],
-        sessionId,
-        id: chat.id,
-        chatId: chat.id
-      }}
-      groups={groups}
-      /> }
-      {
-        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-          {moment(chat.created).format('hh:mm A')}
-        </div>
-      }
-    </div>
-  }
-
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
@@ -296,8 +335,7 @@ export default function AICanvas () {
                 }
               </div>
               <div className='title'>
-                <RuckusAiDog size='lg' />
-                <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
+                <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
                 <Close data-testid='close-icon' onClick={onClickClose}/>
@@ -306,13 +344,12 @@ export default function AICanvas () {
             <div className='content'>
               <Loader states={[{ isLoading: isChatsLoading }]}>
                 <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <div className='messages-wrapper'>
-                    {moreloading && <div className='loading'><Spin /></div>}
-                    {chats?.map((i) => (
-                      <Message key={i.id} chat={i} />
-                    ))}
-                    {aiBotLoading && <div className='loading'><Spin /></div>}
-                  </div>
+                  <Messages
+                    moreloading={moreloading}
+                    aiBotLoading={aiBotLoading}
+                    chats={chats}
+                    sessionId={sessionId}
+                    groups={groups} />
                   {
                     !chats?.length && <div className='placeholder'>
                       {
@@ -328,15 +365,24 @@ export default function AICanvas () {
                     </div>
                   }
                   <div className='input'>
-                    <UI.Input
-                      autoFocus
-                      data-testid='search-input'
-                      onKeyDown={debounce(onKeyDown, 500)}
-                      value={searchText}
-                      onChange={({ target: { value } }) => setSearchText(value)}
-                      style={{ height: 90, resize: 'none' }}
-                      placeholder={placeholder}
-                    />
+                    <Form form={form} >
+                      <Form.Item
+                        name='searchInput'
+                        children={<UI.Input
+                          autoFocus
+                          maxLength={maxSearchTextNumber}
+                          data-testid='search-input'
+                          onKeyDown={onKeyDown}
+                          onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
+                          style={{ height: 90, resize: 'none' }}
+                          placeholder={placeholder}
+                        />}
+                      />
+                    </Form>
+                    {
+                      searchText.length > 0 && <div className='text-counter'>
+                        {searchText.length + '/' + maxSearchTextNumber}</div>
+                    }
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}

@@ -13,8 +13,7 @@ import {
   downloadFile,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TxStatus,
-  PersonaAssociation
+  TxStatus, IdentityClient
 } from '@acx-ui/rc/utils'
 import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -246,7 +245,10 @@ export const personaApi = basePersonaApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateDevice',
-            'DeleteDevice'
+            'DeleteDevice',
+            'UpdatePersona',
+            'DELETE_DPSK_PASSPHRASE',
+            'Delete_DPSK_Passphrase_network_service'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(personaApi.util.invalidateTags([
@@ -254,19 +256,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
             ]))
           })
         })
-      },
-      providesTags: [{ type: 'Persona', id: 'ID' }]
-    }),
-    getPersonaIdentities: build.query<TableResult<PersonaAssociation>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaIdentities, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewTableResult<PersonaAssociation>) {
-        return transferToTableResult<PersonaAssociation>(result)
       },
       providesTags: [{ type: 'Persona', id: 'ID' }]
     }),
@@ -340,15 +329,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    deletePersonaAssociation: build.mutation({
-      query: ({ params }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.deletePersonaAssociation, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Persona' }]
-    }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
@@ -399,6 +379,25 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Persona', id: 'ID' }]
+    }),
+    searchIdentityClients: build.query<TableResult<IdentityClient>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.searchIdentityClients,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      transformResponse (result: NewTableResult<IdentityClient>) {
+        return transferToTableResult<IdentityClient>(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'IdentityClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -423,14 +422,17 @@ export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
   useLazyGetPersonaByIdQuery,
-  useGetPersonaIdentitiesQuery,
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,
   useDeletePersonasMutation,
-  useDeletePersonaAssociationMutation,
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery
+} = personaApi
+
+export const {
+  useSearchIdentityClientsQuery,
+  useLazySearchIdentityClientsQuery
 } = personaApi

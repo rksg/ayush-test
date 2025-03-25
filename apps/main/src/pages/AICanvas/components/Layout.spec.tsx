@@ -464,7 +464,7 @@ jest.mock('@acx-ui/rc/services', () => {
     useGetWidgetQuery: jest.fn().mockReturnValue(chart),
     useCreateWidgetMutation: () => [
       jest.fn(() => ({
-        unwrap: jest.fn().mockResolvedValue({
+        then: jest.fn().mockResolvedValue({
           id: '123'
         })
       }))
@@ -517,6 +517,7 @@ describe('Layout', () => {
     fireEvent.drop(dropItem)
     fireEvent.dragLeave(dropItem)
     fireEvent.dragEnd(dragItem)
+    await new Promise((resolve) => setTimeout(resolve, 400))
     expect(mockedSetGroups).toHaveBeenCalled()
   })
 

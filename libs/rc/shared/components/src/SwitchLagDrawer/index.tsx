@@ -194,6 +194,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               actions={filterByAccess([{
                 label: $t({ defaultMessage: 'Add LAG' }),
                 scopeKey: [SwitchScopes.CREATE],
+                rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addLag)],
                 disabled: !isOperational,
                 onClick: () => {
                   setModalVisible(true)

@@ -1,9 +1,10 @@
-import { useContext, useState, useEffect, Key } from 'react'
+import { useContext, useState, useEffect, Key, ReactNode } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
   Vlan,
   SwitchModel,
@@ -14,9 +15,9 @@ import {
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { getIntl }                       from '@acx-ui/utils'
 
-import { DefaultVlanDrawer }               from '../../DefaultVlanDrawer'
-import { VlanSettingDrawer }               from '../../VlanSettingDrawer'
-import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
+import { DefaultVlanDrawer }                 from '../../DefaultVlanDrawer'
+import { VlanSettingDrawer, checkVlanRange } from '../../VlanSettingDrawer'
+import { ConfigurationProfileFormContext }   from '../ConfigurationProfileFormContext'
 
 import * as UI from './styledComponents'
 
@@ -31,6 +32,7 @@ export function VlanSetting () {
   const [ vlanDrawerVisible, setVlanDrawerVisible ] = useState(false)
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
+  const isBulkVlanProvisioningEnabled = useIsSplitOn(Features.BULK_VLAN_PROVISIONING)
 
   useEffect(() => {
     if(currentData.vlans){
@@ -74,11 +76,12 @@ export function VlanSetting () {
     render: (_, { spanningTreeProtocol }) => {
       return spanningTreeProtocol ? SpanningTreeProtocolName[spanningTreeProtocol] : null
     }
-  }, {
+  },
+  ...(!isBulkVlanProvisioningEnabled ? [{
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (_, row) => {
+    render: (_: ReactNode, row: Vlan) => {
       return <Tooltip
         title={row.switchFamilyModels && generateTooltips(row.switchFamilyModels)}
       >
@@ -93,8 +96,8 @@ export function VlanSetting () {
           : 0}
       </Tooltip>
     }
-  }]
-
+  }] : [])
+  ]
 
   const generateTooltips = (switchFamilyModels: SwitchModel[]) => {
     const portTooltips = switchFamilyModels.map((item: SwitchModel) => {
@@ -117,6 +120,32 @@ export function VlanSetting () {
   }
 
   const handleSetVlan = (data: Vlan) => {
+    const hasIpV4Changed = !_.isEqual(drawerFormRule?.ipv4DhcpSnooping, data.ipv4DhcpSnooping)
+    if (drawerEditMode && hasIpV4Changed) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'Override Settings?' }),
+        // eslint-disable-next-line max-len
+        content: $t({ defaultMessage: 'Some of the VLANs in this range have a different \'IPv4 DHCP Snooping\' setting. Proceeding with this change will overwrite the previously configured on those VLANs with the current selection. ' }),
+        okText: $t({ defaultMessage: 'Proceed' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        onOk: async () => {
+          try {
+            applySetVlan(data)
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        }
+      })
+      return
+    } else {
+      applySetVlan(data)
+    }
+  }
+
+  const applySetVlan = (data: Vlan) => {
+    const { vlans } = checkVlanRange(data.vlanId.toString())
     const filterData = drawerFormRule?.vlanId ? vlanTable.filter(
       (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
       vlanTable
@@ -132,13 +161,27 @@ export function VlanSetting () {
       }
     })
 
-    data.switchFamilyModels = sfm
-    setVlanTable([...filterData, data])
-    if(_.isEmpty(defaultVlan)){
-      form.setFieldValue('vlans', [...filterData, data])
-    }else{
-      form.setFieldValue('vlans', [...filterData, data, defaultVlan])
+    const transformData = vlans.map((item) => {
+      const isCloneSfm = !isBulkVlanProvisioningEnabled
+      || drawerFormRule?.vlanId?.toString() === item
+      || vlans?.length === 1
+
+      return {
+        ..._.omit(data, ['switchFamilyModels']),
+        vlanId: Number(item),
+        ...(isCloneSfm ? { switchFamilyModels: sfm } : {}
+        )
+      }
+    })
+
+    setVlanTable([...filterData, ...transformData])
+
+    if (_.isEmpty(defaultVlan)) {
+      form.setFieldValue('vlans', [...filterData, ...transformData])
+    } else {
+      form.setFieldValue('vlans', [...filterData, ...transformData, defaultVlan])
     }
+
     setDrawerEditMode(false)
     setDrawerFormRule(undefined)
     setSelectedRows([])
@@ -166,13 +209,22 @@ export function VlanSetting () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
+        const hasExtraContent = isBulkVlanProvisioningEnabled
+          && selectedRows.find(row => row.switchFamilyModels?.length)
+
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Vlan' }),
+            entityName: $t({ defaultMessage: 'VLAN' }),
             entityValue: selectedRows[0].vlanId.toString()
           },
+          ...(hasExtraContent ? {
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: `This VLAN has already been configured on some ports (can be looked up in the Ports section). Deleting this VLAN will result in the port configuration getting updated. 
+              {br}{br}Are you sure you want to delete this VLAN?` }, { br: <br/> })
+          } : {}
+          ),
           onOk: () => {
             const vlanRows = vlanTable?.filter((option: { vlanId: number }) => {
               return !selectedRows
@@ -209,7 +261,6 @@ export function VlanSetting () {
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add VLAN' }),
               onClick: () => {
-                form.resetFields()
                 setDrawerFormRule({} as Vlan)
                 setDrawerEditMode(false)
                 setVlanDrawerVisible(true)
@@ -228,9 +279,18 @@ export function VlanSetting () {
         visible={vlanDrawerVisible}
         setVisible={setVlanDrawerVisible}
         vlan={(drawerFormRule)}
-        setVlan={handleSetVlan}
+        setVlan={isBulkVlanProvisioningEnabled
+          ? handleSetVlan
+          : applySetVlan
+        }
         isProfileLevel={true}
-        vlansList={vlanTable.filter(item=>item.vlanId !== drawerFormRule?.vlanId)}
+        vlansList={
+          vlanTable
+            .filter(item=>item.vlanId !== drawerFormRule?.vlanId)
+            .concat(defaultVlan && isBulkVlanProvisioningEnabled ? [defaultVlan] : [])
+        }
+        enablePortModelConfigure={!isBulkVlanProvisioningEnabled}
+        enableVlanRangeConfigure={isBulkVlanProvisioningEnabled}
       />
       <DefaultVlanDrawer
         visible={defaultVlanDrawerVisible}

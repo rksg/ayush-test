@@ -50,6 +50,13 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       return
     }
 
+    if (tab === 'clients') {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${tab}/wifi`
+      })
+      return
+    }
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`

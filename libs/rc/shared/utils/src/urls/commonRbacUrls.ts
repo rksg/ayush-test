@@ -81,6 +81,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addGuestPass: {
     method: 'post',
     url: '/wifiNetworks/:networkId/guestUsers',
+    opsApi: 'POST:/wifiNetworks/{id}/guestUsers',
     newApi: true
   },
   getExternalProviders: {
@@ -93,6 +94,12 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/alarms',
     opsApi: 'DELETE:/venues/{id}/alarms',
+    newApi: true
+  },
+  clearAllAlarms: {
+    method: 'delete',
+    url: '/venues/alarms',
+    opsApi: 'DELETE:/venues/alarms',
     newApi: true
   },
   deleteGateway: {

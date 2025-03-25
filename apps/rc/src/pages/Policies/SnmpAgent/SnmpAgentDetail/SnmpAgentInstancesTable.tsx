@@ -5,6 +5,7 @@ import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { useGetApUsageByApSnmpQuery }      from '@acx-ui/rc/services'
 import { ApSnmpApUsage, useTableQuery }    from '@acx-ui/rc/utils'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
+import { noDataDisplay }                   from '@acx-ui/utils'
 
 export default function SnmpAgentInstancesTable () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -32,9 +33,9 @@ export default function SnmpAgentInstancesTable () {
       sorter: true,
       render: function (_, row, __, highlightFn) {
         const { apName, apId } = row
-        return (
+        return (!apName? noDataDisplay :
           <TenantLink to={`/devices/wifi/${apId}/details/overview`}>
-            {highlightFn(apName || '--')}
+            {highlightFn(apName)}
           </TenantLink>
         )
       }
@@ -48,9 +49,9 @@ export default function SnmpAgentInstancesTable () {
       defaultSortOrder: 'descend',
       render: (_, row, __, highlightFn) => {
         const { venueName, venueId } = row
-        return (
+        return (!venueName? noDataDisplay :
           <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
-            {highlightFn(venueName || '--')}
+            {highlightFn(venueName)}
           </TenantLink>
         )
       }

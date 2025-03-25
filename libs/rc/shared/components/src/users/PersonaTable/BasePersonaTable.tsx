@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }        from 'antd'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
+import { useIdentityListQuery }                                               from '@acx-ui/cloudpath/components'
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
@@ -12,16 +14,18 @@ import {
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
   useLazyBatchGetPropertyUnitsByIdsQuery,
-  useSearchPersonaGroupListQuery
+  useSearchPersonaGroupListQuery,
+  useGetUnitsLinkedIdentitiesQuery,
+  useGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, PersonaUrls, SEARCH } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission }                                 from '@acx-ui/user'
 import { exportMessageMapping, getOpsApi, useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
 import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
-import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
@@ -39,12 +43,32 @@ function useColumns (
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
+
+  const identities = new Map(useGetUnitsLinkedIdentitiesQuery
+  ({
+    params: { venueId: venueId },
+    payload: { pageSize: 10000, page: 1, sortOrder: 'ASC' }
+  },
+  { skip: !venueId || !isMultipleIdentityUnits }
+  ).data?.data?.map(identity => [identity.personaId, identity.unitId]))
+
+  const units = new Map(useGetPropertyUnitListQuery({
+    params: { venueId: venueId },
+    payload: {
+      page: 1,
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  },
+  { skip: !venueId || !isMultipleIdentityUnits }).data?.data?.map(unit => [unit.id,unit.name]))
 
   const columns: TableProps<Persona>['columns'] = [
     {
@@ -76,6 +100,13 @@ function useColumns (
       title: $t({ defaultMessage: 'Email' }),
       sorter: true,
       ...props.email
+    },
+    {
+      key: 'phoneNumber',
+      dataIndex: 'phoneNumber',
+      title: $t({ defaultMessage: 'Phone' }),
+      sorter: true,
+      ...props.phoneNumber
     },
     {
       key: 'description',
@@ -114,8 +145,10 @@ function useColumns (
         render: (_, row) =>
           <PropertyUnitLink
             venueId={venueId}
-            unitId={row.identityId}
-            name={unitPool.get(row.identityId ?? '')}
+            unitId={row.identityId ? row.identityId : identities.get(row.id)}
+            name={row.identityId
+              ? unitPool.get(row.identityId)
+              : units.get(identities.get(row.id) ?? '')}
           />
         ,
         ...props.identityId
@@ -202,6 +235,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
   } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isIdentityRefactor = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
+
+  const basePath = useTenantLink('/users/identity-management/identity-group')
+  const navigate = useNavigate()
 
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
@@ -223,7 +260,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
   const isSelectMode = mode === 'selectable'
 
-  const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
+  const personaListQuery = useIdentityListQuery({ personaGroupId, settingsId })
 
   useEffect(() => {
     if (!propertyEnabled || personaGroupQuery.isLoading) return
@@ -303,8 +340,16 @@ export function BasePersonaTable (props: PersonaTableProps) {
         label: $t({ defaultMessage: 'Add Identity' }),
         rbacOpsIds: [getOpsApi(PersonaUrls.addPersona)],
         onClick: () => {
-        // if user is under PersonaGroup page, props groupId into Drawer
-          setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+          if (isIdentityRefactor) {
+            let pathname = basePath.pathname
+            if (personaGroupId) {
+              pathname = pathname.concat(`/${personaGroupId}`)
+            }
+            navigate({ ...basePath, pathname: `${pathname}/identity/create` })
+          } else {
+            // if user is under PersonaGroup page, props groupId into Drawer
+            setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+          }
         }
       },
       ...isSelectMode
@@ -322,7 +367,15 @@ export function BasePersonaTable (props: PersonaTableProps) {
           label: $t({ defaultMessage: 'Edit' }),
           rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           onClick: ([data], clearSelection) => {
-            setDrawerState({ data, isEdit: true, visible: true })
+            if (isIdentityRefactor) {
+              let pathname = basePath.pathname
+              if (data.groupId) {
+                pathname = pathname.concat(`/${data.groupId}`)
+                navigate({ ...basePath, pathname: `${pathname}/identity/${data.id}/edit` })
+              }
+            } else {
+              setDrawerState({ data, isEdit: true, visible: true })
+            }
             clearSelection()
           },
           visible: (selectedItems => selectedItems.length === 1)
@@ -427,7 +480,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
               onChange: (items) => onChange?.(personaListQuery.data?.data
                 ?.find(p => p.id === items[0]))
             }
-            : hasCrossVenuesPermission({ needGlobalPermission: true })
+            : filterByAccess(rowActions).length !== 0
             && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={isSelectMode ? undefined : {

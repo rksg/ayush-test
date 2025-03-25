@@ -6,6 +6,7 @@ import { useIntl }   from 'react-intl'
 import { Button, Card, Drawer, Tabs } from '@acx-ui/components'
 import { MspLicenseCardProps }        from '@acx-ui/msp/utils'
 import { TrialType }                  from '@acx-ui/rc/utils'
+import { useUserProfileContext }      from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -19,6 +20,12 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
   const [currentTab, setCurrentTab] = useState<string | undefined>('mspSubscriptions')
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false)
   const { title, selfData, mspData, isExtendedTrial, footerContent } = props
+
+  const {
+    isPrimeAdmin
+  } = useUserProfileContext()
+
+  const isPrimeAdminUser = isPrimeAdmin()
 
   const [form] = Form.useForm()
 
@@ -129,6 +136,7 @@ export default function MSPSolutionTokenCard (props: MspLicenseCardProps) {
             footer={
               <div><Button
                 type='primary'
+                disabled={!isPrimeAdminUser}
                 onClick={() => onSubmitHandler()}>
                 {$t({ defaultMessage: 'Save' })}
               </Button>

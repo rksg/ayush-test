@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                                         from 'lodash'
 
-import { Filter }        from '@acx-ui/components'
+import { Filter } from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -93,7 +93,9 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   APLanPortSettings,
-  mergeLanPortSettings
+  mergeLanPortSettings,
+  IpsecUrls,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -932,7 +934,8 @@ export const apApi = baseApApi.injectEndpoints({
         params, enableRbac,
         enableEthernetProfile,
         enableSoftGreOnEthernet,
-        enableClientIsolationOnEthernet
+        enableClientIsolationOnEthernet,
+        enableIpsecOverNetwork
       },
       _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
@@ -1032,6 +1035,29 @@ export const apApi = baseApApi.injectEndpoints({
           }
         }
 
+        if (enableIpsecOverNetwork) {
+          const ipsecReq = {
+            ...createHttpRequest(IpsecUrls.getIpsecViewDataList),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const ipsecListQuery = await fetchWithBQ(ipsecReq)
+          const ipsecList = ipsecListQuery.data as TableResult<IpsecViewData>
+          if (ipsecList.data && apLanPorts.lanPorts) {
+            for (let ipsec of ipsecList.data) {
+              findTargetLanPorts(apLanPorts, ipsec.apActivations, params.serialNumber).forEach(targetPort => {
+                targetPort.ipsecProfileId = ipsec.id
+                targetPort.ipsecEnabled = true
+              })
+            }
+          }
+        }
+
         if (enableClientIsolationOnEthernet) {
           const clientIsolationReq = {
             ...createHttpRequest(ClientIsolationUrls.queryClientIsolation),
@@ -1105,7 +1131,7 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true) && (!!!l.ipsecEnabled))
             .map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -1116,6 +1142,17 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
+          const ipsecActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && l.ipsecProfileId && (l.ipsecEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                softGreProfileId: l.softGreProfileId,
+                ipsecProfileId: l.ipsecProfileId
               }
             }))
           const clientIsolationActivateRequests = apSettings?.lanPorts
@@ -1155,6 +1192,9 @@ export const apApi = baseApApi.injectEndpoints({
           if(!useVenueSettings) {
             await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
               softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(IpsecUrls.activateIpsecOnApLanPort,
+              ipsecActivateRequests!, fetchWithBQ, customHeaders)
 
             await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
               clientIsolationActivateRequests!, fetchWithBQ, customHeaders)

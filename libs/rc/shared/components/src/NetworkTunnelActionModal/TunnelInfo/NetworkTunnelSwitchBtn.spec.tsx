@@ -61,6 +61,7 @@ describe('NetworkTunnelSwitchBtn', () => {
       <NetworkTunnelSwitchBtn
         tunnelType={NetworkTunnelTypeEnum.Pin}
         onClick={mockOnClick}
+        venueSdLanInfo={undefined}
       />
     )
 
@@ -77,6 +78,7 @@ describe('NetworkTunnelSwitchBtn', () => {
       <NetworkTunnelSwitchBtn
         tunnelType={NetworkTunnelTypeEnum.SoftGre}
         onClick={mockOnClick}
+        venueSdLanInfo={undefined}
       />
     )
     const btn = screen.getByRole('switch')
@@ -89,6 +91,7 @@ describe('NetworkTunnelSwitchBtn', () => {
       <NetworkTunnelSwitchBtn
         tunnelType={NetworkTunnelTypeEnum.None}
         onClick={mockOnClick}
+        venueSdLanInfo={undefined}
       />
     )
     const btn = screen.getByRole('switch')
@@ -103,6 +106,7 @@ describe('NetworkTunnelSwitchBtn', () => {
         onClick={mockOnClick}
         disabled={true}
         tooltip='testing'
+        venueSdLanInfo={undefined}
       />
     )
     const btn = screen.getByRole('switch')
@@ -110,5 +114,36 @@ describe('NetworkTunnelSwitchBtn', () => {
     expect(btn).not.toBeChecked()
     await userEvent.hover(btn, { pointerEventsCheck: PointerEventsCheckLevel.Never })
     await screen.findByRole('tooltip', { name: 'testing', hidden: true })
+  })
+
+  it('should call onClick with true when the button is clicked', async () => {
+    const mockOnClick = jest.fn()
+
+    render(<NetworkTunnelSwitchBtn
+      tunnelType={NetworkTunnelTypeEnum.None}
+      onClick={mockOnClick}
+      venueSdLanInfo={undefined}
+    />)
+
+    const button = screen.getByRole('switch')
+    await userEvent.click(button)
+
+    expect(mockOnClick).toHaveBeenCalledWith(true)
+  })
+
+  // eslint-disable-next-line max-len
+  it('should call onClick with false when the button is clicked and NOT greyout', async () => {
+    const mockOnClick = jest.fn()
+
+    render(<NetworkTunnelSwitchBtn
+      tunnelType={NetworkTunnelTypeEnum.SoftGre}
+      onClick={mockOnClick}
+      venueSdLanInfo={undefined}
+    />)
+
+    const button = screen.getByRole('switch')
+    await userEvent.click(button)
+    expect(screen.getByRole('switch')).not.toBeDisabled()
+    expect(mockOnClick).toHaveBeenCalledWith(false)
   })
 })

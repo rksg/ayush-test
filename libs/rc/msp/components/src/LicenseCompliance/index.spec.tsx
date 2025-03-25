@@ -55,7 +55,7 @@ const compliances = {
           usedLicenseCount: 0
         },
         {
-          deviceType: 'SLTN_PI_NET',
+          deviceType: 'SLTN_PIN_FOR_IDENTITY',
           installedDeviceCount: 100,
           usedLicenseCount: 0
         }
@@ -143,8 +143,8 @@ const mileageReportData = {
 
 const list = [
   {
-    featureType: 'SLTN_PI_NET',
-    featureName: 'Personal Identity Network',
+    featureType: 'SLTN_PIN_FOR_IDENTITY',
+    featureName: 'PIN for RUCKUS One Identity',
     maxQuantity: 0,
     enabled: false,
     capped: false,
@@ -235,7 +235,11 @@ describe('LicenseCompliance', () => {
   it('should render table correctly for non-msp', async () => {
     render(
       <Provider>
-        <LicenseCompliance isMsp={false}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={false}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -253,7 +257,11 @@ describe('LicenseCompliance', () => {
     })
     render(
       <Provider>
-        <LicenseCompliance isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -269,7 +277,11 @@ describe('LicenseCompliance', () => {
     })
     render(
       <Provider>
-        <LicenseCompliance isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -286,7 +298,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -307,7 +323,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -326,7 +346,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -345,7 +369,11 @@ describe('LicenseCompliance', () => {
       ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
     render(
       <Provider>
-        <LicenseCompliance isMsp={false}/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <LicenseCompliance isMsp={false}/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
@@ -391,7 +419,7 @@ describe('LicenseCompliance', () => {
     expect(screen.getByRole('tabpanel', { name: 'Settings' } )).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Edit Settings' }))
 
-    expect(screen.getByRole('checkbox', { name: 'Personal Identity Network' } )).toBeVisible()
+    expect(screen.getByRole('checkbox', { name: 'PIN for RUCKUS One Identity' } )).toBeVisible()
     expect(screen.getByRole('checkbox', { name: 'Adaptive Policy' } )).toBeVisible()
 
     expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()
@@ -440,7 +468,7 @@ describe('LicenseCompliance', () => {
     expect(screen.getByRole('tabpanel', { name: 'Settings' } )).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Edit Settings' }))
 
-    expect(screen.getByRole('checkbox', { name: 'Personal Identity Network' } )).toBeVisible()
+    expect(screen.getByRole('checkbox', { name: 'PIN for RUCKUS One Identity' } )).toBeVisible()
     expect(screen.getByRole('checkbox', { name: 'Adaptive Policy' } )).toBeVisible()
 
     expect(screen.getByText('Edit Solution Usage Cap')).toBeVisible()

@@ -31,7 +31,8 @@ import {
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                 from '@acx-ui/utils'
 
-import { IdentityDeviceContext } from './index'
+import { IdentityDeviceContext } from './LegacyPersonaDetails'
+
 
 
 const defaultClientPayload = {
@@ -71,7 +72,7 @@ export function PersonaDevicesTable (props: {
 
   // ClientMac format should be: 11:22:33:44:55:66
   const toClientMacFormat = (macAddress: string) => {
-    return macAddress.replaceAll('-', ':').toUpperCase()
+    return macAddress.replaceAll('-', ':').toLowerCase()
   }
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export function PersonaDevicesTable (props: {
       params: { tenantId },
       payload: {
         ...defaultClientPayload,
-        filters: { macAddress: [...clientMac] }
+        filters: { macAddress: [...clientMac] } // should be lowered case
       }
     })
       .then(result => {

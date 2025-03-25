@@ -3,10 +3,10 @@ import { ReactNode } from 'react'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { CheckMark }                                     from '@acx-ui/icons'
-import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { CheckMark }                                                from '@acx-ui/icons'
+import { CertificateToolTip, SimpleListTooltip, useEnforcedStatus } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAAAPolicyListMutation,
@@ -30,7 +30,8 @@ import {
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
   CertificateStatusType,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -46,6 +47,7 @@ export default function AAATable () {
     : AAA_LIMIT_NUMBER
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.RADIUS)
 
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
@@ -83,6 +85,8 @@ export default function AAATable () {
       rbacOpsIds: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: (selectedRows, clearSelection) => doDelete(selectedRows, clearSelection)
     },
     {
@@ -287,7 +291,8 @@ function useColumns () {
       align: 'center' as AlignType,
       width: 80,
       render: (data: ReactNode, row: AAAViewModalType) => {
-        return (row.radSecOptions?.tlsEnabled ? <CheckMark /> : null)
+        return (row.radSecOptions?.tlsEnabled ?
+          <CheckMark style={{ width: '18px', paddingTop: '4px' }}/> : null)
       }
     },
     {

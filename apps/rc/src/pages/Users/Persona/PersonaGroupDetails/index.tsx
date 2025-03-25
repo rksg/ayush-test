@@ -26,6 +26,7 @@ import {
   useLazyGetAdaptivePolicySetQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup, PersonaUrls }                    from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 import { filterByOperations, hasCrossVenuesPermission } from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }                     from '@acx-ui/utils'
 
@@ -70,9 +71,12 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const basePath = useTenantLink('users/identity-management/identity-group')
+  const navigate = useNavigate()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isCertTemplateEnable = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isIdentityRefactorEnabled = useIsSplitOn(Features.IDENTITY_UI_REFACTOR)
 
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
@@ -172,7 +176,8 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Identities' }),
-      content: detailsQuery.data?.identities?.length ?? 0
+      content: detailsQuery.data?.identities?.length
+        ?? detailsQuery.data?.identityCount ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
@@ -225,7 +230,16 @@ function PersonaGroupDetails () {
     <>
       <PersonaGroupDetailsPageHeader
         title={detailsQuery.data?.name ?? personaGroupId}
-        onClick={() => setEditVisible(true)}
+        onClick={() => {
+          if (isIdentityRefactorEnabled) {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/${personaGroupId}/edit`
+            })
+          } else {
+            setEditVisible(true)
+          }
+        }}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
@@ -239,7 +253,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? detailsQuery.data?.identityCount?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

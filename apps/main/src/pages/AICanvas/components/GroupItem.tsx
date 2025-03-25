@@ -28,12 +28,13 @@ export interface GroupProps {
   updateGroupList:Dispatch<SetStateAction<Group[]>>
   handleLoad:() => void
   deleteCard:(id: string, groupIndex: number) => void
+  removeShadowCard: (groupIndex: number)=>void
 }
 
 export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
-  const { id, cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
-
+  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem } = props
+  // const sectionRef = useRef(null)
   useEffect(() => {
     let clientWidth
     const containerDom = document.querySelector('#card-container')
@@ -59,17 +60,21 @@ export default function GroupItem (props: GroupProps) {
     return
   }
 
-  const [, dropRef] = useDrop({
+  const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: ItemTypes.CARD,
     drop: (item: CardInfo) => {
       const dragItem = item
       const dropItem = props
       dropCard(dragItem, dropItem)
     },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop()
+    }),
     hover: (item: CardInfo, monitor) => {
       const dragItem = item
       if (dragItem.type === ItemTypes.CARD) {
-        if(props.shadowCard.id !== dragItem.id){
+        if(shadowCard.id !== dragItem.id){
           props.updateShadowCard(dragItem)
           return
         }
@@ -89,11 +94,18 @@ export default function GroupItem (props: GroupProps) {
     }
   })
 
+  useEffect(() => {
+    if (shadowCard.id && !isOver && canDrop) {
+      props.removeShadowCard(index)
+    }
+  }, [shadowCard, isOver])
+
   return (
     <div className='rglb_group-item' ref={dropRef} id={'group' + id} data-testid='dropGroup'>
       <div className='group-item-container'>
         <section
           id='card-container'
+          // ref={sectionRef}
           style={{
             height:
                 containerHeight > defaultLayout.containerHeight
@@ -113,6 +125,7 @@ export default function GroupItem (props: GroupProps) {
               updateShadowCard={props.updateShadowCard}
               updateGroupList={props.updateGroupList}
               deleteCard={props.deleteCard}
+              // sectionRef={sectionRef}
             />
             )
           }

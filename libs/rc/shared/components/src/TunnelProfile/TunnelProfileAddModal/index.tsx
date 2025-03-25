@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsForm }    from '@acx-ui/components'
-import { getTunnelProfileFormDefaultValues, TunnelProfileFormType  } from '@acx-ui/rc/utils'
+import { Button, Loader, Modal, ModalType, showToast, StepsForm }   from '@acx-ui/components'
+import { getTunnelProfileFormDefaultValues, TunnelProfileFormType } from '@acx-ui/rc/utils'
 
 import { TunnelProfileForm }       from '../TunnelProfileForm'
 import { useTunnelProfileActions } from '../TunnelProfileForm/useTunnelProfileActions'
@@ -15,11 +15,11 @@ export const TunnelProfileAddModal = (props: TunnelProfileAddModalProps) => {
   const { initialValues } = props
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { createTunnelProfile, isTunnelProfileCreating } = useTunnelProfileActions()
+  const { createTunnelProfileOperation, isTunnelProfileCreating } = useTunnelProfileActions()
 
   const handleCreateTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
-      await createTunnelProfile(data)
+      await createTunnelProfileOperation(data)
       setVisible(false)
     } catch {
       showToast({

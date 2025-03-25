@@ -9,7 +9,7 @@ export enum AgeTimeUnit {
   MINUTES='minutes'
 }
 
-export enum TunnelTypeEnum {
+export enum NetworkSegmentTypeEnum {
   VXLAN='VXLAN',
   VLAN_VXLAN='VLAN_VXLAN'
 }
@@ -17,4 +17,9 @@ export enum TunnelTypeEnum {
 export enum MtuRequestTimeoutUnit {
   SECONDS='seconds',
   MILLISECONDS='milliseconds'
+}
+
+export enum TunnelTypeEnum {
+  VXLAN_GPE='VXLAN_GPE',
+  L2GRE='L2GRE'
 }

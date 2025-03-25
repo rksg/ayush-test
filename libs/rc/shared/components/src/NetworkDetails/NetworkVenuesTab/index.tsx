@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState, useRef } from 'react'
 
 import { Form, Switch }           from 'antd'
 import { assign, cloneDeep }      from 'lodash'
@@ -58,7 +58,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   ConfigTemplateUrlsInfo,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams }  from '@acx-ui/react-router-dom'
 import { WifiScopes } from '@acx-ui/types'
@@ -78,6 +79,7 @@ import {
 } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog } from '../../NetworkApGroupDialog'
 import {
+  NetworkTunnelActionDrawer,
   NetworkTunnelActionModal,
   NetworkTunnelActionModalProps,
   useSoftGreTunnelActions
@@ -134,8 +136,7 @@ const defaultRbacPayload = {
     ...basePayload.fields,
     'venueApGroups',
     'incompatible',
-    'isEnforced',
-    'isManagedByTemplate'
+    'isEnforced'
   ]
 }
 
@@ -195,7 +196,7 @@ interface schedule {
 }
 
 export function NetworkVenuesTab () {
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
   const params = useParams()
   const networkId = params.networkId
   const { $t } = useIntl()
@@ -216,16 +217,17 @@ export function NetworkVenuesTab () {
 
   const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([updateNetworkVenueOpsAPi])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -237,7 +239,7 @@ export function NetworkVenuesTab () {
   const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
-  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
+  const [isTableUpdating, setIsTableUpdating] = useState<boolean>(false)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
   })
@@ -304,14 +306,18 @@ export function NetworkVenuesTab () {
   })
 
   // hooks for tunnel column - start
-  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
+  // for tunnel type data refetching
+  const refetchFnRef = useRef({} as { [key: string]: () => void })
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId, refetchFnRef)
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const tunnelColumn = useTunnelColumn({
     network: networkQuery.data,
     sdLanScopedNetworkVenues,
-    setTunnelModalState
+    setTunnelModalState,
+    refetchFnRef,
+    setIsTableUpdating
   })
   // hooks for tunnel column - end
 
@@ -327,7 +333,7 @@ export function NetworkVenuesTab () {
     enableRbac: isPolicyRbacEnabled
   })
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     if (instanceListResult?.data) {
@@ -372,6 +378,11 @@ export function NetworkVenuesTab () {
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
 
+  const refetchTunnelInfoData = () => {
+    Object.keys(refetchFnRef.current)
+      .forEach(key => refetchFnRef.current[key]())
+  }
+
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
     // if (checked) {
@@ -406,12 +417,12 @@ export function NetworkVenuesTab () {
         }
 
         if (resolvedRbacEnabled) {
-          setIsActivateUpdating(true)
+          setIsTableUpdating(true)
           addRbacNetworkVenue({
             params: apiParams,
             payload: newNetworkVenue,
             enableRbac: true,
-            callback: () => setIsActivateUpdating(false)
+            callback: () => setIsTableUpdating(false)
           })
         } else {
           addNetworkVenue({
@@ -438,11 +449,14 @@ export function NetworkVenuesTab () {
           }
 
           if (resolvedRbacEnabled) {
-            setIsActivateUpdating(true)
+            setIsTableUpdating(true)
             deleteRbacNetworkVenue({
               params: apiParams,
               enableRbac: true,
-              callback: () => setIsActivateUpdating(false)
+              callback: () => {
+                refetchTunnelInfoData()
+                setIsTableUpdating(false)
+              }
             })
           } else {
             deleteNetworkVenue({ params: apiParams, enableRbac: false })
@@ -455,7 +469,7 @@ export function NetworkVenuesTab () {
   const handleAddNetworkVenues = async (networkVenues: NetworkVenue[], clearSelection: () => void) => {
     if (networkVenues.length > 0) {
       if (resolvedRbacEnabled) {
-        setIsActivateUpdating(true)
+        setIsTableUpdating(true)
         const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
           const params = {
             venueId: networkVenue.venueId,
@@ -465,7 +479,7 @@ export function NetworkVenuesTab () {
             params,
             payload: networkVenue,
             enableRbac: true,
-            callback: () => setIsActivateUpdating(false)
+            callback: () => setIsTableUpdating(false)
           })
         })
 
@@ -484,7 +498,7 @@ export function NetworkVenuesTab () {
       if (resolvedRbacEnabled) {
         const network = networkQuery.data
         const networkId = (network && network?.id) ? network.id : ''
-        setIsActivateUpdating(true)
+        setIsTableUpdating(true)
         const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
           const curParams = {
             venueId: networkVenueId,
@@ -493,7 +507,7 @@ export function NetworkVenuesTab () {
           return deleteRbacNetworkVenue({
             params: curParams,
             enableRbac: true,
-            callback: () => setIsActivateUpdating(false)
+            callback: () => setIsTableUpdating(false)
           })
         })
 
@@ -873,7 +887,13 @@ export function NetworkVenuesTab () {
       await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
-      await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
+
+      if (isIpsecEnabled && formValues.ipsec?.enableIpsec) {
+        await softGreTunnelActions.activateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+      } else {
+        await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
+      }
+
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
 
@@ -884,7 +904,7 @@ export function NetworkVenuesTab () {
     }
   }
 
-  const isFetching = isActivateUpdating
+  const isFetching = isTableUpdating
     || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
     || isAddNetworkUpdating || isDeleteNetworkUpdating
 
@@ -934,11 +954,20 @@ export function NetworkVenuesTab () {
         />
       </Form.Provider>
       {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
-        <NetworkTunnelActionModal
-          {...tunnelModalState}
-          onFinish={handleNetworkTunnelActionFinish}
-          onClose={handleCloseTunnelModal}
-        />
+        <>
+          {!isIpsecEnabled &&
+            <NetworkTunnelActionModal
+              {...tunnelModalState}
+              onFinish={handleNetworkTunnelActionFinish}
+              onClose={handleCloseTunnelModal}
+            />}
+          {isIpsecEnabled &&
+            <NetworkTunnelActionDrawer
+              {...tunnelModalState}
+              onFinish={handleNetworkTunnelActionFinish}
+              onClose={handleCloseTunnelModal}
+            />}
+        </>
       }
     </Loader>
   )
