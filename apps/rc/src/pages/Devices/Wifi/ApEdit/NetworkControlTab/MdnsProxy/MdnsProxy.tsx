@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
@@ -12,11 +12,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { ApMdnsProxySelector }                                       from '@acx-ui/rc/components'
-import { useGetApQuery }                                             from '@acx-ui/rc/services'
-import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
-import { useParams }                                                 from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApMdnsProxySelector }    from '@acx-ui/rc/components'
+import { useGetApQuery }          from '@acx-ui/rc/services'
+import {
+  useAddMdnsProxyApsMutation,
+  useDeleteMdnsProxyApsMutation
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
@@ -74,7 +77,6 @@ export function MdnsProxy (props: ApEditItemProps) {
   const { isAllowEdit=true } = props
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -90,8 +92,7 @@ export function MdnsProxy (props: ApEditItemProps) {
     data: apDetail,
     isFetching: isDataFetching,
     isLoading,
-    isSuccess,
-    refetch
+    isSuccess
   } = useGetApQuery({
     params: { ...params, venueId: venueData?.id },
     enableRbac: isUseWifiRbacApi
@@ -99,13 +100,6 @@ export function MdnsProxy (props: ApEditItemProps) {
 
   const [ addMdnsProxyAps, { isLoading: isUpdating } ] = useAddMdnsProxyApsMutation()
   const [ deleteMdnsProxyAps, { isLoading: isDeleting } ] = useDeleteMdnsProxyApsMutation()
-
-  useEffect(() => {
-    if (!isFormChangedHandled) {
-      updateEditContextData(isServiceChanged())
-      setIsFormChangedHandled(true)
-    }
-  }, [isFormChangedHandled])
 
   useEffect(() => {
     if (apDetail && !isLoading) {
@@ -116,9 +110,10 @@ export function MdnsProxy (props: ApEditItemProps) {
   const isServiceChanged = (): boolean => {
     const formData = formRef.current!.getFieldsValue()
     const serviceId = apDetail!.multicastDnsProxyServiceProfileId
+    const serviceEnabled = !!serviceId
 
-    return formData.serviceId !== serviceId ||
-      (formData.serviceEnabled && !serviceId)
+    return (formData.serviceEnabled !== serviceEnabled) ||
+      (serviceEnabled && (formData.serviceId !== serviceId))
   }
 
   const isFormInvalid = () => {
@@ -130,7 +125,7 @@ export function MdnsProxy (props: ApEditItemProps) {
       ...editContextData,
       unsavedTabKey: 'networkControl',
       tabTitle: $t({ defaultMessage: 'Network Control' }),
-      isDirty: true,
+      isDirty: dataChanged,
       hasError: dataChanged ? isFormInvalid() : editContextData.hasError
     })
 
@@ -145,11 +140,6 @@ export function MdnsProxy (props: ApEditItemProps) {
     })
   }
 
-  const resetForm = () => {
-    refetch()
-    updateEditContextData(false)
-  }
-
   const onSave = async (formData: MdnsProxyFormFieldType) => {
     const originalServiceId = apDetail?.multicastDnsProxyServiceProfileId
 
@@ -159,17 +149,27 @@ export function MdnsProxy (props: ApEditItemProps) {
           params: { ...params, serviceId: formData.serviceId, venueId: apDetail?.venueId },
           payload: [serialNumber],
           enableRbac
-        }).unwrap().then(resetForm)
+        }).unwrap()
       } else if (originalServiceId && serialNumber) { // Disable the mDNS Proxy which has been applied before
         await deleteMdnsProxyAps({
           params: { ...params, serviceId: originalServiceId, venueId: apDetail?.venueId },
           payload: [serialNumber],
           enableRbac
-        }).unwrap().then(resetForm)
+        }).unwrap()
       }
+
+      setEditContextData({
+        ...editContextData,
+        isDirty: false,
+        hasError: false
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const handleFormChanged = () => {
+    updateEditContextData(isServiceChanged())
   }
 
   return (
@@ -179,7 +179,7 @@ export function MdnsProxy (props: ApEditItemProps) {
     }]}>
       <StepsFormLegacy
         formRef={formRef}
-        onFormChange={() => setIsFormChangedHandled(false)}
+        onFormChange={() => handleFormChanged()}
       >
         {isSuccess &&
           <StepsFormLegacy.StepForm<MdnsProxyFormFieldType>
