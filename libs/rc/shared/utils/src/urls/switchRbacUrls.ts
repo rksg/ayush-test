@@ -535,7 +535,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchStickyMacAcls: {
     method: 'post',
-    url: '/venues/:venueId/switches/:switchId/stickyMacAcls',
+    url: '/venues/:venueId/switches/:switchId/stickyMacAcls/query',
     newApi: true
   }
 }
