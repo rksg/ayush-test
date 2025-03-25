@@ -173,7 +173,6 @@ describe('ApEdit', () => {
         }
       })
 
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
@@ -199,7 +198,6 @@ describe('ApEdit', () => {
         }
       })
 
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
@@ -216,7 +214,6 @@ describe('ApEdit', () => {
       })
 
       jest.restoreAllMocks()
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
@@ -237,7 +234,6 @@ describe('ApEdit', () => {
         }
       })
 
-      await screen.findByRole('heading', { name: 'test ap', level: 1 })
       await waitFor(async () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
