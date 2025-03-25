@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
-import { useEffect, useState } from 'react'
+import { MutableRefObject, useEffect, useRef, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { useIsSplitOn, Features }                                                           from '@acx-ui/feature-toggle'
-import { useLazyGetIpsecViewDataListQuery, useLazyGetSoftGreViewDataListQuery }             from '@acx-ui/rc/services'
-import { IpsecActivation, IpsecWiredActivation, IpsecWiredApActivation, useConfigTemplate } from '@acx-ui/rc/utils'
+import { StepsFormLegacyInstance }                                                                         from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                                          from '@acx-ui/feature-toggle'
+import { useLazyGetIpsecViewDataListQuery, useLazyGetSoftGreViewDataListQuery }                            from '@acx-ui/rc/services'
+import { IpsecActivation, IpsecWiredActivation, IpsecWiredApActivation, useConfigTemplate, WifiApSetting } from '@acx-ui/rc/utils'
 
 enum ActionLevelEnum {
   NETWORK = 'NETWORK',
@@ -30,9 +31,16 @@ interface NameMapItem {
   name: string
 }
 
-export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
+export interface SoftGreIpsecStateProps {
+  venueId: string
+  isVenueOperation: boolean
+  formRef?: MutableRefObject<StepsFormLegacyInstance<WifiApSetting>>
+}
+
+export const SoftGreIpSecState = (props: SoftGreIpsecStateProps) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const { venueId, isVenueOperation, formRef } = props
   const params = useParams()
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
@@ -189,31 +197,68 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
     console.log('boundSoftGreIpsecList', boundSoftGreIpsecList)
   }, [])
 
+  const getPortFormData = (index: number) => {
+    if (isVenueOperation) {
+      const softGreId = form.getFieldValue(['lan', index, 'softGreProfileId'])
+      const softGreName =
+        softGRENameMap.filter(softGre => softGre.id === softGreId)?.[0]?.name || ''
+      const ipsecId = form.getFieldValue(['lan', index, 'ipsecProfileId'])
+      const ipsecName = ipsecNameMap.filter(ipsec => ipsec.id === ipsecId)?.[0]?.name || ''
+      const enabledSoftGre = form.getFieldValue(['lan', index, 'softGreEnabled'])
+      if (!enabledSoftGre) {
+        form.setFieldValue(['lan', index, 'ipsecEnabled'], false)
+      }
+      const enabledIpsec = form.getFieldValue(['lan', index, 'ipsecEnabled'])
+      return {
+        softGreId,
+        softGreName,
+        ipsecId,
+        ipsecName,
+        enabledSoftGre,
+        enabledIpsec
+      }
+    } else {
+      const values = formRef?.current?.getFieldsValue() as WifiApSetting
+      console.log(values)
+      const softGreId = formRef?.current?.getFieldValue(['lan', index, 'softGreProfileId'])
+      const softGreName =
+        softGRENameMap.filter(softGre => softGre.id === softGreId)?.[0]?.name || ''
+      const ipsecId = formRef?.current?.getFieldValue(['lan', index, 'ipsecProfileId'])
+      const ipsecName = ipsecNameMap.filter(ipsec => ipsec.id === ipsecId)?.[0]?.name || ''
+      const enabledSoftGre = formRef?.current?.getFieldValue(['lan', index, 'softGreEnabled'])
+      if (!enabledSoftGre) {
+        formRef?.current?.setFieldValue(['lan', index, 'ipsecEnabled'], false)
+      }
+      const enabledIpsec = formRef?.current?.getFieldValue(['lan', index, 'ipsecEnabled'])
+      return {
+        softGreId,
+        softGreName,
+        ipsecId,
+        ipsecName,
+        enabledSoftGre,
+        enabledIpsec
+      }
+    }
+  }
+
   const softGreIpsecProfileValidator = async (
     softGreEditable: boolean, index: number, apModel?: string) => {
-    const softGreId = form.getFieldValue(['lan', index, 'softGreProfileId'])
-    const softGreName = softGRENameMap.filter(softGre => softGre.id === softGreId)?.[0]?.name || ''
-    const ipsecId = form.getFieldValue(['lan', index, 'ipsecProfileId'])
-    const ipsecName = ipsecNameMap.filter(ipsec => ipsec.id === ipsecId)?.[0]?.name || ''
-    const enabledSoftGre = form.getFieldValue(['lan', index, 'softGreEnabled'])
-    if (!enabledSoftGre) {
-      form.setFieldValue(['lan', index, 'ipsecEnabled'], false)
-    }
-    const enabledIpsec = form.getFieldValue(['lan', index, 'ipsecEnabled'])
+    const formData = getPortFormData(index)
     const targetList = [...boundSoftGreIpsecList, ...newSoftGreIpsecList]
 
     console.log('targetList', targetList,
-      ', enabledSoftGre', enabledSoftGre,
-      ', enabledIpsec', enabledIpsec,
-      ', softGreId', softGreId,
-      ', softGreName', softGreName,
-      ', ipsecId', ipsecId,
-      ', ipsecName', ipsecName,
+      ', softGreEditable', softGreEditable,
+      ', enabledSoftGre', formData.enabledSoftGre,
+      ', enabledIpsec', formData.enabledIpsec,
+      ', softGreId', formData.softGreId,
+      ', softGreName', formData.softGreName,
+      ', ipsecId', formData.ipsecId,
+      ', ipsecName', formData.ipsecName,
       ', index', index,
       ', apModel', apModel)
     if (targetList.length !== 0) {
       if (targetList[0].ipsecId && targetList[0].ipsecId.length > 0) {
-        if (enabledSoftGre && !enabledIpsec) {
+        if (formData.enabledSoftGre && !formData.enabledIpsec) {
           if (targetList.length === 1
             && newSoftGreIpsecList.length === 1
             && targetList[0].index === index
@@ -221,8 +266,8 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
             setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
               return {
                 actionLevel: p.actionLevel,
-                softGreId: softGreId,
-                softGreName: softGreName,
+                softGreId: formData.softGreId,
+                softGreName: formData.softGreName,
                 ipsecId: undefined,
                 ipsecName: undefined,
                 isChangable: true,
@@ -238,10 +283,10 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
                 ipsecName: targetList[0].ipsecName
               }))
           }
-        } else if (enabledIpsec) {
+        } else if (formData.enabledIpsec) {
           //specific ipsec
-          if (targetList.filter(boundProfile => boundProfile.softGreId !== softGreId
-               || boundProfile.ipsecId !== ipsecId).length > 0) {
+          if (targetList.filter(boundProfile => boundProfile.softGreId !== formData.softGreId
+               || boundProfile.ipsecId !== formData.ipsecId).length > 0) {
             return Promise.reject(
               $t({ defaultMessage: 'Current SoftGRE is {softGreName} and IPsec is {ipsecName}.' }, {
                 softGreName: targetList[0].softGreName,
@@ -251,7 +296,7 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
         }
       } else {
         // only softgre
-        if (enabledIpsec) {
+        if (formData.enabledIpsec) {
           if (targetList.length === 1
             && newSoftGreIpsecList.length === 1
             && targetList[0].index === index
@@ -259,10 +304,10 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
             setNewSoftGreIpsecList(newSoftGreIpsecList.map(p => {
               return {
                 actionLevel: p.actionLevel,
-                softGreId: softGreId,
-                softGreName: softGreName,
-                ipsecId: ipsecId,
-                ipsecName: ipsecName,
+                softGreId: formData.softGreId,
+                softGreName: formData.softGreName,
+                ipsecId: formData.ipsecId,
+                ipsecName: formData.ipsecName,
                 isChangable: true,
                 index: index,
                 apModel: apModel
@@ -277,7 +322,7 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
           }
         }
       }
-      if (!enabledSoftGre && softGreEditable) {
+      if (!formData.enabledSoftGre && softGreEditable) {
         // disable softgre (ipsec)
         if (isVenueOperation) {
           if (newSoftGreIpsecList.filter(boundProfile =>
@@ -299,22 +344,22 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
       if (isVenueOperation) {
         if (newSoftGreIpsecList.filter(boundProfile =>
           index === boundProfile.index && boundProfile.apModel === apModel).length === 0) {
-          if (enabledIpsec) {
+          if (formData.enabledIpsec) {
             setNewSoftGreIpsecList([...newSoftGreIpsecList, {
               actionLevel: isVenueOperation ? ActionLevelEnum.VENUE : ActionLevelEnum.AP,
-              softGreId: softGreId,
-              softGreName: softGreName,
-              ipsecId: ipsecId,
-              ipsecName: ipsecName,
+              softGreId: formData.softGreId,
+              softGreName: formData.softGreName,
+              ipsecId: formData.ipsecId,
+              ipsecName: formData.ipsecName,
               isChangable: true,
               index: index,
               apModel: apModel
             }])
-          } else if (enabledSoftGre) {
+          } else if (formData.enabledSoftGre) {
             setNewSoftGreIpsecList([...newSoftGreIpsecList, {
               actionLevel: isVenueOperation ? ActionLevelEnum.VENUE : ActionLevelEnum.AP,
-              softGreId: softGreId,
-              softGreName: softGreName,
+              softGreId: formData.softGreId,
+              softGreName: formData.softGreName,
               ipsecId: undefined,
               ipsecName: undefined,
               isChangable: true,
@@ -325,24 +370,25 @@ export const SoftGreIpSecState = (venueId: string, isVenueOperation = true) => {
         }
       } else {
         if (newSoftGreIpsecList.filter(boundProfile => index === boundProfile.index).length === 0) {
-          if (enabledIpsec) {
+          if (formData.enabledIpsec) {
             setNewSoftGreIpsecList([...newSoftGreIpsecList, {
               actionLevel: isVenueOperation ? ActionLevelEnum.VENUE : ActionLevelEnum.AP,
-              softGreId: softGreId,
-              softGreName: softGreName,
-              ipsecId: ipsecId,
-              ipsecName: ipsecName,
+              softGreId: formData.softGreId,
+              softGreName: formData.softGreName,
+              ipsecId: formData.ipsecId,
+              ipsecName: formData.ipsecName,
               isChangable: true,
               index: index
             }])
-          } else if (enabledSoftGre) {
+          } else if (formData.enabledSoftGre) {
             setNewSoftGreIpsecList([...newSoftGreIpsecList, {
               actionLevel: isVenueOperation ? ActionLevelEnum.VENUE : ActionLevelEnum.AP,
-              softGreId: softGreId,
-              softGreName: softGreName,
+              softGreId: formData.softGreId,
+              softGreName: formData.softGreName,
               ipsecId: undefined,
               ipsecName: undefined,
-              isChangable: true
+              isChangable: true,
+              index: index
             }])
           }
         }

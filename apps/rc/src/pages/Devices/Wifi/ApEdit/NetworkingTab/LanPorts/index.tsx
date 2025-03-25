@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
+import { SoftGreIpsecStateProps }               from 'libs/rc/shared/components/src/SoftGRETunnelSettings/SoftGreIpSecState'
 import { cloneDeep, isObject }                  from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
@@ -166,7 +167,7 @@ export function LanPorts (props: ApEditItemProps) {
     isVenueBoundIpsec,
     boundSoftGreIpsecList,
     softGreIpsecProfileValidator
-  } = SoftGreIpSecState(venueId!, false)
+  } = SoftGreIpSecState( { venueId, isVenueOperation: false, formRef } as SoftGreIpsecStateProps)
 
   const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
@@ -253,19 +254,24 @@ export function LanPorts (props: ApEditItemProps) {
   const onTabChange = async (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
     const form = formRef?.current as StepsFormLegacyInstance
-    form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
-      .then(async () => {
-        try {
-          // eslint-disable-next-line no-console
-          console.log('onTabChange:', tabIndex)
-          setActiveTabIndex(tabIndex)
-          setLanPortIdx(tabIndex)
-          setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(error)
-        }
-      }).catch(() => {})
+    form.validateFields().then((m) => {
+      // eslint-disable-next-line no-console
+      console.log('validSuccess:',m)
+      try {
+        setActiveTabIndex(tabIndex)
+        setLanPortIdx(tabIndex)
+        setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error)
+      }
+    }).catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error(e)
+      setActiveTabIndex(lanPortIdx)
+      setLanPortIdx(lanPortIdx)
+      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[lanPortIdx] as LanPort)
+    })
   }
   const handleCustomize = async (useVenueSettings: boolean) => {
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting

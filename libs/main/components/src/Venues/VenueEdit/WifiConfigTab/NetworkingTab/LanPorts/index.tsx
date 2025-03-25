@@ -2,6 +2,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
+import { SoftGreIpsecStateProps }                        from 'libs/rc/shared/components/src/SoftGRETunnelSettings/SoftGreIpSecState'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
@@ -235,7 +236,7 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     isVenueBoundIpsec,
     boundSoftGreIpsecList,
     softGreIpsecProfileValidator
-  } = SoftGreIpSecState(venueId!, true)
+  } = SoftGreIpSecState({ venueId, isVenueOperation: true } as SoftGreIpsecStateProps)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
