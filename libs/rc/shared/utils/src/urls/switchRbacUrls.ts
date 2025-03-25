@@ -496,5 +496,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/rearDetails?unitid=:unitId',
     newApi: true
+  },
+  updatePortDisableRecovery: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/portDisableRecoverySetting',
+    newApi: true
   }
 }
