@@ -502,6 +502,7 @@ describe('SwitchTable', () => {
       )
     )
 
+    expect(await screen.findByRole('table')).toBeVisible()
     const tbody = await findTBody()
     const rows = await within(tbody).findAllByRole('row')
     expect(within(rows[0]).getByRole('cell', { name: 'FEK4224R19X' })).toBeVisible() // select ap 1: operational
