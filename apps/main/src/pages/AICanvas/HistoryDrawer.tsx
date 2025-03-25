@@ -218,6 +218,8 @@ export default function HistoryDrawer (props: DrawerProps) {
       children={content}
       placement={'left'}
       width={'320px'}
+      mask={true}
+      maskClosable={true}
     />
   )
 }
