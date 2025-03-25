@@ -28,6 +28,7 @@ interface WidgetListProps {
   visible?: boolean
   setVisible?: (v: boolean) => void
   groups?: Group[]
+  removeShadowCard?: ()=>void
 }
 
 interface WidgetCategory {
@@ -111,7 +112,7 @@ export const getChartConfig = (data: WidgetListData) => {
   return ChartConfig[data.chartType]
 }
 
-export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups }) => {
+export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups, removeShadowCard }) => {
   const { $t } = useIntl()
   const canDragtoCanvas = () => {
     if(groups) {
@@ -148,6 +149,11 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data, groups }) => {
         ...(data.chartType? getChartConfig(data) : [])
       }
       return dragCard
+    },
+    end: (item, monitor) => {
+      if (!monitor.didDrop() && removeShadowCard) {
+        removeShadowCard()
+      }
     }
   })
 
@@ -294,7 +300,11 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
     } else if(type === 'bar') {
       return <BarChart
         style={{ width: width-30, height: height-5 }}
-        grid={{ right: '10px', top: chartData?.multiseries ? '15%': '0' }}
+        grid={{
+          right: '10px',
+          top: chartData?.multiseries ? '15%': '0'
+        }}
+        disableLegend={data.type !== 'card'}
         data={(chartData?.chartOption || []) as BarChartData}
         barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
           ? 8 : undefined}

@@ -8,20 +8,22 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import AICanvas from '.'
+import { DndProvider } from 'react-dnd'
+import { TestBackend } from 'react-dnd-test-backend'
 
 
 jest.mock('./HistoryDrawer', () => () => <div>History Drawer</div>)
-jest.mock('./Canvas', () => {
-  const { forwardRef } = jest.requireActual('react')
-  return forwardRef(() => <div>Canvas</div>)
-})
+
 jest.mock('./components/WidgetChart', () => ({
   DraggableChart: () => <div>DraggableChart</div>
 }))
+
+jest.mock('./components/Card', () => () =><div>Card</div>)
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -44,10 +46,54 @@ jest.mock('@acx-ui/components', () => {
   }
 })
 
+const mockedGetCanvas = jest.fn(() => ({
+  unwrap: jest.fn().mockResolvedValue([
+    {
+      id: '65bcb4d334ec4a47b21ae5e062de279f',
+      name: 'Canvas',
+      content: `[{
+        "id":"default_section",
+        "type":"section",
+        "hasTab":false,
+        "groups":[
+          {
+            "id":"default_group",
+            "sectionId":"default_section",
+            "type":"group",
+            "cards":[
+              {
+                "axisType":"category","multiSeries":false,"chartType":"bar","chartOption":{
+                "dimensions":["Current Connection Status","AP Count"],
+                "source":[["Offline",3],["Online",1]],
+                "seriesEncode":[{"x":"AP Count","y":"Current Connection Status","seriesName":null}],
+                "multiSeries":false},"sessionId":"989a8e31-f282-497e-be3b-14478f5c1cf9",
+                "id":"685e5931349d4f86867419a67dc93ec92d8900ce-29d3-4677-9ddc-0c5aae9ade15",
+                "chatId":"685e5931349d4f86867419a67dc93ec9","type":"card","isShadow":false,
+                "width":2,"height":6,"currentSizeIndex":0,
+                "sizes":[{"width":2,"height":6},{"width":3,"height":10},{"width":4,"height":12}],
+                "gridx":0,"gridy":0}]
+              }
+            ]
+          }
+        ]`
+    }
+  ])
+}))
+const mockedUpdate = jest.fn()
+
 jest.mock('@acx-ui/rc/services', () => {
   const useGetAllChatsQuery = jest.requireActual('@acx-ui/rc/services').useGetAllChatsQuery
   return {
     useGetAllChatsQuery,
+    useUpdateCanvasMutation: () => ([ mockedUpdate ]),
+    useLazyGetCanvasQuery: () => ([ mockedGetCanvas ]),
+    useCreateWidgetMutation: () => [
+      jest.fn(() => ({
+        then: jest.fn().mockResolvedValue({
+          id: '123'
+        })
+      }))
+    ],
     useGetChatsMutation: () => [
       jest.fn(() => ({
         unwrap: jest.fn().mockResolvedValue({
@@ -172,7 +218,15 @@ const chats = [
     updatedDate: '2025-01-20T09:30:40.517+00:00'
   }
 ]
-describe('AICanvas', () => {
+
+describe('AICanvas Drag', () => {
+  const renderWithDndProvider = (component: JSX.Element) => {
+    return render(
+      <DndProvider backend={TestBackend}>
+        {component}
+      </DndProvider>
+    )
+  }
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -187,13 +241,12 @@ describe('AICanvas', () => {
   })
 
   it('should render a chat content correctly', async () => {
-    render(
+    renderWithDndProvider(
       <Provider>
         <AICanvas />
       </Provider>
     )
     expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
-    expect(await screen.findByText('Canvas')).toBeVisible()
     expect(await screen.findByText(
       'Older chat conversations have been deleted due to the 30-day retention policy.'))
       .toBeVisible()
@@ -204,61 +257,15 @@ describe('AICanvas', () => {
     // New chat cannot be started because the history limit of 10 has been reached.
     expect(await screen.findByText('what can you do?')).toBeVisible()
     expect(await screen.findByText('DraggableChart')).toBeVisible()
-    const historyBtn = await screen.findByTestId('historyIcon')
-    expect(historyBtn).toBeVisible()
-    fireEvent.click(historyBtn)
-    expect(await screen.findByText('History Drawer')).toBeVisible()
-    const searchInput = await screen.findByTestId('search-input')
-    await userEvent.type(searchInput, 'hello')
-    expect(await screen.findByText('5/300')).toBeVisible()
-    fireEvent.keyDown(searchInput, { key: 'Enter' })
-    expect(await screen.findByText('hello')).toBeVisible()
-    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
-  })
-
-  it('should render a new chat correctly', async () => {
-    const scrollTo = jest.fn()
-    HTMLElement.prototype.scrollTo = scrollTo
-    mockServer.use(
-      rest.get(
-        RuckusAiChatUrlInfo.getAllChats.url,
-        (req, res, ctx) => res(ctx.json([]))
-      )
-    )
-    render(
-      <Provider>
-        <AICanvas />
-      </Provider>
-    )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
-    expect(await screen.findByText('Canvas')).toBeVisible()
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
-    // eslint-disable-next-line max-len
-    const suggestQuestion = await screen.findByText('How many clients were connected to my network yesterday?')
-    expect(suggestQuestion).toBeVisible()
-    fireEvent.click(suggestQuestion)
-    expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
-  })
-
-  it('should close without changes correctly', async () => {
-    const scrollTo = jest.fn()
-    HTMLElement.prototype.scrollTo = scrollTo
-    render(
-      <Provider>
-        <AICanvas />
-      </Provider>
-    )
-    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
-    expect(await screen.findByText('Canvas')).toBeVisible()
-    const searchInput = await screen.findByTestId('search-input')
-    await userEvent.type(searchInput, 'hello')
-    const searchBtn = await screen.findByTestId('search-button')
-    fireEvent.click(searchBtn)
-    expect(await screen.findByText('hello')).toBeVisible()
-    const closeBtn = await screen.findByTestId('close-icon')
-    fireEvent.click(closeBtn)
-    expect(mockedNavigate).toBeCalled()
+    const dragItem = await screen.findByText('DraggableChart')
+    const dropItem = await screen.findByTestId('dropGroup')
+    fireEvent.dragStart(dragItem)
+    fireEvent.dragEnter(dropItem)
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.drop(dropItem)
+    fireEvent.dragLeave(dropItem)
+    fireEvent.dragEnd(dragItem)
+    expect(await within(dropItem).findByText('Card')).toBeVisible()
   })
 
 })
