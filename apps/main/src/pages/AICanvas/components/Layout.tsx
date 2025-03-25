@@ -189,6 +189,31 @@ export default function Layout (props: LayoutProps) {
     setShadowCard({} as CardInfo)
   }
 
+  const removeShadowCard = (groupIndex: number) => {
+    const groupsTmp = _.cloneDeep(groups)
+    const { compactType } = props
+    groupsTmp[groupIndex].cards = groupsTmp[groupIndex].cards
+      .filter((item) => item.id !== shadowCard.id)
+      // Remove shadows from all cards within all groups.
+    utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
+    // Recompress the layout horizontally within the target group, and due to cross-group dependencies,
+    // all groups must be compressed.
+    _.forEach(groupsTmp, (g, i) => {
+      if (compactType === 'horizontal') {
+        let compactedLayout = compactLayoutHorizontal(
+          groupsTmp[i].cards,
+          layout.col, null
+        )
+        g.cards = compactedLayout
+      } else if (compactType === 'vertical') {
+        let compactedLayout = compactLayout(groupsTmp[i].cards)
+        g.cards = compactedLayout
+      }
+    })
+    setGroups(groupsTmp)
+    setShadowCard({} as CardInfo)
+  }
+
   const deleteCard = (id: string, groupIndex:number) => {
     let cards = groups[groupIndex].cards.filter((item) => item.id !== id)
     let compactedLayout = compactLayoutHorizontal(cards, 4, null)
@@ -251,6 +276,7 @@ export default function Layout (props: LayoutProps) {
               updateGroupList={setGroups}
               handleLoad={handleLoad}
               deleteCard={deleteCard}
+              removeShadowCard={removeShadowCard}
             /> : <></>)
           }
           {/* </>
