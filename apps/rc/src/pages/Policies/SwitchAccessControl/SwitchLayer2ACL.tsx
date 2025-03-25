@@ -175,7 +175,7 @@ export function SwitchLayer2ACL () {
       rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
-          navigate(basePath.pathname + `/${selectedRows[0].id}/edit`, {
+          navigate(basePath.pathname + `/layer2/${selectedRows[0].id}/edit`, {
             replace: true
           })
         }

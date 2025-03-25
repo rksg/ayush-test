@@ -73,8 +73,8 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   const [updateAccessControl] = useUpdateLayer2AclMutation()
   const [getAccessControls] = useLazyGetLayer2AclsQuery()
   const { data, isLoading, isFetching } = useGetLayer2AclByIdQuery(
-    { params: { accessControlId: accessControlId || layer2AclId },
-      skip: !accessControlId && !layer2AclId })
+    { params: { accessControlId: accessControlId || layer2AclId } },
+    { skip: !editMode })
 
   useEffect(() => {
     if(data) {

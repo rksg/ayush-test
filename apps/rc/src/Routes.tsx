@@ -1651,6 +1651,15 @@ function PolicyRoutes () {
           }
         />
         <Route
+          path='policies/accessControl/switch/:accessControlId/edit'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>
+              <SwitchAccessControlSetForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
           path='policies/accessControl/switch/layer2/add'
           element={
             // eslint-disable-next-line max-len
@@ -1660,7 +1669,7 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path='policies/accessControl/switch/:accessControlId/edit'
+          path='policies/accessControl/switch/layer2/:accessControlId/edit'
           element={
             // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>

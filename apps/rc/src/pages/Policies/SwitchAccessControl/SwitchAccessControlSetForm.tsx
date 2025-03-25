@@ -7,13 +7,13 @@ import styled                                  from 'styled-components/macro'
 import {
   GridCol,
   GridRow,
-  Loader,
   Drawer,
   PageHeader,
   StepsForm } from '@acx-ui/components'
 import {
   useGetLayer2AclsQuery,
   useAddSwitchAccessControlSetMutation,
+  useGetSwitchAccessControlSetByIdQuery,
   useLazyGetSwitchAccessControlSetQuery,
   useUpdateSwitchAccessControlSetMutation
 } from '@acx-ui/rc/services'
@@ -82,13 +82,35 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const [addAccessControl] = useAddSwitchAccessControlSetMutation()
   const [updateAccessControl] = useUpdateSwitchAccessControlSetMutation()
   const [getAccessControls] = useLazyGetSwitchAccessControlSetQuery()
-  const { data, isLoading, isFetching } = useGetLayer2AclsQuery(
-    { payload }, { skip: !drawerEditMode })
+
+  const { data: layer2ProfileList } = useGetLayer2AclsQuery(
+    { payload }, { skip: !layer2ProfileVisible })
+
+  const { data } = useGetSwitchAccessControlSetByIdQuery(
+    { params: { accessControlId } }, { skip: !editMode })
 
   const layer2AclId = Form.useWatch('layer2AclName', form)
 
   useEffect (() => {
-  }, [layer2AclId])
+    if(data){
+      form.setFieldsValue([{
+        policyName: data?.policyName,
+        description: data?.description
+      }])
+
+      if(data?.layer2AclPolicyName){
+        setLayer2ProfileVisible(true)
+      }
+    }
+
+    if(layer2ProfileList){
+      if(data?.layer2AclPolicyName){
+        form.setFieldValue('layer2AclPolicyName', layer2ProfileList?.data?.find(
+          item => item.name === data?.layer2AclPolicyName)?.name)
+      }
+    }
+  }, [data, layer2ProfileList])
+
   const onCancel = () => {
     navigate(switchAccessControlLink, { replace: true })
   }
@@ -150,7 +172,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
           title={$t({ defaultMessage: 'Settings' })}
         >
           <Form.Item
-            name='name'
+            name='policyName'
             label={$t({ defaultMessage: 'MAC ACL Name' })}
             rules={[
               { required: true, message: 'Please enter MAC ACL name' },
@@ -199,7 +221,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                           <Select
                             style={{ width: '150px' }}
                             placeholder={$t({ defaultMessage: 'Select profile...' })}
-                            options={data?.data?.map(
+                            options={layer2ProfileList?.data?.map(
                               item => ({ label: item.name, value: item.id }))}
                           />
                         }
@@ -249,13 +271,11 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
         width={800}
         destroyOnClose={true}
       >
-        <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
-          <SwitchLayer2ACLForm
-            editMode={drawerEditMode}
-            layer2AclId={drawerEditMode ? layer2AclId : undefined}
-            drawerOnClose={() => setDrawerVisible(false)}
-          />
-        </Loader>
+        <SwitchLayer2ACLForm
+          editMode={drawerEditMode}
+          layer2AclId={drawerEditMode ? layer2AclId : undefined}
+          drawerOnClose={() => setDrawerVisible(false)}
+        />
       </Drawer>
       }
     </>

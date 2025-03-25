@@ -9,7 +9,7 @@ import {
   showActionModal,
   Button } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { useUpdateSwitchAccessControlSetMutation, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
+import { useDeleteSwitchAccessControlSetMutation, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
   SwitchAccessControl,
   SwitchRbacUrlsInfo,
@@ -33,7 +33,7 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
   const { setAccessControlCount } = props
   const settingsId = 'switch-access-control-set'
 
-  const [deleteAccessControl] = useUpdateSwitchAccessControlSetMutation()
+  const [deleteAccessControl] = useDeleteSwitchAccessControlSetMutation()
   const [aclName, setAclName] = React.useState('')
   const [layer2ACLDetailVisible, setLayer2ACLDetailVisible] = React.useState(false)
 
@@ -90,7 +90,9 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
           type='link'
           size='small'
           onClick={() => {
-            setAclName(row.layer2AclPolicyName)
+            if(row?.layer2AclPolicyName){
+              setAclName(row?.layer2AclPolicyName)
+            }
             setLayer2ACLDetailVisible(true)
           }}>
           {row.layer2AclPolicyName}
@@ -135,7 +137,7 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
               selectedRows.map(row =>
                 deleteAccessControl({
                   params: {
-                    l2AclId: row.id
+                    accessControlId: row.id
                   }
                 })
               )
