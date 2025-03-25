@@ -20,7 +20,7 @@ export enum ReportType {
   RSS_TRAFFIC = 'rssTraffic',
   RSS_SESSION = 'rssSession',
   WIRELESS_AIRTIME = 'wirelessAirtime',
-  TRAFFIC_APPLICTION = 'trafficApplications'
+  TRAFFIC_APPLICATION = 'trafficApplications'
 }
 
 export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
@@ -44,7 +44,7 @@ export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
   defineMessage({ defaultMessage: 'Wireless : RSS and Session by Access Points' }),
   [ReportType.WIRELESS_AIRTIME]:
   defineMessage({ defaultMessage: 'Wireless : Airtime by Access Points' }),
-  [ReportType.TRAFFIC_APPLICTION]:
+  [ReportType.TRAFFIC_APPLICATION]:
   defineMessage({ defaultMessage: 'Wireless : Traffic by Applications and Access Points' })
 }
 
@@ -66,7 +66,7 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.RSS_TRAFFIC]: 'Wireless RSS and Traffic',
   [ReportType.RSS_SESSION]: 'Wireless RSS and Session',
   [ReportType.WIRELESS_AIRTIME]: 'Wireless Airtime',
-  [ReportType.TRAFFIC_APPLICTION]: 'Wireless Traffic and Application'
+  [ReportType.TRAFFIC_APPLICATION]: 'Wireless Traffic and Application'
 }
 
 export const reportTypeMapping: Record<ReportType, FilterMode> = {
@@ -87,7 +87,7 @@ export const reportTypeMapping: Record<ReportType, FilterMode> = {
   [ReportType.RSS_TRAFFIC]: 'ap',
   [ReportType.RSS_SESSION]: 'ap',
   [ReportType.WIRELESS_AIRTIME]: 'ap',
-  [ReportType.TRAFFIC_APPLICTION]: 'ap'
+  [ReportType.TRAFFIC_APPLICATION]: 'ap'
 }
 
 export const bandDisabledReports:ReportType[] = [

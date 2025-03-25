@@ -35,7 +35,7 @@ export default function ReportsRoutes () {
     rssTraffic: <Report type={ReportType.RSS_TRAFFIC} />,
     rssSession: <Report type={ReportType.RSS_SESSION} />,
     wirelessAirtime: <Report type={ReportType.WIRELESS_AIRTIME} />,
-    trafficApplications: <Report type={ReportType.TRAFFIC_APPLICTION} />
+    trafficApplications: <Report type={ReportType.TRAFFIC_APPLICATION} />
   }
 
   const routes = rootRoutes(
