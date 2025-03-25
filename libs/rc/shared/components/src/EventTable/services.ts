@@ -67,7 +67,8 @@ const defaultPayload = {
     'action',
     'macOui',
     'lldpTlv',
-    'macAclName'
+    'macAclName',
+    'accessControlProfileName'
   ]
 }
 

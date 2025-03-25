@@ -6,12 +6,11 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-// import { SwitchAccessControlSet }    from './SwitchAccessControlSet'
-import { SwitchLayer2ACL } from './SwitchLayer2ACL'
+import { SwitchAccessControlSet } from './SwitchAccessControlSet'
+import { SwitchLayer2ACL }        from './SwitchLayer2ACL'
 
 export function SwitchAccessControl () {
   const { activeSubTab } = useParams()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [accessControlCount, setAccessControlCount] = useState(0)
   const basePath = useTenantLink('/policies/accessControl/switch')
 
@@ -45,7 +44,7 @@ export function SwitchAccessControl () {
   }
 
   const tabs = {
-    list: () => <></>,
+    list: () => <SwitchAccessControlSet setAccessControlCount={setAccessControlCount}/>,
     layer2: () => <SwitchLayer2ACL />
   }
 

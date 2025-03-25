@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { Col }     from 'antd'
 import Row         from 'antd/lib/row'
@@ -12,11 +11,16 @@ import {
   Button,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { useDeleteAccessControlMutation, useGetAccessControlsListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useDeleteLayer2AclMutation, useGetLayer2AclsQuery } from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
+  getScopeKeyByPolicy,
   MacAcl,
   macAclRulesParser,
+  PolicyOperation,
+  PolicyType,
   SwitchRbacUrlsInfo,
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -31,13 +35,10 @@ export function SwitchLayer2ACL () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const settingsId = 'switch-layer2-access-control'
 
-  const switchAccessControlPage = '/policies/accessControl/switch'
-  const switchAccessControlLink = useTenantLink(switchAccessControlPage)
-
-  const [deleteAccessControl] = useDeleteAccessControlMutation()
+  const [deleteAccessControl] = useDeleteLayer2AclMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: useGetAccessControlsListQuery,
+    useQuery: useGetLayer2AclsQuery,
     defaultPayload: {
       pagination: { settingsId }
     },
@@ -154,6 +155,19 @@ export function SwitchLayer2ACL () {
     }
   ]
 
+  const actions = [{
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE),
+    scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE),
+    label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
+    onClick: () => {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/layer2/add`
+      }, { replace: true })
+    }
+  }]
+  const allowedActions = filterByAccessForServicePolicyMutation(actions)
+
   const rowActions: TableProps<MacAcl>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -161,7 +175,7 @@ export function SwitchLayer2ACL () {
       rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
-          navigate(switchAccessControlLink.pathname + `/${selectedRows[0].id}/edit`, {
+          navigate(basePath.pathname + `/${selectedRows[0].id}/edit`, {
             replace: true
           })
         }
@@ -235,6 +249,7 @@ export function SwitchLayer2ACL () {
         onFilterChange={tableQuery.handleFilterChange}
         pagination={tableQuery.pagination}
         dataSource={tableQuery.data?.data}
+        actions={allowedActions}
         rowActions={rowActions}
         rowSelection={{
           type: 'checkbox'

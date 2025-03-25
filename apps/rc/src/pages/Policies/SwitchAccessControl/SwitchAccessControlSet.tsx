@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 
-import { Col }     from 'antd'
-import Row         from 'antd/lib/row'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,24 +7,22 @@ import {
   TableProps,
   Loader,
   showActionModal,
-  Button,
-  Tooltip
-} from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { useDeleteAccessControlMutation, useGetAccessControlsListQuery } from '@acx-ui/rc/services'
+  Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { useUpdateSwitchAccessControlSetMutation, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
-  MacAcl,
-  macAclRulesParser,
+  SwitchAccessControl,
   SwitchRbacUrlsInfo,
   useTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
 import { getOpsApi }                  from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { SwitchLayer2ACLDetail } from './SwitchLayer2ACLDetail'
+
 
 interface AccessControlSetProps {
-    setAccessControlCount: React.Dispatch<React.SetStateAction<number>>
+  setAccessControlCount: React.Dispatch<React.SetStateAction<number>>
 }
 
 export function SwitchAccessControlSet (props: AccessControlSetProps) {
@@ -37,16 +33,22 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
   const { setAccessControlCount } = props
   const settingsId = 'switch-access-control-set'
 
-  const [deleteAccessControl] = useDeleteAccessControlMutation()
+  const [deleteAccessControl] = useUpdateSwitchAccessControlSetMutation()
+  const [aclName, setAclName] = React.useState('')
+  const [layer2ACLDetailVisible, setLayer2ACLDetailVisible] = React.useState(false)
 
   const tableQuery = useTableQuery({
-    useQuery: useGetAccessControlsListQuery,
+    useQuery: useGetSwitchAccessControlSetQuery,
     defaultPayload: {
+      fields: [
+        'id',
+        'policyName'
+      ],
       pagination: { settingsId }
     },
     enableRbac: isSwitchRbacEnabled,
     sorter: {
-      sortField: 'name',
+      sortField: 'policyName',
       sortOrder: 'ASC'
     }
   })
@@ -55,11 +57,11 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
     setAccessControlCount(tableQuery.data?.data.length || 0)
   }, [tableQuery.data?.data.length, setAccessControlCount])
 
-  const columns: TableProps<MacAcl>['columns'] = [
+  const columns: TableProps<SwitchAccessControl>['columns'] = [
     {
-      key: 'name',
-      title: $t({ defaultMessage: 'ACL Name' }),
-      dataIndex: 'name',
+      key: 'accessControlPolicyName',
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'accessControlPolicyName',
       defaultSortOrder: 'ascend',
       searchable: true,
       sorter: true,
@@ -76,92 +78,28 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
             }, { replace: true })
           }}
         >
-          {row.name}
+          {row.accessControlPolicyName}
         </Button>
     },
     {
-      key: 'macAclRules',
-      title: $t({ defaultMessage: 'Rules' }),
-      dataIndex: 'macAclRules',
+      key: 'layer2AclPolicyName',
+      title: $t({ defaultMessage: 'Layer 2' }),
+      dataIndex: 'layer2AclPolicyName',
       render: (_, row) => {
-        const rules = macAclRulesParser(row.macAclRules || [])
-
-        return <Tooltip
-          title={
-            <UI.TooltipContainer>
-              <Row gutter={[8, 16]}>
-                <Col span={24}>
-                  <UI.TooltipTitle>
-                    {$t({ defaultMessage: 'Permit' })}
-                  </UI.TooltipTitle>
-                  <div>{rules.permit} {$t({ defaultMessage: 'rule(s)' })}</div>
-                </Col>
-              </Row>
-              <UI.RowSpace />
-              <Row gutter={[8, 16]}>
-                <Col span={24}>
-                  <UI.TooltipTitle>
-                    {$t({ defaultMessage: 'Deny' })}
-                  </UI.TooltipTitle>
-                  <div>{rules.deny} {$t({ defaultMessage: 'rule(s)' })}</div>
-                </Col>
-              </Row>
-            </UI.TooltipContainer>
-          }
-          dottedUnderline={row.macAclRules?.length ? true : false}
-          placement='bottom'
-        >
-          {row?.macAclRules?.length ?? 0}
-        </Tooltip>
-      }
-    },
-    {
-      key: 'switches',
-      title: $t({ defaultMessage: 'Switches' }),
-      dataIndex: 'switches',
-      render: (_, row) => {
-        if (!row.appliedSwitchesInfo || row.appliedSwitchesInfo.length === 0) return 0
-
-        const tooltipItems = Array.from(
-          new Set(row.appliedSwitchesInfo.map(item => item.switchName))
-        )
-
-        return (
-          <Tooltip
-            title={tooltipItems.map((p: string) => p).join('\n')}
-            dottedUnderline={tooltipItems.length > 0}
-            placement='bottom'
-          >
-            {tooltipItems.length}
-          </Tooltip>
-        )
-      }
-    },
-    {
-      key: 'venues',
-      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      dataIndex: 'venues',
-      render: (_, row) => {
-        if (!row.appliedSwitchesInfo || row.appliedSwitchesInfo.length === 0) return 0
-
-        const uniqueVenues = Array.from(
-          new Set(row.appliedSwitchesInfo.map(item => item.venueName))
-        )
-
-        return (
-          <Tooltip
-            title={uniqueVenues.map((p: string) => p).join('\n')}
-            dottedUnderline={uniqueVenues.length > 0}
-            placement='bottom'
-          >
-            {uniqueVenues.length}
-          </Tooltip>
-        )
+        return <Button
+          type='link'
+          size='small'
+          onClick={() => {
+            setAclName(row.layer2AclPolicyName)
+            setLayer2ACLDetailVisible(true)
+          }}>
+          {row.layer2AclPolicyName}
+        </Button>
       }
     }
   ]
 
-  const rowActions: TableProps<MacAcl>['rowActions'] = [
+  const rowActions: TableProps<SwitchAccessControl>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
@@ -185,7 +123,8 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
           type: 'confirm',
           title: $t({ defaultMessage: 'Delete {macAclTitle}?' },
             { macAclTitle: selectedRows.length === 1 ?
-              selectedRows[0].name : $t({ defaultMessage: '{totalCount} Mac ACLs' },
+              selectedRows[0].accessControlPolicyName :
+              $t({ defaultMessage: '{totalCount} Mac ACLs' },
                 { totalCount: selectedRows.length }) }),
           // eslint-disable-next-line max-len
           content: $t({ defaultMessage: 'Are you sure you want to delete {count, plural, one {} other {these}}?' }, { count: selectedRows.length }),
@@ -208,23 +147,30 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
   ]
 
   return (
-    <Loader
-      states={[tableQuery]}
-    >
-      <Table
-        settingsId={settingsId}
-        rowKey='id'
-        columns={columns}
-        type={'tall'}
-        onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
-        pagination={tableQuery.pagination}
-        dataSource={tableQuery.data?.data}
-        rowActions={rowActions}
-        rowSelection={{
-          type: 'checkbox'
-        }}
-      />
-    </Loader>
+    <>
+      <Loader
+        states={[tableQuery]}
+      >
+        <Table
+          settingsId={settingsId}
+          rowKey='id'
+          columns={columns}
+          type={'tall'}
+          onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          pagination={tableQuery.pagination}
+          dataSource={tableQuery.data?.data}
+          rowActions={rowActions}
+          rowSelection={{
+            type: 'checkbox'
+          }}
+        />
+      </Loader>
+      {layer2ACLDetailVisible && <SwitchLayer2ACLDetail
+        visible={layer2ACLDetailVisible}
+        setVisible={setLayer2ACLDetailVisible}
+        aclName={aclName}
+      />}
+    </>
   )
 }

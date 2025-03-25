@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, Loader, Table, TableProps } from '@acx-ui/components'
-import { useGetAccessControlRulesQuery }               from '@acx-ui/rc/services'
+import { useGetLayer2AclRulesQuery }                   from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MacAclRule
@@ -26,7 +26,7 @@ export default function Layer2ACLRules () {
   }
 
   const tableQuery = useTableQuery<MacAclRule>({
-    useQuery: useGetAccessControlRulesQuery,
+    useQuery: useGetLayer2AclRulesQuery,
     defaultPayload,
     sorter: { sortField: 'id', sortOrder: 'ASC' }
   })

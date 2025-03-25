@@ -66,14 +66,14 @@ export default function AccessControl () {
     ]) : hasCrossVenuesPermission() && filterByAccess([
       <TenantLink
         scopeKey={
-          getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)
+          getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
         }
         rbacOpsIds={
-          getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)
+          getPolicyAllowedOperation(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)
         }
         to={'/policies/accessControl/switch/add'}
       >
-        <Button type='primary'>{$t({ defaultMessage: 'Add Switch Access Control' })}</Button>
+        <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
       </TenantLink>
     ])
   }

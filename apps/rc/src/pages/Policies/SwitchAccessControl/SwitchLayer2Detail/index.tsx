@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs }                                                       from '@acx-ui/components'
-import { useGetAccessControlByIdQuery }                                                   from '@acx-ui/rc/services'
+import { useGetLayer2AclByIdQuery }                                                       from '@acx-ui/rc/services'
 import { getPolicyAllowedOperation, PolicyType, PolicyOperation, getPolicyListRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink }                              from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                                                   from '@acx-ui/types'
@@ -54,7 +54,7 @@ export function SwitchLayer2Detail () {
   const { accessControlId, activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   const accessControlRoute = getPolicyListRoutePath(true) + '/accessControl/switch'
-  const { data } = useGetAccessControlByIdQuery({ params: { accessControlId } })
+  const { data } = useGetLayer2AclByIdQuery({ params: { accessControlId } })
 
   const getConfigureButton = () => {
     return (

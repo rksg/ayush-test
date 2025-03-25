@@ -135,6 +135,7 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
+import { SwitchAccessControlSetForm }                                   from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetForm'
 import { SwitchLayer2ACLForm }                                          from './pages/Policies/SwitchAccessControl/SwitchLayer2ACLForm'
 import { SwitchLayer2Detail }                                           from './pages/Policies/SwitchAccessControl/SwitchLayer2Detail'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
@@ -1633,10 +1634,24 @@ function PolicyRoutes () {
         />
         <Route
           path='policies/accessControl/wifi/create'
-          element={<AccessControlForm editMode={false}/>}
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <AccessControlForm editMode={false}/>
+            </AuthRoute>
+          }
         />
         <Route
           path='policies/accessControl/switch/add'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <SwitchAccessControlSetForm editMode={false} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/add'
           element={
             // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)}>

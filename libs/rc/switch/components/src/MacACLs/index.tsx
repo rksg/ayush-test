@@ -75,8 +75,15 @@ export function MacACLs (props: {
       key: 'sharedWithPolicyAndProfile',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'sharedWithPolicyAndProfile',
-      render: (_, row) => row.customized ?
-        $t({ defaultMessage: 'Customized' }) : $t({ defaultMessage: 'Shared' })
+      render: (_, row) => {
+        if (row.customized && row.sharedWithPolicyAndProfile) {
+          return $t({ defaultMessage: 'Customized' })
+        } else if (!row.customized && row.sharedWithPolicyAndProfile) {
+          return $t({ defaultMessage: 'Shared' })
+        } else {
+          return '- -'
+        }
+      }
     }
   ]
 

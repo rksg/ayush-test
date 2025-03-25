@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Button, Form, Input, Select, Switch } from 'antd'
+import { useIntl }                             from 'react-intl'
+import styled                                  from 'styled-components/macro'
 
 import {
+  GridCol,
+  GridRow,
   Loader,
   PageHeader,
   StepsForm,
@@ -28,6 +31,18 @@ import { getOpsApi }                             from '@acx-ui/utils'
 
 import { SwitchLayer2ACLDrawer } from './SwitchLayer2ACLDrawer'
 
+const AccessComponentWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 50px 190px auto;
+`
+
+const FieldLabel = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  line-height: 32px;
+  grid-template-columns: 175px 1fr;
+`
+
 interface SwitchLayer2ACLFormProps {
   editMode: boolean
 }
@@ -50,7 +65,15 @@ const defaultPayload ={
   filters: { id: [] as string[] }
 }
 
-export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
+const AclGridCol = ({ children }: { children: ReactNode }) => {
+  return (
+    <GridCol col={{ span: 6 }} style={{ marginTop: '6px' }}>
+      {children}
+    </GridCol>
+  )
+}
+
+export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const { editMode } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -58,6 +81,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   const { accessControlId } = useParams()
   const [dataSource, setDataSource] = useState<MacAclRule[]>()
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [layer2ProfileVisible, setLayer2ProfileVisible] = useState(false)
   const [selectedRow, setSelectedRow] = useState<MacAclRule>()
 
   const switchAccessControlPage = '/policies/accessControl/switch/layer2'
@@ -237,19 +261,84 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
             >
               <Input disabled={editMode} style={{ width: '400px' }} />
             </Form.Item>
-            <Table
-              dataSource={dataSource}
-              columns={columns}
-              rowActions={rowActions}
-              rowSelection={{
-                type: 'checkbox'
-              }}
-              actions={[{
-                label: $t({ defaultMessage: 'Add Rule' }),
-                onClick: () => handleAddRule()
-              }]}
-              pagination={{ pageSize: 10000 }}
-              rowKey='key' />
+            <Form.Item
+              name='description'
+              label={$t({ defaultMessage: 'Description' })}
+              initialValue={''}
+              rules={[
+                { min: 1, transform: (value) => value.trim() },
+                { max: 255, transform: (value) => value.trim() }
+              ]}
+              children={<Input.TextArea
+                rows={4}
+                maxLength={180}
+                style={{ width: '400px' }}
+              />}
+            />
+            <Form.Item
+              name='accessControlComponent'
+              label={$t({ defaultMessage: 'Access Control Components' })}
+              children={
+                <FieldLabel>
+                  {$t({ defaultMessage: 'Layer 2' })}
+                  <AccessComponentWrapper>
+                    <Form.Item
+                      style={{ marginBottom: '10px' }}
+                      valuePropName='checked'
+                      initialValue={false}
+                      children={<Switch />}
+                    />
+                    <GridRow style={{ width: '350px' }}>
+                      <GridCol col={{ span: 12 }}>
+                        <Form.Item
+                          name={['layer2AclName']}
+                          rules={[{
+                            required: true,
+                            message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+                          }]}
+                          children={
+                            <Select
+                              style={{ width: '150px' }}
+                              placeholder={$t({ defaultMessage: 'Select profile...' })}
+                              disabled={layer2ProfileVisible}
+                              onChange={(value) => {
+
+                              }}
+                              children={[]}
+                            />
+                          }
+                        />
+                      </GridCol>
+                      <AclGridCol>
+                        {/* {hasEditPermission && */}
+                        <Button type='link'
+                          onClick={() => {
+                            // if (l2AclPolicyId) {
+                            //   setDrawerVisible(true)
+                            //   setQueryPolicyId(l2AclPolicyId)
+                            //   setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+                            // }
+                          }
+                          }>
+                          {$t({ defaultMessage: 'Edit Details' })}
+                        </Button>
+                        {/* } */}
+                      </AclGridCol>
+                      <AclGridCol>
+                        {/* {hasCreatePermission && */}
+                        <Button type='link'
+                          onClick={() => {
+                            // setDrawerVisible(true)
+                            // setQueryPolicyId('')
+                          }}>
+                          {$t({ defaultMessage: 'Add New' })}
+                        </Button>
+                        {/* } */}
+                      </AclGridCol>
+                    </GridRow>
+                  </AccessComponentWrapper>
+                </FieldLabel>}
+            />
           </StepsForm.StepForm>
         </StepsForm>
       </Loader>

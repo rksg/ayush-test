@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useGetAccessControlOverviewQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
+import { useGetLayer2AclOverviewQuery, useVenuesListQuery }           from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MacAclOverview
@@ -33,7 +33,7 @@ export default function Layer2ACLOverview () {
   })
 
   const tableQuery = useTableQuery<MacAclOverview>({
-    useQuery: useGetAccessControlOverviewQuery,
+    useQuery: useGetLayer2AclOverviewQuery,
     defaultPayload,
     search: {
       searchString: '',

@@ -1105,6 +1105,12 @@ export interface PortDisableRecoverySettingForm {
   recoverySetting: PortDisableRecoverySetting,
 }
 
+export interface SwitchAccessControl {
+  id: string,
+  accessControlPolicyName: string,
+  layer2AclPolicyName: string
+}
+
 export interface MacAclRule {
 	id?: string,
   key?: string,

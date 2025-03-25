@@ -798,42 +798,42 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/portDisableRecoverySetting',
     newApi: true
   },
-  getAccessControls: {
+  getLayer2Acls: {
     method: 'post',
     url: '/switchL2AclPolicies/query',
     newApi: true
   },
-  getAccessControlById: {
+  getLayer2AclById: {
     method: 'get',
     url: '/switchL2AclPolicies/:accessControlId',
     newApi: true
   },
-  getAccessControlRules: {
+  getLayer2AclRules: {
     method: 'post',
     url: '/switchL2AclPolicies/l2AclPolicyRules/:accessControlId',
     newApi: true
   },
-  getAccessControlOverview: {
+  getLayer2AclOverview: {
     method: 'post',
     url: '/switchL2AclPolicies/:accessControlId/appliedSwitches/query',
     newApi: true
   },
-  getAccessControlsCount: {
+  getLayer2AclsCount: {
     method: 'get',
     url: '/switchL2AclPolicies/totalAmount',
     newApi: true
   },
-  addAccessControl: {
+  addLayer2Acl: {
     method: 'post',
     url: '/switchL2AclPolicies',
     newApi: true
   },
-  updateAccessControl: {
+  updateLayer2Acl: {
     method: 'put',
     url: '/switchL2AclPolicies/:l2AclId',
     newApi: true
   },
-  deleteAccessControl: {
+  deleteLayer2Acl: {
     method: 'delete',
     url: '/switchL2AclPolicies/:l2AclId',
     newApi: true
@@ -861,6 +861,31 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchStickyMacAcls: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/stickyMacAcls/query',
+    newApi: true
+  },
+  getSwitchAccessControlSetById: {
+    method: 'get',
+    url: '/switchAccessControlProfiles/:accessControlId',
+    newApi: true
+  },
+  getSwitchAccessControlSet: {
+    method: 'post',
+    url: '/switchAccessControlProfiles/query',
+    newApi: true
+  },
+  addSwitchAccessControlSet: {
+    method: 'post',
+    url: '/switchAccessControlProfiles',
+    newApi: true
+  },
+  updateSwitchAccessControlSet: {
+    method: 'put',
+    url: '/switchAccessControlProfiles/:accessControlId',
+    newApi: true
+  },
+  deleteSwitchAccessControlSet: {
+    method: 'delete',
+    url: '/switchAccessControlProfiles/:accessControlId',
     newApi: true
   }
 }

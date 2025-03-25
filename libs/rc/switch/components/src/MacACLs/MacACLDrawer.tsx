@@ -13,7 +13,7 @@ import {
 import {
   useAddSwitchMacAclMutation,
   useUpdateSwitchMacAclMutation,
-  useGetAccessControlsListQuery,
+  useGetLayer2AclsQuery,
   useLazyGetSwitchMacAclsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -76,7 +76,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   const [addSwitchMacAcl] = useAddSwitchMacAclMutation()
   const [updateSwitchMacAcl] = useUpdateSwitchMacAclMutation()
   const tableQuery = useTableQuery({
-    useQuery: useGetAccessControlsListQuery,
+    useQuery: useGetLayer2AclsQuery,
     defaultPayload: {
       filters: {
         name: [macACLData?.name]
@@ -342,7 +342,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           rowSelection={customized ? {
             type: 'checkbox'
           } : undefined}
-          actions={customized ? [{
+          actions={customized || !editMode ? [{
             label: $t({ defaultMessage: 'Add Rule' }),
             onClick: () => handleAddRule()
           }] : undefined}
