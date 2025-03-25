@@ -820,7 +820,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getLayer2AclsCount: {
     method: 'get',
-    url: '/switchL2AclPolicies/totalAmount',
+    url: '/switchL2AclPolicies/totalAmounts',
     newApi: true
   },
   addLayer2Acl: {

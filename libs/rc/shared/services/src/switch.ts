@@ -2456,6 +2456,7 @@ export const {
   useDeleteSwitchMacAclMutation,
   useGetSwitchStickyMacAclsQuery,
   useGetSwitchAccessControlSetQuery,
+  useLazyGetSwitchAccessControlSetQuery,
   useGetSwitchAccessControlSetByIdQuery,
   useAddSwitchAccessControlSetMutation,
   useUpdateSwitchAccessControlSetMutation,

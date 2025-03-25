@@ -30,6 +30,8 @@ import { SwitchLayer2ACLDrawer } from './SwitchLayer2ACLDrawer'
 
 interface SwitchLayer2ACLFormProps {
   editMode: boolean
+  layer2AclId?: string
+  drawerOnClose?: () => void
 }
 
 const defaultPayload ={
@@ -38,8 +40,8 @@ const defaultPayload ={
     'name'
   ],
   page: 1,
-  pageSize: 10,
-  defaultPageSize: 10,
+  pageSize: 10000,
+  defaultPageSize: 10000,
   total: 0,
   sortField: 'name',
   sortOrder: 'ASC',
@@ -51,7 +53,7 @@ const defaultPayload ={
 }
 
 export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
-  const { editMode } = props
+  const { editMode, layer2AclId, drawerOnClose } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [form] = Form.useForm()
@@ -71,7 +73,8 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   const [updateAccessControl] = useUpdateLayer2AclMutation()
   const [getAccessControls] = useLazyGetLayer2AclsQuery()
   const { data, isLoading, isFetching } = useGetLayer2AclByIdQuery(
-    { params: { accessControlId }, skip: !accessControlId })
+    { params: { accessControlId: accessControlId || layer2AclId },
+      skip: !accessControlId && !layer2AclId })
 
   useEffect(() => {
     if(data) {
@@ -182,7 +185,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     const existingACLs = response.data
 
     const duplicateACL = existingACLs.find(acl =>
-      acl.name === value && (!editMode || acl.id !== accessControlId)
+      acl.name === value && (!editMode || acl.id !== (accessControlId || layer2AclId))
     )
 
     if (duplicateACL) {
@@ -196,9 +199,12 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
 
   return (
     <>
-      <PageHeader
-        title={pageTitle}
-        breadcrumb={breadcrumb} />
+      {accessControlId &&
+        <PageHeader
+          title={pageTitle}
+          breadcrumb={breadcrumb}
+        />
+      }
       <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
         <StepsForm
           form={form}
@@ -216,11 +222,17 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
             const payload = { ...formValues, macAclRules }
 
             if (editMode) {
-              await updateAccessControl({ params: { l2AclId: accessControlId }, payload }).unwrap()
+              await updateAccessControl({
+                params: { l2AclId: (accessControlId || layer2AclId) }, payload }).unwrap()
             } else {
               await addAccessControl({ payload }).unwrap()
             }
-            navigate(switchAccessControlLink, { replace: true })
+
+            if(drawerOnClose){
+              drawerOnClose()
+            }else{
+              navigate(switchAccessControlLink, { replace: true })
+            }
           }}
         >
           <StepsForm.StepForm
@@ -234,6 +246,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
                 { required: true, message: 'Please enter MAC ACL name' },
                 { validator: validateMacAclName }
               ]}
+              validateTrigger='onBlur'
             >
               <Input disabled={editMode} style={{ width: '400px' }} />
             </Form.Item>

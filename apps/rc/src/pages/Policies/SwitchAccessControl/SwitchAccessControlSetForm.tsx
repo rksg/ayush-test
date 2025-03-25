@@ -8,28 +8,22 @@ import {
   GridCol,
   GridRow,
   Loader,
+  Drawer,
   PageHeader,
-  StepsForm,
-  Table,
-  TableProps
-} from '@acx-ui/components'
+  StepsForm } from '@acx-ui/components'
 import {
-  useAddLayer2AclMutation,
-  useGetLayer2AclByIdQuery,
-  useLazyGetLayer2AclsQuery,
-  useUpdateLayer2AclMutation
+  useGetLayer2AclsQuery,
+  useAddSwitchAccessControlSetMutation,
+  useLazyGetSwitchAccessControlSetQuery,
+  useUpdateSwitchAccessControlSetMutation
 } from '@acx-ui/rc/services'
 import {
-  MacAclRule,
+  MacAcl,
   PolicyType,
-  usePolicyListBreadcrumb,
-  SwitchRbacUrlsInfo
-} from '@acx-ui/rc/utils'
+  usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes }                          from '@acx-ui/types'
-import { getOpsApi }                             from '@acx-ui/utils'
 
-import { SwitchLayer2ACLDrawer } from './SwitchLayer2ACLDrawer'
+import { SwitchLayer2ACLForm } from './SwitchLayer2ACLForm'
 
 const AccessComponentWrapper = styled.div`
   display: grid;
@@ -47,22 +41,17 @@ interface SwitchLayer2ACLFormProps {
   editMode: boolean
 }
 
-const defaultPayload ={
+const payload ={
   fields: [
     'id',
-    'name'
+    'policyName'
   ],
   page: 1,
-  pageSize: 10,
-  defaultPageSize: 10,
+  pageSize: 10000,
+  defaultPageSize: 10000,
   total: 0,
-  sortField: 'name',
-  sortOrder: 'ASC',
-  searchString: '',
-  searchTargetFields: [
-    'name'
-  ],
-  filters: { id: [] as string[] }
+  sortField: 'policyName',
+  sortOrder: 'ASC'
 }
 
 const AclGridCol = ({ children }: { children: ReactNode }) => {
@@ -79,116 +68,29 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const { accessControlId } = useParams()
-  const [dataSource, setDataSource] = useState<MacAclRule[]>()
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [drawerEditMode, setDrawerEditMode] = useState(false)
   const [layer2ProfileVisible, setLayer2ProfileVisible] = useState(false)
-  const [selectedRow, setSelectedRow] = useState<MacAclRule>()
 
-  const switchAccessControlPage = '/policies/accessControl/switch/layer2'
+  const switchAccessControlPage = '/policies/accessControl/switch'
   const switchAccessControlLink = useTenantLink(switchAccessControlPage)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
   breadcrumb[2].link = switchAccessControlPage
   const pageTitle = editMode ? $t({ defaultMessage: 'Edit Switch Access Control' }) :
     $t({ defaultMessage: 'Add Switch Access Control' })
 
-  const [addAccessControl] = useAddLayer2AclMutation()
-  const [updateAccessControl] = useUpdateLayer2AclMutation()
-  const [getAccessControls] = useLazyGetLayer2AclsQuery()
-  const { data, isLoading, isFetching } = useGetLayer2AclByIdQuery(
-    { params: { accessControlId }, skip: !accessControlId })
+  const [addAccessControl] = useAddSwitchAccessControlSetMutation()
+  const [updateAccessControl] = useUpdateSwitchAccessControlSetMutation()
+  const [getAccessControls] = useLazyGetSwitchAccessControlSetQuery()
+  const { data, isLoading, isFetching } = useGetLayer2AclsQuery(
+    { payload }, { skip: !drawerEditMode })
 
-  useEffect(() => {
-    if(data) {
-      if(data && data.macAclRules){
-        form.setFieldValue('name', data.name)
-        setDataSource(data.macAclRules.map((rule: MacAclRule) => {
-          return {
-            ...rule,
-            key: rule.id
-          }
-        }))
-      }
-    }
-  }, [data])
+  const layer2AclId = Form.useWatch('layer2AclName', form)
 
-  const columns: TableProps<MacAclRule>['columns'] = [
-    {
-      key: 'action',
-      title: $t({ defaultMessage: 'Action' }),
-      dataIndex: 'action'
-    },
-    {
-      key: 'sourceAddress',
-      title: $t({ defaultMessage: 'Source MAC Address' }),
-      dataIndex: 'sourceAddress'
-    },
-    {
-      key: 'sourceMask',
-      title: $t({ defaultMessage: 'Mask' }),
-      dataIndex: 'sourceMask'
-    },
-    {
-      key: 'destinationAddress',
-      title: $t({ defaultMessage: 'Dest. MAC Address' }),
-      dataIndex: 'destinationAddress'
-    },
-    {
-      key: 'destinationMask',
-      title: $t({ defaultMessage: 'Dest. Mask' }),
-      dataIndex: 'destinationMask'
-    }
-  ]
-
+  useEffect (() => {
+  }, [layer2AclId])
   const onCancel = () => {
     navigate(switchAccessControlLink, { replace: true })
-  }
-
-
-  const rowActions: TableProps<MacAclRule>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateAccessControl)],
-      onClick: (selectedRows, clearSelection) => {
-        if (selectedRows.length === 1) {
-          setSelectedRow(selectedRows[0])
-          setDrawerVisible(true)
-        }
-        clearSelection()
-      },
-      disabled: (selectedRows) => selectedRows.length > 1
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteAccessControl)],
-      onClick: (selectedRows, clearSelection) => {
-        setDataSource(dataSource?.filter(option=>{
-          return !selectedRows.map(r=>r.key).includes(option?.key)
-        }))
-        clearSelection()
-      }
-    }
-  ]
-
-  const handleAddRule = () => {
-    setSelectedRow({} as MacAclRule)
-    setDrawerVisible(true)
-  }
-
-  const handleSaveRule = (row: MacAclRule) => {
-    setDataSource(prevData => {
-      if (!prevData) return [row]
-      const index = prevData.findIndex(
-        item => (row.key && row.key === item.key))
-      if (index > -1) {
-        const newData = [...prevData]
-        newData.splice(index, 1, { ...prevData[index], ...row })
-        return newData
-      }else{
-        return [...prevData, row]
-      }
-    })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -197,16 +99,16 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
     const response = await getAccessControls({
       payload: {
-        ...defaultPayload,
+        ...payload,
         searchString: value,
-        searchTargetFields: ['name']
+        searchTargetFields: ['policyName']
       }
     }).unwrap()
 
     const existingACLs = response.data
 
     const duplicateACL = existingACLs.find(acl =>
-      acl.name === value && (!editMode || acl.id !== accessControlId)
+      acl.accessControlPolicyName === value && (!editMode || acl.id !== accessControlId)
     )
 
     if (duplicateACL) {
@@ -223,131 +125,139 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
       <PageHeader
         title={pageTitle}
         breadcrumb={breadcrumb} />
-      <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
-        <StepsForm
-          form={form}
-          editMode={editMode}
-          onCancel={onCancel}
-          onFinish={async (data) => {
+      <StepsForm
+        form={form}
+        editMode={editMode}
+        onCancel={onCancel}
+        onFinish={async (data) => {
 
-            const formValues = data
+          const formValues = data
 
-            const macAclRules = dataSource?.map(row => {
-              const { key, ...rowData } = row
-              return rowData
-            })
+          const payload = { ...formValues,
+            layer2AclName: data?.data?.filter(
+              (acl: MacAcl) => acl.id === formValues.layer2AclName)[0].name }
 
-            const payload = { ...formValues, macAclRules }
-
-            if (editMode) {
-              await updateAccessControl({ params: { l2AclId: accessControlId }, payload }).unwrap()
-            } else {
-              await addAccessControl({ payload }).unwrap()
-            }
-            navigate(switchAccessControlLink, { replace: true })
-          }}
+          if (editMode) {
+            await updateAccessControl({ params: { id: accessControlId }, payload }).unwrap()
+          } else {
+            await addAccessControl({ payload }).unwrap()
+          }
+          navigate(switchAccessControlLink, { replace: true })
+        }}
+      >
+        <StepsForm.StepForm
+          name='settings'
+          title={$t({ defaultMessage: 'Settings' })}
         >
-          <StepsForm.StepForm
-            name='settings'
-            title={$t({ defaultMessage: 'Settings' })}
+          <Form.Item
+            name='name'
+            label={$t({ defaultMessage: 'MAC ACL Name' })}
+            rules={[
+              { required: true, message: 'Please enter MAC ACL name' },
+              { validator: validateMacAclName }
+            ]}
+            validateTrigger='onBlur'
           >
-            <Form.Item
-              name='name'
-              label={$t({ defaultMessage: 'MAC ACL Name' })}
-              rules={[
-                { required: true, message: 'Please enter MAC ACL name' },
-                { validator: validateMacAclName }
-              ]}
-            >
-              <Input disabled={editMode} style={{ width: '400px' }} />
-            </Form.Item>
-            <Form.Item
-              name='description'
-              label={$t({ defaultMessage: 'Description' })}
-              initialValue={''}
-              rules={[
-                { min: 1, transform: (value) => value.trim() },
-                { max: 255, transform: (value) => value.trim() }
-              ]}
-              children={<Input.TextArea
-                rows={4}
-                maxLength={180}
-                style={{ width: '400px' }}
-              />}
-            />
-            <Form.Item
-              name='accessControlComponent'
-              label={$t({ defaultMessage: 'Access Control Components' })}
-              children={
-                <FieldLabel>
-                  {$t({ defaultMessage: 'Layer 2' })}
-                  <AccessComponentWrapper>
-                    <Form.Item
-                      style={{ marginBottom: '10px' }}
-                      valuePropName='checked'
-                      initialValue={false}
-                      children={<Switch />}
-                    />
-                    <GridRow style={{ width: '350px' }}>
-                      <GridCol col={{ span: 12 }}>
-                        <Form.Item
-                          name={['layer2AclName']}
-                          rules={[{
-                            required: true,
-                            message: $t({ defaultMessage: 'Please select Layer 2 profile' })
-                          }]}
-                          children={
-                            <Select
-                              style={{ width: '150px' }}
-                              placeholder={$t({ defaultMessage: 'Select profile...' })}
-                              disabled={layer2ProfileVisible}
-                              onChange={(value) => {
-
-                              }}
-                              children={[]}
-                            />
+            <Input disabled={editMode} style={{ width: '400px' }} />
+          </Form.Item>
+          <Form.Item
+            name='description'
+            label={$t({ defaultMessage: 'Description' })}
+            initialValue={''}
+            rules={[
+              { min: 1, transform: (value) => value.trim() },
+              { max: 255, transform: (value) => value.trim() }
+            ]}
+            children={<Input.TextArea
+              rows={4}
+              maxLength={180}
+              style={{ width: '400px' }}
+            />}
+          />
+          <Form.Item
+            name='accessControlComponent'
+            label={$t({ defaultMessage: 'Access Control Components' })}
+            children={
+              <FieldLabel>
+                {$t({ defaultMessage: 'Layer 2' })}
+                <AccessComponentWrapper>
+                  <Form.Item
+                    style={{ marginBottom: '10px' }}
+                    valuePropName='checked'
+                    initialValue={false}
+                    children={<Switch onChange={(value) => setLayer2ProfileVisible(value)}/>}
+                  />
+                  {layer2ProfileVisible && <GridRow style={{ width: '350px' }}>
+                    <GridCol col={{ span: 12 }}>
+                      <Form.Item
+                        name='layer2AclName'
+                        rules={[{
+                          required: true,
+                          message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+                        }]}
+                        children={
+                          <Select
+                            style={{ width: '150px' }}
+                            placeholder={$t({ defaultMessage: 'Select profile...' })}
+                            options={data?.data?.map(
+                              item => ({ label: item.name, value: item.id }))}
+                          />
+                        }
+                      />
+                    </GridCol>
+                    <AclGridCol>
+                      {/* {hasEditPermission && */}
+                      <Button type='link'
+                        disabled={!layer2AclId}
+                        onClick={() => {
+                          if (layer2AclId) {
+                            setDrawerEditMode(true)
+                            setDrawerVisible(true)
+                            // setQueryPolicyId(l2AclPolicyId)
+                            // setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
                           }
-                        />
-                      </GridCol>
-                      <AclGridCol>
-                        {/* {hasEditPermission && */}
-                        <Button type='link'
-                          onClick={() => {
-                            // if (l2AclPolicyId) {
-                            //   setDrawerVisible(true)
-                            //   setQueryPolicyId(l2AclPolicyId)
-                            //   setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
-                            // }
-                          }
-                          }>
-                          {$t({ defaultMessage: 'Edit Details' })}
-                        </Button>
-                        {/* } */}
-                      </AclGridCol>
-                      <AclGridCol>
-                        {/* {hasCreatePermission && */}
-                        <Button type='link'
-                          onClick={() => {
-                            // setDrawerVisible(true)
-                            // setQueryPolicyId('')
-                          }}>
-                          {$t({ defaultMessage: 'Add New' })}
-                        </Button>
-                        {/* } */}
-                      </AclGridCol>
-                    </GridRow>
-                  </AccessComponentWrapper>
-                </FieldLabel>}
-            />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Loader>
-      <SwitchLayer2ACLDrawer
+                        }
+                        }>
+                        {$t({ defaultMessage: 'Edit Details' })}
+                      </Button>
+                      {/* } */}
+                    </AclGridCol>
+                    <AclGridCol>
+                      {/* {hasCreatePermission && */}
+                      <Button type='link'
+                        onClick={() => {
+                          setDrawerEditMode(false)
+                          setDrawerVisible(true)
+                        }}>
+                        {$t({ defaultMessage: 'Add New' })}
+                      </Button>
+                      {/* } */}
+                    </AclGridCol>
+                  </GridRow>
+                  }
+                </AccessComponentWrapper>
+              </FieldLabel>}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+      {drawerVisible &&
+      <Drawer
+        title={drawerEditMode ? $t({ defaultMessage: 'Edit Layer 2 Settings' }) :
+          $t({ defaultMessage: 'Add Layer 2 Settings' })}
         visible={drawerVisible}
-        setVisible={setDrawerVisible}
-        data={selectedRow}
-        handleSaveRule={handleSaveRule}
-      />
+        onClose={() => setDrawerVisible(false)}
+        width={800}
+        destroyOnClose={true}
+      >
+        <Loader states={[{ isLoading: isLoading, isFetching: isFetching }]}>
+          <SwitchLayer2ACLForm
+            editMode={drawerEditMode}
+            layer2AclId={drawerEditMode ? layer2AclId : undefined}
+            drawerOnClose={() => setDrawerVisible(false)}
+          />
+        </Loader>
+      </Drawer>
+      }
     </>
   )
 }
