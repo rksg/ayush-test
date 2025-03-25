@@ -57,6 +57,7 @@ function ApEditPageHeader () {
     }
   }, [apGroupInfo, apDetails])
 
+  // eslint-disable-next-line max-len
   const titleWithVenueApGroup = <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
     <div>{apData?.name || ''}</div>
     <Space direction='horizontal' size={0} style={{ height: '15px' }}>
