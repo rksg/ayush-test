@@ -4,15 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { policyApi }              from '@acx-ui/rc/services'
+import { policyApi }                                from '@acx-ui/rc/services'
 import {
   PolicyType,
   ApSnmpUrls,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyOperation,
-  getPolicyListRoutePath,
-  LbsServerProfileUrls
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, useTenantLink }                    from '@acx-ui/react-router-dom'
 import { Provider, store }                        from '@acx-ui/store'
@@ -21,7 +20,6 @@ import { render, renderHook, screen, mockServer } from '@acx-ui/test-utils'
 import { snmpAgentList } from './__tests__/fixtures'
 
 import SelectPolicyForm from '.'
-import { LBS_SERVER_PROFILE_MAX_COUNT } from '@acx-ui/rc/components'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
