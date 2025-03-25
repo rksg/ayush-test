@@ -354,21 +354,21 @@ export function VenuesForm (props: VenuesFormProps) {
 
   const handleAddVenue = async (values: VenueExtended) => {
     await checkNameExists(values.name)
-    if (checkFormIsValid())
+    if (checkFormIsInvalid())
       return
     await handleSubmit(values, addVenue)
   }
 
   const handleEditVenue = async (values: VenueExtended) => {
     await checkNameExists(values.name)
-    if (checkFormIsValid())
+    if (checkFormIsInvalid())
       return
     await handleSubmit(values, updateVenue, false)
   }
 
   const handleOverrideVenue = async (values: VenueExtended) => {
     await checkNameExists(values.name)
-    if (checkFormIsValid())
+    if (checkFormIsInvalid())
       return
     await handleSubmit(values, undefined, false)
   }
@@ -387,14 +387,14 @@ export function VenuesForm (props: VenuesFormProps) {
     return action !== 'edit' && !modalMode
   }
 
-  const checkFormIsValid = () => {
+  const checkFormIsInvalid = () => {
     const errors = formRef.current?.getFieldsError()
     const hasErrors = errors?.some((field) => field.errors.length > 0)
     return hasErrors
   }
 
   const onBlurNameHandling = async (ev: React.FocusEvent<HTMLInputElement, Element>) => {
-    if (checkFormIsValid())
+    if (checkFormIsInvalid())
       return
     checkNameExists(ev.target.value)
   }
