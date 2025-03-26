@@ -26,7 +26,7 @@ function ChannelDistributionChart (intent: IntentDetail) {
     <Card title={$t({ defaultMessage: 'Channel Distribution' })}>
       {apChannelDistributions.length ? <VerticalBarChart
         data={data}
-        xAxisName={`(${$t({ defaultMessage: 'Channel' })})`}
+        xAxisName={$t({ defaultMessage: 'Channel' })}
         barWidth={20}
         showTooltipName={false}
       /> : <NoData />}

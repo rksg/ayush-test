@@ -49,3 +49,7 @@ export const LabelStyleAfter = styled.div`
     font-weight: var(--acx-subtitle-6-font-weight);
   }
 `
+
+export const ChartWrapper = styled.div`
+  margin-top: 40px;
+`

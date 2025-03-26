@@ -12,6 +12,7 @@ import ChannelDistributionChart from '../Chart/ChannelDistributionChart'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
+import * as UI        from './styledComponents'
 
 export function Introduction () {
   const { $t } = useIntl()
@@ -51,9 +52,9 @@ export function Introduction () {
           </Tabs.TabPane>
         </Tabs>
       </StepsForm.TextContent>
-      <StepsForm.TextContent>
+      <UI.ChartWrapper>
         <ChannelDistributionChart {...intent} />
-      </StepsForm.TextContent>
+      </UI.ChartWrapper>
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />
