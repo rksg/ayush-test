@@ -29,6 +29,7 @@ export function MacACLs (props: {
 }) {
   const { $t } = useIntl()
   const { switchDetail } = props
+  const deviceOnline = switchDetail?.deviceStatus === 'ONLINE'
   const [currentRow, setCurrentRow] = useState({} as MacAcl)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [macACLData, setMacACLData] = useState({} as unknown as MacAcl)
@@ -89,6 +90,7 @@ export function MacACLs (props: {
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Add MAC ACL' }),
+    disabled: !deviceOnline,
     scopeKey: [SwitchScopes.CREATE],
     rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitchVlans)],
     onClick: () => {
@@ -156,7 +158,7 @@ export function MacACLs (props: {
         dataSource={tableQuery.data?.data}
         actions={filterByAccess(tableActions)}
         rowActions={rowActions}
-        rowSelection={{
+        rowSelection={deviceOnline && {
           type: 'checkbox'
         }}
       />
