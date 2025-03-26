@@ -184,7 +184,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
       dataIndex: 'macAddress',
       sorter: true,
       defaultSortOrder: 'ascend',
-      searchable: true
+      searchable: true,
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Username' }),
