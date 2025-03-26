@@ -6,8 +6,11 @@ exports[`Legend should render properly 1`] = `
   margin-left: 3em;
 }
 
-.c2 {
-  display: grid;
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   grid-template-columns: auto 1fr;
   grid-column-gap: 10px;
   grid-row-gap: 10px;
@@ -17,44 +20,13 @@ exports[`Legend should render properly 1`] = `
   -ms-flex-align: start;
   align-items: start;
   justify-items: start;
-}
-
-.c1 {
-  color: var(--acx-primary-black);
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
-.c4 {
-  color: var(--acx-primary-black);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  font-weight: var(--acx-body-font-weight);
-}
-
-.c3 {
-  background-color: #ED1C24;
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-top: 2px;
-}
-
-.c5 {
-  background-color: #EC7100;
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-top: 2px;
-}
-
-.c6 {
-  background-color: #ACAEB0;
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-top: 2px;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
 }
 
 <div
@@ -62,37 +34,7 @@ exports[`Legend should render properly 1`] = `
   >
     <div
       class="c1"
-    >
-      Legend
-    </div>
-    <div
-      class="c2"
-    >
-      <span
-        class="c3"
-      />
-      <div
-        class="c4"
-      >
-        Has interfering links
-      </div>
-      <span
-        class="c5"
-      />
-      <div
-        class="c4"
-      >
-        Reduction in transmit power
-      </div>
-      <span
-        class="c6"
-      />
-      <div
-        class="c4"
-      >
-        No interfering links
-      </div>
-    </div>
+    />
   </div>
 </DocumentFragment>
 `;

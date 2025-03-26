@@ -12,7 +12,7 @@ import { IntroSummary }                        from '../../common/IntroSummary'
 import { richTextFormatValues }                from '../../common/richTextFormatValues'
 import { AiFeatures }                          from '../../config'
 import { useIntentContext }                    from '../../IntentContext'
-import { SliderGraphAfter, SliderGraphBefore } from '../RRMGraph'
+import { SliderGraphAfter, SliderGraphBefore } from '../RRMGraph/indexLegacy'
 import { useIntentAICRRMQuery }                from '../RRMGraph/services'
 
 import * as SideNotes from './SideNotes'
