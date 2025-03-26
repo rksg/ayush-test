@@ -6,13 +6,18 @@ import { useIntl }                                    from 'react-intl'
 import { GridRow, GridCol, Modal, ModalType, SelectionControl }   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
-  useAdaptivePolicySetListByQueryQuery, useGetPersonaGroupByIdQuery,
+  useAdaptivePolicySetListByQueryQuery, useSearchPersonaListQuery,
   useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
-import { RolesEnum }                                               from '@acx-ui/types'
-import {  hasRoles }                                               from '@acx-ui/user'
+import {
+  checkObjectNotExists,
+  getPolicyAllowedOperation,
+  Persona, PolicyOperation, PolicyType,
+  trailingNorLeadingSpaces
+} from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
 
 import { AdaptivePolicySetForm }                                         from '../../AdaptivePolicySetForm'
 import { ExpirationDateSelector }                                        from '../../ExpirationDateSelector'
@@ -45,11 +50,13 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
 
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
 
-  const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
-    // eslint-disable-next-line max-len
-    { params: { groupId: identityGroupId } },
-    { skip: !identityGroupId }
-  )
+  const {
+    data: identityList,
+    isLoading: isIdentityLoading,
+    isFetching: isIdentityFetching
+  } = useSearchPersonaListQuery({
+    payload: { page: 1, pageSize: 10000, groupId: identityGroupId }
+  }, { skip: !identityGroupId })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
@@ -186,10 +193,11 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
             ]}
           >
             <Select
+              loading={isIdentityLoading || isIdentityFetching}
               placeholder={$t({ defaultMessage: 'Choose ...' })}
               options={
                 // eslint-disable-next-line max-len
-                personaGroupData?.identities?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
+                identityList?.data?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
             />
           </Form.Item>
         </GridCol>
@@ -240,7 +248,9 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           />
         </GridCol>
         {
-          hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+          (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+          // eslint-disable-next-line max-len
+          hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) &&
           <>
             <Space align='center'>
               <Button

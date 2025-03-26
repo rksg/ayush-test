@@ -72,3 +72,15 @@ export const ProtectedEnforceTemplateToggle = withTemplateFeatureGuard({
   featureId: Features.CONFIG_TEMPLATE_ENFORCED,
   rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.updateEnforcement)]
 })
+
+export const ProtectedEnforceTemplateToggleP1 = withTemplateFeatureGuard({
+  WrappedComponent: EnforceTemplateToggle,
+  featureId: Features.CONFIG_TEMPLATE_ENFORCED_P1,
+  rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.updateEnforcement)]
+})
+
+export const ProtectedEnforceTemplateToggleVenue = withTemplateFeatureGuard({
+  WrappedComponent: EnforceTemplateToggle,
+  featureId: Features.CONFIG_TEMPLATE_ENFORCED_VENUE,
+  rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.updateEnforcement)]
+})

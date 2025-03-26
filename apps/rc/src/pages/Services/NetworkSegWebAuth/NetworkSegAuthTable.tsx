@@ -172,7 +172,8 @@ export default function NetworkSegAuthTable () {
             type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
           })}
           scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
-          rbacOpsIds={getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+          rbacOpsIds={
+            getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
         >
           <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>

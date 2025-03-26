@@ -3,13 +3,14 @@ import {
   DpskWlanAdvancedCustomization,
   MaxRateEnum,
   NetworkSaveData,
+  NetworkSegmentTypeEnum,
   NetworkTypeEnum,
   NetworkVenue,
   RadioEnum,
-  TunnelTypeEnum, WlanSecurityEnum
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
-import { updateClientIsolationAllowlist, tranferSettingsToSave, transferMoreSettingsToSave } from './parser'
+import { tranferSettingsToSave, transferMoreSettingsToSave, updateClientIsolationAllowlist } from './parser'
 
 describe('NetworkForm parser', () => {
   describe('updateClientIsolationAllowlist', () => {
@@ -120,7 +121,7 @@ describe('NetworkForm parser', () => {
       }
       const tunnelInfo = {
         enableVxLan: true,
-        tunnelType: TunnelTypeEnum.VXLAN
+        tunnelType: NetworkSegmentTypeEnum.VXLAN
       }
 
       const moreSettingData = transferMoreSettingsToSave(incomingData, incomingData, tunnelInfo)

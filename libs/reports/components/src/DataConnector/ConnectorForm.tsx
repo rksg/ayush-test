@@ -6,9 +6,9 @@ import { useIntl }     from 'react-intl'
 import { GridRow, GridCol, PageHeader, Select, Button, ActionsContainer, showToast, Loader } from '@acx-ui/components'
 import { useNavigate, useParams }                                                            from '@acx-ui/react-router-dom'
 
-import { useGetConnectorQuery, useSaveConnectorMutation } from './services'
-import { Frequency }                                      from './types'
-import { frequencyMap, getUserName, generateBreadcrumb }  from './utils'
+import { useGetConnectorQuery, useSaveConnectorMutation, useGetDataSourcesQuery } from './services'
+import { DataSources, Frequency }                                                 from './types'
+import { frequencyMap, getUserName, generateBreadcrumb, connectorNameRegExp }     from './utils'
 
 type DataConnectorFormProps = {
   editMode?: boolean
@@ -21,20 +21,20 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
   const params = useParams()
   const connectorId = params.settingId
   const selectedConnector = useGetConnectorQuery({ id: connectorId }, { skip: !editMode })
+  const { data, isLoading: isDataSourcesLoading } = useGetDataSourcesQuery({})
+  const dataSources = (data as unknown as DataSources)?.map(({ dataSource }) => ({
+    label: $t(dataSource.name),
+    value: dataSource.value
+  })).sort((a, b) => a.label.localeCompare(b.label))
   const [form] = Form.useForm()
 
-  const selectedDataSet = Form.useWatch('dataSource', form) || selectedConnector.data?.dataSource
-  // todo prepare map from api response
-  const dataSetColumns = {
-    apInventory: [
-      { value: 'apMac', label: $t({ defaultMessage: 'MAC Address' }) },
-      { value: 'apName', label: $t({ defaultMessage: 'AP Name' }) }
-    ],
-    switchInventory: [
-      { value: 'switchMac', label: $t({ defaultMessage: 'Mac Address' }) },
-      { value: 'switchName', label: $t({ defaultMessage: 'Switch Name' }) }
-    ]
-  }
+  const selectedDataSource =
+    Form.useWatch('dataSource', form) || selectedConnector.data?.dataSource
+  const dataSourceColumns = (data as unknown as DataSources)?.reduce(
+    (acc, { dataSource, cols }) => ({
+      ...acc,
+      [dataSource.value]: cols.map(col => ({ label: col, value: col }))
+    }), {})
   const [updateConnector, { isLoading }] = useSaveConnectorMutation()
   const saveConnector = useCallback(() => {
     const data = form.getFieldsValue()
@@ -65,7 +65,9 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
         : $t({ defaultMessage: 'New Connector' })}
       breadcrumb={generateBreadcrumb()}
     />
-    <Loader states={[{ isLoading: isLoading || selectedConnector.isLoading }]}>
+    <Loader states={[
+      { isLoading: isDataSourcesLoading || isLoading || selectedConnector.isLoading }
+    ]}>
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
           <Form
@@ -79,6 +81,8 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
               rules={[{
                 required: true,
                 message: $t({ defaultMessage: 'Connector name is required!' })
+              }, {
+                validator: (_, value) => connectorNameRegExp(value)
               }]}
             >
               <Input data-testid='name' />
@@ -94,10 +98,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
               <Select
                 data-testid='dataSourceSelect'
                 onSelect={() => form.setFieldValue('columns', undefined)}
-                options={[
-                  { value: 'apInventory', label: $t({ defaultMessage: 'AP Inventory' }) },
-                  { value: 'switchInventory', label: $t({ defaultMessage: 'Switch Inventory' }) }
-                ]}
+                options={dataSources}
               />
             </Form.Item>
             <Form.Item
@@ -112,7 +113,7 @@ const DataConnectorForm: React.FC<DataConnectorFormProps> = ({ editMode=false })
                 data-testid='columnsSelect'
                 showSearch
                 mode='multiple'
-                options={dataSetColumns[selectedDataSet as keyof typeof dataSetColumns]}
+                options={dataSourceColumns?.[selectedDataSource as keyof typeof dataSourceColumns]}
               />
             </Form.Item>
             <Form.Item

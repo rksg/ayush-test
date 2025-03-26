@@ -78,7 +78,6 @@ export const ApservContinuousReboots = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity='PT180S'
           buffer={buffer}
         />
       </GridCol>

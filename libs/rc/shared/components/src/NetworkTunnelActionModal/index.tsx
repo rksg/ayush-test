@@ -16,6 +16,8 @@ export {
 export {
   useGetSoftGreScopeVenueMap,
   useGetSoftGreScopeNetworkMap,
+  useGetIpsecScopeVenueMap,
+  useGetIpsecScopeNetworkMap,
   useSoftGreTunnelActions
 } from './useSoftGreTunnelActions'
 export {

@@ -7,31 +7,31 @@ import { useParams }                                              from 'react-ro
 
 import {
   useGetAvailableSwitchesQuery,
+  useGetDhcpStatsQuery,
   useGetEdgeClusterListQuery,
+  useGetEdgeFeatureSetsQuery,
+  useGetEdgeMvSdLanViewDataListQuery,
   useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
   useGetPropertyConfigsQuery,
+  useGetSwitchFeatureSetsQuery,
   useGetTunnelProfileViewDataListQuery,
-  useVenueNetworkActivationsViewModelListQuery,
-  useVenuesListQuery,
-  useGetDhcpStatsQuery,
-  useGetEdgeMvSdLanViewDataListQuery,
   useLazyGetDpskQuery,
-  useGetEdgeFeatureSetsQuery,
-  useGetSwitchFeatureSetsQuery
+  useVenueNetworkActivationsViewModelListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
+  ClusterHighAvailabilityModeEnum,
   DhcpStats,
   DpskSaveData,
+  EdgeClusterStatus,
+  IncompatibilityFeatures,
+  NetworkSegmentTypeEnum,
+  NetworkTypeEnum,
   PersonaGroup,
   SwitchLite,
-  TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
-  isDsaeOnboardingNetwork,
-  NetworkTypeEnum,
-  ClusterHighAvailabilityModeEnum,
-  EdgeClusterStatus,
-  IncompatibilityFeatures
+  isDsaeOnboardingNetwork
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
@@ -90,7 +90,7 @@ const venueOptionsDefaultPayload = {
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id', 'type'],
   filters: {
-    type: [TunnelTypeEnum.VXLAN]
+    type: [NetworkSegmentTypeEnum.VXLAN]
   },
   pageSize: 10000,
   sortField: 'name',
@@ -211,7 +211,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, TunnelTypeEnum.VXLAN),
+        // eslint-disable-next-line max-len
+        tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, NetworkSegmentTypeEnum.VXLAN),
         isTunnelLoading: isLoading
       }
     }

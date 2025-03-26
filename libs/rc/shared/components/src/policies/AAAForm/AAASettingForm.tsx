@@ -27,12 +27,13 @@ import {
 import { hasAllowedOperations } from '@acx-ui/user'
 import { getOpsApi }            from '@acx-ui/utils'
 
-import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
+import { ProtectedEnforceTemplateToggleP1 }                       from '../../configTemplates'
 import { CERTIFICATE_AUTHORITY_MAX_COUNT, CERTIFICATE_MAX_COUNT } from '../CertificateTemplate'
-import CertificateDrawer                                          from '../CertificateTemplate/Certificate/CertificateDrawer'
+import { CertificateWarning }                                     from '../CertificateUtil'
+import CertificateAuthorityDrawer                                 from '../CertificateUtil/CertificateAuthorityDrawer'
+import CertificateDrawer                                          from '../CertificateUtil/CertificateDrawer'
 
 import { useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
-import CertificateAuthorityDrawer      from './CertificateAuthorityDrawer'
 import { MessageMapping }              from './messageMapping'
 import * as UI                         from './styledComponents'
 
@@ -648,6 +649,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               ]}
               children={<PasswordInput />}
             /></Fieldset>}
+          <ProtectedEnforceTemplateToggleP1 templateId={saveState.id} />
         </Space>
 
         <CertificateAuthorityDrawer

@@ -556,8 +556,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.deactivateMspEcAccount, params)
         // const payload = { status: 'deactivate' }
         return {
           ...req
@@ -567,8 +568,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     reactivateMspEc: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.reactivateMspEcAccount, params)
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.reactivateMspEcAccount, params)
         // const payload = { status: 'reactivate' }
         return {
           ...req
@@ -887,8 +889,9 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }),
     mspEcFirmwareUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.mspEcFirmwareUpgradeSchedules, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.mspEcFirmwareUpgradeSchedules, params)
         return {
           ...req,
           body: payload
