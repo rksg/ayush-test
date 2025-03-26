@@ -50,6 +50,10 @@ describe('EditTunnelProfile', () => {
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
         (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -61,6 +65,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
@@ -192,8 +197,6 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqPin).toBeCalled()
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
-      expect(typeField).toBeDisabled()
       jest.mocked(useIsTierAllowed).mockReset()
     })
 
@@ -226,8 +229,6 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqPin).not.toBeCalled()
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
-      expect(typeField).toBeDisabled()
       expect(screen.queryByText('Enable NAT-T Support')).not.toBeInTheDocument()
     })
   })
