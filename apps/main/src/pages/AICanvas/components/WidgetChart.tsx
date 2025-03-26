@@ -38,6 +38,13 @@ interface WidgetCategory {
   sizes?: { width: number, height:number }[]
 }
 
+interface BarChartTooltip {
+  y: string
+  x: string
+  value: string
+  color: string
+}
+
 export const getChartConfig = (data: WidgetListData) => {
   const ChartConfig:{ [key:string]: WidgetCategory } = {
     pie: {
@@ -224,11 +231,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
       params[0].data[xIndex] : ''
     const color = Array.isArray(params) ? params[0].color : ''
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
-    let maps = [] as {
-      y: string,
-      x: string,
-      value: string,
-      color: string }[]
+    let maps = [] as BarChartTooltip[]
     if(Array.isArray(params)) {
       //@ts-ignore
       maps =params.map(p => {
@@ -246,18 +249,19 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
       <TooltipWrapper>
         <div>
           {
-            maps.map(i => <>
-              <b>{chartData?.axisType === 'time' ?
-                formatter(DateFormatEnum.DateTimeFormat)(i.y) : i.y as string}</b>
-              <p>
-                {
-                  i.color ? <UI.Badge
-                    className='acx-chart-tooltip'
-                    color={i.color as string}
-                    text={i.x}
-                  />: i.x
-                } : <b> {formatter(unit)(i.value) as string}</b>
-              </p>
+            maps.map((i, index) => <>
+              {
+                index === 0 && <b>{chartData?.axisType === 'time' ?
+                  formatter(DateFormatEnum.DateTimeFormat)(i.y) : i.y as string}</b>
+              }
+              <br/>
+              {
+                i.color ? <UI.Badge
+                  className='acx-chart-tooltip'
+                  color={i.color as string}
+                  text={i.x}
+                />: i.x
+              } : <b> {formatter(unit)(i.value) as string}</b>
             </>)
           }
         </div>
