@@ -316,6 +316,7 @@ export enum Features {
   SWITCH_SUPPORT_ICX8100X = 'switch-support-icx8100x-toggle',
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
   ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle',
+  MSP_APP_VISIBILITY = 'mspservice-app-visibility',
   SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle'
 }
 

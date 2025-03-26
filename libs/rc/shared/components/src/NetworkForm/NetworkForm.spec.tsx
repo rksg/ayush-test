@@ -7,6 +7,7 @@ import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui
 import { networkApi, policyApi, serviceApi, softGreApi, venueApi } from '@acx-ui/rc/services'
 import {
   AccessControlUrls,
+  AdministrationUrlsInfo,
   CommonUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
@@ -19,6 +20,7 @@ import {
   NetworkTypeEnum,
   NewDpskBaseUrl,
   AaaUrls,
+  IpsecUrls,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -65,6 +67,9 @@ jest.mock('./Venues/TunnelColumn/useTunnelColumn', () => ({
   useTunnelColumn: jest.fn().mockReturnValue([])
 }))
 
+jest.mock('./NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
 describe('NetworkForm', () => {
 
   beforeEach(() => {
@@ -76,7 +81,9 @@ describe('NetworkForm', () => {
 
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation((ff) => (
-      ff !== Features.RBAC_SERVICE_POLICY_TOGGLE && ff !== Features.WIFI_RBAC_API
+      ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
+       && ff !== Features.WIFI_RBAC_API
+       && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
     ))
 
     networkDeepResponse.name = 'open network test'
@@ -133,7 +140,11 @@ describe('NetworkForm', () => {
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
-        (req, res, ctx) => res(ctx.json([])))
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
