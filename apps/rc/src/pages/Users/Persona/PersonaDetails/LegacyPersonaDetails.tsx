@@ -342,7 +342,7 @@ function LegacyPersonaDetails () {
           }
         </Row>
 
-        <Tabs onChange={setActiveTab} activeKey={activeTab}>
+        <Tabs onChange={setActiveTab} activeKey={activeTab} stickyTop={false}>
           <Tabs.TabPane
             key={'device'}
             tab={$t(
