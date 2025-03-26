@@ -206,7 +206,7 @@ describe('Add SAML IDP Profile', () => {
 
     const signingCertCombo = screen.getByRole('combobox', { name: 'Select Signing Certificate' })
     await user.click(signingCertCombo)
-    await user.click((await screen.findAllByText(mockCertName3))[1])
+    await user.click((await screen.findAllByText(mockCertName3))[0])
 
     await user.click(screen.getByRole('button', { name: 'Add' }))
 
@@ -283,6 +283,6 @@ describe('Add SAML IDP Profile', () => {
 
     // Click the mocked certificate drawer button which will trigger handleSave
     await user.click((await screen.findAllByTestId('mock-certificate-drawer'))[1])
-    expect((await screen.findAllByText(mockCertName2))[1]).toBeInTheDocument()
+    expect((await screen.findAllByText(mockCertName2))[0]).toBeInTheDocument()
   })
 })

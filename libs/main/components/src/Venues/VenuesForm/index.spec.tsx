@@ -158,7 +158,6 @@ describe('Venues Form', () => {
 
     const venueInput = await screen.findByLabelText('Venue Name')
     fireEvent.change(venueInput, { target: { value: '  ' } })
-    fireEvent.blur(venueInput)
 
     expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
   })
