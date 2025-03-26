@@ -87,7 +87,7 @@ jest.mock('@acx-ui/rc/components', () => ({
     scopedNetworkIds: []
   }),
   transformVLAN: jest.fn().mockReturnValue('VLAN-1 (Default)'),
-  useEdgeAllPinData: jest.fn().mockReturnValue([]),
+  useEdgeAllPinData: jest.fn().mockReturnValue({ venuePins: [] }),
   NetworkTunnelActionModal: jest.fn().mockImplementation((props: NetworkTunnelActionModalProps) => {
     return <div data-testid='rc-NetworkTunnelActionModal' >
       {''+props.isPinNetwork}
@@ -316,7 +316,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
     }
 
     it('should correctly display tunnel column when PIN is running on it', async () => {
-      jest.mocked(useEdgeAllPinData).mockReturnValue(mockPinStatsList.data)
+      jest.mocked(useEdgeAllPinData).mockReturnValue({ venuePins: mockPinStatsList.data })
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {
@@ -337,7 +337,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
       const mockPinList = cloneDeep(EdgePinFixtures.mockPinStatsList)
       mockPinList.data[0].tunneledWlans.push({ networkId: targetNetworkId })
 
-      jest.mocked(useEdgeAllPinData).mockReturnValue(mockPinList.data)
+      jest.mocked(useEdgeAllPinData).mockReturnValue({ venuePins: mockPinList.data })
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {

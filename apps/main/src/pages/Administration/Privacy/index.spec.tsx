@@ -7,7 +7,8 @@ import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen }                  from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
-import { fakeUserProfile } from '../Administrators/__tests__/fixtures'
+import { fakeTenantDetails } from '../AccountSettings/__tests__/fixtures'
+import { fakeUserProfile }   from '../Administrators/__tests__/fixtures'
 
 import Privacy from '.'
 
@@ -40,7 +41,11 @@ describe('Privacy settings', () => {
       rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
         (req, res, ctx) => res(ctx.json(settings))),
       rest.patch(AdministrationUrlsInfo.updatePrivacySettings.url,
-        (_, res, ctx) => res(ctx.json(settings)))
+        (_, res, ctx) => res(ctx.json(settings))),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json({ ...fakeTenantDetails, tenantType: 'MSP' }))
+      )
     )
   })
   afterEach(() => {
@@ -49,6 +54,7 @@ describe('Privacy settings', () => {
 
   it('Should show ARC privacy settings', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_VISIBILITY)
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -60,10 +66,52 @@ describe('Privacy settings', () => {
       { route: { params } })
 
     expect(screen.getByText(/Enable application-recognition and control/i)).toBeVisible()
-    const switchBtn = screen.getByRole('switch')
+    const switchBtn = screen.getAllByRole('switch')[1]
     expect(switchBtn).toBeVisible()
     await userEvent.click(switchBtn)
     expect(switchBtn.getAttribute('aria-checked')).toBe('true')
     expect(await screen.findByText('Application-recognition and control is enabled')).toBeVisible()
+  })
+
+  it('Should show Application Visibility privacy settings', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_VISIBILITY)
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Privacy/>
+        </UserProfileContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Enable application visibility for all MSP customer tenants/i)).toBeVisible()
+    const switchBtn = screen.getAllByRole('switch')[0]
+    expect(switchBtn).toBeVisible()
+    await userEvent.click(switchBtn)
+    expect(switchBtn.getAttribute('aria-checked')).toBe('true')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Application visibility is enabled')).toBeVisible()
+  })
+
+  it('Should show correct privacy settings for non prime admin', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_MONITORING)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_APP_VISIBILITY)
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ ...userProfileContextValues, isPrimeAdmin: () => false }}
+        >
+          <Privacy/>
+        </UserProfileContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Application visibility for all MSP customer tenants is Disabled/i)).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(/Application-recognition and control is Disabled/i)).toBeVisible()
   })
 })

@@ -402,6 +402,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteSwitchProfile: {
     method: 'delete',
     url: '/switchProfiles/:switchProfileId',
+    opsApi: 'DELETE:/switchProfiles/{id}',
     newApi: true
   },
   associateCliTemplate: {

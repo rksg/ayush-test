@@ -23,7 +23,7 @@ function WelcomePage (props: {
   return <div
     style={{
       position: 'relative',
-      marginTop: '60px',
+      marginTop: isCanvasEnabled ? '45px':'60px',
       zIndex: 1,
       display: 'flex',
       flexDirection: 'column',
@@ -35,11 +35,11 @@ function WelcomePage (props: {
     }}
   >
     <div style={{
-      height: '110px'
+      height: isCanvasEnabled ? '100px':'110px'
     }} >
       {
         isCanvasEnabled ? <RuckusAiDog style={{
-          width: '110px', height: '110px'
+          width: '90px', height: '90px'
         }} />:
           <WelcomeLogo style={{
             width: '110px', height: '110px'
@@ -50,8 +50,9 @@ function WelcomePage (props: {
     <span style={{
       fontSize: '24px',
       fontWeight: 700,
-      marginTop: '25px',
-      fontFamily: 'Montserrat'
+      marginTop: isCanvasEnabled ? '0px': '25px',
+      fontFamily: 'Montserrat',
+      ...(isCanvasEnabled && { lineHeight: '45px' })
     }}>
       {`${$t({ defaultMessage: 'Hello' })} ${name},`}
     </span>
@@ -59,7 +60,8 @@ function WelcomePage (props: {
       isCanvasEnabled ? <span style={{
         fontSize: '24px',
         fontWeight: 500,
-        fontFamily: 'Montserrat'
+        fontFamily: 'Montserrat',
+        marginBottom: '5px'
       }}>
         {$t({ defaultMessage: 'Welcome! Let' })}
         {/* <RuckusAiLogo
@@ -115,10 +117,10 @@ function WelcomePage (props: {
           <UI.WelcomeMeta
             title={<span
               className='card-title'
-            > <AIChat />{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>}
+            > <AIChat />{$t({ defaultMessage: 'RUCKUS DSE' })}</span>}
             style={{ fontFamily: 'Montserrat' }}
             // eslint-disable-next-line max-len
-            description={$t({ defaultMessage: 'Ask me anything about your deployment! I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.' })}
+            description={$t({ defaultMessage: 'RUCKUS Digital System Engineer (DSE) available for deployment inquiries. I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.' })}
           />
         </Card>
       </UI.WelcomeCards> :

@@ -13,12 +13,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  getNetworkSegmentTypeString,
   getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
-  getTunnelTypeString, hasPolicyPermission,
+  hasPolicyPermission,
   isDefaultTunnelProfile,
   MtuTypeEnum,
   NetworkSegmentTypeEnum,
@@ -128,7 +129,8 @@ const TunnelProfileTable = () => {
         key: 'type',
         dataIndex: 'type',
         sorter: true,
-        render: (_, row) => getTunnelTypeString($t, row.type || NetworkSegmentTypeEnum.VXLAN,
+        // eslint-disable-next-line max-len
+        render: (_, row) => getNetworkSegmentTypeString($t, row.type || NetworkSegmentTypeEnum.VXLAN,
           isEdgeVxLanKaReady)
       }] as TableColumn<TunnelProfileViewData, 'text'>[]
       : []

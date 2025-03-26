@@ -266,6 +266,15 @@ export interface EdgeService {
   edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
+export interface EdgeClusterService {
+  edgeClusterId: string
+  serviceId: string
+  serviceName: string
+  serviceType: EdgeServiceTypeEnum | EdgeClsuterProfileTypeEnum
+  currentVersion: string
+  targetVersion: string
+}
+
 export interface PingEdge {
   targetHost: string
 }
