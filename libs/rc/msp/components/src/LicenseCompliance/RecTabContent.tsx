@@ -54,7 +54,7 @@ export default function RecTabContent (props: RecTabContentProps) {
         <label>{switchData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
       <UI.FieldLabelSubs width='275px'>
-        <label>{$t({ defaultMessage: 'SmartEdge vAppliances' })}</label>
+        <label>{$t({ defaultMessage: 'Edge vAppliances' })}</label>
         <label>{virtualEdgeData?.installedDeviceCount}</label>
         <label>{virtualEdgeData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>

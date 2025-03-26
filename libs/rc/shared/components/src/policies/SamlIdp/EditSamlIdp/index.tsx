@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 
-import { Form }      from 'antd'
-import { cloneDeep } from 'lodash'
-import { useIntl }   from 'react-intl'
+import { Col, Form, Row } from 'antd'
+import { cloneDeep }      from 'lodash'
+import { useIntl }        from 'react-intl'
 
 import { Loader }                   from '@acx-ui/components'
 import {
-  useActivateSamlIdpProfileCertificateMutation,
-  useDeactivateSamlIdpProfileCertificateMutation,
+  useActivateSamlEncryptionCertificateMutation,
+  useActivateSamlSigningCertificateMutation,
+  useDeactivateSamlEncryptionCertificateMutation,
+  useDeactivateSamlSigningCertificateMutation,
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useUpdateSamlIdpProfileMutation
 } from '@acx-ui/rc/services'
@@ -20,8 +22,10 @@ export const EditSamlIdp = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const [ updateSamlIdpProfile ] = useUpdateSamlIdpProfileMutation()
-  const [ activateCertificate ] = useActivateSamlIdpProfileCertificateMutation()
-  const [ deactivateCertificate ] = useDeactivateSamlIdpProfileCertificateMutation()
+  const [ activateSamlEncryptionCertificate ] = useActivateSamlEncryptionCertificateMutation()
+  const [ deactivateSamlEncryptionCertificate ] = useDeactivateSamlEncryptionCertificateMutation()
+  const [ activateSamlSigningCertificate ] = useActivateSamlSigningCertificateMutation()
+  const [ deactivateSamlSigningCertificate ] = useDeactivateSamlSigningCertificateMutation()
 
   const [form] = Form.useForm()
 
@@ -50,21 +54,37 @@ export const EditSamlIdp = () => {
         }
       }).unwrap()
 
-      if(samlIdpProfileData?.responseEncryptionEnabled &&
-        samlIdpProfileData.encryptionCertificateId !== payload.encryptionCertificateId) {
-        deactivateCertificate({ params: {
-          id: policyId,
-          certificateId: samlIdpProfileData?.encryptionCertificateId
-        } })
+      if(samlIdpProfileData?.encryptionCertificateId !== payload.encryptionCertificateId) {
+        if(samlIdpProfileData?.encryptionCertificateEnabled ) {
+          deactivateSamlEncryptionCertificate({ params: {
+            id: policyId,
+            certificateId: samlIdpProfileData?.encryptionCertificateId
+          } })
+        }
+
+        if(payload.encryptionCertificateEnabled) {
+          activateSamlEncryptionCertificate({ params: {
+            id: policyId,
+            certificateId: payload.encryptionCertificateId
+          } })
+        }
       }
 
-      if(payload.responseEncryptionEnabled) {
-        activateCertificate({ params: {
-          id: policyId,
-          certificateId: payload.encryptionCertificateId
-        } })
-      }
+      if(samlIdpProfileData?.signingCertificateId !== payload.signingCertificateId) {
+        if(samlIdpProfileData?.signingCertificateEnabled) {
+          deactivateSamlSigningCertificate({ params: {
+            id: policyId,
+            certificateId: samlIdpProfileData?.signingCertificateId
+          } })
+        }
 
+        if(payload.signingCertificateEnabled) {
+          activateSamlSigningCertificate({ params: {
+            id: policyId,
+            certificateId: payload.signingCertificateId
+          } })
+        }
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error)
@@ -77,22 +97,23 @@ export const EditSamlIdp = () => {
     }
 
     const sourceData = cloneDeep(samlIdpProfileData) as SamlIdpProfileFormType
-
-    sourceData.metadata = Buffer.from(samlIdpProfileData.metadata, 'base64').toString('ascii')
-
     form.setFieldsValue(sourceData)
 
   }, [samlIdpProfileData])
 
   return (
     <Loader states={[{ isLoading }]}>
-      <SamlIdpForm
-        title={$t({ defaultMessage: 'Edit SAML Identity Provider' })}
-        submitButtonLabel={$t({ defaultMessage: 'Apply' })}
-        onFinish={handleEditSamlIdpProfile}
-        form={form}
-        isEditMode={true}
-      />
+      <Row>
+        <Col span={12}>
+          <SamlIdpForm
+            title={$t({ defaultMessage: 'Edit SAML Identity Provider' })}
+            submitButtonLabel={$t({ defaultMessage: 'Apply' })}
+            onFinish={handleEditSamlIdpProfile}
+            form={form}
+            isEditMode={true}
+          />
+        </Col>
+      </Row>
     </Loader>
   )
 }

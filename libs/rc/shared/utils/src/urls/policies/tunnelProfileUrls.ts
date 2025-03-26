@@ -29,5 +29,17 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
     url: '/tunnelServiceProfiles/:id',
     newApi: true,
     opsApi: 'PUT:/tunnelServiceProfiles/{id}'
+  },
+  activateTunnelProfileByEdgeCluster: {
+    method: 'put',
+    url: '/venues/:venueId/edgeClusters/:clusterId/tunnelProfiles/:id',
+    newApi: true,
+    opsApi: 'PUT:/venues/{venueId}/edgeClusters/{clusterId}/tunnelProfiles/{tunnelProfileId}'
+  },
+  deactivateTunnelProfileByEdgeCluster: {
+    method: 'delete',
+    url: '/venues/:venueId/edgeClusters/:clusterId/tunnelProfiles/:id',
+    newApi: true,
+    opsApi: 'DELETE:/venues/{venueId}/edgeClusters/{clusterId}/tunnelProfiles/{tunnelProfileId}'
   }
 }
