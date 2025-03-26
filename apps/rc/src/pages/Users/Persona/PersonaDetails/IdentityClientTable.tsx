@@ -30,20 +30,6 @@ const defaultClientPayload = {
   pageSize: 10000
 }
 
-const onboardingTypesMapping: { [key: string]: string } = {
-  'dpsk': 'DPSK',
-  'OpenNetwork': 'Open Network',
-  'mac-auth': 'Mac Auth',
-  'AAANetwork': 'AAA Network',
-  'PSKNetwork': 'PSK Network',
-  'eap': 'EAP/TLS'
-}
-
-const getOnboardingTerm = (type?: string): string => {
-  if (!type) return ''
-  return onboardingTypesMapping[type] || type.toUpperCase()
-}
-
 function IdentityClientTable (props: { personaId?: string, personaGroupId?: string }) {
   const { $t } = useIntl()
   const { personaId, personaGroupId } = props
@@ -213,7 +199,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       align: 'center',
       title: $t({ defaultMessage: 'Onboarding Mechanism' }),
       sorter: { compare: sortProp('onboardType', defaultSort) },
-      render: (_, row) => getOnboardingTerm(row.onboardType)
+      render: (_, row) => row.onboardType?.toUpperCase()
     },
     {
       key: 'lastSeenAt',
