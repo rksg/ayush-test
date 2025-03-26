@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Card, NoData, VerticalBarChart } from '@acx-ui/components'
 
@@ -31,22 +30,6 @@ function ChannelDistributionChart (intent: IntentDetail) {
         barWidth={20}
         showTooltipName={false}
       /> : <NoData />}
-      {/* <AutoSizer>
-        {({ width, height }) =>
-          apChannelDistributions.length
-            ? (
-              <VerticalBarChart
-                style={{ height: 300, width }}
-                data={data}
-                xAxisName={`(${$t({ defaultMessage: 'Channel' })})`}
-                barWidth={20}
-                showTooltipName={false}
-              />):
-            (
-              <NoData />
-            )
-        }
-      </AutoSizer> */}
     </Card>
   )
 }

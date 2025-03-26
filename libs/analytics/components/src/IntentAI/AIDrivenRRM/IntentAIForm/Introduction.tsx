@@ -116,7 +116,9 @@ export function Introduction () {
           />
         </StepsForm.TextContent>
         {isDataRetained && isHotTierData && compareSlider}
-        <ChannelDistributionChart {...intent} />
+        <StepsForm.TextContent>
+          <ChannelDistributionChart {...intent} />
+        </StepsForm.TextContent>
       </Col>
       <Col span={7} offset={2}>
         <SideNotes.Introduction />
