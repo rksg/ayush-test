@@ -503,7 +503,7 @@ export const Wrapper = styled.div<StyledTable>`
         }
         .ant-table-cell-with-append {
           .ant-table-row-expand-icon {
-            left: -32px;
+            display: none;
           }
         }
       }

@@ -20,7 +20,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
 }
 
 .c3 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
-  left: -32px;
+  display: none;
 }
 
 .c3 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
@@ -484,7 +484,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
 }
 
 .c3 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
-  left: -32px;
+  display: none;
 }
 
 .c3 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {

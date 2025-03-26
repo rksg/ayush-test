@@ -67,7 +67,7 @@ export function useGroupBy<RecordType> (
       if('children' in record && expanded)
       expandedRows?.push(key as Key)
       if('children' in record && !expanded)
-      expandedRows?.splice(expandedRows?.indexOf(key as Key), 1);
+      expandedRows?.splice(expandedRows?.indexOf(key as Key), 1)
     }
     const renderGroupRow = (record: RecordType) => {
       return <UI.GroupRow>
