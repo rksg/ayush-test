@@ -199,7 +199,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
 
   return (
     <>
-      {(accessControlId || !editMode) &&
+      {!drawerOnClose &&
         <PageHeader
           title={pageTitle}
           breadcrumb={breadcrumb}
