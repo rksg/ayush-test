@@ -1,8 +1,9 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }   from '@acx-ui/components'
-import { useNavigate } from '@acx-ui/react-router-dom'
+import { StepsForm }              from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useNavigate }            from '@acx-ui/react-router-dom'
 
 import { IntentWizardHeader } from '../../common/IntentWizardHeader'
 import { getScheduledAt }     from '../../common/ScheduleTiming'
@@ -16,9 +17,11 @@ import {
   useInitialValues
 } from '../../useIntentTransition'
 
-import { Introduction } from './Introduction'
-import { Priority }     from './Priority'
-import { Summary }      from './Summary'
+import { Introduction }       from './Introduction'
+import { IntroductionLegacy } from './IntroductionLegacy'
+import { Priority }           from './Priority'
+import { Summary }            from './Summary'
+import { SummaryLegacy }      from './SummaryLegacy'
 
 type CRRMFormValues = FormValues<{ crrmFullOptimization: boolean }>
 type CRRMPayload = IntentTransitionPayload<Exclude<CRRMFormValues['preferences'], undefined>>
@@ -41,6 +44,7 @@ export function IntentAIForm () {
   const { intent } = useIntentContext()
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isAIDrivenRRMMetricsEnabled = useIsSplitOn(Features.AI_DRIVEN_RRM_METRICS_TOGGLE)
 
   const { submit } = useIntentTransition()
   const initialValues = useInitialValues()
@@ -58,7 +62,7 @@ export function IntentAIForm () {
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
-        children={<Introduction />}
+        children={isAIDrivenRRMMetricsEnabled ? <Introduction /> : <IntroductionLegacy />}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Intent Priority' })}
@@ -70,7 +74,7 @@ export function IntentAIForm () {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary />}
+        children={isAIDrivenRRMMetricsEnabled ? <Summary /> : <SummaryLegacy />}
       />
     </StepsForm>
   </>)
