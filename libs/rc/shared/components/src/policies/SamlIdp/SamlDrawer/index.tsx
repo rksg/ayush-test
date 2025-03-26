@@ -1,16 +1,12 @@
 import { useState } from 'react'
 
-import { Buffer } from 'buffer'
-
 import {  Col, Form, Row, Button } from 'antd'
-import TextArea                    from 'antd/lib/input/TextArea'
 import { useIntl }                 from 'react-intl'
 
-import { Drawer }                 from '@acx-ui/components'
-import { Modal }                  from '@acx-ui/components'
+import { Drawer }                              from '@acx-ui/components'
 import {
-  useLazyGetSamlIdpProfileByIdQuery,
-  useGetServerCertificatesQuery
+  useGetServerCertificatesQuery,
+  useGetSamlIdpProfileWithRelationsByIdQuery
 } from '@acx-ui/rc/services'
 import {
   SamlIdpProfileViewData,
@@ -22,7 +18,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { AddSamlIdp } from '../AddSamlIdp'
+import { AddSamlIdp }           from '../AddSamlIdp'
+import { SamlIdpMetadataModal } from '../SamlIdpMetadataModal'
 
 
 
@@ -80,9 +77,20 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
 
   const { $t } = useIntl()
 
-  const [idpMetadata, setIdpMetadata] = useState('')
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
-  const [lazyGetSamlIdpProfile] = useLazyGetSamlIdpProfileByIdQuery()
+
+  const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
+    payload: {
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: {
+        id: [policy.id]
+      }
+    },
+    params: {
+      id: policy.id
+    }
+  })
 
   const { certificateNameMap } = useGetServerCertificatesQuery({
     payload: {
@@ -100,15 +108,6 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
     })
   })
 
-
-  const handleDisplayMetadata = async (id:string) => {
-    const data = await lazyGetSamlIdpProfile({
-      params: { id: id }
-    }).unwrap()
-    setIdpMetadata(Buffer.from(data?.metadata, 'base64').toString('ascii'))
-    setIdpMetadataModalVisible(true)
-  }
-
   return (
     <>
       <Form layout='vertical'>
@@ -121,16 +120,34 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
                   data-testid={'display-metadata-button'}
                   style={{ borderStyle: 'none' }}
                   type='link'
-                  onClick={()=>{handleDisplayMetadata(policy.id)}}
+                  onClick={()=>{ setIdpMetadataModalVisible(true) }}
                 >
                   {$t({ defaultMessage: 'View metadata' })}
                 </Button>
               }
             />
             <Form.Item
-              label={$t({ defaultMessage: 'Require SAML requests to be signed' })}
+              label={$t({ defaultMessage: 'SAML Request Signature' })}
               children={
                 transformDisplayOnOff(policy.signingCertificateEnabled)
+              }
+            />
+            <Form.Item
+              label={$t({ defaultMessage: 'Signing Certificate' })}
+              children={
+                (policy.signingCertificateId ?
+                  <TenantLink
+                    to={getPolicyRoutePath({
+                      type: PolicyType.SERVER_CERTIFICATES,
+                      oper: PolicyOperation.LIST
+                    })}>
+                    {
+                      certificateNameMap.find(cert => {
+                        return cert.key === policy.signingCertificateId
+                      })?.value || ''
+                    }
+                  </TenantLink> : ''
+                )
               }
             />
             <Form.Item
@@ -140,9 +157,9 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
               }
             />
             <Form.Item
-              label={$t({ defaultMessage: 'Server Certificate' })}
+              label={$t({ defaultMessage: 'Encryption Certificate' })}
               children={
-                (policy.encryptionCertificateId ? '' :
+                (policy.encryptionCertificateId ?
                   <TenantLink
                     to={getPolicyRoutePath({
                       type: PolicyType.SERVER_CERTIFICATES,
@@ -153,33 +170,18 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
                         return cert.key === policy.encryptionCertificateId
                       })?.value || ''
                     }
-                  </TenantLink>
+                  </TenantLink> : ''
                 )
               }
             />
           </Col>
         </Row>
       </Form>
-      <Modal
-        title={$t({ defaultMessage: 'IdP Metadata' })}
+      <SamlIdpMetadataModal
+        metadata={samlIdpData?.metadataContent ?? ''}
         visible={idpMetadataModalVisible}
-        width={800}
-        footer={
-          <Button
-            type='primary'
-            onClick={() => {
-              setIdpMetadataModalVisible(false)
-            }}
-          >
-            {$t({ defaultMessage: 'OK' })}
-          </Button>
-        }
-      >
-        <TextArea
-          style={{ width: '100%', height: 500 }}
-          value={idpMetadata}
-        />
-      </Modal>
+        setVisible={setIdpMetadataModalVisible}
+      />
     </>
   )
 }

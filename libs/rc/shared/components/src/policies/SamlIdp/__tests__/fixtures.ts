@@ -1,4 +1,4 @@
-import { CertificateStatusType, GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { CertificateStatusType, GuestNetworkTypeEnum, KeyUsageType, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockSamlIdpProfileId = '__samlIdpProfile_ID__'
@@ -70,7 +70,8 @@ export const certList = {
       name: mockCertName1,
       commonName: mockCertName1,
       value: mockCertName1,
-      status: ['VALID']
+      status: ['VALID'],
+      keyUsages: [KeyUsageType.DIGITAL_SIGNATURE, KeyUsageType.KEY_ENCIPHERMENT]
     },
     {
       key: mockCertId2,
@@ -78,7 +79,8 @@ export const certList = {
       name: mockCertName2,
       commonName: mockCertName2,
       value: mockCertName2,
-      status: ['VALID']
+      status: ['VALID'],
+      keyUsages: [KeyUsageType.KEY_ENCIPHERMENT]
     },
     {
       key: mockCertId3,
@@ -86,7 +88,8 @@ export const certList = {
       name: mockCertName3,
       commonName: mockCertName3,
       value: mockCertName3,
-      status: [CertificateStatusType.EXPIRED]
+      status: [CertificateStatusType.EXPIRED],
+      keyUsages: [KeyUsageType.DIGITAL_SIGNATURE]
     }
   ]
 }

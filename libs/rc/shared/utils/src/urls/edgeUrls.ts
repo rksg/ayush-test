@@ -195,6 +195,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     opsApi: 'POST:/edges/services/query'
   },
+  getEdgeClusterServiceList: {
+    method: 'post',
+    url: '/edgeClusterServices/query',
+    newApi: true,
+    opsApi: 'POST:/edgeClusterServices/query'
+  },
   getEdgesTopTraffic: {
     method: 'post',
     url: '/edges/topTraffic',

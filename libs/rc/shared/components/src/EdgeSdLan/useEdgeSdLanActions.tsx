@@ -561,13 +561,14 @@ export interface SdLanScopedVenueNetworksData {
 }
 export const useSdLanScopedVenueNetworks = (
   venueId: string | undefined,
-  networkIds: string[] | undefined
+  networkIds: string[] | undefined,
+  refetchFnRef?: React.MutableRefObject<{ [key: string]: () => void }>
 ) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
-  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
+  const { data, refetch, isUninitialized } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: isEdgeMvSdLanReady
         ? { 'tunneledWlans.venueId': [venueId] }
@@ -589,6 +590,8 @@ export const useSdLanScopedVenueNetworks = (
   }, {
     skip: !venueId || !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
   })
+
+  if(refetchFnRef && !isUninitialized) refetchFnRef.current.sdlan = refetch
 
   const result = useMemo(() => {
     if (isEdgeMvSdLanReady) {
@@ -618,12 +621,15 @@ export interface SdLanScopedNetworkVenuesData {
     networkVenueIds: string[] | undefined,
     guestNetworkVenueIds: string[] | undefined
 }
-export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
+export const useSdLanScopedNetworkVenues = (
+  networkId: string | undefined,
+  refetchFnRef?: React.MutableRefObject<{ [key: string]: () => void }>
+) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
-  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
+  const { data, refetch, isUninitialized } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: isEdgeMvSdLanReady
         ? { 'tunneledWlans.networkId': [networkId] }
@@ -645,6 +651,8 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   }, {
     skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady || isEdgeMvSdLanReady)
   })
+
+  if (refetchFnRef && !isUninitialized) refetchFnRef.current.sdlan = refetch
 
   const result = useMemo(() => {
     if (isEdgeMvSdLanReady) {

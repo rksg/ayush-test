@@ -16,6 +16,9 @@ export const SamlIdpMetadataModal = (props: SamlIdpMetadataModalProps) => {
       title={$t({ defaultMessage: 'IdP Metadata' })}
       visible={visible}
       width={800}
+      onCancel={() => {
+        setVisible(false)
+      }}
       footer={
         <Button
           type='primary'

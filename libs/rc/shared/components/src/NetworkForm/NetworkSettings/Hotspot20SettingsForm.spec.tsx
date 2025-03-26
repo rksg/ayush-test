@@ -30,6 +30,10 @@ import { MLOContext } from '../NetworkForm'
 
 import { Hotspot20SettingsForm } from './Hotspot20SettingsForm'
 
+jest.mock('./SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
+
 //jest.mocked(useIsSplitOn).mockReturnValue(true)
 // eslint-disable-next-line max-len
 jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)

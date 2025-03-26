@@ -59,7 +59,7 @@ export const SAMLForm = () => {
       }
     }
     setData()
-  }, [])
+  }, [idpViewDataList])
 
   useEffect(() => {
     if (selectedSamlIdpProfilesId) {
@@ -90,7 +90,6 @@ export const SAMLForm = () => {
                 <Select
                   data-testid={'saml-idp-profile-select'}
                   style={{ width: '320px' }}
-                  placeholder={'Select...'}
                   onChange={(value, option) => {
                     form.setFieldValue('samlIdpProfilesName',(option as DefaultOptionType).label)
                   }}

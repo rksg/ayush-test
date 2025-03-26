@@ -143,7 +143,6 @@ export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
   [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)',
   [GuestNetworkTypeEnum.Directory]: 'Active Directory/ LDAP Server',
   [GuestNetworkTypeEnum.SAML]: 'SSO via SAML Identity Provider (IdP)'
-
 }
 
 export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
