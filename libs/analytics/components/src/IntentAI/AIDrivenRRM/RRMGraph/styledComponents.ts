@@ -46,23 +46,6 @@ export const GraphLegendWrapper = styled.div`
   display: grid;
 `
 
-export const GraphWrapperLegacy = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: 3fr 0.6fr 3fr 1.8fr;
-  width: 100%;
-  height: 100%;
-`
-
-export const GraphTitleWrapperLegacy = styled.div`
-  width: 100%;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  display: grid;
-  grid-template-columns: 3.6fr 4.8fr;
-`
-
 export const GraphTitle = styled.div`
   color: var(--acx-primary-black);
   font-size: var(--acx-subtitle-4-font-size);
@@ -98,16 +81,6 @@ export const RightArrow = styled(ArrowChevronRight)`
 
 export const LegendWrapper = styled.div`
   margin-left: 3em;
-`
-
-export const LegendItemsLegacy = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  padding: 10px 0px;
-  align-items: start;
-  justify-items: start;
 `
 
 export const LegendItems = styled.div`
@@ -153,4 +126,31 @@ export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link'
 export const GraphFooterWrapper = styled(Space)`
   justify-content: space-between;
   align-items: flex-start;
+`
+
+export const GraphWrapperLegacy = styled.div`
+  position: relative;
+  display: grid;
+  grid-template-columns: 3fr 0.6fr 3fr 1.8fr;
+  width: 100%;
+  height: 100%;
+`
+
+export const GraphTitleWrapperLegacy = styled.div`
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: grid;
+  grid-template-columns: 3.6fr 4.8fr;
+`
+
+export const LegendItemsLegacy = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  padding: 10px 0px;
+  align-items: start;
+  justify-items: start;
 `
