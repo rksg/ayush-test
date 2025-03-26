@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'

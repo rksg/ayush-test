@@ -1,6 +1,10 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { SoftGreIpsecStateProps } from 'libs/rc/shared/components/src/SoftGRETunnelSettings/SoftGreIpSecState'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { useIpsecProfileLimitedSelectionProps } from 'libs/rc/shared/components/src/SoftGRETunnelSettings/useIpsecProfileLimitedSelection'
 import { cloneDeep, isObject }                  from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
@@ -14,8 +18,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                     from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, SoftGreIpSecState, SoftGreIpsecStateProps, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                                              from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, SoftGreIpSecState, useIpsecProfileLimitedSelection, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,
@@ -165,7 +169,17 @@ export function LanPorts (props: ApEditItemProps) {
     isVenueBoundIpsec,
     boundSoftGreIpsecList,
     softGreIpsecProfileValidator
-  } = SoftGreIpSecState( { venueId, isVenueOperation: false, formRef } as SoftGreIpsecStateProps)
+  } = SoftGreIpSecState( {
+    venueId: venueId!,
+    isVenueOperation: false,
+    formRef: formRef } as SoftGreIpsecStateProps)
+  const {
+    optionChange, ipsecOptionList, boundSoftGreIpsecData
+  } = useIpsecProfileLimitedSelection({
+    venueId: venueId!, isVenueOperation: false,
+    duplicationChangeDispatch: duplicationChangeDispatch,
+    formRef: formRef
+  } as useIpsecProfileLimitedSelectionProps)
 
   const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
@@ -251,13 +265,13 @@ export function LanPorts (props: ApEditItemProps) {
 
   const onTabChange = async (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
-    formRef?.current?.validateFields().then(async (m) => {
-      setActiveTabIndex(tabIndex)
-      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
-    }).catch((e) => {
-      // eslint-disable-next-line no-console
-      console.error(e)
-    })
+    setActiveTabIndex(tabIndex)
+    setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    // formRef?.current?.validateFields().then(async () => {
+    // }).catch((e) => {
+    //   // eslint-disable-next-line no-console
+    //   console.error(e)
+    // })
   }
   const handleCustomize = async (useVenueSettings: boolean) => {
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
@@ -616,6 +630,9 @@ export function LanPorts (props: ApEditItemProps) {
                           isVenueBoundIpsec={isVenueBoundIpsec}
                           boundSoftGreIpsecList={boundSoftGreIpsecList}
                           softGreIpsecProfileValidator={softGreIpsecProfileValidator}
+                          ipsecOptionList={ipsecOptionList}
+                          ipsecOptionChange={optionChange}
+                          boundSoftGreIpsecData={boundSoftGreIpsecData}
                         />
                       </Col>
                     </Row>

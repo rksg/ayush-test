@@ -4,10 +4,7 @@ import { Form, Select, Button, Space } from 'antd'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
-import {
-  useGetIpsecViewDataListQuery,
-  useLazyGetIpsecOptionsQuery
-} from '@acx-ui/rc/services'
+import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
   PolicyType,
@@ -27,16 +24,21 @@ interface IPSecProfileSettingsProps {
   readonly: boolean
   portId?: string
   apModel?: string
-  serialNumber?: string
+  serialNumber?: string,
+  ipsecProfileOptionList: DefaultOptionType[],
+  ipsecOptionChange?: (index: number, apModel?: string, serialNumber?: string) => void
 }
 
 export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   const {
     index,
     ipsecProfileId,
-    softGreProfileId,
     onGUIChanged,
-    readonly
+    readonly,
+    apModel,
+    serialNumber,
+    ipsecProfileOptionList,
+    ipsecOptionChange
   } = props
   const { $t } = useIntl()
   const params = useParams()
@@ -45,33 +47,33 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ ipsecProfile, setIpSecProfile ] = useState<DefaultOptionType>(defaultIpsecOption)
-  const [ ipsecOptions, setIpsecOptions ] = useState<DefaultOptionType[]>([])
+  // const [ ipsecOptions, setIpsecOptions ] = useState<DefaultOptionType[]>([])
 
   const ipsecViewDataList = useGetIpsecViewDataListQuery({
     params,
     payload: {}
   })
 
-  useEffect(() => {
-    loadOptions()
-  },[softGreProfileId])
+  // useEffect(() => {
+  //   loadOptions()
+  // },[softGreProfileId])
 
-  const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
+  // const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
 
-  const loadOptions = async () => {
-    const queryData = await getIpsecOptions(
-      { params: {
-        venueId: params.venueId,
-        softGreId: props.softGreProfileId },
-      payload: {},
-      skip: !params.venueId }
-    ).unwrap()
+  // const loadOptions = async () => {
+  //   const queryData = await getIpsecOptions(
+  //     { params: {
+  //       venueId: params.venueId,
+  //       softGreId: props.softGreProfileId },
+  //     payload: {},
+  //     skip: !params.venueId }
+  //   ).unwrap()
 
-    if (queryData) {
-      const { options } = queryData
-      setIpsecOptions(options.map(opt => ({ ...opt, disabled: false })))
-    }
-  }
+  //   if (queryData) {
+  //     const { options } = queryData
+  //     setIpsecOptions(options.map(opt => ({ ...opt, disabled: false })))
+  //   }
+  // }
 
   const onChange = (value: string) => {
     if(!value) {
@@ -80,17 +82,21 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
     onGUIChanged?.('ipsecProfile')
 
     setIpSecProfile(
-      ipsecOptions.find((profile) => profile.value === value) ??
+      ipsecProfileOptionList.find((profile) => profile.value === value) ??
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
     )
+
+    ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
   }
 
   const addIpsecOption = (value: DefaultOptionType) => {
-    if (ipsecOptions.find((profile) => profile.disabled === true)) {
-      setIpsecOptions([...ipsecOptions, { ...value, disabled: true }])
-    } else {
-      setIpsecOptions([...ipsecOptions, { ...value }])
-    }
+    console.log(value) // eslint-disable-line no-console
+    ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
+    // if (ipsecOptions.find((profile) => profile.disabled === true)) {
+    //   setIpsecOptions([...ipsecOptions, { ...value, disabled: true }])
+    // } else {
+    //   setIpsecOptions([...ipsecOptions, { ...value }])
+    // }
   }
 
   useEffect(() => {
@@ -107,11 +113,11 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
     if(!ipsecProfileId) {
       return
     }
-    const selectedProfile = ipsecOptions
+    const selectedProfile = ipsecProfileOptionList
       .find((profile) => profile.value === ipsecProfileId)
     setIpSecProfile(selectedProfile ? selectedProfile: defaultIpsecOption)
 
-  }, [ipsecProfileId, ipsecOptions])
+  }, [ipsecProfileId, ipsecProfileOptionList])
 
   return (
     <>
@@ -133,7 +139,7 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
                 {
                   label: $t({ defaultMessage: 'Select...' }), value: ''
                 },
-                ...ipsecOptions
+                ...ipsecProfileOptionList || []
               ]}
               placeholder={$t({ defaultMessage: 'Select...' })}
             />}

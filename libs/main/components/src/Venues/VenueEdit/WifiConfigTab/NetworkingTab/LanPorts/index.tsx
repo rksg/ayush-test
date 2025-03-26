@@ -2,7 +2,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import { SoftGreIpsecStateProps }                        from 'libs/rc/shared/components/src/SoftGRETunnelSettings/SoftGreIpSecState'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
@@ -13,13 +12,14 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
   useSoftGreProfileLimitedSelection,
-  SoftGreIpSecState
+  SoftGreIpSecState,
+  useIpsecProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
 import {
@@ -225,8 +225,8 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const [lanPortIdx, setLanPortIdx] = useState(0)
-  const [lanPortModel, setLanPortModel] = useState('')
+  // const [lanPortIdx, setLanPortIdx] = useState(0)
+  // const [lanPortModel, setLanPortModel] = useState('')
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
@@ -236,7 +236,13 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     isVenueBoundIpsec,
     boundSoftGreIpsecList,
     softGreIpsecProfileValidator
-  } = SoftGreIpSecState({ venueId, isVenueOperation: true } as SoftGreIpsecStateProps)
+  } = SoftGreIpSecState({ venueId: venueId!, isVenueOperation: true })
+  const {
+    optionChange, ipsecOptionList, boundSoftGreIpsecData
+  } = useIpsecProfileLimitedSelection({
+    venueId: venueId!,
+    isVenueOperation: true,
+    duplicationChangeDispatch: duplicationChangeDispatch })
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -290,28 +296,30 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
 
   const onTabChange = async (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
-    try {
-      await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
-      setActiveTabIndex(tabIndex)
-      setLanPortIdx(tabIndex)
-      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    }
+    setActiveTabIndex(tabIndex)
+    setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    // try {
+    //   await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
+    //   setActiveTabIndex(tabIndex)
+    //   setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
+    //   setLanPortIdx(tabIndex)
+    // } catch (error) {
+    //   // eslint-disable-next-line no-console
+    //   console.error(error)
+    // }
   }
 
   const handleModelChange = async (value: string) => {
-    try {
-      await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
-      setLanPortModel(value)
-      form.setFieldValue('model', value)
-    } catch (error) {
-      form.setFieldValue('model', lanPortModel)
-      // eslint-disable-next-line no-console
-      console.error(error)
-      return
-    }
+    // try {
+    //   await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
+    //   setLanPortModel(value)
+    //   form.setFieldValue('model', value)
+    // } catch (error) {
+    //   form.setFieldValue('model', lanPortModel)
+    //   // eslint-disable-next-line no-console
+    //   console.error(error)
+    //   return
+    // }
 
     const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
     const lanPortsCap = modelCaps?.lanPorts || []
@@ -870,6 +878,9 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     isVenueBoundIpsec={isVenueBoundIpsec}
                     boundSoftGreIpsecList={boundSoftGreIpsecList}
                     softGreIpsecProfileValidator={softGreIpsecProfileValidator}
+                    ipsecOptionChange={optionChange}
+                    ipsecOptionList={ipsecOptionList}
+                    boundSoftGreIpsecData={boundSoftGreIpsecData}
                   />
                 </Col>
               </Row>

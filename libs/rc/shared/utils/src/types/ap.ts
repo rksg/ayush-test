@@ -1038,7 +1038,9 @@ export enum SoftGreDuplicationChangeState {
   TurnOffLanPort,
   ResetToDefault,
   FindTheOnlyVoter,
-  ReloadOptionList
+  ReloadOptionList,
+  BoundIpSec,
+  UnboundIpSec
 }
 
 export interface SoftGreDuplicationChangeDispatcher {

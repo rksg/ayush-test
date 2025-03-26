@@ -29,7 +29,8 @@ interface SoftGREProfileSettingsProps {
   apModel?: string
   serialNumber?: string
   isUnderAPNetworking: boolean
-  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean,
+  ipsecOptionChange?: (index: number, apModel?: string, serialNumber?: string) => void
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
@@ -44,7 +45,8 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
     apModel,
     serialNumber,
     isUnderAPNetworking,
-    validateIsFQDNDuplicate
+    validateIsFQDNDuplicate,
+    ipsecOptionChange
   } = props
   const { $t } = useIntl()
   const params = useParams()
@@ -138,6 +140,8 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
                     { model: apModel, portId: portId }
                   )
                 })
+
+                ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
               }}
               options={[
                 {

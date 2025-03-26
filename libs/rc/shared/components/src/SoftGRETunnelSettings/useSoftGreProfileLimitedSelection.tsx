@@ -29,6 +29,7 @@ export const useSoftGreProfileLimitedSelection = (
   const [ softGREProfileOptionList, setSoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ voteTallyBoard, setVoteTallyBoard ] = useState<VoteTallyBoard[]>([])
   const [ isTheOnlyVoter, setIsTheOnlyVoter] = useState<boolean>(false)
+  const [ isBoundIpsec, setIsBoundIpsec] = useState<boolean>(false)
 
   const allowSoftGetGrePorfiles = !isTemplate
     && isEthernetSoftgreEnabled
@@ -99,6 +100,8 @@ export const useSoftGreProfileLimitedSelection = (
         }
         return option
       }))
+    } else if (isBoundIpsec) {
+      console.log('Now is BoundIpsec') // eslint-disable-line no-console
     } else {
       setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
         return omit(option, 'disabled') as DefaultOptionType
@@ -284,10 +287,31 @@ export const useSoftGreProfileLimitedSelection = (
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           addCandidate(next?.index, next?.candidate, next?.voter)
           break
+        case SoftGreDuplicationChangeState.BoundIpSec:
+          boundIpSec(next?.softGreProfileId)
+          break
+        case SoftGreDuplicationChangeState.UnboundIpSec:
+          unboundIpSec()
+          break
       }
       return next
     }
 
+  const boundIpSec = (softGreProfileId?: string) => {
+    setIsBoundIpsec(true)
+    setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
+      if (option.value === softGreProfileId) {
+        return { ...option, disabled: false }
+      }
+      return { ...option, disabled: true }
+    }))
+  }
+  const unboundIpSec = () => {
+    setIsBoundIpsec(false)
+    setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
+      return { ...option, disabled: false }
+    }))
+  }
 
   // eslint-disable-next-line
   const [duplicationChangeState, duplicationChangeDispatch] = useReducer(actionRunner, {
