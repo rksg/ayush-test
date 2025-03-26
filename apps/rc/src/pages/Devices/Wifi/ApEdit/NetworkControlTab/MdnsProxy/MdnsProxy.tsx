@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react'
 
 import { Form, Switch } from 'antd'
+import { omit }         from 'lodash'
 import { useIntl }      from 'react-intl'
 import styled           from 'styled-components/macro'
 
@@ -120,39 +121,39 @@ export function MdnsProxy (props: ApEditItemProps) {
     return formRef.current!.getFieldsError().map(item => item.errors).flat().length > 0
   }
 
-  const updateEditContextData = (dataChanged: boolean) => {
+  const updateEditContextData = (hasChanged: boolean) => {
+    const newEditNetworkControlContextData = (hasChanged)? {
+      ...editNetworkControlContextData,
+      updateMdnsProxy: () => { onSave(formRef.current!.getFieldsValue()) },
+      discardMdnsProxyChanges: () => { formRef.current!.resetFields() }
+    } : {
+      ...omit(editNetworkControlContextData, ['updateMdnsProxy', 'discardMdnsProxyChanges'])
+    }
+    setEditNetworkControlContextData(newEditNetworkControlContextData)
+
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'networkControl',
       tabTitle: $t({ defaultMessage: 'Network Control' }),
-      isDirty: dataChanged,
-      hasError: dataChanged ? isFormInvalid() : editContextData.hasError
+      isDirty: Object.keys(newEditNetworkControlContextData).length > 0,
+      hasError: hasChanged ? isFormInvalid() : editContextData.hasError
     })
 
-    setEditNetworkControlContextData({
-      ...editNetworkControlContextData,
-      updateMdnsProxy: () => {
-        dataChanged && onSave(formRef.current!.getFieldsValue())
-      },
-      discardMdnsProxyChanges: () => {
-        dataChanged && formRef.current!.resetFields()
-      }
-    })
   }
 
   const onSave = async (formData: MdnsProxyFormFieldType) => {
-    const originalServiceId = apDetail?.multicastDnsProxyServiceProfileId
+    const { multicastDnsProxyServiceProfileId: originalServiceId, venueId } = apDetail || {}
 
     try {
       if (formData.serviceEnabled && serialNumber) {
         await addMdnsProxyAps({
-          params: { ...params, serviceId: formData.serviceId, venueId: apDetail?.venueId },
+          params: { ...params, serviceId: formData.serviceId, venueId: venueId },
           payload: [serialNumber],
           enableRbac
         }).unwrap()
       } else if (originalServiceId && serialNumber) { // Disable the mDNS Proxy which has been applied before
         await deleteMdnsProxyAps({
-          params: { ...params, serviceId: originalServiceId, venueId: apDetail?.venueId },
+          params: { ...params, serviceId: originalServiceId, venueId: venueId },
           payload: [serialNumber],
           enableRbac
         }).unwrap()
