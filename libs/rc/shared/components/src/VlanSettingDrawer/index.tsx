@@ -22,6 +22,7 @@ import {
   SwitchModelPortData,
   SwitchSlot,
   StackMember,
+  SWITCH_DEFAULT_VLAN_NAME,
   PortStatusMessages,
   validateVlanExcludingReserved,
   validateDuplicateVlanId,
@@ -159,10 +160,12 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
   const [hasPortsUsedByLag, setHasPortsUsedByLag] = useState(false)
 
-  const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
-    switchFamilyModel, portSlotsData,
+  const { form, vlan, setVlan, vlansList, isProfileLevel,
+    editMode, switchFamilyModel, portSlotsData,
     enablePortModelConfigure = true, enableVlanRangeConfigure,
     portsUsedBy, stackMember, gptObject, switchFirmware } = props
+
+  const defaultVlan = vlansList.find(vlan => vlan.vlanName === SWITCH_DEFAULT_VLAN_NAME)
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const is10020aSwitchOnlyRstpEnabled = useIsSplitOn(Features.SWITCH_UPDATE_RSTP_ABOVE_10020A)
@@ -368,14 +371,23 @@ function VlanSettingForm (props: VlanSettingFormProps) {
                 if (!isValidRange || isVlanDuplicate) {
                   return Promise.reject($t(validationMessages.invalidVlanRange))
                 }
+                if (defaultVlan?.vlanId && vlans.includes(defaultVlan?.vlanId.toString())) {
+                  return Promise.reject(
+                    $t(validationMessages.vlanIdSetAsDeaultVlan, {
+                      defaultVlan: defaultVlan?.vlanId
+                    })
+                  )
+                }
                 return Promise.all(
                   vlans.map(async (v: string) => {
                     await validateVlanExcludingReserved(v)
                     await validateDuplicateVlanId(
                       Number(v),
-                      vlansList.filter(vlanItem =>
-                        (editMode ? vlanItem.vlanId !== vlan?.vlanId : true)
-                      )
+                      vlansList
+                        .filter(vlan => vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
+                        .filter(vlanItem =>
+                          (editMode ? vlanItem.vlanId !== vlan?.vlanId : true)
+                        )
                     )
                   })
                 ).then(() => Promise.resolve())
@@ -556,7 +568,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           currrentRecords={ruleList}
           onCancel={onCancel}
           onSave={onSaveVlan}
-          vlanList={vlansList}
+          vlanList={
+            vlansList.filter(vlan => vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
+          }
           switchFamilyModel={isSwitchLevelVlanEnabled ? switchFamilyModel : undefined}
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}

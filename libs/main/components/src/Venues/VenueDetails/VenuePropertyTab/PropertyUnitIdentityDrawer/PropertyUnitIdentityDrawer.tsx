@@ -137,7 +137,7 @@ export function PropertyUnitIdentityDrawer (props: PropertyUnitIdentityDrawerPro
   return (
     <Drawer
       destroyOnClose={true}
-      width={'700px'}
+      width={'900px'}
       visible={visible}
       title={$t({ defaultMessage: 'Add Identity Association' })}
       children={

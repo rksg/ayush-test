@@ -53,7 +53,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           ...getFilterPayload(payload),
-          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M')
+          granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),
       transformResponse: (response: Response<Ports>) =>

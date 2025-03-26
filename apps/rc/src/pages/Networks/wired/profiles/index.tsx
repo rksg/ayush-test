@@ -17,7 +17,8 @@ import {
   SwitchProfileModel,
   ProfileTypeEnum,
   usePollingTableQuery,
-  SwitchUrlsInfo
+  SwitchUrlsInfo,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -103,7 +104,7 @@ export function ProfilesTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteProfiles)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchProfile)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -133,7 +134,7 @@ export function ProfilesTab () {
   const isSelectionVisible = hasPermission({
     scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE],
     rbacOpsIds: [
-      getOpsApi(SwitchUrlsInfo.deleteProfiles),
+      getOpsApi(SwitchRbacUrlsInfo.deleteSwitchProfile),
       getOpsApi(SwitchUrlsInfo.updateSwitchConfigProfile)
     ]
   })

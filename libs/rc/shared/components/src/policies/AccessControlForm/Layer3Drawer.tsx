@@ -1108,6 +1108,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
             onClick={() => {
               setDrawerVisible(true)
               setQueryPolicyId('')
+              clearFieldsValue()
             }}>
             {$t({ defaultMessage: 'Add New' })}
           </Button>

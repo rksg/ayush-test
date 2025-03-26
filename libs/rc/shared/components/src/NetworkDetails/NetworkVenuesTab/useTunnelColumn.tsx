@@ -33,10 +33,16 @@ interface useTunnelColumnProps {
   network: NetworkSaveData | null | undefined
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
+  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>,
+  setIsTableUpdating: React.Dispatch<React.SetStateAction<boolean>>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
-  const { network, sdLanScopedNetworkVenues, setTunnelModalState } = props
+  const {
+    network, sdLanScopedNetworkVenues, setTunnelModalState,
+    refetchFnRef,
+    setIsTableUpdating
+  } = props
   const { isTemplate } = useConfigTemplate()
 
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -47,9 +53,9 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const networkId = network?.id
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
-  const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
-  const ipsecVenueMap = useGetIpsecScopeNetworkMap(networkId)
-  const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
+  const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId, refetchFnRef)
+  const ipsecVenueMap = useGetIpsecScopeNetworkMap(networkId, refetchFnRef)
+  const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId, refetchFnRef)
   const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
   const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: NetworkSaveData) => () => {
@@ -102,7 +108,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           <div><NetworkTunnelSwitchBtn
             tunnelType={tunnelType}
             venueSdLanInfo={venueSdLanInfo}
-            onClick={(checked) => {
+            onClick={async (checked) => {
               if (checked) {
                 handleClickNetworkTunnel(row, network)()
               } else {
@@ -110,11 +116,18 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   tunnelType: NetworkTunnelTypeEnum.None,
                   softGre: {
                     oldProfileId: targetSoftGre?.[0].profileId
+                  },
+                  ipsec: {
+                    enableIpsec: targetIpsec && targetIpsec.length > 0,
+                    oldProfileId: targetIpsec?.[0].profileId
                   }
                 } as NetworkTunnelActionForm
 
+                setIsTableUpdating(true)
                 // deactivate depending on current tunnel type
-                deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                // eslint-disable-next-line max-len
+                await deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                setIsTableUpdating(false)
               }
             }}
           /></div>

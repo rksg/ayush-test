@@ -5,7 +5,7 @@ import { useIntl }                                        from 'react-intl'
 
 import {
   useGetCertificateAuthoritiesQuery,
-  useGetPersonaGroupByIdQuery,
+  useSearchPersonaListQuery,
   useGetCertificateTemplatesQuery
 } from '@acx-ui/rc/services'
 import { CertificateTemplate, Persona } from '@acx-ui/rc/utils'
@@ -63,11 +63,16 @@ export default function CertificateSettings (
       (item) => item.value === certificateTemplateId)?.groupId
   }
 
-  const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
-    // eslint-disable-next-line max-len
-    { params: { groupId: templateData?.identityGroupId ?? getIdentityGroupIdFromSelectTemplate() } },
-    { skip: (!templateData?.identityGroupId && !certificateTemplateId) || !!specificIdentity }
-  )
+  const {
+    data: identityList,
+    isLoading: isIdentityLoading,
+    isFetching: isIdentityFetching
+  } = useSearchPersonaListQuery({
+    payload: {
+      page: 1, pageSize: 10000,
+      groupId: templateData?.identityGroupId ?? getIdentityGroupIdFromSelectTemplate()
+    }
+  }, { skip: (!templateData?.identityGroupId && !certificateTemplateId) || !!specificIdentity })
 
   const csrSourceOptions = [
     { label: $t({ defaultMessage: 'Auto-Generate CSR' }), value: 'generate' },
@@ -124,10 +129,11 @@ export default function CertificateSettings (
               }]}
             >
               <Select
+                loading={isIdentityLoading || isIdentityFetching}
                 placeholder={$t({ defaultMessage: 'Choose ...' })}
                 options={
                   // eslint-disable-next-line max-len
-                  personaGroupData?.identities?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
+                  identityList?.data?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
               />
             </Form.Item>
           </Col>

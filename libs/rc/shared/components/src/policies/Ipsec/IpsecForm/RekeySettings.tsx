@@ -14,6 +14,7 @@ interface FormFieldConfig {
   placeholder?: string
   rules?: RuleObject[]
   render: boolean
+  defaultValue: number
 }
 
 export default function RekeySettings () {
@@ -29,14 +30,16 @@ export default function RekeySettings () {
       itemKey: 'ikeRekeyTime',
       itemLabel: $t({ defaultMessage: 'Internet Key Exchange (IKE)' }),
       render: true,
-      rules: [{ min: 0, max: 16384 }],
+      defaultValue: 4,
+      rules: [{ min: 1, max: 16384 }],
       tooltipMsg: $t(messageMapping.ike_rekey_tooltip)
     },
     {
       itemKey: 'espRekeyTime',
       itemLabel: $t({ defaultMessage: 'Encapsulating Security Payload (ESP)' }),
       render: true,
-      rules: [{ min: 0, max: 16384 }],
+      defaultValue: 1,
+      rules: [{ min: 1, max: 16384 }],
       tooltipMsg: $t(messageMapping.esp_rekey_tooltip)
     }
   ]
@@ -49,6 +52,7 @@ export default function RekeySettings () {
           itemLabel,
           tooltipMsg,
           placeholder,
+          defaultValue,
           rules,
           render
         } = formField
@@ -67,7 +71,7 @@ export default function RekeySettings () {
               <Space>
                 <Form.Item
                   name={itemKey}
-                  initialValue={4}
+                  initialValue={defaultValue}
                   children={
                     <InputNumber placeholder={placeholder} style={{ width: 80 }} />
                   } />

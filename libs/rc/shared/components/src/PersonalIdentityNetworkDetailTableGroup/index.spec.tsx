@@ -67,7 +67,11 @@ describe('PersonalIdentityNetwork DetailTableGroup', () => {
         (_req, res, ctx) => res(ctx.json(mockedPersonaList))),
       rest.get(
         EdgePinUrls.getSwitchInfoByPinId.url,
-        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData)))
+        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData))),
+      rest.post(
+        PersonaUrls.searchIdentityClients.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
