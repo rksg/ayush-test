@@ -59,7 +59,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
       await MacAddressFilterRegExp(value)
 
       let mask = form.getFieldValue(maskField)
-      if(mask === ''){
+      if(!mask){
         if (value.includes(':')) {
           mask = 'ff:ff:ff:ff:ff:ff'
         } else if (value.includes('-')) {
