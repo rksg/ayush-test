@@ -44,13 +44,13 @@ interface SwitchLayer2ACLFormProps {
 const payload ={
   fields: [
     'id',
-    'policyName'
+    'name'
   ],
   page: 1,
   pageSize: 10000,
   defaultPageSize: 10000,
   total: 0,
-  sortField: 'policyName',
+  sortField: 'name',
   sortOrder: 'ASC'
 }
 
