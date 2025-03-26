@@ -3,8 +3,8 @@ import { Typography }                               from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow, Tabs } from '@acx-ui/components'
-import { getIntl }                      from '@acx-ui/utils'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
+import { getIntl }                from '@acx-ui/utils'
 
 import { DescriptionSection }   from '../../DescriptionSection'
 import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
@@ -13,13 +13,13 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
+import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
-import ChannelDistributionChart  from './Chart/ChannelDistributionChart'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
@@ -71,7 +71,7 @@ export function createUseValuesText () {
   }
 }
 
-export function IntentAIDetails () {
+export function IntentAIDetailsLegacy () {
   const { $t } = useIntl()
   const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const useValuesText = createUseValuesText()
@@ -103,17 +103,19 @@ export function IntentAIDetails () {
         {!noData ? <>
           <DetailsSection data-testid='Details'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <Tabs>
-              <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
-                <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
-              </Tabs.TabPane>
-            </Tabs>
+            <DetailsSection.Details>
+              <GridRow>
+                <KPIGrid/>
+              </GridRow>
+            </DetailsSection.Details>
           </DetailsSection>
 
-          <DetailsSection>
-            <GridCol col={{ span: 12 }}>
-              <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
-            </GridCol>
+          <DetailsSection data-testid='Key Performance Indications'>
+            <DetailsSection.Title
+              children={$t({ defaultMessage: 'Key Performance Indications' })} />
+            <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
+              <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+            </DetailsSection.Details>
           </DetailsSection>
 
           <GridRow>
