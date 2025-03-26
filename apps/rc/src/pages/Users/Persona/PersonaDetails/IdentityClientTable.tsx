@@ -38,11 +38,12 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   ] = useLazyGetClientsQuery()
   const tableQuery = useTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
-    apiParams: { },
+    apiParams: { pageSize: '100' },
     sorter: {
-      sortField: 'username',
-      sortOrder: 'ASC'
+      sortField: 'updatedAt',
+      sortOrder: 'DESC'
     },
+    pagination: { pageSize: 100 },
     defaultPayload: { identityIds: [personaId] },
     option: { skip: !personaId || !personaGroupId }
   })
@@ -112,7 +113,10 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   >
     <Table<ClientInfo>
       rowKey={'clientMac'}
-      columns={useRbacClientTableColumns(useIntl(), false)}
+      columns={useRbacClientTableColumns(useIntl(), false)
+        .map(col =>
+          col.key === 'hostname' ? { ...col, defaultSortOrder: 'descend' } : col
+        )}
       settingsId={settingsId}
       dataSource={datasource}
     />
