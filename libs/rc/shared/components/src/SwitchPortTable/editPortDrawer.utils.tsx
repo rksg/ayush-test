@@ -155,10 +155,14 @@ export const getAclOptions = (acls?: AclUnion) => {
   ] as DefaultOptionType[]
 }
 
-export const getMacAclOptions = (macAclList?: MacAcl[]) => {
+export const getMacAclOptions = (macAclList?: MacAcl[], macAclGlobalList?: MacAcl[]) => {
   const { $t } = getIntl()
-  const options = macAclList?.map((macAcl: { name: string }) =>
-    ({ value: macAcl.name, label: macAcl.name })) || []
+  const options = [...macAclList?.map((macAcl: MacAcl) =>
+    ({ value: macAcl.name,
+      label: `${macAcl.name} ${macAcl.customized === true ?
+        '(Customized)' : ''}` })) || [],
+  ...macAclGlobalList?.map((macAcl: MacAcl) =>
+    ({ value: macAcl.name, label: macAcl.name })) || []]
 
   return [
     { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },

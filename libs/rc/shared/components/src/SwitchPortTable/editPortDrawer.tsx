@@ -35,7 +35,8 @@ import {
   useCyclePoeMutation,
   useLazyPortProfileOptionsForMultiSwitchesQuery,
   useGetSwitchStickyMacAclsQuery,
-  useGetSwitchMacAclsQuery
+  useGetSwitchMacAclsQuery,
+  useGetLayer2AclsQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -366,6 +367,14 @@ export function EditPortDrawer ({
     skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b || !switchDetail?.venueId
   })
 
+  const { data: macAclGlobalList } = useGetLayer2AclsQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: { sortField: 'name', pageSize: 10000 },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchMacAclEnabled || !isFirmwareAbove10010gOr10020b || !switchDetail?.venueId
+  })
+
   const stickyMacAclsColumns: TableProps<{ macAddress: string }>['columns'] = [
     {
       key: 'macAddress',
@@ -577,7 +586,7 @@ export function EditPortDrawer ({
       setVlanUsedByVe(vlanUsedByVe)
       setPortSpeedOptions(portSpeed)
       setAclsOptions(getAclOptions(aclUnion))
-      setMacAclsOptions(getMacAclOptions(macAclList?.data))
+      setMacAclsOptions(getMacAclOptions(macAclList?.data, macAclGlobalList?.data))
       setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
