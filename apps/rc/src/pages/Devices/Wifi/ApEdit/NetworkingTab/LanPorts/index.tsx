@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { SoftGreIpsecStateProps }               from 'libs/rc/shared/components/src/SoftGRETunnelSettings/SoftGreIpSecState'
 import { cloneDeep, isObject }                  from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
@@ -15,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                             from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, SoftGreIpSecState, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                                     from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, SoftGreIpSecState, SoftGreIpsecStateProps, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,
@@ -156,7 +155,6 @@ export function LanPorts (props: ApEditItemProps) {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const [lanPortIdx, setLanPortIdx] = useState(0)
   const isResetClick = useRef(false)
   const {
     softGREProfileOptionList,
@@ -253,24 +251,12 @@ export function LanPorts (props: ApEditItemProps) {
 
   const onTabChange = async (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
-    const form = formRef?.current as StepsFormLegacyInstance
-    form.validateFields().then((m) => {
-      // eslint-disable-next-line no-console
-      console.log('validSuccess:',m)
-      try {
-        setActiveTabIndex(tabIndex)
-        setLanPortIdx(tabIndex)
-        setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      }
+    formRef?.current?.validateFields().then(async (m) => {
+      setActiveTabIndex(tabIndex)
+      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
     }).catch((e) => {
       // eslint-disable-next-line no-console
       console.error(e)
-      setActiveTabIndex(lanPortIdx)
-      setLanPortIdx(lanPortIdx)
-      setSelectedPortCaps(selectedModelCaps?.lanPorts?.[lanPortIdx] as LanPort)
     })
   }
   const handleCustomize = async (useVenueSettings: boolean) => {
@@ -600,6 +586,7 @@ export function LanPorts (props: ApEditItemProps) {
               <Tabs
                 type='third'
                 onChange={onTabChange}
+                activeKey={`lan-${activeTabIndex + 1}`}
                 animated={true}
               >
                 {selectedModel?.lanPorts?.map((lan: LanPort, index: number) =>
