@@ -70,3 +70,14 @@ export const dataSetMapping = {
   'switchNetwork': defineMessage({ defaultMessage: 'Switch Network' }),
   'wifiCalling': defineMessage({ defaultMessage: 'AP WiFi Calling' })
 }
+
+export function connectorNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // Max length is 128 (reserve file extension)
+  const regexWithMaxLength = /^[A-Za-z0-9\s_-]{1,128}$/
+  const isValid = regexWithMaxLength.test(value)
+  return isValid ? Promise.resolve() : Promise.reject($t({
+    defaultMessage:
+      'Please enter a valid name (alphanumeric, spaces, _ and -) with max length of 128.'
+  }))
+}

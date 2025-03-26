@@ -1,3 +1,5 @@
+import { IdentityClient, NewTablePageable, NewTableResult } from '@acx-ui/rc/utils'
+
 export const mockedIdentityList = {
   content: [
     {
@@ -181,6 +183,39 @@ export const mockedIdentityList = {
     empty: false
   },
   empty: false
+}
+
+const defaultPageable: NewTablePageable = {
+  offset: 0,
+  pageNumber: 0,
+  pageSize: 10,
+  paged: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: false
+  },
+  unpaged: false
+}
+
+export const mockedIdentityClientList: NewTableResult<IdentityClient> = {
+  totalElements: 10,
+  totalPages: 0,
+  sort: {
+    unsorted: false,
+    sorted: false,
+    empty: false
+  },
+  content: [
+    {
+      id: '3fc815a5-4a1b-4c49-bfdc-0e7a6ddc562f',
+      tenantId: '765862a3-8e11-488b-85ae-d40a2a0ed7fd',
+      groupId: '765862a3-8e11-488b-85ae-d40a2a0ed7fd',
+      identityId: '3fc815a5-4a1b-4c49-bfdc-0e7a6ddc562f',
+      clientMac: '11:11:11:11:11:11'
+    }
+  ],
+  pageable: defaultPageable
 }
 
 export const mockedIdentityGroupList = {

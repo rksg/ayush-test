@@ -30,7 +30,7 @@ Object {
     "p-channeldist-suboptimal-plan-50g-indoor",
   ],
   "end": "2023-07-10T06:00:00.000Z",
-  "granularity": "PT180S",
+  "granularity": "PT15M",
   "path": Array [
     Object {
       "name": "density-vsze-cluster",

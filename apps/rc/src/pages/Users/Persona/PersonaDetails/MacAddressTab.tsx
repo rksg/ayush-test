@@ -46,7 +46,6 @@ function MacAddressTab (props: { personaGroupData?: PersonaGroup }) {
         }
       ]
     },
-    pagination: { settingsId: 'identity-macregistration-table' },
     apiParams: { policyId: personaGroupData?.macRegistrationPoolId ?? '' },
     option: {
       skip: !personaGroupData?.macRegistrationPoolId || !personaId
@@ -75,6 +74,8 @@ function MacAddressTab (props: { personaGroupData?: PersonaGroup }) {
       <MacRegistrationsTable
         policyId={personaGroupData?.macRegistrationPoolId}
         tableQuery={macRegistrationTableQuery}
+        defaultIdentityId={personaId}
+        settingsId={'identity-macregistration-table'}
       />
     </> : <></>)
 }

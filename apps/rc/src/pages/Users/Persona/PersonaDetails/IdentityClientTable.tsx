@@ -198,7 +198,8 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       searchable: true,
       align: 'center',
       title: $t({ defaultMessage: 'Onboarding Mechanism' }),
-      sorter: { compare: sortProp('onboardType', defaultSort) }
+      sorter: { compare: sortProp('onboardType', defaultSort) },
+      render: (_, row) => row.onboardType?.toUpperCase()
     },
     {
       key: 'lastSeenAt',

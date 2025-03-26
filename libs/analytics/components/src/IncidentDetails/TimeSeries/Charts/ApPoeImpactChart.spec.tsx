@@ -85,7 +85,7 @@ describe('apPoeImpactQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentPoeLow,
         charts: [TimeSeriesChartTypes.ApPoeImpactChart],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

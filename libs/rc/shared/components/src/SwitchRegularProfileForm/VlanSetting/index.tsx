@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, Key, ReactNode } from 'react'
+import { useContext, useState, useEffect, Key, ReactNode } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
@@ -261,7 +261,6 @@ export function VlanSetting () {
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add VLAN' }),
               onClick: () => {
-                form.resetFields()
                 setDrawerFormRule({} as Vlan)
                 setDrawerEditMode(false)
                 setVlanDrawerVisible(true)
@@ -285,7 +284,11 @@ export function VlanSetting () {
           : applySetVlan
         }
         isProfileLevel={true}
-        vlansList={vlanTable.filter(item=>item.vlanId !== drawerFormRule?.vlanId)}
+        vlansList={
+          vlanTable
+            .filter(item=>item.vlanId !== drawerFormRule?.vlanId)
+            .concat(defaultVlan && isBulkVlanProvisioningEnabled ? [defaultVlan] : [])
+        }
         enablePortModelConfigure={!isBulkVlanProvisioningEnabled}
         enableVlanRangeConfigure={isBulkVlanProvisioningEnabled}
       />

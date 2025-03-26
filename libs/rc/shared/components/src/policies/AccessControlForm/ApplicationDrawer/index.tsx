@@ -733,6 +733,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             onClick={() => {
               setDrawerVisible(true)
               setQueryPolicyId('')
+              clearFieldsValue()
             }}>
             {$t({ defaultMessage: 'Add New' })}
           </Button>

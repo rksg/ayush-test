@@ -81,7 +81,7 @@ export function EdgeTrafficByVolumeWidget () {
     payload: {
       start: filters?.startDate,
       end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate)
     } as EdgeTimeSeriesPayload
   })
 
