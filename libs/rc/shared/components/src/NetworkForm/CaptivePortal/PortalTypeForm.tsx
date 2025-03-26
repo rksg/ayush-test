@@ -131,7 +131,7 @@ function TypesForm () {
               </Radio>
             }
             {
-              (isSAMLSSOEnable || true) && !isTemplate &&
+              (isSAMLSSOEnable) && !isTemplate &&
               <Radio value={GuestNetworkTypeEnum.SAML}>
                 {GuestNetworkTypeLabel[GuestNetworkTypeEnum.SAML]}
                 <RadioDescription>
