@@ -90,6 +90,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const { data } = useGetSwitchAccessControlSetByIdQuery(
     { params: { accessControlId } }, { skip: !editMode })
 
+  const layer2Toggle = Form.useWatch('layer2Toggle', form)
   const layer2AclId = Form.useWatch('layer2AclName', form)
 
   useEffect (() => {
@@ -162,8 +163,8 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
           const payload = {
             description: data.description,
-            layer2AclName: layer2ProfileList?.data?.filter(
-              (acl: MacAcl) => acl.id === formValues.layer2AclName)[0].name,
+            layer2AclName: layer2Toggle ? layer2ProfileList?.data?.filter(
+              (acl: MacAcl) => acl.id === formValues.layer2AclName)[0].name : '',
             policyName: data.policyName
           }
           if (editMode) {
@@ -245,8 +246,6 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                               (acl: MacAcl) => acl.id === layer2AclId)?.id ?? '')
                             setDrawerEditMode(true)
                             setDrawerVisible(true)
-                            // setQueryPolicyId(l2AclPolicyId)
-                            // setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
                           }
                         }
                         }>
