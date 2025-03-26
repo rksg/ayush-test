@@ -17,7 +17,10 @@ import {
   SamlIdpMessages,
   getPolicyRoutePath,
   redirectPreviousPage,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  KeyUsages,
+  ServerCertificate,
+  KeyUsageType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -62,19 +65,32 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
   const isEncryptionCertificateEnabled = useWatch('encryptionCertificateEnabled', formRef)
   const [uploadXmlDrawerVisible, setUploadXmlDrawerVisible ] = useState(false)
 
-  const { serverCertificateOptions } =
-  useGetServerCertificatesQuery(
-    { payload: { pageSize: 1000, page: 1 } },
-    {
-      selectFromResult ({ data }) {
-        return {
-          serverCertificateOptions: data?.data?.map(
-            item => ({ label: item.name, value: item.id })
-          ) ?? []
+  const { encryptionCertificateOptions, signingCertificateOptions } =
+    useGetServerCertificatesQuery(
+      { payload: { pageSize: 1000, page: 1 } },
+      {
+        selectFromResult ({ data }) {
+          return {
+            encryptionCertificateOptions: data?.data
+              ?.filter((item: ServerCertificate) =>
+                item.keyUsages && item.keyUsages.includes(KeyUsageType.KEY_ENCIPHERMENT)
+              )
+              .map((item: ServerCertificate) => ({
+                label: item.name,
+                value: item.id
+              })) ?? [],
+            signingCertificateOptions: data?.data
+              ?.filter((item: ServerCertificate) =>
+                item.keyUsages && item.keyUsages.includes(KeyUsageType.DIGITAL_SIGNATURE)
+              )
+              .map((item: ServerCertificate) => ({
+                label: item.name,
+                value: item.id
+              })) ?? []
+          }
         }
       }
-    }
-  )
+    )
 
   const handleFinish = async () => {
     try{
@@ -225,7 +241,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   required
                 >
                   <Select
-                    options={serverCertificateOptions}
+                    options={signingCertificateOptions}
                   />
                 </Form.Item>
                 <Button type='link' onClick={()=>setSigningCertFormVisible(true)}>
@@ -264,7 +280,7 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                   required
                 >
                   <Select
-                    options={serverCertificateOptions}
+                    options={encryptionCertificateOptions}
                   />
                 </Form.Item>
                 <Button type='link' onClick={()=>setEncryptCertFormVisible(true)}>
@@ -281,12 +297,14 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
         setVisible={setEncryptCertFormVisible}
         handleSave={handleEncryptCertificateSave}
         width={1000}
+        keyUsages={[KeyUsages.KEY_ENCIPHERMENT]}
       />
       <CertificateDrawer
         visible={signingCertFormVisible}
         setVisible={setSigningCertFormVisible}
         handleSave={handleSigningCertificateSave}
         width={1000}
+        keyUsages={[KeyUsages.DIGITAL_SIGNATURE]}
       />
     </>
   )

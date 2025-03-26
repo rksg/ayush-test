@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Drawer }            from '@acx-ui/components'
-import { ExtendedKeyUsages } from '@acx-ui/rc/utils'
+import { Drawer }                       from '@acx-ui/components'
+import { ExtendedKeyUsages, KeyUsages } from '@acx-ui/rc/utils'
 
 import { ServerClientCertificateForm } from '../CertificateTemplate/ServerClientCertificateForm'
 
@@ -10,17 +10,20 @@ interface CertificateDrawerProps {
     setVisible: (v: boolean) => void,
     handleSave: (id?: string) => void
     width?: number
+    keyUsages?: KeyUsages[]
     extendedKeyUsages?: ExtendedKeyUsages[]
 }
 
 const CertificateDrawer = (props: CertificateDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, handleSave, width=500 } = props
+  const { visible, setVisible, handleSave, width=500, keyUsages, extendedKeyUsages } = props
 
   const content = <ServerClientCertificateForm
     modalMode={true}
     modalCallBack={handleSave}
-    extendedKeyUsages={props?.extendedKeyUsages}/>
+    keyUsages={keyUsages}
+    extendedKeyUsages={extendedKeyUsages}
+  />
 
   const handleClose = () => {
     setVisible(false)
