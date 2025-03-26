@@ -157,11 +157,17 @@ export const getAclOptions = (acls?: AclUnion) => {
 
 export const getMacAclOptions = (macAclList?: MacAcl[], macAclGlobalList?: MacAcl[]) => {
   const { $t } = getIntl()
+
+  const switchMacAclList = new Set(macAclList?.map(macAcl => macAcl.name) || [])
+
+  const globalFilterMacAclList = macAclGlobalList?.filter(
+    macAcl => !switchMacAclList.has(macAcl.name)) || []
+
   const options = [...macAclList?.map((macAcl: MacAcl) =>
     ({ value: macAcl.name,
       label: `${macAcl.name} ${macAcl.customized === true ?
         '(Customized)' : ''}` })) || [],
-  ...macAclGlobalList?.map((macAcl: MacAcl) =>
+  ...globalFilterMacAclList?.map((macAcl: MacAcl) =>
     ({ value: macAcl.name, label: macAcl.name })) || []]
 
   return [
