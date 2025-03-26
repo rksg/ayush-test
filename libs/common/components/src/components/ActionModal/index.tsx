@@ -394,7 +394,7 @@ function ApiCollapsePanel (props: {
     const { $t } = getIntl()
     const content = props.content
     const object = JSON.parse(content)
-    const errorObj = object.errors?.[0] || {}
+    const errorObj = object.errors?.[0] || object.error || {}
     return <UI.ErrorDescriptions labelWidthPercent={errorObj.suggestion? 26 : 28}
       contentStyle={{ alignItems: 'center' }}>
       {props.path &&
