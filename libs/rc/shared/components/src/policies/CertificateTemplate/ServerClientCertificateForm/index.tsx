@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm }                                                                      from '@acx-ui/components'
-import { ExtendedKeyUsages, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }                                                                                 from '@acx-ui/components'
+import { ExtendedKeyUsages, KeyUsages, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                            from '@acx-ui/react-router-dom'
 
 import { GenerateCertificateFormSelection } from './CertificateStepForms/GenerateCertificateFormSelection'
 import useCertificateForm                   from './useCertificateForm'
@@ -10,6 +10,7 @@ import useCertificateForm                   from './useCertificateForm'
 type ServerClientCertificateFormProps = {
   modalMode?: boolean,
   modalCallBack?: (id?: string) => void,
+  keyUsages?: KeyUsages[],
   extendedKeyUsages?: ExtendedKeyUsages[]
 }
 
@@ -21,7 +22,7 @@ export const ServerClientCertificateForm = (props: ServerClientCertificateFormPr
     type: PolicyType.SERVER_CERTIFICATES,
     oper: PolicyOperation.LIST
   }))
-  const { modalMode=false, modalCallBack } = props
+  const { modalMode=false, modalCallBack, keyUsages, extendedKeyUsages } = props
 
   return (
     <>
@@ -56,7 +57,10 @@ export const ServerClientCertificateForm = (props: ServerClientCertificateFormPr
         onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
       >
         <StepsForm.StepForm>
-          <GenerateCertificateFormSelection extendedKeyUsages={props?.extendedKeyUsages}/>
+          <GenerateCertificateFormSelection
+            keyUsages={keyUsages}
+            extendedKeyUsages={extendedKeyUsages}
+          />
         </StepsForm.StepForm>
       </StepsForm>
     </>
