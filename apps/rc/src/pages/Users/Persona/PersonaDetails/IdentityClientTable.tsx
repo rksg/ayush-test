@@ -117,6 +117,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       key: 'deviceName',
       dataIndex: 'deviceName',
       searchable: true,
+      fixed: 'left',
       title: $t({ defaultMessage: 'Device Name' }),
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
@@ -138,6 +139,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       key: 'clientMac',
       dataIndex: 'clientMac',
       searchable: true,
+      fixed: 'left',
       title: $t({ defaultMessage: 'MAC Address' }),
       sorter: { compare: sortProp('macAddress', defaultSort) },
       render: (_, row) => row.clientMac.replaceAll(':', '-').toUpperCase()
