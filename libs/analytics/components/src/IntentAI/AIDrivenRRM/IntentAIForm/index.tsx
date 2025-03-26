@@ -1,9 +1,9 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }              from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useNavigate }            from '@acx-ui/react-router-dom'
+import { StepsForm }                from '@acx-ui/components'
+import { Features, useAnySplitsOn } from '@acx-ui/feature-toggle'
+import { useNavigate }              from '@acx-ui/react-router-dom'
 
 import { IntentWizardHeader } from '../../common/IntentWizardHeader'
 import { getScheduledAt }     from '../../common/ScheduleTiming'
@@ -44,7 +44,8 @@ export function IntentAIForm () {
   const { intent } = useIntentContext()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const isAIDrivenRRMMetricsEnabled = useIsSplitOn(Features.AI_DRIVEN_RRM_METRICS_TOGGLE)
+  const isAIDrivenRRMMetricsEnabled = useAnySplitsOn(
+    [Features.AI_DRIVEN_RRM_METRICS_TOGGLE, Features.RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE])
 
   const { submit } = useIntentTransition()
   const initialValues = useInitialValues()

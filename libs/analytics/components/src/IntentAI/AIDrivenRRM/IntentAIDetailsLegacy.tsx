@@ -71,85 +71,82 @@ export function createUseValuesText () {
   }
 }
 
-export function createIntentAIDetailsLegacy () {
+export function IntentAIDetailsLegacy () {
+  const { $t } = useIntl()
+  const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const useValuesText = createUseValuesText()
+  const valuesText = useValuesText()
+  const { displayStatus, sliceValue, metadata, updatedAt } = intent
 
-  return function IntentAIDetails () {
-    const { $t } = useIntl()
-    const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
-    const valuesText = useValuesText()
-    const { displayStatus, sliceValue, metadata, updatedAt } = intent
+  const fields = useCommonFields(intent)
+  const noData = state === 'no-data'
+  const isFullOptimization = _.get(intent, ['metadata', 'preferences', 'crrmFullOptimization'])
 
-    const fields = useCommonFields(intent)
-    const noData = state === 'no-data'
-    const isFullOptimization = _.get(intent, ['metadata', 'preferences', 'crrmFullOptimization'])
+  return <>
+    <IntentDetailsHeader />
+    <GridRow>
+      <GridCol col={{ span: 6, xxl: 4 }}>
+        <FixedAutoSizer>
+          {({ width }) => (<IntentDetailsSidebar style={{ width }}>
+            <IntentIcon size='large' />
+            <Typography.Paragraph
+              children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
+            <DescriptionSection fields={fields}/>
+            <br />
+            {!noData && isDataRetained && isHotTierData
+              ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+              : null}
+          </IntentDetailsSidebar>)}
+        </FixedAutoSizer>
+      </GridCol>
+      <GridCol col={{ span: 18, xxl: 20 }}>
+        {!noData ? <>
+          <DetailsSection data-testid='Details'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+            <DetailsSection.Details>
+              <GridRow>
+                <KPIGrid/>
+              </GridRow>
+            </DetailsSection.Details>
+          </DetailsSection>
 
-    return <>
-      <IntentDetailsHeader />
-      <GridRow>
-        <GridCol col={{ span: 6, xxl: 4 }}>
-          <FixedAutoSizer>
-            {({ width }) => (<IntentDetailsSidebar style={{ width }}>
-              <IntentIcon size='large' />
-              <Typography.Paragraph
-                children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
-              <DescriptionSection fields={fields}/>
-              <br />
-              {!noData && isDataRetained && isHotTierData
-                ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
-                : null}
-            </IntentDetailsSidebar>)}
-          </FixedAutoSizer>
-        </GridCol>
-        <GridCol col={{ span: 18, xxl: 20 }}>
-          {!noData ? <>
-            <DetailsSection data-testid='Details'>
-              <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-              <DetailsSection.Details>
-                <GridRow>
-                  <KPIGrid/>
-                </GridRow>
-              </DetailsSection.Details>
-            </DetailsSection>
+          <DetailsSection data-testid='Key Performance Indications'>
+            <DetailsSection.Title
+              children={$t({ defaultMessage: 'Key Performance Indications' })} />
+            <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
+              <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+            </DetailsSection.Details>
+          </DetailsSection>
 
-            <DetailsSection data-testid='Key Performance Indications'>
-              <DetailsSection.Title
-                children={$t({ defaultMessage: 'Key Performance Indications' })} />
-              <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
-                <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
-              </DetailsSection.Details>
-            </DetailsSection>
-
-            <GridRow>
-              <GridCol col={{ span: 12 }}>
-                <DetailsSection data-testid='Benefits'>
-                  <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
-                  <DetailsSection.Details children={<Card>{valuesText.benefitText}</Card>} />
-                </DetailsSection>
-              </GridCol>
-              <GridCol col={{ span: 12 }}>
-                <DetailsSection data-testid='Potential Trade-off'>
-                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
-                  <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
-                </DetailsSection>
-              </GridCol>
-            </GridRow>
-          </> : <GridRow>
+          <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Current Status'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
-                <DetailsSection.Details children={
-                  <Card>
-                    {getStatusTooltip(
-                      displayStatus, sliceValue, { ...metadata, updatedAt })}
-                  </Card>} />
+              <DetailsSection data-testid='Benefits'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+                <DetailsSection.Details children={<Card>{valuesText.benefitText}</Card>} />
               </DetailsSection>
             </GridCol>
-          </GridRow>}
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection data-testid='Potential Trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
+                <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
+              </DetailsSection>
+            </GridCol>
+          </GridRow>
+        </> : <GridRow>
+          <GridCol col={{ span: 12 }}>
+            <DetailsSection data-testid='Current Status'>
+              <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+              <DetailsSection.Details children={
+                <Card>
+                  {getStatusTooltip(
+                    displayStatus, sliceValue, { ...metadata, updatedAt })}
+                </Card>} />
+            </DetailsSection>
+          </GridCol>
+        </GridRow>}
 
-          <StatusTrail />
-        </GridCol>
-      </GridRow>
-    </>
-  }
+        <StatusTrail />
+      </GridCol>
+    </GridRow>
+  </>
 }

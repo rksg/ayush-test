@@ -306,7 +306,8 @@ export enum Features {
   LOGIN_SSO_SAML_TECHPARTNER = 'login-sso-saml-techpartner',
   RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE = 'ra-privacysettings-app-visibility-toggle',
   WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
-  AI_DRIVEN_RRM_METRICS_TOGGLE = 'acx-ui-ai-driven-rrm-metrics-toggle'
+  AI_DRIVEN_RRM_METRICS_TOGGLE = 'acx-ui-ai-driven-rrm-metrics-toggle',
+  RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE = 'ruckus-ai-ai-driven-rrm-metrics-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
