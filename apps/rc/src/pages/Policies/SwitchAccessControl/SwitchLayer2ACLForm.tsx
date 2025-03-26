@@ -66,8 +66,8 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   const switchAccessControlLink = useTenantLink(switchAccessControlPage)
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
   breadcrumb[2].link = switchAccessControlPage
-  const pageTitle = editMode ? $t({ defaultMessage: 'Edit Switch Access Control' }) :
-    $t({ defaultMessage: 'Add Switch Access Control' })
+  const pageTitle = editMode ? $t({ defaultMessage: 'Edit Layer 2 Settings' }) :
+    $t({ defaultMessage: 'Add Layer 2 Settings' })
 
   const [addAccessControl] = useAddLayer2AclMutation()
   const [updateAccessControl] = useUpdateLayer2AclMutation()
