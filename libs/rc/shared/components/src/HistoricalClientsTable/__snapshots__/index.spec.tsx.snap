@@ -70,7 +70,7 @@ h5.c1.ant-typography {
 }
 
 .c2 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
-  display: none;
+  left: -32px;
 }
 
 .c2 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
