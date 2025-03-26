@@ -278,7 +278,21 @@ export const mockedIntentCRRM = {
   dataCheck: {
     isDataRetained: true,
     isHotTierData: true
-  }
+  },
+  apChannelDistributions: [
+    {
+      channel: 1,
+      apCount: 1
+    },
+    {
+      channel: 2,
+      apCount: 2
+    },
+    {
+      channel: 3,
+      apCount: 3
+    }
+  ]
 } as unknown as IntentDetail
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent
@@ -323,7 +337,8 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
       result: 0
     }
   },
-  preferences: null
+  preferences: null,
+  apChannelDistributions: []
 } as unknown as IntentDetail
 
 export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
@@ -380,7 +395,13 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
       result: 2
     }
   },
-  preferences: null
+  preferences: null,
+  apChannelDistributions: [
+    {
+      channel: 1,
+      apCount: 1
+    }
+  ]
 } as unknown as IntentDetail
 
 export const mockedCRRMGraphs = {

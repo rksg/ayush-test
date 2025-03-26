@@ -12,6 +12,7 @@ import { IntroSummary }                        from '../../common/IntroSummary'
 import { richTextFormatValues }                from '../../common/richTextFormatValues'
 import { AiFeatures }                          from '../../config'
 import { useIntentContext }                    from '../../IntentContext'
+import ChannelDistributionChart                from '../Chart/ChannelDistributionChart'
 import { SliderGraphAfter, SliderGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                from '../RRMGraph/services'
 
@@ -62,7 +63,7 @@ export const SliderAfter = (props: { image: string }) => {
 
 export function Introduction () {
   const { $t } = useIntl()
-  const { isDataRetained, isHotTierData } = useIntentContext()
+  const { isDataRetained, isHotTierData, intent } = useIntentContext()
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
@@ -115,6 +116,7 @@ export function Introduction () {
           />
         </StepsForm.TextContent>
         {isDataRetained && isHotTierData && compareSlider}
+        <ChannelDistributionChart {...intent} />
       </Col>
       <Col span={7} offset={2}>
         <SideNotes.Introduction />

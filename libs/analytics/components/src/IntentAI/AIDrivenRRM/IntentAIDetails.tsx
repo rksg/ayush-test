@@ -20,6 +20,7 @@ import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
+import ChannelDistributionChart  from './Chart/ChannelDistributionChart'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
@@ -118,6 +119,12 @@ export function createIntentAIDetails () {
               <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
                 <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
               </DetailsSection.Details>
+            </DetailsSection>
+
+            <DetailsSection>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
+              </GridCol>
             </DetailsSection>
 
             <GridRow>
