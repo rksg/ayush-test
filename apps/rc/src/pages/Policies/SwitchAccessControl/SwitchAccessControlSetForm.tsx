@@ -111,7 +111,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   }, [data, layer2ProfileList])
 
   const onCancel = () => {
-    navigate(switchAccessControlLink, { replace: true })
+    navigate(switchAccessControlLink, { replace: false })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -171,7 +171,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
           } else {
             await addAccessControl({ payload }).unwrap()
           }
-          navigate(switchAccessControlLink, { replace: true })
+          navigate(switchAccessControlLink, { replace: false })
         }}
       >
         <StepsForm.StepForm

@@ -67,7 +67,7 @@ export function SwitchLayer2ACL () {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/layer2/${row.id}/overview`
-            }, { replace: true })
+            }, { replace: false })
           }}
         >
           {row.name}
@@ -163,7 +163,7 @@ export function SwitchLayer2ACL () {
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}/layer2/add`
-      }, { replace: true })
+      }, { replace: false })
     }
   }]
   const allowedActions = filterByAccessForServicePolicyMutation(actions)
@@ -176,7 +176,7 @@ export function SwitchLayer2ACL () {
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           navigate(basePath.pathname + `/layer2/${selectedRows[0].id}/edit`, {
-            replace: true
+            replace: false
           })
         }
         clearSelection()

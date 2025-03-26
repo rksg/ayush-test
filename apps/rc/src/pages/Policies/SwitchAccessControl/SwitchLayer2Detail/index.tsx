@@ -23,7 +23,7 @@ const SwitchLayer2DetailTabs = () => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${accessControlId}/${tab}`
-    }, { replace: true })
+    }, { replace: false })
   }
 
   useEffect(() => {

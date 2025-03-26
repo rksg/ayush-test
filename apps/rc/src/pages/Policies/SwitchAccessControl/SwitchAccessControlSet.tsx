@@ -81,7 +81,7 @@ export function SwitchAccessControlSet () {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/${row.id}/overview`
-            }, { replace: true })
+            }, { replace: false })
           }}
         >
           {row.accessControlPolicyName}
@@ -117,7 +117,7 @@ export function SwitchAccessControlSet () {
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           navigate(basePath.pathname + `/${selectedRows[0].id}/edit`, {
-            replace: true
+            replace: false
           })
         }
         clearSelection()

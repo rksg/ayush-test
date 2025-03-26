@@ -119,7 +119,11 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   ]
 
   const onCancel = () => {
-    navigate(switchAccessControlLink, { replace: true })
+    if(drawerOnClose){
+      drawerOnClose()
+    }else{
+      navigate(switchAccessControlLink, { replace: false })
+    }
   }
 
 
@@ -197,6 +201,32 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     return Promise.resolve()
   }
 
+  const handleFinish = async (data: MacAclRule) => {
+    const formValues = data
+
+    const macAclRules = dataSource?.map(row => {
+      const { key, ...rowData } = row
+      return rowData
+    })
+
+    const payload = { ...formValues, macAclRules }
+
+    if (editMode) {
+      await updateAccessControl({
+        params: { l2AclId: (layer2AclId || accessControlId) },
+        payload
+      }).unwrap()
+    } else {
+      await addAccessControl({ payload }).unwrap()
+    }
+
+    if (drawerOnClose) {
+      drawerOnClose()
+    } else {
+      navigate(switchAccessControlLink, { replace: false })
+    }
+  }
+
   return (
     <>
       {!drawerOnClose &&
@@ -210,30 +240,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
           form={form}
           editMode={editMode}
           onCancel={onCancel}
-          onFinish={async (data) => {
-
-            const formValues = data
-
-            const macAclRules = dataSource?.map(row => {
-              const { key, ...rowData } = row
-              return rowData
-            })
-
-            const payload = { ...formValues, macAclRules }
-
-            if (editMode) {
-              await updateAccessControl({
-                params: { l2AclId: (layer2AclId || accessControlId ) }, payload }).unwrap()
-            } else {
-              await addAccessControl({ payload }).unwrap()
-            }
-
-            if(drawerOnClose){
-              drawerOnClose()
-            }else{
-              navigate(switchAccessControlLink, { replace: true })
-            }
-          }}
+          onFinish={handleFinish}
         >
           <StepsForm.StepForm
             name='settings'
