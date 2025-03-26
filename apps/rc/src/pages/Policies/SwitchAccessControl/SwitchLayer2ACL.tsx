@@ -66,7 +66,7 @@ export function SwitchLayer2ACL () {
           onClick={() => {
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/${row.id}/overview`
+              pathname: `${basePath.pathname}/layer2/${row.id}/overview`
             }, { replace: true })
           }}
         >

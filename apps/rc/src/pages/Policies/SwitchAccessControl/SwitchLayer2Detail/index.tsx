@@ -17,7 +17,7 @@ const SwitchLayer2DetailTabs = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { accessControlId, activeTab } = useParams()
-  const basePath = useTenantLink('/policies/accessControl/switch')
+  const basePath = useTenantLink('/policies/accessControl/switch/layer2')
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -53,7 +53,7 @@ export function SwitchLayer2Detail () {
   const { $t } = useIntl()
   const { accessControlId, activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  const accessControlRoute = getPolicyListRoutePath(true) + '/accessControl/switch'
+  const accessControlRoute = getPolicyListRoutePath(true) + '/accessControl/switch/layer2'
   const { data } = useGetLayer2AclByIdQuery({ params: { accessControlId } })
 
   const getConfigureButton = () => {
@@ -61,7 +61,7 @@ export function SwitchLayer2Detail () {
       <TenantLink
         scopeKey={[SwitchScopes.UPDATE]}
         rbacOpsIds={getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}
-        to={`/policies/accessControl/switch/${accessControlId}/edit`}
+        to={`/policies/accessControl/switch/layer2/${accessControlId}/edit`}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
       </TenantLink>

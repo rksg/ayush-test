@@ -1678,7 +1678,7 @@ function PolicyRoutes () {
           }
         />
         <Route
-          path='policies/accessControl/switch/:accessControlId/:activeTab'
+          path='policies/accessControl/switch/layer2/:accessControlId/:activeTab'
           element={
           // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.DETAIL)}>
