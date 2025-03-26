@@ -274,7 +274,7 @@ export function SwitchPortTable (props: {
           const tooltipContent = row.stickyMacAclAllowList.join('\n')
 
           return (
-            <Tooltip title={tooltipContent}>
+            <Tooltip title={tooltipContent} dottedUnderline={row.stickyMacAclAllowCount > 0}>
               <span>{row.stickyMacAclAllowCount}</span>
             </Tooltip>
           )

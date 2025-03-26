@@ -818,9 +818,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchL2AclPolicies/:accessControlId/appliedSwitches/query',
     newApi: true
   },
-  getLayer2AclsCount: {
+  getAccessControlCount: {
     method: 'get',
-    url: '/switchL2AclPolicies/totalAmounts',
+    url: '/switchAccessControlProfiles/totalAmounts',
     newApi: true
   },
   addLayer2Acl: {
