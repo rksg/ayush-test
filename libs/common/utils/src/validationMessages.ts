@@ -514,6 +514,10 @@ export const validationMessages = {
     // eslint-disable-next-line max-len
     defaultMessage: 'Duplicate MAC OUI and LLDP TLV values are being used. Please ensure that the MAC OUI and LLDP TLV are not duplicated across the profiles.',
     description: 'Validation - Switch Port Profiles Duplicate Invalid'
+  }),
+  IpsecProfileDhcpOpion43InvalidValue: defineMessage({
+    defaultMessage: 'DHCP Option 43 value with 6 is invalid.',
+    description: 'Validation - Ipsec Profile DHCP Option 43 Invalid Value'
   })
 }
 
