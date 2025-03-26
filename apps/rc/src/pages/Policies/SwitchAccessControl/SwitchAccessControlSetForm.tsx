@@ -91,7 +91,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
     { params: { accessControlId } }, { skip: !editMode })
 
   const layer2Toggle = Form.useWatch('layer2Toggle', form)
-  const layer2AclId = Form.useWatch('layer2AclName', form)
+  const layer2AclId = Form.useWatch('layer2AclId', form)
 
   useEffect (() => {
     if(data){
@@ -105,8 +105,8 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
     if(layer2ProfileList){
       if(data?.layer2AclPolicyName){
-        form.setFieldValue('layer2AclName', layer2ProfileList?.data?.find(
-          item => item.id === data?.layer2AclPolicyId)?.id)
+        form.setFieldValue('layer2AclId', layer2ProfileList?.data?.find(
+          item => item.id === layer2AclId)?.id)
       }
     }
   }, [data, layer2ProfileList])
@@ -164,7 +164,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
           const payload = {
             description: data.description,
             layer2AclName: layer2Toggle ? layer2ProfileList?.data?.filter(
-              (acl: MacAcl) => acl.id === formValues.layer2AclName)[0].name : '',
+              (acl: MacAcl) => acl.id === formValues.layer2AclId)[0].name : '',
             policyName: data.policyName
           }
           if (editMode) {
@@ -221,7 +221,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                   {layer2ProfileVisible && <GridRow style={{ width: '350px' }}>
                     <GridCol col={{ span: 12 }}>
                       <Form.Item
-                        name='layer2AclName'
+                        name='layer2AclId'
                         rules={[{
                           required: true,
                           message: $t({ defaultMessage: 'Please select Layer 2 profile' })
