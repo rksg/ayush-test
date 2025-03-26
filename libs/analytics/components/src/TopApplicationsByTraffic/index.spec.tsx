@@ -1,7 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn, useSplitOverride }                from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { dataApiURL, Provider, store }                             from '@acx-ui/store'
 import { fireEvent, render, screen, mockGraphqlQuery, mockServer } from '@acx-ui/test-utils'
@@ -20,8 +20,7 @@ jest.mock('@acx-ui/utils', () => ({
 
 jest.mock('@acx-ui/feature-toggle', () => ({
   ...jest.requireActual('@acx-ui/feature-toggle'),
-  useIsSplitOn: jest.fn(),
-  useSplitOverride: jest.fn()
+  useIsSplitOn: jest.fn()
 }))
 
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
@@ -81,12 +80,6 @@ describe('TopApplicationsByTrafficWidget', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.mocked(useSplitOverride).mockReturnValue({
-      treatments: {
-        [Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE]: 'on'
-      },
-      isReady: true
-    })
     mockServer.use(
       rest.get(AdministrationUrlsInfo.getPrivacySettings.url,
         (_req, res, ctx) => res(ctx.json(settingsEnabled))),

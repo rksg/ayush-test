@@ -10,15 +10,15 @@ import {
   DonutChart,
   qualitativeColorSet
 } from '@acx-ui/components'
-import type { DonutChartData }                      from '@acx-ui/components'
-import { get }                                      from '@acx-ui/config'
-import { Features, useIsSplitOn, useSplitOverride } from '@acx-ui/feature-toggle'
-import { formatter }                                from '@acx-ui/formatter'
-import { useGetPrivacySettingsQuery }               from '@acx-ui/rc/services'
-import { PrivacyFeatureName }                       from '@acx-ui/rc/utils'
-import { getJwtTokenPayload }                       from '@acx-ui/utils'
-import { useTrackLoadTime, widgetsMapping }         from '@acx-ui/utils'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import type { DonutChartData }              from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter }                        from '@acx-ui/formatter'
+import { useGetPrivacySettingsQuery }       from '@acx-ui/rc/services'
+import { PrivacyFeatureName }               from '@acx-ui/rc/utils'
+import { getJwtTokenPayload }               from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
 
@@ -47,10 +47,8 @@ export const dataFormatter = (value: unknown): string => formatter('bytesFormat'
 
 const useAppVisibility = (tenantId: string) => {
   const isRA = Boolean(get('IS_MLISA_SA'))
-  const { treatments, isReady: isSplitClientReady } = useSplitOverride(tenantId, [
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE
-  ])
-  const isAppPrivacyFFOn = treatments[Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE] === 'on'
+  const isAppPrivacyFFEnabled = useIsSplitOn(
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
 
   const { data: privacySettings } = useGetPrivacySettingsQuery({
     params: { tenantId },
@@ -61,7 +59,7 @@ const useAppVisibility = (tenantId: string) => {
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
 
   useEffect(() => {
-    if (isSplitClientReady && (!isAppPrivacyFFOn || isRA)) {
+    if (!isAppPrivacyFFEnabled || isRA) {
       setIsAppVisibilityEnabled(true)
       return
     }
@@ -71,7 +69,7 @@ const useAppVisibility = (tenantId: string) => {
         .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
       setIsAppVisibilityEnabled(privacyVisibilitySetting?.isEnabled ?? false)
     }
-  }, [isAppPrivacyFFOn, isRA, isSplitClientReady, privacySettings])
+  }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 
   return isAppVisibilityEnabled
 }

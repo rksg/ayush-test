@@ -14,7 +14,7 @@ import {
   ContentSwitcherProps
 } from '@acx-ui/components'
 import { get }                                                  from '@acx-ui/config'
-import { Features, useIsSplitOn, useSplitOverride }             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }                               from '@acx-ui/formatter'
 import { useGetPrivacySettingsQuery }                           from '@acx-ui/rc/services'
 import { PrivacyFeatureName }                                   from '@acx-ui/rc/utils'
@@ -35,14 +35,11 @@ export function TopApplicationsByTraffic ({
   const isRA = Boolean(get('IS_MLISA_SA'))
   const { tenantId } = getJwtTokenPayload()
 
-  // Use Split override only for privacy feature flag
-  const { treatments, isReady: isSplitClientReady } = useSplitOverride(tenantId, [
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE
-  ])
-
-  const isAppPrivacyFFOn = treatments[Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE] === 'on'
-  const queryResults = useTopApplicationsByTrafficQuery(filters)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isAppPrivacyFFEnabled = useIsSplitOn(
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
   const { data: privacySettings } = useGetPrivacySettingsQuery({
     params: { tenantId },
     customHeaders: { 'x-rks-tenantid': tenantId },
@@ -50,7 +47,7 @@ export function TopApplicationsByTraffic ({
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
 
   useEffect(() => {
-    if(isSplitClientReady && (!isAppPrivacyFFOn || isRA)){
+    if(!isAppPrivacyFFEnabled || isRA){
       setIsAppVisibilityEnabled(true)
     }
     else if (privacySettings) {
@@ -60,7 +57,7 @@ export function TopApplicationsByTraffic ({
         setIsAppVisibilityEnabled(true)
       }
     }
-  }, [isAppPrivacyFFOn, isRA, isSplitClientReady, privacySettings])
+  }, [isAppPrivacyFFEnabled, isRA, privacySettings])
 
 
   const columns=[
