@@ -301,7 +301,12 @@ function LegacyPersonaDetails () {
                       {item.label}:
                     </Typography.Paragraph>
                   </Col>
-                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
+                  <Col
+                    span={12}
+                    style={{ wordBreak: 'break-word' }}
+                  >
+                    {item.value ?? noDataDisplay}
+                  </Col>
                 </Row>
               )}
             </Loader>
