@@ -32,7 +32,7 @@ export interface GroupProps {
 
 export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
-  const { id, cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
+  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem } = props
   // const sectionRef = useRef(null)
   useEffect(() => {
     let clientWidth
@@ -69,7 +69,7 @@ export default function GroupItem (props: GroupProps) {
     hover: (item: CardInfo, monitor) => {
       const dragItem = item
       if (dragItem.type === ItemTypes.CARD) {
-        if(props.shadowCard.id !== dragItem.id){
+        if(shadowCard.id !== dragItem.id){
           props.updateShadowCard(dragItem)
           return
         }

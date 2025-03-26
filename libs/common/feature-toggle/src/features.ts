@@ -316,7 +316,8 @@ export enum Features {
   WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE = 'wifi-identity-and-identity-group-management-toggle',
   SWITCH_SUPPORT_ICX8100X = 'switch-support-icx8100x-toggle',
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
-  ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle'
+  ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle',
+  MSP_APP_VISIBILITY = 'mspservice-app-visibility'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
