@@ -2033,7 +2033,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     accessControlsCount: build.query<MacAcl, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getAccessControlsCount, params, customHeaders.v1)
+          SwitchUrlsInfo.getLayer2AclsCount, params, customHeaders.v1)
         return { ...req }
       }
     }),

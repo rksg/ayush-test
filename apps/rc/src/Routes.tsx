@@ -135,6 +135,7 @@ import SnmpAgentForm                                                    from './
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
+import { SwitchAccessControlSetDetail }                                 from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetDetail'
 import { SwitchAccessControlSetForm }                                   from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetForm'
 import { SwitchLayer2ACLForm }                                          from './pages/Policies/SwitchAccessControl/SwitchLayer2ACLForm'
 import { SwitchLayer2Detail }                                           from './pages/Policies/SwitchAccessControl/SwitchLayer2Detail'
@@ -1656,6 +1657,15 @@ function PolicyRoutes () {
             // eslint-disable-next-line max-len
             <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>
               <SwitchAccessControlSetForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/:activeTab'
+          element={
+          // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.DETAIL)}>
+              <SwitchAccessControlSetDetail />
             </AuthRoute>
           }
         />

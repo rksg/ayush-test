@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -21,16 +21,11 @@ import { getOpsApi }                  from '@acx-ui/utils'
 import { SwitchLayer2ACLDetail } from './SwitchLayer2ACLDetail'
 
 
-interface AccessControlSetProps {
-  setAccessControlCount: React.Dispatch<React.SetStateAction<number>>
-}
-
-export function SwitchAccessControlSet (props: AccessControlSetProps) {
+export function SwitchAccessControlSet () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/accessControl/switch')
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const { setAccessControlCount } = props
   const settingsId = 'switch-access-control-set'
 
   const [deleteAccessControl] = useDeleteSwitchAccessControlSetMutation()
@@ -52,10 +47,6 @@ export function SwitchAccessControlSet (props: AccessControlSetProps) {
       sortOrder: 'ASC'
     }
   })
-
-  useEffect(() => {
-    setAccessControlCount(tableQuery.data?.data.length || 0)
-  }, [tableQuery.data?.data.length, setAccessControlCount])
 
   const columns: TableProps<SwitchAccessControl>['columns'] = [
     {
