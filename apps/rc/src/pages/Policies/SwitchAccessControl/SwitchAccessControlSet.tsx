@@ -8,8 +8,8 @@ import {
   Loader,
   showActionModal,
   Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { useDeleteSwitchAccessControlSetMutation, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                                            from '@acx-ui/feature-toggle'
+import { useDeleteSwitchAccessControlSetMutation, useGetLayer2AclsQuery, useGetSwitchAccessControlSetQuery } from '@acx-ui/rc/services'
 import {
   SwitchAccessControl,
   SwitchRbacUrlsInfo,
@@ -20,6 +20,18 @@ import { getOpsApi }                  from '@acx-ui/utils'
 
 import { SwitchLayer2ACLDetail } from './SwitchLayer2ACLDetail'
 
+const payload ={
+  fields: [
+    'id',
+    'name'
+  ],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 export function SwitchAccessControlSet () {
   const { $t } = useIntl()
@@ -30,7 +42,11 @@ export function SwitchAccessControlSet () {
 
   const [deleteAccessControl] = useDeleteSwitchAccessControlSetMutation()
   const [aclName, setAclName] = React.useState('')
+  const [accessControlId, setAccessControlId] = React.useState('')
   const [layer2ACLDetailVisible, setLayer2ACLDetailVisible] = React.useState(false)
+
+
+  const { data: layer2ProfileList } = useGetLayer2AclsQuery({ payload })
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchAccessControlSetQuery,
@@ -55,7 +71,6 @@ export function SwitchAccessControlSet () {
       dataIndex: 'accessControlPolicyName',
       defaultSortOrder: 'ascend',
       searchable: true,
-      sorter: true,
       fixed: 'left',
       width: 500,
       render: (_, row) =>
@@ -82,9 +97,11 @@ export function SwitchAccessControlSet () {
           size='small'
           onClick={() => {
             if(row?.layer2AclPolicyName){
-              setAclName(row?.layer2AclPolicyName)
+              setAccessControlId(layer2ProfileList?.data?.find(
+                (acl) => acl.name === row.layer2AclPolicyName)?.id ?? '')
+              setAclName(row.layer2AclPolicyName)
+              setLayer2ACLDetailVisible(true)
             }
-            setLayer2ACLDetailVisible(true)
           }}>
           {row.layer2AclPolicyName}
         </Button>
@@ -163,6 +180,7 @@ export function SwitchAccessControlSet () {
         visible={layer2ACLDetailVisible}
         setVisible={setLayer2ACLDetailVisible}
         aclName={aclName}
+        accessControlId={accessControlId}
       />}
     </>
   )

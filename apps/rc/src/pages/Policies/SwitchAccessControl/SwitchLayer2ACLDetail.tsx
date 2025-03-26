@@ -16,12 +16,14 @@ interface MacACLDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   aclName: string
+  accessControlId: string
 }
 
 export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
   visible,
   setVisible,
-  aclName
+  aclName,
+  accessControlId
 }) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -43,6 +45,7 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
 
   const tableQuery = useTableQuery<MacAclRule>({
     useQuery: useGetLayer2AclRulesQuery,
+    apiParams: { accessControlId: accessControlId || '' },
     defaultPayload,
     sorter: { sortField: 'id', sortOrder: 'ASC' }
   })
@@ -87,7 +90,7 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'View MAC ACL' })}
+      title={$t({ defaultMessage: 'L2 Settings' })}
       visible={visible}
       onClose={onClose}
       width={1000}
