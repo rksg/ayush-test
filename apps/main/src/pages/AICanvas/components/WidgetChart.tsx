@@ -14,6 +14,7 @@ import { BarChart, cssNumber, cssStr, DonutChart, Loader, showToast, StackedArea
 import { DateFormatEnum, formatter }                                                                           from '@acx-ui/formatter'
 import { useGetWidgetQuery }                                                                                   from '@acx-ui/rc/services'
 import { WidgetListData }                                                                                      from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                       from '@acx-ui/utils'
 
 import { Group } from '../Canvas'
 import * as UI   from '../styledComponents'
@@ -217,7 +218,45 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
       params[0].data[xIndex] : ''
     const color = Array.isArray(params) ? params[0].color : ''
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
-    return renderToString(
+    let maps = [] as {
+      y: string,
+      x: string,
+      value: string,
+      color: string }[]
+    if(Array.isArray(params)) {
+      //@ts-ignore
+      maps =params.map(p => {
+        const yIndex = p?.encode?.y?.length ? p.encode.y[0] : 0
+        const xIndex = p?.encode?.x?.length ? p.encode.x[0] : 1
+        return {
+          y: Array.isArray(p.data) ? p.data[yIndex] : '',
+          x: Array.isArray(p.dimensionNames) ? p.dimensionNames[xIndex] : '',
+          value: Array.isArray(p.data) ? p.data[xIndex] : '',
+          color: p.color
+        }})
+    }
+
+    return Array.isArray(params) ? renderToString(
+      <TooltipWrapper>
+        <div>
+          {
+            maps.map(i => <>
+              <b>{chartData?.axisType === 'time' ?
+                formatter(DateFormatEnum.DateTimeFormat)(i.y) : i.y as string}</b>
+              <p>
+                {
+                  i.color ? <UI.Badge
+                    className='acx-chart-tooltip'
+                    color={i.color as string}
+                    text={i.x}
+                  />: i.x
+                } : <b> {formatter(unit)(i.value) as string}</b>
+              </p>
+            </>)
+          }
+        </div>
+      </TooltipWrapper>
+    ) : renderToString(
       <TooltipWrapper>
         <div>
           <b>{chartData?.axisType === 'time' ?
@@ -265,10 +304,24 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
         tooltipFormatter={tooltipFormatter}
       />
     } else if(type === 'table') {
+      const formatterType = {
+        MILLISECONDS: formatter('longDurationFormat'),
+        BYTES: formatter('bytesFormat')
+      }
       return <Table
         style={{ width: width-30, height: height-5 }}
         columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
-          .map(i => ({ ...i, searchable: true })) || []}
+          .map(i => ({
+            ...i,
+            searchable: true,
+            // @ts-ignore
+            ...(i?.unit ? {
+              render: (value) => {
+                // @ts-ignore
+                return value ? formatterType[i.unit](value) : noDataDisplay
+              }
+            } : [])
+          })) || []}
         dataSource={chartData?.chartOption?.dataSource}
         type='compactWidget'
         rowKey='index' // API support 'index' column

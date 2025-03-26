@@ -192,7 +192,7 @@ describe('AICanvas', () => {
         <AICanvas />
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
+    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
     expect(await screen.findByText(
       'Older chat conversations have been deleted due to the 30-day retention policy.'))
@@ -230,11 +230,12 @@ describe('AICanvas', () => {
         <AICanvas />
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
+    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.')).toBeVisible()
-    const suggestQuestion = await screen.findByText('Show me the top-consuming clients')
+    // eslint-disable-next-line max-len
+    const suggestQuestion = await screen.findByText('How many clients were connected to my network yesterday?')
     expect(suggestQuestion).toBeVisible()
     fireEvent.click(suggestQuestion)
     expect(await screen.findByText('Hello! I can help you!')).toBeVisible()
@@ -248,7 +249,7 @@ describe('AICanvas', () => {
         <AICanvas />
       </Provider>
     )
-    expect(await screen.findByText('RUCKUS One Assistant')).toBeVisible()
+    expect(await screen.findByText('RUCKUS DSE')).toBeVisible()
     expect(await screen.findByText('Canvas')).toBeVisible()
     const searchInput = await screen.findByTestId('search-input')
     await userEvent.type(searchInput, 'hello')

@@ -412,7 +412,7 @@ export const validationMessages = {
     description: 'Validation - validate vlan id'
   }),
   vlanIdSetAsDeaultVlan: defineMessage({
-    defaultMessage: 'The VLAN ID {defaultVlan} has been set as Default VLAN',
+    defaultMessage: 'This list cannot include the default VLAN {defaultVlan}',
     description: 'Validation - validate vlan id'
   }),
   vlanNameInvalidWithDefaultVlans: defineMessage({
