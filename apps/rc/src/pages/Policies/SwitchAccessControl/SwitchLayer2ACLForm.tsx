@@ -73,7 +73,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
   const [updateAccessControl] = useUpdateLayer2AclMutation()
   const [getAccessControls] = useLazyGetLayer2AclsQuery()
   const { data, isLoading, isFetching } = useGetLayer2AclByIdQuery(
-    { params: { accessControlId: accessControlId || layer2AclId } },
+    { params: { accessControlId: layer2AclId || accessControlId } },
     { skip: !editMode })
 
   useEffect(() => {
@@ -185,7 +185,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     const existingACLs = response.data
 
     const duplicateACL = existingACLs.find(acl =>
-      acl.name === value && (!editMode || acl.id !== (accessControlId || layer2AclId))
+      acl.name === value && (!editMode || acl.id !== (layer2AclId || accessControlId))
     )
 
     if (duplicateACL) {
@@ -223,7 +223,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
 
             if (editMode) {
               await updateAccessControl({
-                params: { l2AclId: (accessControlId || layer2AclId) }, payload }).unwrap()
+                params: { l2AclId: (layer2AclId || accessControlId ) }, payload }).unwrap()
             } else {
               await addAccessControl({ payload }).unwrap()
             }

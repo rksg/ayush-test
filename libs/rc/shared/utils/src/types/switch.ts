@@ -1110,6 +1110,7 @@ export interface SwitchAccessControl {
   policyName?: string,
   description?: string,
   accessControlPolicyName?: string,
+  layer2AclPolicyId?: string,
   layer2AclPolicyName?: string
 }
 

@@ -71,6 +71,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [drawerEditMode, setDrawerEditMode] = useState(false)
   const [layer2ProfileVisible, setLayer2ProfileVisible] = useState(false)
+  const [layer2AclDrawerId, setLayer2AclDrawerId] = useState('')
 
   const switchAccessControlPage = '/policies/accessControl/switch'
   const switchAccessControlLink = useTenantLink(switchAccessControlPage)
@@ -93,20 +94,18 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
   useEffect (() => {
     if(data){
-      form.setFieldsValue([{
-        policyName: data?.policyName,
-        description: data?.description
-      }])
+      form.setFieldsValue(data)
 
       if(data?.layer2AclPolicyName){
+        form.setFieldValue('layer2Toggle', true)
         setLayer2ProfileVisible(true)
       }
     }
 
     if(layer2ProfileList){
       if(data?.layer2AclPolicyName){
-        form.setFieldValue('layer2AclPolicyName', layer2ProfileList?.data?.find(
-          item => item.name === data?.layer2AclPolicyName)?.name)
+        form.setFieldValue('layer2AclName', layer2ProfileList?.data?.find(
+          item => item.id === data?.layer2AclPolicyId)?.id)
       }
     }
   }, [data, layer2ProfileList])
@@ -122,6 +121,12 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
     const response = await getAccessControls({
       payload: {
         ...payload,
+        fields: [
+          'id',
+          'policyName'
+        ],
+        sortField: 'policyName',
+        sortOrder: 'ASC',
         searchString: value,
         searchTargetFields: ['policyName']
       }
@@ -155,12 +160,14 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
           const formValues = data
 
-          const payload = { ...formValues,
-            layer2AclName: data?.data?.filter(
-              (acl: MacAcl) => acl.id === formValues.layer2AclName)[0].name }
-
+          const payload = {
+            description: data.description,
+            layer2AclName: layer2ProfileList?.data?.filter(
+              (acl: MacAcl) => acl.id === formValues.layer2AclName)[0].name,
+            policyName: data.policyName
+          }
           if (editMode) {
-            await updateAccessControl({ params: { id: accessControlId }, payload }).unwrap()
+            await updateAccessControl({ params: { accessControlId }, payload }).unwrap()
           } else {
             await addAccessControl({ payload }).unwrap()
           }
@@ -180,7 +187,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
             ]}
             validateTrigger='onBlur'
           >
-            <Input disabled={editMode} style={{ width: '400px' }} />
+            <Input style={{ width: '400px' }} />
           </Form.Item>
           <Form.Item
             name='description'
@@ -204,6 +211,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                 {$t({ defaultMessage: 'Layer 2' })}
                 <AccessComponentWrapper>
                   <Form.Item
+                    name='layer2Toggle'
                     style={{ marginBottom: '10px' }}
                     valuePropName='checked'
                     initialValue={false}
@@ -232,7 +240,9 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                       <Button type='link'
                         disabled={!layer2AclId}
                         onClick={() => {
-                          if (layer2AclId) {
+                          if (layer2AclId && layer2ProfileList?.data) {
+                            setLayer2AclDrawerId(layer2ProfileList.data?.find(
+                              (acl: MacAcl) => acl.id === layer2AclId)?.id ?? '')
                             setDrawerEditMode(true)
                             setDrawerVisible(true)
                             // setQueryPolicyId(l2AclPolicyId)
@@ -248,6 +258,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                       {/* {hasCreatePermission && */}
                       <Button type='link'
                         onClick={() => {
+                          setLayer2AclDrawerId('')
                           setDrawerEditMode(false)
                           setDrawerVisible(true)
                         }}>
@@ -273,7 +284,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
       >
         <SwitchLayer2ACLForm
           editMode={drawerEditMode}
-          layer2AclId={drawerEditMode ? layer2AclId : undefined}
+          layer2AclId={drawerEditMode ? layer2AclDrawerId : undefined}
           drawerOnClose={() => setDrawerVisible(false)}
         />
       </Drawer>
