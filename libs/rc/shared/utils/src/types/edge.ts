@@ -16,7 +16,8 @@ import {
   EdgeLinkDownCriteriaEnum, EdgeMultiWanModeEnum, EdgeMultiWanProtocolEnum,
   EdgePortTypeEnum,
   EdgeServiceTypeEnum, EdgeStatusSeverityEnum,
-  NodeClusterRoleEnum
+  NodeClusterRoleEnum,
+  EdgeClusterProfileTypeEnum
 } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -270,7 +271,7 @@ export interface EdgeClusterService {
   edgeClusterId: string
   serviceId: string
   serviceName: string
-  serviceType: EdgeServiceTypeEnum | EdgeClsuterProfileTypeEnum
+  serviceType: EdgeServiceTypeEnum | EdgeClusterProfileTypeEnum
   currentVersion: string
   targetVersion: string
 }
