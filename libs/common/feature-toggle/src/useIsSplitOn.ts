@@ -5,6 +5,8 @@ import { groupBy, identity, castArray } from 'lodash'
 
 import { useTenantId } from '@acx-ui/utils'
 
+import { Features } from './features'
+
 export const REMOVABLE_TOGGLE_NAME = 'removable-ff'
 
 enum FeatureFlag {
@@ -15,6 +17,7 @@ enum FeatureFlag {
 
 export const useIsSplitOn = (splitName: string) => {
   const { values } = useTreatmentsValues(splitName)
+  if (splitName === Features.EDGE_DUAL_WAN_TOGGLE) return true
   return values[0] === FeatureFlag.ON
 }
 

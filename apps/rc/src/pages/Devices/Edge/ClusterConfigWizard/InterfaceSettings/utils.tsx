@@ -3,6 +3,7 @@ import _, { cloneDeep }      from 'lodash'
 import moment                from 'moment-timezone'
 import { defineMessage }     from 'react-intl'
 
+import { getDualWanDefaultDataFromApiData }                                                 from '@acx-ui/edge/components'
 import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
 import {
   ClusterHaFallbackScheduleTypeEnum,
@@ -53,13 +54,16 @@ export const transformFromApiToFormData =
      fallbackSettings.schedule.time = moment(time, 'HH:mm:ss')
    }
 
+   const multiWanSettings = getDualWanDefaultDataFromApiData(apiData)
+
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
      timeout,
      vipConfig,
      fallbackSettings: fallbackSettings,
-     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution
+     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution,
+     multiWanSettings
    } as InterfaceSettingsFormType
  }
 
@@ -404,7 +408,8 @@ export const transformFromFormToApiData = (
         fallbackSettings,
         loadDistribution: data.loadDistribution
       }
-    } : {})
+    } : {}),
+    multiWanSettings: data.multiWanSettings
   }
 }
 

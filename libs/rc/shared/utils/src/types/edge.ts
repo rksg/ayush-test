@@ -1,7 +1,23 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, Compatibility, FirmwareCategory, IncompatibleFeatureTypeEnum, SkippedVersion }                                                                                                                                                                                                                       from '..'
-import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import {
+  ApCompatibility, Compatibility,
+  FirmwareCategory,
+  IncompatibleFeatureTypeEnum,
+  SkippedVersion
+} from '..'
+import {
+  ClusterHaFallbackScheduleTypeEnum,
+  ClusterHaLoadDistributionEnum,
+  ClusterHighAvailabilityModeEnum,
+  ClusterNodeStatusEnum,
+  CompatibilityEntityTypeEnum,
+  EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum,
+  EdgeLinkDownCriteriaEnum, EdgeMultiWanModeEnum, EdgeMultiWanProtocolEnum,
+  EdgePortTypeEnum,
+  EdgeServiceTypeEnum, EdgeStatusSeverityEnum,
+  NodeClusterRoleEnum
+} from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -538,8 +554,35 @@ export interface ClusterNetworkSettings {
       }
     }
     loadDistribution: ClusterHaLoadDistributionEnum
-  }
+  },
+  multiWanSettings?: ClusterNetworkMultiWanSettings
 }
+
+// ========== Multi WAN ===========
+
+export interface EdgeWanLinkHealthCheckPolicy {
+  protocol: EdgeMultiWanProtocolEnum
+  targetIpAddresses: string[]
+  linkDownCriteria: EdgeLinkDownCriteriaEnum
+  intervalSeconds: number
+  maxCountToDown: number
+  maxCountToUp: number
+}
+
+export interface EdgeWanMember {
+  serialNumber: string
+  portName: string
+  priority: number
+  healthCheckEnabled: boolean
+  linkHealthCheckPolicy?: EdgeWanLinkHealthCheckPolicy
+}
+
+export interface ClusterNetworkMultiWanSettings {
+  mode: EdgeMultiWanModeEnum
+  wanMembers: EdgeWanMember[]
+}
+
+// ========== Multi WAN ===========
 
 export interface ClusterSubInterfaceSettings {
   nodes: NodeSubInterfaces[]
