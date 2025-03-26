@@ -31,20 +31,31 @@ import {
   IsNetworkSupport6g,
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  ConfigTemplateType,
+  ConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                                                           from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                          from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasPermission } from '@acx-ui/user'
+import { getOpsApi }                                                           from '@acx-ui/utils'
 
-import { useEnforcedStatus }                                                                                              from '../../configTemplates'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                                           from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                                                           from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionDrawer, NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                                                        from '../../NetworkTunnelActionModal/types'
-import { NetworkVenueScheduleDialog }                                                                                     from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                                                             from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                                                          from '../../useEdgeActions'
-import NetworkFormContext                                                                                                 from '../NetworkFormContext'
+import { useEnforcedStatus }                                                    from '../../configTemplates'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import {
+  NetworkTunnelActionDrawer,
+  NetworkTunnelActionModal,
+  NetworkTunnelActionModalProps,
+  useGetSoftGreScopeVenueMap,
+  useGetIpsecScopeVenueMap
+} from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                            from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                         from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                              from '../../useEdgeActions'
+import NetworkFormContext                                     from '../NetworkFormContext'
 
 import { useTunnelColumn }                                                       from './TunnelColumn/useTunnelColumn'
 import { handleIpsecAction, handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
@@ -165,7 +176,10 @@ interface VenuesProps {
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
-  // const { isTemplate } = useConfigTemplate()
+  const { isTemplate } = useConfigTemplate()
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
@@ -189,6 +203,26 @@ export function Venues (props: VenuesProps) {
 
   const [tableData, setTableData] = useState<Venue[]>([])
 
+  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasActivatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasActivatePermission)
+
   // AP group form
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -206,15 +240,17 @@ export function Venues (props: VenuesProps) {
   // hooks for tunnel column - start
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const ipsecVenueMap = useGetIpsecScopeVenueMap()
   const tunnelColumn = useTunnelColumn({
     network: data,
     sdLanScopedNetworkVenues,
     softGreVenueMap,
-    setTunnelModalState
+    setTunnelModalState,
+    ipsecVenueMap
   })
   // hooks for tunnel column - end
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     // need to make sure table data is ready.
@@ -274,6 +310,7 @@ export function Venues (props: VenuesProps) {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      rbacOpsIds: [addNetworkVenueOpsAPi],
       visible: (selectedRows) => {
         const enabled = selectedRows.some((item)=>{
           return item.mesh && item.mesh.enabled && data && data.enableDhcp
@@ -288,6 +325,7 @@ export function Venues (props: VenuesProps) {
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      rbacOpsIds: [deleteNetworkVenueOpsAPi],
       visible: (selectedRows) => {
         const enabled = selectedRows.some((item)=>{
           return item.mesh && item.mesh.enabled && data && data.enableDhcp
@@ -458,20 +496,24 @@ export function Venues (props: VenuesProps) {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (_, row) {
-        const isDhcpDisabled = data && data.enableDhcp && row.mesh && row.mesh.enabled
-        const dhcpDisabledMsg = isDhcpDisabled
-          // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
-          : ''
-
-        const isEnforcedByTemplate = hasEnforcedItem([row])
-        const enforcedActionMsg = getEnforcedActionMsg([row])
+        let disabled = false
+        let title = ''
+        if (hasActivateNetworkVenuePermission) {
+          if (data && data.enableDhcp && row.mesh && row.mesh.enabled){
+            disabled = true
+            // eslint-disable-next-line max-len
+            title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          } else if (hasEnforcedItem([row])) {
+            disabled = true
+            title = getEnforcedActionMsg([row])
+          }
+        }
 
         return <Tooltip
-          title={dhcpDisabledMsg || enforcedActionMsg}
+          title={title}
           placement='bottom'>
           <Switch
-            disabled={isDhcpDisabled || isEnforcedByTemplate}
+            disabled={!hasActivateNetworkVenuePermission || disabled}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
@@ -499,7 +541,7 @@ export function Venues (props: VenuesProps) {
           getCurrentVenue(row),
           data as NetworkSaveData,
           (e) => handleClickApGroups(row, e),
-          false,
+          !hasUpdateNetworkVenuePermission,
           row?.incompatible
         )
       }
@@ -510,8 +552,12 @@ export function Venues (props: VenuesProps) {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row),
-          data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformRadios(
+          getCurrentVenue(row),
+          data as NetworkSaveData,
+          (e) => handleClickApGroups(row, e),
+          !hasUpdateNetworkVenuePermission
+        )
       }
     },
     {
@@ -520,7 +566,11 @@ export function Venues (props: VenuesProps) {
       dataIndex: 'scheduling',
       render: function (_, row) {
         return transformScheduling(
-          getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
+          getCurrentVenue(row),
+          scheduleSlotIndexMap[row.id],
+          (e) => handleClickScheduling(row, e),
+          !hasUpdateNetworkVenuePermission
+        )
       }
     },
     ...tunnelColumn
@@ -667,6 +717,8 @@ export function Venues (props: VenuesProps) {
     }
   }
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <>
       <StepsFormLegacy.Title>
@@ -679,8 +731,8 @@ export function Venues (props: VenuesProps) {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            rowActions={filterByAccess(rowActions)}
-            rowSelection={{
+            rowActions={allowedRowActions}
+            rowSelection={(allowedRowActions.length > 0) &&{
               type: 'checkbox'
             }}
             columns={columns}

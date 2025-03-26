@@ -70,7 +70,8 @@ import {
   NetworkTunnelSdLanAction,
   NetworkTunnelSoftGreAction,
   VlanPool,
-  NetworkTunnelIpsecAction
+  NetworkTunnelIpsecAction,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -300,7 +301,7 @@ export function NetworkForm (props:{
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.NETWORK)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     updateSaveState((preState) => {
@@ -628,7 +629,7 @@ export function NetworkForm (props:{
       (data.type === NetworkTypeEnum.PSK || data.type === NetworkTypeEnum.AAA || data.type === NetworkTypeEnum.HOTSPOT20)
       && identityGroupFlag
     ) {
-      return omit(data, ['identityGroupId', 'identityId'])
+      return omit(data, ['identityGroupId', 'identityId', 'enableIdentityAssociation'])
     }
     return data
   }

@@ -34,7 +34,8 @@ export interface BarChartProps
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
   labelRichStyle?: object
   onClick?: (params: EventParams) => void
-  yAxisType?: 'time' & 'category'
+  yAxisType?: 'time' & 'category',
+  disableLegend?: boolean
 }
 
 const getSeries = (
@@ -76,6 +77,7 @@ export function BarChart<TChartData extends BarChartData>
   labelRichStyle,
   barColors,
   barWidth,
+  disableLegend,
   onClick,
   ...props
 }: BarChartProps<TChartData>) {
@@ -120,10 +122,12 @@ export function BarChart<TChartData extends BarChartData>
       },
       formatter: tooltipFormatter
     },
-    legend: {
-      ...legendOptions(),
-      textStyle: legendTextStyleOptions()
-    },
+    ...(disableLegend ? {} : {
+      legend: {
+        ...legendOptions(),
+        textStyle: legendTextStyleOptions()
+      }
+    }),
     xAxis: {
       axisLabel: {
         show: false

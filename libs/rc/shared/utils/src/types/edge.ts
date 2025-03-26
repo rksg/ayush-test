@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, Compatibility, FirmwareCategory, IncompatibleFeatureTypeEnum, SkippedVersion }                                                                                                                                                                                                                       from '..'
-import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import { ApCompatibility, Compatibility, FirmwareCategory, IncompatibleFeatureTypeEnum, SkippedVersion }                                                                                                                                                                                                                                                   from '..'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeClsuterProfileTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -250,6 +250,15 @@ export interface EdgeService {
   edgeAlarmSummary?: EdgeAlarmSummary[]
 }
 
+export interface EdgeClusterService {
+  edgeClusterId: string
+  serviceId: string
+  serviceName: string
+  serviceType: EdgeServiceTypeEnum | EdgeClsuterProfileTypeEnum
+  currentVersion: string
+  targetVersion: string
+}
+
 export interface PingEdge {
   targetHost: string
 }
@@ -371,7 +380,7 @@ export interface EdgeCluster {
   }
 }
 
-interface EdgeFeatureRequirement {
+export interface EdgeFeatureRequirement {
   featureName: string
   requiredFw: string
 }
@@ -414,6 +423,7 @@ export interface EdgeSdLanApCompatibilitiesResponse {
   compatibilities?: EdgeSdLanApCompatibility[]
 }
 
+// Content-Type: application/vnd.ruckus.v1.1+json
 interface EdgeFeatureRequirementV1_1 {
   firmware: string
 }
@@ -444,6 +454,13 @@ export interface EntityCompatibilityV1_1 {
 }
 export interface VenueEdgeCompatibilitiesResponseV1_1 {
   compatibilities?: EntityCompatibilityV1_1[]
+}
+export interface EdgeServiceCompatibilityV1_1 {
+  serviceId?: string
+  clusterEdgeCompatibilities?: EntityCompatibilityV1_1[]
+}
+export interface EdgeServiceCompatibilitiesResponseV1_1 {
+  compatibilities?: EdgeServiceCompatibilityV1_1[]
 }
 
 // ap incompatibility by model

@@ -7,6 +7,7 @@ import {
   EdgeDhcpSetting,
   EdgeDhcpUrls,
   EdgeServiceCompatibilitiesResponse,
+  EdgeServiceCompatibilitiesResponseV1_1,
   onActivityMessageReceived,
   onSocketActivityChanged,
   TableResult
@@ -200,6 +201,17 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'COMPATIBILITY' }]
+    }),
+    // eslint-disable-next-line max-len
+    getDhcpEdgeCompatibilitiesV1_1: build.query<EdgeServiceCompatibilitiesResponseV1_1, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpEdgeCompatibilitiesV1_1, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'COMPATIBILITY' }]
     })
   })
 })
@@ -218,5 +230,8 @@ export const {
   useActivateEdgeDhcpServiceMutation,
   useDeactivateEdgeDhcpServiceMutation,
   useRestartEdgeDhcpServiceMutation,
-  useGetDhcpEdgeCompatibilitiesQuery
+  useGetDhcpEdgeCompatibilitiesQuery,
+  useLazyGetDhcpEdgeCompatibilitiesQuery,
+  useGetDhcpEdgeCompatibilitiesV1_1Query,
+  useLazyGetDhcpEdgeCompatibilitiesV1_1Query
 } = edgeDhcpApi

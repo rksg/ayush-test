@@ -59,7 +59,7 @@ import {
   useActivateSoftGreMutation,
   useDectivateSoftGreMutation,
   useActivateIpsecMutation,
-  useDectivateIpsecMutation
+  useDeactivateIpsecMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -67,7 +67,7 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   DpskWlanAdvancedCustomization,
-  TunnelTypeEnum,
+  NetworkSegmentTypeEnum,
   TunnelProfileViewData,
   useConfigTemplate,
   ConfigTemplateType,
@@ -209,7 +209,7 @@ export const useNetworkVxLanTunnelProfileInfo =
       { skip: !isEdgeEnabled || !data }
     )
 
-    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN
+    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN
       && item.personalIdentityNetworkIds.length > 0)
     const enableTunnel = !_.isEmpty(tunnelProfileData?.data)
     const enableVxLan = !_.isEmpty(vxLanTunnels)
@@ -918,7 +918,7 @@ export const useUpdateSoftGreActivations = () => {
 
 export const useUpdateIpsecActivations = () => {
   const [ activateIpsec ] = useActivateIpsecMutation()
-  const [ dectivateIpsec ] = useDectivateIpsecMutation()
+  const [ deactivateIpsec ] = useDeactivateIpsecMutation()
 
   // eslint-disable-next-line max-len
   const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
@@ -928,7 +928,7 @@ export const useUpdateIpsecActivations = () => {
       // eslint-disable-next-line max-len
       const action = updates[venueId]
       if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
-        return dectivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
+        return deactivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
       } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
         return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
       }

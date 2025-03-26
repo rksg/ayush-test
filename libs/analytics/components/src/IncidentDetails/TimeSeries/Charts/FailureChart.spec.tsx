@@ -94,7 +94,7 @@ describe('failureChartQuery', () => {
         buffer: buffer6hr,
         incident: fakeIncident1,
         charts: [TimeSeriesChartTypes.FailureChart],
-        minGranularity: 'PT180S'
+        minGranularity: 'PT15M'
       })
     )
     expect(status).toBe('fulfilled')

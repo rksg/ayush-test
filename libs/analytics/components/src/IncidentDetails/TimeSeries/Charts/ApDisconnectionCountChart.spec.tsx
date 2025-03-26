@@ -89,7 +89,7 @@ describe('apDisconnectionCountChartQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentDowntimeHigh,
         charts: [TimeSeriesChartTypes.ApDisconnectionCountChart],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

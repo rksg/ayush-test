@@ -6,6 +6,8 @@ import {
   EdgeSdLanApCompatibility,
   EdgeServiceApCompatibility,
   EdgeServiceCompatibility,
+  EdgeServiceCompatibilityV1_1,
+  EntityCompatibilityV1_1,
   getCompatibilityFeatureDisplayName,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
@@ -17,7 +19,7 @@ interface EdgeTableCompatibilityWarningTooltipProps {
   serviceId: string,
   featureName: IncompatibilityFeatures,
   // eslint-disable-next-line max-len
-  compatibility?: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[] | EdgeServiceApCompatibility[]>
+  compatibility?: Record<string, EdgeServiceCompatibilityV1_1[] | EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[] | EdgeServiceApCompatibility[]>
 }
 // eslint-disable-next-line max-len
 export const EdgeTableCompatibilityWarningTooltip = (props: EdgeTableCompatibilityWarningTooltipProps) => {
@@ -25,8 +27,9 @@ export const EdgeTableCompatibilityWarningTooltip = (props: EdgeTableCompatibili
   const { serviceId, featureName, compatibility } = props
 
   // eslint-disable-next-line max-len
-  const edgeIncompatibleData = (find(compatibility?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeServiceCompatibility)?.clusterEdgeCompatibilities
-  const edgeIncompatibleCount = sumBy(edgeIncompatibleData, (data) => data.incompatible)
+  const edgeIncompatibleData = (find(compatibility?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as (EdgeServiceCompatibilityV1_1 | EdgeServiceCompatibility))?.clusterEdgeCompatibilities
+  // eslint-disable-next-line max-len
+  const edgeIncompatibleCount = sumBy(edgeIncompatibleData as EntityCompatibilityV1_1[], (data) => data.incompatible)
   const edgeIncompatible = edgeIncompatibleCount > 0
 
   // eslint-disable-next-line max-len

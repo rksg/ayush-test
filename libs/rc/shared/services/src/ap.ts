@@ -1131,7 +1131,7 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true) && (!!!l.ipsecEnabled))
             .map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -1145,7 +1145,7 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const ipsecActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.ipsecProfileId && (l.ipsecEnabled === true) && (l.enabled === true))
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && l.ipsecProfileId && (l.ipsecEnabled === true) && (l.enabled === true))
             .map(l => ({
               params: {
                 venueId: params!.venueId,

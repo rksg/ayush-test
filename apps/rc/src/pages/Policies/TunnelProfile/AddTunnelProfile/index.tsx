@@ -8,14 +8,14 @@ import { TunnelProfileForm } from '../TunnelProfileForm'
 
 const AddTunnelProfile = () => {
   const { $t } = useIntl()
-  const { createTunnelProfile } = useTunnelProfileActions()
+  const { createTunnelProfileOperation } = useTunnelProfileActions()
   const formInitValues = getTunnelProfileFormDefaultValues()
 
   return (
     <TunnelProfileForm
       title={$t({ defaultMessage: 'Add Tunnel Profile' })}
       submitButtonLabel={$t({ defaultMessage: 'Add' })}
-      onFinish={createTunnelProfile}
+      onFinish={createTunnelProfileOperation}
       initialValues={formInitValues}
     />
   )

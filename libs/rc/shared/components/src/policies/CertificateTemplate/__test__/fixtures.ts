@@ -1,4 +1,4 @@
-import { AlgorithmType, CertificateStatusType, ExtendedKeyUsages, KeyUsageType, Persona, PersonaGroup, ServerCertificate, UsageType } from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateStatusType, KeyUsageType, Persona, PersonaGroup, ServerCertificate, UsageType } from '@acx-ui/rc/utils'
 
 /* eslint-disable max-len */
 export const certificateAuthorityList =
@@ -599,14 +599,17 @@ export const mockPersonaGroupWithIdentity: PersonaGroup = {
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
   propertyId: 'propertyId-100',
-  certificateTemplateId: 'cert-template-1',
-  identities: [
-    {
-      id: 'b1d533e6-15b6-4168-8f5c-418198a7e3e7',
-      groupId: 'persona-group-id-1',
-      name: 'testccc-123'
-    }] as Persona[]
+  certificateTemplateId: 'cert-template-1'
 }
+
+export const mockPersonaList: Persona[] = [
+  {
+    id: 'b1d533e6-15b6-4168-8f5c-418198a7e3e7',
+    groupId: 'persona-group-id-1',
+    name: 'testccc-123',
+    revoked: false
+  }
+]
 
 export const serverCertificateList = {
   fields: null,
@@ -680,44 +683,6 @@ export const serverCertificateList = {
       details: '  [0]         Version: 3\n         SerialNumber: 523034246409022721574999995590484643897172655484\n             IssuerDN: CN=myrootCa@test.com,O=test,OU=test,L=test,ST=test,C=test,T=test\n           Start Date: Wed Jan 24 16:00:00 GMT 2024\n           Final Date: Thu Jan 24 23:59:59 GMT 2030\n            SubjectDN: CN=test,O=test,OU=test,L=test,ST=test,C=test\n           Public Key: RSA Public Key [c7:0c:92:d6:a8:d7:c3:0c:50:0e:44:f2:06:e2:d2:78:ba:96:1a:9e],[56:66:d1:a4]\n        modulus: 9b81f1072991901a70ccbd3956c1ce61db94d994b070a8f4da58f6ead55270589536cafbd76e19c0bb97a1943edb89fda3b0b06c139c0e678d820a4087541af4c96bf9ae7446c83ed302f78125edb1b18a8f0321d153fcf06124bd3cc5555b9a41dd1553ae5a479f9ed9b7d3ab706787d95a21e314069ab7f5a408006c517f1e7cac944d99a6882cfbfe1d2378e573418e1c4392b710b43f95d81bce172b8960bbfd05d6398f68d0ac0bcc42b449fd296d5f2f296e537886713324d3bacd32b381e4d32eae8b60b7f73ce2510f5dcd29c49a4b0b6c93e3fd3612523f4c2bc92ec89288c55ce7b12054f29f5d9bff31129ad6b51767256a9c90215138889db3d9f104c17226d9384d1aa7a0c327e8472f6786d28abb493388cd6d5f835751d6d249854c39a7db5e2f524776020522a8a36ae043fec643aa888eea9df732d4b46a4dbb9a3476343965a539053153120db847a01c61f4001031b138ae4280d651af9bf2302fbaaab6ef90d8e93d8cbe71f31b6c991d42e442fcc4a90cada5e1a45c234a267a085ff833722069b6b8e563684bbac20af3e9e2656dca7ee8e1503958d8462019afcf5672cf5b80af4db124ea782d8203e64726e2ba0760f5e8f08f27377c86ca8a6a73cd5b343948c6da4db0d0fb35dcf88c97f9f1fb3a881738a7aee10f540d45d664a61ce3d98bc59ef2adac7402857637ef6d3cb23ad7d8d04373\npublic exponent: 10001\n\n  Signature Algorithm: SHA512WITHRSA\n            Signature: 0f6fbf1751dd60d81f6ee6ab12cfba2b6a847934\n                       cea236bf95ca7c02361f1b59cf84e77b222f5acd\n                       e6b5988930c09efc322cd52b2e261d0c39b2e8dc\n                       263d1951836d8f36c98d98fa8313ae13735a7d2f\n                       3e67079a238d2954e1d7fdd0cabd2f6d0b2aee08\n                       d5f683be29a2acb3735895c179de92f1ef9780c9\n                       78dba706f158609fe33a5669808b8a71d2c5ce97\n                       dcf86470d784cefa423a3f3b8b67187b29ad3e1f\n                       6ca3a9240e072481a2aaa713bda05494f435d7c1\n                       55c1d52d9ff5974774773b3c88de971049805393\n                       4356db1e379929debded269a7c58afa40537e452\n                       fb824e766ca2b65f4e56b1dc8a6d9d08479eb4e0\n                       008fc106f9c84d2416dfeb746d77bfdd\n       Extensions: \n                       critical(false) 2.5.29.14 value = DER Octet String[20] \n\n                       critical(false) 2.5.29.35 value = Sequence\n    Tagged [CONTEXT 0] IMPLICIT \n        DER Octet String[20] \n    Tagged [CONTEXT 1]\n        Tagged [CONTEXT 4]\n            Sequence\n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.3)\n                        UTF8String(myrootCa@test.com) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.10)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.11)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.7)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.8)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.6)\n                        PrintableString(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.12)\n                        UTF8String(test) \n    Tagged [CONTEXT 2] IMPLICIT \n        DER Octet String[21] \n\n                       critical(false) 1.3.6.1.4.1.311.20.2 value = IA5String(forIT11) \n\n                       critical(false) 2.5.29.37 value = Sequence\n    ObjectIdentifier(1.3.6.1.5.5.7.3.2)\n    ObjectIdentifier(1.3.6.1.4.1.40808.1.1.2)\n\n                       critical(false) 1.3.6.1.5.5.7.1.1 value = Sequence\n    Sequence\n        ObjectIdentifier(1.3.6.1.5.5.7.48.1)\n        Tagged [CONTEXT 6] IMPLICIT \n            DER Octet String[4] \n\n                       critical(true) KeyUsage: 0xa0\n',
       description: null,
       certificateType: null,
-      status: ['VALID']
-    }
-  ]
-}
-
-export const caList = {
-  page: 1,
-  totalCount: 2,
-  data: [
-    {
-      id: '1',
-      name: 'CA-1',
-      status: ['VALID']
-    },
-    {
-      id: '2',
-      name: 'CA-2',
-      status: ['VALID']
-    }
-  ]
-}
-
-export const certList = {
-  page: 1,
-  totalCount: 2,
-  data: [
-    {
-      id: '1',
-      name: 'Server-Cert-1',
-      commonName: 'Server-Cert-1',
-      extendedKeyUsages: [ExtendedKeyUsages.SERVER_AUTH],
-      status: ['VALID']
-    },
-    {
-      id: '2',
-      name: 'Client-Cert-1',
-      commonName: 'Client-Cert-1',
-      extendedKeyUsages: [ExtendedKeyUsages.CLIENT_AUTH],
       status: ['VALID']
     }
   ]
