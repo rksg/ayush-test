@@ -331,7 +331,7 @@ export function EditPortDrawer ({
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
-    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox
+    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox, portSecurity
   }
   const authFormWatchValues = [
     authenticationType, dot1xPortControl, authDefaultVlan,
@@ -2530,6 +2530,7 @@ export function EditPortDrawer ({
         { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b &&
           portSecurity && !isMultipleEdit && <Table
           rowKey='id'
+          sortDirections={['ascend', 'descend', 'ascend']}
           columns={stickyMacAclsColumns}
           onChange={stickyMacAclsQuery.handleTableChange}
           pagination={stickyMacAclsQuery.pagination}

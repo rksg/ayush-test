@@ -115,7 +115,7 @@ export function SwitchConfigHistoryTable (props: {
     if(!isSwitchPortProfileEnabled){
       configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.PORT_PROFILE)
     }
-    if(isSwitchMacAclEnabled){
+    if(!isSwitchMacAclEnabled){
       configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.MAC_ACL)
     }
     if(!isSwitchDisabledRecoveryEnabled){

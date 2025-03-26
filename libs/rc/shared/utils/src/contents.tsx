@@ -339,6 +339,9 @@ export const EditPortMessages = {
   }),
   CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED: defineMessage({
     defaultMessage: 'MAC ACL cannot be enabled if Authentication is turned ON.'
+  }),
+  CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled if Port MAC Security is turned ON.'
   })
 }
 
