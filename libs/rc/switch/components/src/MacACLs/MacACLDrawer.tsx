@@ -336,10 +336,10 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           <Form.Item name='customized' />
         </Form>
         <Table
-          dataSource={customized? dataSource : globalDataSource}
+          dataSource={customized || !editMode ? dataSource : globalDataSource}
           columns={columns}
-          rowActions={customized ? rowActions : undefined}
-          rowSelection={customized ? {
+          rowActions={customized || !editMode ? rowActions : undefined}
+          rowSelection={customized || !editMode ? {
             type: 'checkbox'
           } : undefined}
           actions={customized || !editMode ? [{

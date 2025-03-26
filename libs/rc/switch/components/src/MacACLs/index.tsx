@@ -126,10 +126,17 @@ export function MacACLs (props: {
           okText: $t({ defaultMessage: 'Delete' }),
           cancelText: $t({ defaultMessage: 'Cancel' }),
           onOk: () => {
-            deleteSwitchMacAcl({
-              params: { venueId: switchDetail?.venueId, switchId: switchDetail?.id },
-              payload: selectedRows.map(selectedRows => { return selectedRows.id }) })
-              .then(clearSelection)
+            Promise.all(
+              selectedRows.map(row =>
+                deleteSwitchMacAcl({
+                  params: {
+                    venueId: switchDetail?.venueId,
+                    switchId: switchDetail?.id,
+                    macAclId: row.id
+                  }
+                })
+              )
+            ).then(clearSelection)
           }
         })
       }
