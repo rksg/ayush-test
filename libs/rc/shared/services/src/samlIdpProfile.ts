@@ -43,7 +43,10 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SamlIdpProfile', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'DETAIL' }
+      ]
     }),
 
     deleteSamlIdpProfile: build.mutation<CommonResult, RequestPayload>({
@@ -74,7 +77,7 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
 
     getSamlIdpProfileWithRelationsById:
     build.query<SamlIdpProfileFormType | null, RequestPayload>({
-      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
@@ -83,16 +86,29 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         const viewDataReq = createHttpRequest(
           SamlIdpProfileUrls.getSamlIdpProfileViewDataList, params)
 
-        const idPListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        const idPListQuery = await fetchWithBQ(
+          { ...viewDataReq,
+            body: JSON.stringify({
+              sortField: 'name',
+              sortOrder: 'ASC',
+              filters: {
+                id: [params.id]
+              }
+            })
+          })
         let idPList = idPListQuery.data as TableResult<SamlIdpProfileViewData>
 
         const samlIdpProfile = await fetchWithBQ(
           createHttpRequest(SamlIdpProfileUrls.getSamlIdpProfile, params)
         )
-        const samlIdpProfileData = samlIdpProfile.data as SamlIdpProfileFormType
+        const samlIdpProfileData = {
+          ...(samlIdpProfile.data as SamlIdpProfileFormType),
+          id: params.id
+        }
 
-        samlIdpProfileData.metadataContent =
-          Buffer.from(samlIdpProfileData.metadata, 'base64').toString('ascii')
+        samlIdpProfileData.metadataContent = Buffer
+          .from(samlIdpProfileData.metadata, 'base64')
+          .toString('utf-8')
 
         if (samlIdpProfileData && idPList?.data) {
           const viewData = idPList.data.find(item => item.id === params.id)

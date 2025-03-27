@@ -99,7 +99,7 @@ const SamlIdpTable = () => {
     const data = await lazyGetSamlIdpProfile({
       params: { id: id }
     }).unwrap()
-    setIdpMetadata(Buffer.from(data?.metadata, 'base64').toString('ascii'))
+    setIdpMetadata(Buffer.from(data?.metadata, 'base64').toString('utf-8'))
     setIdpMetadataModalVisible(true)
   }
 

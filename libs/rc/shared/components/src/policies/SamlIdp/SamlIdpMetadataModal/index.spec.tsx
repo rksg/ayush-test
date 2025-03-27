@@ -48,4 +48,24 @@ describe('CertificateInfoItem', () => {
     user.click(okButton)
     await waitFor(() => expect(mockedSetVisible).toBeCalledWith(false))
   })
+
+  it('should call visible false when click Close button', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <SamlIdpMetadataModal
+          metadata={mockedMetadata}
+          visible={true}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>
+      , { route: { path: detailViewPath, params } }
+    )
+
+    expect(screen.getByText(mockedMetadata)).toBeInTheDocument()
+
+    const cancelButton = screen.getByRole('button', { name: 'Close' })
+    user.click(cancelButton)
+    await waitFor(() => expect(mockedSetVisible).toBeCalledWith(false))
+  })
 })

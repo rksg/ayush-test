@@ -12,6 +12,7 @@ export const SamlIdpMetadataModal = (props: SamlIdpMetadataModalProps) => {
   const { $t } = useIntl()
   const { metadata, visible, setVisible } = props
   return (
+
     <Modal
       title={$t({ defaultMessage: 'IdP Metadata' })}
       visible={visible}
