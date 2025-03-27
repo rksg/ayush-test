@@ -48,7 +48,11 @@ export function IdentityForm (props: IdentityFormProps) {
       if (modalMode) {
         callback?.(result?.id)
       } else {
-        navigate(previousPath.concat(personaGroupId ? `/${personaGroupId}` : ''), { replace: true })
+        editMode
+          ? navigate(-1)
+          : navigate(
+            previousPath.concat(personaGroupId ? `/${personaGroupId}` : ''),
+            { replace: true })
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -109,7 +113,7 @@ export function IdentityForm (props: IdentityFormProps) {
           editMode={editMode}
           form={form}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-          onCancel={() => modalMode ? callback?.() : navigate(previousPath)}
+          onCancel={() => modalMode ? callback?.() : navigate(-1)}
           onFinish={handleSubmit}
         >
           <StepsForm.StepForm>
