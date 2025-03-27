@@ -176,8 +176,8 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                 name='sourceMask'
                 label={$t({ defaultMessage: 'Mask' })}
                 rules={[
-                  { required: !isAnySrcAddress }
-
+                  { required: !isAnySrcAddress },
+                  { validator: (_, value) => MacAddressFilterRegExp(value) }
                 ]}
                 children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnySrcAddress} />}
                 validateFirst
@@ -224,7 +224,8 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                 name='destinationMask'
                 label={$t({ defaultMessage: 'Destination Mask' })}
                 rules={[
-                  { required: !isAnyDestAddress }
+                  { required: !isAnyDestAddress },
+                  { validator: (_, value) => MacAddressFilterRegExp(value) }
                 ]}
                 children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnyDestAddress} />}
                 validateFirst
