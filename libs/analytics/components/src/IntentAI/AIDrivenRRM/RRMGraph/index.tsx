@@ -308,32 +308,6 @@ export const GraphImage = (
   )
 }
 
-export const SliderGraphBefore = (
-  { crrmData, setUrl }:
-  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
-) => {
-  return <GraphImage
-    crrmData={crrmData}
-    data={0}
-    setUrl={setUrl}
-    justifyContent='start'
-    backgroundColor='#333333'
-    width={300}
-  />
-}
-
-export const SliderGraphAfter = (
-  { crrmData, setUrl }:
-  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
-) => {
-  return <GraphImage
-    crrmData={crrmData}
-    data={1}
-    setUrl={setUrl}
-    justifyContent='end'
-    width={300}
-  />
-}
 export const SummaryGraphBefore = (
   { crrmData, setUrl, width }:
   { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, width: number }
