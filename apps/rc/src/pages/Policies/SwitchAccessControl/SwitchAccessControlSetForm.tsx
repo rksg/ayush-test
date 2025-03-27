@@ -91,7 +91,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
     { params: { accessControlId } }, { skip: !editMode })
 
   const layer2Toggle = Form.useWatch('layer2Toggle', form)
-  const layer2AclId = Form.useWatch('layer2AclId', form)
+  const layer2AclPolicyId = Form.useWatch('layer2AclPolicyId', form)
 
   useEffect (() => {
     if(data){
@@ -105,8 +105,8 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
 
     if(layer2ProfileList){
       if(data?.layer2AclPolicyName){
-        form.setFieldValue('layer2AclId', layer2ProfileList?.data?.find(
-          item => item.id === layer2AclId)?.id)
+        form.setFieldValue('layer2AclPolicyId', layer2ProfileList?.data?.find(
+          item => item.id === layer2AclPolicyId)?.id)
       }
     }
   }, [data, layer2ProfileList])
@@ -164,7 +164,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
           const payload = {
             description: data.description,
             layer2AclName: layer2Toggle ? layer2ProfileList?.data?.filter(
-              (acl: MacAcl) => acl.id === formValues.layer2AclId)[0].name : '',
+              (acl: MacAcl) => acl.id === formValues.layer2AclPolicyId)[0].name : '',
             policyName: data.policyName
           }
           if (editMode) {
@@ -221,7 +221,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                   {layer2ProfileVisible && <GridRow style={{ width: '350px' }}>
                     <GridCol col={{ span: 12 }}>
                       <Form.Item
-                        name='layer2AclId'
+                        name='layer2AclPolicyId'
                         rules={[{
                           required: true,
                           message: $t({ defaultMessage: 'Please select Layer 2 profile' })
@@ -239,11 +239,11 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
                     <AclGridCol>
                       {/* {hasEditPermission && */}
                       <Button type='link'
-                        disabled={!layer2AclId}
+                        disabled={!layer2AclPolicyId}
                         onClick={() => {
-                          if (layer2AclId && layer2ProfileList?.data) {
+                          if (layer2AclPolicyId && layer2ProfileList?.data) {
                             setLayer2AclDrawerId(layer2ProfileList.data?.find(
-                              (acl: MacAcl) => acl.id === layer2AclId)?.id ?? '')
+                              (acl: MacAcl) => acl.id === layer2AclPolicyId)?.id ?? '')
                             setDrawerEditMode(true)
                             setDrawerVisible(true)
                           }
