@@ -18,6 +18,11 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
 
+jest.mock('@acx-ui/feature-toggle', () => ({
+  ...jest.requireActual('@acx-ui/feature-toggle'),
+  useIsSplitOn: jest.fn()
+}))
+
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
 
 const extractRows = (doc:DocumentFragment)=>{
