@@ -20,8 +20,13 @@ import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
 
-const Message = (props:{ chat: ChatMessage, sessionId:string, groups: Group[] }) => {
-  const { chat, sessionId, groups } = props
+const Message = (props:{
+    chat: ChatMessage,
+    sessionId:string,
+    groups: Group[],
+    canvasRef?: React.RefObject<CanvasRef>
+  }) => {
+  const { chat, sessionId, groups, canvasRef } = props
   const { $t } = useIntl()
   const deletedHint = $t({ defaultMessage:
     'Older chat conversations have been deleted due to the 30-day retention policy.' })
@@ -37,6 +42,7 @@ const Message = (props:{ chat: ChatMessage, sessionId:string, groups: Group[] })
         chatId: chat.id
       }}
       groups={groups}
+      removeShadowCard={canvasRef?.current?.removeShadowCard}
       /> }
       {
         chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
@@ -51,7 +57,8 @@ const Messages = memo((props:{
   aiBotLoading: boolean,
   chats: ChatMessage[],
   sessionId:string,
-  groups: Group[]
+  groups: Group[],
+  canvasRef: React.RefObject<CanvasRef>
 })=> {
   const { $t } = useIntl()
   const welcomeMessage = {
@@ -60,7 +67,7 @@ const Messages = memo((props:{
     text: $t({ defaultMessage:
       'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
   }
-  const { moreloading, aiBotLoading, chats, sessionId, groups } = props
+  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef } = props
   return <div className='messages-wrapper'>
     {
       !chats?.length && <Message key={welcomeMessage.id}
@@ -70,7 +77,7 @@ const Messages = memo((props:{
     }
     {moreloading && <div className='loading'><Spin /></div>}
     {chats?.map((i) => (
-      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} />
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef}/>
     ))}
     {aiBotLoading && <div className='loading'><Spin /></div>}
   </div>})
@@ -349,6 +356,7 @@ export default function AICanvas () {
                     aiBotLoading={aiBotLoading}
                     chats={chats}
                     sessionId={sessionId}
+                    canvasRef={canvasRef}
                     groups={groups} />
                   {
                     !chats?.length && <div className='placeholder'>
