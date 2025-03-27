@@ -1,10 +1,18 @@
+/* eslint-disable max-len */
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { PageHeader, StepsForm }                       from '@acx-ui/components'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { getPolicyListRoutePath, PortProfileTabsEnum } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm }  from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import {
+  getPolicyAllowedOperation,
+  getPolicyListRoutePath,
+  PolicyOperation,
+  PolicyType,
+  PortProfileTabsEnum
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAllowedOperations }       from '@acx-ui/user'
 
 export default function CreatePortProfile () {
   const { $t } = useIntl()
@@ -24,6 +32,12 @@ export default function CreatePortProfile () {
     navigate(type === PortProfileTabsEnum.WIFI ?
       createEthernetPortProfilePath : createSwitchPortProfilePath)
   }
+
+  const wifiPortProfileOids = getPolicyAllowedOperation(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)
+  const hasCreateWifiPortProfilePermission = wifiPortProfileOids? hasAllowedOperations(wifiPortProfileOids) : true
+
+  const switchPortProfileOids = getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)
+  const hasCreateSwitchPortProfilePermission = switchPortProfileOids? hasAllowedOperations(switchPortProfileOids) : true
 
   return (
     <>
@@ -53,14 +67,14 @@ export default function CreatePortProfile () {
         <StepsForm.StepForm>
           <Form.Item name='portProfileType'
             label={$t({ defaultMessage: 'Port Profile Type' })}
-            initialValue={isEthernetPortProfileEnabled ?
+            initialValue={(isEthernetPortProfileEnabled && hasCreateWifiPortProfilePermission) ?
               PortProfileTabsEnum.WIFI : PortProfileTabsEnum.SWITCH}>
             <Radio.Group>
               <Space direction='vertical'>
-                <Radio value={PortProfileTabsEnum.WIFI} disabled={!isEthernetPortProfileEnabled}>
+                <Radio value={PortProfileTabsEnum.WIFI} disabled={!isEthernetPortProfileEnabled || !hasCreateWifiPortProfilePermission}>
                   {$t({ defaultMessage: 'Wi-Fi' })}
                 </Radio>
-                <Radio value={PortProfileTabsEnum.SWITCH} disabled={!isSwitchPortProfileEnabled}>
+                <Radio value={PortProfileTabsEnum.SWITCH} disabled={!isSwitchPortProfileEnabled || !hasCreateSwitchPortProfilePermission}>
                   {$t({ defaultMessage: 'Switch' })}
                 </Radio>
               </Space>
