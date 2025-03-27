@@ -112,7 +112,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     }
   }
 
-  const dhcp43ValueValidator = (_: any, value: number) => {
+  const dhcp43ValueValidator = (value: number) => {
     if (value === 6) {
       return Promise.reject($t(validationMessages.IpsecProfileDhcpOpion43InvalidValue))
     }
@@ -144,7 +144,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             initialValue={7}
             rules={[
               { type: 'number', min: 3, max: 243 },
-              { validator: dhcp43ValueValidator }
+              { validator: (_, value) => dhcp43ValueValidator(value) }
             ]}
             children={
               <InputNumber min={3} max={243} />

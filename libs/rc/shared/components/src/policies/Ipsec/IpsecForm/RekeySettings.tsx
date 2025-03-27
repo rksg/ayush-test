@@ -4,8 +4,8 @@ import { Form, InputNumber, Space }      from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }                       from 'react-intl'
 
-import { GridCol, GridRow, Subtitle, Tooltip, Select } from '@acx-ui/components'
-import { Ipsec, IpSecRekeyTimeUnitEnum }               from '@acx-ui/rc/utils'
+import { GridCol, GridRow, Tooltip, Select } from '@acx-ui/components'
+import { Ipsec, IpSecRekeyTimeUnitEnum }     from '@acx-ui/rc/utils'
 
 import { messageMapping } from './messageMapping'
 
