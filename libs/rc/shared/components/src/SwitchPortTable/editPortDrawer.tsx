@@ -2541,7 +2541,17 @@ export function EditPortDrawer ({
           rowKey='id'
           sortDirections={['ascend', 'descend', 'ascend']}
           columns={stickyMacAclsColumns}
-          onChange={stickyMacAclsQuery.handleTableChange}
+          onChange={(pagination, filters, sorter, extra) => {
+            if (extra.action === 'paginate') {
+              const currentSorter = {
+                ...Array.isArray(sorter) ? sorter[0] : sorter,
+                field: stickyMacAclsQuery.sorter.sortField || 'id'
+              }
+              stickyMacAclsQuery.handleTableChange?.(pagination, filters, currentSorter, extra)
+            } else {
+              stickyMacAclsQuery.handleTableChange?.(pagination, filters, sorter, extra)
+            }
+          }}
           pagination={stickyMacAclsQuery.pagination}
           dataSource={stickyMacAclsQuery.data?.data}
         />
