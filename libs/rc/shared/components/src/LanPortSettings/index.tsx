@@ -14,6 +14,7 @@ import {
   checkVlanMember,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
+  IpsecOptionChangeDispatcher,
   LanPort,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
@@ -31,7 +32,6 @@ import {
 } from '../ApCompatibility'
 import { DhcpOption82Settings }  from '../DhcpOption82Settings'
 import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
-import { BoundSoftGreIpsec }     from '../SoftGRETunnelSettings/SoftGreIpSecState'
 import { SoftGreIpsecProfile }   from '../SoftGRETunnelSettings/useIpsecProfileLimitedSelection'
 
 import ClientIsolationSettingsFields from './ClientIsolationSettingsFields'
@@ -74,13 +74,9 @@ export function LanPortSettings (props: {
   softGREProfileOptionList?: DefaultOptionType[]
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
-  isVenueBoundIpsec?: boolean,
-  boundSoftGreIpsecList?: BoundSoftGreIpsec[],
-  softGreIpsecProfileValidator: (
-    softGreEditable: boolean, index: number) => Promise<void>,
-  boundSoftGreIpsecData?: SoftGreIpsecProfile[],
+  usedProfileData?: { data: SoftGreIpsecProfile[], operations: SoftGreIpsecProfile[] },
   ipsecOptionList?: DefaultOptionType[],
-  ipsecOptionChange?: (index: number, apModel?: string, serialNumber?: string) => void
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }) {
   const { $t } = useIntl()
   const {
@@ -99,12 +95,9 @@ export function LanPortSettings (props: {
     softGREProfileOptionList,
     optionDispatch,
     validateIsFQDNDuplicate,
-    isVenueBoundIpsec,
-    boundSoftGreIpsecList,
-    softGreIpsecProfileValidator,
-    boundSoftGreIpsecData,
+    usedProfileData,
     ipsecOptionList,
-    ipsecOptionChange
+    ipsecOptionDispatch
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -117,7 +110,6 @@ export function LanPortSettings (props: {
   const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
-  const [isSoftGreEditable, setIsSoftGreEditable] = useState(true)
 
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
@@ -181,11 +173,6 @@ export function LanPortSettings (props: {
       }
     }
   }, [currentEthernetPortData])
-
-
-  useEffect(() => {
-    setIsSoftGreEditable(!!!selectedModel.lanPorts![index].softGreEnabled)
-  }, [])
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
@@ -290,13 +277,9 @@ export function LanPortSettings (props: {
             isUnderAPNetworking={isUnderAPNetworking}
             optionDispatch={optionDispatch}
             validateIsFQDNDuplicate={validateIsFQDNDuplicate}
-            isVenueBoundIpsec={isVenueBoundIpsec}
-            boundSoftGreIpsecList={boundSoftGreIpsecList}
-            softGreIpsecProfileValidator={softGreIpsecProfileValidator}
-            softGreEditable={isSoftGreEditable}
-            boundSoftGreIpsecData={boundSoftGreIpsecData}
-            ipsecOptionChange={ipsecOptionChange}
+            usedProfileData={usedProfileData}
             ipsecOptionList={ipsecOptionList}
+            ipsecOptionDispatch={ipsecOptionDispatch}
           />
           {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
             <DhcpOption82Settings

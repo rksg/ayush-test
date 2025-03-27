@@ -6,6 +6,8 @@ import { useIntl }                     from 'react-intl'
 
 import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  IpsecOptionChangeDispatcher,
+  IpsecOptionChangeState,
   PolicyOperation,
   PolicyType,
   hasPolicyPermission
@@ -26,19 +28,20 @@ interface IPSecProfileSettingsProps {
   apModel?: string
   serialNumber?: string,
   ipsecProfileOptionList: DefaultOptionType[],
-  ipsecOptionChange?: (index: number, apModel?: string, serialNumber?: string) => void
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }
 
 export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   const {
     index,
+    portId,
     ipsecProfileId,
     onGUIChanged,
     readonly,
     apModel,
     serialNumber,
     ipsecProfileOptionList,
-    ipsecOptionChange
+    ipsecOptionDispatch
   } = props
   const { $t } = useIntl()
   const params = useParams()
@@ -47,33 +50,11 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ ipsecProfile, setIpSecProfile ] = useState<DefaultOptionType>(defaultIpsecOption)
-  // const [ ipsecOptions, setIpsecOptions ] = useState<DefaultOptionType[]>([])
 
   const ipsecViewDataList = useGetIpsecViewDataListQuery({
     params,
     payload: {}
   })
-
-  // useEffect(() => {
-  //   loadOptions()
-  // },[softGreProfileId])
-
-  // const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
-
-  // const loadOptions = async () => {
-  //   const queryData = await getIpsecOptions(
-  //     { params: {
-  //       venueId: params.venueId,
-  //       softGreId: props.softGreProfileId },
-  //     payload: {},
-  //     skip: !params.venueId }
-  //   ).unwrap()
-
-  //   if (queryData) {
-  //     const { options } = queryData
-  //     setIpsecOptions(options.map(opt => ({ ...opt, disabled: false })))
-  //   }
-  // }
 
   const onChange = (value: string) => {
     if(!value) {
@@ -86,17 +67,10 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
     )
 
-    ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
-  }
-
-  const addIpsecOption = (value: DefaultOptionType) => {
-    console.log(value) // eslint-disable-line no-console
-    ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
-    // if (ipsecOptions.find((profile) => profile.disabled === true)) {
-    //   setIpsecOptions([...ipsecOptions, { ...value, disabled: true }])
-    // } else {
-    //   setIpsecOptions([...ipsecOptions, { ...value }])
-    // }
+    ipsecOptionDispatch && ipsecOptionDispatch({
+      state: IpsecOptionChangeState.OnChange,
+      index, portId, apModel, serialNumber
+    })
   }
 
   useEffect(() => {
@@ -175,7 +149,11 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
       <IpsecDrawer
         visible={addDrawerVisible}
         setVisible={setAddDrawerVisible}
-        callbackFn={addIpsecOption}
+        callbackFn={async (newOption) => {
+          ipsecOptionDispatch && ipsecOptionDispatch({
+            state: IpsecOptionChangeState.ReloadOptionList, newOption
+          })
+        }}
       />
     </>
   )

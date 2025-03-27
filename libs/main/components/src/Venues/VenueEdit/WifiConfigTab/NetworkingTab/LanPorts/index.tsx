@@ -18,7 +18,6 @@ import {
   LanPortSettings,
   ConvertPoeOutToFormData,
   useSoftGreProfileLimitedSelection,
-  SoftGreIpSecState,
   useIpsecProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
@@ -63,7 +62,8 @@ import {
   WifiNetworkMessages,
   SoftGreDuplicationChangeState,
   Voter,
-  mergeLanPortSettings
+  mergeLanPortSettings,
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -225,20 +225,13 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  // const [lanPortIdx, setLanPortIdx] = useState(0)
-  // const [lanPortModel, setLanPortModel] = useState('')
   const {
     softGREProfileOptionList,
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
   const {
-    isVenueBoundIpsec,
-    boundSoftGreIpsecList,
-    softGreIpsecProfileValidator
-  } = SoftGreIpSecState({ venueId: venueId!, isVenueOperation: true })
-  const {
-    optionChange, ipsecOptionList, boundSoftGreIpsecData
+    ipsecOptionList, ipsecOptionDispatch, usedProfileData
   } = useIpsecProfileLimitedSelection({
     venueId: venueId!,
     isVenueOperation: true,
@@ -294,33 +287,13 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     }
   }, [apPoeMode, lanPoeOut, lanPorts])
 
-  const onTabChange = async (tab: string) => {
+  const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
     setActiveTabIndex(tabIndex)
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
-    // try {
-    //   await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
-    //   setActiveTabIndex(tabIndex)
-    //   setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
-    //   setLanPortIdx(tabIndex)
-    // } catch (error) {
-    //   // eslint-disable-next-line no-console
-    //   console.error(error)
-    // }
   }
 
   const handleModelChange = async (value: string) => {
-    // try {
-    //   await form.validateFields([['lan', lanPortIdx, 'softGreIpsecValidator']])
-    //   setLanPortModel(value)
-    //   form.setFieldValue('model', value)
-    // } catch (error) {
-    //   form.setFieldValue('model', lanPortModel)
-    //   // eslint-disable-next-line no-console
-    //   console.error(error)
-    //   return
-    // }
-
     const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
     const lanPortsCap = modelCaps?.lanPorts || []
     // eslint-disable-next-line max-len
@@ -716,6 +689,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       voters: voters
     })
 
+    if (isIpSecOverNetworkEnabled) {
+      ipsecOptionDispatch({
+        state: IpsecOptionChangeState.ResetToDefault,
+        voters: voters
+      })
+    }
 
     customGuiChagedRef.current = true
   }
@@ -875,12 +854,9 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
                     validateIsFQDNDuplicate={validateIsFQDNDuplicate}
-                    isVenueBoundIpsec={isVenueBoundIpsec}
-                    boundSoftGreIpsecList={boundSoftGreIpsecList}
-                    softGreIpsecProfileValidator={softGreIpsecProfileValidator}
-                    ipsecOptionChange={optionChange}
-                    ipsecOptionList={ipsecOptionList}
-                    boundSoftGreIpsecData={boundSoftGreIpsecData}
+                    ipsecOptionDispatch={isIpSecOverNetworkEnabled ? ipsecOptionDispatch : undefined}
+                    ipsecOptionList={isIpSecOverNetworkEnabled ? ipsecOptionList : undefined}
+                    usedProfileData={isIpSecOverNetworkEnabled ? usedProfileData : undefined}
                   />
                 </Col>
               </Row>

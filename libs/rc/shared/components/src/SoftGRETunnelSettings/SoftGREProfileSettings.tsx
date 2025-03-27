@@ -6,6 +6,8 @@ import { useIntl }                     from 'react-intl'
 
 import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  IpsecOptionChangeDispatcher,
+  IpsecOptionChangeState,
   PolicyOperation,
   PolicyType,
   SoftGreDuplicationChangeDispatcher,
@@ -29,8 +31,8 @@ interface SoftGREProfileSettingsProps {
   apModel?: string
   serialNumber?: string
   isUnderAPNetworking: boolean
-  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean,
-  ipsecOptionChange?: (index: number, apModel?: string, serialNumber?: string) => void
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
@@ -46,7 +48,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
     serialNumber,
     isUnderAPNetworking,
     validateIsFQDNDuplicate,
-    ipsecOptionChange
+    ipsecOptionDispatch
   } = props
   const { $t } = useIntl()
   const params = useParams()
@@ -141,7 +143,9 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
                   )
                 })
 
-                ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
+                ipsecOptionDispatch && ipsecOptionDispatch({
+                  state: IpsecOptionChangeState.OnChange, index, portId, apModel, serialNumber
+                })
               }}
               options={[
                 {

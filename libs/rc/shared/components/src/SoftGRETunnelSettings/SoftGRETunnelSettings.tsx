@@ -6,12 +6,13 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
+  IpsecOptionChangeDispatcher,
+  IpsecOptionChangeState,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 
 import { IPSecProfileSettings }   from './IPSecProfileSettings'
-import { BoundSoftGreIpsec }      from './SoftGreIpSecState'
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
 import { SoftGreIpsecProfile }    from './useIpsecProfileLimitedSelection'
@@ -28,14 +29,9 @@ interface SoftGRETunnelSettingsProps {
   isUnderAPNetworking: boolean
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean,
-  isVenueBoundIpsec?: boolean,
-  boundSoftGreIpsecList?: BoundSoftGreIpsec[],
-  softGreIpsecProfileValidator: (
-    softGreEditable: boolean, index: number, apModel?: string) => Promise<void>,
-  softGreEditable?: boolean,
-  boundSoftGreIpsecData?: SoftGreIpsecProfile[],
+  usedProfileData?: { data: SoftGreIpsecProfile[], operations: SoftGreIpsecProfile[] },
   ipsecOptionList?: DefaultOptionType[],
-  ipsecOptionChange?: (index: number, apModel?: string, serialNumber?: string) => void
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -52,10 +48,9 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     isUnderAPNetworking,
     optionDispatch,
     validateIsFQDNDuplicate,
-    // softGreIpsecProfileValidator,
-    softGreEditable,
+    usedProfileData,
     ipsecOptionList,
-    ipsecOptionChange
+    ipsecOptionDispatch
   } = props
 
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -67,6 +62,28 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const isIpSecToggleEnabled = useWatch<boolean>(ipsecFieldName, form)
   const softGreProfileId = useWatch<string>(['lan', index, 'softGreProfileId'], form)
   const ipsecProfileId = useWatch<string>(['lan', index, 'ipsecProfileId'], form)
+
+  const isIpsecDisabled = () => {
+    const target = [...usedProfileData?.data || [], ...usedProfileData?.operations || []]
+    if (isUnderAPNetworking) {
+      return target.filter(item => !(apModel === item.apModel && portId === item.portId))
+        .some((item) => !!item.ipsecId)
+    } else {
+      return target.filter(item => !(serialNumber === item.serialNumber && portId === item.portId))
+        .some((item) => !!item.ipsecId)
+    }
+  }
+
+  const isIpsecChecked = () => {
+    const target = [...usedProfileData?.data || [], ...usedProfileData?.operations || []]
+    if (isUnderAPNetworking) {
+      return target.filter(item => !(apModel === item.apModel && portId === item.portId))
+        .some((item) => !!item.ipsecId) ? 'checked' : ''
+    } else {
+      return target.filter(item => !(serialNumber === item.serialNumber && portId === item.portId))
+        .some((item) => !!item.ipsecId) ? 'checked' : ''
+    }
+  }
   return (
     <>
       <StepsForm.StepForm>
@@ -94,7 +111,10 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
                 onChange={(value) => {
                   onGUIChanged?.('softGreEnabled')
                   if (isIpSecOverNetworkEnabled) {
-                    ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
+                    ipsecOptionDispatch && ipsecOptionDispatch({
+                      state: IpsecOptionChangeState.OnChange,
+                      index, portId, apModel, serialNumber
+                    })
                   }
                   const voter = (isUnderAPNetworking ?
                     { serialNumber, portId: portId ?? '0' }:
@@ -118,26 +138,16 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           />
         </FieldLabel>
       </StepsForm.StepForm>
-      {/* {isIpSecOverNetworkEnabled && <Form.Item
-        style={{ textAlign: 'left', marginTop: '-20px', minHeight: '1px' }}
-        name={['lan', index, 'softGreIpsecValidator']}
-        // eslint-disable-next-line react/jsx-no-useless-fragment
-        children={<></>}
-        rules={[{ validator: () => {
-          return Promise.resolve()
-          // softGreIpsecProfileValidator(softGreEditable || false, index, apModel)
-        } }]}></Form.Item>} */}
-      {
-        isSoftGreTunnelToggleEnabled && <>
-          <Alert
-            data-testid={'enable-softgre-tunnel-banner'}
-            showIcon={true}
-            style={{ verticalAlign: 'middle' }}
-            message={$t({
-              defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })
-            }
-          />
-          {isIpSecOverNetworkEnabled &&
+      {isSoftGreTunnelToggleEnabled && <>
+        <Alert
+          data-testid={'enable-softgre-tunnel-banner'}
+          showIcon={true}
+          style={{ verticalAlign: 'middle' }}
+          message={$t({
+            defaultMessage: 'Enabling on the uplink/WAN port will disconnect AP(s)' })
+          }
+        />
+        {isIpSecOverNetworkEnabled &&
             <Alert
               data-testid={'enable-ipsec-banner'}
               showIcon={true}
@@ -151,22 +161,21 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
                   }}
                 />}
             />}
-          <SoftGREProfileSettings
-            index={index}
-            softGreProfileId={softGreProfileId}
-            onGUIChanged={onGUIChanged}
-            // readonly={readonly || !softGreEditable}
-            readonly={readonly}
-            portId={portId}
-            softGREProfileOptionList={softGREProfileOptionList}
-            apModel={apModel}
-            serialNumber={serialNumber}
-            isUnderAPNetworking={isUnderAPNetworking}
-            optionDispatch={optionDispatch}
-            validateIsFQDNDuplicate={validateIsFQDNDuplicate}
-            ipsecOptionChange={isIpSecOverNetworkEnabled ? ipsecOptionChange : undefined}
-          />
-          {isIpSecOverNetworkEnabled &&
+        <SoftGREProfileSettings
+          index={index}
+          softGreProfileId={softGreProfileId}
+          onGUIChanged={onGUIChanged}
+          readonly={readonly}
+          portId={portId}
+          softGREProfileOptionList={softGREProfileOptionList}
+          apModel={apModel}
+          serialNumber={serialNumber}
+          isUnderAPNetworking={isUnderAPNetworking}
+          optionDispatch={optionDispatch}
+          validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+          ipsecOptionDispatch={isIpSecOverNetworkEnabled ? ipsecOptionDispatch : undefined}
+        />
+        {isIpSecOverNetworkEnabled &&
           <FieldLabel width='220px'>
             <Space>
               {$t({ defaultMessage: 'Enable IPsec' })}
@@ -182,32 +191,36 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               valuePropName='checked'
               style={{ marginTop: '-5px' }}
               name={ipsecFieldName}
+              initialValue={isIpsecChecked()}
               children={
                 <Switch
                   data-testid={'ipsec-switch'}
-                  // disabled={readonly || !softGreEditable}
-                  disabled={readonly}
+                  disabled={readonly || isIpsecDisabled()}
                   onChange={() => {
                     onGUIChanged?.('ipsecEnabled')
-                    ipsecOptionChange && ipsecOptionChange(index, apModel, serialNumber)
+                    ipsecOptionDispatch && ipsecOptionDispatch({
+                      state: IpsecOptionChangeState.OnChange,
+                      portId, apModel, serialNumber
+                    })
                   }}
                 />
               }
             />
           </FieldLabel>}
-          {isIpSecToggleEnabled &&
+        {isIpSecToggleEnabled &&
           <IPSecProfileSettings
             index={index}
+            portId={portId}
             ipsecProfileId={ipsecProfileId}
             onGUIChanged={onGUIChanged}
-            readonly={readonly || !softGreEditable}
+            readonly={readonly}
             softGreProfileId={softGreProfileId}
             ipsecProfileOptionList={ipsecOptionList || []}
-            ipsecOptionChange={ipsecOptionChange}
+            ipsecOptionDispatch={ipsecOptionDispatch}
             apModel={apModel}
             serialNumber={serialNumber}
           />}
-        </>
+      </>
       }
     </>
   )
