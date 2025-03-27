@@ -200,7 +200,12 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
         return rowData
       })
 
-      const payload = { ...formValues, switchMacAclRules }
+      let payload = { ...formValues, switchMacAclRules }
+
+      if (formValues.usePolicyAndProfileSetting) {
+        const { customized, ...payloadWithoutCustomized } = payload
+        payload = payloadWithoutCustomized
+      }
 
       if (editMode) {
         showActionModal({
@@ -322,6 +327,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
                 type='link'
                 onClick={() => {
                   form.setFieldValue('customized', !customized)
+                  form.setFieldValue('usePolicyAndProfileSetting', customized)
                 }}>
                 {customized ?
                   $t({ defaultMessage: 'Use \'Policies & Profiles\' Level Settings' })
@@ -334,6 +340,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           // eslint-disable-next-line max-len
             customized && $t({ defaultMessage: 'By customizing here, changes to the same ACL under the \'Policies & Profiles\' level settings\' will no longer be applied to this switch.' })}</label>
           <Form.Item name='customized' />
+          <Form.Item name='usePolicyAndProfileSetting' />
         </Form>
         <Table
           dataSource={customized || !editMode ? dataSource : globalDataSource}
