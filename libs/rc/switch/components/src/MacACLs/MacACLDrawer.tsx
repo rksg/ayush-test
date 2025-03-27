@@ -63,14 +63,14 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   const { switchId } = useParams()
   const [dataSource, setDataSource] = useState<MacAclRule[]>()
   const [globalDataSource, setGlobalDataSource] = useState<MacAclRule[]>()
-  const [drawerVisible, setDrawerVisible] = useState(false)
   const [selectedRow, setSelectedRow] = useState<MacAclRule>()
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const switchAccessControlPage = '/policies/accessControl/switch'
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
   breadcrumb[2].link = switchAccessControlPage
 
-  const { customized } = (useWatch([], form) ?? {})
+  const customized = useWatch('customized', form)
 
   const [getSwitchMacAcls] = useLazyGetSwitchMacAclsQuery()
   const [addSwitchMacAcl] = useAddSwitchMacAclMutation()
@@ -88,7 +88,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   useEffect(() => {
     if(macACLData) {
       form.setFieldValue('name', macACLData.name)
-      form.setFieldValue('customized', customized)
+      form.setFieldValue('customized', macACLData.customized)
       if(macACLData.switchMacAclRules){
         setDataSource(macACLData.switchMacAclRules.map((rule: MacAclRule) => {
           return {
