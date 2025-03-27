@@ -5,8 +5,8 @@ import { useIntl }           from 'react-intl'
 import { useParams }         from 'react-router-dom'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Button, Card, cssStr, Descriptions, DonutChart, GridCol, GridRow, Loader, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                           from '@acx-ui/feature-toggle'
+import { Button, Card, cssStr, Descriptions, DonutChart, GridCol, GridRow, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
 import {
   IdentityGroupLink,
   NetworkSegmentationLink,
@@ -198,16 +198,14 @@ export function PersonaOverview (props:
       </GridRow>
       <GridRow>
         <GridCol col={{ span: 12 }}>
-          <Loader >
-            {details.map(item =>
-              <Descriptions key={item.label} labelWidthPercent={25}>
-                <Descriptions.Item
-                  label={item.label}
-                  children={item.value ?? noDataDisplay}
-                />
-              </Descriptions>
-            )}
-          </Loader>
+          {details.map(item =>
+            <Descriptions key={item.label} labelWidthPercent={25}>
+              <Descriptions.Item
+                label={item.label}
+                children={item.value ?? noDataDisplay}
+              />
+            </Descriptions>
+          )}
         </GridCol>
         {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
           <GridCol col={{ span: 12 }}>
