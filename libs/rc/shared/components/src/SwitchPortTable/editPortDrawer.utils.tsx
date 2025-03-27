@@ -165,8 +165,8 @@ export const getMacAclOptions = (macAclList?: MacAcl[], macAclGlobalList?: MacAc
 
   const options = [...macAclList?.map((macAcl: MacAcl) =>
     ({ value: macAcl.name,
-      label: `${macAcl.name} ${macAcl.customized === true ?
-        '(Customized)' : ''}` })) || [],
+      // eslint-disable-next-line max-len
+      label: `${macAcl.name} ${macAcl.customized === true && macAclGlobalList?.map((globalMacAcl: MacAcl) => globalMacAcl.name === macAcl.name) ? $t({ defaultMessage: '(Customized)' }) : ''}` })) || [],
   ...globalFilterMacAclList?.map((macAcl: MacAcl) =>
     ({ value: macAcl.name, label: macAcl.name })) || []]
 
