@@ -96,8 +96,8 @@ export const WanPriorityTable = (props: WanPriorityTableProps) => {
 
   const onSortEnd = useCallback(
     ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-      if (oldIndex !== newIndex) {
-        let tempDataSource = cloneDeep(data ?? [])
+      if (data && oldIndex !== newIndex) {
+        let tempDataSource = cloneDeep(data)
         let movingItem = tempDataSource.splice(oldIndex, 1)
         tempDataSource.splice(newIndex, 0, movingItem[0])
 

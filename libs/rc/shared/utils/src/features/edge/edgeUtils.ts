@@ -581,8 +581,8 @@ export const getEdgeWanInterfaces = (portsData: EdgePort[] | undefined, lagData:
 
   const lagWans = getLagGateways(lagData, false)
 
-  const wans: (EdgePort | EdgeLag)[] = physicalWans
-  wans.push(...lagWans)
+  const wans: (EdgePort | EdgeLag)[] = lagWans
+  wans.push(...physicalWans)
 
   return wans
 }

@@ -1,6 +1,5 @@
-
-import { ClusterNetworkMultiWanSettings, ClusterNetworkSettings, EdgeLag, EdgeLinkDownCriteriaEnum, EdgeMultiWanModeEnum, EdgeMultiWanProtocolEnum, EdgePort, EdgeWanMember, getEdgeWanInterfaces } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                                                                                                                  from '@acx-ui/utils'
+import { EdgeLinkDownCriteriaEnum, EdgeMultiWanModeEnum, EdgeMultiWanProtocolEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                  from '@acx-ui/utils'
 
 export const getDualWanModeString = (type: EdgeMultiWanModeEnum) => {
   const { $t } = getIntl()
@@ -39,37 +38,4 @@ export const getWanLinkDownCriteriaString = (type: EdgeLinkDownCriteriaEnum) => 
     default:
       return ''
   }
-}
-
-export const getDualWanDefaultDataFromApiData = (
-  apiData: ClusterNetworkSettings | undefined
-): ClusterNetworkMultiWanSettings | undefined => {
-
-  let multiWanSettings = apiData?.multiWanSettings
-
-  // only handle single-node case
-  if (apiData?.portSettings?.length === 1) {
-    // eslint-disable-next-line max-len
-    const wans = getEdgeWanInterfaces(apiData?.portSettings[0].ports, apiData?.lagSettings[0].lags)
-    // eslint-disable-next-line max-len
-    if (wans.length > 1 && apiData?.multiWanSettings?.mode !== EdgeMultiWanModeEnum.ACTIVE_BACKUP) {
-      const wanMembers = wans.map((item, idx) =>
-        ({
-          serialNumber: apiData?.portSettings[0].serialNumber,
-          portName: item.hasOwnProperty('interfaceName')
-            ? ((item as EdgePort).interfaceName as string)
-            : `lag${(item as EdgeLag).id}`,
-          priority: idx + 1,
-          healthCheckEnabled: false,
-          linkHealthCheckPolicy: undefined
-        })) as unknown as EdgeWanMember[]
-
-      multiWanSettings = {
-        mode: EdgeMultiWanModeEnum.ACTIVE_BACKUP,
-        wanMembers
-      }
-    }
-  }
-
-  return multiWanSettings
 }
