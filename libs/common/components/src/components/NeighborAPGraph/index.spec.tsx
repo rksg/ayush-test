@@ -11,7 +11,6 @@ describe('Graph', () => {
   })
   it('should match snapshot', () => {
     const { asFragment } = render(<Graph
-      chartRef={() => {}}
       title='Before'
       data={sampleData}
       nodeSize={nodeSize}
@@ -24,7 +23,6 @@ describe('Graph', () => {
 
   it('should match snapshot when there are no nodes or links', () => {
     const { asFragment } = render(<Graph
-      chartRef={() => {}}
       title='Current'
       data={{} as ProcessedNeighborAPGraph}
       nodeSize={nodeSize}
@@ -37,7 +35,6 @@ describe('Graph', () => {
 
   it('should match snapshot when subtext is provided', () => {
     const { asFragment } = render(<Graph
-      chartRef={() => {}}
       title='Before'
       subtext='Subtext'
       data={sampleData}

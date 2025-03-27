@@ -11,7 +11,6 @@ storiesOf('Neighbor APGraph', module)
       title='Default Graph'
       data={sampleData}
       nodeSize={nodeSize}
-      chartRef={() => {}}
     />
   ))
   .add('Graph with additional Nodes', () => {
@@ -23,7 +22,6 @@ storiesOf('Neighbor APGraph', module)
     return <Graph
       title='Graph with More Nodes'
       data={extraNodes}
-      chartRef={() => {}}
       nodeSize={nodeSize}
     />
   })
@@ -33,6 +31,5 @@ storiesOf('Neighbor APGraph', module)
       subtext='Subtext'
       data={sampleData}
       nodeSize={nodeSize}
-      chartRef={() => {}}
     />
   ))

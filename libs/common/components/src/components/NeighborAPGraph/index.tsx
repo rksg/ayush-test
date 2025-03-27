@@ -1,5 +1,3 @@
-import { RefCallback, useRef } from 'react'
-
 import { scalePow } from 'd3'
 import ReactECharts from 'echarts-for-react'
 
@@ -43,7 +41,6 @@ interface NodeSize {
 }
 
 interface NeighborAPGraphProps extends GraphProps {
-  chartRef: RefCallback<ReactECharts>
   data: ProcessedNeighborAPGraph
   title: string
   subtext?: string
@@ -57,8 +54,6 @@ const repulsionScale = scalePow()
   .range([1000, 2500, 8500, 8500])
 
 export const Graph = (props: NeighborAPGraphProps) => {
-  const chartRef = useRef(null)
-
   const {
     data: { nodes = [], links = [] },
     backgroundColor,
@@ -126,7 +121,7 @@ export const Graph = (props: NeighborAPGraphProps) => {
     ]
   }
 
-  return <ReactECharts ref={chartRef} option={option} style={{ height: '400px', width: '100%' }} />
+  return <ReactECharts option={option} />
 }
 
 export default Graph
