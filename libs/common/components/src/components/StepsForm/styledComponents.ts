@@ -332,7 +332,3 @@ export const TextContent = styled.div`
 
   ${greyTextStyles}
 `
-
-export const ChartContent = styled.div`
-  margin-top: 40px;
-`

@@ -81,7 +81,6 @@ StepsForm.SectionTitle = UI.SectionTitle
 StepsForm.FieldLabel = UI.FieldLabel
 StepsForm.MultiSelect = UI.MultiSelect
 StepsForm.TextContent = UI.TextContent
-StepsForm.ChartContent = UI.ChartContent
 StepsForm.greyTextStyles = UI.greyTextStyles
 StepsForm.ActionsContainer = UI.ActionsContainer
 
