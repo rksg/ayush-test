@@ -239,10 +239,7 @@ export function NetworkForm (props:{
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
 
-  const {
-    hasActivateNetworkVenuePermission,
-    hasUpdateNetworkVenuePermission
-  } = hasControlnetworkVenuePermission(isTemplate)
+  const { hasActivateNetworkVenuePermission } = hasControlnetworkVenuePermission(isTemplate)
 
   const [ addRbacNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddRbacNetworkVenueMutation,
