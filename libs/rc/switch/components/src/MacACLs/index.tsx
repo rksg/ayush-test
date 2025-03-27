@@ -159,7 +159,7 @@ export function MacACLs (props: {
         actions={filterByAccess(tableActions)}
         rowActions={rowActions}
         rowSelection={deviceOnline && {
-          type: 'checkbox'
+          type: 'radio'
         }}
       />
 
