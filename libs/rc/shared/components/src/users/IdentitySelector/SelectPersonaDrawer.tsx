@@ -52,7 +52,7 @@ export function SelectPersonaDrawer (props: SelectPersonaDrawerProps) {
       settingsId={'select-persona-drawer'}
       onChange={(p) => setSelectedPersona(p)}
       disableAddDevices={disableAddDevices}
-      useByIdentityGroup={true}
+      useByIdentityGroup={useByIdentityGroup}
       colProps={{
         name: { searchable: true },
         email: { searchable: true },
