@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useAnySplitsOn, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen }          from '@acx-ui/test-utils'
 
@@ -40,6 +40,7 @@ describe('IntentAIDetails', () => {
       data: { intent: mockedCRRMGraphs }
     })
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useAnySplitsOn).mockReturnValue(true)
   })
 
   describe('renders correctly', () => {
