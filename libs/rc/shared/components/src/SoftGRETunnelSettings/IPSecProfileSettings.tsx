@@ -4,7 +4,6 @@ import { Form, Select, Button, Space } from 'antd'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
-import { useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   IpsecOptionChangeDispatcher,
   IpsecOptionChangeState,
@@ -12,7 +11,6 @@ import {
   PolicyType,
   hasPolicyPermission
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import IpsecDrawer from '../policies/Ipsec/IpsecForm/IpsecDrawer'
 
@@ -44,17 +42,11 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
     ipsecOptionDispatch
   } = props
   const { $t } = useIntl()
-  const params = useParams()
   const ipsecProfileIdFieldName = ['lan', index, 'ipsecProfileId']
   const form = Form.useFormInstance()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ ipsecProfile, setIpSecProfile ] = useState<DefaultOptionType>(defaultIpsecOption)
-
-  const ipsecViewDataList = useGetIpsecViewDataListQuery({
-    params,
-    payload: {}
-  })
 
   const onChange = (value: string) => {
     if(!value) {
@@ -74,22 +66,14 @@ export const IPSecProfileSettings = (props: IPSecProfileSettingsProps) => {
   }
 
   useEffect(() => {
-    const ipsecProfileList = ipsecViewDataList.data?.data ?? []
-    if(ipsecProfileList.length > 0) {
-      if (ipsecProfileId) {
-        form.setFieldValue(ipsecProfileIdFieldName, ipsecProfileId)
-      }
-    }
-
-  }, [ipsecViewDataList])
-
-  useEffect(() => {
     if(!ipsecProfileId) {
       return
     }
     const selectedProfile = ipsecProfileOptionList
-      .find((profile) => profile.value === ipsecProfileId)
+      .find((profile) => profile.value === ipsecProfileId && profile.disabled === false)
     setIpSecProfile(selectedProfile ? selectedProfile: defaultIpsecOption)
+
+    form.setFieldValue(ipsecProfileIdFieldName, selectedProfile ? ipsecProfileId : '')
 
   }, [ipsecProfileId, ipsecProfileOptionList])
 

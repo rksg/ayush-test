@@ -142,9 +142,6 @@ export const useIpsecProfileLimitedSelection = (
           portId: act.portId.toString()
         })
       })
-      // if (boundVenueIpsec.softGreProfileId && boundVenueIpsec.softGreProfileId.length > 0) {
-
-      // }
 
       ipsec.apActivations?.filter(
         act => act.venueId === venueId).forEach(act => {
@@ -157,9 +154,6 @@ export const useIpsecProfileLimitedSelection = (
           portId: act.portId.toString()
         })
       })
-      // if (boundApIpsec.softGreProfileId && boundApIpsec.softGreProfileId.length > 0) {
-
-      // }
     })
     return boundIpsecList
   }
