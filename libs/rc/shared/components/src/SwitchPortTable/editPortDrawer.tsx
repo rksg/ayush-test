@@ -2657,12 +2657,12 @@ export function EditPortDrawer ({
               />
             </Tooltip>
             {((isMultipleEdit && switchMacAclCheckbox) ||
-            !isMultipleEdit) && hasCreatePermission &&
+            !isMultipleEdit) &&
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
                   key='add-mac-acl'
                   size='small'
-                  disabled={(isMultipleEdit && !switchMacAclCheckbox) || !hasSwitchProfile ||
+                  disabled={(isMultipleEdit && !switchMacAclCheckbox) ||
                     getFieldDisabled('switchMacAcl')}
                   onClick={() => { setDrawerMACAclVisible(true) }}
                 >{$t({ defaultMessage: 'Add MAC ACL' })}
