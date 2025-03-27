@@ -1,13 +1,11 @@
-/* eslint-disable no-console */
 import { MutableRefObject, useEffect, useReducer, useState } from 'react'
 
 import { Form }              from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import { useParams }         from 'react-router-dom'
 
-import { StepsFormLegacyInstance }                                          from '@acx-ui/components'
-import { useIsSplitOn, Features }                                           from '@acx-ui/feature-toggle'
-import { useLazyGetSoftGreViewDataListQuery, useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
+import { StepsFormLegacyInstance }                                      from '@acx-ui/components'
+import { useIsSplitOn, Features }                                       from '@acx-ui/feature-toggle'
+import { useGetSoftGreViewDataListQuery, useGetIpsecViewDataListQuery } from '@acx-ui/rc/services'
 import {
   useConfigTemplate,
   IpsecActivation,
@@ -45,7 +43,6 @@ export const useIpsecProfileLimitedSelection = (
   }
 ) => {
   const { isTemplate } = useConfigTemplate()
-  const params = useParams()
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isWifiIpsecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
@@ -70,8 +67,6 @@ export const useIpsecProfileLimitedSelection = (
     && isEthernetPortProfileEnabled
 
   const allowIpsecGetPorfiles = allowSoftGetGrePorfiles && isWifiIpsecOverNetworkEnabled
-
-  const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
 
   const getUsedSoftGreProfiles = (softGreList: SoftGreViewData[]) => {
     const softGreIds = new Set<string>()
@@ -169,6 +164,19 @@ export const useIpsecProfileLimitedSelection = (
     return boundIpsecList
   }
 
+  const { softGreData } = useGetSoftGreViewDataListQuery({
+    payload: {
+      page: 1,
+      pageSize: 10_000,
+      fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
+      filters: {}
+    } }, {
+    selectFromResult: ({ data }) => {
+      const softGreData = data?.data || []
+      return { softGreData }
+    }
+  })
+
   const { ipsecData } = useGetIpsecViewDataListQuery({
     payload: {
       page: 1,
@@ -183,20 +191,22 @@ export const useIpsecProfileLimitedSelection = (
   })
 
   useEffect(() => {
-    const setData = async () => {
-      const softGreList = ((allowSoftGetGrePorfiles) ?
-        (await getSoftGreViewDataList({
-          params,
-          payload: {}
-        }).unwrap()).data : [])
+    const setData = () => {
+      const softGreList = ((allowSoftGetGrePorfiles) ? softGreData : [])
 
-      const ipsecProfileList = ((allowIpsecGetPorfiles) ?
-        ipsecData : [])
+      const ipsecProfileList = ((allowIpsecGetPorfiles) ? ipsecData : [])
       const { softGreIds, boundSoftGreList } = getUsedSoftGreProfiles(softGreList)
 
-      setSoftGreOptionList(softGreList.map((softGre) => {
-        return { label: softGre.name, value: softGre.id }
-      }))
+      if (softGreList.length > 0) {
+        setSoftGreOptionList(softGreList.map((softGre) => {
+          return { label: softGre.name, value: softGre.id }
+        }))
+      }
+
+      // load data from backend, clean all user actions
+      if (newSoftGreIpsecList.length > 0) {
+        setNewSoftGreIpsecList([])
+      }
 
       const boundIpsecList = getUsedIpsecProfiles(ipsecProfileList)
 
@@ -218,17 +228,20 @@ export const useIpsecProfileLimitedSelection = (
           return { label: ipsec.name, value: ipsec.id, disabled: true }
         }))
       } else {
-        setBoundSoftGreIpsecData([])
-        setNewSoftGreIpsecList([])
-        setIpsecOptionList(ipsecProfileList.map((ipsec) => {
-          return { label: ipsec.name, value: ipsec.id }
-        }))
+        if (boundSoftGreIpsecData.length > 0) {
+          setBoundSoftGreIpsecData([])
+        }
+        if (ipsecProfileList.length > 0) {
+          setIpsecOptionList(ipsecProfileList.map((ipsec) => {
+            return { label: ipsec.name, value: ipsec.id }
+          }))
+        }
       }
     }
-    if (ipsecData) {
+    if (ipsecData && softGreData) {
       setData()
     }
-  }, [ipsecData])
+  }, [ipsecData, softGreData])
 
   const restrictSoftGreOptionsToSpecificSoftGre = (softGreId: string) => {
     changeSoftGreOptionState(SoftGreDuplicationChangeState.BoundIpSec, softGreId)
@@ -301,11 +314,12 @@ export const useIpsecProfileLimitedSelection = (
   }, [boundSoftGreIpsecData, newSoftGreIpsecList])
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
     console.log(
       'softGreOptionList: ', softGreOptionList,
-      '\t\tipsecOptionList: ', ipsecOptionList,
-      '\t\tboundSoftGreIpsecList:', boundSoftGreIpsecData,
-      '\t\tnewSoftGreIpsecList:', newSoftGreIpsecList)
+      '\tipsecOptionList: ', ipsecOptionList,
+      '\tboundSoftGreIpsecList:', boundSoftGreIpsecData,
+      '\tnewSoftGreIpsecList:', newSoftGreIpsecList)
   }, [ipsecOptionList])
 
   const getPortFormData = (index: number) => {
@@ -383,7 +397,7 @@ export const useIpsecProfileLimitedSelection = (
 
       }
     }
-
+    // eslint-disable-next-line no-console
     console.log('formData: ', formData, '\ncurrentData: ', currentData, '\nboundData: ', boundData)
   }
 

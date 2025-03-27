@@ -286,3 +286,56 @@ export const mockSoftGreViewModelWith8Profiles = {
     }
   ]
 }
+
+export const mockIpsecViewModelWith2Profiles = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'e19a07e22a9846fda91bda603b9ddd09',
+      tenantId: '17397d37a42541b497483e9ee62db71e',
+      name: 'ipsec7',
+      activations: [],
+      venueActivations: [
+        {
+          venueId: '52322e4b3a4e440495960eeece8712ed',
+          softGreProfileId: 'soft7',
+          apModel: 'H350',
+          portId: 1,
+          apSerialNumbers: []
+        },
+        {
+          venueId: 'ca5be910292d4788a5f03fb9170ad07e',
+          softGreProfileId: 'soft4',
+          apModel: 'H350',
+          portId: 1,
+          apSerialNumbers: []
+        }
+      ],
+      apActivations: []
+    },
+    {
+      id: 'a2d333bdbf1f48ddb4a184d2f3432935',
+      name: 'ipsec4',
+      activations: [],
+      venueActivations: [
+        {
+          venueId: 'ca5be910292d4788a5f03fb9170ad07e',
+          softGreProfileId: 'soft4',
+          apModel: 'H350',
+          portId: 2,
+          apSerialNumbers: []
+        },
+        {
+          venueId: '7bb1d91750c64f94a9d97d2ffb2936fe',
+          softGreProfileId: 'soft1',
+          apModel: 'H550',
+          portId: 3,
+          apSerialNumbers: []
+        }
+      ],
+      apActivations: []
+    }
+  ]
+}

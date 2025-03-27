@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { softGreApi }             from '@acx-ui/rc/services'
+import { ipSecApi, softGreApi }   from '@acx-ui/rc/services'
 import { IpsecUrls, SoftGreUrls } from '@acx-ui/rc/utils'
 import { Provider, store }        from '@acx-ui/store'
 import {
@@ -15,10 +15,11 @@ import {
   renderHook
 } from '@acx-ui/test-utils'
 
-import { mockSoftgreViewModel, mockSoftGreViewModelWith8Profiles } from './fixture'
-import { SoftGREProfileSettings }                                  from './SoftGREProfileSettings'
-import { SoftGRETunnelSettings }                                   from './SoftGRETunnelSettings'
-import { useSoftGreProfileLimitedSelection }                       from './useSoftGreProfileLimitedSelection'
+import { mockIpsecViewModelWith2Profiles, mockSoftgreViewModel, mockSoftGreViewModelWith8Profiles } from './fixture'
+import { SoftGREProfileSettings }                                                                   from './SoftGREProfileSettings'
+import { SoftGRETunnelSettings }                                                                    from './SoftGRETunnelSettings'
+import { useIpsecProfileLimitedSelection }                                                          from './useIpsecProfileLimitedSelection'
+import { useSoftGreProfileLimitedSelection }                                                        from './useSoftGreProfileLimitedSelection'
 
 describe('SoftGRETunnelSettings', () => {
   beforeEach(() => {
@@ -167,5 +168,46 @@ describe('useSoftGreProfileLimitedSelection', () => {
 
     const validateFunction = result.current.validateIsFQDNDuplicate
     expect(validateFunction(softGreProfileId)).toBeFalsy()
+  })
+})
+
+describe('useIpsecProfileLimitedSelection', () => {
+
+  const venueId = '52322e4b3a4e440495960eeece8712ed'
+  const whiteList = ['ipsec4', 'ipsec7']
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <Provider store={store}>{children}</Provider>
+  )
+
+  beforeEach(() => {
+    store.dispatch(softGreApi.util.resetApiState())
+    store.dispatch(ipSecApi.util.resetApiState())
+    mockServer.use(
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockSoftGreViewModelWith8Profiles))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockIpsecViewModelWith2Profiles))
+      })
+    )
+  })
+  it('Should render IPsec Profile option list correctly', async () => {
+
+    const { result } = renderHook(() => useIpsecProfileLimitedSelection(
+      { venueId, isVenueOperation: true, duplicationChangeDispatch: jest.fn() }), {
+      wrapper,
+      route: true
+    })
+    const options = result.current.ipsecOptionList
+    let pass = true
+    options.forEach(option => {
+      if(!whiteList.includes(option.name)) {
+        if (!option.disabled) {
+          pass = false
+        }
+      }
+    })
+    expect(pass).toBeTruthy()
   })
 })

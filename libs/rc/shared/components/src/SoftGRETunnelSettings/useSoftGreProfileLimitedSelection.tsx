@@ -101,7 +101,6 @@ export const useSoftGreProfileLimitedSelection = (
         return option
       }))
     } else if (isBoundIpsec) {
-      console.log('Now is BoundIpsec') // eslint-disable-line no-console
     } else {
       setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
         return omit(option, 'disabled') as DefaultOptionType
