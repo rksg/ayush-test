@@ -36,6 +36,7 @@ interface SwitchAccessControlFormProps {
   setVisible: (visible: boolean) => void
   macACLData?: MacAcl
   venueId: string
+  switchIds?: string[]
 }
 
 const defaultPayload ={
@@ -57,7 +58,7 @@ const defaultPayload ={
 }
 
 export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
-  const { editMode, visible, setVisible, macACLData, venueId } = props
+  const { editMode, visible, setVisible, macACLData, venueId, switchIds } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { switchId } = useParams()
@@ -231,14 +232,27 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           }
         })
       } else {
-        await addSwitchMacAcl({
-          payload: [payload],
-          params: {
-            switchId,
-            venueId: venueId
-          }
-        }).unwrap()
-
+        if(switchIds && switchIds.length > 0){
+          Promise.all(
+            switchIds.map(switchId =>
+              addSwitchMacAcl({
+                payload: [payload],
+                params: {
+                  switchId,
+                  venueId
+                }
+              })
+            )
+          )
+        }else{
+          await addSwitchMacAcl({
+            payload: [payload],
+            params: {
+              switchId,
+              venueId
+            }
+          }).unwrap()
+        }
         form.resetFields()
         setDataSource([])
         setVisible(false)
@@ -267,20 +281,41 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validateMacAclName = async (_: any, value: string) => {
     if (!value) return Promise.resolve()
+    let existingACLs = []
 
-    const response = await getSwitchMacAcls({
-      params: {
-        switchId,
-        venueId: venueId
-      },
-      payload: {
-        ...defaultPayload,
-        searchString: value,
-        searchTargetFields: ['name']
-      }
-    }).unwrap()
+    if (switchIds && switchIds.length > 0) {
+      const responses = await Promise.all(
+        switchIds.map(id =>
+          getSwitchMacAcls({
+            params: {
+              switchId: id,
+              venueId: venueId
+            },
+            payload: {
+              ...defaultPayload,
+              searchString: value,
+              searchTargetFields: ['name']
+            }
+          }).unwrap()
+        )
+      )
 
-    const existingACLs = response.data
+      existingACLs = responses.flatMap(response => response.data)
+    } else {
+      const response = await getSwitchMacAcls({
+        params: {
+          switchId,
+          venueId: venueId
+        },
+        payload: {
+          ...defaultPayload,
+          searchString: value,
+          searchTargetFields: ['name']
+        }
+      }).unwrap()
+
+      existingACLs = response.data
+    }
 
     const duplicateACL = existingACLs.find(acl =>
       acl.name === value && (!editMode || acl.id !== macACLData?.id)

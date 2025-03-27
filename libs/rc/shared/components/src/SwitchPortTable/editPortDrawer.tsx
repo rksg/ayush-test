@@ -2635,6 +2635,7 @@ export function EditPortDrawer ({
           setVisible={setDrawerMACAclVisible}
           editMode={false}
           venueId={switchDetail?.venueId || ''}
+          switchIds={selectedSwitchList?.map(p => p.id)}
         />
         { isSwitchMacAclEnabled && isFirmwareAbove10010gOr10020b && getFieldTemplate({
           field: 'switchMacAcl',
