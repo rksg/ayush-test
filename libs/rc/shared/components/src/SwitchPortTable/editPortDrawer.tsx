@@ -2554,6 +2554,7 @@ export function EditPortDrawer ({
           }}
           pagination={stickyMacAclsQuery.pagination}
           dataSource={stickyMacAclsQuery.data?.data}
+          style={{ marginBottom: '30px' }}
         />
         }
 
