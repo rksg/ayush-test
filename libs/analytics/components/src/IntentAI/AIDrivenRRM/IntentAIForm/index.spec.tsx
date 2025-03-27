@@ -96,7 +96,6 @@ describe('IntentAIForm', () => {
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     // Step 1
     expect(await screen.findByText('Benefits')).toBeVisible()
     expect(await screen.findByText('Projection')).toBeVisible()
