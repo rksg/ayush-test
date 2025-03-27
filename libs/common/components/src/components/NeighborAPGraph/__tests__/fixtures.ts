@@ -1,16 +1,18 @@
-export const sampleData = {
-  nodes: [
-    { name: 'AP', value: 5, category: 'center', key: 'AP' },
-    { name: 'Non-Interfering AP', value: 12, category: 'non-interfering', key: '12' },
-    { name: 'Co-Channel Interfering AP', value: 5, category: 'co-channel', key: '5' },
-    { name: 'Rogue AP', value: 10, category: 'rogue', key: '10' }
-  ],
-  links: [
-    { source: 'AP', target: 'Non-Interfering AP' },
-    { source: 'AP', target: 'Co-Channel Interfering AP' },
-    { source: 'AP', target: 'Rogue AP' }
-  ]
-}
+import { cssStr } from '../../../theme/helper'
+
+export const nodes = [
+  { name: 'Non-Interfering AP', value: 12, color: cssStr('--acx-accents-blue-50') },
+  { name: 'Co-Channel Interfering AP', value: 9, color: cssStr('--acx-semantics-red-50') },
+  { name: 'Rogue AP', value: 5, color: cssStr('--acx-neutrals-80') }
+]
+
+export const nodesWithZeroValue = [
+  { name: 'Non-Interfering AP', value: 0, color: cssStr('--acx-accents-blue-50') },
+  { name: 'Co-Channel Interfering AP', value: 9, color: cssStr('--acx-semantics-red-50') },
+  { name: 'Rogue AP', value: 5, color: cssStr('--acx-neutrals-80') }
+]
+
+export const rootNode = { label: 'AP', color: cssStr('--acx-neutrals-50') }
 
 export const nodeSize = {
   max: 150,

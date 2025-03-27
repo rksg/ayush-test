@@ -1,70 +1,75 @@
-import { scalePow } from 'd3'
 import ReactECharts from 'echarts-for-react'
 
 import { cssNumber, cssStr } from '../../theme/helper'
-
-export interface Node {
-  name: string;
-  value: number;
-  category: string;
-  key: string;
-}
-
-interface Link {
-  source: string;
-  target: string;
-}
-
-interface GraphProps {
-  data: {
-    nodes: Node[];
-    links: Link[];
-  };
-  title?: string;
-}
-
-const categoryColors: Record<string, string> = {
-  'center': cssStr('--acx-neutrals-50'),
-  'non-interfering': cssStr('--acx-accents-blue-50'),
-  'co-channel': cssStr('--acx-semantics-red-50'),
-  'rogue': cssStr('--acx-neutrals-80')
-}
-
-export interface ProcessedNeighborAPGraph {
-  nodes: Node[]
-  links: Link[]
-}
 
 interface NodeSize {
   max: number
   min: number
 }
 
-interface NeighborAPGraphProps extends GraphProps {
-  data: ProcessedNeighborAPGraph
-  title: string
-  subtext?: string
-  backgroundColor?: string
-  nodeSize: NodeSize
+interface RootNode {
+  label: string;
+  color: string;
 }
 
-const repulsionScale = scalePow()
-  .exponent(1)
-  .domain([0, 1, 10, 20])
-  .range([1000, 2500, 8500, 8500])
+export interface Node {
+  name: string;
+  value: number;
+  color: string;
+}
+interface NeighborAPGraphProps {
+  title: string
+  subtext?: string
+  nodeSize: NodeSize
+  root: RootNode
+  nodes: Node[]
+}
+
+const genericLabel = {
+  show: true,
+  position: 'inside',
+  color: cssStr('--acx-primary-white'),
+  fontWeight: cssNumber('--acx-subtitle-4-font-weight'),
+  fontSize: cssNumber('--acx-body-2-font-size')
+}
 
 export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
   const {
-    data: { nodes = [], links = [] },
-    backgroundColor,
-    nodeSize
+    nodeSize,
+    root,
+    nodes
   } = props
 
-  const linksNodeRatio = links.length / nodes.length || 1
-  const repulsion = repulsionScale(linksNodeRatio)
+  const rootNode = {
+    name: root.label,
+    category: 'center',
+    symbolSize: ((nodeSize.min + nodeSize.max) / 3),
+    itemStyle: { color: root.color },
+    fixed: true,
+    label: {
+      ...genericLabel,
+      formatter: root.label
+    }
+  }
+
+  const graphNodes = nodes.filter(node => node.value !== 0).map(node => ({
+    name: node.name,
+    symbolSize: Math.max(Math.min(node.value * 10, nodeSize.max), nodeSize.min),
+    itemStyle: { color: node.color },
+    label: {
+      ...genericLabel,
+      formatter: JSON.stringify(node.value)
+    }
+  }))
+
+  const links = nodes.map(node => ({
+    source: root.label,
+    target: node.name,
+    lineStyle: { color: cssStr('--acx-neutrals-50'), width: 2 }
+  }))
 
   const option = {
-    backgroundColor: backgroundColor ?? cssStr('--acx-neutrals-10'),
+    backgroundColor: cssStr('--acx-neutrals-10'),
     title: {
       text: props.title,
       textStyle: {
@@ -94,26 +99,12 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       {
         type: 'graph',
         layout: 'force',
-        data: nodes.map(node => ({
-          ...node,
-          symbolSize: Math.max(Math.min(node.value * 10, nodeSize.max), nodeSize.min),
-          itemStyle: {
-            color: categoryColors[node.category]
-          },
-          label: {
-            show: true,
-            position: 'inside',
-            formatter: node.key,
-            color: cssStr('--acx-primary-white'),
-            fontWeight: 'bold',
-            fontSize: cssNumber('--acx-body-3-font-size')
-          }
-        })),
-        links: links,
+        data: [rootNode, ...graphNodes],
+        links,
         roam: true,
         force: {
           layoutAnimation: false,
-          repulsion,
+          repulsion: 1500,
           initLayout: 'circular'
         },
         emphasis: { focus: 'none' }

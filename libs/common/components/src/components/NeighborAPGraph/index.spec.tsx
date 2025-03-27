@@ -1,8 +1,8 @@
 import { mockDOMSize, render } from '@acx-ui/test-utils'
 
-import { nodeSize, sampleData } from './__tests__/fixtures'
+import { nodes, nodeSize, nodesWithZeroValue, rootNode } from './__tests__/fixtures'
 
-import { NeighborAPGraph, ProcessedNeighborAPGraph } from '.'
+import { NeighborAPGraph } from '.'
 
 describe('Graph', () => {
   beforeEach(() => {
@@ -12,8 +12,9 @@ describe('Graph', () => {
   it('should match snapshot', () => {
     const { asFragment } = render(<NeighborAPGraph
       title='Before'
-      data={sampleData}
+      root={rootNode}
       nodeSize={nodeSize}
+      nodes={nodes}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
@@ -21,11 +22,12 @@ describe('Graph', () => {
     expect(fragment).toMatchSnapshot()
   })
 
-  it('should match snapshot when there are no nodes or links', () => {
+  it('should match snapshot when there nodes with zero value', () => {
     const { asFragment } = render(<NeighborAPGraph
       title='Current'
-      data={{} as ProcessedNeighborAPGraph}
+      root={rootNode}
       nodeSize={nodeSize}
+      nodes={nodesWithZeroValue}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
@@ -37,8 +39,9 @@ describe('Graph', () => {
     const { asFragment } = render(<NeighborAPGraph
       title='Before'
       subtext='Subtext'
-      data={sampleData}
       nodeSize={nodeSize}
+      root={rootNode}
+      nodes={nodes}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
