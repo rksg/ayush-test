@@ -135,4 +135,127 @@ describe('CaptiveNetworkForm - SAML', () => {
       await screen.findByRole('option', { name: /SAML-A7/ })
     ).toBeInTheDocument()
   })
+
+  it('should handle empty SAML IDP profile list', async () => {
+    mockServer.use(
+      rest.post(
+        SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
+        (_, res, ctx) => {
+          SAMLQueryAPI()
+          return res(ctx.json({ data: [], totalCount: 0 }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider
+            value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}
+          >
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SAMLForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
+    const saml = screen.getByTestId('saml-idp-profile-select')
+    expect(saml).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('combobox'))
+    expect(screen.queryByRole('option')).not.toBeInTheDocument()
+  })
+
+  it('should handle API error when fetching SAML IDP profiles', async () => {
+    mockServer.use(
+      rest.post(
+        SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
+        (_, res, ctx) => {
+          SAMLQueryAPI()
+          return res(ctx.status(500))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider
+            value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}
+          >
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SAMLForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
+    const saml = screen.getByTestId('saml-idp-profile-select')
+    expect(saml).toBeInTheDocument()
+  })
+
+  it('should handle selection of SAML IDP profile', async () => {
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true,
+            cloneMode: false,
+            data: { ...cloudPathDataNone, id: params.networkId },
+            isRuckusAiMode: false
+          }}
+        >
+          <MLOContext.Provider
+            value={{
+              isDisableMLO: false,
+              disableMLO: jest.fn()
+            }}
+          >
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SAMLForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+
+    await waitFor(() => expect(SAMLQueryAPI).toBeCalled())
+    await userEvent.click(await screen.findByRole('combobox'))
+    const option = await screen.findByRole('option', { name: /SAML-A7/ })
+    await userEvent.click(option)
+    expect(option).toBeInTheDocument()
+  })
 })
