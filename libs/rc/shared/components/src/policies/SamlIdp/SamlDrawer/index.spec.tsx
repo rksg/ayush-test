@@ -1,18 +1,19 @@
 
 import { rest } from 'msw'
 
-import { SamlIdpProfileViewData }     from '@acx-ui/rc/utils'
-import { CertificateUrls }            from '@acx-ui/rc/utils'
+import {
+  SamlIdpProfileUrls,
+  CertificateUrls,
+  SamlIdpProfileViewData }     from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
+import { mockSAMLIdpQuery }      from '../../../NetworkForm/__tests__/fixtures'
 import { serverCertificateList } from '../../CertificateTemplate/__test__/fixtures'
 
 import { SAMLDrawer } from './index'
 
-describe('SAML Drawer - Add', () => {
-
-
+describe('SAML Drawer', () => {
   const mockSAMLProfile = {
     id: 'c55f0a3bc2e44db5b3e55641dcbb0bfc',
     name: 'SAML-A4',
@@ -32,6 +33,12 @@ describe('SAML Drawer - Add', () => {
       rest.post(
         CertificateUrls.getServerCertificates.url,
         (req, res, ctx) => res(ctx.json(serverCertificateList))
+      ),
+      rest.post(
+        SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockSAMLIdpQuery))
+        }
       )
     )
   })
