@@ -2,7 +2,7 @@ import { mockDOMSize, render } from '@acx-ui/test-utils'
 
 import { nodeSize, sampleData } from './__tests__/fixtures'
 
-import { Graph, ProcessedNeighborAPGraph } from '.'
+import { NeighborAPGraph, ProcessedNeighborAPGraph } from '.'
 
 describe('Graph', () => {
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('Graph', () => {
     mockDOMSize(1280, 800)
   })
   it('should match snapshot', () => {
-    const { asFragment } = render(<Graph
+    const { asFragment } = render(<NeighborAPGraph
       title='Before'
       data={sampleData}
       nodeSize={nodeSize}
@@ -22,7 +22,7 @@ describe('Graph', () => {
   })
 
   it('should match snapshot when there are no nodes or links', () => {
-    const { asFragment } = render(<Graph
+    const { asFragment } = render(<NeighborAPGraph
       title='Current'
       data={{} as ProcessedNeighborAPGraph}
       nodeSize={nodeSize}
@@ -34,7 +34,7 @@ describe('Graph', () => {
   })
 
   it('should match snapshot when subtext is provided', () => {
-    const { asFragment } = render(<Graph
+    const { asFragment } = render(<NeighborAPGraph
       title='Before'
       subtext='Subtext'
       data={sampleData}

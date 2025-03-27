@@ -53,7 +53,7 @@ const repulsionScale = scalePow()
   .domain([0, 1, 10, 20])
   .range([1000, 2500, 8500, 8500])
 
-export const Graph = (props: NeighborAPGraphProps) => {
+export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
   const {
     data: { nodes = [], links = [] },
     backgroundColor,
@@ -104,9 +104,9 @@ export const Graph = (props: NeighborAPGraphProps) => {
             show: true,
             position: 'inside',
             formatter: node.key,
-            color: '#fff',
+            color: cssStr('--acx-primary-white'),
             fontWeight: 'bold',
-            fontSize: 12
+            fontSize: cssNumber('--acx-body-3-font-size')
           }
         })),
         links: links,
@@ -124,4 +124,4 @@ export const Graph = (props: NeighborAPGraphProps) => {
   return <ReactECharts option={option} />
 }
 
-export default Graph
+export default NeighborAPGraph
