@@ -5,8 +5,6 @@ import { groupBy, identity, castArray } from 'lodash'
 
 import { useTenantId } from '@acx-ui/utils'
 
-import { Features } from './features'
-
 export const REMOVABLE_TOGGLE_NAME = 'removable-ff'
 
 enum FeatureFlag {
@@ -15,9 +13,8 @@ enum FeatureFlag {
   CONTROL = 'control'
 }
 
-export const useIsSplitOn = (splitName: string) => {
-  const { values } = useTreatmentsValues(splitName)
-  if (splitName === Features.EDGE_DUAL_WAN_TOGGLE) return true
+export const useIsSplitOn = (splitName: string, tenantId?: string) => {
+  const { values } = useTreatmentsValues(splitName, tenantId)
   return values[0] === FeatureFlag.ON
 }
 
@@ -32,16 +29,16 @@ export const useIsSplitOn = (splitName: string) => {
  * a feature flag is off when Split.IO helper returns `control`, with `null` returned from this
  * helper, developer can choose to not fire a query so to avoid unexpected query fired.
  */
-export const useAnySplitsOn = (splitNames: string | string[]) => {
-  const { keys, values } = useTreatmentsValues(splitNames)
+export const useAnySplitsOn = (splitNames: string | string[], tenantId?: string) => {
+  const { keys, values } = useTreatmentsValues(splitNames, tenantId)
   const { on = [], control = [] } = groupBy(values, identity)
   if (control.length === keys.length) return null
   return on.length > 0
 }
 
-const useTreatmentsValues = (splitNames: string | string[]) => {
+const useTreatmentsValues = (splitNames: string | string[], tenantId?: string) => {
   const keys = castArray(splitNames)
-  const treatments = useTreatments(keys, { tenantKey: useTenantId() })
+  const treatments = useTreatments(keys, { tenantKey: useTenantId() }, tenantId)
 
   useDebugValue(treatments)
 

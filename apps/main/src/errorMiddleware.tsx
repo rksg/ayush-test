@@ -104,10 +104,7 @@ export const getErrorContent = (action: ErrorAction) => {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
     if('data' in action.payload) {
-      const { data } = action.payload
-      errors = data?.error
-        ? { ...data, errors: [data.error] as CatchErrorDetails[] }
-        : data
+      errors = action.payload.data
     } else if ('error' in action.payload) {
       errors = action.payload.error
     } else if ('message' in action.payload) {
@@ -182,10 +179,13 @@ export const getErrorContent = (action: ErrorAction) => {
   }
 
   if(errors && isShowImprovedErrorSuggestion(errors)) {
-    const errorObj = errors as { errors: CatchErrorDetails[] }
+    const errorObj = errors as {
+      errors: CatchErrorDetails[],
+       error: CatchErrorDetails }
     const description =
-      errorObj.errors?.[0].suggestion || errorObj.errors?.[0].reason || ''
-    content = <span>{description}</span>
+      errorObj.errors?.[0].suggestion || errorObj.errors?.[0].reason ||
+      errorObj.error?.suggestion || errorObj.error?.reason || ''
+    content = description ? <span>{description}</span> : content
   }
 
   return {
