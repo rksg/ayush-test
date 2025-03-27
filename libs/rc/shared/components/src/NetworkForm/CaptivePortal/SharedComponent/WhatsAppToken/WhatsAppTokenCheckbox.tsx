@@ -1,13 +1,14 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Button, Form }              from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Tooltip }                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
-import { NotificationSmsUsage, SmsProviderType, useConfigTemplate } from '@acx-ui/rc/utils'
-import { TenantLink }                                               from '@acx-ui/react-router-dom'
+import { Tooltip }                                                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                        from '@acx-ui/icons'
+import { useGetNotificationSmsProviderQuery, useGetTwiliosWhatsappServicesQuery }            from '@acx-ui/rc/services'
+import { NotificationSmsUsage, SmsProviderType, TwiliosWhatsappServices, useConfigTemplate } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                        from '@acx-ui/react-router-dom'
 
 import NetworkFormContext     from '../../../NetworkFormContext'
 import * as UI                from '../../../styledComponents'
@@ -26,6 +27,29 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
   const { provider = SmsProviderType.RUCKUS_ONE } = SMSUsage || {}
   const { useWatch } = Form
   const enableWhatsappLogin = useWatch(['guestPortal', 'enableWhatsappLogin'])
+  const [enableWhatsappLoginByTwilio, setEnableWhatsappLoginByTwilio] = useState(false)
+
+  const smsProviderData = useGetNotificationSmsProviderQuery(
+    { params: { provider: 'twilios' } },
+    { skip: !isEnabledWhatsApp })
+  const twilioData = useGetTwiliosWhatsappServicesQuery({
+    payload: {
+      accountSid: smsProviderData.data?.accountSid,
+      authToken: smsProviderData.data?.authToken,
+      authTemplateSid: smsProviderData.data?.authTemplateSid
+    }
+  }, { skip: !smsProviderData.data })
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    if (twilioData.data && (twilioData.data as TwiliosWhatsappServices).approvalFetch?.sid === smsProviderData.data?.authTemplateSid
+      // eslint-disable-next-line max-len
+      && (twilioData.data as TwiliosWhatsappServices).approvalFetch?.accountSid === smsProviderData.data?.accountSid
+      // eslint-disable-next-line max-len
+      && (twilioData.data as TwiliosWhatsappServices).approvalFetch?.whatsapp.status === 'approved') {
+      setEnableWhatsappLoginByTwilio(true)
+    }
+  }, [twilioData, smsProviderData])
 
   if (!isEnabledWhatsApp) {
     return null
@@ -33,7 +57,8 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
 
   // eslint-disable-next-line max-len
   const isAlert = enableWhatsappLogin && data?.guestPortal?.enableWhatsappLogin && provider !== SmsProviderType.TWILIO
-  const isDisabled = !isAlert && (!enableWhatsappLogin || provider !== SmsProviderType.TWILIO)
+  // eslint-disable-next-line max-len
+  const isDisabled = !isAlert && (!enableWhatsappLogin || provider !== SmsProviderType.TWILIO) && !enableWhatsappLoginByTwilio
 
   return <><Form.Item name={['guestPortal', 'enableWhatsappLogin']}
     initialValue={false}
