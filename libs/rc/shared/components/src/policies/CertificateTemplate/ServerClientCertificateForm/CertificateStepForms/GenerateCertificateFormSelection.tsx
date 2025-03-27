@@ -1,9 +1,15 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { CertificateGenerationType, CertificateUrls, ExtendedKeyUsages, GenerateCertificateFormData } from '@acx-ui/rc/utils'
-import { hasAllowedOperations }                                                                       from '@acx-ui/user'
-import { getOpsApi }                                                                                  from '@acx-ui/utils'
+import {
+  CertificateGenerationType,
+  CertificateUrls,
+  ExtendedKeyUsages,
+  GenerateCertificateFormData,
+  KeyUsages
+} from '@acx-ui/rc/utils'
+import { hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi }            from '@acx-ui/utils'
 
 import { generateCertificateDescription, generateCertificateTitle } from '../../contentsMap'
 import { RadioItemDescription }                                     from '../../styledComponents'
@@ -13,19 +19,25 @@ import { GenerateCertificateWithCSR } from './GenerateCertificateWIthCSR'
 import { UploadCertificate }          from './UploadCertificate'
 
 type GenerateCertificateFormSelectionFormProps = {
+  keyUsages?: KeyUsages[]
   extendedKeyUsages?: ExtendedKeyUsages[]
 }
 
 export const GenerateCertificateFormSelection =
 (props: GenerateCertificateFormSelectionFormProps) => {
   const { $t } = useIntl()
+  const { keyUsages, extendedKeyUsages } = props
   const generateCertificateForm = Form.useFormInstance<GenerateCertificateFormData>()
   const generation = Form.useWatch('generation', generateCertificateForm)
   const generationFormMapping = {
     [CertificateGenerationType.NEW]: <GenerateCertificate
-      extendedKeyUsages={props?.extendedKeyUsages}/>,
+      extendedKeyUsages={extendedKeyUsages}
+      keyUsages={keyUsages}
+    />,
     [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR
-      extendedKeyUsages={props?.extendedKeyUsages}/>,
+      extendedKeyUsages={extendedKeyUsages}
+      keyUsages={keyUsages}
+    />,
     [CertificateGenerationType.UPLOAD]: <UploadCertificate />
   }
 

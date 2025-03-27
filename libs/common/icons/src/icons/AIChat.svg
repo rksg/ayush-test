@@ -1,69 +1,69 @@
-<svg width="49" height="47" viewBox="0 0 49 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Group 11720">
-<ellipse id="Ellipse 4691" cx="24.3171" cy="23.5005" rx="24.2556" ry="23.5" fill="url(#paint0_linear_40238_41875)"/>
+<g id="Ellipse 4691" style="mix-blend-mode:multiply">
+<circle cx="24" cy="24" r="24" fill="url(#paint0_linear_40929_2593)"/>
+</g>
 <g id="Group 11719">
 <g id="Group 11711">
-<ellipse id="Ellipse 4686" cx="20.9273" cy="11.4747" rx="2.25541" ry="2.18515" fill="white"/>
-<ellipse id="Ellipse 4687" cx="15.6647" cy="13.3678" rx="1.80433" ry="1.74812" fill="white"/>
-<ellipse id="Ellipse 4688" cx="12.0564" cy="16.2821" rx="1.20289" ry="1.16541" fill="white"/>
-<ellipse id="Ellipse 4689" cx="10.5526" cy="19.1949" rx="0.902164" ry="0.874061" fill="white"/>
-<ellipse id="Ellipse 4690" cx="10.4022" cy="22.2543" rx="0.751804" ry="0.728384" fill="white"/>
+<circle id="Ellipse 4686" cx="20.1574" cy="11.2321" r="2.23165" fill="white"/>
+<circle id="Ellipse 4687" cx="14.9513" cy="13.1652" r="1.78532" fill="white"/>
+<circle id="Ellipse 4688" cx="11.3816" cy="16.1419" r="1.19021" fill="white"/>
+<circle id="Ellipse 4689" cx="9.89266" cy="19.1163" r="0.892658" fill="white"/>
+<ellipse id="Ellipse 4690" cx="9.74388" cy="22.241" rx="0.743882" ry="0.743882" fill="white"/>
 </g>
 <g id="Group 11712">
-<ellipse id="Ellipse 4686_2" cx="2.18515" cy="2.25541" rx="2.18515" ry="2.25541" transform="matrix(0.00452136 -0.99999 0.999991 0.00424406 9.68945 29.394)" fill="white"/>
-<ellipse id="Ellipse 4687_2" cx="1.74812" cy="1.80433" rx="1.74812" ry="1.80433" transform="matrix(0.00452136 -0.99999 0.999991 0.00424406 12.0752 34.0659)" fill="white"/>
-<ellipse id="Ellipse 4688_2" cx="1.16542" cy="1.20289" rx="1.16542" ry="1.20289" transform="matrix(0.00452136 -0.99999 0.999991 0.00424406 15.6699 36.9946)" fill="white"/>
-<ellipse id="Ellipse 4689_2" cx="0.874062" cy="0.902164" rx="0.874062" ry="0.902164" transform="matrix(0.00452136 -0.99999 0.999991 0.00424406 18.9736 38.1743)" fill="white"/>
-<ellipse id="Ellipse 4690_2" cx="0.728385" cy="0.751803" rx="0.728385" ry="0.751803" transform="matrix(0.00452136 -0.99999 0.999991 0.00424406 22.2812 38.188)" fill="white"/>
+<ellipse id="Ellipse 4686_2" cx="11.2805" cy="27.3109" rx="2.23165" ry="2.23165" transform="rotate(-89.749 11.2805 27.3109)" fill="white"/>
+<ellipse id="Ellipse 4687_2" cx="13.1916" cy="32.5262" rx="1.78532" ry="1.78532" transform="rotate(-89.749 13.1916 32.5262)" fill="white"/>
+<circle id="Ellipse 4688_2" cx="16.1524" cy="36.1099" r="1.19021" transform="rotate(-89.749 16.1524 36.1099)" fill="white"/>
+<ellipse id="Ellipse 4689_2" cx="19.1212" cy="37.6113" rx="0.892658" ry="0.892658" transform="rotate(-89.749 19.1212 37.6113)" fill="white"/>
+<circle id="Ellipse 4690_2" cx="22.2452" cy="37.7731" r="0.743882" transform="rotate(-89.749 22.2452 37.7731)" fill="white"/>
 </g>
 <g id="Group 11713">
-<ellipse id="Ellipse 4686_3" cx="2.18515" cy="2.25541" rx="2.18515" ry="2.25541" transform="matrix(0.00174635 0.999998 -0.999999 0.00163924 39.1367 18.0308)" fill="white"/>
-<ellipse id="Ellipse 4687_3" cx="1.74812" cy="1.80433" rx="1.74812" ry="1.80433" transform="matrix(0.00174635 0.999998 -0.999999 0.00163924 36.7227 13.3726)" fill="white"/>
-<ellipse id="Ellipse 4688_3" cx="1.16542" cy="1.20289" rx="1.16542" ry="1.20289" transform="matrix(0.00174635 0.999998 -0.999999 0.00163924 33.1084 10.4644)" fill="white"/>
-<ellipse id="Ellipse 4689_3" cx="0.874061" cy="0.902164" rx="0.874061" ry="0.902164" transform="matrix(0.00174635 0.999998 -0.999999 0.00163924 29.7988 9.30518)" fill="white"/>
-<ellipse id="Ellipse 4690_3" cx="0.728384" cy="0.751804" rx="0.728384" ry="0.751804" transform="matrix(0.00174635 0.999998 -0.999999 0.00163924 26.4912 9.31006)" fill="white"/>
+<ellipse id="Ellipse 4686_3" cx="35.9479" cy="20.1627" rx="2.23165" ry="2.23165" transform="rotate(89.9031 35.9479 20.1627)" fill="white"/>
+<circle id="Ellipse 4687_3" cx="34.0048" cy="14.9583" r="1.78532" transform="rotate(89.9031 34.0048 14.9583)" fill="white"/>
+<circle id="Ellipse 4688_3" cx="31.0227" cy="11.3924" r="1.19021" transform="rotate(89.9031 31.0227 11.3924)" fill="white"/>
+<circle id="Ellipse 4689_3" cx="28.0444" cy="9.91028" r="0.892658" transform="rotate(89.9031 28.0444 9.91028)" fill="white"/>
+<ellipse id="Ellipse 4690_3" cx="24.9214" cy="9.76614" rx="0.743882" ry="0.743882" transform="rotate(89.9031 24.9214 9.76614)" fill="white"/>
 </g>
 <g id="Group 11714">
-<ellipse id="Ellipse 4686_4" cx="2.25537" cy="2.1852" rx="2.25537" ry="2.1852" transform="matrix(-0.999715 0.0238761 -0.0254351 -0.999677 30.4453 37.7642)" fill="white"/>
-<ellipse id="Ellipse 4687_4" cx="1.8043" cy="1.74816" rx="1.8043" ry="1.74816" transform="matrix(-0.999715 0.0238761 -0.0254351 -0.999677 35.1973 35.3179)" fill="white"/>
-<ellipse id="Ellipse 4688_4" cx="1.20286" cy="1.16544" rx="1.20286" ry="1.16544" transform="matrix(-0.999715 0.0238761 -0.0254351 -0.999677 38.1143 31.7515)" fill="white"/>
-<ellipse id="Ellipse 4689_4" cx="0.902148" cy="0.874078" rx="0.902148" ry="0.874078" transform="matrix(-0.999715 0.0238761 -0.0254351 -0.999677 39.2354 28.519)" fill="white"/>
-<ellipse id="Ellipse 4690_4" cx="0.75179" cy="0.728399" rx="0.75179" ry="0.728399" transform="matrix(-0.999715 0.0238761 -0.0254351 -0.999677 39.1533 25.3149)" fill="white"/>
+<ellipse id="Ellipse 4686_4" cx="27.2902" cy="35.9051" rx="2.23165" ry="2.23165" transform="rotate(178.588 27.2902 35.9051)" fill="white"/>
+<ellipse id="Ellipse 4687_4" cx="32.4505" cy="33.8417" rx="1.78532" ry="1.78532" transform="rotate(178.588 32.4505 33.8417)" fill="white"/>
+<ellipse id="Ellipse 4688_4" cx="35.9449" cy="30.7799" rx="1.19021" ry="1.19021" transform="rotate(178.588 35.9449 30.7799)" fill="white"/>
+<ellipse id="Ellipse 4689_4" cx="37.3591" cy="27.7688" rx="0.892658" ry="0.892658" transform="rotate(178.588 37.3591 27.7688)" fill="white"/>
+<ellipse id="Ellipse 4690_4" cx="37.4314" cy="24.6414" rx="0.743882" ry="0.743882" transform="rotate(178.588 37.4314 24.6414)" fill="white"/>
 </g>
 <g id="Group 11715">
-<ellipse id="Ellipse 4687_5" cx="1.74814" cy="1.80431" rx="1.74814" ry="1.80431" transform="matrix(0.0186241 0.999827 0.999847 -0.0174822 11.5312 20.5669)" fill="white"/>
-<ellipse id="Ellipse 4688_5" cx="1.16543" cy="1.20287" rx="1.16543" ry="1.20287" transform="matrix(0.0186241 0.999827 0.999847 -0.0174822 15.084 17.5903)" fill="white"/>
-<ellipse id="Ellipse 4689_5" cx="0.87407" cy="0.902155" rx="0.87407" ry="0.902155" transform="matrix(0.0186241 0.999827 0.999847 -0.0174822 18.3701 16.3667)" fill="white"/>
-<ellipse id="Ellipse 4690_5" cx="0.728392" cy="0.751796" rx="0.728392" ry="0.751796" transform="matrix(0.0186241 0.999827 0.999847 -0.0174822 21.6777 16.3091)" fill="white"/>
+<circle id="Ellipse 4687_5" cx="1.78532" cy="1.78532" r="1.78532" transform="matrix(0.0180441 0.999837 0.999837 -0.0180441 10.8594 20.5176)" fill="white"/>
+<circle id="Ellipse 4688_5" cx="1.19021" cy="1.19021" r="1.19021" transform="matrix(0.0180441 0.999837 0.999837 -0.0180441 14.375 17.4775)" fill="white"/>
+<circle id="Ellipse 4689_5" cx="0.892658" cy="0.892658" r="0.892658" transform="matrix(0.0180441 0.999837 0.999837 -0.0180441 17.627 16.228)" fill="white"/>
+<circle id="Ellipse 4690_5" cx="0.743882" cy="0.743882" r="0.743882" transform="matrix(0.0180441 0.999837 0.999837 -0.0180441 20.9004 16.1694)" fill="white"/>
 </g>
 <g id="Group 11716">
-<ellipse id="Ellipse 4687_6" cx="1.80426" cy="1.7482" rx="1.80426" ry="1.7482" transform="matrix(-0.999379 0.0352303 0.0375291 0.999296 27.6924 11.77)" fill="white"/>
-<ellipse id="Ellipse 4688_6" cx="1.20284" cy="1.16547" rx="1.20284" ry="1.16547" transform="matrix(-0.999379 0.0352303 0.0375291 0.999296 30.8291 15.1577)" fill="white"/>
-<ellipse id="Ellipse 4689_6" cx="0.902128" cy="0.874099" rx="0.902128" ry="0.874099" transform="matrix(-0.999379 0.0352303 0.0375291 0.999296 32.1504 18.3179)" fill="white"/>
-<ellipse id="Ellipse 4690_6" cx="0.751773" cy="0.728416" rx="0.751773" ry="0.728416" transform="matrix(-0.999379 0.0352303 0.0375291 0.999296 32.2715 21.521)" fill="white"/>
+<ellipse id="Ellipse 4687_6" cx="1.78532" cy="1.78532" rx="1.78532" ry="1.78532" transform="matrix(-0.999339 0.0363616 0.0363616 0.999339 26.8496 11.5342)" fill="white"/>
+<ellipse id="Ellipse 4688_6" cx="1.19021" cy="1.19021" rx="1.19021" ry="1.19021" transform="matrix(-0.999339 0.0363616 0.0363616 0.999339 29.9551 14.9941)" fill="white"/>
+<ellipse id="Ellipse 4689_6" cx="0.892658" cy="0.892658" rx="0.892658" ry="0.892658" transform="matrix(-0.999339 0.0363616 0.0363616 0.999339 31.2617 18.2217)" fill="white"/>
+<circle id="Ellipse 4690_6" cx="0.743882" cy="0.743882" r="0.743882" transform="matrix(-0.999339 0.0363616 0.0363616 0.999339 31.3809 21.4927)" fill="white"/>
 </g>
 <g id="Group 11717">
-<ellipse id="Ellipse 4687_7" cx="1.74817" cy="1.80428" rx="1.74817" ry="1.80428" transform="matrix(0.0293968 -0.999568 -0.999619 -0.0275952 36.8311 26.8032)" fill="white"/>
-<ellipse id="Ellipse 4688_7" cx="1.16545" cy="1.20286" rx="1.16545" ry="1.20286" transform="matrix(0.0293968 -0.999568 -0.999619 -0.0275952 33.1377 29.6157)" fill="white"/>
-<ellipse id="Ellipse 4689_7" cx="0.874084" cy="0.902142" rx="0.874084" ry="0.902142" transform="matrix(0.0293968 -0.999568 -0.999619 -0.0275952 29.7969 30.6899)" fill="white"/>
-<ellipse id="Ellipse 4690_7" cx="0.728404" cy="0.751785" rx="0.728404" ry="0.751785" transform="matrix(0.0293968 -0.999568 -0.999619 -0.0275952 26.4902 30.5981)" fill="white"/>
+<ellipse id="Ellipse 4687_7" cx="1.78532" cy="1.78532" rx="1.78532" ry="1.78532" transform="matrix(0.0284818 -0.999594 -0.999594 -0.0284818 35.8945 26.8862)" fill="white"/>
+<ellipse id="Ellipse 4688_7" cx="1.19021" cy="1.19021" rx="1.19021" ry="1.19021" transform="matrix(0.0284818 -0.999594 -0.999594 -0.0284818 32.2402 29.7588)" fill="white"/>
+<ellipse id="Ellipse 4689_7" cx="0.892658" cy="0.892658" rx="0.892658" ry="0.892658" transform="matrix(0.0284818 -0.999594 -0.999594 -0.0284818 28.9355 30.856)" fill="white"/>
+<circle id="Ellipse 4690_7" cx="0.743882" cy="0.743882" r="0.743882" transform="matrix(0.0284818 -0.999594 -0.999594 -0.0284818 25.6621 30.7622)" fill="white"/>
 </g>
 <g id="Group 11718">
-<ellipse id="Ellipse 4687_8" cx="1.80425" cy="1.7482" rx="1.80425" ry="1.7482" transform="matrix(0.999363 -0.0357001 -0.0380295 -0.999277 21.2061 35.3423)" fill="white"/>
-<ellipse id="Ellipse 4688_8" cx="1.20284" cy="1.16547" rx="1.20284" ry="1.16547" transform="matrix(0.999363 -0.0357001 -0.0380295 -0.999277 18.0684 31.9556)" fill="white"/>
-<ellipse id="Ellipse 4689_8" cx="0.902127" cy="0.8741" rx="0.902127" ry="0.8741" transform="matrix(0.999363 -0.0357001 -0.0380295 -0.999277 16.7441 28.7954)" fill="white"/>
-<ellipse id="Ellipse 4690_8" cx="0.751772" cy="0.728417" rx="0.751772" ry="0.728417" transform="matrix(0.999363 -0.0357001 -0.0380295 -0.999277 16.6221 25.5933)" fill="white"/>
+<ellipse id="Ellipse 4687_8" cx="1.78532" cy="1.78532" rx="1.78532" ry="1.78532" transform="matrix(0.999321 -0.0368464 -0.0368464 -0.999321 20.4316 35.6074)" fill="white"/>
+<ellipse id="Ellipse 4688_8" cx="1.19021" cy="1.19021" rx="1.19021" ry="1.19021" transform="matrix(0.999321 -0.0368464 -0.0368464 -0.999321 17.3281 32.1484)" fill="white"/>
+<ellipse id="Ellipse 4689_8" cx="0.892658" cy="0.892658" rx="0.892658" ry="0.892658" transform="matrix(0.999321 -0.0368464 -0.0368464 -0.999321 16.0176 28.9209)" fill="white"/>
+<ellipse id="Ellipse 4690_8" cx="0.743882" cy="0.743882" rx="0.743882" ry="0.743882" transform="matrix(0.999321 -0.0368464 -0.0368464 -0.999321 15.8965 25.6509)" fill="white"/>
 </g>
 </g>
 </g>
 <defs>
-<linearGradient id="paint0_linear_40238_41875" x1="84" y1="161" x2="-49.2993" y2="109.133" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F7B605"/>
-<stop offset="0.25" stop-color="#F79B06"/>
-<stop offset="0.482762" stop-color="#F65650"/>
-<stop offset="0.601239" stop-color="#F05079"/>
-<stop offset="0.75" stop-color="#EC4C9A"/>
-<stop offset="1" stop-color="#A560FF"/>
+<linearGradient id="paint0_linear_40929_2593" x1="110" y1="-258" x2="5.29819" y2="-268.438" gradientUnits="userSpaceOnUse">
+<stop offset="0.172438" stop-color="#06CBF7"/>
+<stop offset="0.496416" stop-color="#A560FF"/>
+<stop offset="0.743678" stop-color="#EC4C9A"/>
+<stop offset="0.897242" stop-color="#F65650"/>
 </linearGradient>
 </defs>
 </svg>

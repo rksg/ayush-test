@@ -466,7 +466,9 @@ export const apApi = baseApApi.injectEndpoints({
           const activities = [
             'UpdateAp',
             'UpdateApCustomization',
-            'ResetApCustomization'
+            'ResetApCustomization',
+            'ActivateMulticastDnsProxyProfile',
+            'DeactivateMulticastDnsProxyProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))

@@ -196,6 +196,8 @@ export const MSPUtils = () => {
   }
 
   const transformExpirationDate = (row: MspEc) => {
+    if (row?.expirationDate)
+      return row?.expirationDate
     let expirationDate = '--'
     const apswEntitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
       en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
