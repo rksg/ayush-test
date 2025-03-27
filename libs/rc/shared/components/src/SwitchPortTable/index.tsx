@@ -252,7 +252,7 @@ export function SwitchPortTable (props: {
     }
   },
   ...( isSwitchMacAclEnabled
-    && (isVenueLevel || isFirmwareVersionAbove10020b(switchFirmware))
+    && (isVenueLevel || isFirmwareVersionAbove10010g2Or10020b(switchFirmware))
     ? [{
       key: 'switchMacAcl',
       title: $t({ defaultMessage: 'MAC ACL' }),
