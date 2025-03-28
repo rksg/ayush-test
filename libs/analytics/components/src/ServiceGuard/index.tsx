@@ -6,8 +6,6 @@ import { Button }     from '@acx-ui/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes } from '@acx-ui/types'
 import {
-  getUserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   hasCrossVenuesPermission,
   hasPermission
@@ -33,13 +31,11 @@ export function useServiceGuard () {
     description: 'Translation string - Service Validation'
   })
 
-  const { rbacOpsApiEnabled } = getUserProfile()
-  const hasCreateServiceGuardPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([aiOpsApis.createServiceValidation])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_SERVICE_VALIDATION',
-      scopes: [WifiScopes.CREATE]
-    })
+  const hasCreateServiceGuardPermission = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_SERVICE_VALIDATION',
+    scopes: [WifiScopes.CREATE],
+    rbacOpsIds: [aiOpsApis.createServiceValidation]
+  })
 
   const headerExtra = [
     <TenantLink to='/analytics/serviceValidation/add' key='add'>

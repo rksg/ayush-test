@@ -28,10 +28,8 @@ import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
-  hasAllowedOperations,
   hasCrossVenuesPermission,
   hasPermission,
-  getUserProfile,
   aiOpsApis
 } from '@acx-ui/user'
 import {
@@ -159,19 +157,21 @@ export function IncidentTable ({ filters }: {
     ? queryResults.data
     : filterMutedIncidents(queryResults.data)
 
-  const { rbacOpsApiEnabled } = getUserProfile()
-  const hasRowSelection = rbacOpsApiEnabled
-    ? hasAllowedOperations([aiOpsApis.updateIncident])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_INCIDENTS',
-      scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
-    })
-  const hasUpdateSwitchIncidentPermission = rbacOpsApiEnabled
-    ? hasRowSelection
-    : hasPermission({ permission: 'WRITE_INCIDENTS', scopes: [SwitchScopes.UPDATE] })
-  const hasUpdateWifiIncidentPermission = rbacOpsApiEnabled
-    ? hasRowSelection
-    : hasPermission({ permission: 'WRITE_INCIDENTS', scopes: [WifiScopes.UPDATE] })
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_INCIDENTS',
+    scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIncident]
+  })
+  const hasUpdateSwitchIncidentPermission = hasPermission({
+    permission: 'WRITE_INCIDENTS',
+    scopes: [SwitchScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIncident]
+  })
+  const hasUpdateWifiIncidentPermission = hasPermission({
+    permission: 'WRITE_INCIDENTS',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIncident]
+  })
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {

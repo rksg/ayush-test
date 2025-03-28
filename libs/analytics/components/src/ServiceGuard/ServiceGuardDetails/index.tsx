@@ -4,8 +4,6 @@ import { PageHeader, Tabs }                                    from '@acx-ui/com
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                          from '@acx-ui/types'
 import {
-  getUserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   hasCrossVenuesPermission,
   hasPermission
@@ -48,13 +46,11 @@ export function ServiceGuardDetails () {
   })
   const Tab = tabs.find(tab => tab.key === activeTab)?.component
 
-  const { rbacOpsApiEnabled } = getUserProfile()
-  const hasUpdateServiceGuardPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([aiOpsApis.updateServiceValidation])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_SERVICE_VALIDATION',
-      scopes: [WifiScopes.UPDATE]
-    })
+  const hasUpdateServiceGuardPermission = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_SERVICE_VALIDATION',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateServiceValidation]
+  })
 
   return (
     <>

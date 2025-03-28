@@ -16,8 +16,6 @@ import { DateFormatEnum, formatter }                                    from '@a
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                   from '@acx-ui/types'
 import {
-  getUserProfile as getR1UserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   useUserProfileContext,
   filterByAccess,
@@ -258,17 +256,15 @@ export function ServiceGuardTable () {
     }
   ]
 
-  const { rbacOpsApiEnabled } = getR1UserProfile()
-  const hasRowSelection = rbacOpsApiEnabled
-    ? hasAllowedOperations([
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_SERVICE_VALIDATION',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [
       aiOpsApis.createServiceValidation,
       aiOpsApis.updateServiceValidation,
       aiOpsApis.deleteServiceValidation
-    ])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_SERVICE_VALIDATION',
-      scopes: [WifiScopes.UPDATE]
-    })
+    ]
+  })
 
   return (
     <Loader states={[queryResults]}>

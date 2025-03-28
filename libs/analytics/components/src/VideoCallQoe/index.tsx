@@ -8,8 +8,6 @@ import { TenantLink }          from '@acx-ui/react-router-dom'
 import { WifiScopes }          from '@acx-ui/types'
 import {
   getShowWithoutRbacCheckKey,
-  getUserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   hasCrossVenuesPermission,
   hasPermission
@@ -59,13 +57,11 @@ export function useVideoCallQoe () {
     <VideoCallQoeTable />
   </CountContext.Provider>
 
-  const { rbacOpsApiEnabled } = getUserProfile()
-  const hasCreateVideoCallQoePermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([aiOpsApis.createVideoCallQoe])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_VIDEO_CALL_QOE',
-      scopes: [WifiScopes.CREATE]
-    })
+  const hasCreateVideoCallQoePermission = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_VIDEO_CALL_QOE',
+    scopes: [WifiScopes.CREATE],
+    rbacOpsIds: [aiOpsApis.createVideoCallQoe]
+  })
 
   return {
     title: $t(title, { count }),

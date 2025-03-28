@@ -18,8 +18,6 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }            from '@acx-ui/types'
 import {
-  getUserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   hasCrossVenuesPermission,
   hasPermission
@@ -123,13 +121,11 @@ export function VideoCallQoeDetails (){
           range: DateRange.custom
         })
 
-        const { rbacOpsApiEnabled } = getUserProfile()
-        const hasUpdateVideoCallQoePermission = rbacOpsApiEnabled
-          ? hasAllowedOperations([aiOpsApis.updateVideoCallQoe])
-          : hasCrossVenuesPermission() && hasPermission({
-            permission: 'WRITE_VIDEO_CALL_QOE',
-            scopes: [WifiScopes.UPDATE]
-          })
+        const hasUpdateVideoCallQoePermission = hasCrossVenuesPermission() && hasPermission({
+          permission: 'WRITE_VIDEO_CALL_QOE',
+          scopes: [WifiScopes.UPDATE],
+          rbacOpsIds: [aiOpsApis.updateVideoCallQoe]
+        })
 
         if (networkType.toLowerCase() === 'wifi') {
           const link =

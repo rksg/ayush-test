@@ -12,8 +12,6 @@ import { WifiScopes }                                    from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
-  getUserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   hasCrossVenuesPermission,
   hasPermission
@@ -324,13 +322,11 @@ export function IntentAITable (
     isEnabled: isMonitoringPageEnabled
   })
 
-  const { rbacOpsApiEnabled } = getUserProfile()
-  const hasRowSelection = rbacOpsApiEnabled
-    ? hasAllowedOperations([aiOpsApis.updateIntentAI])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_INTENT_AI',
-      scopes: [WifiScopes.UPDATE]
-    })
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_INTENT_AI',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.updateIntentAI]
+  })
 
   return (
     <Loader states={[queryResults]}>

@@ -22,8 +22,6 @@ import { TenantLink }                from '@acx-ui/react-router-dom'
 import { WifiScopes }                from '@acx-ui/types'
 import {
   filterByAccess,
-  getUserProfile,
-  hasAllowedOperations,
   aiOpsApis,
   hasCrossVenuesPermission,
   hasPermission
@@ -228,13 +226,11 @@ export function VideoCallQoeTable () {
     }
   ]
 
-  const { rbacOpsApiEnabled } = getUserProfile()
-  const hasRowSelection = rbacOpsApiEnabled
-    ? hasAllowedOperations([aiOpsApis.deleteVideoCallQoe])
-    : hasCrossVenuesPermission() && hasPermission({
-      permission: 'WRITE_VIDEO_CALL_QOE',
-      scopes: [WifiScopes.UPDATE]
-    })
+  const hasRowSelection = hasCrossVenuesPermission() && hasPermission({
+    permission: 'WRITE_VIDEO_CALL_QOE',
+    scopes: [WifiScopes.UPDATE],
+    rbacOpsIds: [aiOpsApis.deleteVideoCallQoe]
+  })
 
   return (
     <Loader states={[queryResults]}>
