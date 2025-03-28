@@ -176,7 +176,8 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Identities' }),
-      content: detailsQuery.data?.identities?.length ?? 0
+      content: detailsQuery.data?.identities?.length
+        ?? detailsQuery.data?.identityCount ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
@@ -252,7 +253,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? detailsQuery.data?.identityCount?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

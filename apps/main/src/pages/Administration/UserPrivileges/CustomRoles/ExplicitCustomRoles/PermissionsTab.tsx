@@ -1,8 +1,8 @@
-import { Form, Table, TableProps, TreeDataNode } from 'antd'
-import { useIntl }                               from 'react-intl'
+import { Form, Table, TableProps } from 'antd'
+import { useIntl }                 from 'react-intl'
 
-import { Descriptions }    from '@acx-ui/components'
-import { ScopePermission } from '@acx-ui/rc/utils'
+import { Descriptions }                       from '@acx-ui/components'
+import { ScopePermission, ScopeTreeDataNode } from '@acx-ui/rc/utils'
 
 import * as UI from '../../styledComponents'
 
@@ -10,8 +10,8 @@ import { Flat } from './AddExplicitCustomRole'
 
 interface PermissionsTabProps {
   updateSelected?: (key: string, permission: string, enabled: boolean) => void,
-  scopeHierarchy: TreeDataNode[]
-  tabScopes: TreeDataNode[]
+  scopeHierarchy: ScopeTreeDataNode[]
+  tabScopes: ScopeTreeDataNode[]
   permissions: ScopePermission[]
 }
 
@@ -46,7 +46,7 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
     return children.some(p => p[permission]) && !children.every(p => p[permission])
   }
 
-  const columns: TableProps<TreeDataNode>['columns'] = [
+  const columns: TableProps<ScopeTreeDataNode>['columns'] = [
     {
       title: '',
       dataIndex: 'title',

@@ -4,6 +4,7 @@ import { rest } from 'msw'
 import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { Provider, rbacApiURL }                                  from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor }        from '@acx-ui/test-utils'
+import { getUserProfile, setUserProfile }                        from '@acx-ui/user'
 import { AccountVertical, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
@@ -433,5 +434,25 @@ describe('Layout', () => {
     await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
     await expect(await screen.findByText('Brand Properties'))
       .toBeInTheDocument()
+  })
+
+  it('should render menues correctly if rbacOpsApiEnabled is true', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      rbacOpsApiEnabled: true
+    })
+    render(
+      <Provider>
+        <HspContext.Provider value={{
+          state: {
+            isHsp: true
+          },
+          dispatch: jest.fn()
+        }}>
+          <Layout />
+        </HspContext.Provider>
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByText('My Customers')).toBeVisible()
   })
 })

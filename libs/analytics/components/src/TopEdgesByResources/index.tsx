@@ -86,7 +86,7 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
     payload: {
       start: filters?.startDate,
       end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'),
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate),
       venueIds: filters?.filter?.networkNodes?.flatMap(
         item => item.map(v => (v as FilterNameNode).name)
       )

@@ -19,7 +19,8 @@ import {
   ResidentPortal,
   getServiceDetailsLink,
   getScopeKeyByService,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -42,6 +43,7 @@ export default function ResidentPortalTable () {
       label: intl.$t({ defaultMessage: 'Delete' }),
       visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
       scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -63,6 +65,7 @@ export default function ResidentPortalTable () {
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.RESIDENT_PORTAL, ServiceOperation.EDIT),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -139,6 +142,10 @@ export default function ResidentPortalTable () {
               type: ServiceType.RESIDENT_PORTAL,
               oper: ServiceOperation.CREATE })
             }
+            rbacOpsIds={getServiceAllowedOperation(
+              ServiceType.RESIDENT_PORTAL,
+              ServiceOperation.CREATE
+            )}
             scopeKey={getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.CREATE)}
           >
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>

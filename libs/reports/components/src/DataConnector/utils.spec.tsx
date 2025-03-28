@@ -1,7 +1,7 @@
 import { get } from '@acx-ui/config'
 
-import { DataConnector }                                               from './types'
-import { Actions, generateBreadcrumb, getUserName, isVisibleByAction } from './utils'
+import { DataConnector }                                                                    from './types'
+import { Actions, connectorNameRegExp, generateBreadcrumb, getUserName, isVisibleByAction } from './utils'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -71,5 +71,27 @@ describe('isVisibleByAction', () => {
   it('should hide by default', () => {
     expect(isVisibleByAction([activeRow], 'INVALID_ACTION' as Actions)).toBeFalsy()
     expect(isVisibleByAction([activeRow, activeRow], 'INVALID_ACTION' as Actions)).toBeFalsy()
+  })
+})
+
+describe('connectorNameRegExp', () => {
+  it('should resolve with no error when the input is valid', async () => {
+    const validInput = 'valid _-name'
+    await expect(connectorNameRegExp(validInput)).resolves.toBeUndefined()
+    const validMaxLength = 'a'.repeat(128)
+    await expect(connectorNameRegExp(validMaxLength)).resolves.toBeUndefined()
+    const validMinLength = 'a'.repeat(1)
+    await expect(connectorNameRegExp(validMinLength)).resolves.toBeUndefined()
+  })
+
+  it('should reject with an error for invalid inputs', async () => {
+    const errMsg = 'Please enter a valid name (alphanumeric, spaces, _ and -) ' +
+      'with max length of 128.'
+    const invalidChar = 'invalid.name'
+    await expect(connectorNameRegExp(invalidChar)).rejects.toEqual(errMsg)
+    const invalidLength = 'a'.repeat(129)
+    await expect(connectorNameRegExp(invalidLength)).rejects.toEqual(errMsg)
+    const emptyInput = ''
+    await expect(connectorNameRegExp(emptyInput)).rejects.toEqual(errMsg)
   })
 })

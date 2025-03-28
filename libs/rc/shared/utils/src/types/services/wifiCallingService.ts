@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { QosPriorityEnum } from '../../constants'
+import { QosPriorityEnum }   from '../../constants'
+import { EnforceableFields } from '../configTemplate'
 
 export interface WifiCallingScope {
   id: string,
@@ -17,7 +18,7 @@ export interface WifiCallingDetailContextType {
   setNetworkIds: (networkIds: string[]) => void
 }
 
-export interface WifiCallingFormContextType {
+export interface WifiCallingFormContextType extends EnforceableFields {
   id?: string
   serviceName: string
   name?: string,

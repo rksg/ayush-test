@@ -59,7 +59,7 @@ export function EdgeUpTimeWidget () {
     payload: {
       start: filters?.startDate,
       end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate)
     } as EdgeTimeSeriesPayload
   })
 
@@ -71,7 +71,7 @@ export function EdgeUpTimeWidget () {
         inclusiveDataPoint[2] = moment(dataPoint?.[2])
           .add(
             moment
-              .duration(calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'))
+              .duration(calculateGranularity(filters?.startDate, filters?.endDate))
               .asSeconds(),
             'seconds'
           )

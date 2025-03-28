@@ -144,6 +144,8 @@ describe('IdentityGroupForm', () => {
       })
 
     await waitFor(() => expect(getPersonaGroup).toBeCalled())
+    expect(await screen.findByText(/Edit Identity Group/)).toBeVisible()
+    expect(await screen.findByText(/Identity Group Name/)).toBeVisible()
 
     // eslint-disable-next-line max-len
     fireEvent.change(screen.getByLabelText('Identity Group Name'), { target: { value: 'New IG Name' } })

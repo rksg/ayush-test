@@ -3,7 +3,6 @@ import { gql } from 'graphql-request'
 import {
   calculateGranularity,
   getFilterPayload,
-  granularityToHours,
   IncidentFilter,
   IncidentsToggleFilter,
   incidentsToggle
@@ -23,11 +22,6 @@ interface Response <TimeSeriesData> {
     }
   }
 }
-
-// https://github.com/rksg/rsa-mlisa-ui/pull/279
-const customGranularity = granularityToHours
-  .filter(v => v.granularity !== 'PT1H')
-  .concat({ granularity: 'PT30M', hours: 1 })
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -64,16 +58,10 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          granularity: payload.hideIncidents
-            ? calculateGranularity(
-              payload.startDate,
-              payload.endDate,
-              undefined
-            )
-            : calculateGranularity(
-              payload.startDate,
-              payload.endDate,
-              undefined, customGranularity),
+          granularity: calculateGranularity(
+            payload.startDate,
+            payload.endDate
+          ),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: incidentsToggle(payload),
           ...getFilterPayload(payload)

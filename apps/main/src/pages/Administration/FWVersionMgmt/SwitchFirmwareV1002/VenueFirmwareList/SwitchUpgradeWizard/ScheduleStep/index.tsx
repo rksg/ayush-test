@@ -17,7 +17,10 @@ import {
   SwitchFirmwareModelGroup,
   getSwitchModelGroup,
   SwitchFirmwareV1002,
-  invalidVersionFor82Av
+  invalidVersionFor82Av,
+  invalidVersionFor81X,
+  isRodanAv,
+  isBabyRodanX
 } from '@acx-ui/rc/utils'
 
 import * as UI                   from '../../styledComponents'
@@ -41,6 +44,8 @@ export interface ScheduleStepProps {
 export function ScheduleStep (props: ScheduleStepProps) {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport81Or81X = isSupport8100 || isSupport8100X
   const { availableVersions,
     hasVenue, upgradeVenueList, upgradeSwitchList,
     setShowSubTitle } = props
@@ -93,7 +98,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-  const [switchNoteEnable, setSwitchNoteEnable] = useState(false)
+  const [switch82AvNoteEnable, setSwitch82AvNoteEnable] = useState(false)
+  const [switch81XNoteEnable, setSwitch81XNoteEnable] = useState(false)
 
   const payload = {
     venueIdList: upgradeVenueList.map(item => item.venueId),
@@ -108,14 +114,46 @@ export function ScheduleStep (props: ScheduleStepProps) {
     { payload: {
       ...payload,
       searchFilter: 'ICX8200-C08PFV'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX8100-24-X'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX8100-24P-X'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX8100-48-X'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX8100-48P-X'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX8100-C08PF-X'
     } } ]
     , { skip: upgradeVenueList.length === 0 })
 
   const icxRodanAvGroupedData = (): SwitchFirmwareV1002[][] => {
-    const upgradeSwitchListOfRodanAv = upgradeSwitchList.filter(s =>
-      s.model === 'ICX8200-24PV' || s.model === 'ICX8200-C08PFV')
-    if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
-      const switchList = upgradeSwitchListOfRodanAv.concat(getSwitchFirmwareList?.data || [])
+    const upgradeSwitchListOfRodanAv = upgradeSwitchList.filter(s => isRodanAv(s.model))
+    const switch82AvFirmwareList = getSwitchFirmwareList?.data.filter(s => isRodanAv(s.model))
+    if (upgradeVenueList.length === 0 || switch82AvFirmwareList) {
+      const switchList = upgradeSwitchListOfRodanAv.concat(switch82AvFirmwareList || [])
+      const groupedObject = _.groupBy(switchList, 'venueId')
+      return Object.values(groupedObject)
+    } else {
+      return []
+    }
+  }
+
+  const icxBabyRodanXGroupedData = (): SwitchFirmwareV1002[][] => {
+    const upgradeSwitchListOfBabyRodanX = upgradeSwitchList.filter(s => isBabyRodanX(s.model))
+    const switch81XFirmwareList = getSwitchFirmwareList?.data.filter(s => isBabyRodanX(s.model))
+    if (upgradeVenueList.length === 0 || switch81XFirmwareList) {
+      const switchList = upgradeSwitchListOfBabyRodanX.concat(switch81XFirmwareList || [])
       const groupedObject = _.groupBy(switchList, 'venueId')
       return Object.values(groupedObject)
     } else {
@@ -127,12 +165,16 @@ export function ScheduleStep (props: ScheduleStepProps) {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
   }
 
-  const updateSwitchNoteEnable = (version: string) => {
-    if (exist82AvAndInvalidVersion(version)) {
-      setSwitchNoteEnable(true)
-    } else {
-      setSwitchNoteEnable(false)
-    }
+  const exist81XAndInvalidVersion = (version: string): boolean => {
+    return invalidVersionFor81X(version) && icxBabyRodanXGroupedData().length > 0
+  }
+
+  const updateSwitch82AvNoteEnable = (version: string) => {
+    setSwitch82AvNoteEnable(exist82AvAndInvalidVersion(version))
+  }
+
+  const updateSwitch81XNoteEnable = (version: string) => {
+    setSwitch81XNoteEnable(exist81XAndInvalidVersion(version))
   }
 
   const setVersionFieldValue = function () {
@@ -146,9 +188,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
     setShowSubTitle(false)
 
     setVersionFieldValue()
-    // NotesEnum.NOTE8200_1
     if (isSupport8200AV) {
-      updateSwitchNoteEnable(form.getFieldValue('selectedICX82Version'))
+      updateSwitch82AvNoteEnable(form.getFieldValue('selectedICX82Version'))
+    }
+    if (isSupport8100X) {
+      updateSwitch81XNoteEnable(form.getFieldValue('selectedICX81Version'))
     }
   }, [current])
 
@@ -166,13 +210,16 @@ export function ScheduleStep (props: ScheduleStepProps) {
     setSelecteedICX81Version(value.target.value)
     form.setFieldValue('selectedICX81Version', value.target.value)
     form.validateFields(['selectVersionStep'])
+    if (isSupport8100X) {
+      updateSwitch81XNoteEnable(value.target.value)
+    }
   }
   const handleICX82Change = (value: RadioChangeEvent) => {
     setSelecteedICX82Version(value.target.value)
     form.setFieldValue('selectedICX82Version', value.target.value)
     form.validateFields(['selectVersionStep'])
     if (isSupport8200AV) {
-      updateSwitchNoteEnable(value.target.value)
+      updateSwitch82AvNoteEnable(value.target.value)
     }
   }
 
@@ -265,7 +312,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: '5px 0 40px 0', fontSize: 'var(--acx-body-3-font-size)' }}
+              style={{
+                margin: (isSupport8200AV && switch82AvNoteEnable) ? '5px 0 12px 0' : '5px 0 40px 0',
+                fontSize: 'var(--acx-body-3-font-size)'
+              }}
               onChange={handleICX82Change}
               value={selectedICX82Version}>
               <Space direction={'vertical'}>
@@ -283,25 +333,29 @@ export function ScheduleStep (props: ScheduleStepProps) {
             </Radio.Group>
           </>}
 
-          {isSupport8200AV && switchNoteEnable && <SwitchNote
+          {isSupport8200AV && switch82AvNoteEnable && <SwitchNote
             type={NotesEnum.NOTE8200_1}
             data={icxRodanAvGroupedData()} />}
 
-          { isSupport8100 && (hasVenue || ICX81Count > 0) && <>
+          { isSupport81Or81X && (hasVenue || ICX81Count > 0) && <>
             <Subtitle level={4}>
               {intl.$t({ defaultMessage: 'Firmware available for ICX 8100 Series' })}
               &nbsp;
               ({ICX81Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: '5px 0 40px 0', fontSize: 'var(--acx-body-3-font-size)' }}
+              style={{
+                margin: (isSupport8100X && switch81XNoteEnable) ? '5px 0 12px 0' : '5px 0 40px 0',
+                fontSize: 'var(--acx-body-3-font-size)'
+              }}
               onChange={handleICX81Change}
               value={selectedICX81Version}>
               <Space direction={'vertical'}>
                 {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX81)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getVersionOptionV1002(intl, v)}
+                      {getVersionOptionV1002(intl, v,
+                        (isSupport8100X && exist81XAndInvalidVersion(v.id) ? ' *' : null))}
                     </Radio>)}
                 <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
@@ -309,6 +363,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
               </Space>
             </Radio.Group>
           </>}
+
+          {isSupport8100X && switch81XNoteEnable && <SwitchNote
+            type={NotesEnum.NOTE8100_1}
+            data={icxBabyRodanXGroupedData()} />}
 
           {(hasVenue || ICX7XCount > 0) && <>
             <Subtitle level={4}>

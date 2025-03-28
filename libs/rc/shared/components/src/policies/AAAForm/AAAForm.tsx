@@ -33,7 +33,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -65,7 +66,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
   const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
-  const { getEnforcedStepsFormProps } = useEnforcedStatus()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.RADIUS)
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
@@ -119,15 +120,14 @@ export const AAAForm = (props: AAAFormProps) => {
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
     const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
-    let entityId: string | undefined
+    let entityId: string | undefined = params?.policyId
 
     try {
       if (isEdit) {
-        const res = await updateInstance(requestPayload).unwrap()
+        await updateInstance(requestPayload).unwrap()
         if (supportRadsec) {
           updateRadSecActivations(data, requestPayload?.params?.policyId)
         }
-        entityId = res.id
       } else {
         await createInstance(requestPayload).unwrap().then(res => {
           entityId = res?.response?.id
@@ -279,7 +279,7 @@ export const AAAForm = (props: AAAFormProps) => {
         onCancel={onCancel}
         onFinish={handleAAAPolicy}
         editMode={isEdit}
-        {...getEnforcedStepsFormProps('StepsFormLegacy')}
+        {...getEnforcedStepsFormProps('StepsFormLegacy', data?.isEnforced)}
       >
         <StepsFormLegacy.StepForm
           name='settings'

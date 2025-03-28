@@ -3,10 +3,10 @@ import { useState, useEffect, useContext, useRef } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                           from 'antd/lib/checkbox'
 
-import { Card, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES }     from '@acx-ui/rc/utils'
-import { getIntl }                from '@acx-ui/utils'
+import { Card, Tooltip }                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES, isRodanAvSubModel, isBabyRodanXSubModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                     from '@acx-ui/utils'
 
 import PortProfileContext from './PortProfileContext'
 import * as UI            from './styledComponents'
@@ -38,6 +38,7 @@ export function SelectModelStep () {
 
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
 
   const selectedModels = editMode ?
     portProfileList?.filter(
@@ -119,7 +120,12 @@ export function SelectModelStep () {
       initState(family)
       for (const model in ICX_MODELS_MODULES[family as keyof typeof ICX_MODELS_MODULES]) {
         if (!isSupport8200AV && family === 'ICX8200') {
-          if (model === '24PV' || model === 'C08PFV') {
+          if (isRodanAvSubModel(model)) {
+            continue
+          }
+        }
+        if (!isSupport8100X && family === 'ICX8100') {
+          if (isBabyRodanXSubModel(model)) {
             continue
           }
         }
