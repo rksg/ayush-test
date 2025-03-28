@@ -71,8 +71,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         setEspReplayWindowEnabled(false)
         form.setFieldValue('espReplayWindowEnabledCheckbox', false)
       }
-      if (initIpSecData.advancedOption?.dpdDelay
-        || initIpSecData.advancedOption?.dpdDelay !== 0) {
+      if (initIpSecData.advancedOption?.dpdDelay) {
         setDeadPeerDetectionDelayEnabled(true)
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
       } else {

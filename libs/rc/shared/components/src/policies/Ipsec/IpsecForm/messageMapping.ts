@@ -6,7 +6,7 @@ export const messageMapping = {
   authentication_certificate_help_msg: defineMessage({ defaultMessage: 'The client certificate is pre-installed on the AP. Uploading the server root CA is required for authentication and validation on the IPsec server.' }),
   ike_rekey_tooltip: defineMessage({ defaultMessage: 'Set the time interval at which the IKE key renews or uncheck to disable the IKE rekey.' }),
   esp_rekey_tooltip: defineMessage({ defaultMessage: 'Set the time interval at which the ESP key renews or uncheck to disable the ESP rekey.' }),
-  gateway_dhcp_option_tooltip: defineMessage({ defaultMessage: 'Set the DHCP Option 43 subcode that will be used to discover the address of the security gateway on the network. Available range is 3-243 but not 6.' }),
+  gateway_dhcp_option_tooltip: defineMessage({ defaultMessage: 'Set the DHCP Option 43 subcode that will be used to discover the address of the security gateway on the network. The available range is 3-243, excluding 6' }),
   gateway_retry_tooltip: defineMessage({ defaultMessage: 'Set the number of times that the controller will attempt to discover the address of the security gateway. Available values are 1-16.' }),
   connection_esp_replay_window_tooltip: defineMessage({ defaultMessage: 'Set the ESP replay window (in packets). Available range is 1-32.' }),
   connection_ip_compression_tooltip: defineMessage({ defaultMessage: 'To enable IP Payload Compression Protocol (IPComp) compression before encryption.' }),

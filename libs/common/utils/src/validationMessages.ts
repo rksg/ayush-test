@@ -516,7 +516,7 @@ export const validationMessages = {
     description: 'Validation - Switch Port Profiles Duplicate Invalid'
   }),
   IpsecProfileDhcpOpion43InvalidValue: defineMessage({
-    defaultMessage: 'DHCP Option 43 value with 6 is invalid.',
+    defaultMessage: 'The available range is 3-243, excluding 6',
     description: 'Validation - Ipsec Profile DHCP Option 43 Invalid Value'
   })
 }

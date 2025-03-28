@@ -1,9 +1,18 @@
 import { Form }         from 'antd'
 import { IntlProvider } from 'react-intl'
 
-import { render, fireEvent, screen } from '@acx-ui/test-utils'
+import { IpSecAuthEnum }                         from '@acx-ui/rc/utils'
+import { render, fireEvent, screen, renderHook } from '@acx-ui/test-utils'
 
 import RekeySettings from './RekeySettings'
+
+const initialFormValue = {
+  id: 'testId',
+  name: 'testName',
+  authType: IpSecAuthEnum.PSK,
+  ikeRekeyTime: 4,
+  espRekeyTime: 1
+}
 
 describe('RekeySettings', () => {
   const renderComponent = () => {
@@ -15,6 +24,25 @@ describe('RekeySettings', () => {
       </IntlProvider>
     )
   }
+
+  it('renders with default props', () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      return form
+    })
+    render(<Form form={formRef.current}>
+      <RekeySettings
+        initIpSecData={initialFormValue}
+        loadReKeySettings
+        setLoadReKeySettings={jest.fn()} /></Form>)
+    expect(screen.getByText('Internet Key Exchange (IKE)')).toBeInTheDocument()
+    expect(screen.getByText('Encapsulating Security Payload (ESP)')).toBeInTheDocument()
+
+    const ikeRekeyTimeElement = screen.getByTestId('ikeRekeyTime')
+    expect(ikeRekeyTimeElement).toBeInTheDocument()
+    const espRekeyTimeElement = screen.getByTestId('espRekeyTime')
+    expect(espRekeyTimeElement).toBeInTheDocument()
+  })
 
   it('toggles checkboxes', () => {
     renderComponent()
