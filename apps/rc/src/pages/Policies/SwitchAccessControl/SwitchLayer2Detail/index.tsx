@@ -3,12 +3,13 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                       from '@acx-ui/components'
-import { useGetLayer2AclByIdQuery }                                                       from '@acx-ui/rc/services'
-import { getPolicyAllowedOperation, PolicyType, PolicyOperation, getPolicyListRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink }                              from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                                                   from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess }                                       from '@acx-ui/user'
+import { Button, PageHeader, Tabs }                          from '@acx-ui/components'
+import { useGetLayer2AclByIdQuery }                          from '@acx-ui/rc/services'
+import {  getPolicyListRoutePath, SwitchRbacUrlsInfo }       from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                      from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission }          from '@acx-ui/user'
+import { getOpsApi }                                         from '@acx-ui/utils'
 
 import Layer2ACLOverview from './Layer2ACLOverview'
 import Layer2ACLRules    from './Layer2ACLRules'
@@ -60,7 +61,7 @@ export function SwitchLayer2Detail () {
     return (
       <TenantLink
         scopeKey={[SwitchScopes.UPDATE]}
-        rbacOpsIds={getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}
+        rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.updateLayer2Acl)]}
         to={`/policies/accessControl/switch/layer2/${accessControlId}/edit`}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>

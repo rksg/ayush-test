@@ -255,7 +255,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
               ]}
               validateTrigger='onBlur'
             >
-              <Input disabled={editMode} style={{ width: '400px' }} />
+              <Input disabled={editMode} style={{ width: '400px' }} maxLength={255} />
             </Form.Item>
             <Table
               dataSource={dataSource}

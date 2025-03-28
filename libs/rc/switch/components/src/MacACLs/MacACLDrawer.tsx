@@ -354,7 +354,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
                 { validator: validateMacAclName }
               ]}
             >
-              <Input disabled={editMode} style={{ width: '400px' }} />
+              <Input disabled={editMode} style={{ width: '400px' }} maxLength={255} />
             </Form.Item></Col>
             <Col>
               {macACLData?.sharedWithPolicyAndProfile &&

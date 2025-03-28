@@ -1,11 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, SummaryCard }                                                 from '@acx-ui/components'
-import { useGetSwitchAccessControlSetByIdQuery }                                           from '@acx-ui/rc/services'
-import { getPolicyAllowedOperation, PolicyOperation, PolicyType, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                           from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                                                    from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess }                                        from '@acx-ui/user'
+import { Button, PageHeader, SummaryCard }                         from '@acx-ui/components'
+import { useGetSwitchAccessControlSetByIdQuery }                   from '@acx-ui/rc/services'
+import { PolicyType, SwitchRbacUrlsInfo, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                   from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                            from '@acx-ui/types'
+import { hasCrossVenuesPermission, filterByAccess }                from '@acx-ui/user'
+import { getOpsApi }                                               from '@acx-ui/utils'
 
 export const SwitchAccessControlSetDetail = () => {
   const { $t } = useIntl()
@@ -21,7 +22,7 @@ export const SwitchAccessControlSetDetail = () => {
     return (
       <TenantLink
         scopeKey={[SwitchScopes.UPDATE]}
-        rbacOpsIds={getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT)}
+        rbacOpsIds={[getOpsApi(SwitchRbacUrlsInfo.updateSwitchAccessControlSet)]}
         to={`/policies/accessControl/switch/${accessControlId}/edit`}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
