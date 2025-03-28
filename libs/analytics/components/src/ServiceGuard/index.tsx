@@ -2,10 +2,16 @@ import { createContext, useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button }                                  from '@acx-ui/components'
-import { TenantLink }                              from '@acx-ui/react-router-dom'
-import { WifiScopes }                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { Button }     from '@acx-ui/components'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
 
 import { ServiceGuardTable }            from './ServiceGuardTable'
 import { useAllServiceGuardSpecsQuery } from './services'
@@ -27,16 +33,21 @@ export function useServiceGuard () {
     description: 'Translation string - Service Validation'
   })
 
-  const extra = hasCrossVenuesPermission() && hasPermission({
-    permission: 'WRITE_SERVICE_VALIDATION',
-    scopes: [WifiScopes.CREATE]
-  }) ? [
-      <TenantLink to='/analytics/serviceValidation/add' key='add'>
-        <Button type='primary'
-          children={$t({ defaultMessage: 'Create Test' })}
-        />
-      </TenantLink>
-    ]: []
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasCreateServiceGuardPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([aiOpsApis.createServiceValidation])
+    : hasCrossVenuesPermission() && hasPermission({
+      permission: 'WRITE_SERVICE_VALIDATION',
+      scopes: [WifiScopes.CREATE]
+    })
+
+  const headerExtra = [
+    <TenantLink to='/analytics/serviceValidation/add' key='add'>
+      <Button type='primary'
+        children={$t({ defaultMessage: 'Create Test' })}
+      />
+    </TenantLink>
+  ]
 
   const component = <CountContext.Provider value={{ count, setCount }}>
     <ServiceGuardTable />
@@ -44,7 +55,7 @@ export function useServiceGuard () {
 
   return {
     title: $t(title, { count }),
-    headerExtra: extra,
+    headerExtra: hasCreateServiceGuardPermission ? headerExtra : [],
     component
   }
 }

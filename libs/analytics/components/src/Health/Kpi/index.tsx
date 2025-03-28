@@ -14,11 +14,17 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Button }        from '@acx-ui/components'
-import { get }                                     from '@acx-ui/config'
-import { SwitchScopes, WifiScopes }                from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import type { AnalyticsFilter }                    from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -108,6 +114,14 @@ export function KpiSection (props: {
   useEffect(() => { connect('timeSeriesGroup') }, [])
   useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
 
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasUpdateKpiPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([aiOpsApis.updateHealthKpiThreshold])
+    : hasCrossVenuesPermission() && hasPermission({
+      permission: 'WRITE_HEALTH',
+      scopes: [isSwitch ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
+    })
+
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>
@@ -150,10 +164,7 @@ export function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
-                disabled={!(hasCrossVenuesPermission() && hasPermission({
-                  permission: 'WRITE_HEALTH',
-                  scopes: [isSwitch ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
-                }))}
+                disabled={!hasUpdateKpiPermission}
               />
             ) : (
               <BarChart

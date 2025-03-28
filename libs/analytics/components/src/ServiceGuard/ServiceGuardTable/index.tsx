@@ -10,13 +10,21 @@ import {
   dateSort,
   getUserProfile
 }                              from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, showActionModal, showToast, Modal }                   from '@acx-ui/components'
-import { get }                                                                            from '@acx-ui/config'
-import { DateFormatEnum, formatter }                                                      from '@acx-ui/formatter'
-import { TenantLink, useTenantLink }                                                      from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                     from '@acx-ui/types'
-import { useUserProfileContext, filterByAccess, hasPermission, hasCrossVenuesPermission } from '@acx-ui/user'
-import { noDataDisplay }                                                                  from '@acx-ui/utils'
+import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
+import { get }                                                          from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                   from '@acx-ui/types'
+import {
+  getUserProfile as getR1UserProfile,
+  hasAllowedOperations,
+  aiOpsApis,
+  useUserProfileContext,
+  filterByAccess,
+  hasPermission,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { CountContext }  from '..'
 import * as contents     from '../contents'
@@ -84,6 +92,7 @@ export function ServiceGuardTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [aiOpsApis.updateServiceValidation],
       onClick: ([{ id }], clearSelection) => {
         runTest({ id })
         clearSelection()
@@ -102,6 +111,7 @@ export function ServiceGuardTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [aiOpsApis.updateServiceValidation],
       onClick: (selectedRows) => {
         navigate({
           ...serviceGuardPath,
@@ -124,11 +134,13 @@ export function ServiceGuardTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
       scopeKey: [WifiScopes.CREATE],
+      rbacOpsIds: [aiOpsApis.createServiceValidation],
       onClick: ([{ id }]) => setClone(id)
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Delete' })),
       scopeKey: [WifiScopes.DELETE],
+      rbacOpsIds: [aiOpsApis.deleteServiceValidation],
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -246,6 +258,18 @@ export function ServiceGuardTable () {
     }
   ]
 
+  const { rbacOpsApiEnabled } = getR1UserProfile()
+  const hasRowSelection = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      aiOpsApis.createServiceValidation,
+      aiOpsApis.updateServiceValidation,
+      aiOpsApis.deleteServiceValidation
+    ])
+    : hasCrossVenuesPermission() && hasPermission({
+      permission: 'WRITE_SERVICE_VALIDATION',
+      scopes: [WifiScopes.UPDATE]
+    })
+
   return (
     <Loader states={[queryResults]}>
       <Table
@@ -253,13 +277,7 @@ export function ServiceGuardTable () {
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
-        rowSelection={
-          hasCrossVenuesPermission() &&
-          hasPermission({
-            permission: 'WRITE_SERVICE_VALIDATION',
-            scopes: [WifiScopes.UPDATE]
-          }) && { type: 'radio' }
-        }
+        rowSelection={hasRowSelection && { type: 'radio' }}
         rowActions={filterByAccess(rowActions)}
         rowKey='id'
         showSorterTooltip={false}

@@ -2,15 +2,29 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip, Banner }                                          from '@acx-ui/components'
-import { get }                                                                                 from '@acx-ui/config'
-import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI }                                       from '@acx-ui/icons'
-import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                          from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter, useEncodedParameter, useTrackLoadTime, widgetsMapping }    from '@acx-ui/utils'
+import { Loader, TableProps, Table, Tooltip, Banner }    from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI } from '@acx-ui/icons'
+import { useNavigate, useTenantLink, TenantLink }        from '@acx-ui/react-router-dom'
+import { WifiScopes }                                    from '@acx-ui/types'
+import {
+  filterByAccess,
+  getShowWithoutRbacCheckKey,
+  getUserProfile,
+  hasAllowedOperations,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import {
+  noDataDisplay,
+  PathFilter,
+  useEncodedParameter,
+  useTrackLoadTime,
+  widgetsMapping
+} from '@acx-ui/utils'
 
 import { Icon }                                       from './common/IntentIcon'
 import { AiFeatures, codes, IntentListItem }          from './config'
@@ -310,6 +324,14 @@ export function IntentAITable (
     isEnabled: isMonitoringPageEnabled
   })
 
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasRowSelection = rbacOpsApiEnabled
+    ? hasAllowedOperations([aiOpsApis.updateIntentAI])
+    : hasCrossVenuesPermission() && hasPermission({
+      permission: 'WRITE_INTENT_AI',
+      scopes: [WifiScopes.UPDATE]
+    })
+
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />
@@ -330,8 +352,7 @@ export function IntentAITable (
         columns={columns}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasCrossVenuesPermission() &&
-          hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] }) && {
+        rowSelection={hasRowSelection && {
           type: 'checkbox',
           selectedRowKeys,
           onChange: (_, selRows) => setSelectedRows(selRows)

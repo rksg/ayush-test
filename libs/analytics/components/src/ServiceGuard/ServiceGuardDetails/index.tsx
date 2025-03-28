@@ -3,7 +3,13 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                          from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }             from '@acx-ui/user'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
 
 import { Details }                                        from './DetailsTable'
 import { Title, useSubTitle, ReRunButton, TestRunButton } from './Header'
@@ -42,6 +48,14 @@ export function ServiceGuardDetails () {
   })
   const Tab = tabs.find(tab => tab.key === activeTab)?.component
 
+  const { rbacOpsApiEnabled } = getUserProfile()
+  const hasUpdateServiceGuardPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([aiOpsApis.updateServiceValidation])
+    : hasCrossVenuesPermission() && hasPermission({
+      permission: 'WRITE_SERVICE_VALIDATION',
+      scopes: [WifiScopes.UPDATE]
+    })
+
   return (
     <>
       <PageHeader
@@ -56,13 +70,7 @@ export function ServiceGuardDetails () {
           }
         ]}
         extra={[
-          ...(hasCrossVenuesPermission() && hasPermission({
-            permission: 'WRITE_SERVICE_VALIDATION',
-            scopes: [WifiScopes.UPDATE]
-          })
-            ? [ <ReRunButton key='re-run' /> ]
-            : []
-          ),
+          ...(hasUpdateServiceGuardPermission ? [<ReRunButton key='re-run' />] : []),
           <TestRunButton key='past-tests' />
         ]}
         footer={

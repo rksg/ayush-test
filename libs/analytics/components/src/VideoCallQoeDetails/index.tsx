@@ -15,10 +15,21 @@ import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                      from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }                         from '@acx-ui/user'
-import { DateFilter, DateRange, TABLE_DEFAULT_PAGE_SIZE, encodeParameter } from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  aiOpsApis,
+  hasCrossVenuesPermission,
+  hasPermission
+} from '@acx-ui/user'
+import {
+  DateFilter,
+  DateRange,
+  TABLE_DEFAULT_PAGE_SIZE,
+  encodeParameter
+} from '@acx-ui/utils'
 
 import { zoomStatsThresholds }                                                                         from '../VideoCallQoe/constants'
 import { useSearchClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
@@ -112,6 +123,14 @@ export function VideoCallQoeDetails (){
           range: DateRange.custom
         })
 
+        const { rbacOpsApiEnabled } = getUserProfile()
+        const hasUpdateVideoCallQoePermission = rbacOpsApiEnabled
+          ? hasAllowedOperations([aiOpsApis.updateVideoCallQoe])
+          : hasCrossVenuesPermission() && hasPermission({
+            permission: 'WRITE_VIDEO_CALL_QOE',
+            scopes: [WifiScopes.UPDATE]
+          })
+
         if (networkType.toLowerCase() === 'wifi') {
           const link =
             `/users/wifi/clients/${macAddress}/details/troubleshooting?period=${callPeriod}`
@@ -127,8 +146,7 @@ export function VideoCallQoeDetails (){
                   : (
                     <div style={{ width: '100px' }}>-</div>
                   )}
-              {hasCrossVenuesPermission() &&
-               hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE', scopes: [WifiScopes.UPDATE] }) &&
+              {hasUpdateVideoCallQoePermission &&
               <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
                 <EditOutlinedIcon
                   style={{ height: '16px', width: '16px', cursor: 'pointer' }}
@@ -146,8 +164,7 @@ export function VideoCallQoeDetails (){
         return (
           <Space>
             <div style={{ width: '100px' }}>-</div>
-            {hasCrossVenuesPermission() &&
-             hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE', scopes: [WifiScopes.UPDATE] }) &&
+            {hasUpdateVideoCallQoePermission &&
             <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
               <EditOutlinedDisabledIcon
                 style={{ height: '16px', width: '16px', cursor: 'not-allowed' }}
