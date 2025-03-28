@@ -99,7 +99,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
         name={['ikeSecurityAssociation', 'ikeProposalType']}
         label={$t({ defaultMessage: 'Internet Key Exchange (IKE) Proposal' })}
         style={{ width: '300px' }}
-        initialValue={ikeProposalType}
         children={
           <Select
             onChange={onProposalTypeChange}

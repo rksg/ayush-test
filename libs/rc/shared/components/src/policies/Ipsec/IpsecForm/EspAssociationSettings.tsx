@@ -94,7 +94,6 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
         name={['espSecurityAssociation', 'espProposalType']}
         label={$t({ defaultMessage: 'Encapsulating Security Payload (ESP) Proposal' })}
         style={{ width: '300px' }}
-        initialValue={espProposalType}
         children={
           <Select
             onChange={onProposalTypeChange}
@@ -163,11 +162,11 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     rules={[
                       { required: true }
                     ]}
+                    initialValue={IpSecIntegrityAlgorithmEnum.SHA1}
                     children={
                       <Select style={{ minWidth: 180 }}
                         data-testid={`select_integrity_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
-                        defaultValue={IpSecIntegrityAlgorithmEnum.SHA1}
                         options={integrityOptions}
                       />}
                   />
@@ -175,11 +174,11 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     name={[field.name, 'dhGroup']}
                     label={$t({ defaultMessage: 'DH Group' })}
                     rules={[{ required: true }]}
+                    initialValue={IpSecDhGroupEnum.MODP2048}
                     children={
                       <Select style={{ minWidth: 180 }}
                         data-testid={`select_dh_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
-                        defaultValue={IpSecDhGroupEnum.MODP2048}
                         options={dhGroupOptions}
                       />}
                   />
