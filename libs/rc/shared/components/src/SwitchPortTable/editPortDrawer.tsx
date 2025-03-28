@@ -923,6 +923,8 @@ export function EditPortDrawer ({
         return !isFirmwareAbove10020b || isCloudPort
       case 'adminPtToPt':
         return !isFirmwareAbove10020b
+      case 'portSecurity':
+        return !isFirmwareAbove10010gOr10020b
       case 'switchMacAcl':
         return !isFirmwareAbove10010gOr10020b || isCloudPort
       default: return false
