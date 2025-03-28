@@ -93,7 +93,7 @@ function PersonaDetails () {
       page: 1,
       pageSize: 1
     }
-  }, { skip: !personaId })
+  }, { skip: !personaId || !isIdentityRefactorEnabled })
 
   const certTableQuery = useTableQuery({
     useQuery: useGetCertificatesByIdentityIdQuery,

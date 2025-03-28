@@ -36,12 +36,15 @@ import {
   useConfigTemplateQueryFnSwitcher,
   TableResult,
   useServicePreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { useEnforcedStatus } from '../../configTemplates'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
@@ -96,6 +99,8 @@ export function DpskForm (props: DpskFormProps) {
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.DPSK)
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -122,6 +127,7 @@ export function DpskForm (props: DpskFormProps) {
   const saveData = async (data: CreateDpskFormFields) => {
     const dpskSaveData = transferFormFieldsToSaveData(data)
     let result: DpskMutationResult
+    let entityId: string | undefined
 
     try {
       if (editMode) {
@@ -130,6 +136,8 @@ export function DpskForm (props: DpskFormProps) {
           payload: _.omit(dpskSaveData, 'id'),
           enableRbac
         }).unwrap()
+
+        entityId = params.serviceId
       } else {
         if (isIdentityGroupRequired) {
           result = await createDpskWithIdentityGroup({
@@ -143,6 +151,12 @@ export function DpskForm (props: DpskFormProps) {
             enableRbac
           }).unwrap()
         }
+
+        entityId = result.id
+      }
+
+      if (entityId) {
+        await saveEnforcementConfig(entityId)
       }
 
       if (modalMode) {
@@ -167,6 +181,7 @@ export function DpskForm (props: DpskFormProps) {
           onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
           onFinish={saveData}
           editMode={editMode}
+          {...getEnforcedStepsFormProps('StepsFormLegacy', dataFromServer?.isEnforced)}
         >
           <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'

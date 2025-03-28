@@ -34,6 +34,8 @@ import {
 import {
   ApVenueStatusEnum,
   CommonUrlsInfo,
+  ConfigTemplateType,
+  PropertyUrlsInfo,
   TableQuery,
   usePollingTableQuery,
   Venue,
@@ -215,6 +217,8 @@ function useColumns (
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: function (_, row) {
         return (
           <>
@@ -288,7 +292,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
   const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const hasDeletePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])
@@ -300,7 +304,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
       getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+      getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+      getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
@@ -354,7 +360,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
             getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
-            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting)
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]
         }) && rowSelection}
       />

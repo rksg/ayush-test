@@ -33,9 +33,12 @@ import {
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
-  useConfigTemplate
+  useConfigTemplate,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+
+import { useEnforcedStatus } from '../../configTemplates'
 
 import { AAASettingForm } from './AAASettingForm'
 
@@ -62,7 +65,8 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
+  const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.RADIUS)
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
@@ -116,6 +120,8 @@ export const AAAForm = (props: AAAFormProps) => {
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
     const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
+    let entityId: string | undefined = params?.policyId
+
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
@@ -124,11 +130,16 @@ export const AAAForm = (props: AAAFormProps) => {
         }
       } else {
         await createInstance(requestPayload).unwrap().then(res => {
+          entityId = res?.response?.id
           data.id = res?.response?.id
           if (supportRadsec) {
             addRadSecActivations(data, res?.response?.id)
           }
         })
+      }
+
+      if (entityId) {
+        await saveEnforcementConfig(entityId)
       }
 
       networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
@@ -268,6 +279,7 @@ export const AAAForm = (props: AAAFormProps) => {
         onCancel={onCancel}
         onFinish={handleAAAPolicy}
         editMode={isEdit}
+        {...getEnforcedStepsFormProps('StepsFormLegacy', data?.isEnforced)}
       >
         <StepsFormLegacy.StepForm
           name='settings'

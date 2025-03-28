@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 
 import { Button, Card, Drawer, Tabs } from '@acx-ui/components'
 import { LicenseCardProps }           from '@acx-ui/msp/utils'
+import { useUserProfileContext }      from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -17,6 +18,12 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
   const [currentTab, setCurrentTab] = useState<string | undefined>('summary')
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false)
   const { title, data, trialType } = props
+
+  const {
+    isPrimeAdmin
+  } = useUserProfileContext()
+
+  const isPrimeAdminUser = isPrimeAdmin()
 
   const [form] = Form.useForm()
 
@@ -122,6 +129,7 @@ export default function RecSolutionTokenCard (props: LicenseCardProps) {
             footer={
               <div><Button
                 type='primary'
+                disabled={!isPrimeAdminUser}
                 onClick={() => onSubmitHandler()}>
                 {$t({ defaultMessage: 'Save' })}
               </Button>

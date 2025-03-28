@@ -7,23 +7,24 @@ import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc
 import {
   CommonUrlsInfo,
   DpskUrls,
+  EdgeCompatibilityFixtures,
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
   EdgePinFixtures,
+  EdgePinUrls,
+  EdgeSdLanFixtures,
+  EdgeSdLanUrls,
+  EdgeStatus,
   EdgeTunnelProfileFixtures,
   EdgeUrlsInfo,
-  EdgePinUrls,
+  NetworkSegmentTypeEnum,
   PersonaUrls,
   PropertyUrlsInfo,
+  SwitchUrlsInfo,
   TunnelProfileUrls,
-  TunnelTypeEnum,
-  VenueFixtures,
-  EdgeSdLanUrls,
-  EdgeSdLanFixtures,
-  EdgeCompatibilityFixtures,
-  EdgeStatus,
-  SwitchUrlsInfo } from '@acx-ui/rc/utils'
+  VenueFixtures
+} from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
@@ -57,7 +58,7 @@ const { mockDhcpStatsData } = EdgeDHCPFixtures
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
-  data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
+  data: mockedTunnelProfileViewData.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN)
 }
 
 // make cluster[0] and cluster[1] have the same venue

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, memo } from 'react'
 
 import { Divider, Form, Spin } from 'antd'
 import { debounce }            from 'lodash'
@@ -10,7 +10,7 @@ import { v4 as uuidv4 }        from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation, useSendFeedbackMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                                             from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                           from '@acx-ui/react-router-dom'
@@ -19,6 +19,123 @@ import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
 import HistoryDrawer                from './HistoryDrawer'
 import * as UI                      from './styledComponents'
+
+const Message = (props:{
+    chat: ChatMessage,
+    sessionId:string,
+    groups: Group[],
+    canvasRef?: React.RefObject<CanvasRef>,
+    onUserFeedback: (feedback: string, message: ChatMessage) => void
+}) => {
+  const { chat, sessionId, groups, canvasRef, onUserFeedback } = props
+  const chatBubbleRef = useRef<HTMLDivElement>(null)
+  const messageTailRef = useRef<HTMLDivElement>(null)
+  const { $t } = useIntl()
+  const deletedHint = $t({ defaultMessage:
+    'Older chat conversations have been deleted due to the 30-day retention policy.' })
+
+  const [sendFeedback] = useSendFeedbackMutation()
+
+  const onSubmitFeedback = (feedback: boolean, message: ChatMessage) => {
+    const userFeedback = feedback ? 'THUMBS_UP' : 'THUMBS_DOWN'
+    onUserFeedback(userFeedback, message)
+    sendFeedback({
+      params: { sessionId: sessionId, messageId: message.id },
+      payload: feedback
+    }).catch(()=> {
+      onUserFeedback('', message)
+    })
+  }
+
+  useEffect(() => {
+    if (chatBubbleRef.current && messageTailRef.current) {
+      const isFixed = messageTailRef.current.classList.contains('fixed') ||
+        messageTailRef.current.classList.contains('message-tail')
+      if (!isFixed) {
+        messageTailRef.current.style.width = `${chatBubbleRef.current.offsetWidth}px`
+      }
+    }
+  }, [chat.text])
+
+  return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
+    : <div className='message'>
+      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
+        {/* eslint-disable-next-line max-len */}
+        <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
+      </div>
+      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+        ...chat.widgets[0],
+        sessionId,
+        id: chat.id,
+        chatId: chat.id
+      }}
+      groups={groups}
+      removeShadowCard={canvasRef?.current?.removeShadowCard}
+      /> }
+      {
+        chat.created &&
+        <div ref={messageTailRef}
+          // eslint-disable-next-line max-len
+          className={`${chat.role === 'AI' ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'}`}>
+          <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+            {moment(chat.created).format('hh:mm A')}
+          </div>
+          {
+            chat.role === 'AI' &&
+            <div className='user-feedback'>
+              <UI.ThumbsUp
+                // eslint-disable-next-line max-len
+                className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_UP' ? 'clicked' : '') : ''}`}
+                onClick={() => {
+                  onSubmitFeedback(true, chat)
+                }}
+              />
+              <UI.ThumbsDown
+                // eslint-disable-next-line max-len
+                className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_DOWN' ? 'clicked' : '') : ''}`}
+                onClick={() => {
+                  onSubmitFeedback(false, chat)
+                }}
+              />
+            </div>
+          }
+        </div>
+      }
+    </div>
+}
+
+const Messages = memo((props:{
+  moreloading: boolean,
+  aiBotLoading: boolean,
+  chats: ChatMessage[],
+  sessionId:string,
+  groups: Group[],
+  canvasRef: React.RefObject<CanvasRef>,
+  onUserFeedback: (feedback: string, message: ChatMessage) => void
+})=> {
+  const { $t } = useIntl()
+  const welcomeMessage = {
+    id: 'welcomeMessage',
+    role: 'AI',
+    text: $t({ defaultMessage:
+      'Hello, I am RUCKUS digital system engineer, you can ask me anything about your network.' })
+  }
+  const { moreloading, aiBotLoading, chats, sessionId, groups, canvasRef, onUserFeedback } = props
+  return <div className='messages-wrapper'>
+    {
+      !chats?.length && <Message key={welcomeMessage.id}
+        chat={welcomeMessage}
+        sessionId={sessionId}
+        groups={groups}
+        onUserFeedback={onUserFeedback} />
+    }
+    {moreloading && <div className='loading'><Spin /></div>}
+    {chats?.map((i) => (
+      // eslint-disable-next-line max-len
+      <Message key={i.id} chat={i} sessionId={sessionId} groups={groups} canvasRef={canvasRef} onUserFeedback={onUserFeedback}/>
+    ))}
+    {aiBotLoading && <div className='loading'><Spin /></div>}
+  </div>})
 
 export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
@@ -29,7 +146,6 @@ export default function AICanvas () {
   const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
   const [getChats] = useGetChatsMutation()
-  const [sendFeedback] = useSendFeedbackMutation()
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
@@ -43,17 +159,18 @@ export default function AICanvas () {
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
 
+  const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
-  const deletedHint = $t({ defaultMessage:
-    'Older chat conversations have been deleted due to the 30-day retention policy.' })
   const questions = [
     'What can you do?',
-    'Show me the top-consuming clients',
-    'Generate a graph of my APs usage over the past 24 hours',
-    'Can you give me the trending network traffic from last week?'
+    'Give me a table for the Top 10 clients based on traffic.',
+    'Show me the trending of the network traffic for last week.',
+    'How many clients were connected to my network yesterday?'
   ] // Only support english default questions in phase 1
+
+
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
@@ -199,17 +316,17 @@ export default function AICanvas () {
             type: 'default',
             key: 'cancel'
           }, {
-            text: $t({ defaultMessage: 'Save Canvas' }),
-            type: 'primary',
-            key: 'ok',
-            closeAfterAction: true,
-            handler: handleSaveCanvas
-          }, {
             text: $t({ defaultMessage: 'Discard Changes' }),
             type: 'primary',
             key: 'discard',
             closeAfterAction: true,
             handler: onClose
+          }, {
+            text: $t({ defaultMessage: 'Save Canvas' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true,
+            handler: handleSaveCanvas
           }]
         }
       })
@@ -251,17 +368,6 @@ export default function AICanvas () {
     setChats([])
   }
 
-  const onSubmitFeedback = (feedback: boolean, message: ChatMessage) => {
-    const userFeedback = feedback ? 'THUMBS_UP' : 'THUMBS_DOWN'
-    cacheUserFeedback(userFeedback, message)
-    sendFeedback({
-      params: { sessionId: sessionId, messageId: message.id },
-      payload: feedback
-    }).catch(()=> {
-      cacheUserFeedback('', message)
-    })
-  }
-
   const cacheUserFeedback = (userFeedback: string, message: ChatMessage) => {
     const updatedMessage = {
       ...message,
@@ -272,67 +378,6 @@ export default function AICanvas () {
         chat.id === message.id ? updatedMessage : chat
       )
     )
-  }
-
-  const Message = (props:{ chat: ChatMessage }) => {
-    const { chat } = props
-    const chatBubbleRef = useRef<HTMLDivElement>(null)
-    const messageTailRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-      if (chatBubbleRef.current && messageTailRef.current) {
-        const isFixed = messageTailRef.current.classList.contains('fixed') ||
-          messageTailRef.current.classList.contains('message-tail')
-        if (!isFixed) {
-          messageTailRef.current.style.width = `${chatBubbleRef.current.offsetWidth}px`
-        }
-      }
-    }, [chat.text])
-
-    return chat.role ==='SYSTEM' ? <Divider plain>{deletedHint}</Divider>
-      : <div className='message'>
-        <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-          {/* eslint-disable-next-line max-len */}
-          <div className='chat-bubble' ref={chatBubbleRef} dangerouslySetInnerHTML={{ __html: chat.text }} />
-        </div>
-        { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
-          ...chat.widgets[0],
-          sessionId,
-          id: chat.id,
-          chatId: chat.id
-        }}
-        groups={groups}
-        /> }
-        {
-          chat.created &&
-          <div ref={messageTailRef}
-            // eslint-disable-next-line max-len
-            className={`${chat.role === 'AI' ? 'ai-message-tail' : 'message-tail'} ${!!chat.widgets?.length ? 'fixed' : 'dynamic'}`}>
-            <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-              {moment(chat.created).format('hh:mm A')}
-            </div>
-            {
-              chat.role === 'AI' &&
-              <div className='user-feedback'>
-                <UI.ThumbsUp
-                  // eslint-disable-next-line max-len
-                  className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_UP' ? 'clicked' : '') : ''}`}
-                  onClick={() => {
-                    onSubmitFeedback(true, chat)
-                  }}
-                />
-                <UI.ThumbsDown
-                  // eslint-disable-next-line max-len
-                  className={`${chat.userFeedback ? (chat.userFeedback === 'THUMBS_DOWN' ? 'clicked' : '') : ''}`}
-                  onClick={() => {
-                    onSubmitFeedback(false, chat)
-                  }}
-                />
-              </div>
-            }
-          </div>
-        }
-      </div>
   }
 
   return (
@@ -364,8 +409,7 @@ export default function AICanvas () {
                 }
               </div>
               <div className='title'>
-                <RuckusAiDog size='lg' />
-                <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
+                <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
                 <Close data-testid='close-icon' onClick={onClickClose}/>
@@ -374,13 +418,14 @@ export default function AICanvas () {
             <div className='content'>
               <Loader states={[{ isLoading: isChatsLoading }]}>
                 <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <div className='messages-wrapper'>
-                    {moreloading && <div className='loading'><Spin /></div>}
-                    {chats?.map((i) => (
-                      <Message key={i.id} chat={i} />
-                    ))}
-                    {aiBotLoading && <div className='loading'><Spin /></div>}
-                  </div>
+                  <Messages
+                    moreloading={moreloading}
+                    aiBotLoading={aiBotLoading}
+                    chats={chats}
+                    sessionId={sessionId}
+                    canvasRef={canvasRef}
+                    groups={groups}
+                    onUserFeedback={cacheUserFeedback} />
                   {
                     !chats?.length && <div className='placeholder'>
                       {
@@ -401,6 +446,7 @@ export default function AICanvas () {
                         name='searchInput'
                         children={<UI.Input
                           autoFocus
+                          maxLength={maxSearchTextNumber}
                           data-testid='search-input'
                           onKeyDown={onKeyDown}
                           onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
@@ -409,6 +455,10 @@ export default function AICanvas () {
                         />}
                       />
                     </Form>
+                    {
+                      searchText.length > 0 && <div className='text-counter'>
+                        {searchText.length + '/' + maxSearchTextNumber}</div>
+                    }
                     <Button
                       data-testid='search-button'
                       icon={<SendMessageOutlined />}

@@ -447,6 +447,7 @@ export function PropertyUnitDetails () {
         venueId={venueId}
         unitId={unitId}
         groupId={personaGroupId}
+        identityCount={identitiesCount}
         onClose={() => {
           setAddIdentityAssociationDrawerVisible(false)
           identities.refetch()

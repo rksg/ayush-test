@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, getSparklineGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                                   from '@acx-ui/store'
-import type { AnalyticsFilter }                      from '@acx-ui/utils'
+import { calculateGranularity, getFilterPayload } from '@acx-ui/analytics/utils'
+import { dataApi }                                from '@acx-ui/store'
+import type { AnalyticsFilter }                   from '@acx-ui/utils'
 
 export type HierarchyNodeData = {
   uploadAppTraffic: number
@@ -64,7 +64,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          granularity: getSparklineGranularity(payload.startDate, payload.endDate),
+          granularity: calculateGranularity(payload.startDate, payload.endDate),
           n: 5,
           ...getFilterPayload(payload)
         }

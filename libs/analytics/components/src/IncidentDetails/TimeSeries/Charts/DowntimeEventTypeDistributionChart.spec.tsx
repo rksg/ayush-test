@@ -88,7 +88,7 @@ describe('downtimeEventTypeDistributionChartQuery', () => {
         buffer: buffer6hr,
         incident: fakeIncidentDowntimeHigh,
         charts: [TimeSeriesChartTypes.DowntimeEventTypeDistributionChart],
-        minGranularity: 'PT180S'
+        minGranularity: 'PT15M'
       })
     )
     expect(status).toBe('fulfilled')

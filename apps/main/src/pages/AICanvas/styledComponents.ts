@@ -14,7 +14,7 @@ export const Input = styled(AntInput.TextArea)`
   background: var(--acx-neutrals-10);
   border-radius: 16px;
   border: none;
-  padding: 16px 60px 16px 16px;
+  padding: 16px 62px 16px 16px;
   .ant-input::placeholder {
     color: var(--acx-neutrals-50);
   }
@@ -63,9 +63,6 @@ export const History = styled.div`
       &.active {
         background: var(--acx-neutrals-80);
         color: var(--acx-primary-white);
-        .action {
-          display: flex;
-        }
       }
       &.edit {
         display: grid;
@@ -159,12 +156,12 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     .actions{
       display: flex;
       align-items: center;
-      width: 48px;
+      width: 56px;
       justify-content: space-between;
       color: #000;
       svg {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
       }
       .newChat {
@@ -272,8 +269,8 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         align-self: flex-end;
       }
       .chat-bubble {
-        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%,
-          #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
+        background: linear-gradient(264deg, #0CC3EC -25.46%,
+           #A560FF 39.27%, #EC4C9A 88.67%, #F65650 119.35%);
         color: var(--acx-primary-white);
         width: fit-content;
         max-width: 90%;
@@ -338,16 +335,27 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         bottom: 0;
         width: 400px;
         padding: 10px 20px 20px 20px;
+        .text-counter {
+          position: absolute;
+          right: 35px;
+          bottom: 85px;
+          color: var(--acx-neutrals-60);
+        }
         button {
-          position: fixed;
-          left: 333px;
-          bottom: 57px;
+          min-width: 24px;
+          width: 24px;
+          height: 24px;
+          position: absolute;
+          right: 37px;
+          bottom: 46px;
           border: 0px;
           background: var(--acx-accents-orange-50);
           &.ant-btn[disabled] {
             background: var(--acx-neutrals-30);
           }
           svg {
+            width: 14px;
+            height: 14px;
             path { stroke: var(--acx-primary-white); } }
           }
         }

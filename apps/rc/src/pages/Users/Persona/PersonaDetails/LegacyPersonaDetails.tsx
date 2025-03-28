@@ -29,7 +29,8 @@ import {
   useLazyGetMacRegListQuery,
   useLazyGetEdgePinByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery
+  useLazyGetPropertyUnitByIdQuery,
+  useGetUnitsLinkedIdentitiesQuery
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup, PersonaUrls, useTableQuery } from '@acx-ui/rc/utils'
 import { hasAllowedOperations }                                         from '@acx-ui/user'
@@ -84,8 +85,22 @@ function LegacyPersonaDetails () {
     } })
 
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
+
+  const identities = useGetUnitsLinkedIdentitiesQuery(
+    {
+      params: { venueId: personaGroupData?.propertyId },
+      payload: {
+        pageSize: 1, page: 1, sortOrder: 'ASC',
+        filters: {
+          personaId: personaId
+        }
+      }
+    },
+    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits }
+  )
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -134,16 +149,17 @@ function LegacyPersonaDetails () {
         .finally(() => setPinData({ id: personaGroupData.personalIdentityNetworkId, name }))
     }
 
-    if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
+    if (propertyEnabled && personaGroupData.propertyId &&
+      (personaDetailsQuery?.data?.identityId || identities?.data?.data[0]?.unitId)) {
       const venueId = personaGroupData.propertyId
-      const unitId = personaDetailsQuery.data.identityId
+      const unitId = personaDetailsQuery?.data?.identityId ?? identities?.data?.data[0]?.unitId
       let name: string | undefined
 
       getUnitById({ params: { venueId , unitId } })
         .then(result => name = result.data?.name)
         .finally(() => setUnitData({ venueId, unitId, name }))
     }
-  }, [personaGroupData])
+  }, [personaGroupData, identities])
 
   useEffect(() => {
     if (!personaGroupData || !personaDetailsQuery.data) return
