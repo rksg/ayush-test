@@ -30,7 +30,8 @@ import {
   getScopeKeyByPolicy,
   filterByAccessForServicePolicyMutation,
   CertificateStatusType,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -46,7 +47,7 @@ export default function AAATable () {
     : AAA_LIMIT_NUMBER
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.RADIUS)
 
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,

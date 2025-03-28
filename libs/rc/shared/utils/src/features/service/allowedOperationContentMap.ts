@@ -168,12 +168,6 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteFlexAuthenticationProfile)],
     [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getFlexAuthenticationProfiles)]
   },
-  [PolicyType.SWITCH_PORT_PROFILE]: {
-    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addSwitchPortProfile)],
-    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfile)],
-    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfile)],
-    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getSwitchPortProfilesList)]
-  },
   [PolicyType.WORKFLOW]: {
     [PolicyOperation.CREATE]: ['POST:/workflows'],
     [PolicyOperation.EDIT]: ['PATCH:/workflows/{id}'],
@@ -221,6 +215,26 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: [getOpsApi(EthernetPortProfileUrls.updateEthernetPortProfile)],
     [PolicyOperation.DELETE]: [getOpsApi(EthernetPortProfileUrls.deleteEthernetPortProfile)],
     [PolicyOperation.LIST]: [getOpsApi(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)]
+  },
+  [PolicyType.SWITCH_PORT_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addSwitchPortProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getSwitchPortProfilesList)]
+  },
+  [PolicyType.PORT_PROFILE]: { // include ETHERNET_PORT_PROFILE & SWITCH_PORT_PROFILE
+    [PolicyOperation.CREATE]: [
+      getOpsApi(EthernetPortProfileUrls.createEthernetPortProfile),
+      getOpsApi(SwitchUrlsInfo.addSwitchPortProfile)],
+    [PolicyOperation.EDIT]: [
+      getOpsApi(EthernetPortProfileUrls.updateEthernetPortProfile),
+      getOpsApi(SwitchUrlsInfo.editSwitchPortProfile)],
+    [PolicyOperation.DELETE]: [
+      getOpsApi(EthernetPortProfileUrls.deleteEthernetPortProfile),
+      getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfile)],
+    [PolicyOperation.LIST]: [
+      getOpsApi(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
+      getOpsApi(SwitchUrlsInfo.getSwitchPortProfilesList)]
   },
   [PolicyType.SOFTGRE]: {
     [PolicyOperation.CREATE]: [getOpsApi(SoftGreUrls.createSoftGre)],

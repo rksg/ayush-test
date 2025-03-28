@@ -5,124 +5,113 @@ describe('Network Segmentation Utils', () => {
   const keaConfig = `{
     "Dhcp4": {
       "subnet4": [{
-        "subnet": "192.168.10.16/28",
+        "subnet": "192.168.0.0/24",
         "pools": [
-          { "pool": "192.168.10.18 - 192.168.10.27" }
+          { "pool": "192.168.0.2 - 192.168.0.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.17"
+            "data": "192.168.0.1"
           }
         ]
       },{
-        "subnet": "192.168.10.32/28",
+        "subnet": "192.168.1.0/24",
         "pools": [
-          { "pool": "192.168.10.34 - 192.168.10.43" }
+          { "pool": "192.168.1.2 - 192.168.1.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.33"
+            "data": "192.168.1.1"
           }
         ]
       },{
-        "subnet": "192.168.10.48/28",
+        "subnet": "192.168.2.0/24",
         "pools": [
-          { "pool": "192.168.10.50 - 192.168.10.59" }
+          { "pool": "192.168.2.2 - 192.168.2.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.49"
+            "data": "192.168.2.1"
           }
         ]
       },{
-        "subnet": "192.168.10.64/28",
+        "subnet": "192.168.3.0/24",
         "pools": [
-          { "pool": "192.168.10.66 - 192.168.10.75" }
+          { "pool": "192.168.3.2 - 192.168.3.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.65"
+            "data": "192.168.3.1"
           }
         ]
       },{
-        "subnet": "192.168.10.80/28",
+        "subnet": "192.168.4.0/24",
         "pools": [
-          { "pool": "192.168.10.82 - 192.168.10.91" }
+          { "pool": "192.168.4.2 - 192.168.4.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.81"
+            "data": "192.168.4.1"
           }
         ]
       },{
-        "subnet": "192.168.10.96/28",
+        "subnet": "192.168.5.0/24",
         "pools": [
-          { "pool": "192.168.10.98 - 192.168.10.107" }
+          { "pool": "192.168.5.2 - 192.168.5.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.97"
+            "data": "192.168.5.1"
           }
         ]
       },{
-        "subnet": "192.168.10.112/28",
+        "subnet": "192.168.6.0/24",
         "pools": [
-          { "pool": "192.168.10.114 - 192.168.10.123" }
+          { "pool": "192.168.6.2 - 192.168.6.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.113"
+            "data": "192.168.6.1"
           }
         ]
       },{
-        "subnet": "192.168.10.128/28",
+        "subnet": "192.168.7.0/24",
         "pools": [
-          { "pool": "192.168.10.130 - 192.168.10.139" }
+          { "pool": "192.168.7.2 - 192.168.7.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.129"
+            "data": "192.168.7.1"
           }
         ]
       },{
-        "subnet": "192.168.10.144/28",
+        "subnet": "192.168.8.0/24",
         "pools": [
-          { "pool": "192.168.10.146 - 192.168.10.155" }
+          { "pool": "192.168.8.2 - 192.168.8.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.145"
+            "data": "192.168.8.1"
           }
         ]
       },{
-        "subnet": "192.168.10.160/28",
+        "subnet": "192.168.9.0/24",
         "pools": [
-          { "pool": "192.168.10.162 - 192.168.10.171" }
+          { "pool": "192.168.9.2 - 192.168.9.254" }
         ],
         "option-data": [
           {
             "name": "routers",
-            "data": "192.168.10.161"
-          }
-        ]
-      },{
-        "subnet": "192.168.10.176/28",
-        "pools": [
-          { "pool": "192.168.10.178 - 192.168.10.187" }
-        ],
-        "option-data": [
-          {
-            "name": "routers",
-            "data": "192.168.10.177"
+            "data": "192.168.9.1"
           }
         ]
       }
@@ -130,62 +119,57 @@ describe('Network Segmentation Utils', () => {
     }
   }`
 
-  const iscConfig = `subnet 192.168.10.16 netmask 255.255.255.240 {
-    range 192.168.10.18 192.168.10.27;
-    option routers 192.168.10.17;
+  const iscConfig = `subnet 192.168.0.0 netmask 255.255.255.0 {
+    range 192.168.0.2 192.168.0.254;
+    option routers 192.168.0.1;
 }
 
-subnet 192.168.10.32 netmask 255.255.255.240 {
-    range 192.168.10.34 192.168.10.43;
-    option routers 192.168.10.33;
+subnet 192.168.1.0 netmask 255.255.255.0 {
+    range 192.168.1.2 192.168.1.254;
+    option routers 192.168.1.1;
 }
 
-subnet 192.168.10.48 netmask 255.255.255.240 {
-    range 192.168.10.50 192.168.10.59;
-    option routers 192.168.10.49;
+subnet 192.168.2.0 netmask 255.255.255.0 {
+    range 192.168.2.2 192.168.2.254;
+    option routers 192.168.2.1;
 }
 
-subnet 192.168.10.64 netmask 255.255.255.240 {
-    range 192.168.10.66 192.168.10.75;
-    option routers 192.168.10.65;
+subnet 192.168.3.0 netmask 255.255.255.0 {
+    range 192.168.3.2 192.168.3.254;
+    option routers 192.168.3.1;
 }
 
-subnet 192.168.10.80 netmask 255.255.255.240 {
-    range 192.168.10.82 192.168.10.91;
-    option routers 192.168.10.81;
+subnet 192.168.4.0 netmask 255.255.255.0 {
+    range 192.168.4.2 192.168.4.254;
+    option routers 192.168.4.1;
 }
 
-subnet 192.168.10.96 netmask 255.255.255.240 {
-    range 192.168.10.98 192.168.10.107;
-    option routers 192.168.10.97;
+subnet 192.168.5.0 netmask 255.255.255.0 {
+    range 192.168.5.2 192.168.5.254;
+    option routers 192.168.5.1;
 }
 
-subnet 192.168.10.112 netmask 255.255.255.240 {
-    range 192.168.10.114 192.168.10.123;
-    option routers 192.168.10.113;
+subnet 192.168.6.0 netmask 255.255.255.0 {
+    range 192.168.6.2 192.168.6.254;
+    option routers 192.168.6.1;
 }
 
-subnet 192.168.10.128 netmask 255.255.255.240 {
-    range 192.168.10.130 192.168.10.139;
-    option routers 192.168.10.129;
+subnet 192.168.7.0 netmask 255.255.255.0 {
+    range 192.168.7.2 192.168.7.254;
+    option routers 192.168.7.1;
 }
 
-subnet 192.168.10.144 netmask 255.255.255.240 {
-    range 192.168.10.146 192.168.10.155;
-    option routers 192.168.10.145;
+subnet 192.168.8.0 netmask 255.255.255.0 {
+    range 192.168.8.2 192.168.8.254;
+    option routers 192.168.8.1;
 }
 
-subnet 192.168.10.160 netmask 255.255.255.240 {
-    range 192.168.10.162 192.168.10.171;
-    option routers 192.168.10.161;
-}
-
-subnet 192.168.10.176 netmask 255.255.255.240 {
-    range 192.168.10.178 192.168.10.187;
-    option routers 192.168.10.177;
+subnet 192.168.9.0 netmask 255.255.255.0 {
+    range 192.168.9.2 192.168.9.254;
+    option routers 192.168.9.1;
 }\n\n`
   it('genDhcpConfigByPinSetting successfully', () => {
-    const configs = genDhcpConfigByPinSetting('192.168.10.1','192.168.10.200',10,10)
+    const configs = genDhcpConfigByPinSetting('192.168.0.1','192.168.11.200',10,253)
     expect(configs.keaDhcpConfig).toBe(keaConfig)
     expect(configs.iscDhcpConfig).toBe(iscConfig)
   })
@@ -193,13 +177,13 @@ subnet 192.168.10.176 netmask 255.255.255.240 {
   it('genDhcpConfigByPinSetting failed', () => {
     const mockedErrorHandler = jest.fn()
     try{
-      genDhcpConfigByPinSetting('10.0.0.1', '10.0.10.100', 100, 20)
+      genDhcpConfigByPinSetting('10.0.0.1', '10.0.10.100', 100, 253)
     }catch(err) {
       mockedErrorHandler(err)
     }
     expect(mockedErrorHandler).toBeCalledWith(
       new Error(`error: DHCP pool size is too small to configure 100 PANs
-    Currently range can hold 82 number of PANs`)
+    Currently range can hold 10 number of PANs`)
     )
   })
 

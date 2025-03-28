@@ -10,7 +10,7 @@ import {
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockCertName1, mockCertName2, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedsamlIpdProfileList } from '../__tests__/fixtures'
+import { certList, mockCertName1, mockCertName2, mockCertName3, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedsamlIpdProfileList } from '../__tests__/fixtures'
 
 import { EditSamlIdp } from '.'
 
@@ -27,8 +27,10 @@ const editViewPath = '/:tenantId/' + getPolicyRoutePath({
 })
 
 const mockedMainSamlIdpProfile = jest.fn()
-const mockedActivateCertificate = jest.fn()
-const mockedDeactivateCertificate = jest.fn()
+const mockedActivateEncryptionCertificate = jest.fn()
+const mockedDeactivateEncryptionCertificate = jest.fn()
+const mockedActivateSigningCertificate = jest.fn()
+const mockedDeactivateSigningCertificate = jest.fn()
 
 describe('Edit SSO/SAML', () => {
   beforeEach(() => {
@@ -39,8 +41,10 @@ describe('Edit SSO/SAML', () => {
     }
 
     mockedMainSamlIdpProfile.mockClear()
-    mockedActivateCertificate.mockClear()
-    mockedDeactivateCertificate.mockClear()
+    mockedActivateEncryptionCertificate.mockClear()
+    mockedDeactivateEncryptionCertificate.mockClear()
+    mockedActivateSigningCertificate.mockClear()
+    mockedDeactivateSigningCertificate.mockClear()
 
     mockServer.use(
       rest.get(
@@ -66,17 +70,33 @@ describe('Edit SSO/SAML', () => {
       ),
 
       rest.put(
-        SamlIdpProfileUrls.activateSamlIdpProfileCertificate.url,
+        SamlIdpProfileUrls.activateEncryptionCertificate.url,
         (req, res, ctx) => {
-          mockedActivateCertificate()
+          mockedActivateEncryptionCertificate()
           return res(ctx.status(202))
         }
       ),
 
       rest.delete(
-        SamlIdpProfileUrls.deactivateSamlIdpProfileCertificate.url,
+        SamlIdpProfileUrls.deactivateEncryptionCertificate.url,
         (req, res, ctx) => {
-          mockedDeactivateCertificate()
+          mockedDeactivateEncryptionCertificate()
+          return res(ctx.status(202))
+        }
+      ),
+
+      rest.put(
+        SamlIdpProfileUrls.activateSigningCertificate.url,
+        (req, res, ctx) => {
+          mockedActivateSigningCertificate()
+          return res(ctx.status(202))
+        }
+      ),
+
+      rest.delete(
+        SamlIdpProfileUrls.deactivateSigningCertificate.url,
+        (req, res, ctx) => {
+          mockedDeactivateSigningCertificate()
           return res(ctx.status(202))
         }
       ),
@@ -133,13 +153,19 @@ describe('Edit SSO/SAML', () => {
       ,{ route: { path: editViewPath, params } }
     )
 
-    const certCombo = await screen.findByText(mockCertName1)
-    await user.click(certCombo)
+    const encryptionCertCombo = await screen.findByText(mockCertName1)
+    await user.click(encryptionCertCombo)
     await user.click(await screen.findByText(mockCertName2))
+
+    const signingCertCombo = (await screen.findAllByText(mockCertName3))[0]
+    await user.click(signingCertCombo)
+    await user.click((await screen.findAllByText(mockCertName1))[1])
 
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
-    await waitFor(() => expect(mockedActivateCertificate).toBeCalled())
-    await waitFor(() => expect(mockedDeactivateCertificate).toBeCalled())
+    await waitFor(() => expect(mockedActivateEncryptionCertificate).toBeCalled())
+    await waitFor(() => expect(mockedDeactivateEncryptionCertificate).toBeCalled())
+    await waitFor(() => expect(mockedActivateSigningCertificate).toBeCalled())
+    await waitFor(() => expect(mockedDeactivateSigningCertificate).toBeCalled())
   })
 })

@@ -30,6 +30,20 @@ const defaultClientPayload = {
   pageSize: 10000
 }
 
+const onboardingTypesMapping: { [key: string]: string } = {
+  'dpsk': 'DPSK',
+  'OpenNetwork': 'Open Network',
+  'mac-auth': 'Mac Auth',
+  'AAANetwork': 'AAA Network',
+  'PSKNetwork': 'PSK Network',
+  'eap': 'EAP/TLS'
+}
+
+const getOnboardingTerm = (type?: string): string => {
+  if (!type) return ''
+  return onboardingTypesMapping[type] || type.toUpperCase()
+}
+
 function IdentityClientTable (props: { personaId?: string, personaGroupId?: string }) {
   const { $t } = useIntl()
   const { personaId, personaGroupId } = props
@@ -117,6 +131,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       key: 'deviceName',
       dataIndex: 'deviceName',
       searchable: true,
+      fixed: 'left',
       title: $t({ defaultMessage: 'Device Name' }),
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
@@ -138,6 +153,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       key: 'clientMac',
       dataIndex: 'clientMac',
       searchable: true,
+      fixed: 'left',
       title: $t({ defaultMessage: 'MAC Address' }),
       sorter: { compare: sortProp('macAddress', defaultSort) },
       render: (_, row) => row.clientMac.replaceAll(':', '-').toUpperCase()
@@ -198,7 +214,8 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       searchable: true,
       align: 'center',
       title: $t({ defaultMessage: 'Onboarding Mechanism' }),
-      sorter: { compare: sortProp('onboardType', defaultSort) }
+      sorter: { compare: sortProp('onboardType', defaultSort) },
+      render: (_, row) => getOnboardingTerm(row.onboardType)
     },
     {
       key: 'lastSeenAt',

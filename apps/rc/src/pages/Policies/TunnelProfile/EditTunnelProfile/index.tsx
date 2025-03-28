@@ -30,7 +30,7 @@ const EditTunnelProfile = () => {
   const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }
   )
-  const { updateTunnelProfile } = useTunnelProfileActions()
+  const { updateTunnelProfileOperation } = useTunnelProfileActions()
 
   const { isSdLanP1Used, isSdLanP1Fetching } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
@@ -88,8 +88,8 @@ const EditTunnelProfile = () => {
     }
   })
 
-  const handelUpdate = (data: TunnelProfileFormType) =>
-    updateTunnelProfile(policyId || '', data)
+  const handelOnFinish = (data: TunnelProfileFormType) =>
+    updateTunnelProfileOperation(policyId || '', data)
 
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
   const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
@@ -112,9 +112,10 @@ const EditTunnelProfile = () => {
         form={form}
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
-        onFinish={handelUpdate}
+        onFinish={handelOnFinish}
         isDefaultTunnel={isDefaultTunnelProfile}
         initialValues={formInitValues}
+        editMode={true}
       />
     </Loader>
   )

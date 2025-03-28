@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState, useRef } from 'react'
 
 import { Form, Switch }           from 'antd'
 import { assign, cloneDeep, get } from 'lodash'
@@ -207,18 +207,18 @@ export function VenueNetworksTab () {
     ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
     : WifiRbacUrlsInfo.deleteNetworkVenue)
 
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
   const hasAddNetworkPermission = rbacOpsApiEnabled
     ? hasAllowedOperations([addNetworkOpsApi])
     : (hasPermission({ scopes: [WifiScopes.CREATE] }) && hasCrossVenuesPermission())
 
   const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([updateNetworkVenueOpsAPi])
-    : (hasUpdatePermission)
+    : (hasActivatePermission)
 
   const { venueId } = params
   const settingsId = 'venue-networks-table'
@@ -226,7 +226,8 @@ export function VenueNetworksTab () {
   const tableQuery = useVenueNetworkList({ settingsId, venueId })
 
   const [tableData, setTableData] = useState(defaultArray)
-  const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
+  // controlling loading icon on top of table
+  const [isTableUpdating, setIsTableUpdating] = useState<boolean>(false)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
   })
@@ -267,14 +268,18 @@ export function VenueNetworksTab () {
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   // hooks for tunnel column - start
-  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
+  // for tunnel type data refetching
+  const refetchFnRef = useRef({} as { [key: string]: () => void })
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id), refetchFnRef)
   const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const tunnelColumn = useTunnelColumn({
     venueId: venueId!,
     sdLanScopedNetworks,
-    setTunnelModalState
+    setTunnelModalState,
+    refetchFnRef,
+    setIsTableUpdating
   })
   // hooks for tunnel column - end
 
@@ -326,6 +331,12 @@ export function VenueNetworksTab () {
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
   const linkToAddNetworkTemplate = useConfigTemplateTenantLink('networks/wireless/add')
 
+
+  const refetchTunnelInfoData = () => {
+    Object.keys(refetchFnRef.current)
+      .forEach(key => refetchFnRef.current[key]())
+  }
+
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
       // TODO:
@@ -347,12 +358,12 @@ export function VenueNetworksTab () {
           }
 
           if (resolvedRbacEnabled) {
-            setIsActivateUpdating(true)
+            setIsTableUpdating(true)
             addRbacNetworkVenue({
               params: apiParams,
               payload: newNetworkVenue,
               enableRbac: true,
-              callback: () => setIsActivateUpdating(false)
+              callback: () => setIsTableUpdating(false)
             })
           } else {
             addNetworkVenue({
@@ -373,11 +384,15 @@ export function VenueNetworksTab () {
               }
 
               if (resolvedRbacEnabled) {
-                setIsActivateUpdating(true)
+                setIsTableUpdating(true)
                 deleteRbacNetworkVenue({
                   params: apiParams,
                   enableRbac: true,
-                  callback: () => setIsActivateUpdating(false)
+                  callback: () => {
+                    // refetch all tunnel type data because the tunnel type should be reset after network is deactivated
+                    refetchTunnelInfoData()
+                    setIsTableUpdating(false)
+                  }
                 })
               } else {
                 deleteNetworkVenue({
@@ -700,9 +715,11 @@ export function VenueNetworksTab () {
       await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
-      await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
-      if (isIpSecOverNetworkEnabled) {
+
+      if (isIpSecOverNetworkEnabled && formValues.ipsec?.enableIpsec) {
         await softGreTunnelActions.activateIpSecOverSoftGre(network!.venueId, network!.id, formValues)
+      } else {
+        await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
       }
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
@@ -713,7 +730,7 @@ export function VenueNetworksTab () {
     }
   }
 
-  const isFetching = isActivateUpdating
+  const isFetching = isTableUpdating
     || isAddRbacNetworkUpdating || isDeleteRbacNetworkUpdating
     || isAddNetworkUpdating || isDeleteNetworkUpdating
   return (
