@@ -257,7 +257,7 @@ export function SwitchPortTable (props: {
       key: 'switchMacAcl',
       title: $t({ defaultMessage: 'MAC ACL' }),
       dataIndex: 'switchMacAcl',
-      sorter: true,
+      sorter: false,
       show: true,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
         return row.switchMacAcl ? row.switchMacAcl : ''
@@ -266,7 +266,7 @@ export function SwitchPortTable (props: {
       key: 'stickyMacAclAllowCount',
       title: $t({ defaultMessage: 'Sticky MAC' }),
       dataIndex: 'stickyMacAclAllowCount',
-      sorter: true,
+      sorter: false,
       show: true,
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
         if (row.stickyMacAclAllowCount && row.stickyMacAclAllowCount > 0 &&
