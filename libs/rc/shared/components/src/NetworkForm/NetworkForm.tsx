@@ -104,7 +104,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance         from './PortalInstance'
+import PortalInstance                from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -117,7 +117,8 @@ import {
   useUpdateEdgeSdLanActivations,
   useUpdateSoftGreActivations,
   deriveWISPrFieldsFromServerData,
-  useUpdateIpsecActivations
+  useUpdateIpsecActivations,
+  hasControlnetworkVenuePermission
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -237,6 +238,8 @@ export function NetworkForm (props:{
   const cloneMode = params.action === 'clone'
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
+
+  const { hasActivateNetworkVenuePermission } = hasControlnetworkVenuePermission(isTemplate)
 
   const [ addRbacNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddRbacNetworkVenueMutation,
@@ -409,7 +412,10 @@ export function NetworkForm (props:{
 
     if (cloneMode) {
       formRef.current?.resetFields()
-      formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+      formRef.current?.setFieldsValue({
+        ...resolvedData,
+        name: data.name + ' - copy'
+      })
     } else if (editMode) {
       form?.resetFields()
       form?.setFieldsValue(resolvedData)
@@ -424,7 +430,8 @@ export function NetworkForm (props:{
       ...resolvedData,
       certificateTemplateId,
       ...(dpskService && { dpskServiceProfileId: dpskService.id }),
-      ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
+      ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id }),
+      ...((cloneMode && !hasActivateNetworkVenuePermission) && { venues: [] })
     })
   }, [data, certificateTemplateId, dpskService, portalService])
   //}, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
