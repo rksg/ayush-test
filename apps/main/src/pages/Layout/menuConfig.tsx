@@ -39,14 +39,21 @@ import {
   MigrationUrlsInfo,
   LicenseUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                                            from '@acx-ui/types'
-import { hasRoles, useUserProfileContext, RaiPermission, hasAllowedOperations } from '@acx-ui/user'
-import { getOpsApi, useTenantId }                                               from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import {
+  hasRoles,
+  useUserProfileContext,
+  RaiPermission,
+  hasAllowedOperations,
+  isFoundationTier
+} from '@acx-ui/user'
+import { getOpsApi, useTenantId } from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData, isCustomRole, rbacOpsApiEnabled } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole, rbacOpsApiEnabled,
+    accountTier } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
@@ -71,6 +78,7 @@ export function useMenuConfig () {
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
+  const isFoundation = isFoundationTier(accountTier)
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -108,7 +116,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    {
+    ...(!isFoundation ? [{
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -141,7 +149,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    },
+    }] : []),
     ...(!showGatewaysMenu ? [{
       uri: '/venues',
       label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),

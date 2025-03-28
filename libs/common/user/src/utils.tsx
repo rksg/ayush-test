@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import { TenantNavigate } from '@acx-ui/react-router-dom'
+import { AccountTier }    from '@acx-ui/utils'
 
 import { UserSettingsUIModel, UserSettingsValuePath } from './types'
 
@@ -35,4 +36,8 @@ export function goToNotFound () {
 
 export function goToNoPermission () {
   return <TenantNavigate replace to='/no-permissions' />
+}
+
+export function isFoundationTier (tier: string | undefined) {
+  return tier === AccountTier.FOUNDATION
 }
