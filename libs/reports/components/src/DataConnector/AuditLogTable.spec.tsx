@@ -87,8 +87,8 @@ describe('AuditLogTable', () => {
       'Last update',
       'Status',
       'Size transferred',
-      'Export start date',
-      'Export end date'
+      'Export start',
+      'Export end'
     ])
 
     const firstRow = (await tbody.findAllByRole('row'))[0]
