@@ -172,7 +172,7 @@ export function SwitchLayer2ACL () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           navigate(basePath.pathname + `/layer2/${selectedRows[0].id}/edit`, {
@@ -186,7 +186,7 @@ export function SwitchLayer2ACL () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         const appliedSwitchesCount = selectedRows.reduce(
           (count, row) => count + (row.appliedSwitchesInfo?.length || 0), 0)

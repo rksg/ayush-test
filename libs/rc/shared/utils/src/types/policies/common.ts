@@ -36,7 +36,7 @@ export enum PolicyType {
   SOFTGRE = 'SoftGRE',
   DIRECTORY_SERVER = 'Directory Server',
   PORT_PROFILE = 'Port Profile',
-  SWITCH_PORT_PROFILE = 'Switch Port Profile',
+  SWITCH_PORT_PROFILE = 'Switch Port Profile'
 }
 
 export enum PolicyOperation {

@@ -131,7 +131,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateAccessControl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           setSelectedRow(selectedRows[0])
@@ -144,7 +144,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteAccessControl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteLayer2Acl)],
       onClick: (selectedRows, clearSelection) => {
         setDataSource(dataSource?.filter(option=>{
           return !selectedRows.map(r=>r.key).includes(option?.key)

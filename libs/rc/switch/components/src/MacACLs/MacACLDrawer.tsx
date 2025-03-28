@@ -142,7 +142,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateAccessControl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           setSelectedRow(selectedRows[0])
@@ -155,7 +155,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteAccessControl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
       onClick: (selectedRows, clearSelection) => {
         setDataSource(dataSource?.filter(option=>{
           return !selectedRows.map(r=>r.key).includes(option?.key)

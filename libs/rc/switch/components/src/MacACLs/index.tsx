@@ -57,7 +57,6 @@ export function MacACLs (props: {
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       sorter: true,
-      fixed: 'left',
       width: 500,
       render: (_, row) =>
         <Button
@@ -92,7 +91,7 @@ export function MacACLs (props: {
     label: $t({ defaultMessage: 'Add MAC ACL' }),
     disabled: !deviceOnline,
     scopeKey: [SwitchScopes.CREATE],
-    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitchVlans)],
+    rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.addSwitchMacAcl)],
     onClick: () => {
       setEditMode(false)
       setMacACLData({} as MacAcl)

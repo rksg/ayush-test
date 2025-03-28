@@ -113,7 +113,7 @@ export function SwitchAccessControlSet () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [SwitchScopes.UPDATE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.updateSwitchAccessControlSet)],
       onClick: (selectedRows, clearSelection) => {
         if (selectedRows.length === 1) {
           navigate(basePath.pathname + `/${selectedRows[0].id}/edit`, {
@@ -127,7 +127,7 @@ export function SwitchAccessControlSet () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [SwitchScopes.DELETE],
-      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchMacAcl)],
+      rbacOpsIds: [getOpsApi(SwitchRbacUrlsInfo.deleteSwitchAccessControlSet)],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',

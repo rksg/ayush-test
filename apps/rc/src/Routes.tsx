@@ -1645,8 +1645,7 @@ function PolicyRoutes () {
         <Route
           path='policies/accessControl/switch/add'
           element={
-            // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)}>
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
               <SwitchAccessControlSetForm editMode={false} />
             </AuthRoute>
           }
@@ -1654,26 +1653,19 @@ function PolicyRoutes () {
         <Route
           path='policies/accessControl/switch/:accessControlId/edit'
           element={
-            // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
               <SwitchAccessControlSetForm editMode={true} />
             </AuthRoute>
           }
         />
         <Route
           path='policies/accessControl/switch/:accessControlId/:activeTab'
-          element={
-          // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.DETAIL)}>
-              <SwitchAccessControlSetDetail />
-            </AuthRoute>
-          }
+          element={<SwitchAccessControlSetDetail />}
         />
         <Route
           path='policies/accessControl/switch/layer2/add'
           element={
-            // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.CREATE)}>
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
               <SwitchLayer2ACLForm editMode={false} />
             </AuthRoute>
           }
@@ -1681,20 +1673,14 @@ function PolicyRoutes () {
         <Route
           path='policies/accessControl/switch/layer2/:accessControlId/edit'
           element={
-            // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.EDIT)}>
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
               <SwitchLayer2ACLForm editMode={true} />
             </AuthRoute>
           }
         />
         <Route
           path='policies/accessControl/switch/layer2/:accessControlId/:activeTab'
-          element={
-          // eslint-disable-next-line max-len
-            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.SWITCH_ACCESS_CONTROL, PolicyOperation.DETAIL)}>
-              <SwitchLayer2Detail />
-            </AuthRoute>
-          }
+          element={<SwitchLayer2Detail />}
         />
       </>}
       {isDirectoryServerEnabled && <>
