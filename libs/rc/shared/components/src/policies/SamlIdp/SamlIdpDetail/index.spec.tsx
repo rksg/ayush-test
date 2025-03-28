@@ -34,8 +34,8 @@ const detailViewPath = '/:tenantId/' + getPolicyRoutePath({
   oper: PolicyOperation.DETAIL
 })
 
-const mockedMainSamlIdpProfile = jest.fn()
-const mockedViewDataList = jest.fn()
+const mockedGetSamlIdpProfile = jest.fn()
+const mockedQueryViewDataList = jest.fn()
 const mockedDownloadMetadata = jest.fn()
 const mockedSyncMetadata = jest.fn()
 
@@ -47,11 +47,13 @@ describe('SAML IdP Detail', () => {
       policyId: mockSamlIdpProfileId
     }
 
+    jest.clearAllMocks()
+
     mockServer.use(
       rest.get(
         SamlIdpProfileUrls.getSamlIdpProfile.url,
         (req, res, ctx) => {
-          mockedMainSamlIdpProfile()
+          mockedGetSamlIdpProfile()
           if (req.params.id === mockSamlIdpProfileId) {
             return res(ctx.json(mockedSamlIdpProfile))
           }
@@ -62,7 +64,7 @@ describe('SAML IdP Detail', () => {
       rest.post(
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (req, res, ctx) => {
-          mockedViewDataList()
+          mockedQueryViewDataList()
           return res(ctx.json(mockedsamlIpdProfileList))
         }
       ),
@@ -85,11 +87,13 @@ describe('SAML IdP Detail', () => {
         }
       ),
 
-      rest.put(
-        SamlIdpProfileUrls.updateSamlIdpProfile.url,
+      rest.patch(
+        SamlIdpProfileUrls.refreshSamlServiceProviderMetadata.url,
         (req, res, ctx) => {
           mockedSyncMetadata()
-          return res(ctx.status(202))
+          return res(ctx.json({
+            action: 'REFRESH_METADATA'
+          }))
         }
       )
     )
@@ -115,7 +119,7 @@ describe('SAML IdP Detail', () => {
       , { route: { path: detailViewPath, params } }
     )
 
-    await waitFor(() => expect(mockedViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalled())
 
     expect(await screen.findByText(mockSamlIdpProfileName)).toBeInTheDocument()
     const downloadButton = screen.getByRole('button', { name: 'Download SAML Metadata' })
@@ -124,7 +128,7 @@ describe('SAML IdP Detail', () => {
     await waitFor(() => expect(downloadFile).toBeCalled())
   })
 
-  it('should call sync metadata api when click sync metadata button', async () => {
+  it('Should call sync metadata api when click sync metadata button', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -136,11 +140,14 @@ describe('SAML IdP Detail', () => {
       } }
     )
 
-    await waitFor(() => expect(mockedViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalled())
 
     expect(await screen.findByText(mockSamlIdpProfileName2)).toBeInTheDocument()
     const syncMetadataButton = screen.getByTestId('sync-metadata-button')
     await user.click(syncMetadataButton)
     await waitFor(() => expect(mockedSyncMetadata).toBeCalled())
+
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalledTimes(2))
   })
 })

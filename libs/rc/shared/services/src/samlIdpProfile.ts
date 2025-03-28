@@ -101,16 +101,15 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         const samlIdpProfile = await fetchWithBQ(
           createHttpRequest(SamlIdpProfileUrls.getSamlIdpProfile, params)
         )
-        const samlIdpProfileData = {
-          ...(samlIdpProfile.data as SamlIdpProfileFormType),
-          id: params.id
-        }
+
+        const samlIdpProfileData = samlIdpProfile.data as SamlIdpProfileFormType
 
         samlIdpProfileData.metadataContent = Buffer
           .from(samlIdpProfileData.metadata, 'base64')
           .toString('utf-8')
 
         if (samlIdpProfileData && idPList?.data) {
+          samlIdpProfileData.id = params.id
           const viewData = idPList.data.find(item => item.id === params.id)
 
           if(viewData) {
@@ -128,7 +127,21 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           : { error: samlIdpProfile.error } as QueryReturnValue<
           SamlIdpProfileFormType, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
       },
-      providesTags: [{ type: 'SamlIdpProfile', id: 'DETAIL' }]
+      providesTags: [{ type: 'SamlIdpProfile', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'SamlIdpProfileAction'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              samlIdpProfileApi.util.invalidateTags([
+                { type: 'SamlIdpProfile', id: 'DETAIL' }
+              ])
+            )
+          })
+        })
+      }
     }),
 
     getSamlIdpProfileViewDataList:
@@ -220,6 +233,20 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           }
         }
       }
+    }),
+
+    refreshSamlServiceProviderMetadata: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SamlIdpProfileUrls.refreshSamlServiceProviderMetadata, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'DETAIL' }
+      ]
     })
   })
 })
@@ -237,5 +264,6 @@ export const {
   useDeactivateSamlEncryptionCertificateMutation,
   useActivateSamlSigningCertificateMutation,
   useDeactivateSamlSigningCertificateMutation,
-  useDownloadSamlServiceProviderMetadataMutation
+  useDownloadSamlServiceProviderMetadataMutation,
+  useRefreshSamlServiceProviderMetadataMutation
 } = samlIdpProfileApi

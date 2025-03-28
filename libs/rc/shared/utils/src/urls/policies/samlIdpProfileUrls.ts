@@ -97,5 +97,15 @@ export const SamlIdpProfileUrls: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       Accept: 'text/xml'
     }
+  },
+  refreshSamlServiceProviderMetadata: {
+    method: 'PATCH',
+    url: '/samlIdpProfiles/:id',
+    opsApi: 'PATCH:/samlIdpProfiles/{id}',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

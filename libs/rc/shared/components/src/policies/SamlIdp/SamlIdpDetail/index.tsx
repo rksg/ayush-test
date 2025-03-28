@@ -11,7 +11,7 @@ import {
   useDownloadSamlServiceProviderMetadataMutation,
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useGetServerCertificatesQuery,
-  useUpdateSamlIdpProfileMutation
+  useRefreshSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -60,15 +60,14 @@ export const SamlIdpDetail = () => {
     })
   })
 
-  const [ updateSamlIdpProfile ] = useUpdateSamlIdpProfileMutation()
+  const [ refreshSamlServiceProviderMetadata ] = useRefreshSamlServiceProviderMetadataMutation()
 
   const handleSyncMetadata = async () => {
     setIsSyncingMetadata(true)
-    await updateSamlIdpProfile({
+    await refreshSamlServiceProviderMetadata({
       params: { id: samlIdpData?.id },
       payload: {
-        name: samlIdpData?.name,
-        metadataUrl: samlIdpData?.metadataUrl
+        action: 'REFRESH_METADATA'
       }
     })
       .unwrap()
