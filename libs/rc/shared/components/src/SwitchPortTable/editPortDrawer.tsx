@@ -160,7 +160,7 @@ export const allMultipleEditableFields = [
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
   'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId',
-  'adminPtToPt'
+  'adminPtToPt', 'portSecurity', 'portSecurityMaxEntries', 'switchMacAcl'
 ]
 
 interface ProfileVlans {
