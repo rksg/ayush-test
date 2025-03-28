@@ -5,11 +5,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                               from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                                                                             from '@acx-ui/rc/services'
-import { AaaUrls, ClientIsolationUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, LanPortsUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook }                                                        from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                                          from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                                                                                        from '@acx-ui/rc/services'
+import { AaaUrls, ClientIsolationUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, IpsecUrls, LanPortsUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook }                                                                   from '@acx-ui/test-utils'
 
 import { NetworkingSettingContext } from '..'
 import { VenueUtilityContext }      from '../..'
@@ -159,6 +159,10 @@ describe('LanPortsForm', () => {
 
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable))
+      ),
+
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json({}))
       ),
 
       rest.post(ClientIsolationUrls.queryClientIsolation.url,
@@ -483,6 +487,7 @@ describe('LanPortsForm', () => {
       ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
       ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
       ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+      ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE ||
       ff === Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE
     )
 

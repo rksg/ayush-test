@@ -8,7 +8,9 @@ import {
   AaaUrls,
   CommonUrlsInfo,
   EthernetPortProfileUrls,
+  IpsecUrls,
   LanPortsUrls,
+  SoftGreUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -111,7 +113,11 @@ describe('Lan Port', () => {
 
           return res(ctx.json({}))
         }
-      )
+      ),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
@@ -265,6 +271,7 @@ describe('Lan Port', () => {
           (_, res, ctx) => res(ctx.json({}))),
         rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
           (_, res, ctx) => res(ctx.json(mockDefaultTunkEthertnetPortProfile))),
+
         rest.get(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => res(ctx.json({ model: 'T750SE' }))),
         rest.get(
