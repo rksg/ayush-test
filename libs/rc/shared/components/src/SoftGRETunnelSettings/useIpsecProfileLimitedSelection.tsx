@@ -166,8 +166,7 @@ export const useIpsecProfileLimitedSelection = (
       filters: {}
     } }, {
     selectFromResult: ({ data }) => {
-      const softGreData = data?.data || []
-      return { softGreData }
+      return { softGreData: data?.data }
     }
   })
 
@@ -179,8 +178,7 @@ export const useIpsecProfileLimitedSelection = (
       filters: {}
     } }, {
     selectFromResult: ({ data }) => {
-      const ipsecData = data?.data || []
-      return { ipsecData }
+      return { ipsecData: data?.data }
     }
   })
 

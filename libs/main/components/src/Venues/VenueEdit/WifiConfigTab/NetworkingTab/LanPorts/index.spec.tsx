@@ -487,7 +487,6 @@ describe('LanPortsForm', () => {
       ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
       ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
       ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
-      ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE ||
       ff === Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE
     )
 
