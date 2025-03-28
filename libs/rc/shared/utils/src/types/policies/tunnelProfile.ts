@@ -1,4 +1,4 @@
-import { MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum, TunnelTypeEnum } from '../../models'
+import { MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum } from '../../models'
 
 export interface TunnelProfile {
   id: string
