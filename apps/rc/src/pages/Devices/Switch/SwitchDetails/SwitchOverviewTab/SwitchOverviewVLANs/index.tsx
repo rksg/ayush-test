@@ -227,7 +227,7 @@ export function SwitchOverviewVLANs (props: {
       dataIndex: 'vlanId',
       defaultSortOrder: 'ascend',
       sorter: true,
-      fixed: 'left',
+      // fixed: 'left',
       render: (_, row) =>
         <Button
           type='link'
