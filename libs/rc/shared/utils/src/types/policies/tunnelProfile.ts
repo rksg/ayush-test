@@ -1,4 +1,4 @@
-import { MtuTypeEnum, NetworkSegmentTypeEnum } from '../../models'
+import { MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum } from '../../models'
 
 export interface TunnelProfile {
   id: string
@@ -33,6 +33,9 @@ export interface TunnelProfileViewData {
   keepAliveRetry: number
   keepAliveInterval: number // unit is milliseconds
   natTraversalEnabled?: boolean
+  tunnelType?: TunnelTypeEnum
+  destinationEdgeClusterId?: string
+  destinationEdgeClusterName?: string
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {

@@ -327,19 +327,10 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () =
   return <div data-testid='ConnectionMeteringPageForm' />
 })
 
-jest.mock('./pages/Services/EdgeSdLan/AddEdgeSdLan', () => ({
-  AddEdgeSdLan: () => <div data-testid='AddEdgeSdLan' />
-}))
-
-jest.mock('./pages/Services/EdgeSdLan/EditEdgeSdLan', () => ({
-  EditEdgeSdLan: () => <div data-testid='EditEdgeSdLan' />
-}))
-
-jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanTable', () => ({
-  EdgeSdLanTable: () => <div data-testid='EdgeSdLanTable' />
-}))
-
-jest.mock('./pages/Services/EdgeSdLan/EdgeSdLanDetail', () => ({
+jest.mock('./pages/Services/EdgeSdLan', () => ({
+  AddEdgeSdLan: () => <div data-testid='AddEdgeSdLan' />,
+  EditEdgeSdLan: () => <div data-testid='EditEdgeSdLan' />,
+  EdgeSdLanTable: () => <div data-testid='EdgeSdLanTable' />,
   EdgeSdLanDetail: () => <div data-testid='EdgeSdLanDetail' />
 }))
 
