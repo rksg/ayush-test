@@ -4,10 +4,10 @@ import { Form, Space, Switch } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Button, Drawer }               from '@acx-ui/components'
-import { EditOutlined }                 from '@acx-ui/icons'
 import { EdgeWanLinkHealthCheckPolicy } from '@acx-ui/rc/utils'
 
 import { LinkHealthMonitorSettingForm } from './LinkHealthMonitorSettingForm'
+import { EditOutlinedIcon }             from './styledComponents'
 
 export const LinkHealthMonitorToggleButton = (props: {
   portName: string
@@ -48,7 +48,7 @@ export const LinkHealthMonitorToggleButton = (props: {
         onChange(checked, data)
       }}
     />
-    { enabled && <Button type='link' icon={<EditOutlined />} onClick={handleEdit}/> }
+    { enabled && <Button type='link' icon={<EditOutlinedIcon />} onClick={handleEdit}/> }
 
     <Drawer
       visible={visible}

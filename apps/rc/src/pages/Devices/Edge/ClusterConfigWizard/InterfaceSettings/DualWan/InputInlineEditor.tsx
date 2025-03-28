@@ -1,15 +1,12 @@
 import { useState } from 'react'
 
-import {
-  Input,
-  Space
-} from 'antd'
-import { useIntl } from 'react-intl'
+import { Input, Space } from 'antd'
+import { useIntl }      from 'react-intl'
 
-import { Button }                                                        from '@acx-ui/components'
-import { DeleteOutlined, EditOutlined, Check as CheckIcon, CloseSymbol } from '@acx-ui/icons'
+import { Button }             from '@acx-ui/components'
+import { Check as CheckIcon } from '@acx-ui/icons'
 
-import { StyledFormItem } from './styledComponents'
+import { StyledFormItem, DeleteOutlinedIcon, EditOutlinedIcon, CloseSymbolIcon } from './styledComponents'
 
 interface InputInlineEditorProps {
   value?: string
@@ -84,15 +81,15 @@ export const InputInlineEditor = (props: InputInlineEditorProps) => {
             onClick={handleApply}
           />
           <Button type='link'
-            icon={<CloseSymbol />}
+            icon={<CloseSymbolIcon />}
             disabled={isSubmitting}
             onClick={handleCancel}
           />
         </>
       ) : (<>
         <label>{propsValue}</label>
-        <Button type='link' icon={<EditOutlined />} onClick={handleEdit}/>
-        <Button type='link' icon={<DeleteOutlined />} onClick={handleDelete}/>
+        <Button type='link' icon={<EditOutlinedIcon />} onClick={handleEdit}/>
+        <Button type='link' icon={<DeleteOutlinedIcon />} onClick={handleDelete}/>
       </>
       )}
     </Space>

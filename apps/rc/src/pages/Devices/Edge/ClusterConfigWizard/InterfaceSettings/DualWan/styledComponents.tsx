@@ -1,13 +1,28 @@
 import { Form } from 'antd'
 import styled   from 'styled-components/macro'
 
-import { cssStr } from '@acx-ui/components'
-import { Drag }   from '@acx-ui/icons'
+import { cssStr }                                          from '@acx-ui/components'
+import { DeleteOutlined, Drag, EditOutlined, CloseSymbol } from '@acx-ui/icons'
 
 export const DragIcon = styled(Drag)`
   cursor: grab;
  `
 
+export const DeleteOutlinedIcon = styled(DeleteOutlined)`
+ path {
+   stroke: var(--acx-accents-blue-50) !important;
+ }
+`
+export const EditOutlinedIcon = styled(EditOutlined)`
+ path {
+   stroke: var(--acx-accents-blue-50) !important;
+ }
+`
+export const CloseSymbolIcon = styled(CloseSymbol)`
+ path {
+   stroke: var(--acx-accents-blue-50) !important;
+ }
+`
 interface DragIconWrapperProps extends React.PropsWithChildren {
   disabled?: boolean;
   'data-testid'?: string;

@@ -86,7 +86,7 @@ export const LinkHealthMonitorSettingForm = (props: LinkHealthMonitorSettingForm
             <StyledFormItem
               {...field}
               rules={[
-                { required: true },
+                { required: true, message: $t({ defaultMessage: 'Please enter target IP' }) },
                 { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
