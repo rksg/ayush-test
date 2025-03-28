@@ -184,9 +184,11 @@ export const useIpsecProfileLimitedSelection = (
 
   useEffect(() => {
     const setData = () => {
-      const softGreList = ((allowSoftGetGrePorfiles) ? softGreData : [])
+      const softGreList = ((allowSoftGetGrePorfiles
+        && softGreData && softGreData?.length > 0) ? softGreData : [])
 
-      const ipsecProfileList = ((allowIpsecGetPorfiles) ? ipsecData : [])
+      const ipsecProfileList = ((allowIpsecGetPorfiles
+        && ipsecData && ipsecData?.length > 0) ? ipsecData : [])
       const { softGreIds, boundSoftGreList } = getUsedSoftGreProfiles(softGreList)
 
       if (softGreList.length > 0) {
