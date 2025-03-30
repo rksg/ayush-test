@@ -2571,6 +2571,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           const apiCustomHeader = customHeaders ? customHeaders : GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const searchAgentName = (payload as any).searchString
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const venueName = (payload as any).filters?.venues?.name.keyword
+
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
             body: JSON.stringify({})

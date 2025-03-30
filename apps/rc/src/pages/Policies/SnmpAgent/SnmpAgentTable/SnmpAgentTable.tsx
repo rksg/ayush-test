@@ -29,7 +29,7 @@ import {
   useTableQuery,
   GetApiVersionHeader,
   ApiVersionEnum,
-  getPolicyAllowedOperation
+  getPolicyAllowedOperation, RbacApSnmpViewModelData
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -75,20 +75,37 @@ export default function SnmpAgentTable () {
   })
 
   const list = filterResults.data
-  let customerVenues: string[] = []
+  let customerVenues: { venueId: string, venueName: string }[] = []
 
   if (list && list.totalCount > 0) {
     list?.data.forEach((c => {
-      const { names, count } = c.venues || {}
-      if (count) {
-        customerVenues = customerVenues.concat(names)
+      if (isUseRbacApi) {
+        const ids = (c as unknown as RbacApSnmpViewModelData)?.venueIds || []
+        const names = (c as unknown as RbacApSnmpViewModelData)?.venueNames || []
+        ids.forEach((id, index) => {
+          customerVenues.push({
+            venueId: id,
+            venueName: names[index]
+          })
+        })
+      }
+      else {
+        const { names, count } = (c as ApSnmpViewModelData)?.venues || {}
+        if (count) {
+          names.forEach((name) => {
+            customerVenues.push({
+              venueId: name,
+              venueName: name
+            })
+          })
+        }
       }
     }))
 
     customerVenues = _.uniq(customerVenues)
   }
 
-  const filterables = { venues: customerVenues?.map(v => ({ key: v, value: v })) }
+  const filterables = { venues: customerVenues?.map(v => ({ key: v.venueName, value: v.venueId })) }
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
