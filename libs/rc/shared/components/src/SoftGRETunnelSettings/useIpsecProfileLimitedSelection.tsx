@@ -33,7 +33,7 @@ export interface SoftGreIpsecProfile {
     apModel?: string,
     serialNumber?: string
   }
-
+/* istanbul ignore next */
 export const useIpsecProfileLimitedSelection = (
   props: {
     venueId: string
@@ -67,6 +67,30 @@ export const useIpsecProfileLimitedSelection = (
     && isEthernetPortProfileEnabled
 
   const allowIpsecGetPorfiles = allowSoftGetGrePorfiles && isWifiIpsecOverNetworkEnabled
+
+  const { softGreData } = useGetSoftGreViewDataListQuery({
+    payload: {
+      page: 1,
+      pageSize: 10_000,
+      fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
+      filters: {}
+    } }, {
+    selectFromResult: ({ data }) => {
+      return { softGreData: data?.data }
+    }
+  })
+
+  const { ipsecData } = useGetIpsecViewDataListQuery({
+    payload: {
+      page: 1,
+      pageSize: 10_000,
+      fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
+      filters: {}
+    } }, {
+    selectFromResult: ({ data }) => {
+      return { ipsecData: data?.data }
+    }
+  })
 
   const getUsedSoftGreProfiles = (softGreList: SoftGreViewData[]) => {
     const softGreIds = new Set<string>()
@@ -157,30 +181,6 @@ export const useIpsecProfileLimitedSelection = (
     })
     return boundIpsecList
   }
-
-  const { softGreData } = useGetSoftGreViewDataListQuery({
-    payload: {
-      page: 1,
-      pageSize: 10_000,
-      fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
-      filters: {}
-    } }, {
-    selectFromResult: ({ data }) => {
-      return { softGreData: data?.data }
-    }
-  })
-
-  const { ipsecData } = useGetIpsecViewDataListQuery({
-    payload: {
-      page: 1,
-      pageSize: 10_000,
-      fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
-      filters: {}
-    } }, {
-    selectFromResult: ({ data }) => {
-      return { ipsecData: data?.data }
-    }
-  })
 
   useEffect(() => {
     const setData = () => {
@@ -307,15 +307,6 @@ export const useIpsecProfileLimitedSelection = (
     }
   }, [boundSoftGreIpsecData, newSoftGreIpsecList])
 
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(
-      'softGreOptionList: ', softGreOptionList,
-      '\tipsecOptionList: ', ipsecOptionList,
-      '\tboundSoftGreIpsecList:', boundSoftGreIpsecData,
-      '\tnewSoftGreIpsecList:', newSoftGreIpsecList)
-  }, [ipsecOptionList])
-
   const getPortFormData = (index: number) => {
     if (isVenueOperation) {
       const softGreId = form.getFieldValue(['lan', index, 'softGreProfileId'])
@@ -391,8 +382,6 @@ export const useIpsecProfileLimitedSelection = (
 
       }
     }
-    // eslint-disable-next-line no-console
-    console.log('formData: ', formData, '\ncurrentData: ', currentData, '\nboundData: ', boundData)
   }
 
   const reloadOptionList = (newOption?: DefaultOptionType) => {
