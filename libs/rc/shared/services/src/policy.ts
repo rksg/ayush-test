@@ -2574,11 +2574,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const searchAgentName = (payload as any).searchString
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const venueName = (payload as any).filters?.venues?.name.keyword
+          const venueIds = (payload as any).filters?.['venues.name.keyword']
+
+          let filtersPayload = {}
+
+          if (searchAgentName) {
+            filtersPayload = {
+              ...filtersPayload,
+              name: [searchAgentName]
+            }
+          }
+          if (venueIds) {
+            filtersPayload = {
+              ...filtersPayload,
+              venueIds: venueIds
+            }
+          }
 
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
-            body: JSON.stringify({})
+            body: JSON.stringify({ filters: filtersPayload })
           }
           const res = await fetchWithBQ(req)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
@@ -2603,7 +2618,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
               v2Agents: convertToCountAndNumber(oldPolicy.snmpV2Agents),
               v3Agents: convertToCountAndNumber(oldPolicy.snmpV3Agents),
               venues: convertToCountAndNumber(rbacApSnmpViewModel?.venueNames),
-              aps: convertToCountAndNumber(rbacApSnmpViewModel?.apNames)
+              aps: convertToCountAndNumber(rbacApSnmpViewModel?.apNames),
+              venuesIdAndNames: rbacApSnmpViewModel?.venueIds.map((venueId, index) => {
+                return { venueId: venueId, venueName: rbacApSnmpViewModel?.venueNames[index] }
+              })
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>

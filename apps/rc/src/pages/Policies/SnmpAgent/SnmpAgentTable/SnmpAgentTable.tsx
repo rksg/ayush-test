@@ -78,19 +78,12 @@ export default function SnmpAgentTable () {
   let customerVenues: { venueId: string, venueName: string }[] = []
 
   if (list && list.totalCount > 0) {
-    list?.data.forEach((c => {
+    list?.data.forEach(((c) => {
       if (isUseRbacApi) {
-        const ids = (c as unknown as RbacApSnmpViewModelData)?.venueIds || []
-        const names = (c as unknown as RbacApSnmpViewModelData)?.venueNames || []
-        ids.forEach((id, index) => {
-          customerVenues.push({
-            venueId: id,
-            venueName: names[index]
-          })
-        })
+        customerVenues = customerVenues.concat(c.venuesIdAndNames)
       }
       else {
-        const { names, count } = (c as ApSnmpViewModelData)?.venues || {}
+        const { names, count } = c?.venues || {}
         if (count) {
           names.forEach((name) => {
             customerVenues.push({
@@ -105,7 +98,7 @@ export default function SnmpAgentTable () {
     customerVenues = _.uniq(customerVenues)
   }
 
-  const filterables = { venues: customerVenues?.map(v => ({ key: v.venueName, value: v.venueId })) }
+  const filterables = { venues: customerVenues?.map(v => ({ key: v.venueId, value: v.venueName })) }
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
