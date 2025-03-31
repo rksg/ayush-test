@@ -159,8 +159,8 @@ const TunnelProfileTable = () => {
           sorter: false,
           render: (_, row) => {
             return TunnelTypeEnum.VXLAN_GPE === row.tunnelType ?
-              `${row.destinationEdgeClusterName || $t({ defaultMessage: noDataDisplay })}` :
-              `${row.destinationIpAddress || $t({ defaultMessage: noDataDisplay })}`
+              `${row.destinationEdgeClusterName || noDataDisplay}` :
+              `${row.destinationIpAddress || noDataDisplay}`
           }
         }] as TableColumn<TunnelProfileViewData, 'text'>[]
       :[]),
