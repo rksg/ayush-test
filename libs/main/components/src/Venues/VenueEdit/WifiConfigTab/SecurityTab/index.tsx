@@ -43,7 +43,7 @@ import {
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { hasAllowedOperations }   from '@acx-ui/user'
+import { getUserProfile, hasAllowedOperations, isFoundationTier }   from '@acx-ui/user'
 
 import { VenueEditContext }               from '../..'
 import {
@@ -95,6 +95,8 @@ export function SecurityTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  const { accountTier } = getUserProfile()
+  const isFoundation = isFoundationTier(accountTier)
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
@@ -444,73 +446,75 @@ export function SecurityTab () {
               }}
             />
           </FieldsetItem>
-          <FieldsetItem
-            name='rogueApEnabled'
-            label={$t({ defaultMessage: 'Rogue AP Detection:' })}
-            disabled={!isAllowEditRogueAp}
-            initialValue={false}
-            switchStyle={{}}
-            triggerDirtyFunc={setTriggerRogueAPDetection}
-            hidden={isTemplate && !isConfigTemplateEnabledByType}
-          >
-            <Form.Item
-              label={<>
-                {$t({ defaultMessage: 'Report SNR Threshold:' })}
-                <Tooltip.Question
-                  title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
-                  placement='bottom'
-                />
-              </>}
+          { !isFoundation && <FieldsetItem
+              name='rogueApEnabled'
+              label={$t({ defaultMessage: 'Rogue AP Detection:' })}
+              disabled={!isAllowEditRogueAp}
+              initialValue={false}
+              switchStyle={{}}
+              triggerDirtyFunc={setTriggerRogueAPDetection}
+              hidden={isTemplate && !isConfigTemplateEnabledByType}
             >
-              <Space>
-                <Form.Item noStyle
-                  name='reportThreshold'
-                  initialValue={0}
-                  children={<InputNumber
-                    disabled={!isAllowEditRogueAp}
-                    onChange={() => setTriggerRogueAPDetection(true)}
-                    min={0}
-                    max={100}
-                    style={{ width: '120px' }} />} />
-                <span style={{ marginTop: '30px' }}>dB</span>
-              </Space>
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'Rogue AP Detection Policy Profile:' })}
-            >
-              <Space>
-                <Form.Item noStyle
-                  initialValue={roguePolicyIdValue}
-                  name='roguePolicyId'>
-                  <Select
-                    disabled={!isAllowEditRogueAp}
-                    children={selectOptions}
-                    value={roguePolicyIdValue}
-                    onChange={(value => setRogueApPolicyId(value))}
-                    style={{ width: '200px' }}
+              <Form.Item
+                label={<>
+                  {$t({ defaultMessage: 'Report SNR Threshold:' })}
+                  <Tooltip.Question
+                    title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
+                    placement='bottom'
                   />
-                </Form.Item>
-                <Button type='link'
-                  disabled={!roguePolicyIdValue}
-                  onClick={() => {
-                    if (roguePolicyIdValue) {
-                      setRogueDrawerVisible(true)
+                </>}
+              >
+                <Space>
+                  <Form.Item noStyle
+                    name='reportThreshold'
+                    initialValue={0}
+                    children={<InputNumber
+                      disabled={!isAllowEditRogueAp}
+                      onChange={() => setTriggerRogueAPDetection(true)}
+                      min={0}
+                      max={100}
+                      style={{ width: '120px' }} />} />
+                  <span style={{ marginTop: '30px' }}>dB</span>
+                </Space>
+              </Form.Item>
+              <Form.Item
+                label={$t({ defaultMessage: 'Rogue AP Detection Policy Profile:' })}
+              >
+                <Space>
+                  <Form.Item noStyle
+                    initialValue={roguePolicyIdValue}
+                    name='roguePolicyId'>
+                    <Select
+                      disabled={!isAllowEditRogueAp}
+                      children={selectOptions}
+                      value={roguePolicyIdValue}
+                      onChange={(value => setRogueApPolicyId(value))}
+                      style={{ width: '200px' }}
+                    />
+                  </Form.Item>
+                  <Button type='link'
+                    disabled={!roguePolicyIdValue}
+                    onClick={() => {
+                      if (roguePolicyIdValue) {
+                        setRogueDrawerVisible(true)
+                      }
                     }
+                    }>
+                    {$t({ defaultMessage: 'View Details' })}
+                  </Button>
+                  {isAllowEditRogueAp && <RogueApModal
+                    setPolicyId={setRogueApPolicyId}
+                  />
                   }
-                  }>
-                  {$t({ defaultMessage: 'View Details' })}
-                </Button>
-                { isAllowEditRogueAp && <RogueApModal
-                  setPolicyId={setRogueApPolicyId}
-                />
-                }
-              </Space>
-              { rogueDrawerVisible && <RogueApDrawer
-                visible={rogueDrawerVisible}
-                setVisible={setRogueDrawerVisible}
-                policyId={roguePolicyIdValue} /> }
-            </Form.Item>
-          </FieldsetItem>
+                </Space>
+                {rogueDrawerVisible && <RogueApDrawer
+                  visible={rogueDrawerVisible}
+                  setVisible={setRogueDrawerVisible}
+                  policyId={roguePolicyIdValue} />}
+              </Form.Item>
+            </FieldsetItem>
+          }
+          
           { !isTemplate && supportTlsKeyEnhance && <Space align='start'>
             <StepsFormLegacy.FieldLabel
               width='max-content'
