@@ -91,6 +91,7 @@ function useColumns (
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
+  const isTagsColumnEnabled = true//useIsSplitOn(Features.VENUE_TAG_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -237,7 +238,16 @@ function useColumns (
           </>
         )
       }
-    }
+    },
+    ...(isTagsColumnEnabled ? [{
+      title: $t({ defaultMessage: 'Tags' }),
+      key: 'tags',
+      dataIndex: 'tags',
+      sorter: true,
+      filterKey: 'tags',
+      searchable: searchable,
+      filterable: filterables ? filterables['tags'] : false
+    }] : [])
   ]
 
   return columns.filter(({ key }) =>
@@ -389,6 +399,7 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityList()
   const tableData = useVenueEdgeCompatibilities(tableQuery)
+  // const { cityFilterOptions } = useGetVenueCityList()
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -414,7 +425,7 @@ export function VenuesTable () {
         tableData={tableData}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
-        filterables={{ city: cityFilterOptions }}
+        filterables={{ city: cityFilterOptions, tags: cityFilterOptions }}
       />
     </>
   )

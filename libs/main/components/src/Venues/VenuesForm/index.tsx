@@ -41,7 +41,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplatePageHeaderTitle,
   CommonResult,
-  ConfigTemplateType
+  ConfigTemplateType,
+  validateTags
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -157,6 +158,7 @@ export function VenuesForm (props: VenuesFormProps) {
   const { modalMode = false, modalCallBack, specifiedAction, dataFromParent } = props
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isTagsEnabled = true//useIsSplitOn(Features.VENUE_TAG_TOGGLE)
 
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
@@ -457,12 +459,15 @@ export function VenuesForm (props: VenuesFormProps) {
                   label={intl.$t({ defaultMessage: 'Description' })}
                   children={<Input.TextArea rows={2} maxLength={180} />}
                 />
-                {/* // TODO: Waiting for TAG feature support
-              <Form.Item
-              name='tags'
-              label='Tags:'
-              children={<Input />} />
-              */}
+                {isTagsEnabled && <Form.Item
+                  name='tags'
+                  label={intl.$t({ defaultMessage: 'Tags' })}
+                  rules={[{
+                    validator: (_, value) => validateTags(value)
+                  }]}
+                  children={<Select mode='tags' maxLength={24} />}
+                />}
+
               </Col>
             </Row>
             <Row gutter={20}>
