@@ -292,6 +292,12 @@ export const mockedIntentCRRM = {
       channel: 3,
       apCount: 3
     }
+  ],
+  apPowerTransmission: [
+    {
+      txPower: '_FULL',
+      apCount: 1
+    }
   ]
 } as unknown as IntentDetail
 
@@ -338,7 +344,8 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
     }
   },
   preferences: null,
-  apChannelDistributions: []
+  apChannelDistributions: [],
+  apPowerTransmission: []
 } as unknown as IntentDetail
 
 export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
@@ -399,6 +406,12 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
   apChannelDistributions: [
     {
       channel: 1,
+      apCount: 1
+    }
+  ],
+  apPowerTransmission: [
+    {
+      txPower: '_FULL',
       apCount: 1
     }
   ]

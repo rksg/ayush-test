@@ -20,6 +20,7 @@ import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
 import ChannelDistributionChart  from './Chart/ChannelDistributionChart'
+import PowerTransmissionChart    from './Chart/PowerTransmissionChart'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
@@ -110,11 +111,18 @@ export function IntentAIDetails () {
             </Tabs>
           </DetailsSection>
 
-          <DetailsSection>
+          <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
+              <DetailsSection>
+                <DetailsSection.Details children={<ChannelDistributionChart {...intent} />} />
+              </DetailsSection>
             </GridCol>
-          </DetailsSection>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection>
+                <DetailsSection.Details children={<PowerTransmissionChart {...intent} />} />
+              </DetailsSection>
+            </GridCol>
+          </GridRow>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>

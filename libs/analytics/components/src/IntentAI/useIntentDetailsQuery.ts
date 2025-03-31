@@ -50,6 +50,10 @@ export type IntentDetail = Intent & Partial<IntentKPI> & {
     channel: number
     apCount: number
   }[]
+  apPowerTransmission: {
+    txPower: number
+    apCount: number
+  }[]
 }
 
 export const useIntentParams = () => {
@@ -178,6 +182,10 @@ export const api = intentAIApi.injectEndpoints({
               ${preventColdTier ? 'dataCheck' : ''}
               apChannelDistributions {
                 channel
+                apCount
+              }
+              apPowerTransmission {
+                txPower
                 apCount
               }
             }
