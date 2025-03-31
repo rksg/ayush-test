@@ -3,12 +3,15 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { getUserProfile, isFoundationTier } from '@acx-ui/user'
 
 function ApTabs () {
   const { $t } = useIntl()
   const { apId, activeTab } = useParams()
+  const { accountTier } = getUserProfile()
   const basePath = useTenantLink(`/devices/wifi/${apId}/details/`)
   const navigate = useNavigate()
+  const isFoundation = isFoundationTier(accountTier)
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
@@ -17,7 +20,7 @@ function ApTabs () {
   }
   return (
     <Tabs onChange={onTabChange} activeKey={activeTab}>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='ai' />
+      {!isFoundation && <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='ai' />}
       <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />

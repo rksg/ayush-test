@@ -12,6 +12,7 @@ import ApplicationPolicyComponent from './ApplicationPolicyComponent'
 import DevicePolicyComponent      from './DevicePolicyComponent'
 import Layer2Component            from './Layer2Component'
 import Layer3Component            from './Layer3Component'
+import { getUserProfile, isFoundationTier } from '@acx-ui/user'
 
 
 const defaultPayload = {
@@ -24,6 +25,9 @@ const defaultPayload = {
 
 function AccessControlTabs () {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isFoundation = isFoundationTier(accountTier)
+  
   const paddingStyle = { paddingTop: '8px' }
 
   const [currentTab, setCurrentTab] = useState('accessControlSet')
@@ -75,13 +79,15 @@ function AccessControlTabs () {
       >
         <DevicePolicyComponent />
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Applications' })}
-        key='application'
-        style={paddingStyle}
-      >
-        <ApplicationPolicyComponent />
-      </Tabs.TabPane>
+      {
+        !isFoundation && <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Applications' })}
+          key='application'
+          style={paddingStyle}
+        >
+          <ApplicationPolicyComponent />
+        </Tabs.TabPane>
+      }
     </Tabs>
   )
 }

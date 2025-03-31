@@ -252,10 +252,10 @@ export function useMenuConfig () {
               uri: '/networks/wireless/reports/wlans',
               label: $t({ defaultMessage: 'WLANs Report' })
             },
-            {
+            ...(!isFoundation ? [{
               uri: '/networks/wireless/reports/applications',
               label: $t({ defaultMessage: 'Applications Report' })
-            },
+            }] : []),
             {
               uri: '/networks/wireless/reports/wireless',
               label: $t({ defaultMessage: 'Wireless Report' })
@@ -354,7 +354,12 @@ export function useMenuConfig () {
         }
       ]
     },
-    {
+    ...(isFoundation ? [{
+      uri: '/reports',
+      label: $t({ defaultMessage: 'Business Insights' }),
+      inactiveIcon: SpeedIndicatorOutlined,
+      activeIcon: SpeedIndicatorSolid
+    }] : [{
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
       activeIcon: BulbSolid,
@@ -366,7 +371,7 @@ export function useMenuConfig () {
         }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
-    },
+    }]),
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
