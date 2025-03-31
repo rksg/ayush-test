@@ -38,8 +38,20 @@ describe('ApiInfo', () => {
     expect(isIgnoreErrorModal()).toBe(false)
   })
 
-  it('Check the isShowImprovedErrorSuggestion flag', async () => {
+  it('Check the isShowImprovedErrorSuggestion flag with empty errors', async () => {
     expect(isShowImprovedErrorSuggestion({ errors: [] })).toBe(false)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with errors', async () => {
+    expect(isShowImprovedErrorSuggestion({ errors: [{ reason: 'test' }] })).toBe(true)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with empty error', async () => {
+    expect(isShowImprovedErrorSuggestion({ error: {} })).toBe(false)
+  })
+
+  it('Check the isShowImprovedErrorSuggestion flag with error', async () => {
+    expect(isShowImprovedErrorSuggestion({ error: { reason: 'test' } })).toBe(true)
   })
 
   it('getFilters', async () => {

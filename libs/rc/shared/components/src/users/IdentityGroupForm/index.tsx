@@ -73,7 +73,9 @@ export function IdentityGroupForm ({
       if (modalMode) {
         callback?.(result?.id)
       } else {
-        navigate(previousPath, { replace: true })
+        editMode
+          ? navigate(-1)
+          : navigate(previousPath, { replace: true })
       }
     } catch (e) {
       return Promise.resolve()
@@ -103,7 +105,7 @@ export function IdentityGroupForm ({
         editMode={editMode}
         form={form}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onCancel={() => modalMode ? callback?.() : navigate(previousPath)}
+        onCancel={() => modalMode ? callback?.() : navigate(-1)}
         onFinish={handleSubmit}>
         <StepsForm.StepForm>
           <IdentityGroupSettingForm modalMode={modalMode}/>
