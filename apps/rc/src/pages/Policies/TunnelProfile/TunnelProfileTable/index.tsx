@@ -19,6 +19,7 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
+  getTunnelTypeString,
   hasPolicyPermission,
   isDefaultTunnelProfile,
   MtuTypeEnum,
@@ -26,6 +27,7 @@ import {
   PolicyOperation,
   PolicyType,
   TunnelProfileViewData,
+  TunnelTypeEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -42,6 +44,8 @@ const TunnelProfileTable = () => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
+
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -123,8 +127,18 @@ const TunnelProfileTable = () => {
         )
       }
     },
-    ...((isEdgeVxLanKaReady)
+    ...((isEdgeL2greReady)
       ? [{
+        title: $t({ defaultMessage: 'Tunnel Type' }),
+        key: 'tunnelType',
+        dataIndex: 'tunnelType',
+        // eslint-disable-next-line max-len
+        filterable: [{ key: TunnelTypeEnum.VXLAN_GPE, value: 'VXLAN GPE' }, { key: TunnelTypeEnum.L2GRE, value: 'L2GRE' }],
+        sorter: true,
+        // eslint-disable-next-line max-len
+        render: (_, row) => getTunnelTypeString($t, row.tunnelType || TunnelTypeEnum.VXLAN_GPE)
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      : [{
         title: $t({ defaultMessage: 'Network Segment Type' }),
         key: 'type',
         dataIndex: 'type',
@@ -133,30 +147,47 @@ const TunnelProfileTable = () => {
         render: (_, row) => getNetworkSegmentTypeString($t, row.type || NetworkSegmentTypeEnum.VXLAN,
           isEdgeVxLanKaReady)
       }] as TableColumn<TunnelProfileViewData, 'text'>[]
-      : []
     ),
-    {
-      title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
-      key: 'mtuType',
-      dataIndex: 'mtuType',
-      sorter: true,
-      render: (_, row) => {
-        return MtuTypeEnum.AUTO === row.mtuType ?
-          $t({ defaultMessage: 'Auto' }) :
-          `${$t({ defaultMessage: 'Manual' })} (${row.mtuSize})`
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Force Fragmentation' }),
-      key: 'forceFragmentation',
-      dataIndex: 'forceFragmentation',
-      sorter: true,
-      render: (_, row) => {
-        return row.forceFragmentation ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' })
-      }
-    },
+    ...((isEdgeL2greReady)?
+      [
+        {
+          title: $t({ defaultMessage: 'Destination' }),
+          key: 'destination',
+          dataIndex: 'destination',
+          sorter: false,
+          render: (_, row) => {
+            return TunnelTypeEnum.VXLAN_GPE === row.tunnelType ?
+              `${row.destinationEdgeClusterName || $t({ defaultMessage: 'N/A' })}` :
+              `${row.destinationIpAddress || $t({ defaultMessage: 'N/A' })}`
+          }
+        }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      :[]),
+    ...((isEdgeL2greReady)?[]:[
+      {
+        title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
+        key: 'mtuType',
+        dataIndex: 'mtuType',
+        sorter: true,
+        render: (_, row) => {
+          return MtuTypeEnum.AUTO === row.mtuType ?
+            $t({ defaultMessage: 'Auto' }) :
+            `${$t({ defaultMessage: 'Manual' })} (${row.mtuSize})`
+        }
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+    ),
+    ...((isEdgeL2greReady)?[]:[
+      {
+        title: $t({ defaultMessage: 'Force Fragmentation' }),
+        key: 'forceFragmentation',
+        dataIndex: 'forceFragmentation',
+        sorter: true,
+        render: (_, row) => {
+          return row.forceFragmentation ?
+            $t({ defaultMessage: 'ON' }) :
+            $t({ defaultMessage: 'OFF' })
+        }
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+    ),
     {
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       key: 'personalIdentityNetworkIds',
@@ -179,15 +210,17 @@ const TunnelProfileTable = () => {
       }] as TableColumn<TunnelProfileViewData, 'text'>[]
       : []
     ),
-    {
-      title: $t({ defaultMessage: 'Networks' }),
-      key: 'networkIds',
-      dataIndex: 'networkIds',
-      align: 'center',
-      filterable: networkOptions,
-      sorter: true,
-      render: (_, row) => row.networkIds?.length || 0
-    }
+    ...((isEdgeL2greReady)?[]:[
+      {
+        title: $t({ defaultMessage: 'Networks' }),
+        key: 'networkIds',
+        dataIndex: 'networkIds',
+        align: 'center',
+        filterable: networkOptions,
+        sorter: true,
+        render: (_, row) => row.networkIds?.length || 0
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+    )
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
     //   key: 'tags',
@@ -205,7 +238,7 @@ const TunnelProfileTable = () => {
       rbacOpsIds: getPolicyAllowedOperation(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT),
       // Default Tunnel profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
-            && !isDefaultTunnelProfile(selectedRows[0]),
+            && (!isDefaultTunnelProfile(selectedRows[0]) || isEdgeL2greReady),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -221,7 +254,8 @@ const TunnelProfileTable = () => {
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.DELETE),
       rbacOpsIds: getPolicyAllowedOperation(PolicyType.TUNNEL_PROFILE, PolicyOperation.DELETE),
-      visible: (selectedRows) => !selectedRows.some(row => isDefaultTunnelProfile(row)),
+      visible: (selectedRows) => !selectedRows
+        .some(row => isDefaultTunnelProfile(row) && !isEdgeL2greReady),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
