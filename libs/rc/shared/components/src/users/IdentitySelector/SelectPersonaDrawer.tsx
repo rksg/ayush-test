@@ -13,20 +13,25 @@ interface SelectPersonaDrawerProps {
   identityId?: string,
   onSubmit?: (persona?: Persona) => void,
   onCancel?: () => void,
-  disableAddDevices?: boolean
+  disableAddDevices?: boolean,
+  useByIdentityGroup?: boolean
 }
 
 export function SelectPersonaDrawer (props: SelectPersonaDrawerProps) {
   const { $t } = useIntl()
   const { identityGroupId: personaGroupId, identityId, onSubmit, onCancel,
-    disableAddDevices } = props
+    disableAddDevices, useByIdentityGroup = false } = props
   const [ selectedPersona, setSelectedPersona ] = useState<Persona>()
 
   return <Drawer
     visible
     destroyOnClose
     width={700}
-    title={$t({ defaultMessage: 'Select Identity' })}
+    title={
+      useByIdentityGroup ?
+        $t({ defaultMessage: 'Associate Identity' }) :
+        $t({ defaultMessage: 'Select Identity' })
+    }
     push={false}
     onClose={onCancel}
     footer={
@@ -47,6 +52,7 @@ export function SelectPersonaDrawer (props: SelectPersonaDrawerProps) {
       settingsId={'select-persona-drawer'}
       onChange={(p) => setSelectedPersona(p)}
       disableAddDevices={disableAddDevices}
+      useByIdentityGroup={useByIdentityGroup}
       colProps={{
         name: { searchable: true },
         email: { searchable: true },
