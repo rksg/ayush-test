@@ -115,9 +115,13 @@ export interface EnforceableFields {
 
 export type AllowedCloneTemplateTypes =
   ConfigTemplateType.NETWORK |
-  ConfigTemplateType.VENUE
+  ConfigTemplateType.VENUE |
+  ConfigTemplateType.DPSK |
+  ConfigTemplateType.WIFI_CALLING
 
 export const allowedCloneTemplateTypesSet = new Set<ConfigTemplateType>([
   ConfigTemplateType.NETWORK,
-  ConfigTemplateType.VENUE
+  ConfigTemplateType.VENUE,
+  ConfigTemplateType.DPSK,
+  ConfigTemplateType.WIFI_CALLING
 ])
