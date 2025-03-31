@@ -26,11 +26,13 @@ import {
   NetworkSegmentTypeEnum,
   PolicyOperation,
   PolicyType,
+  transformDisplayOnOff,
   TunnelProfileViewData,
   TunnelTypeEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                from '@acx-ui/utils'
 
 const defaultTunnelProfileTablePayload = {}
 
@@ -157,8 +159,8 @@ const TunnelProfileTable = () => {
           sorter: false,
           render: (_, row) => {
             return TunnelTypeEnum.VXLAN_GPE === row.tunnelType ?
-              `${row.destinationEdgeClusterName || $t({ defaultMessage: 'N/A' })}` :
-              `${row.destinationIpAddress || $t({ defaultMessage: 'N/A' })}`
+              `${row.destinationEdgeClusterName || $t({ defaultMessage: noDataDisplay })}` :
+              `${row.destinationIpAddress || $t({ defaultMessage: noDataDisplay })}`
           }
         }] as TableColumn<TunnelProfileViewData, 'text'>[]
       :[]),
@@ -182,9 +184,7 @@ const TunnelProfileTable = () => {
         dataIndex: 'forceFragmentation',
         sorter: true,
         render: (_, row) => {
-          return row.forceFragmentation ?
-            $t({ defaultMessage: 'ON' }) :
-            $t({ defaultMessage: 'OFF' })
+          return transformDisplayOnOff(row.forceFragmentation)
         }
       }] as TableColumn<TunnelProfileViewData, 'text'>[]
     ),
