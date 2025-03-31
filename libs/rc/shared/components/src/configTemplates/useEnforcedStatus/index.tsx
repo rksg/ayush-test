@@ -26,7 +26,7 @@ export function useEnforcedStatus (type: AllowedEnforcedType) {
 
   // eslint-disable-next-line max-len
   const hasEnforcedItem = (target: Array<EnforceableFields> | undefined): boolean => {
-    if (!target || !enforcedAvailableMap[type] || isTemplate) return false
+    if (!target || !isEnforcedAvailable() || isTemplate) return false
 
     return target.some(item => item.isEnforced)
   }
@@ -35,7 +35,7 @@ export function useEnforcedStatus (type: AllowedEnforcedType) {
     return hasEnforcedItem(target) ? $t(enforcedActionMsg) : ''
   }
 
-  const hasEnforcedFields = () => {
+  const hasEnforcedFieldsFromContext = () => {
     return hasEnforcedItem([enforcedFields])
   }
 
@@ -43,7 +43,7 @@ export function useEnforcedStatus (type: AllowedEnforcedType) {
     formType: T, isEnforced?: boolean
   ): GetStepsFormProps<T> | undefined => {
 
-    const enforced = isEnforced ?? hasEnforcedFields()
+    const enforced = isEnforced ?? hasEnforcedFieldsFromContext()
     if (!hasEnforcedItem([{ isEnforced: enforced }])) return undefined
 
     return (formType === 'StepsForm'
@@ -52,7 +52,17 @@ export function useEnforcedStatus (type: AllowedEnforcedType) {
     ) as GetStepsFormProps<T>
   }
 
-  return { hasEnforcedItem, getEnforcedActionMsg, getEnforcedStepsFormProps }
+  const isEnforcedAvailable = () => {
+    return enforcedAvailableMap[type]
+  }
+
+  return {
+    hasEnforcedItem,
+    getEnforcedActionMsg,
+    getEnforcedStepsFormProps,
+    hasEnforcedFieldsFromContext,
+    isEnforcedAvailable
+  }
 }
 
 function getEnforcedButtonProps () {
