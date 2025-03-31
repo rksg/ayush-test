@@ -137,9 +137,9 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
         {(fields, { add, remove }) => (
           <>
             {fields?.map((field, index) =>
-              <>
+              <Space direction='vertical' key={`proposal_${index}`}>
                 <Subtitle level={4}>{`Proposal #${index + 1}`}</Subtitle>
-                <Space key={`proposal_${index}`}>
+                <Space >
                   {<Form.Item
                     name={[field.name, 'encAlg']}
                     label={$t({ defaultMessage: 'Encryption Mode' })}
@@ -192,7 +192,7 @@ export default function EspAssociationSettings (props: EspAssociationSettingsFor
                     />
                   }
                 </Space>
-              </>
+              </Space>
             )}
             {(fields.length < MAX_PROPOSALS) &&
               <Button type='link'
