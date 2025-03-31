@@ -112,7 +112,7 @@ export default function OnboardForm ({ editMode = false }) {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 32 },
+                { max: 64 },
                 { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               validateTrigger={'onBlur'}
