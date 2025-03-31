@@ -75,6 +75,7 @@ export const useIpsecProfileLimitedSelection = (
       fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
       filters: {}
     } }, {
+    skip: !allowIpsecGetPorfiles,
     selectFromResult: ({ data }) => {
       return { softGreData: data?.data }
     }
@@ -87,6 +88,7 @@ export const useIpsecProfileLimitedSelection = (
       fields: ['name', 'id', 'activations', 'venueActivations', 'apActivations'],
       filters: {}
     } }, {
+    skip: !allowIpsecGetPorfiles,
     selectFromResult: ({ data }) => {
       return { ipsecData: data?.data }
     }
