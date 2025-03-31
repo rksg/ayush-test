@@ -61,9 +61,10 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   const tableQuery = useTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
     apiParams: { },
+    pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
     sorter: {
-      sortField: 'username',
-      sortOrder: 'ASC'
+      sortField: 'updatedAt',
+      sortOrder: 'desc'
     },
     defaultPayload: { identityIds: [personaId] },
     option: { skip: !personaId || !personaGroupId }
@@ -155,7 +156,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       searchable: true,
       fixed: 'left',
       title: $t({ defaultMessage: 'MAC Address' }),
-      sorter: { compare: sortProp('macAddress', defaultSort) },
+      sorter: { compare: sortProp('clientMac', defaultSort) },
       render: (_, row) => row.clientMac.replaceAll(':', '-').toUpperCase()
     },
     {
@@ -196,7 +197,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       dataIndex: ['apInformation', 'name'],
       align: 'center',
       title: $t({ defaultMessage: 'AP' }),
-      sorter: { compare: sortProp('ap', defaultSort) },
+      sorter: { compare: sortProp('apInformation.name', defaultSort) },
       render: (_, { apInformation }) => {
         const { serialNumber, name } = apInformation ?? {}
         if (!serialNumber || !name) return name ?? serialNumber ?? noDataDisplay
@@ -241,6 +242,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       columns={columns}
       settingsId={settingsId}
       dataSource={datasource}
+      pagination={{ pageSize: 10, defaultPageSize: 10 }}
     />
   </Loader>
 }
