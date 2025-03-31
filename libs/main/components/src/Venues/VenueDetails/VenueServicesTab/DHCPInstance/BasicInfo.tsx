@@ -22,12 +22,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   // eslint-disable-next-line max-len
-  DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, Mesh, ServiceOperation,ServiceType, VenueSettings,
+  DHCPConfigTypeEnum, DHCPSaveData, DHCPUrls, LocationExtended, Mesh, ServiceOperation,ServiceType, VenueSettings,
   // eslint-disable-next-line max-len
   useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
 import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
@@ -212,7 +213,10 @@ export default function BasicInfo () {
           ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
           : ''
         }>{$t({ defaultMessage: 'Manage Local Service' })}</Button>,
-      visible: hasPermission({ scopes: [WifiScopes.UPDATE] })
+      visible: hasPermission({
+        scopes: [WifiScopes.UPDATE],
+        rbacOpsIds: [getOpsApi(DHCPUrls.bindVenueDhcpProfile)]
+      })
     }
   ]
 
