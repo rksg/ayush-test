@@ -11,6 +11,7 @@ import { ICX_MODELS_MODULES,
   TrustedPortTypeEnum,
   isRodanAvSubModel,
   isBabyRodanXSubModel,
+  is7550ZippySubModel,
   getFamilyAndModel } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -52,6 +53,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const [trustedPorts, setTrustedPorts] =
     useState<TrustedPort>({
@@ -231,6 +233,9 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       }
       if (!isSupport8100X && index === 'ICX8100') {
         return modelsData.filter(model => !isBabyRodanXSubModel(model.value))
+      }
+      if (!isSupport7550Zippy && index === 'ICX7550') {
+        return modelsData.filter(model => !is7550ZippySubModel(model.value))
       }
       return modelsData
     }
