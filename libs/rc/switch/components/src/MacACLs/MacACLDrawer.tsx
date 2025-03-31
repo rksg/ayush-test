@@ -273,7 +273,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
         type='primary'
         onClick={onApply}
       >
-        {$t({ defaultMessage: 'Apply' })}
+        {editMode ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })}
       </Button>
     </Space>
   )

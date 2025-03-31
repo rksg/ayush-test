@@ -241,7 +241,8 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
   const footer = (
     <Drawer.FormFooter
       buttonLabel={{
-        save: !!data ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+        save: data && Object.values(data).length > 0 ?
+          $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
       }}
       onCancel={handleClose}
       onSave={handleSave}

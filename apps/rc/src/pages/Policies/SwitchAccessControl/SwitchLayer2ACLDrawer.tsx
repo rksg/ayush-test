@@ -251,7 +251,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
   const footer = (
     <Drawer.FormFooter
       buttonLabel={{
-        save: data && Object.values(data).length ?
+        save: data && Object.values(data).length > 0 ?
           $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
       }}
       onCancel={handleClose}
