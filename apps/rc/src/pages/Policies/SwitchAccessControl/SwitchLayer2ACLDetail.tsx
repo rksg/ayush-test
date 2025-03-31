@@ -50,8 +50,6 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
     sorter: { sortField: 'id', sortOrder: 'ASC' }
   })
 
-
-
   function useColumns () {
     const columns: TableProps<MacAclRule>['columns'] = [
       {

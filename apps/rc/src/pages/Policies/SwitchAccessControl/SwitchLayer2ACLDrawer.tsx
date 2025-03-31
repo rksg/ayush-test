@@ -155,6 +155,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
               {$t({ defaultMessage: 'Any' })}
             </Radio>
             <Radio
+              data-testid='sourceMac'
               value={'sourceMac'}
             >
               <Form.Item
@@ -166,6 +167,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
                     'sourceAddress', isAnySrcAddress, 'sourceMask') }
                 ]}
                 children={<Input
+                  data-testid='sourceAddress'
                   disabled={isAnySrcAddress}
                   placeholder={'HHHH.HHHH.HHHH'}
                   style={{ width: '300px' }}
@@ -179,7 +181,10 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
                   { required: !isAnySrcAddress },
                   { validator: (_, value) => MacAddressFilterRegExp(value) }
                 ]}
-                children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnySrcAddress} />}
+                children={<Input
+                  data-testid='sourceMask'
+                  placeholder={'HHHH.HHHH.HHHH'}
+                  disabled={isAnySrcAddress} />}
                 validateFirst
               />
             </Radio>
@@ -203,6 +208,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
               {$t({ defaultMessage: 'Any' })}
             </Radio>
             <Radio
+              data-testid='destinationMac'
               value={'destinationMac'}
             >
               <Form.Item
@@ -214,6 +220,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
                     'destinationAddress', isAnyDestAddress, 'destinationMask') }
                 ]}
                 children={<Input
+                  data-testid='destinationAddress'
                   disabled={isAnyDestAddress}
                   placeholder={'HHHH.HHHH.HHHH'}
                   style={{ width: '300px' }}
@@ -227,7 +234,10 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
                   { required: !isAnyDestAddress },
                   { validator: (_, value) => MacAddressFilterRegExp(value) }
                 ]}
-                children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnyDestAddress} />}
+                children={<Input
+                  data-testid='destinationMask'
+                  placeholder={'HHHH.HHHH.HHHH'}
+                  disabled={isAnyDestAddress} />}
                 validateFirst
               />
             </Radio>
@@ -241,7 +251,8 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
   const footer = (
     <Drawer.FormFooter
       buttonLabel={{
-        save: !!data ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+        save: data && Object.values(data).length ?
+          $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
       }}
       onCancel={handleClose}
       onSave={handleSave}
