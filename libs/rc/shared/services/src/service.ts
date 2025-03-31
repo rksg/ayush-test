@@ -523,6 +523,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'ActivateMulticastDnsProxyProfile',
+            'DeactivateMulticastDnsProxyProfile'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'MdnsProxyAp', id: 'LIST' }
+            ]))
+          })
+        })
+      },
       extraOptions: { maxRetries: 5 }
     }),
     deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload<string[]>>({
