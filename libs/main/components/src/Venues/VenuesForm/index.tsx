@@ -158,7 +158,7 @@ export function VenuesForm (props: VenuesFormProps) {
   const { modalMode = false, modalCallBack, specifiedAction, dataFromParent } = props
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isTagsEnabled = true//useIsSplitOn(Features.VENUE_TAG_TOGGLE)
+  const isTagsEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
 
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
@@ -200,6 +200,13 @@ export function VenuesForm (props: VenuesFormProps) {
   })
   const { saveEnforcementConfig } = useConfigTemplate()
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvalye Lab' ]
+  const venueTagOptions =
+    Object.entries(venueTagList)
+      .map(([item])=>({
+        label: item,
+        value: item
+      }))
 
   useEffect(() => {
     if (data) {
@@ -465,7 +472,10 @@ export function VenuesForm (props: VenuesFormProps) {
                   rules={[{
                     validator: (_, value) => validateTags(value)
                   }]}
-                  children={<Select mode='tags' maxLength={24} />}
+                  children={<Select
+                    options={venueTagOptions}
+                    mode='tags'
+                    maxLength={24} />}
                 />}
 
               </Col>

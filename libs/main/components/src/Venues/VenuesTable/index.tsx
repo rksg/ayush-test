@@ -27,6 +27,7 @@ import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
+  useGetVenueTagListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useVenuesTableQuery
@@ -91,7 +92,7 @@ function useColumns (
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
   const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
-  const isTagsColumnEnabled = true//useIsSplitOn(Features.VENUE_TAG_TOGGLE)
+  const isTagsColumnEnabled = useIsSplitOn(Features.VENUE_TAG_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -399,7 +400,7 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityList()
   const tableData = useVenueEdgeCompatibilities(tableQuery)
-  // const { cityFilterOptions } = useGetVenueCityList()
+  const { tagFilterOptions } = useGetVenueTagList()
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -425,7 +426,7 @@ export function VenuesTable () {
         tableData={tableData}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
-        filterables={{ city: cityFilterOptions, tags: cityFilterOptions }}
+        filterables={{ city: cityFilterOptions, tags: tagFilterOptions }}
       />
     </>
   )
@@ -452,6 +453,17 @@ function useGetVenueCityList () {
   })
 
   return venueCityList
+}
+
+function useGetVenueTagList () {
+  // const params = useParams()
+
+  // let venueTagList = useGetVenueTagListQuery({
+  //   params
+  // })
+  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvalye Lab' ]
+
+  return { tagFilterOptions: venueTagList }
 }
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {

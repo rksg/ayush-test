@@ -416,6 +416,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result.cityList
       }
     }),
+    getVenueTagList: build.query<{ name: string }[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.getVenueTagList, params)
+        return{
+          ...req
+        }
+      }
+    }),
     getVenueSettings: build.query<VenueSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
@@ -2466,6 +2474,7 @@ export const {
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useGetVenueCityListQuery,
+  useGetVenueTagListQuery,
   useGetVenueSettingsQuery,
   useLazyGetVenueSettingsQuery,
   useGetVenueMeshQuery,
