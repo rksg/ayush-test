@@ -22,5 +22,25 @@ export const ConfigTemplateCloneUrlsInfo: Record<AllowedCloneTemplateTypes, ApiI
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
     opsApi: 'POST:/templates/venues/{id}/cloneSettings'
+  },
+  [ConfigTemplateType.DPSK]: {
+    method: 'post',
+    url: '/templates/dpskServices/:templateId/cloneSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/templates/dpskServices/{id}/cloneSettings'
+  },
+  [ConfigTemplateType.WIFI_CALLING]: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles/:templateId/cloneSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'POST:/templates/wifiCallingServiceProfiles/{id}/cloneSettings'
   }
 }

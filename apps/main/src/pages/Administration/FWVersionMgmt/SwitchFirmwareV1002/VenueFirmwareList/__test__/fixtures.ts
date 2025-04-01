@@ -613,6 +613,33 @@ export const availableVersions_hasInUse = [
     ]
   },
   {
+    modelGroup: 'ICX81',
+    switchCount: 0,
+    versions: [
+      {
+        id: '10010f_cd2_rc3',
+        name: '10010f_cd2_rc3',
+        category: 'REGULAR',
+        createdDate: '2024-05-23T03:54:07.867+00:00',
+        isDowngradeVersion: true
+      },
+      {
+        id: '10010f_cd2',
+        name: '10010f_cd2',
+        category: 'REGULAR',
+        createdDate: '2024-05-22T07:21:52.693+00:00',
+        isDowngradeVersion: true
+      },
+      {
+        id: '10020b_cd1',
+        name: '10020b_cd1',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:12:47.128+00:00',
+        isDowngradeVersion: true
+      }
+    ]
+  },
+  {
     modelGroup: 'ICX7X',
     switchCount: 0,
     versions: [
@@ -763,6 +790,35 @@ export const icx8100XGroupedData = [
       switchName: 'FPA4828V01P Switch - test',
       isStack: false,
       model: 'ICX8100_24',
+      currentFirmware: '10010f_cd2',
+      preDownload: true,
+      isSwitchLevelSchedule: false
+    }
+  ]
+]
+
+export const icx7550ZippyGroupedData = [
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue',
+      switchId: '80:f0:cf:34:9a:11',
+      switchName: 'FPH4439V00X',
+      isStack: false,
+      model: 'ICX7550-24XZP',
+      currentFirmware: '10020b_cd1',
+      preDownload: false,
+      isSwitchLevelSchedule: false
+    }
+  ],
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce36453',
+      venueName: 'My-Venue2',
+      switchId: '80:f0:cf:34:9a:00',
+      switchName: 'FMP4440T07E Switch - test',
+      isStack: false,
+      model: 'ICX7550-24ZP',
       currentFirmware: '10010f_cd2',
       preDownload: true,
       isSwitchLevelSchedule: false

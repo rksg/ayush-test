@@ -122,10 +122,13 @@ export function useCloneConfigTemplate () {
 function useCloneFeatureFlags () {
   const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
   const cloneVenueEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE_VENUE)
+  const cloneP1Enabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE_P1)
 
   const availabilityMap: Record<AllowedCloneTemplateTypes, boolean> = {
     [ConfigTemplateType.NETWORK]: cloneEnabled,
-    [ConfigTemplateType.VENUE]: cloneVenueEnabled
+    [ConfigTemplateType.VENUE]: cloneVenueEnabled,
+    [ConfigTemplateType.DPSK]: cloneP1Enabled,
+    [ConfigTemplateType.WIFI_CALLING]: cloneP1Enabled
   }
 
   return availabilityMap

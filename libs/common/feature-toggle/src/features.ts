@@ -25,6 +25,7 @@ export enum Features {
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_CLONE = 'acx-ui-config-template-clone',
+  CONFIG_TEMPLATE_CLONE_P1 = 'acx-ui-config-template-clone-phase1',
   CONFIG_TEMPLATE_CLONE_VENUE = 'acx-ui-config-template-clone-venue',
   CONFIG_TEMPLATE_ENFORCED = 'acx-ui-config-template-enforcement',
   CONFIG_TEMPLATE_ENFORCED_P1 = 'acx-ui-config-template-enforcement-phase1',
@@ -316,7 +317,8 @@ export enum Features {
   SWITCH_SUPPORT_ICX8100X = 'switch-support-icx8100x-toggle',
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
   ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle',
-  MSP_APP_VISIBILITY = 'mspservice-app-visibility'
+  MSP_APP_VISIBILITY = 'mspservice-app-visibility',
+  SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
