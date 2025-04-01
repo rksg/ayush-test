@@ -65,7 +65,7 @@ export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
   }, {
     key: 'portNumbers',
     dataIndex: 'portNumbers',
-    title: $t({ defaultMessage: 'Port Detail' }),
+    title: $t({ defaultMessage: 'Port Details' }),
     fixed: 'left',
     width: 240,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
