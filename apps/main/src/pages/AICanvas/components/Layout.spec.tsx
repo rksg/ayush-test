@@ -15,7 +15,7 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
-import { Group, LayoutConfig, Section } from '../Canvas'
+import { CardInfo, Group, LayoutConfig, Section } from '../Canvas'
 
 import Layout             from './Layout'
 import { getChartConfig } from './WidgetChart'
@@ -437,6 +437,8 @@ const layout: LayoutConfig = {
 
 // jest.mock('./GroupItem', () => () => <div>GroupItem</div>)
 const mockedSetGroups = jest.fn()
+const mockedSetLayout = jest.fn()
+const mockedSetShadowCard = jest.fn()
 
 jest.mock('@acx-ui/components', () => {
   const cssNumber = jest.requireActual('@acx-ui/components').cssNumber
@@ -501,6 +503,9 @@ describe('Layout', () => {
           setGroups={mockedSetGroups}
           compactType={'horizontal'}
           layout={layout}
+          setLayout={mockedSetLayout}
+          shadowCard={{} as CardInfo}
+          setShadowCard={mockedSetShadowCard}
           canvasId={DEFAULT_CANVAS[0].id}
         />
       </Provider>
@@ -530,6 +535,9 @@ describe('Layout', () => {
           setGroups={mockedSetGroups}
           compactType={'horizontal'}
           layout={layout}
+          setLayout={mockedSetLayout}
+          shadowCard={{} as CardInfo}
+          setShadowCard={mockedSetShadowCard}
           canvasId={PIE_CANVAS[0].id}
         />
       </Provider>

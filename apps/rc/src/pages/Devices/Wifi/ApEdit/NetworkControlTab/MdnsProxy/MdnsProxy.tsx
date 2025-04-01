@@ -1,6 +1,7 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 
 import { Form, Switch } from 'antd'
+import { omit }         from 'lodash'
 import { useIntl }      from 'react-intl'
 import styled           from 'styled-components/macro'
 
@@ -12,11 +13,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { ApMdnsProxySelector }                                       from '@acx-ui/rc/components'
-import { useGetApQuery }                                             from '@acx-ui/rc/services'
-import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
-import { useParams }                                                 from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApMdnsProxySelector }    from '@acx-ui/rc/components'
+import { useGetApQuery }          from '@acx-ui/rc/services'
+import {
+  useAddMdnsProxyApsMutation,
+  useDeleteMdnsProxyApsMutation
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext, ApEditItemProps } from '../..'
 
@@ -74,7 +78,6 @@ export function MdnsProxy (props: ApEditItemProps) {
   const { isAllowEdit=true } = props
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -90,8 +93,7 @@ export function MdnsProxy (props: ApEditItemProps) {
     data: apDetail,
     isFetching: isDataFetching,
     isLoading,
-    isSuccess,
-    refetch
+    isSuccess
   } = useGetApQuery({
     params: { ...params, venueId: venueData?.id },
     enableRbac: isUseWifiRbacApi
@@ -99,13 +101,6 @@ export function MdnsProxy (props: ApEditItemProps) {
 
   const [ addMdnsProxyAps, { isLoading: isUpdating } ] = useAddMdnsProxyApsMutation()
   const [ deleteMdnsProxyAps, { isLoading: isDeleting } ] = useDeleteMdnsProxyApsMutation()
-
-  useEffect(() => {
-    if (!isFormChangedHandled) {
-      updateEditContextData(isServiceChanged())
-      setIsFormChangedHandled(true)
-    }
-  }, [isFormChangedHandled])
 
   useEffect(() => {
     if (apDetail && !isLoading) {
@@ -116,60 +111,66 @@ export function MdnsProxy (props: ApEditItemProps) {
   const isServiceChanged = (): boolean => {
     const formData = formRef.current!.getFieldsValue()
     const serviceId = apDetail!.multicastDnsProxyServiceProfileId
+    const serviceEnabled = !!serviceId
 
-    return formData.serviceId !== serviceId ||
-      (formData.serviceEnabled && !serviceId)
+    return (formData.serviceEnabled !== serviceEnabled) ||
+      (serviceEnabled && (formData.serviceId !== serviceId))
   }
 
   const isFormInvalid = () => {
     return formRef.current!.getFieldsError().map(item => item.errors).flat().length > 0
   }
 
-  const updateEditContextData = (dataChanged: boolean) => {
+  const updateEditContextData = (hasChanged: boolean) => {
+    const newEditNetworkControlContextData = (hasChanged)? {
+      ...editNetworkControlContextData,
+      updateMdnsProxy: () => { onSave(formRef.current!.getFieldsValue()) },
+      discardMdnsProxyChanges: () => { formRef.current!.resetFields() }
+    } : {
+      ...omit(editNetworkControlContextData, ['updateMdnsProxy', 'discardMdnsProxyChanges'])
+    }
+    setEditNetworkControlContextData(newEditNetworkControlContextData)
+
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'networkControl',
       tabTitle: $t({ defaultMessage: 'Network Control' }),
-      isDirty: true,
-      hasError: dataChanged ? isFormInvalid() : editContextData.hasError
+      isDirty: Object.keys(newEditNetworkControlContextData).length > 0,
+      hasError: hasChanged ? isFormInvalid() : editContextData.hasError
     })
 
-    setEditNetworkControlContextData({
-      ...editNetworkControlContextData,
-      updateMdnsProxy: () => {
-        dataChanged && onSave(formRef.current!.getFieldsValue())
-      },
-      discardMdnsProxyChanges: () => {
-        dataChanged && formRef.current!.resetFields()
-      }
-    })
-  }
-
-  const resetForm = () => {
-    refetch()
-    updateEditContextData(false)
   }
 
   const onSave = async (formData: MdnsProxyFormFieldType) => {
-    const originalServiceId = apDetail?.multicastDnsProxyServiceProfileId
+    const { multicastDnsProxyServiceProfileId: originalServiceId, venueId } = apDetail || {}
 
     try {
       if (formData.serviceEnabled && serialNumber) {
         await addMdnsProxyAps({
-          params: { ...params, serviceId: formData.serviceId, venueId: apDetail?.venueId },
+          params: { ...params, serviceId: formData.serviceId, venueId: venueId },
           payload: [serialNumber],
           enableRbac
-        }).unwrap().then(resetForm)
+        }).unwrap()
       } else if (originalServiceId && serialNumber) { // Disable the mDNS Proxy which has been applied before
         await deleteMdnsProxyAps({
-          params: { ...params, serviceId: originalServiceId, venueId: apDetail?.venueId },
+          params: { ...params, serviceId: originalServiceId, venueId: venueId },
           payload: [serialNumber],
           enableRbac
-        }).unwrap().then(resetForm)
+        }).unwrap()
       }
+
+      setEditContextData({
+        ...editContextData,
+        isDirty: false,
+        hasError: false
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const handleFormChanged = () => {
+    updateEditContextData(isServiceChanged())
   }
 
   return (
@@ -179,7 +180,7 @@ export function MdnsProxy (props: ApEditItemProps) {
     }]}>
       <StepsFormLegacy
         formRef={formRef}
-        onFormChange={() => setIsFormChangedHandled(false)}
+        onFormChange={() => handleFormChanged()}
       >
         {isSuccess &&
           <StepsFormLegacy.StepForm<MdnsProxyFormFieldType>
