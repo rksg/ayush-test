@@ -103,7 +103,7 @@ describe('handleConfigChangeDownload', () => {
         '"2023-05-30T06:11:22+00:00","AP","94:B3:4F:3D:21:80","initialState.ccmAp.radio24g.radio.channel_select_mode",,"Background scanning"\n' +
         '"2023-05-30T06:11:22+00:00","AP","94:B3:4F:3D:21:80","initialState.ccmAp.radio24g.radio.channel_width",,"Auto"\n' +
         '"2023-05-30T06:11:22+00:00","WLAN","!!R770_url_sanity","initialState.CcmWlan.firewall.firewall_url_filtering_policy.enabled","false","true"\n' +
-        '"2023-05-30T06:11:22+00:00","WLAN","ER-12560_1","BSS Min. Rate","12 mbps","Default"\n' +
+        '"2023-05-30T06:11:22+00:00","WLAN","ER-12560_1","BSS Min. Rate","12 Mbps","Default"\n' +
         '"2023-05-30T06:11:22+00:00","Zone","23A-IND-BNG-D23-Home","initialState.ccmZone.radio24g.radio.bg_scan","Disabled","Enabled"\n' +
         '"2023-05-30T06:11:22+00:00","Zone","23A-IND-BNG-D23-Home","initialState.ccmZone.radio5g.indoor_channel_range","149, 153, 157, 161, 36, 40, 44, 48","100, 104, 108, 112, 116, 120, 124, 128, 132"\n' +
         '"2023-05-30T06:11:22+00:00","Zone","someTest","unknown",,\n' +
