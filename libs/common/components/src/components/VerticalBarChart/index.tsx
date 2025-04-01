@@ -35,6 +35,7 @@ export interface VerticalBarChartProps
     max?: number
     min?: number
   }
+  xAxisValues?: string[]
   xAxisName?: string
   xAxisOffset?: number
   showTooltipName?: Boolean
@@ -86,6 +87,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
   barWidth = 20,
   dataFormatter = formatter('countFormat'),
   yAxisProps,
+  xAxisValues,
   xAxisName,
   xAxisOffset,
   yAxisOffset,
@@ -125,6 +127,7 @@ export function VerticalBarChart<TChartData extends BarChartData>
       offset: xAxisOffset,
       axisPointer: { type: 'shadow' },
       type: 'category',
+      data: xAxisValues,
       axisLabel: {
         ...axisLabelOptions(),
         formatter: (value: string) => value.trim(),

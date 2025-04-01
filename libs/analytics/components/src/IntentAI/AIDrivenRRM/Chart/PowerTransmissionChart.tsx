@@ -1,12 +1,16 @@
 import { useIntl } from 'react-intl'
 
 import { Card, NoData, VerticalBarChart } from '@acx-ui/components'
+import { txpowerMapping }                 from '@acx-ui/formatter'
+
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
 function PowerTransmissionChart (intent: IntentDetail) {
   const { $t } = useIntl()
   const { apPowerTransmission } = intent
+
+  const txPowerMapping = Object.values(txpowerMapping).map(value => value.replace(/dB/g, ' dB'))
 
   const sortedData = apPowerTransmission?.map(
     ({ txPower, apCount }) => [txPower, apCount]).sort((a, b) => a[0] - b[0])
@@ -29,6 +33,7 @@ function PowerTransmissionChart (intent: IntentDetail) {
         xAxisName={$t({ defaultMessage: 'Tx Power' })}
         barWidth={20}
         showTooltipName={false}
+        xAxisValues={txPowerMapping}
       /> : <NoData />}
     </Card>
   )
