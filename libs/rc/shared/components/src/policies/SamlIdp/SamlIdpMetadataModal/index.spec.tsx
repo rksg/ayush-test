@@ -8,7 +8,11 @@ import {
 import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockSamlIdpProfileId, mockedMetadata } from '../__tests__/fixtures'
+import {
+  mockSamlIdpProfileId,
+  mockedMetadata,
+  mockedSamlIdpProfileWithRelations
+} from '../__tests__/fixtures'
 
 import { SamlIdpMetadataModal } from '.'
 
@@ -34,7 +38,7 @@ describe('CertificateInfoItem', () => {
     render(
       <Provider>
         <SamlIdpMetadataModal
-          metadata={mockedMetadata}
+          samlIdpData={mockedSamlIdpProfileWithRelations}
           visible={true}
           setVisible={mockedSetVisible}
         />
@@ -54,7 +58,7 @@ describe('CertificateInfoItem', () => {
     render(
       <Provider>
         <SamlIdpMetadataModal
-          metadata={mockedMetadata}
+          samlIdpData={mockedSamlIdpProfileWithRelations}
           visible={true}
           setVisible={mockedSetVisible}
         />

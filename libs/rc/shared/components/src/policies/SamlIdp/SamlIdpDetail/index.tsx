@@ -180,11 +180,13 @@ export const SamlIdpDetail = () => {
         networkIds={samlIdpData?.wifiNetworkIds ?? []}
       />
     </Space>
-    <SamlIdpMetadataModal
-      metadata={samlIdpData?.metadataContent ?? ''}
-      visible={samlIdpMetadataModalVisible}
-      setVisible={setSamlIdpMetadataModalVisible}
-    />
+    {samlIdpData && (
+      <SamlIdpMetadataModal
+        samlIdpData={samlIdpData}
+        visible={samlIdpMetadataModalVisible}
+        setVisible={setSamlIdpMetadataModalVisible}
+      />
+    )}
   </>
   )
 }

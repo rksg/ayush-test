@@ -39,6 +39,17 @@ export const mockedSamlIdpProfileByURL = {
   updatedData: '2025-03-26T09:12:52.705+00:00'
 }
 
+export const mockedSamlIdpProfileWithRelations = {
+  ...mockedSamlIdpProfile,
+  id: mockSamlIdpProfileId,
+  metadataContent: mockedMetadata,
+  signingCertificateEnabled: true,
+  signingCertificateId: mockCertId3,
+  encryptionCertificateEnabled: true,
+  encryptionCertificateId: mockCertId1,
+  wifiNetworkIds: [mockedNetworkId1]
+}
+
 export const mockedsamlIpdProfileList = {
   page: 1,
   totalCount: 2,
