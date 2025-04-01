@@ -5,7 +5,7 @@ import { useAccessControlsCountQuery }           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { SwitchAccessControlSet } from './SwitchAccessControlSet'
-import { SwitchLayer2ACL }        from './SwitchLayer2ACL'
+import { SwitchLayer2ACL }        from './SwitchLayer2/SwitchLayer2ACL'
 
 export function SwitchAccessControl () {
   const { activeSubTab } = useParams()

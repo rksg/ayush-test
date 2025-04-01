@@ -24,7 +24,7 @@ import {
   usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { SwitchLayer2ACLForm } from './SwitchLayer2ACLForm'
+import { SwitchLayer2ACLForm } from './SwitchLayer2/SwitchLayer2ACLForm'
 
 const AccessComponentWrapper = styled.div`
   display: grid;

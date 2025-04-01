@@ -289,6 +289,7 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         data={selectedRow}
+        dataSource={dataSource}
         handleSaveRule={handleSaveRule}
       />
     </>

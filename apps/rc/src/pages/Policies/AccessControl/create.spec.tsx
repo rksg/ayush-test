@@ -16,9 +16,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('CreateAccessControl', () => {
-  const params = {
-    tenantId: '__tenantId__'
-  }
+  const params = { tenantId: 'tenant-id' }
 
   const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })
 

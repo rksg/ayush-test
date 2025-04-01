@@ -397,6 +397,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         data={selectedRow}
+        dataSource={dataSource}
         handleSaveRule={handleSaveRule}
       />
     </>

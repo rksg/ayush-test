@@ -12,13 +12,14 @@ interface SwitchAccessControlDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: MacAclRule,
+  dataSource?: MacAclRule[],
   handleSaveRule: (data: MacAclRule) => void
 }
 
 export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps) => {
   const { Option } = Select
   const { $t } = useIntl()
-  const { visible, setVisible, data, handleSaveRule } = props
+  const { visible, setVisible, data, dataSource, handleSaveRule } = props
   const [form] = Form.useForm()
   const editMode = data && Object.values(data).length > 0
 
@@ -113,6 +114,24 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
 
       const payload = {
         id, key, action, sourceAddress, sourceMask, destinationAddress, destinationMask }
+
+      const isDuplicate = dataSource?.some(rule =>
+        rule.action === payload.action &&
+            rule.sourceAddress === payload.sourceAddress &&
+            rule.sourceMask === payload.sourceMask &&
+            rule.destinationAddress === payload.destinationAddress &&
+            rule.destinationMask === payload.destinationMask &&
+            (editMode ? rule.key !== payload.key : true)
+      )
+
+      if (isDuplicate) {
+        form.setFields([{
+          name: 'action',
+          errors: [$t({ defaultMessage: 'Rule is duplicated' })]
+        }])
+        return
+      }
+
       if(editMode){
         handleSaveRule(payload)
       }else{

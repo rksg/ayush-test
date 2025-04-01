@@ -253,6 +253,7 @@ export function SwitchLayer2ACL () {
         rowSelection={{
           type: 'checkbox'
         }}
+        stickyHeaders={false}
       />
     </Loader>
   )

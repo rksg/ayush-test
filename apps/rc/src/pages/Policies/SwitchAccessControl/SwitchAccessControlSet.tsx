@@ -18,7 +18,7 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { SwitchScopes }               from '@acx-ui/types'
 import { getOpsApi }                  from '@acx-ui/utils'
 
-import { SwitchLayer2ACLDetail } from './SwitchLayer2ACLDetail'
+import { SwitchLayer2ACLDetail } from './SwitchLayer2/SwitchLayer2ACLDetail'
 
 const payload ={
   fields: [
@@ -173,6 +173,7 @@ export function SwitchAccessControlSet () {
           rowSelection={{
             type: 'checkbox'
           }}
+          stickyHeaders={false}
         />
       </Loader>
       {layer2ACLDetailVisible && <SwitchLayer2ACLDetail
