@@ -20,6 +20,7 @@ import {
 import {
   MacAcl,
   PolicyType,
+  SwitchAccessControl,
   usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -148,6 +149,23 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
     return Promise.resolve()
   }
 
+  const handleFinish = async (data: SwitchAccessControl) => {
+    const formValues = data
+
+    const payload = {
+      description: data.description,
+      layer2AclName: layer2Toggle ? layer2ProfileList?.data?.filter(
+        (acl: MacAcl) => acl.id === formValues.layer2AclPolicyId)[0].name : '',
+      policyName: data.policyName
+    }
+    if (editMode) {
+      await updateAccessControl({ params: { accessControlId }, payload }).unwrap()
+    } else {
+      await addAccessControl({ payload }).unwrap()
+    }
+    navigate(switchAccessControlLink, { replace: false })
+  }
+
   return (
     <>
       <PageHeader
@@ -157,23 +175,7 @@ export const SwitchAccessControlSetForm = (props: SwitchLayer2ACLFormProps) => {
         form={form}
         editMode={editMode}
         onCancel={onCancel}
-        onFinish={async (data) => {
-
-          const formValues = data
-
-          const payload = {
-            description: data.description,
-            layer2AclName: layer2Toggle ? layer2ProfileList?.data?.filter(
-              (acl: MacAcl) => acl.id === formValues.layer2AclPolicyId)[0].name : '',
-            policyName: data.policyName
-          }
-          if (editMode) {
-            await updateAccessControl({ params: { accessControlId }, payload }).unwrap()
-          } else {
-            await addAccessControl({ payload }).unwrap()
-          }
-          navigate(switchAccessControlLink, { replace: false })
-        }}
+        onFinish={handleFinish}
       >
         <StepsForm.StepForm
           name='settings'
