@@ -11,8 +11,7 @@ function PowerTransmissionChart (intent: IntentDetail) {
 
   const txPowerMapping = Object.values(txpowerMapping).map(value => value.replace(/dB/g, ' dB'))
 
-  const sortedData = apPowerTransmission?.map(
-    ({ txPower, apCount }) => [txPower, apCount]).sort((a, b) => a[0] - b[0])
+  const sortedData = apPowerTransmission?.map(({ txPower, apCount }) => [txPower, apCount])
 
   const data = {
     dimensions: ['txPower', 'apCount'],
