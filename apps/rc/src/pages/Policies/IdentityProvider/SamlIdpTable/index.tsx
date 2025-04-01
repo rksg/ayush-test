@@ -124,7 +124,7 @@ const SamlIdpTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Idp Metadata' }),
+      title: $t({ defaultMessage: 'IdP Metadata' }),
       key: 'metadata',
       dataIndex: 'metadata',
       render: (_, row) => {

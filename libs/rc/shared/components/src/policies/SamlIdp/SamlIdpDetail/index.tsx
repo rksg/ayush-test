@@ -23,6 +23,7 @@ import {
   usePolicyListBreadcrumb,
   useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { CertificateInfoItem }              from '../CertificateInfoItem'
@@ -108,7 +109,7 @@ export const SamlIdpDetail = () => {
                     ? formatter(DateFormatEnum.DateFormat)(
                       samlIdpData?.updatedData
                     )
-                    : $t({ defaultMessage: 'N/A' })
+                    : noDataDisplay
                 }
               </span>
             )}
