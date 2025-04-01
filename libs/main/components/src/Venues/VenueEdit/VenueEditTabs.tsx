@@ -2,15 +2,16 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                         from '@acx-ui/components'
-import { Features, useIsTierAllowed }   from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { Tabs }                                            from '@acx-ui/components'
+import { Features, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   CommonUrlsInfo,
   useConfigTemplate,
   WifiRbacUrlsInfo,
   type LocationExtended,
-  PropertyUrlsInfo
+  PropertyUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -40,6 +41,7 @@ function VenueEditTabs () {
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const { setPreviousPath, ...venueEditTabContext } = useContext(VenueEditContext)
   const { editContextData, setEditContextData } = venueEditTabContext
+  const { hasEnforcedFieldsFromContext } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -58,17 +60,28 @@ function VenueEditTabs () {
   const unblockRef = useRef<Function>()
 
   useEffect(() => {
+    if (hasEnforcedFieldsFromContext() && editContextData.isDirty) {
+      unblockRef.current?.()
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
+      return
+    }
+
     if (editContextData.isDirty) {
       unblockRef.current?.()
       unblockRef.current = blockNavigator.block((tx: Transition) => {
         if (tx.location.hash) {
           return
         }
+
         // do not trigger modal twice
         setEditContextData({
           ...editContextData,
           isDirty: false
         })
+
         showUnsavedModal({
           ...venueEditTabContext,
           callback: tx.retry
