@@ -163,7 +163,9 @@ export function SwitchOverviewTab () {
         <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
           {switchMacAclEnabled &&
             isFirmwareVersionAbove10010g2Or10020b(switchDetail.firmware) ?
-            <Tabs onChange={onCategoryTabChange}
+            <Tabs
+              data-testid='MacACLsTabs'
+              onChange={onCategoryTabChange}
               activeKey={params.categoryTab}
               type='third'
             >
