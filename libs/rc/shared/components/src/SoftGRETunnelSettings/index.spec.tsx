@@ -190,7 +190,39 @@ describe('useIpsecProfileLimitedSelection', () => {
     store.dispatch(ipSecApi.util.resetApiState())
 
   })
-  it('Should render IPsec Profile option list correctly', async () => {
+
+  it('Should enabled all IPsec Profile option', async () => {
+    mockServer.use(
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockSoftGreViewModelWith8Profiles))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockUnboundIpsecViewModel))
+      })
+    )
+
+    const { result } = renderHook(() => useIpsecProfileLimitedSelection(
+      { venueId: '17397d37a42541b497483e9ee62db71e',
+        isVenueOperation: true,
+        duplicationChangeDispatch: jest.fn() }), {
+      wrapper,
+      route: true
+    })
+    await waitFor(() => {
+      const options = result.current.ipsecOptionList
+      let pass = false
+      if (options.find(opt => opt.label === 'ipsec7'
+          && (opt.disabled === false || opt.disabled === undefined))
+        && options.find(opt => opt.label === 'ipsec4'
+          && (opt.disabled === false || opt.disabled === undefined))
+      ) {
+        pass = true
+      }
+      expect(pass).toBeTruthy()
+    })
+  })
+
+  it('Should enabled only one IPsec Profile option list correctly', async () => {
     mockServer.use(
       rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftGreViewModelWith8Profiles))
@@ -209,7 +241,7 @@ describe('useIpsecProfileLimitedSelection', () => {
       const options = result.current.ipsecOptionList
       let pass = false
       if (options.find(opt=>opt.label === 'ipsec7' && opt.disabled === false)
-        && options.some(opt=>opt.label === 'ipsec4' && opt.disabled === true)) {
+        && options.find(opt=>opt.label === 'ipsec4' && opt.disabled === true)) {
         pass = true
       }
       expect(pass).toBeTruthy()
@@ -233,10 +265,8 @@ describe('useIpsecProfileLimitedSelection', () => {
     await waitFor(() => {
       const options = result.current.ipsecOptionList
       let pass = false
-      // eslint-disable-next-line no-console
-      console.log('testcase options:', options)
       if (options.find(opt => opt.label === 'ipsec7' && opt.disabled === true)
-        && options.some(opt => opt.label === 'ipsec4' && opt.disabled === true)) {
+        && options.find(opt => opt.label === 'ipsec4' && opt.disabled === true)) {
         pass = true
       }
       expect(pass).toBeTruthy()
