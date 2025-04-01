@@ -230,7 +230,8 @@ export function useMenuConfig () {
     ...(isDataConnectorEnabled ? [{
       canAccess: canAccess('READ_DATA_CONNECTOR'),
       uri: '/dataConnector',
-      label: $t({ defaultMessage: 'Data Connector' })
+      label: $t({ defaultMessage: 'Data Connector' }),
+      superscript: $t({ defaultMessage: 'beta' })
     }] : []),
     {
       canAccess: canAccess('READ_REPORTS'),
