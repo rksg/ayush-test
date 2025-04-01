@@ -20,7 +20,8 @@ import {
   usePolicyListBreadcrumb,
   KeyUsages,
   ServerCertificate,
-  KeyUsageType
+  KeyUsageType,
+  HttpURLRegExp
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -191,7 +192,37 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
                 name='metadataContent'
                 style={{ width: '400px' }}
                 rules={[
-                  { required: true }
+                  {
+                    required: true,
+                    message: $t({ defaultMessage: 'Please enter SAML metadata URL or XML content' })
+                  },
+                  { validator: async (_, value) => {
+                    if (!value) return Promise.resolve()
+
+                    // Check if it's a URL using HttpURLRegExp
+                    try {
+                      await HttpURLRegExp(value)
+                      return Promise.resolve()
+                    } catch {
+                      // If not a URL, check if it's valid XML
+                      try {
+                        const parser = new DOMParser()
+                        const doc = parser.parseFromString(value, 'text/xml')
+                        const errors = doc.getElementsByTagName('parsererror')
+                        if (errors.length > 0) {
+                          return Promise.reject(
+                            $t({ defaultMessage: 'Please enter a valid URL or SAML XML metadata' })
+                          )
+                        }
+                        return Promise.resolve()
+                      } catch {
+                        return Promise.reject(
+                          $t({ defaultMessage: 'Please enter a valid URL or SAML XML metadata' })
+                        )
+                      }
+                    }
+                  }
+                  }
                 ]}
               >
                 <Input.TextArea
@@ -315,8 +346,16 @@ export const SamlIdpForm = (props: SamlIdpFormProps) => {
 export const requestPreProcess = (data: SamlIdpProfileFormType) => {
   const { ...result } = cloneDeep(data)
 
-  // Convert metadata to base64 format
-  result.metadata = Buffer.from(result.metadataContent?? '').toString('base64')
+  // Check if metadataContent is a URL
+  const urlPattern = /^https?:\/\/.+/i
+  if (urlPattern.test(result.metadataContent ?? '')) {
+    result.metadataUrl = result.metadataContent ?? ''
+    result.metadataContent = ''
+  } else {
+    // Convert metadata to base64 format
+    const content = result.metadataContent?.trim() ?? ''
+    result.metadata = Buffer.from(content).toString('base64')
+  }
   delete result.metadataContent
 
   return result
