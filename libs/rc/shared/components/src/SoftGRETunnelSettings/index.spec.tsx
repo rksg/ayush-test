@@ -12,14 +12,15 @@ import {
   render,
   screen,
   fireEvent,
-  renderHook
+  renderHook,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mockIpsecViewModelWith2Profiles, mockSoftgreViewModel, mockSoftGreViewModelWith8Profiles } from './fixture'
-import { SoftGREProfileSettings }                                                                   from './SoftGREProfileSettings'
-import { SoftGRETunnelSettings }                                                                    from './SoftGRETunnelSettings'
-import { useIpsecProfileLimitedSelection }                                                          from './useIpsecProfileLimitedSelection'
-import { useSoftGreProfileLimitedSelection }                                                        from './useSoftGreProfileLimitedSelection'
+import { mockIpsecViewModelWith2Profiles, mockSoftgreViewModel, mockSoftGreViewModelWith8Profiles, mockUnboundIpsecViewModel } from './fixture'
+import { SoftGREProfileSettings }                                                                                              from './SoftGREProfileSettings'
+import { SoftGRETunnelSettings }                                                                                               from './SoftGRETunnelSettings'
+import { useIpsecProfileLimitedSelection }                                                                                     from './useIpsecProfileLimitedSelection'
+import { useSoftGreProfileLimitedSelection }                                                                                   from './useSoftGreProfileLimitedSelection'
 
 describe('SoftGRETunnelSettings', () => {
   beforeEach(() => {
@@ -174,15 +175,22 @@ describe('useSoftGreProfileLimitedSelection', () => {
 describe('useIpsecProfileLimitedSelection', () => {
 
   const venueId = '52322e4b3a4e440495960eeece8712ed'
-  const whiteList = ['ipsec4', 'ipsec7']
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <Provider store={store}>{children}</Provider>
   )
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn)
+      .mockImplementation(ff =>
+        ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+        || ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE
+        || ff === Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
     store.dispatch(softGreApi.util.resetApiState())
     store.dispatch(ipSecApi.util.resetApiState())
+
+  })
+  it('Should render IPsec Profile option list correctly', async () => {
     mockServer.use(
       rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftGreViewModelWith8Profiles))
@@ -191,23 +199,47 @@ describe('useIpsecProfileLimitedSelection', () => {
         return res(ctx.json(mockIpsecViewModelWith2Profiles))
       })
     )
-  })
-  it('Should render IPsec Profile option list correctly', async () => {
 
     const { result } = renderHook(() => useIpsecProfileLimitedSelection(
       { venueId, isVenueOperation: true, duplicationChangeDispatch: jest.fn() }), {
       wrapper,
       route: true
     })
-    const options = result.current.ipsecOptionList
-    let pass = true
-    options.forEach(option => {
-      if(!whiteList.includes(option.name)) {
-        if (!option.disabled) {
-          pass = false
-        }
+    await waitFor(() => {
+      const options = result.current.ipsecOptionList
+      let pass = false
+      if (options.find(opt=>opt.label === 'ipsec7' && opt.disabled === false)
+        && options.some(opt=>opt.label === 'ipsec4' && opt.disabled === true)) {
+        pass = true
       }
+      expect(pass).toBeTruthy()
     })
-    expect(pass).toBeTruthy()
+  })
+
+  it('Should disabled all IPsec options', async () => {
+    mockServer.use(
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockSoftGreViewModelWith8Profiles))
+      }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url, (req, res, ctx) => {
+        return res(ctx.json(mockUnboundIpsecViewModel))
+      })
+    )
+    const { result } = renderHook(() => useIpsecProfileLimitedSelection(
+      { venueId, isVenueOperation: true, duplicationChangeDispatch: jest.fn() }), {
+      wrapper,
+      route: true
+    })
+    await waitFor(() => {
+      const options = result.current.ipsecOptionList
+      let pass = false
+      // eslint-disable-next-line no-console
+      console.log('testcase options:', options)
+      if (options.find(opt => opt.label === 'ipsec7' && opt.disabled === true)
+        && options.some(opt => opt.label === 'ipsec4' && opt.disabled === true)) {
+        pass = true
+      }
+      expect(pass).toBeTruthy()
+    })
   })
 })

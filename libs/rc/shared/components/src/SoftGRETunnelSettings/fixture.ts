@@ -294,7 +294,6 @@ export const mockIpsecViewModelWith2Profiles = {
   data: [
     {
       id: 'e19a07e22a9846fda91bda603b9ddd09',
-      tenantId: '17397d37a42541b497483e9ee62db71e',
       name: 'ipsec7',
       activations: [],
       venueActivations: [
@@ -335,6 +334,28 @@ export const mockIpsecViewModelWith2Profiles = {
           apSerialNumbers: []
         }
       ],
+      apActivations: []
+    }
+  ]
+}
+
+export const mockUnboundIpsecViewModel = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'e19a07e22a9846fda91bda603b9ddd09',
+      name: 'ipsec7',
+      activations: [],
+      venueActivations: [],
+      apActivations: []
+    },
+    {
+      id: 'a2d333bdbf1f48ddb4a184d2f3432935',
+      name: 'ipsec4',
+      activations: [],
+      venueActivations: [],
       apActivations: []
     }
   ]
