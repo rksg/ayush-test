@@ -3,6 +3,12 @@ import { RolesEnum as Role } from '@acx-ui/types'
 import { UserProfile } from './types'
 import { hasRoles }    from './userProfile'
 
+// Because we are unable to define scopes for GraphQL APIs in RCG config
+// (https://bitbucket.rks-cloud.com/projects/RKSCLOUD/repos/ruckus-cloud-gateway/browse/configs/ruckus-cloud-gateway/configmaps/base/ruckus-cloud-gateway-config-routes.yaml),
+// allowedOperations endpoint is not able to provide the list of allowed operations for a logged in
+// user. Instead, `getAIAllowedOperations` can be use to augment the list using roles and scopes.
+
+// Map of operations to pseudo-URIs
 export const opsApis = {
   updateIncident: 'PATCH:/incidents/{id}',
   updateIntentAI: 'PATCH:/intentAI/{id}',
@@ -15,6 +21,7 @@ export const opsApis = {
   deleteVideoCallQoe: 'DELETE:/videoCallQoe/{id}'
 }
 
+// Operations available for each scope
 const aiOperations = [
   {
     scope: ['ai.incidents-u'],
