@@ -1,9 +1,9 @@
 import { getTenantId } from '@acx-ui/utils'
 
-import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum } from '../../models'
-import { TunnelProfile, TunnelProfileViewData }                                    from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum } from '../../models'
+import { TunnelProfile, TunnelProfileViewData }                                                    from '../../types/policies/tunnelProfile'
 
-import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion } from './tunnelProfileUtils'
+import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getTunnelTypeString, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion } from './tunnelProfileUtils'
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const defaultVxLANProfileName = 'Default tunnel profile (PIN)'
@@ -282,6 +282,22 @@ describe('tunnelProfileUtils', () => {
 
     it('should handle undefined', () => {
       expect(mtuRequestTimeoutUnitConversion(undefined)).toStrictEqual(undefined)
+    })
+  })
+
+  describe('getTunnelTypeString', () => {
+    const mockT = ({ defaultMessage }: { defaultMessage: string }) => defaultMessage
+
+    it('should return VXLAN GPE', () => {
+      expect(getTunnelTypeString(mockT, TunnelTypeEnum.VXLAN_GPE))
+        .toStrictEqual('VXLAN GPE')
+    })
+    it('should return L2GRE', () => {
+      expect(getTunnelTypeString(mockT, TunnelTypeEnum.L2GRE))
+        .toStrictEqual('L2GRE')
+    })
+    it('should return empty string when tunnel type is undefined', () => {
+      expect(getTunnelTypeString(mockT, undefined)).toStrictEqual('')
     })
   })
 })
