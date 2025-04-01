@@ -1,10 +1,28 @@
-import { Input as AntInput, Badge as AntBadge } from 'antd'
-import styled                                   from 'styled-components/macro'
+import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
+import styled                                          from 'styled-components/macro'
 
 import { Card } from '@acx-ui/components'
 
 import CanvasBackground from './assets/CanvasBackground.svg'
 import WaveBackground   from './assets/waves.svg'
+
+export const ChatModal = styled(Modal)`
+  .ant-modal-content {
+    border-radius: 24px;
+    .ant-modal-header {
+      border-radius: 24px;
+    }
+    .ant-modal-footer {
+      background: none;
+      text-align: center;
+    }
+    .ant-modal-body {
+      overflow-y: auto;
+      padding: 0;
+      font-size: 12px;
+     }
+  }
+`
 
 export const Input = styled(AntInput.TextArea)`
   height: 28px;
@@ -108,33 +126,33 @@ export const History = styled.div`
 `
 
 export const Wrapper = styled.div`
-animation: fadeIn 0.1s linear 0s both;
-position: fixed; /* Stay in place */
-z-index: 101; /* Sit on top */
-padding-top: 100px; /* Location of the box */
-left: 0;
-top: 0;
-width: 100%; /* Full width */
-height: 100%; /* Full height */
-background-color: transparent;
-border-top: 75px solid rgba(255,255,255, 0.4);
-
+// animation: fadeIn 0.1s linear 0s both;
+// position: fixed; /* Stay in place */
+// z-index: 101; /* Sit on top */
+// padding-top: 100px; /* Location of the box */
+// left: 0;
+// top: 0;
+// background-color: transparent;
+// border-top: 75px solid rgba(255,255,255, 0.4);
+display: flex;
 .chat-wrapper {
-  height: calc(100vh - 50px);
-  background-color: var(--acx-primary-white);
+  // height: calc(100vh - 50px);
 }
 .chat {
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
   background-color: var(--acx-primary-white);
   background-image: url(${WaveBackground});
   background-repeat: no-repeat;
   background-size: 401px 659px;
-  position: fixed;
+  // position: fixed;
   width: 400px;
-  height: calc(100vh - 50px);
+  // height: calc(100vh - 50px);
   top: 60px;
-  z-index: 2;
+  // z-index: 2;
   .header {
     background-color: rgba(255, 255, 255, .4);
+    border-top-left-radius: 24px;
     height: 50px;
     padding: 15px 20px;
     display: flex;
@@ -171,11 +189,44 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   }
   .content {
     background: transparent;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 130px);
     width: 400px;
-    position: fixed;
+    // position: fixed;
     top: 110px;
     overflow: auto;
+    .input {
+      background-color: var(--acx-primary-white);
+      border-bottom-left-radius: 24px;
+      height: 120px;
+      position: absolute;
+      bottom: 0;
+      width: 400px;
+      padding: 10px 20px 20px 20px;
+      .text-counter {
+        position: absolute;
+        right: 35px;
+        bottom: 85px;
+        color: var(--acx-neutrals-60);
+      }
+      button {
+        min-width: 24px;
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        right: 37px;
+        bottom: 46px;
+        border: 0px;
+        background: var(--acx-accents-orange-50);
+        &.ant-btn[disabled] {
+          background: var(--acx-neutrals-30);
+        }
+        svg {
+          width: 14px;
+          height: 14px;
+          path { stroke: var(--acx-primary-white); } }
+        }
+      }
+    }
     .chatroom {
       /* width */
       &::-webkit-scrollbar {
@@ -287,38 +338,6 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           margin-right: 2px;
         }
       }
-      .input {
-        background-color: var(--acx-primary-white);
-        height: 130px;
-        position: fixed;
-        bottom: 0;
-        width: 400px;
-        padding: 10px 20px 20px 20px;
-        .text-counter {
-          position: absolute;
-          right: 35px;
-          bottom: 85px;
-          color: var(--acx-neutrals-60);
-        }
-        button {
-          min-width: 24px;
-          width: 24px;
-          height: 24px;
-          position: absolute;
-          right: 37px;
-          bottom: 46px;
-          border: 0px;
-          background: var(--acx-accents-orange-50);
-          &.ant-btn[disabled] {
-            background: var(--acx-neutrals-30);
-          }
-          svg {
-            width: 14px;
-            height: 14px;
-            path { stroke: var(--acx-primary-white); } }
-          }
-        }
-      }
     }
   }
 }
@@ -326,13 +345,14 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 `
 
 export const Canvas = styled.div`
-  position: fixed;
-  width: calc(100vw - 400px);
-  top: 60px;
-  z-index: 2;
-  left: 400px;
+  // position: fixed;
+  width: calc(100vw - 450px);
+  // top: 60px;
+  // z-index: 2;
+  // left: 400px;
   .header {
     border: 1px solid #E5E5E5;
+    border-top-right-radius: 24px;
     background-color: var(--acx-primary-white);
     height: 50px;
     display: flex;
@@ -359,7 +379,8 @@ export const Canvas = styled.div`
     background-color: var(--acx-neutrals-30);
     background-image: url(${CanvasBackground});
     border-left: 1px solid #E5E5E5;
-    height: calc(100vh - 110px);
+    border-bottom-right-radius: 24px;
+    // height: calc(100vh - 110px);
     overflow: auto;
     /* width */
     &::-webkit-scrollbar {

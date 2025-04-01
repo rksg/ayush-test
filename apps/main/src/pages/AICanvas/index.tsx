@@ -83,6 +83,7 @@ const Messages = memo((props:{
   </div>})
 
 export default function AICanvas () {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
@@ -314,111 +315,126 @@ export default function AICanvas () {
   }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <UI.Wrapper>
-        <div className='chat-wrapper'>
-          <div className='chat'>
-            <div className='header'>
-              <div className='actions'>
-                {historyData?.length ?
-                  <>
-                    <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
-                    <Tooltip
-                      placement='right'
-                      title={historyData && historyData.length >= 10
-                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
+    <>
+      <Button type='primary' onClick={()=>{setIsModalOpen(true)}}>
+        Open Modal
+      </Button>
+      <UI.ChatModal
+        visible={isModalOpen}
+        onCancel={()=>{setIsModalOpen(false)}}
+        width='calc(100vw - 80px)'
+        style={{ top: 40, height: 'calc(100vh - 40px)' }}
+        footer={null}
+      >
+        <DndProvider backend={HTML5Backend}>
+          <UI.Wrapper>
+            <div className='chat-wrapper'>
+              <div className='chat'>
+                <div className='header'>
+                  <div className='actions'>
+                    {historyData?.length ?
+                      <>
+                        <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
+                        <Tooltip
+                          placement='right'
+                          title={historyData && historyData.length >= 10
+                            ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
-                        : ''}
-                    >
-                      <Plus
-                        data-testid='newChatIcon'
-                        className={
-                          'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
-                        }
-                        onClick={onNewChat}
-                      />
-                    </Tooltip>
-                  </> : null
-                }
-              </div>
-              <div className='title'>
-                <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
-              </div>
-              <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <Close data-testid='close-icon' onClick={onClickClose}/>
-              </div>
-            </div>
-            <div className='content'>
-              <Loader states={[{ isLoading: isChatsLoading }]}>
-                <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <Messages
-                    moreloading={moreloading}
-                    aiBotLoading={aiBotLoading}
-                    chats={chats}
-                    sessionId={sessionId}
-                    canvasRef={canvasRef}
-                    groups={groups} />
-                  {
-                    !chats?.length && <div className='placeholder'>
-                      {
-                        questions.map(question => <div
-                          key={question}
-                          onClick={()=> {
-                            handleSearch(question)
-                          }}
+                            : ''}
                         >
-                          {question}
-                        </div>)
-                      }
-                    </div>
-                  }
-                  <div className='input'>
-                    <Form form={form} >
-                      <Form.Item
-                        name='searchInput'
-                        children={<UI.Input
-                          autoFocus
-                          maxLength={maxSearchTextNumber}
-                          data-testid='search-input'
-                          onKeyDown={onKeyDown}
-                          onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
-                          style={{ height: 90, resize: 'none' }}
-                          placeholder={placeholder}
-                        />}
-                      />
-                    </Form>
-                    {
-                      searchText.length > 0 && <div className='text-counter'>
-                        {searchText.length + '/' + maxSearchTextNumber}</div>
+                          <Plus
+                            data-testid='newChatIcon'
+                            className={
+                              'newChat' + (historyData && historyData.length >= 10 ?
+                                ' disabled' : '')
+                            }
+                            onClick={onNewChat}
+                          />
+                        </Tooltip>
+                      </> : null
                     }
-                    <Button
-                      data-testid='search-button'
-                      icon={<SendMessageOutlined />}
-                      disabled={aiBotLoading || searchText.length <= 1}
-                      onClick={()=> { handleSearch() }}
-                    />
+                  </div>
+                  <div className='title'>
+                    <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
+                  </div>
+                  <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
+                    <Close data-testid='close-icon' onClick={onClickClose}/>
                   </div>
                 </div>
-              </Loader>
+                <div className='content'>
+                  <Loader states={[{ isLoading: isChatsLoading }]}>
+                    <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
+                      <Messages
+                        moreloading={moreloading}
+                        aiBotLoading={aiBotLoading}
+                        chats={chats}
+                        sessionId={sessionId}
+                        canvasRef={canvasRef}
+                        groups={groups} />
+                      {
+                        !chats?.length && <div className='placeholder'>
+                          {
+                            questions.map(question => <div
+                              key={question}
+                              onClick={()=> {
+                                handleSearch(question)
+                              }}
+                            >
+                              {question}
+                            </div>)
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div className='input'>
+                      <Form form={form} >
+                        <Form.Item
+                          name='searchInput'
+                          children={<UI.Input
+                            autoFocus
+                            maxLength={maxSearchTextNumber}
+                            data-testid='search-input'
+                            onKeyDown={onKeyDown}
+                            onChange={debounce(({ target: { value } }) => setSearchText(value), 10)}
+                            style={{ height: 90, resize: 'none' }}
+                            placeholder={placeholder}
+                          />}
+                        />
+                      </Form>
+                      {
+                        searchText.length > 0 && <div className='text-counter'>
+                          {searchText.length + '/' + maxSearchTextNumber}</div>
+                      }
+                      <Button
+                        data-testid='search-button'
+                        icon={<SendMessageOutlined />}
+                        disabled={aiBotLoading || searchText.length <= 1}
+                        onClick={()=> { handleSearch() }}
+                      />
+                    </div>
+                  </Loader>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <Canvas
-          ref={canvasRef}
-          onCanvasChange={handleCanvasChange}
-          groups={groups}
-          setGroups={setGroups}
-        />
-        {
-          historyVisible && <HistoryDrawer
-            visible={historyVisible}
-            onClose={onHistoryDrawer}
-            historyData={historyData as ChatHistory[]}
-            sessionId={sessionId}
-            onClickChat={onClickChat}
-          />
-        }
-      </UI.Wrapper>
-    </DndProvider>
+            <Canvas
+              ref={canvasRef}
+              onCanvasChange={handleCanvasChange}
+              groups={groups}
+              setGroups={setGroups}
+            />
+            {
+              historyVisible && <HistoryDrawer
+                visible={historyVisible}
+                onClose={onHistoryDrawer}
+                historyData={historyData as ChatHistory[]}
+                sessionId={sessionId}
+                onClickChat={onClickChat}
+              />
+            }
+          </UI.Wrapper>
+        </DndProvider>
+      </UI.ChatModal>
+    </>
+
   )
 }
