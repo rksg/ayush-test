@@ -29,7 +29,7 @@ import {
   useTableQuery,
   GetApiVersionHeader,
   ApiVersionEnum,
-  getPolicyAllowedOperation, RbacApSnmpViewModelData
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
