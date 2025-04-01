@@ -356,7 +356,7 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     'ICX8100-24', 'ICX8100-48', 'ICX8100-24-X', 'ICX8100-48-X'
   ]
   const supportPoe5to8Models = [
-    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP'
+    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP', 'ICX7550-24XZP'
   ]
 
   const poeClassOptions = [

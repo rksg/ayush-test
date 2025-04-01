@@ -301,7 +301,12 @@ function LegacyPersonaDetails () {
                       {item.label}:
                     </Typography.Paragraph>
                   </Col>
-                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
+                  <Col
+                    span={12}
+                    style={{ wordBreak: 'break-word' }}
+                  >
+                    {item.value ?? noDataDisplay}
+                  </Col>
                 </Row>
               )}
             </Loader>
@@ -342,7 +347,7 @@ function LegacyPersonaDetails () {
           }
         </Row>
 
-        <Tabs onChange={setActiveTab} activeKey={activeTab}>
+        <Tabs onChange={setActiveTab} activeKey={activeTab} stickyTop={false}>
           <Tabs.TabPane
             key={'device'}
             tab={$t(

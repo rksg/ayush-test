@@ -82,9 +82,18 @@ import {
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
   NetworkTunnelSoftGreAction,
-  NetworkTunnelIpsecAction
+  NetworkTunnelIpsecAction,
+  ConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }  from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
 import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
@@ -1002,4 +1011,37 @@ export const getNetworkTunnelSdLanUpdateData = (
   }
 
   return updateContent
+}
+
+export const hasControlnetworkVenuePermission = (isTemplate: boolean) => {
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
+  const { rbacOpsApiEnabled } = getUserProfile()
+
+  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasActivatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasActivatePermission)
+
+  return {
+    addNetworkVenueOpsAPi,
+    updateNetworkVenueOpsAPi,
+    deleteNetworkVenueOpsAPi,
+    hasActivateNetworkVenuePermission,
+    hasUpdateNetworkVenuePermission
+  }
 }

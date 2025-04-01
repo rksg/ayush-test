@@ -55,6 +55,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
   const [ getIpsecViewDataList ] = useLazyGetIpsecViewDataListQuery()
   const [showMoreSettings, setShowMoreSettings] = useState(false)
   const [preSharedKey] = useState('')
+  const [loadReKeySettings, setLoadReKeySettings] = useState(true)
   const [loadGwSettings, setLoadGwSettings] = useState(true)
   const [loadFailoverSettings, setLoadFailoverSettings] = useState(true)
   const [authType, setAuthType] = useState('')
@@ -125,7 +126,9 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     {
       key: 'rekey',
       display: $t({ defaultMessage: 'Rekey' }),
-      content: <RekeySettings />
+      content: <RekeySettings initIpSecData={initIpSecData}
+        loadReKeySettings={loadReKeySettings}
+        setLoadReKeySettings={setLoadReKeySettings} />
     },
     {
       key: 'gatewayConnection',
