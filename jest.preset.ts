@@ -29,6 +29,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
     '!<rootDir>/src/**/__tests__/**',
+    '!<rootDir>/src/**/archived/**',
     '!<rootDir>/src/**/stories.tsx',
     '!<rootDir>/src/**/stories/**',
     '!<rootDir>/src/components/StepsFormProAnt/*',
