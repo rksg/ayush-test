@@ -33,6 +33,7 @@ import { filterByAccess, hasPermission }                from '@acx-ui/user'
 import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 import { getIntl }                                      from '@acx-ui/utils'
 
+import { SimpleListTooltip }    from '../SimpleListTooltip'
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
 
@@ -271,12 +272,11 @@ export function SwitchPortTable (props: {
       render: (_: React.ReactNode, row: SwitchPortViewModel) => {
         if (row.stickyMacAclAllowCount && row.stickyMacAclAllowCount > 0 &&
           row.stickyMacAclAllowList) {
-          const tooltipContent = row.stickyMacAclAllowList.join('\n')
-
           return (
-            <Tooltip title={tooltipContent} dottedUnderline={row.stickyMacAclAllowCount > 0}>
-              <span>{row.stickyMacAclAllowCount}</span>
-            </Tooltip>
+            <SimpleListTooltip
+              items={row.stickyMacAclAllowList}
+              displayText={row.stickyMacAclAllowCount}
+            />
           )
         }
         return '--'
