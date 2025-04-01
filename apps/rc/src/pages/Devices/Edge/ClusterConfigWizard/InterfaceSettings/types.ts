@@ -19,7 +19,8 @@ export interface InterfaceSettingsFormType {
   vipConfig: VirtualIpFormType['vipConfig']
   fallbackSettings: FallbackSettingsFormType
   // eslint-disable-next-line max-len
-  loadDistribution: Exclude<ClusterNetworkSettings['highAvailabilitySettings'], undefined>['loadDistribution']
+  loadDistribution: Exclude<ClusterNetworkSettings['highAvailabilitySettings'], undefined>['loadDistribution'],
+  multiWanSettings: ClusterNetworkSettings['multiWanSettings']
 }
 
 export interface InterfacePortFormCompatibility {
