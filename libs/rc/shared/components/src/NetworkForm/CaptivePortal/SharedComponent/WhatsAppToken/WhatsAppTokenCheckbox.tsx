@@ -41,12 +41,15 @@ export const WhatsAppTokenCheckbox = ({ SMSUsage, onChange }: {
   }, { skip: !smsProviderData.data })
 
   useEffect(() => {
-    // eslint-disable-next-line max-len
-    if (twilioData.data && (twilioData.data as TwiliosWhatsappServices).approvalFetch?.sid === smsProviderData.data?.authTemplateSid
-      // eslint-disable-next-line max-len
-      && (twilioData.data as TwiliosWhatsappServices).approvalFetch?.accountSid === smsProviderData.data?.accountSid
-      // eslint-disable-next-line max-len
-      && (twilioData.data as TwiliosWhatsappServices).approvalFetch?.whatsapp.status === 'approved') {
+    if (!twilioData.data) return
+
+    const approvalFetch = (twilioData.data as TwiliosWhatsappServices).approvalFetch
+    const isTwilioApproved = approvalFetch &&
+      approvalFetch.sid === smsProviderData.data?.authTemplateSid &&
+      approvalFetch.accountSid === smsProviderData.data?.accountSid &&
+      approvalFetch.whatsapp.status === 'approved'
+
+    if (isTwilioApproved) {
       setEnableWhatsappLoginByTwilio(true)
     }
   }, [twilioData, smsProviderData])
