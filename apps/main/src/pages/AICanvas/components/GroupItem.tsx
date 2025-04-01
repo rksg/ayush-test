@@ -28,7 +28,6 @@ export interface GroupProps {
   updateGroupList:Dispatch<SetStateAction<Group[]>>
   handleLoad:() => void
   deleteCard:(id: string, groupIndex: number) => void
-  removeShadowCard: (groupIndex: number)=>void
 }
 
 export default function GroupItem (props: GroupProps) {
@@ -60,17 +59,13 @@ export default function GroupItem (props: GroupProps) {
     return
   }
 
-  const [{ isOver, canDrop }, dropRef] = useDrop({
+  const [, dropRef] = useDrop({
     accept: ItemTypes.CARD,
     drop: (item: CardInfo) => {
       const dragItem = item
       const dropItem = props
       dropCard(dragItem, dropItem)
     },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
-    }),
     hover: (item: CardInfo, monitor) => {
       const dragItem = item
       if (dragItem.type === ItemTypes.CARD) {
@@ -93,12 +88,6 @@ export default function GroupItem (props: GroupProps) {
       }
     }
   })
-
-  useEffect(() => {
-    if (shadowCard.id && !isOver && canDrop) {
-      props.removeShadowCard(index)
-    }
-  }, [shadowCard, isOver])
 
   return (
     <div className='rglb_group-item' ref={dropRef} id={'group' + id} data-testid='dropGroup'>

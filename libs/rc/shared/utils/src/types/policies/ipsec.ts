@@ -69,6 +69,8 @@ export interface EspProposal {
 }
 
 export interface IpSecFormData extends Ipsec {
+  ikeRekeyTimeEnabledCheckbox?: boolean
+  espRekeyTimeEnabledCheckbox?: boolean
   retryLimitEnabledCheckbox?: boolean
   deadPeerDetectionDelayEnabledCheckbox?: boolean
   espReplayWindowEnabledCheckbox?: boolean
