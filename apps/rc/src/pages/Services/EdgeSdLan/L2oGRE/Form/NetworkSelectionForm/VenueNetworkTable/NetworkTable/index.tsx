@@ -1,11 +1,13 @@
 /* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
+import { DefaultOptionType }  from 'antd/es/cascader'
 import { find, isNil, merge } from 'lodash'
 import { AlignType }          from 'rc-table/lib/interface'
 import { useIntl }            from 'react-intl'
 
 import { Loader, Select, Table, TableColumn, TableProps, useStepFormContext } from '@acx-ui/components'
+import { transToOptions }                                                     from '@acx-ui/edge/components'
 import { AddNetworkModal }                                                    from '@acx-ui/rc/components'
 import { useVenueNetworkActivationsViewModelListQuery }                       from '@acx-ui/rc/services'
 import {
@@ -17,12 +19,15 @@ import {
   NetworkTypeEnum,
   sortProp,
   useTableQuery,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  TunnelProfileViewData,
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { WifiScopes }         from '@acx-ui/types'
 import { filterByAccess }     from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
 
+import { EdgeSdLanFormType }     from '../../..'
 import { useEdgeSdLanContext }   from '../../../EdgeSdLanContextProvider'
 import { NetworkActivationType } from '../../VenueNetworkTable/NetworksDrawer'
 
@@ -107,17 +112,19 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
   })
 
   const dcTunnelProfileId = form.getFieldValue('tunnelProfileId')
+  const allActivatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanFormType['activatedNetworks'] ?? []
+  const allActivatedTunnelProfileIds = Object.values(allActivatedNetworks).flatMap(item => item.map(item => item.tunnelProfileId ?? ''))
 
   const tunnelProfileOptions = useMemo(() =>[
     {
       label: $t({ defaultMessage: 'Core Port' }),
       value: ''
     },
-    ...availableTunnelProfiles.filter(item => item.id !== dcTunnelProfileId)
-      .map(item => ({
-        label: item.name,
-        value: item.id
-      }))], [availableTunnelProfiles])
+    ...transToOptions(
+      availableTunnelProfiles.filter(item => item.id !== dcTunnelProfileId),
+      [...(activated?.map(item => item.tunnelProfileId ?? '') ?? []), ...(allActivatedTunnelProfileIds ?? [])]
+    )
+  ], [availableTunnelProfiles, activated])
 
   const dsaeOnboardNetworkIds = (tableQuery.data?.data
     .map(item => item.dsaeOnboardNetwork?.id)
@@ -171,11 +178,12 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
     render: (_: unknown, row: Network) => {
       const isEnabledTunneling = activated?.some(item => item.networkId === row.id)
       const currentTunnelProfileId = activated?.find(item => item.networkId === row.id)?.tunnelProfileId
+      const processedOptions = getFilteredTunnelProfileOptions(row, tunnelProfileOptions, availableTunnelProfiles)
       return isEnabledTunneling && <Select
         style={{ width: 200 }}
         value={currentTunnelProfileId ?? ''}
         onChange={(value) => onTunnelProfileChange?.(row.id, value)}
-        options={tunnelProfileOptions}
+        options={processedOptions}
       />
     }
   }
@@ -223,4 +231,36 @@ export const ActivatedNetworksTable = (props: ActivatedNetworksTableProps) => {
       />
     </>
   )
+}
+
+export const getFilteredTunnelProfileOptions = (
+  row: Network,
+  tunnelProfileOptions: DefaultOptionType[],
+  availableTunnelProfiles: TunnelProfileViewData[]
+) => {
+  const { $t } = getIntl()
+  const isVlanPooling = !isNil(row.vlanPool)
+  const isCaptivePortal = row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
+
+  return tunnelProfileOptions
+    .map(item => {
+      const profile = availableTunnelProfiles.find(profile => profile.id === item.value)
+
+      // Skip VXLAN-GPE options for non-CAPTIVEPORTAL networks
+      if (!isCaptivePortal && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+        return null
+      }
+
+      // Disable VXLAN-GPE options for vlan pooling networks
+      if (isVlanPooling && profile?.tunnelType === TunnelTypeEnum.VXLAN_GPE) {
+        return {
+          ...item,
+          disabled: true,
+          title: $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+        }
+      }
+
+      return item
+    })
+    .filter((item): item is DefaultOptionType => item !== null)
 }
