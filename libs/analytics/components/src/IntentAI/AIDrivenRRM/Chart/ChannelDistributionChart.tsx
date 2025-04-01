@@ -10,14 +10,13 @@ function ChannelDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
   const { apChannelDistributions } = intent
 
-  const sortedData = apChannelDistributions?.map(
-    ({ channel, apCount }) => [channel, apCount]).sort((a, b) => a[0] - b[0])
+  const channelData = apChannelDistributions?.map(({ channel, apCount }) => [channel, apCount])
 
   const channelList = allChannels[intent.code as keyof typeof allChannels]
 
   const data = {
     dimensions: ['channel', 'apCount'],
-    source: sortedData,
+    source: channelData,
     seriesEncode: [
       {
         x: 'channel',
