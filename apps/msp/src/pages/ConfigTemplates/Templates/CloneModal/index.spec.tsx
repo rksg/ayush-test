@@ -12,10 +12,10 @@ import { checkTemplateTypeValidity, ConfigTemplateCloneModal, useCloneConfigTemp
 
 describe('ConfigTemplateCloneModal', () => {
   // eslint-disable-next-line max-len
-  const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === ConfigTemplateType.NETWORK)!
+  const targetNetworkTemplate = mockedConfigTemplateList.data.find(t => t.type === ConfigTemplateType.NETWORK)!
   const props = {
     setVisible: jest.fn(),
-    selectedTemplate: targetTemplate
+    selectedTemplate: targetNetworkTemplate
   }
 
   beforeEach(() => {
@@ -40,7 +40,8 @@ describe('ConfigTemplateCloneModal', () => {
     render(<Provider><ConfigTemplateCloneModal {...props} /></Provider>)
     expect(screen.getByText('Clone Template')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
-    expect(screen.getByLabelText('Template Name')).toHaveValue(`${targetTemplate.name} - CLONE`)
+    // eslint-disable-next-line max-len
+    expect(screen.getByLabelText('Template Name')).toHaveValue(`${targetNetworkTemplate.name} - CLONE`)
   })
 
   it('calls the handleSave function when the Save button is clicked', async () => {
@@ -57,12 +58,12 @@ describe('ConfigTemplateCloneModal', () => {
 
   it('returns an error when the template name already exists', async () => {
     const existingTemplate = mockedConfigTemplateList.data.find(t => {
-      return t.type === ConfigTemplateType.NETWORK && t.name !== targetTemplate.name
+      return t.type === ConfigTemplateType.NETWORK && t.name !== targetNetworkTemplate.name
     })!
 
     render(<Provider><ConfigTemplateCloneModal {...props} /></Provider>)
     const nameInput = screen.getByLabelText('Template Name')
-    expect(nameInput).toHaveValue(`${targetTemplate.name} - CLONE`)
+    expect(nameInput).toHaveValue(`${targetNetworkTemplate.name} - CLONE`)
     await userEvent.clear(nameInput)
     await userEvent.type(nameInput, existingTemplate.name)
 
@@ -79,7 +80,9 @@ describe('ConfigTemplateCloneModal', () => {
   describe('checkTemplateTypeValidity', () => {
     const availabilityMap = {
       [ConfigTemplateType.NETWORK]: true,
-      [ConfigTemplateType.VENUE]: false
+      [ConfigTemplateType.VENUE]: false,
+      [ConfigTemplateType.DPSK]: false,
+      [ConfigTemplateType.WIFI_CALLING]: false
     }
 
     it('should return false when templateType is undefined', () => {

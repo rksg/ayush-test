@@ -130,7 +130,6 @@ function Hotspot20Form () {
     <>
       <StepsFormLegacy.Title>{
         $t({ defaultMessage: 'Hotspot 2.0 Settings' }) }</StepsFormLegacy.Title>
-      { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
       <Form.Item
         label='Security Protocol'
         name={['wlan', 'wlanSecurity']}
@@ -152,6 +151,7 @@ function Hotspot20Form () {
       </Form.Item>
 
       <Hotspot20Service />
+      { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
     </>
   )
 
