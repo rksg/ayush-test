@@ -12,35 +12,33 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const splitProxy = get('SPLIT_PROXY_ENDPOINT')
   const isMLISA = get('IS_MLISA_SA')
   const suffix = splitKey.substring(0, 5)
-
   const tenantKey = useTenantId()
-
   const prefixKey = isMLISA ? 'MLISA' : 'ACX'
-
-  if (!factory && tenantKey) {
-    factory = SplitSdk({
-      scheduler: {
-        featuresRefreshRate: 30 // 30 sec
-      },
-      core: {
-        authorizationKey: splitKey,
-        key: tenantKey
-      },
-      ...(splitProxy ? { urls: {
-        sdk: splitProxy,
-        events: splitProxy,
-        auth: splitProxy
-      } } : {}),
-      storage: {
-        type: 'LOCALSTORAGE',
-        prefix: `${prefixKey}-${suffix}`
-      },
-      debug: false // set this value to true for running in debug mode for debugging in local development only
-    })
+  if (tenantKey) {
+    if (!factory || tenantKey !== factory.settings.core.key) {
+      factory = SplitSdk({
+        scheduler: {
+          featuresRefreshRate: 30 // 30 sec
+        },
+        core: {
+          authorizationKey: splitKey,
+          key: tenantKey
+        },
+        ...(splitProxy ? { urls: {
+          sdk: splitProxy,
+          events: splitProxy,
+          auth: splitProxy
+        } } : {}),
+        storage: {
+          type: 'LOCALSTORAGE',
+          prefix: `${prefixKey}-${suffix}`
+        },
+        debug: false // set this value to true for running in debug mode for debugging in local development only
+      })
+    }
+    return <SplitFactory key={tenantKey} factory={factory} children={props.children} />
   }
-  return tenantKey ? (
-    <SplitFactory factory={factory} children={props.children} />
-  ) : null
+  return null
 }
 
 export { SplitProvider }
