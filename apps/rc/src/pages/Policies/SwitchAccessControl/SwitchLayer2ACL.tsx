@@ -57,7 +57,6 @@ export function SwitchLayer2ACL () {
       defaultSortOrder: 'ascend',
       searchable: true,
       sorter: true,
-      fixed: 'left',
       width: 500,
       render: (_, row) =>
         <Button

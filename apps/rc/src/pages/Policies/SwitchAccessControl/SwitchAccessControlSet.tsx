@@ -71,7 +71,6 @@ export function SwitchAccessControlSet () {
       dataIndex: 'accessControlPolicyName',
       defaultSortOrder: 'ascend',
       searchable: true,
-      fixed: 'left',
       width: 500,
       render: (_, row) =>
         <Button
