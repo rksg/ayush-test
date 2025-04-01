@@ -2580,20 +2580,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
           if (searchAgentName) {
             filtersPayload = {
-              ...filtersPayload,
-              name: [searchAgentName]
+              searchString: searchAgentName
             }
           }
           if (venueIds) {
             filtersPayload = {
               ...filtersPayload,
-              venueIds: venueIds
+              filters: {
+                venueIds: venueIds
+              }
             }
           }
 
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
-            body: JSON.stringify({ filters: filtersPayload })
+            body: JSON.stringify(filtersPayload)
           }
           const res = await fetchWithBQ(req)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
