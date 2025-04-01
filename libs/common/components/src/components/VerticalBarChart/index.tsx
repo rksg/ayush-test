@@ -21,7 +21,6 @@ import { TooltipWrapper } from '../Chart/styledComponents'
 import type { EChartsOption, TooltipComponentFormatterCallbackParams, ECharts  } from 'echarts'
 import type { EChartsReactProps }                                                from 'echarts-for-react'
 
-
 type BarData = [number, number]
 export interface VerticalBarChartProps
   <TChartData extends BarChartData>
@@ -35,7 +34,7 @@ export interface VerticalBarChartProps
     max?: number
     min?: number
   }
-  xAxisValues?: string[]
+  xAxisValues?: string[] | number[]
   xAxisName?: string
   xAxisOffset?: number
   showTooltipName?: Boolean

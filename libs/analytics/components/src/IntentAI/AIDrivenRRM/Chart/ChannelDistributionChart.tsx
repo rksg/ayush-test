@@ -4,12 +4,16 @@ import { Card, NoData, VerticalBarChart } from '@acx-ui/components'
 
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
+import { allChannels } from './utils'
+
 function ChannelDistributionChart (intent: IntentDetail) {
   const { $t } = useIntl()
   const { apChannelDistributions } = intent
 
   const sortedData = apChannelDistributions?.map(
     ({ channel, apCount }) => [channel, apCount]).sort((a, b) => a[0] - b[0])
+
+  const channelList = allChannels[intent.code as keyof typeof allChannels]
 
   const data = {
     dimensions: ['channel', 'apCount'],
@@ -26,6 +30,7 @@ function ChannelDistributionChart (intent: IntentDetail) {
     <Card title={$t({ defaultMessage: 'Channel Distribution' })}>
       {apChannelDistributions.length ? <VerticalBarChart
         data={data}
+        xAxisValues={channelList}
         xAxisName={$t({ defaultMessage: 'Channel' })}
         barWidth={20}
         showTooltipName={false}
