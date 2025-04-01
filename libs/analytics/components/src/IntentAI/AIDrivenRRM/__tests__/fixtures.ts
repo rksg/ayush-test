@@ -295,8 +295,12 @@ export const mockedIntentCRRM = {
   ],
   apPowerTransmission: [
     {
-      txPower: '_FULL',
+      txPower: '-1 dB',
       apCount: 1
+    },
+    {
+      txPower: '0 dB',
+      apCount: 2
     }
   ]
 } as unknown as IntentDetail

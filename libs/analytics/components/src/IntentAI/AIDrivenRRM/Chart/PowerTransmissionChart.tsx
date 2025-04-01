@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { Card, NoData, VerticalBarChart } from '@acx-ui/components'
 import { txpowerMapping }                 from '@acx-ui/formatter'
 
-
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
 function PowerTransmissionChart (intent: IntentDetail) {
