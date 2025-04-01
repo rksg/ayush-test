@@ -19383,6 +19383,45 @@ exports[`Test Details should render SwitchLLDPStatus correctly 1`] = `
         />
       </div>
     </div>
+    <div
+      class="ant-col ant-col-6 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 249px;"
+      >
+        <div
+          data-testid="impactedSwitchesDonut"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-6 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 249px;"
+      >
+        <div
+          data-testid="ImpactedSwitchesByParamDonut"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-6 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 249px;"
+      >
+        <div
+          data-testid="ImpactedSwitchesByParamDonut"
+        />
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
