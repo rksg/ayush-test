@@ -98,6 +98,16 @@ export const SamlIdpProfileUrls: { [key: string]: ApiInfo } = {
       Accept: 'text/xml'
     }
   },
+  activateIdentityProviderProfileOnNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:wifiNetworkId/samlIdpProfiles/:samlIdpProfileId',
+    opsApi: 'PUT:/wifiNetworks/:wifiNetworkId/samlIdpProfiles/:samlIdpProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   refreshSamlServiceProviderMetadata: {
     method: 'PATCH',
     url: '/samlIdpProfiles/:id',

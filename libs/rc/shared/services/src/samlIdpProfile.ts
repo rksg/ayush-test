@@ -234,6 +234,12 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         }
       }
     }),
+    activateIdentityProviderProfileOnNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(SamlIdpProfileUrls.activateIdentityProviderProfileOnNetwork, params)
+      }
+    }),
 
     refreshSamlServiceProviderMetadata: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -265,5 +271,6 @@ export const {
   useActivateSamlSigningCertificateMutation,
   useDeactivateSamlSigningCertificateMutation,
   useDownloadSamlServiceProviderMetadataMutation,
+  useActivateIdentityProviderProfileOnNetworkMutation,
   useRefreshSamlServiceProviderMetadataMutation
 } = samlIdpProfileApi
