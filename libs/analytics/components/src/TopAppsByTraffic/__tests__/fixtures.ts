@@ -7,3 +7,7 @@ export const topAppsByTrafficFixture = {
     { name: 'windows_update', applicationTraffic: 148907024 }
   ]
 }
+
+export const topAppsByTrafficFixtureNoData = {
+  topNAppByTotalTraffic: []
+}

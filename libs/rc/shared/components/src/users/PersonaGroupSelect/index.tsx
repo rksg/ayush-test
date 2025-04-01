@@ -1,19 +1,31 @@
+import { useEffect } from 'react'
+
 import { Select }      from 'antd'
 import { SelectProps } from 'antd/lib/select'
 
 import { useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
+import { PersonaGroup }                   from '@acx-ui/rc/utils'
+
 
 export function PersonaGroupSelect (props: {
   filterProperty?: boolean,
   whiteList?: string[],
+  setIdentityGroups? (personaGroups: PersonaGroup[]): void
 } & SelectProps) {
-  const { filterProperty, whiteList, ...customSelectProps } = props
+  const { filterProperty, whiteList, setIdentityGroups, ...customSelectProps } = props
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
       page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
+
+  useEffect(() => {
+    const personaGroups = personaGroupList.data?.data
+    if (setIdentityGroups && personaGroups && personaGroups.length > 0) {
+      setIdentityGroups(personaGroups)
+    }
+  }, [personaGroupList])
 
   return (
     <Select
