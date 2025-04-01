@@ -4,6 +4,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal }                                                                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
 import { useCloneTemplateMutation, useGetConfigTemplateListQuery }                                                                  from '@acx-ui/rc/services'
 import { AllowedCloneTemplateTypes, allowedCloneTemplateTypesSet, ConfigTemplate, ConfigTemplateCloneUrlsInfo, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { hasAllowedOperations }                                                                                                     from '@acx-ui/user'
@@ -99,11 +100,14 @@ const isAllowedCloneTemplateTypes = (templateType: ConfigTemplateType): template
 }
 
 export function useCloneConfigTemplate () {
-  const [ visible, setVisible ] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const availabilityMap = useCloneFeatureFlags()
 
   // eslint-disable-next-line max-len
   const canClone = (templateType?: ConfigTemplateType): templateType is AllowedCloneTemplateTypes => {
-    if (!templateType || !isAllowedCloneTemplateTypes(templateType)) return false
+    if (!checkTemplateTypeValidity(templateType, availabilityMap)) {
+      return false
+    }
 
     return hasAllowedOperations([getOpsApi(ConfigTemplateCloneUrlsInfo[templateType])])
   }
@@ -113,4 +117,30 @@ export function useCloneConfigTemplate () {
     visible,
     setVisible
   }
+}
+
+function useCloneFeatureFlags () {
+  const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
+  const cloneVenueEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE_VENUE)
+  const cloneP1Enabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE_P1)
+
+  const availabilityMap: Record<AllowedCloneTemplateTypes, boolean> = {
+    [ConfigTemplateType.NETWORK]: cloneEnabled,
+    [ConfigTemplateType.VENUE]: cloneVenueEnabled,
+    [ConfigTemplateType.DPSK]: cloneP1Enabled,
+    [ConfigTemplateType.WIFI_CALLING]: cloneP1Enabled
+  }
+
+  return availabilityMap
+}
+
+export function checkTemplateTypeValidity (
+  templateType: ConfigTemplateType | undefined,
+  availabilityMap: Record<AllowedCloneTemplateTypes, boolean>
+): templateType is AllowedCloneTemplateTypes {
+  if (!templateType || !isAllowedCloneTemplateTypes(templateType)) {
+    return false
+  }
+
+  return availabilityMap[templateType]
 }

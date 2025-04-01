@@ -128,6 +128,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const { data: switchData } =
     useGetSwitchQuery({
@@ -157,6 +159,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
                 serialNumber: value,
                 isSupport8200AV: isSupport8200AV,
                 isSupport8100: isSupport8100,
+                isSupport8100X: isSupport8100X,
+                isSupport7550Zippy: isSupport7550Zippy,
                 activeSerialNumber: switchDetail?.activeSerial
               }
               return validatorSwitchModel(switchModelParams)}

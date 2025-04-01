@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
-import { Col, Row, Space, Typography } from 'antd'
-import { useIntl }                     from 'react-intl'
-import { useParams }                   from 'react-router-dom'
+import { Space, Typography } from 'antd'
+import { useIntl }           from 'react-intl'
+import { useParams }         from 'react-router-dom'
+import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Button, Descriptions, Loader, Subtitle }   from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Button, Card, cssStr, Descriptions, DonutChart, GridCol, GridRow, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
 import {
   IdentityGroupLink,
   NetworkSegmentationLink,
@@ -17,12 +18,19 @@ import {
   useAllocatePersonaVniMutation,
   useGetConnectionMeteringByIdQuery,
   useGetEdgePinByIdQuery,
-  useGetPropertyUnitByIdQuery
+  useGetPropertyUnitByIdQuery,
+  useGetUnitsLinkedIdentitiesQuery,
+  useSearchIdentityClientsQuery
 } from '@acx-ui/rc/services'
 import { Persona, PersonaGroup, PersonaUrls } from '@acx-ui/rc/utils'
 import { hasAllowedOperations }               from '@acx-ui/user'
 import { getOpsApi, noDataDisplay }           from '@acx-ui/utils'
 
+
+const identityClientDefaultSorter = {
+  sortField: 'username',
+  sortOrder: 'ASC'
+}
 
 export function PersonaOverview (props:
    { personaData?: Persona, personaGroupData?: PersonaGroup }
@@ -34,18 +42,58 @@ export function PersonaOverview (props:
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isMultipleIdentityUnits = useIsSplitOn(Features.MULTIPLE_IDENTITY_UNITS)
+
+  const {
+    identityDeviceCount,
+    isClientsLoading,
+    isClientsFetching
+  } = useSearchIdentityClientsQuery({
+    payload: {
+      ...identityClientDefaultSorter,
+      identityIds: [personaId],
+      page: 1,
+      pageSize: 1
+    }
+  }, {
+    skip: !personaId,
+    selectFromResult: ({ data, isLoading, isFetching }) => {
+      return {
+        identityDeviceCount: data?.totalCount ?? 0,
+        isClientsLoading: isLoading,
+        isClientsFetching: isFetching
+      }
+    }
+  })
 
   const { data: pinData } = useGetEdgePinByIdQuery(
     { params: { serviceId: personaGroupData?.personalIdentityNetworkId } },
     { skip: !networkSegmentationEnabled || !personaGroupData?.personalIdentityNetworkId }
   )
+
+  const identities = useGetUnitsLinkedIdentitiesQuery(
+    {
+      params: { venueId: personaGroupData?.propertyId },
+      payload: {
+        pageSize: 1, page: 1, sortOrder: 'ASC',
+        filters: {
+          personaId: personaId
+        }
+      }
+    },
+    { skip: !personaGroupData?.propertyId || !isMultipleIdentityUnits }
+  )
+
   const { data: unitData } = useGetPropertyUnitByIdQuery({
     params: {
       venueId: personaGroupData?.propertyId,
-      unitId: personaData?.identityId
+      unitId: personaData?.identityId ?? identities?.data?.data[0]?.unitId
     }
   },
-  { skip: !personaGroupData?.propertyId || !personaData?.identityId }
+  {
+    skip: !personaGroupData?.propertyId ||
+        (!personaData?.identityId && !identities?.data?.data[0]?.unitId)
+  }
   )
   const { data: connectionMetering } = useGetConnectionMeteringByIdQuery(
     { params: { id: personaData?.meteringProfileId } },
@@ -79,7 +127,7 @@ export function PersonaOverview (props:
             showNoData={true}
             name={unitData?.name}
             venueId={personaGroupData?.propertyId}
-            unitId={personaData?.identityId}
+            unitId={personaData?.identityId ?? unitData?.id}
           />
       }] : []
   ]
@@ -133,21 +181,23 @@ export function PersonaOverview (props:
   ]
 
   return (
-    <Row gutter={[0, 8]}>
-      <Col span={12}>
-        <Subtitle level={4}>
-          {$t({ defaultMessage: 'Identity Details' })}
-        </Subtitle>
-      </Col>
-      <Col span={12}>
-        {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
+    <>
+      <GridRow>
+        <GridCol col={{ span: 12 }}>
           <Subtitle level={4}>
-            {$t({ defaultMessage: 'Personal Identity Network' })}
+            {$t({ defaultMessage: 'Identity Details' })}
           </Subtitle>
-        }
-      </Col>
-      <Col span={12}>
-        <Loader >
+        </GridCol>
+        <GridCol col={{ span: 12 }}>
+          {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Personal Identity Network' })}
+            </Subtitle>
+          }
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 12 }}>
           {details.map(item =>
             <Descriptions key={item.label} labelWidthPercent={25}>
               <Descriptions.Item
@@ -156,20 +206,19 @@ export function PersonaOverview (props:
               />
             </Descriptions>
           )}
-        </Loader>
-      </Col>
-      {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
-        <Col span={12}>
-          {netSeg.map(item =>
-            <Descriptions key={item.label} labelWidthPercent={25}>
-              <Descriptions.Item
-                label={item.label}
-                children={item.value ?? noDataDisplay}
-              />
-            </Descriptions>
-          )}
-          {
-            isConnectionMeteringEnabled &&
+        </GridCol>
+        {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
+          <GridCol col={{ span: 12 }}>
+            {netSeg.map(item =>
+              <Descriptions key={item.label} labelWidthPercent={25}>
+                <Descriptions.Item
+                  label={item.label}
+                  children={item.value ?? noDataDisplay}
+                />
+              </Descriptions>
+            )}
+            {
+              isConnectionMeteringEnabled &&
             <Descriptions key={'Data Usage Metering'} labelWidthPercent={25}>
               <Descriptions.Item
                 label={$t({ defaultMessage: 'Data Usage Metering:' })}
@@ -180,9 +229,32 @@ export function PersonaOverview (props:
                   noDataDisplay}
               />
             </Descriptions>
-          }
-        </Col>
-      }
-    </Row>
+            }
+          </GridCol>
+        }
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 24 }}/>
+        <GridCol col={{ span: 12 }} style={{ height: '190px' }}>
+          <Card
+            title={$t({ defaultMessage: 'Associated Devices' })}>
+            <AutoSizer>
+              {({ width, height }) => (
+                <DonutChart
+                  style={{ width, height }}
+                  title={$t({ defaultMessage: 'Wi-Fi' })}
+                  showLoading={isClientsLoading || isClientsFetching}
+                  data={[{
+                    value: identityDeviceCount,
+                    name: $t({ defaultMessage: 'Wi-Fi' }),
+                    color: cssStr('--acx-semantics-green-50')
+                  }]}
+                />
+              )}
+            </AutoSizer>
+          </Card>
+        </GridCol>
+      </GridRow>
+    </>
   )
 }

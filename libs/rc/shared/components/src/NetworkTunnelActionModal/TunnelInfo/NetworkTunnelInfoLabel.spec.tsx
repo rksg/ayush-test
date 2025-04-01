@@ -9,13 +9,6 @@ import { NetworkTunnelInfoLabel } from './NetworkTunnelInfoLabel'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
-// jest.mock('@acx-ui/react-router-dom', () => ({
-//   ...jest.requireActual('@acx-ui/react-router-dom'),
-//   TenantLink: (props: React.PropsWithChildren<{ to: string }>) => <a href={props.to}>
-//     {props.children}
-//   </a>
-// }))
-
 const tenantId = 'mock-tenant'
 describe('NetworkTunnelInfoLabel', () => {
   it('should correctly render SDLAN case', async () => {
@@ -121,5 +114,37 @@ describe('NetworkTunnelInfoLabel', () => {
     )
 
     expect(container.innerHTML).toBe('')
+  })
+
+  // eslint-disable-next-line max-len
+  it('should correctly render SoftGre when venue is associated with a SDLAN but WLAN is NOT associated with SDLAN', async () => {
+    const mockedDcSdlan = mockedMvSdLanDataList[1]
+    const sdlanVenueId = mockedDcSdlan.tunneledWlans![0].venueId
+
+    const venueSoftGre = {
+      venueId: sdlanVenueId,
+      networkIds: ['mock-network-id'],
+      profileId: '0d89c0f5596c4689900fb7f5f53a0859',
+      profileName: 'softGreProfileName1'
+    }
+
+    render(
+      <NetworkTunnelInfoLabel
+        network={{
+          id: venueSoftGre.networkIds[0],
+          type: NetworkTypeEnum.DPSK,
+          venueId: venueSoftGre.venueId
+        }}
+        isVenueActivated={true}
+        venueSdLan={mockedDcSdlan}
+        venueSoftGre={venueSoftGre}
+      />, { route: { path: '/:tenantId/t/', params: { tenantId } } }
+    )
+
+    const btn = screen.getByText(/SoftGRE /)
+    expect(btn).toBeVisible()
+    const link = screen.getByRole('link', { name: venueSoftGre.profileName })
+    // eslint-disable-next-line max-len
+    expect(link).toHaveAttribute('href', `/${tenantId}/t/policies/softGre/${venueSoftGre.profileId}/detail`)
   })
 })

@@ -96,7 +96,7 @@ describe('apRebootBySystemQuery', () => {
       Api.endpoints.Charts.initiate({
         incident: fakeIncidentContReboot,
         charts: [TimeSeriesChartTypes.ApRebootBySystemChart],
-        minGranularity: 'PT180S',
+        minGranularity: 'PT15M',
         buffer: buffer6hr
       })
     )

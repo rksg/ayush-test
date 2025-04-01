@@ -9,7 +9,8 @@ import {
   defaultSort,
   sortProp,
   SWITCH_DEFAULT_VLAN_NAME,
-  Vlan
+  Vlan,
+  getFamilyAndModel
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
@@ -430,7 +431,7 @@ function transformData (vlans: Vlan[]) {
     if (!item.switchFamilyModels) return result
 
     item.switchFamilyModels.forEach((switchModel) => {
-      const [family, model] = switchModel.model.split('-')
+      const [ family, model ] = getFamilyAndModel(switchModel.model)
       const tagged = switchModel.taggedPorts ? switchModel.taggedPorts.split(',') : []
       const untagged = switchModel.untaggedPorts ? switchModel.untaggedPorts.split(',') : []
       const ports = [...tagged, ...untagged]

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 
 import { renderHook, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { EdgePortTabEnum } from '../DeprecatedPortsForm'
+import { EdgeEditContext } from '../..'
 
 import { EditEdgeFormControlType, showUnsavedModal } from '.'
 
@@ -21,7 +21,7 @@ const defaultFormControlState = {
 } as EditEdgeFormControlType
 
 const defaultActiveSubTabState = {
-  key: EdgePortTabEnum.PORTS_GENERAL as string,
+  key: EdgeEditContext.EdgePortTabEnum.PORTS_GENERAL as string,
   title: 'Ports General'
 }
 

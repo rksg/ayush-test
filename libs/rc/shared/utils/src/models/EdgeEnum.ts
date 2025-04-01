@@ -55,6 +55,10 @@ export enum EdgeServiceTypeEnum {
   MDNS_PROXY = 'MDNS_PROXY'
 }
 
+export enum EdgeClusterProfileTypeEnum {
+  TUNNEL_PROFILE = 'TUNNEL_PROFILE'
+}
+
 export enum EdgeServiceStatusEnum {
   GOOD = 'GOOD',
   REQUIRES_ATTENTION = 'REQUIRES_ATTENTION',
@@ -117,3 +121,21 @@ export enum CompatibilityEntityTypeEnum {
   CLUSTER = 'cluster',
   DEVICE = 'device'
 }
+
+// ========== Multi WAN ===========
+export enum EdgeMultiWanModeEnum {
+  NONE = 'NONE',
+  ACTIVE_BACKUP = 'ACTIVE_BACKUP'
+}
+
+export enum EdgeMultiWanProtocolEnum {
+  NONE = 'NONE',
+  PING = 'PING'
+}
+
+export enum EdgeLinkDownCriteriaEnum {
+  INVALID = 'INVALID',
+  ALL_TARGETS_DOWN = 'ALL_TARGETS_DOWN',
+  ANY_TARGET_DOWN = 'ANY_TARGET_DOWN'
+}
+// ========== Multi WAN ===========

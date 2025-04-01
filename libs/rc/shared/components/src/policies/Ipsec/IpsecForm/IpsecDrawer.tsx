@@ -4,10 +4,17 @@ import {  Col, Form, Row }   from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Drawer }                                                              from '@acx-ui/components'
-import { useCreateIpsecMutation }                                              from '@acx-ui/rc/services'
-import { Ipsec, IpSecFormData, IpSecProposalTypeEnum, IpSecRekeyTimeUnitEnum } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
+import { Drawer }                 from '@acx-ui/components'
+import { useCreateIpsecMutation } from '@acx-ui/rc/services'
+import {
+  Ipsec,
+  IpSecAdvancedOptionEnum,
+  IpSecFailoverModeEnum,
+  IpSecFormData,
+  IpSecProposalTypeEnum,
+  IpSecRekeyTimeUnitEnum
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpsecSettingForm } from './IpsecSettingForm'
 
@@ -34,6 +41,15 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
         iskRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         espRekeyTimeUnit: IpSecRekeyTimeUnitEnum.HOUR,
         advancedOption: {
+          retryLimit: 5,
+          replayWindow: 32,
+          ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
+          enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
+          dpdDelay: 1,
+          keepAliveInterval: 20,
+          failoverRetryInterval: 1,
+          failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
+          failoverPrimaryCheckInterval: 1
         },
         ikeSecurityAssociation: {
           ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
@@ -43,10 +59,12 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
           espProposalType: IpSecProposalTypeEnum.DEFAULT,
           espProposals: []
         },
-        retryLimitEnabledCheckbox: false,
-        espReplayWindowEnabledCheckbox: false,
+        ikeRekeyTimeEnabledCheckbox: true,
+        espRekeyTimeEnabledCheckbox: true,
+        retryLimitEnabledCheckbox: true,
+        espReplayWindowEnabledCheckbox: true,
         deadPeerDetectionDelayEnabledCheckbox: false,
-        nattKeepAliveIntervalEnabledCheckbox: false
+        nattKeepAliveIntervalEnabledCheckbox: true
       })
     }
   }, [form, readMode, visible])
@@ -63,9 +81,15 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
     if (data?.espSecurityAssociation?.espProposalType === IpSecProposalTypeEnum.DEFAULT) {
       data.espSecurityAssociation.espProposals = []
     }
+    if (data.ikeRekeyTimeEnabledCheckbox === false && data.ikeRekeyTime) {
+      data.ikeRekeyTime = 0
+    }
+    if (data.espRekeyTimeEnabledCheckbox === false && data.espRekeyTime) {
+      data.espRekeyTime = 0
+    }
     if (data.retryLimitEnabledCheckbox === false) {
       if (data.advancedOption && data.advancedOption.retryLimit)
-        data.advancedOption.retryLimit = 5
+        data.advancedOption.retryLimit = 0
     }
     if (data.deadPeerDetectionDelayEnabledCheckbox === false) {
       if (data.advancedOption && data.advancedOption.dpdDelay)
@@ -73,11 +97,11 @@ export default function IpsecDrawer (props: IpsecDrawerProps) {
     }
     if (data.espReplayWindowEnabledCheckbox === false) {
       if (data.advancedOption && data.advancedOption.replayWindow)
-        data.advancedOption.replayWindow = 32
+        data.advancedOption.replayWindow = 0
     }
     if (data.nattKeepAliveIntervalEnabledCheckbox === false) {
       if (data.advancedOption && data.advancedOption.keepAliveInterval)
-        data.advancedOption.keepAliveInterval = 20
+        data.advancedOption.keepAliveInterval = 0
     }
   }
 

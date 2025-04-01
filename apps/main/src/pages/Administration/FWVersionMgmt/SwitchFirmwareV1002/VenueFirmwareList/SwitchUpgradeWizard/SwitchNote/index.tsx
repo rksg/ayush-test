@@ -7,6 +7,8 @@ import * as UI from '../../styledComponents'
 
 export enum NotesEnum {
   NOTE7150_1 = 'NOTE7150_1',
+  NOTE7550_1 = 'NOTE7550_1',
+  NOTE8100_1 = 'NOTE8100_1',
   NOTE8200_1 = 'NOTE8200_1'
 }
 
@@ -25,6 +27,16 @@ export function SwitchNote (props: NoteProps) {
         // eslint-disable-next-line max-len
         defaultMessage: 'The following switches will not be upgraded because the ICX7150-C08P/PT models do not support FastIron versions 10.0.x. You can still upgrade them to the desired 09.0.10x version by selecting these switches separately.'
       }),
+    [NotesEnum.NOTE7550_1]:
+    $t({
+      // eslint-disable-next-line max-len
+      defaultMessage: 'The following switches will not be upgraded because the ICX7550-24XZP models only support FI version 10.0.20b_cd1 and later. You can still upgrade them by selecting the switches individually.'
+    }),
+    [NotesEnum.NOTE8100_1]:
+    $t({
+      // eslint-disable-next-line max-len
+      defaultMessage: 'The following switches will not be upgraded because the ICX8100-X models only support FI version 10.0.10g and later or 10.0.20c and later. You can still upgrade them by selecting the switches individually.'
+    }),
     [NotesEnum.NOTE8200_1]:
       $t({
         // eslint-disable-next-line max-len

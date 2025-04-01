@@ -49,20 +49,40 @@ export const SamlIdpProfileUrls: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  activateSamlIdpProfileCertificate: {
+  activateEncryptionCertificate: {
     method: 'put',
-    url: '/samlIdpProfiles/:id/certificates/:certificateId',
-    opsApi: 'PUT:/samlIdpProfiles/{id}/certificates/{id}',
+    url: '/samlIdpProfiles/:id/encryptionCertificates/:certificateId',
+    opsApi: 'PUT:/samlIdpProfiles/{id}/encryptionCertificates/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  deactivateSamlIdpProfileCertificate: {
+  deactivateEncryptionCertificate: {
     method: 'delete',
-    url: '/samlIdpProfiles/:id/certificates/:certificateId',
-    opsApi: 'DELETE:/samlIdpProfiles/{id}/certificates/{id}',
+    url: '/samlIdpProfiles/:id/encryptionCertificates/:certificateId',
+    opsApi: 'DELETE:/samlIdpProfiles/{id}/encryptionCertificates/{id}',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateSigningCertificate: {
+    method: 'put',
+    url: '/samlIdpProfiles/:id/signingCertificates/:certificateId',
+    opsApi: 'PUT:/samlIdpProfiles/{id}/signingCertificates/{id}',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateSigningCertificate: {
+    method: 'delete',
+    url: '/samlIdpProfiles/:id/signingCertificates/:certificateId',
+    opsApi: 'DELETE:/samlIdpProfiles/{id}/signingCertificates/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -76,6 +96,16 @@ export const SamlIdpProfileUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       Accept: 'text/xml'
+    }
+  },
+  activateIdentityProviderProfileOnNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:wifiNetworkId/samlIdpProfiles/:samlIdpProfileId',
+    opsApi: 'PUT:/wifiNetworks/:wifiNetworkId/samlIdpProfiles/:samlIdpProfileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   }
 }

@@ -59,7 +59,7 @@ import {
   useActivateSoftGreMutation,
   useDectivateSoftGreMutation,
   useActivateIpsecMutation,
-  useDectivateIpsecMutation
+  useDeactivateIpsecMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -67,7 +67,7 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   DpskWlanAdvancedCustomization,
-  TunnelTypeEnum,
+  NetworkSegmentTypeEnum,
   TunnelProfileViewData,
   useConfigTemplate,
   ConfigTemplateType,
@@ -82,9 +82,18 @@ import {
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
   NetworkTunnelSoftGreAction,
-  NetworkTunnelIpsecAction
+  NetworkTunnelIpsecAction,
+  ConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }  from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
 import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
@@ -209,7 +218,7 @@ export const useNetworkVxLanTunnelProfileInfo =
       { skip: !isEdgeEnabled || !data }
     )
 
-    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN
+    const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === NetworkSegmentTypeEnum.VXLAN
       && item.personalIdentityNetworkIds.length > 0)
     const enableTunnel = !_.isEmpty(tunnelProfileData?.data)
     const enableVxLan = !_.isEmpty(vxLanTunnels)
@@ -918,7 +927,7 @@ export const useUpdateSoftGreActivations = () => {
 
 export const useUpdateIpsecActivations = () => {
   const [ activateIpsec ] = useActivateIpsecMutation()
-  const [ dectivateIpsec ] = useDectivateIpsecMutation()
+  const [ deactivateIpsec ] = useDeactivateIpsecMutation()
 
   // eslint-disable-next-line max-len
   const updateIpsecActivations = async (networkId: string, updates: NetworkTunnelIpsecAction, activatedVenues: NetworkVenue[], cloneMode: boolean, editMode: boolean) => {
@@ -928,7 +937,7 @@ export const useUpdateIpsecActivations = () => {
       // eslint-disable-next-line max-len
       const action = updates[venueId]
       if (editMode && !cloneMode && !action.newProfileId && action.oldProfileId) {
-        return dectivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
+        return deactivateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.oldProfileId } })
       } else if (action.newProfileId && action.newProfileId !== action.oldProfileId && action.enableIpsec === true) {
         return activateIpsec({ params: { venueId, networkId, softGreProfileId: action.softGreProfileId, ipsecProfileId: action.newProfileId } })
       }
@@ -1002,4 +1011,37 @@ export const getNetworkTunnelSdLanUpdateData = (
   }
 
   return updateContent
+}
+
+export const hasControlnetworkVenuePermission = (isTemplate: boolean) => {
+  const hasActivatePermission = hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })
+  const { rbacOpsApiEnabled } = getUserProfile()
+
+  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.addNetworkVenue)
+
+  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.updateNetworkVenue)
+
+  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
+    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
+    : WifiRbacUrlsInfo.deleteNetworkVenue)
+
+  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
+    : (hasActivatePermission)
+
+  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
+    : (hasActivatePermission)
+
+  return {
+    addNetworkVenueOpsAPi,
+    updateNetworkVenueOpsAPi,
+    deleteNetworkVenueOpsAPi,
+    hasActivateNetworkVenuePermission,
+    hasUpdateNetworkVenuePermission
+  }
 }

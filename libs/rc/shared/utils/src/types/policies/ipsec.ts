@@ -18,7 +18,7 @@ import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
 export interface Ipsec {
   id: string
   name: string
-  serverAddress: string
+  serverAddress?: string
   authType: IpSecAuthEnum
   preSharedKey?: string
   certificate?: string
@@ -69,6 +69,8 @@ export interface EspProposal {
 }
 
 export interface IpSecFormData extends Ipsec {
+  ikeRekeyTimeEnabledCheckbox?: boolean
+  espRekeyTimeEnabledCheckbox?: boolean
   retryLimitEnabledCheckbox?: boolean
   deadPeerDetectionDelayEnabledCheckbox?: boolean
   espReplayWindowEnabledCheckbox?: boolean

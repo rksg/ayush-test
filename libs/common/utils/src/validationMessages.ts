@@ -411,6 +411,10 @@ export const validationMessages = {
     defaultMessage: 'The VLAN ID already exists',
     description: 'Validation - validate vlan id'
   }),
+  vlanIdSetAsDeaultVlan: defineMessage({
+    defaultMessage: 'This list cannot include the default VLAN {defaultVlan}',
+    description: 'Validation - validate vlan id'
+  }),
   vlanNameInvalidWithDefaultVlans: defineMessage({
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'
@@ -510,6 +514,10 @@ export const validationMessages = {
     // eslint-disable-next-line max-len
     defaultMessage: 'Duplicate MAC OUI and LLDP TLV values are being used. Please ensure that the MAC OUI and LLDP TLV are not duplicated across the profiles.',
     description: 'Validation - Switch Port Profiles Duplicate Invalid'
+  }),
+  IpsecProfileDhcpOpion43InvalidValue: defineMessage({
+    defaultMessage: 'The available range is 3-243, excluding 6',
+    description: 'Validation - Ipsec Profile DHCP Option 43 Invalid Value'
   })
 }
 

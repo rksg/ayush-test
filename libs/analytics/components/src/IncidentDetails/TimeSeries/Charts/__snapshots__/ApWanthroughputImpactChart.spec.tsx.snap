@@ -30,7 +30,7 @@ Object {
     "i-apinfra-wanthroughput-low",
   ],
   "end": "2022-08-03T06:00:00.000Z",
-  "granularity": "PT180S",
+  "granularity": "PT15M",
   "path": Array [
     Object {
       "name": "AlphaNet_5_1",

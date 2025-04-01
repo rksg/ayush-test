@@ -10,6 +10,10 @@ export interface PersonaGroup {
   personalIdentityNetworkId?: string,
   createdAt?: string,
   updatedAt?: string,
+  /** @deprecated('identities')
+   * Only support identityCount in the future
+   * Please use `useSearchPersonaListQuery` to get related identities
+   * */
   identities?: Persona[],
   identityCount?: number,
   certificateTemplateId?: string,

@@ -523,6 +523,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'ActivateMulticastDnsProxyProfile',
+            'DeactivateMulticastDnsProxyProfile'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'MdnsProxyAp', id: 'LIST' }
+            ]))
+          })
+        })
+      },
       extraOptions: { maxRetries: 5 }
     }),
     deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload<string[]>>({
@@ -723,7 +735,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'UPDATE_DPSK_PASSPHRASES',
             'IMPORT_DPSK_PASSPHRASES',
             'CREATE_PASSPHRASE_DEVICES',
-            'DELETE_PASSPHRASE_DEVICES'
+            'DELETE_PASSPHRASE_DEVICES',
+            'UpdatePersona' // for Identity details page > Block
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'DpskPassphrase', id: 'LIST' }

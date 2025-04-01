@@ -67,7 +67,7 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isAssignMultipleEcEnabled =
-    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
+    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
   const MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE = 100
 
@@ -76,7 +76,7 @@ export function MspCustomers () {
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
   const isUpgradeMultipleEcEnabled =
-    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
+    useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
@@ -629,6 +629,7 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Deactivate' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.deactivateMspEcAccount)],
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' &&
@@ -653,13 +654,15 @@ export function MspCustomers () {
               `
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Deactivate' }),
-            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
       },
       {
         label: $t({ defaultMessage: 'Reactivate' }),
+        rbacOpsIds: [getOpsApi(MspRbacUrlsInfo.reactivateMspEcAccount)],
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
             (selectedRows[0].status === 'Active' ||
@@ -682,7 +685,8 @@ export function MspCustomers () {
               { formattedName: name }
             ),
             okText: $t({ defaultMessage: 'Reactivate' }),
-            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
@@ -892,7 +896,7 @@ export function MspCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
-        extra={isAdmin ?
+        extra={hasAddPermission ?
           [
             !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
