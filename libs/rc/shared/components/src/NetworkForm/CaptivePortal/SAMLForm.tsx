@@ -134,7 +134,7 @@ export const SAMLForm = () => {
         <GridCol col={{ span: 14 }}>
           <NetworkDiagram
             type={NetworkTypeEnum.CAPTIVEPORTAL}
-            networkPortalType={GuestNetworkTypeEnum.GuestPass}
+            networkPortalType={GuestNetworkTypeEnum.SAML}
             wlanSecurity={data?.wlan?.wlanSecurity}
           />
         </GridCol>
