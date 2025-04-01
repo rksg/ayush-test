@@ -5,8 +5,8 @@ import { hasRoles }    from './userProfile'
 
 // Because we are unable to define scopes for GraphQL APIs in RCG config
 // (https://bitbucket.rks-cloud.com/projects/RKSCLOUD/repos/ruckus-cloud-gateway/browse/configs/ruckus-cloud-gateway/configmaps/base/ruckus-cloud-gateway-config-routes.yaml),
-// allowedOperations endpoint is not able to provide the list of allowed operations for a logged in
-// user. Instead, `getAIAllowedOperations` can be use to augment the list using roles and scopes.
+// `allowedOperations` endpoint is not able to provide the list of allowed operations for a logged in
+// user. To help with this, `getAIAllowedOperations` can be used to augment the list using roles and scopes.
 
 // Map of operations to pseudo-URIs
 export const opsApis = {
