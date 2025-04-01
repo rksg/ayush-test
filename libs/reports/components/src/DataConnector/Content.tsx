@@ -13,6 +13,7 @@ import { hasRaiPermission, hasRoles }                                           
 import { StorageOptions }     from './CloudStorageForm'
 import { QuotaUsageBar }      from './QuotaUsageBar'
 import { useGetStorageQuery } from './services'
+import * as UI                from './styledComponents'
 import { DataConnectorTable } from './Table'
 
 const DataConnectorContent: React.FC<{}> = () => {
@@ -76,6 +77,9 @@ const DataConnectorContent: React.FC<{}> = () => {
             { connectionType: StorageLabel }
           )
           : $t({ defaultMessage: 'New Cloud Storage' })}
+        {storage?.isConnected
+          ? <UI.ConnectedDot data-testid='connected-dot' />
+          : <UI.DisconnectedDot data-testid='disconnected-dot' />}
       </Button>
     )
   }
