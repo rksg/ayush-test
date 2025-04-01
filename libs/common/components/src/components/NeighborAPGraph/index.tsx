@@ -1,4 +1,6 @@
+import { scalePow } from 'd3-scale'
 import ReactECharts from 'echarts-for-react'
+import { useIntl }  from 'react-intl'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 
@@ -8,7 +10,7 @@ interface NodeSize {
 }
 
 interface RootNode {
-  label: string;
+  name: string;
   color: string;
 }
 
@@ -17,12 +19,15 @@ export interface Node {
   value: number;
   color: string;
 }
+
 interface NeighborAPGraphProps {
   title: string
   subtext?: string
   nodeSize: NodeSize
   root: RootNode
   nodes: Node[]
+  width: number
+  height: number
 }
 
 const genericLabel = {
@@ -34,36 +39,39 @@ const genericLabel = {
 }
 
 export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
-  const {
-    nodeSize,
-    root,
-    nodes
-  } = props
+  const { $t } = useIntl()
+  const { nodeSize, root, nodes, width, height } = props
+  const max = Math.max(...nodes.map(node => node.value))
+  const scale = scalePow()
+    .exponent(0.75)
+    .domain([max * .05, max])
+    .range([nodeSize.min, nodeSize.max])
+    .clamp(true)
 
   const rootNode = {
-    name: root.label,
+    name: root.name,
     category: 'center',
-    symbolSize: ((nodeSize.min + nodeSize.max) / 3),
+    symbolSize: nodeSize.min,
     itemStyle: { color: root.color },
     fixed: true,
     label: {
       ...genericLabel,
-      formatter: root.label
+      formatter: root.name
     }
   }
 
   const graphNodes = nodes.filter(node => node.value !== 0).map(node => ({
     name: node.name,
-    symbolSize: Math.max(Math.min(node.value * 10, nodeSize.max), nodeSize.min),
+    symbolSize: scale(node.value),
     itemStyle: { color: node.color },
     label: {
       ...genericLabel,
-      formatter: JSON.stringify(node.value)
+      formatter: $t({ defaultMessage: '{value, number, -}' }, { value: node.value })
     }
   }))
 
   const links = nodes.map(node => ({
-    source: root.label,
+    source: root.name,
     target: node.name,
     lineStyle: { color: cssStr('--acx-neutrals-50'), width: 2 }
   }))
@@ -87,7 +95,6 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
           fontSize: cssNumber('--acx-body-4-font-size'),
           lineHeight: cssNumber('--acx-body-4-line-height'),
           fontWeight: cssNumber('--acx-body-font-weight'),
-          width: 500,
           overflow: 'break'
         }
       } : {}),
@@ -95,24 +102,27 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
       top: 15,
       left: 15
     },
-    series: [
-      {
-        type: 'graph',
-        layout: 'force',
-        data: [rootNode, ...graphNodes],
-        links,
-        roam: true,
-        force: {
-          layoutAnimation: false,
-          repulsion: 1500,
-          initLayout: 'circular'
-        },
-        emphasis: { focus: 'none' }
-      }
-    ]
+    series: [{
+      type: 'graph',
+      layout: 'force',
+      data: [rootNode, ...graphNodes],
+      links,
+      top: '20%',
+      left: '17.5%',
+      center: ['50%', '50%'],
+      width: '50%',
+      height: '50%',
+      roam: false,
+      force: {
+        layoutAnimation: false,
+        repulsion: width * 4.5,
+        initLayout: 'circular'
+      },
+      emphasis: { focus: 'none' }
+    }]
   }
 
-  return <ReactECharts option={option} />
+  return <ReactECharts option={option} style={{ width, height }} />
 }
 
 export default NeighborAPGraph

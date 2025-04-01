@@ -12,9 +12,9 @@ export const nodesWithZeroValue = [
   { name: 'Rogue AP', value: 5, color: cssStr('--acx-neutrals-80') }
 ]
 
-export const rootNode = { label: 'AP', color: cssStr('--acx-neutrals-50') }
+export const rootNode = { name: 'AP', color: cssStr('--acx-neutrals-50') }
 
 export const nodeSize = {
-  max: 150,
-  min: 20
+  max: 120,
+  min: 50
 }

@@ -4,6 +4,7 @@ import { nodes, nodeSize, nodesWithZeroValue, rootNode } from './__tests__/fixtu
 
 import { NeighborAPGraph } from '.'
 
+const base = 120
 storiesOf('Neighbor APGraph', module)
   .add('Default Graph', () => (
     <NeighborAPGraph
@@ -11,6 +12,8 @@ storiesOf('Neighbor APGraph', module)
       nodeSize={nodeSize}
       root={rootNode}
       nodes={nodes}
+      width={base * 3}
+      height={base * 4}
     />
   ))
   .add('Graph with less Nodes', () => (
@@ -19,6 +22,8 @@ storiesOf('Neighbor APGraph', module)
       nodeSize={nodeSize}
       root={rootNode}
       nodes={nodesWithZeroValue}
+      width={base * 3}
+      height={base * 4}
     />
   ))
   .add('Graph with Subtext', () => (
@@ -28,5 +33,7 @@ storiesOf('Neighbor APGraph', module)
       nodeSize={nodeSize}
       root={rootNode}
       nodes={nodes}
+      width={base * 3}
+      height={base * 4}
     />
   ))
