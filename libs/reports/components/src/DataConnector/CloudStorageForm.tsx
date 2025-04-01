@@ -4,9 +4,9 @@ import { Form, Input }   from 'antd'
 import { FormItemProps } from 'antd/lib/form'
 import { useIntl }       from 'react-intl'
 
-import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast } from '@acx-ui/components'
-import { useNavigate }                                                                       from '@acx-ui/react-router-dom'
-import { getIntl  }                                                                          from '@acx-ui/utils'
+import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast, Tooltip } from '@acx-ui/components'
+import { useNavigate }                                                                                from '@acx-ui/react-router-dom'
+import { getIntl  }                                                                                   from '@acx-ui/utils'
 
 import { useSaveStorageMutation, useGetStorageQuery }               from './services'
 import { AzureConnectionType, AzureStoragePayload, ConnectionType } from './types'
@@ -24,7 +24,7 @@ type CloudStorageFormProps = {
 
 type StorageFieldProps = {
   id: string,
-  name: string,
+  name: React.ReactNode,
   component: FormItemProps['children'],
   dependencies?: FormItemProps['dependencies'],
   rules?: FormItemProps['rules']
@@ -75,6 +75,20 @@ const getStorageMap = (
   azureConnectionType: AzureConnectionType
 ): Record<string, StorageFieldProps[]> => {
   const { $t } = getIntl()
+  const getFieldNameWithTooltip = (
+    needValidation: boolean,
+    fieldName: string
+  ): React.ReactNode => {
+    return needValidation
+      ? fieldName
+      : <>
+        {fieldName}
+        <Tooltip.Question title={$t({
+          defaultMessage: 'If you want to update this field, '
+            + 'please enter a new value. Otherwise, leave this field empty.'
+        })} />
+      </>
+  }
   return {
     azure: [
       {
@@ -102,7 +116,7 @@ const getStorageMap = (
       },
       {
         id: 'azureAccountKey',
-        name: $t({ defaultMessage: 'Azure account key' }),
+        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'Azure account key' })),
         component: <Input data-testid='azureAccountKey' />,
         rules: getFieldRules(needValidation, selectedConnectionType)
       },
@@ -146,7 +160,7 @@ const getStorageMap = (
       },
       {
         id: 'ftpPassword',
-        name: $t({ defaultMessage: 'FTP password' }),
+        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'FTP password' })),
         component: <Input type='password' />,
         rules: getFieldRules(needValidation, selectedConnectionType)
       },
@@ -174,14 +188,14 @@ const getStorageMap = (
       },
       {
         id: 'sftpPassword',
-        name: $t({ defaultMessage: 'SFTP password' }),
+        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'SFTP password' })),
         component: <Input type='password' data-testid='sftpPassword' />,
         dependencies: ['sftpPrivateKey'],
         rules: getFieldRules(needValidation, selectedConnectionType, 'sftpPrivateKey')
       },
       {
         id: 'sftpPrivateKey',
-        name: $t({ defaultMessage: 'SFTP private key' }),
+        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'SFTP private key' })),
         component: <Input.TextArea rows={5} data-testid='sftpPrivateKey' />,
         dependencies: ['sftpPassword'],
         rules: getFieldRules(needValidation, selectedConnectionType, 'sftpPassword')
@@ -271,7 +285,8 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
                   dependencies={item.dependencies}
                   rules={item.rules ?? [{
                     required: true,
-                    message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
+                    message: $t({ defaultMessage: '{label} is required!' },
+                      { label: item.name }) as string
                   }]}
                 >
                   {item.component}
