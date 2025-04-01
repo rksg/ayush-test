@@ -531,7 +531,8 @@ export enum PortalViewEnum{
   HostApproval = 'HostApproval',
   Directory = 'Directory',
   ConnectionConfirmed = 'ConnectionConfirmed',
-  TermCondition = 'TermCondition'
+  TermCondition = 'TermCondition',
+  SAML = 'SAML'
 }
 export enum PortalLanguageEnum{
   zh_TW = 'zh-hant',
