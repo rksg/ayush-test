@@ -9,6 +9,7 @@ import {
   Demo,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -43,6 +44,7 @@ export default function PortalServiceDetail () {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId!
             })}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.EDIT)}
           >
             <Button key={'configure'} type={'primary'}>
