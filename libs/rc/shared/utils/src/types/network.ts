@@ -181,7 +181,9 @@ export interface NetworkSaveData extends EnforceableFields {
   softGreAssociationUpdate?: NetworkTunnelSoftGreAction
   ipsecAssociationUpdate?: NetworkTunnelIpsecAction,
   identityGroupId?: string,
-  identityId?: string
+  identityId?: string,
+  samlIdpProfilesId?: string
+  samlIdpProfilesName?: string
 }
 
 export interface NetworkSummaryExtracData {
