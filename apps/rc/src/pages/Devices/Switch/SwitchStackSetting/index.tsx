@@ -327,7 +327,7 @@ export function SwitchStackSetting (props: {
         isSwitchMacAclEnabled && isSwitchFirmwareAbove10010gOr10020b && <Form.Item>
           <JumboModeSpan>{$t({ defaultMessage: 'Port MAC Security' })}</JumboModeSpan>
           <Form.Item noStyle name='portSecurity' valuePropName='checked'>
-            <Switch disabled={readOnly} />
+            <Switch data-testid='port-security-switch' disabled={readOnly} />
           </Form.Item>
         </Form.Item>
       }
