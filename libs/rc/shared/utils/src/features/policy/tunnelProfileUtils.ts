@@ -2,8 +2,8 @@ import { IntlShape } from 'react-intl'
 
 import { getTenantId } from '@acx-ui/utils'
 
-import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum } from '../../models'
-import { TunnelProfile, TunnelProfileFormType, TunnelProfileViewData }             from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, NetworkSegmentTypeEnum, TunnelTypeEnum } from '../../models'
+import { TunnelProfile, TunnelProfileFormType, TunnelProfileViewData }                             from '../../types/policies/tunnelProfile'
 
 // eslint-disable-next-line max-len
 export const isDefaultTunnelProfile = (profile: TunnelProfileViewData | TunnelProfile | undefined) => {
@@ -69,6 +69,18 @@ export const getNetworkSegmentTypeString = ($t: IntlShape['$t'], type: NetworkSe
     case NetworkSegmentTypeEnum.VLAN_VXLAN:
       return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VLAN to VNI map' })
         : $t({ defaultMessage: 'VLAN-VxLAN' })
+
+    default:
+      return ''
+  }
+}
+
+export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum) => {
+  switch (type) {
+    case TunnelTypeEnum.VXLAN_GPE:
+      return 'VXLAN GPE'
+    case TunnelTypeEnum.L2GRE:
+      return 'L2GRE'
 
     default:
       return ''

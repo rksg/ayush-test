@@ -78,7 +78,7 @@ export default function FailoverSettings (props: FailoverSettingsFormProps) {
               name={['advancedOption','failoverRetryPeriod']}
               initialValue={3}
               children={
-                <InputNumber min={3} />
+                <InputNumber min={3} max={65536}/>
               } />
             <span> {$t({ defaultMessage: 'days' })} </span>
           </Space>
