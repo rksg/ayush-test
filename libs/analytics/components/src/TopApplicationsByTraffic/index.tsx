@@ -34,16 +34,20 @@ export function TopApplicationsByTraffic ({
   const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
   const isRA = Boolean(get('IS_MLISA_SA'))
   const { tenantId } = getJwtTokenPayload()
+
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isAppPrivacyFFEnabled = useIsSplitOn(
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
   const { data: privacySettings } = useGetPrivacySettingsQuery({
     params: { tenantId },
     customHeaders: { 'x-rks-tenantid': tenantId },
     payload: { ignoreDelegation: true } })
   const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
-  const isAppPrivacyFeatureEnabled = useIsSplitOn(
-    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE)
 
   useEffect(() => {
-    if(!isAppPrivacyFeatureEnabled || isRA){
+    if(!isAppPrivacyFFEnabled || isRA){
       setIsAppVisibilityEnabled(true)
     }
     else if (privacySettings) {
@@ -53,9 +57,8 @@ export function TopApplicationsByTraffic ({
         setIsAppVisibilityEnabled(true)
       }
     }
-  }, [isAppPrivacyFeatureEnabled, isRA, privacySettings])
-  const queryResults = useTopApplicationsByTrafficQuery(filters)
-  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  }, [isAppPrivacyFFEnabled, isRA, privacySettings])
+
 
   const columns=[
     {

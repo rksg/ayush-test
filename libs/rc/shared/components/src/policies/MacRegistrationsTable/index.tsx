@@ -37,14 +37,17 @@ interface MacRegistrationTableProps {
   tableQuery: TableQuery<MacRegistration, RequestPayload, unknown>,
   policyId: string,
   defaultIdentityId?: string,
-  settingsId?: string
+  settingsId?: string,
+  disabledFeatures?: {
+    import?: boolean
+  }
 }
 
 export function MacRegistrationsTable (props: MacRegistrationTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
   const inIdentityPage = personaId !== undefined
-  const { policyId, tableQuery, defaultIdentityId, settingsId } = props
+  const { policyId, tableQuery, defaultIdentityId, settingsId, disabledFeatures } = props
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
@@ -181,7 +184,8 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
       dataIndex: 'macAddress',
       sorter: true,
       defaultSortOrder: 'ascend',
-      searchable: true
+      searchable: true,
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Username' }),
@@ -334,12 +338,15 @@ export function MacRegistrationsTable (props: MacRegistrationTableProps) {
             setEditData({} as MacRegistration)
           }
         },
-        {
-          scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE),
-          rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.uploadMacRegistration)],
-          label: $t({ defaultMessage: 'Import From File' }),
-          onClick: () => setUploadCsvDrawerVisible(true)
-        }])}
+        ...(disabledFeatures?.import
+          ? []
+          : [{
+            scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE),
+            rbacOpsIds: [getOpsApi(MacRegListUrlsInfo.uploadMacRegistration)],
+            label: $t({ defaultMessage: 'Import From File' }),
+            onClick: () => setUploadCsvDrawerVisible(true)
+          }])
+        ])}
       />
     </Loader>
   )
