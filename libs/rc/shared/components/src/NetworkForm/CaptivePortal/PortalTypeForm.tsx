@@ -47,6 +47,7 @@ function TypesForm () {
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabledFF = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSAMLSSOEnable = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
   const isDirectoryServerEnabled = !isRuckusAiMode && isDirectoryServerEnabledFF
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, guestPortal:
@@ -126,6 +127,15 @@ function TypesForm () {
                 {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Directory]}
                 <RadioDescription>
                   {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Directory]}
+                </RadioDescription>
+              </Radio>
+            }
+            {
+              (isSAMLSSOEnable) && !isTemplate &&
+              <Radio value={GuestNetworkTypeEnum.SAML}>
+                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.SAML]}
+                <RadioDescription>
+                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.SAML]}
                 </RadioDescription>
               </Radio>
             }

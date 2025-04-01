@@ -52,7 +52,7 @@ export const AddSamlIdp = (props: AddSamlIdpProps) => {
 
   return (
     <Row>
-      <Col span={12}>
+      <Col span={isEmbedded? 24: 12}>
         <SamlIdpForm
           title={$t({ defaultMessage: 'Add SAML Identity Provider' })}
           form={form}
