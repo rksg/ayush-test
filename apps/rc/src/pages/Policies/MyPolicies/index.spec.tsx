@@ -21,7 +21,9 @@ import {
   SwitchUrlsInfo,
   VlanPoolRbacUrls,
   WifiUrlsInfo,
-  EthernetPortProfileUrls
+  EthernetPortProfileUrls,
+  RulesManagementUrlsInfo,
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -52,6 +54,80 @@ const mockNewTableResult = {
     pageSize: 0,
     totalCount: 0
   }
+}
+
+const macRegistrationPools = {
+  content: [
+    {
+      id: 'a21b3a08-6b09-4841-b497-0aa4ed3afceb',
+      name: 'MMM',
+      autoCleanup: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2024-05-10T09:55:07Z',
+      associationIds: [
+        'bc85e0ae-a1cc-40cb-96cf-982d8a22d6b3'
+      ],
+      networkIds: [],
+      isReferenced: true,
+      networkCount: 0,
+      identityGroupId: 'bc85e0ae-a1cc-40cb-96cf-982d8a22d6b3',
+      links: [
+        {
+          rel: 'self',
+          href: '/macRegistrationPools/a21b3a08-6b09-4841-b497-0aa4ed3afceb'
+        }
+      ]
+    },
+    {
+      id: 'e03c536c-c8a8-494d-9243-da31c7e075fc',
+      name: 'MMMM',
+      autoCleanup: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2024-09-13T06:19:55Z',
+      associationIds: [
+        '6e020f13-5a07-435e-a636-5eff772dafa4'
+      ],
+      networkIds: [],
+      isReferenced: true,
+      networkCount: 0,
+      identityGroupId: '6e020f13-5a07-435e-a636-5eff772dafa4',
+      links: [
+        {
+          rel: 'self',
+          href: '/macRegistrationPools/e03c536c-c8a8-494d-9243-da31c7e075fc'
+        }
+      ]
+    }
+  ],
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10,
+    sort: {
+      unsorted: false,
+      sorted: true,
+      empty: false
+    },
+    offset: 0,
+    unpaged: false,
+    paged: true
+  },
+  totalElements: 2,
+  totalPages: 1,
+  last: true,
+  numberOfElements: 2,
+  size: 10,
+  number: 0,
+  sort: {
+    unsorted: false,
+    sorted: true,
+    empty: false
+  },
+  first: true,
+  empty: false
 }
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -146,6 +222,27 @@ describe('MyPolicies', () => {
           totalCount: 1,
           data: []
         }))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({
+          paging: {
+            totalCount: 1,
+            page: 0,
+            pageSize: 0,
+            pageCount: 1
+          },
+          content: [],
+          links: []
+        }))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macRegistrationPools))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getAccessControlCount.url,
+        (req, res, ctx) => res(ctx.json(5))
       )
     )
   })
@@ -322,5 +419,20 @@ describe('MyPolicies', () => {
     )
 
     expect(await screen.findByText('Port Profiles (2)')).toBeVisible()
+  })
+  it('should render Access Control combined count when switch MAC ACL is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE
+    )
+
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Access Control (5)')).toBeVisible()
   })
 })
