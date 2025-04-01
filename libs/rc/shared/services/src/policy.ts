@@ -2567,7 +2567,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     /* eslint-disable max-len */
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac, isSNMPv3PassphraseOn, customHeaders }, _api, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
           const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = {
