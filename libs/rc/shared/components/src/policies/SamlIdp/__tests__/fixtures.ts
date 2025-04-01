@@ -2,7 +2,11 @@ import { CertificateStatusType, GuestNetworkTypeEnum, KeyUsageType, NetworkTypeE
 
 export const mockedTenantId = '__Tenant_ID__'
 export const mockSamlIdpProfileId = '__samlIdpProfile_ID__'
+export const mockSamlIdpProfileId2 = '__samlIdpProfile_ID_2__'
+
 export const mockSamlIdpProfileName = '__samlIdpProfile_Name__'
+export const mockSamlIdpProfileName2 = '__samlIdpProfile_Name_2__'
+
 export const mockCertId1 = '__certId_1__'
 export const mockCertId2 = '__certId_2__'
 export const mockCertId3 = '__certId_3__'
@@ -17,18 +21,38 @@ export const mockedNetworkId2 = '__networkId2__'
 export const mockedNetworkName1 = '__networkName1__'
 export const mockedNetworkName2 = '__networkName2__'
 
-export const mockedMetadata = '<xmlContent>mocked XML</xmlContent>'
+// eslint-disable-next-line max-len
+export const mockedMetadata = '<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" ID="_mockedMetadata"></EntityDescriptor>'
+// eslint-disable-next-line max-len
+export const mockedMetadata2 = '<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" ID="_mockedMetadata2"></EntityDescriptor>'
 
 export const mockedSamlIdpProfile = {
-  id: mockSamlIdpProfileId,
   name: mockSamlIdpProfileName,
-  metadata: Buffer.from('xmlContent').toString('base64'),
+  metadata: Buffer.from(mockedMetadata).toString('base64'),
   metadataUrl: ''
+}
+
+export const mockedSamlIdpProfileByURL = {
+  name: mockSamlIdpProfileName2,
+  metadata: Buffer.from(mockedMetadata2).toString('base64'),
+  metadataUrl: 'https://mockedMetadataUrl',
+  updatedData: '2025-03-26T09:12:52.705+00:00'
+}
+
+export const mockedSamlIdpProfileWithRelations = {
+  ...mockedSamlIdpProfile,
+  id: mockSamlIdpProfileId,
+  metadataContent: mockedMetadata,
+  signingCertificateEnabled: true,
+  signingCertificateId: mockCertId3,
+  encryptionCertificateEnabled: true,
+  encryptionCertificateId: mockCertId1,
+  wifiNetworkIds: [mockedNetworkId1]
 }
 
 export const mockedsamlIpdProfileList = {
   page: 1,
-  totalCount: 1,
+  totalCount: 2,
   data: [
     {
       id: mockSamlIdpProfileId,
@@ -38,6 +62,13 @@ export const mockedsamlIpdProfileList = {
       encryptionCertificateEnabled: true,
       encryptionCertificateId: mockCertId1,
       wifiNetworkIds: [mockedNetworkId1]
+    },
+    {
+      ...mockedSamlIdpProfileByURL,
+      signingCertificateEnabled: true,
+      signingCertificateId: mockCertId3,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: [mockedNetworkId2]
     }
   ]
 }

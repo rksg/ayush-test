@@ -80,13 +80,6 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
 
   const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
-    payload: {
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: {
-        id: [policy.id]
-      }
-    },
     params: {
       id: policy.id
     }
@@ -177,11 +170,13 @@ const ReadModeIdpForm = ({ policy }: SamlIdpDetailProps) => {
           </Col>
         </Row>
       </Form>
-      <SamlIdpMetadataModal
-        metadata={samlIdpData?.metadataContent ?? ''}
-        visible={idpMetadataModalVisible}
-        setVisible={setIdpMetadataModalVisible}
-      />
+      {samlIdpData && (
+        <SamlIdpMetadataModal
+          samlIdpData={samlIdpData}
+          visible={idpMetadataModalVisible}
+          setVisible={setIdpMetadataModalVisible}
+        />
+      )}
     </>
   )
 }
