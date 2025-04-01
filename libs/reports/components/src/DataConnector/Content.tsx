@@ -104,7 +104,8 @@ const DataConnectorContent: React.FC<{}> = () => {
             defaultMessage: `Seamlessly transfer data between RUCKUS AI
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
-          helpUrl={helpUrl} />
+          helpUrl={helpUrl}
+          disabled />
         <QuotaUsageBar />
       </GridCol>
     </GridRow>
