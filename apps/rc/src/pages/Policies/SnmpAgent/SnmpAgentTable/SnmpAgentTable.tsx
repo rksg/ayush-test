@@ -92,7 +92,7 @@ export default function SnmpAgentTable () {
   let customerVenues: string[] = []
 
   if (list && list.totalCount > 0) {
-    list?.data.forEach(((c) => {
+    list?.data.forEach((c => {
       const { names, count } = c.venues || {}
       if (count) {
         customerVenues = customerVenues.concat(names)
