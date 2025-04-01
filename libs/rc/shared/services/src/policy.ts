@@ -2571,58 +2571,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const viewmodelHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           const apiCustomHeader = customHeaders ? customHeaders : GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1))
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const searchAgentName = (payload as any).searchString
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const venueIds = (payload as any).filters?.['venues.name.keyword']
-
-          let filtersPayload = {}
-
-          if (searchAgentName) {
-            filtersPayload = {
-              searchString: searchAgentName
-            }
-          }
-          if (venueIds) {
-            filtersPayload = {
-              ...filtersPayload,
-              filters: {
-                venueIds: venueIds
-              }
-            }
-          }
-
           const req = {
             ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, viewmodelHeader),
-            body: JSON.stringify(filtersPayload)
+            body: JSON.stringify(payload)
           }
           const res = await fetchWithBQ(req)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
           const rbacApSnmpViewModels = tableResult.data
-          const rbacPolicies: Promise<RbacApSnmpPolicy>[] = rbacApSnmpViewModels.map(async (profile) => {
-            // eslint-disable-next-line max-len
-            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy,
-              { profileId: profile.id },
-              {
-                ...ignoreErrorModal,
-                ...apiCustomHeader
-              })
-            const res = await fetchWithBQ(req)
-            return res.data as RbacApSnmpPolicy
-          })
-          const policies = await asyncConvertRbacSnmpPolicyToOldFormat(rbacPolicies, rbacApSnmpViewModels)
-          const apSnmpViewModelData = policies.map((oldPolicy) => {
-            const rbacApSnmpViewModel = rbacApSnmpViewModels.find((model) => model.id === oldPolicy.id)
+          const apSnmpViewModelData = rbacApSnmpViewModels.map((profile) => {
             return {
-              id: oldPolicy.id,
-              name: oldPolicy.policyName,
-              v2Agents: convertToCountAndNumber(oldPolicy.snmpV2Agents),
-              v3Agents: convertToCountAndNumber(oldPolicy.snmpV3Agents),
-              venues: convertToCountAndNumber(rbacApSnmpViewModel?.venueNames),
-              aps: convertToCountAndNumber(rbacApSnmpViewModel?.apNames),
-              venuesIdAndNames: rbacApSnmpViewModel?.venueIds.map((venueId, index) => {
-                return { venueId: venueId, venueName: rbacApSnmpViewModel?.venueNames[index] }
-              })
+              id: profile.id,
+              name: profile.name,
+              v2Agents: convertToCountAndNumber(profile.communityNames),
+              v3Agents: convertToCountAndNumber(profile.userNames),
+              venues: convertToCountAndNumber(profile.venueNames),
+              aps: convertToCountAndNumber(profile.apNames)
             } as ApSnmpViewModelData
           })
           const result = { ...tableResult, data: apSnmpViewModelData } as TableResult<ApSnmpViewModelData>
