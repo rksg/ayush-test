@@ -53,13 +53,15 @@ export const transformFromApiToFormData =
      fallbackSettings.schedule.time = moment(time, 'HH:mm:ss')
    }
 
+
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
      timeout,
      vipConfig,
      fallbackSettings: fallbackSettings,
-     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution
+     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution,
+     multiWanSettings: apiData?.multiWanSettings
    } as InterfaceSettingsFormType
  }
 
@@ -404,7 +406,8 @@ export const transformFromFormToApiData = (
         fallbackSettings,
         loadDistribution: data.loadDistribution
       }
-    } : {})
+    } : {}),
+    multiWanSettings: data.multiWanSettings
   }
 }
 
