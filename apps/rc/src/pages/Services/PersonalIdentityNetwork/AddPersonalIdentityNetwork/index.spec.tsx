@@ -48,6 +48,7 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       resolve(true)

@@ -32,7 +32,9 @@ import { AccountType, getOpsApi  }                         from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
-export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean,
+  isOnboardMsp?: boolean
+) {
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
@@ -50,10 +52,9 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE), tenantType)
   const { rbacOpsApiEnabled } = getUserProfile()
   const hasPortalSettingPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([
-      [getOpsApi(MspRbacUrlsInfo.addMspLabel), getOpsApi(MspRbacUrlsInfo.updateMspLabel)]
-    ])
-    : true
+    ? ( (isOnboardMsp && hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.updateMspLabel)])) ||
+        (!isOnboardMsp && hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.addMspLabel)])) )
+    : isPrimeAdmin
 
   const {
     state
@@ -139,7 +140,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
         inactiveIcon: CopyOutlined,
         activeIcon: CopySolid
       }] : []),
-    ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense || !hasPortalSettingPermission)
+    ...((!hasPortalSettingPermission || isTechPartner || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Portal Settings' }),

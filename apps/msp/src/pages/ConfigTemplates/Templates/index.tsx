@@ -39,7 +39,8 @@ import {
   useDelSyslogPolicyTemplateMutation,
   useDelRoguePolicyTemplateMutation,
   useDeleteSwitchConfigProfileTemplateMutation,
-  useDeleteApGroupsTemplateMutation
+  useDeleteApGroupsTemplateMutation,
+  useDelEthernetPortProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -84,7 +85,6 @@ export function ConfigTemplateList () {
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
   const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
-  const cloneEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_CLONE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -126,14 +126,14 @@ export function ConfigTemplateList () {
         }
       }
     },
-    ...(cloneEnabled ? [{
+    {
       visible: (selectedRows: ConfigTemplate[]) => canClone(selectedRows[0]?.type),
       label: $t({ defaultMessage: 'Clone' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setCloneModalVisible(true)
       }
-    }] : []),
+    },
     {
       rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
@@ -262,9 +262,9 @@ function useColumns (props: TemplateColumnProps) {
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
   const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
-  const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
-  ))
+  const typeFilterOptions = Object.entries(ConfigTemplateType)
+    .map((type => ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })))
+    .sort((a, b) => a.value.localeCompare(b.value))
 
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
     ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
@@ -434,6 +434,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
   const [ deleteRogueAPTemplate ] = useDelRoguePolicyTemplateMutation()
   const [ deleteSwitchConfigProfileTemplate ] = useDeleteSwitchConfigProfileTemplateMutation()
   const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
+  const [ deleteEthernetPortTemplate ] = useDelEthernetPortProfileTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -453,6 +454,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationT
     [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
     [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
     [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
-    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate
+    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate,
+    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: deleteEthernetPortTemplate
   }
 }

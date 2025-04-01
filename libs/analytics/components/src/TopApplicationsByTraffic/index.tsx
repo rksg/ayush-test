@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -11,10 +13,13 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { formatter, intlFormats }           from '@acx-ui/formatter'
-import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { get }                                                  from '@acx-ui/config'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { formatter, intlFormats }                               from '@acx-ui/formatter'
+import { useGetPrivacySettingsQuery }                           from '@acx-ui/rc/services'
+import { PrivacyFeatureName }                                   from '@acx-ui/rc/utils'
+import { getJwtTokenPayload, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }                                 from '@acx-ui/utils'
 
 import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
 import { TrafficPercent }                                                from './styledComponents'
@@ -26,8 +31,34 @@ export function TopApplicationsByTraffic ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTopApplicationsByTrafficQuery(filters)
+  const noPermissionText = $t({ defaultMessage: 'No permission to view application data' })
+  const isRA = Boolean(get('IS_MLISA_SA'))
+  const { tenantId } = getJwtTokenPayload()
+
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+  const isAppPrivacyFFEnabled = useIsSplitOn(
+    Features.RA_PRIVACY_SETTINGS_APP_VISIBILITY_TOGGLE, tenantId)
+
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
+  const { data: privacySettings } = useGetPrivacySettingsQuery({
+    params: { tenantId },
+    customHeaders: { 'x-rks-tenantid': tenantId },
+    payload: { ignoreDelegation: true } })
+  const [isAppVisibilityEnabled, setIsAppVisibilityEnabled] = useState(false)
+
+  useEffect(() => {
+    if(!isAppPrivacyFFEnabled || isRA){
+      setIsAppVisibilityEnabled(true)
+    }
+    else if (privacySettings) {
+      const privacyVisibilitySetting = privacySettings
+        .find(item => item.featureName === PrivacyFeatureName.APP_VISIBILITY)
+      if(privacyVisibilitySetting?.isEnabled){
+        setIsAppVisibilityEnabled(true)
+      }
+    }
+  }, [isAppPrivacyFFEnabled, isRA, privacySettings])
+
 
   const columns=[
     {
@@ -110,7 +141,9 @@ export function TopApplicationsByTraffic ({
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' />
+              {isAppVisibilityEnabled ?
+                <ContentSwitcher tabDetails={tabDetails} size='small' />
+                : <NoData text={noPermissionText}/>}
             </div>
           )}
         </AutoSizer>

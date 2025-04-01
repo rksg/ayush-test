@@ -5,8 +5,6 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features }               from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
   EdgePinFixtures,
@@ -216,162 +214,20 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 })
 
-describe('Enhanced PersonalIdentityNetwork', () => {
-  const params: { tenantId: string, serviceId: string } = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-    serviceId: 'testServiceId'
-  }
-  const mockWirelessPinData = cloneDeep(mockPinData)
-  mockWirelessPinData.distributionSwitchInfos = []
-  mockWirelessPinData.accessSwitchInfos = []
-
-  const mock2TierPinData = cloneDeep(mockPinData)
-  mock2TierPinData.tunneledWlans = []
-
-  const mockValidateEdgeClusterConfigFn = jest.fn()
-
-  beforeEach(() => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
-      ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockPinData, isLoading: false, refetch: jest.fn() }))
-
-    mockedUsedNavigate.mockClear()
-    mockValidateEdgePinSwitchConfigMutation.mockClear()
-    mockValidateEdgeClusterConfigFn.mockClear()
-
-    mockServer.use(
-      rest.put(
-        EdgePinUrls.updateEdgePin.url,
-        (_req, res, ctx) => res(ctx.status(202))),
-      rest.post(
-        EdgePinUrls.validateEdgeClusterConfig.url,
-        (_req, res, ctx) => {
-          mockValidateEdgeClusterConfigFn()
-          return res(ctx.status(202))
-        })
-    )
-  })
-
-  it('should show correct steps with wireless data', async () => {
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockWirelessPinData, isLoading: false, refetch: jest.fn() }))
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await user.click(screen.getByText('Wireless Network'))
-    // step 3
-    expect(await screen.findByTestId('WirelessNetworkForm')).toBeVisible()
-    expect(screen.queryByText('Dist. Switch')).not.toBeInTheDocument()
-    expect(screen.queryByText('Access Switch')).not.toBeInTheDocument()
-  })
-
-  it('should show correct steps with 2-Tier data', async () => {
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mock2TierPinData, isLoading: false, refetch: jest.fn() }))
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await user.click(screen.getByText('Dist. Switch'))
-    // step 3
-    expect(await screen.findByTestId('DistributionSwitchForm')).toBeVisible()
-    await user.click((screen.getByText('Access Switch')))
-    // step 4
-    expect(await screen.findByTestId('AccessSwitchForm')).toBeVisible()
-    expect(screen.queryByText('Wireless Network')).not.toBeInTheDocument()
-  })
-
-  it('should show correct steps with 3-Tier data', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await user.click(screen.getByText('Dist. Switch'))
-    // step 3
-    expect(await screen.findByTestId('DistributionSwitchForm')).toBeVisible()
-    await user.click((screen.getByText('Access Switch')))
-    // step 4
-    expect(await screen.findByTestId('AccessSwitchForm')).toBeVisible()
-    await user.click(screen.getByText('Wireless Network'))
-    // step 5
-    expect(await screen.findByTestId('WirelessNetworkForm')).toBeVisible()
-  })
-
-  it('should skip switch validation when topology is wireless', async () => {
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockWirelessPinData, isLoading: false, refetch: jest.fn() }))
-
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditPersonalIdentityNetwork />
-      </Provider>, {
-        route: { params, path: updatePinPath }
-      })
-    // step 1
-    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
-    await user.click(await screen.findByText('RUCKUS Edge'))
-    // step 2
-    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
-    await userEvent.click(await screen.findByText('Wireless Network'))
-
-    // step 3
-    await screen.findByTestId('WirelessNetworkForm')
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
-      hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
-      search: ''
-    }))
-    expect(mockValidateEdgePinSwitchConfigMutation).toBeCalledTimes(0)
-    expect(mockValidateEdgeClusterConfigFn).toBeCalledTimes(1)
-  })
-})
-
 describe('Test afterSubmitMessage', () => {
   it('afterSubmitMessage', async () => {
     const resError = [
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7] already has VXLAN config,
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      Distribution Switch c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7 will overwrite its existing VXLAN configuration,
+      Distribution Switch c8:03:f5:3a:95:c6 will reboot after set up forwarding profile,
       [forceOverwriteReboot] set true to overwrite config and reboot.` },
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] already has VXLAN config,
+      Distribution Switch c8:03:f5:3a:95:c6 will overwrite its existing VXLAN configuration,
       [forceOverwriteReboot] set true to overwrite config.` },
       { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      Distribution Switch c8:03:f5:3a:95:c6 will reboot after set up forwarding profile,
       [forceOverwriteReboot] set true to reboot.` },
-      { message: `The Access Switch [c0:c5:20:aa:35:fd] web auth VLAN not exist or uplink port not exist at VLAN,
+      { message: `The Access Switch c0:c5:20:aa:35:fd web auth VLAN not exist or uplink port not exist at VLAN,
       please create [WebAuth VLAN] and add uplink port or lag first.` },
       { message: '' }
     ]
@@ -382,16 +238,16 @@ describe('Test afterSubmitMessage', () => {
     ]
 
     const expectMessage= [
-      ['Distribution Switch [FMN4221R00H---DS---3, c8:03:f5:3a:95:c7] already has VXLAN config.',
-        'Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+      ['Distribution Switch FMN4221R00H---DS---3, c8:03:f5:3a:95:c7  will overwrite its existing VXLAN configuration.',
+        'Distribution Switch FMN4221R00H---DS---3  will reboot after set up forwarding profile.',
         'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] already has VXLAN config.',
+      ['Distribution Switch FMN4221R00H---DS---3  will overwrite its existing VXLAN configuration.',
         'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+      ['Distribution Switch FMN4221R00H---DS---3  will reboot after set up forwarding profile.',
         'Click Yes to proceed, No to cancel.'],
-      [`The Access Switch [FEK3224R09N---AS---3] web auth VLAN not exist or uplink port not exist at VLAN,
+      [`The Access Switch FEK3224R09N---AS---3 web auth VLAN not exist or uplink port not exist at VLAN,
       please create [WebAuth VLAN] and add uplink port or lag first.`],
-      []
+      ['']
     ]
 
     expect(afterSubmitMessage(

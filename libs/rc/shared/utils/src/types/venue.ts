@@ -23,7 +23,7 @@ import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
 import { ConfigurationHistory, CliTemplateVariable } from './switch'
 
-import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, RWGStatusEnum, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, EnforceableFields, RWGStatusEnum, SwitchStatusEnum } from './index'
 
 
 
@@ -307,7 +307,7 @@ enum DhcpModeEnum {
   DHCPMODE_HIERARCHICAL_AP = 'DHCPMODE_HIERARCHICAL_AP'
 }
 
-export interface VenueExtended {
+export interface VenueExtended extends EnforceableFields {
   name: string
   description?: string
   notes?: string

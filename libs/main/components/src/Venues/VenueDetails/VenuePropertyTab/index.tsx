@@ -37,15 +37,15 @@ import {
   PolicyType,
   PropertyUnit,
   PropertyUnitMessages,
-  PropertyUnitStatus,
+  PropertyUnitStatus, PropertyUrlsInfo,
   SEARCH,
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }               from '@acx-ui/react-router-dom'
-import { RolesEnum }                from '@acx-ui/types'
-import { filterByAccess, hasRoles } from '@acx-ui/user'
-import { exportMessageMapping }     from '@acx-ui/utils'
+import { TenantLink }                                                     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                      from '@acx-ui/types'
+import { filterByAccess, getUserProfile, hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { exportMessageMapping, getOpsApi }                                from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer }     from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }         from './PropertyUnitDrawer'
@@ -109,6 +109,7 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const PropertyUnitStatusOptions = [
     { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
@@ -152,7 +153,11 @@ export function VenuePropertyTab () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
-  const hasPropertyUnitPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPropertyUnitPermission = rbacOpsApiEnabled
+    ? true
+    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasBulkUpdateUnitsPermission
+    = hasAllowedOperations([getOpsApi(PropertyUrlsInfo.bulkUpdateUnitProfile)])
 
   const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
@@ -323,11 +328,13 @@ export function VenuePropertyTab () {
     hasPropertyUnitPermission
       ? [{
         label: $t({ defaultMessage: 'Add Unit' }),
+        rbacOpsIds: [getOpsApi(PropertyUrlsInfo.addPropertyUnit)],
         disabled: !hasAssociation,
         onClick: () => setDrawerState({ isEdit: false, visible: true, units: undefined })
       },
       {
         label: $t({ defaultMessage: 'Import From File' }),
+        rbacOpsIds: [getOpsApi(PropertyUrlsInfo.importPropertyUnits)],
         disabled: !hasAssociation,
         onClick: () => setUploadCsvDrawerVisible(true)
       }] : []
@@ -337,8 +344,11 @@ export function VenuePropertyTab () {
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.updatePropertyUnit)],
           visible: (selectedItems => selectedItems.length <= 1 ||
-        (isConnectionMeteringAvailable && selectedItems.length > 1)),
+        (isConnectionMeteringAvailable
+          && selectedItems.length > 1
+          && hasBulkUpdateUnitsPermission)),
           onClick: (units, clearSelection) => {
             setDrawerState({ units: units.map(u=> {return {
               ...u,
@@ -352,6 +362,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Suspend' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.updatePropertyUnit)],
           visible: (selectedRows => {
             const activeCount = selectedRows.filter(row => enabled(row.status)).length
             return activeCount > 0 && activeCount === selectedRows.length
@@ -387,6 +398,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Activate' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.updatePropertyUnit)],
           visible: (selectedRows => {
             const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
             return suspendCount > 0 && suspendCount === selectedRows.length
@@ -420,6 +432,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Resend' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.notifyPropertyUnits)],
           onClick: (selectedItems, clearSelection) => {
             notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
               .unwrap()
@@ -435,6 +448,7 @@ export function VenuePropertyTab () {
         },
         {
           label: $t({ defaultMessage: 'Delete' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.deletePropertyUnit)],
           onClick: (selectedItems, clearSelection) => {
             setDrawerState({ isEdit: false, visible: false })
             showActionModal({
@@ -459,7 +473,14 @@ export function VenuePropertyTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Unit Name' }),
       dataIndex: 'name',
-      searchable: true
+      searchable: true,
+      render: function (_, row, __, highlightFn) {
+        return (
+          isMultipleIdentityUnits ? <TenantLink
+            to={`/venues/${venueId}/${row.id}/property-units`}>
+            {highlightFn(row.name)}</TenantLink> : row.name
+        )
+      }
     },
     {
       key: 'status',
@@ -616,6 +637,7 @@ export function VenuePropertyTab () {
         groupId={groupId}
         venueId={venueId}
         unitId={selectedUnit?.id}
+        identityCount={selectedUnit?.identityCount?selectedUnit?.identityCount:0}
         onClose={() => {
           setAddIdentityDrawerVisible(false)
         }}

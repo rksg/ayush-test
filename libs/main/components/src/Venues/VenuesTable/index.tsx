@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
@@ -8,55 +8,59 @@ import { useIntl }                       from 'react-intl'
 import {
   Button,
   ColumnType,
+  cssStr,
+  Loader,
   PageHeader,
+  showActionModal,
   Table,
   TableProps,
-  Loader,
-  showActionModal,
-  cssStr,
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useEnforcedStatus,
   getAPStatusDisplayName,
+  useEnforcedStatus,
   useIsEdgeFeatureReady,
   useIsEdgeReady
 } from '@acx-ui/rc/components'
 import {
-  useVenuesTableQuery,
   useDeleteVenueMutation,
+  useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
-  useEnhanceVenueTableQuery
+  useLazyGetVenueEdgeCompatibilitiesV1_1Query,
+  useVenuesTableQuery
 } from '@acx-ui/rc/services'
 import {
-  Venue,
   ApVenueStatusEnum,
+  CommonUrlsInfo,
+  ConfigTemplateType,
+  PropertyUrlsInfo,
   TableQuery,
   usePollingTableQuery,
-  CommonUrlsInfo,
-  SwitchRbacUrlsInfo
+  Venue,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
   EdgeScopes,
   RequestPayload,
+  RolesEnum,
   SwitchScopes,
-  WifiScopes, RolesEnum
-
-}   from '@acx-ui/types'
+  WifiScopes
+} from '@acx-ui/types'
 import {
-  hasCrossVenuesPermission,
   filterByAccess,
-  hasPermission,
-  hasRoles,
   getUserProfile,
-  hasAllowedOperations
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasPermission,
+  hasRoles
 } from '@acx-ui/user'
 import { getOpsApi, transformToCityListOptions } from '@acx-ui/utils'
 
 const incompatibleIconStyle = {
+  position: 'absolute' as const,
   height: '16px',
   width: '16px',
   marginBottom: '-3px',
@@ -213,6 +217,8 @@ function useColumns (
       key: 'edges',
       dataIndex: 'edges',
       align: 'center',
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: function (_, row) {
         return (
           <>
@@ -260,7 +266,6 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'isManagedByTemplate',
       'addressLine'
     ],
     searchTargetFields: ['name', 'addressLine'],
@@ -287,7 +292,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { rbacOpsApiEnabled } = getUserProfile()
   const columns = useColumns(searchable, filterables)
   const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   const hasDeletePermission = rbacOpsApiEnabled
     ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteVenues)])
@@ -298,14 +303,15 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     rbacOpsIds: [
       getOpsApi(CommonUrlsInfo.updateVenue),
-      getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+      getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+      getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+      getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+      getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
     ],
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    },
-    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
-    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -353,7 +359,10 @@ export const VenueTable = ({ settingsId = 'venues-table',
           scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
           rbacOpsIds: [
             getOpsApi(CommonUrlsInfo.updateVenue),
-            getOpsApi(SwitchRbacUrlsInfo.updateSwitch)
+            getOpsApi(WifiRbacUrlsInfo.updateVenueRadioCustomization),
+            getOpsApi(CommonUrlsInfo.updateVenueSwitchSetting),
+            getOpsApi(PropertyUrlsInfo.updatePropertyConfigs),
+            getOpsApi(PropertyUrlsInfo.patchPropertyConfigs)
           ]
         }) && rowSelection}
       />
@@ -436,17 +445,25 @@ function useGetVenueCityList () {
 
 const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const isEdgeCompatibilityEnhancementEnabled = useIsEdgeFeatureReady(Features.EDGE_ENG_COMPATIBILITY_CHECK_ENHANCEMENT_TOGGLE)
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
+  const [getVenueEdgeCompatibilitiesV1_1] = useLazyGetVenueEdgeCompatibilitiesV1_1Query()
 
   const [tableData, setTableData] = useState<Venue[]>()
 
   useEffect(() => {
     const fetchVenueEdgeCompatibilities = async (tableData: Venue[]) => {
-      const res = await getVenueEdgeCompatibilities({
-        payload: {
-          filters: { venueIds: tableData.map(i => i.id) }
-        }
-      }).unwrap()
+      const res = isEdgeCompatibilityEnhancementEnabled
+        ? await getVenueEdgeCompatibilitiesV1_1({
+          payload: {
+            filters: { venueIds: tableData.map(i => i.id) }
+          }
+        }).unwrap()
+        : await getVenueEdgeCompatibilities({
+          payload: {
+            filters: { venueIds: tableData.map(i => i.id) }
+          }
+        }).unwrap()
 
       const result = cloneDeep(tableData) ?? []
       res?.compatibilities?.forEach((item) => {

@@ -59,14 +59,14 @@ const getExpireInfo = (bannerList:EntitlementBanner[])=>{
   const expireList:ExpireInfo[] = []
   if(!_.isEmpty(bannerList)){
     bannerList
-      .filter(item => item.deviceType !== 'ANALYTICS')
+      .filter(item => item.licenseType !== 'ANALYTICS')
       .forEach(item => {
         expireList.push(
           {
-            deviceCount: item!.deviceCount,
+            deviceCount: item!.licenseCount,
             effectDate: item!.effectDate,
-            effectDays: item!.effectDays,
-            deviceType: item!.deviceType,
+            effectDays: item!.effectiveDays,
+            deviceType: item!.licenseType,
             isMultipleLicense: item!.multipleLicense,
             expireType: item!.type
           }
@@ -91,6 +91,7 @@ export function LicenseBanner (props: BannerProps) {
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
   const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
@@ -111,7 +112,7 @@ export function LicenseBanner (props: BannerProps) {
   }
   const mspPayload = {
     filters: {
-      licenseType: ['APSW'],
+      licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
       usageType: 'ASSIGNED'
     }
   }

@@ -79,7 +79,6 @@ export const EventTable = ({
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
-  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
@@ -136,7 +135,7 @@ export const EventTable = ({
 
     showToast({
       type: 'info',
-      duration: 10,
+      duration: 5,
       closable: false,
       extraContent: <div style={{ width: '60px' }}>
         <Loading3QuartersOutlined spin
@@ -304,7 +303,7 @@ export const EventTable = ({
         ])
         : hasCrossVenuesPermission())
         ? tableIconButtonConfig : {} as IconButtonProps}
-      filterPersistence={enabledUXOptFeature}
+      filterPersistence={true}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

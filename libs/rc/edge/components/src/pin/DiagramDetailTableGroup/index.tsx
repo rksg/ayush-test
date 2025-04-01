@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from 'react'
 import { Typography, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
+import { useIdentityListQuery }                   from '@acx-ui/cloudpath/components'
 import { Card }                                   from '@acx-ui/components'
 import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import { Persona, TableQuery, useTableQuery }     from '@acx-ui/rc/utils'
 
-import { usePersonaListQuery }                     from '../../identityGroup'
 import { PersonalIdentityNetworkDetailTableGroup } from '../PersonalIdentityNetworkDetailTableGroup'
 import { defaultApPayload }                        from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
 import  TopologyDiagram                            from '../TopologyDiagram'
@@ -48,7 +48,7 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
     enableRbac: isWifiRbacEnabled
   })
 
-  const personaListTableQuery = usePersonaListQuery({
+  const personaListTableQuery = useIdentityListQuery({
     personaGroupId: pinData?.personaGroupId
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 
@@ -90,13 +90,15 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
         <Typography.Title level={2}>
           {$t({ defaultMessage: 'Instances' })}
         </Typography.Title>
-        <PersonalIdentityNetworkDetailTableGroup
-          ref={tableDetailsGroupRef}
-          pinData={pinData}
-          apListTableQuery={apListTableQuery}
-          personaListTableQuery={personaListTableQuery}
-          isLoading={isPinDataLoading}
-        />
+        <div style={{ minHeight: '300px' }}>
+          <PersonalIdentityNetworkDetailTableGroup
+            ref={tableDetailsGroupRef}
+            pinData={pinData}
+            apListTableQuery={apListTableQuery}
+            personaListTableQuery={personaListTableQuery}
+            isLoading={isPinDataLoading}
+          />
+        </div>
       </UI.InstancesMargin>
     </Card>
   </Space>

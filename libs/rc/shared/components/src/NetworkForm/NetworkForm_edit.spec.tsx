@@ -54,7 +54,9 @@ jest.mock('./Venues/TunnelColumn/useTunnelColumn', () => ({
   ...jest.requireActual('./Venues/TunnelColumn/useTunnelColumn'),
   useTunnelColumn: jest.fn().mockReturnValue([])
 }))
-
+jest.mock('./NetworkSettings/SharedComponent/IdentityGroup/IdentityGroup', () => ({
+  IdentityGroup: () => <div data-testid={'rc-IdentityGroupSelector'} />
+}))
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -172,7 +174,11 @@ const networkResponse = {
 describe('NetworkForm', () => {
   beforeEach(() => {
     // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.WIFI_RBAC_API
+      && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
+      && ff !== Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE
+    )
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(policyApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())

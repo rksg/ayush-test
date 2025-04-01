@@ -52,6 +52,7 @@ import {
   SwitchCliTemplateModel,
   SwitchFrontView,
   SwitchRearView,
+  StackMembers,
   Lag,
   SwitchVlan,
   downloadFile,
@@ -152,16 +153,40 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           }
         })
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allStacksMember:any = enableAggregateStackMember
-          ? await Promise.all(stacks.map(stack =>
-            fetchWithBQ(genStackMemberPayload(arg, stack))
-          ))
-          : []
+        const enableNewMemberApi = arg.payload.enableNewMemberApi
+        if (enableNewMemberApi) {
+          const stackActiveSerials = stacks.map(stack => stack.serialNumber)
+          const allStacksMember = (enableAggregateStackMember && stackActiveSerials.length
+            ? await fetchWithBQ({
+              ...createHttpRequest(switchUrls.getSwitchMemberList, arg.params, headers),
+              body: JSON.stringify({
+                pageSize: stackActiveSerials.length,
+                filters: {
+                  activeSerial: stackActiveSerials
+                }
+              })
+            })
+            : {}) as { data: { data: StackMembers[] } }
 
-        stacks.forEach((stack:StackInfo, index:number) => {
-          stackMembers[stack.serialNumber] = allStacksMember[index]?.data?.data
-        })
+          stacks.forEach((stack:StackInfo) => {
+            const stackData = allStacksMember?.data?.data?.find(
+              s => s.activeSerial === stack.serialNumber
+            )
+            stackMembers[stack.serialNumber] = (stackData?.members || [])
+          })
+
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const allStacksMember:any = enableAggregateStackMember
+            ? await Promise.all(stacks.map(stack =>
+              fetchWithBQ(genStackMemberPayload(arg, stack))
+            ))
+            : []
+
+          stacks.forEach((stack:StackInfo, index:number) => {
+            stackMembers[stack.serialNumber] = allStacksMember[index]?.data?.data
+          })
+        }
 
         const getUniqSerialNumberList = function (list: TableResult<SwitchRow>) {
           const seenSerialNumbers = new Set()

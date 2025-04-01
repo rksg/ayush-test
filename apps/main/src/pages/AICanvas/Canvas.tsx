@@ -3,12 +3,13 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, showToast }                              from '@acx-ui/components'
+import { Button }                                         from '@acx-ui/components'
 import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
-import Layout            from './components/Layout'
-import * as UI           from './styledComponents'
-import { compactLayout } from './utils/compact'
+import Layout                                     from './components/Layout'
+import * as UI                                    from './styledComponents'
+import utils                                      from './utils'
+import { compactLayout, compactLayoutHorizontal } from './utils/compact'
 
 // import mockData from './mock'
 
@@ -39,6 +40,7 @@ export interface CardInfo {
   isShadow: boolean
   currentSizeIndex: number
   sizes: Size[]
+  groupIndex: number
   chartType?: string
   widgetId?: string
   chatId?: string
@@ -61,7 +63,7 @@ export interface Section {
   groups: Group[]
 }
 
-const layout:LayoutConfig = {
+const layoutConfig:LayoutConfig = {
   containerWidth: 1200,
   containerHeight: 700, // min height
   calWidth: 380,
@@ -87,6 +89,7 @@ const DEFAULT_CANVAS = [
 
 export interface CanvasRef {
   save: () => Promise<void>;
+  removeShadowCard: () => void
 }
 
 interface CanvasProps {
@@ -99,6 +102,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
   const { $t } = useIntl()
   const [sections, setSections] = useState([] as Section[])
   const [canvasId, setCanvasId] = useState('')
+  const [layout, setLayout] = useState(layoutConfig)
+  const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [getCanvas] = useLazyGetCanvasQuery()
   const [updateCanvas] = useUpdateCanvasMutation()
 
@@ -180,25 +185,45 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
           widgetIds
         }
       })
-      showToast({
-        type: 'success',
-        content: $t(
-          { defaultMessage: 'Canvas saved successfully' }
-        )
-      })
     }
     setCanvasChange(false)
     // localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
 
   useImperativeHandle(ref, () => ({
-    save: onSave
+    save: onSave,
+    removeShadowCard: removeShadowCard
   }))
 
   const emptyCanvas = () => {
     setSections(DEFAULT_CANVAS)
     setGroups(DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], []))
     setCanvasChange(false)
+  }
+
+  const removeShadowCard = () => {
+    const groupIndex = 0
+    const groupsTmp = _.cloneDeep(groups)
+    groupsTmp[groupIndex].cards = groupsTmp[groupIndex].cards
+      .filter((item) => item.id !== shadowCard.id)
+      // Remove shadows from all cards within all groups.
+    utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
+    // Recompress the layout horizontally within the target group, and due to cross-group dependencies,
+    // all groups must be compressed.
+    _.forEach(groupsTmp, (g, i) => {
+      if (compactType === 'horizontal') {
+        let compactedLayout = compactLayoutHorizontal(
+          groupsTmp[i].cards,
+          layout.col, null
+        )
+        g.cards = compactedLayout
+      } else if (compactType === 'vertical') {
+        let compactedLayout = compactLayout(groupsTmp[i].cards)
+        g.cards = compactedLayout
+      }
+    })
+    setGroups(groupsTmp)
+    setShadowCard({} as CardInfo)
   }
 
   return (
@@ -230,6 +255,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ onCanvasChange, groups, set
             setGroups={setGroups}
             compactType={compactType}
             layout={layout}
+            setLayout={setLayout}
+            shadowCard={shadowCard}
+            setShadowCard={setShadowCard}
             canvasId={canvasId}
           />
         </UI.Grid>

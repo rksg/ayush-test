@@ -47,3 +47,37 @@ export const isVisibleByAction = (rows: DataConnector[], action: Actions) => {
 export const frequencyMap = {
   [Frequency.Daily]: defineMessage({ defaultMessage: 'Daily' })
 }
+
+export const dataSetMapping = {
+  'apAlarms': defineMessage({ defaultMessage: 'AP Alarms' }),
+  'apInventory': defineMessage({ defaultMessage: 'AP Inventory' }),
+  'apEvents': defineMessage({ defaultMessage: 'AP Events' }),
+  'apWiredClient': defineMessage({ defaultMessage: 'AP Wired Device' }),
+  'binnedApTraffic': defineMessage({ defaultMessage: 'AP Info and Statistics' }),
+  'binnedAvc': defineMessage({ defaultMessage: 'Applications' }),
+  'binnedRadio': defineMessage({ defaultMessage: 'AP Airtime and Hardware' }),
+  'binnedSessions': defineMessage({ defaultMessage: 'Client Info and Statistics' }),
+  'controllerInventory': defineMessage({ defaultMessage: 'Controller Inventory' }),
+  'mlisa-apAfc': defineMessage({ defaultMessage: 'AP AFC' }),
+  'mlisa-apConnectionStats': defineMessage({ defaultMessage: 'Client Connection Counts' }),
+  'mlisa-apMesh': defineMessage({ defaultMessage: 'AP Mesh' }),
+  'mlisa-apPeer': defineMessage({ defaultMessage: 'AP Peer' }),
+  'mlisa-clientConnectionStats': defineMessage({ defaultMessage: 'Client Connection Events' }),
+  'mlisa-edgeAvc': defineMessage({ defaultMessage: 'Edge AVC' }),
+  'rogueAp': defineMessage({ defaultMessage: 'AP Rogues' }),
+  'sessionsSummary': defineMessage({ defaultMessage: 'Client Sessions' }),
+  'switchInventory': defineMessage({ defaultMessage: 'Switch Inventory' }),
+  'switchNetwork': defineMessage({ defaultMessage: 'Switch Network' }),
+  'wifiCalling': defineMessage({ defaultMessage: 'AP WiFi Calling' })
+}
+
+export function connectorNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // Max length is 128 (reserve file extension)
+  const regexWithMaxLength = /^[A-Za-z0-9\s_-]{1,128}$/
+  const isValid = regexWithMaxLength.test(value)
+  return isValid ? Promise.resolve() : Promise.reject($t({
+    defaultMessage:
+      'Please enter a valid name (alphanumeric, spaces, _ and -) with max length of 128.'
+  }))
+}

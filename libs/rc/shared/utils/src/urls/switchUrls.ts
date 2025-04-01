@@ -23,6 +23,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/aaaServers',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
+    opsApi: 'POST:/venues/{id}/aaaServers',
     newApi: true
   },
   updateAaaServer: {
@@ -54,6 +55,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switches/aggregationDetails',
     oldUrl: '/api/viewmodel/:tenantId/switch/grouped',
+    newApi: true
+  },
+  getSwitchMemberList: {
+    method: 'post',
+    url: '/venues/switches/members/query',
     newApi: true
   },
   getSwitchModelList: {

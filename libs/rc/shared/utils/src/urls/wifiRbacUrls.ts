@@ -146,6 +146,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   moveApToTargetApGroup: {
     method: 'put',
     url: '/venues/:venueId/apGroups/:apGroupId/aps/:serialNumber',
+    opsApi: 'PUT:/venues/{id}/apGroups/{id}/aps/{id}',
     newApi: true
   },
   updateAp: {
@@ -461,6 +462,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/venues/:venueId/aps/:serialNumber/lanPortSpecificSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindingPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindingSpecificIdentityPersonaGroupWithNetwork: {
+    method: 'PUT',
+    url: '/wifiNetworks/:networkId/identityGroups/:identityGroupId/identities/:identityId',
+    newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'

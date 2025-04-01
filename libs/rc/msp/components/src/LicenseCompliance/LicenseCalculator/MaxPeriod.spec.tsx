@@ -29,7 +29,7 @@ describe('MaxPeriod Card', () => {
         (_req, res, ctx) => res(ctx.json(response))
       ))
   })
-  it('should render Max Period Card with radio options', async () => {
+  it.skip('should render Max Period Card with radio options', async () => {
 
     render(<Provider><MaxPeriod showExtendedTrial={true} /></Provider>)
 

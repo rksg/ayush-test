@@ -11,8 +11,11 @@ import {
   PatchDataConnector,
   StorageData,
   StoragePayload,
-  ConnectorPayload
+  ConnectorPayload,
+  DataSourceResult,
+  DataSources
 } from './types'
+import { dataSetMapping } from './utils'
 
 export const dataConnectorApis = notificationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -49,6 +52,7 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
           credentials: 'include'
         }
       },
+      providesTags: [{ type: 'DataConnector', id: 'GET_CONNECTOR' }],
       transformResponse: (response: Response<ConnectorPayload>) => response.data
     }),
     saveConnector: build.mutation<{ data: { id: string } }, ConnectorPayload>({
@@ -146,6 +150,32 @@ export const dataConnectorApis = notificationApi.injectEndpoints({
         credentials: 'include'
       }),
       invalidatesTags: [{ type: 'DataConnector', id: 'GET_AUDIT_LIST' }]
+    }),
+    getDataSources: build.query<DataSources, {}>({
+      query: () => {
+        return {
+          url: '/dataConnector/dataSources',
+          method: 'get',
+          credentials: 'include'
+        }
+      },
+      providesTags: [{ type: 'DataConnector', id: 'GET_DATASETS' }],
+      transformResponse: (response: DataSourceResult[]) => {
+        const data = response?.reduce((dataSources, item) => {
+          const name = dataSetMapping[
+            item.dataSource as keyof typeof dataSetMapping
+          ]
+          // ensure the name exists else filter the data set
+          if (name) {
+            dataSources.push({
+              dataSource: { name, value: item.dataSource },
+              cols: item.columns
+            })
+          }
+          return dataSources
+        }, [] as DataSources)
+        return data
+      }
     })
   })
 })
@@ -161,5 +191,6 @@ export const {
   useDeleteDataConnectorMutation,
   useGetDataConnectorByIdQuery,
   useGetAuditsQuery,
-  useRetryAuditMutation
+  useRetryAuditMutation,
+  useGetDataSourcesQuery
 } = dataConnectorApis

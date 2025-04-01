@@ -3,8 +3,8 @@ import { ConfigTemplateType }                                     from '@acx-ui/
 
 export * from './ConfigTemplateLink'
 export * from './utils'
-export { ProtectedEnforceTemplateToggle } from './EnforceTemplateToggle'
-export { EnforcedButton, useEnforcedStatus } from './EnforcedButton'
+export * from './EnforceTemplateToggle'
+export * from './useEnforcedStatus'
 
 export function useIsConfigTemplateBeta (): boolean {
   return useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE)
@@ -26,6 +26,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
   const isBeta = useIsConfigTemplateBeta()
   const isGA = useIsConfigTemplateGA()
   const isExtraScope = useIsConfigTemplateExtra()
+  const isEthernetPortTemplateEnabled = useIsSplitOn(Features.ETHERNET_PORT_TEMPLATE_TOGGLE)
+
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
     [ConfigTemplateType.NETWORK]: isBeta,
     [ConfigTemplateType.VENUE]: isBeta,
@@ -45,7 +47,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.ROGUE_AP_DETECTION]: isGA,
     [ConfigTemplateType.SWITCH_REGULAR]: isExtraScope,
     [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
-    [ConfigTemplateType.AP_GROUP]: isExtraScope
+    [ConfigTemplateType.AP_GROUP]: isExtraScope,
+    [ConfigTemplateType.ETHERNET_PORT_PROFILE]: isBeta && isEthernetPortTemplateEnabled
   }
 
   return visibilityMap

@@ -1,101 +1,183 @@
-import React, { useCallback } from 'react'
-import { ReactElement }       from 'react'
+import React, { useCallback, useMemo } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input }   from 'antd'
+import { FormItemProps } from 'antd/lib/form'
+import { useIntl }       from 'react-intl'
 
 import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast } from '@acx-ui/components'
 import { useNavigate }                                                                       from '@acx-ui/react-router-dom'
 import { getIntl  }                                                                          from '@acx-ui/utils'
 
 import { useSaveStorageMutation, useGetStorageQuery } from './services'
+import { AzureConnectionType }                        from './types'
 import { generateBreadcrumb }                         from './utils'
-
 
 export const StorageOptions = [
   { value: 'azure', label: 'Azure' },
   { value: 'ftp', label: 'FTP' },
   { value: 'sftp', label: 'SFTP' }
 ]
+
 type CloudStorageFormProps = {
   editMode?: boolean
 }
-const getStorageMap = () => {
+
+type StorageFieldProps = {
+  id: string,
+  name: string,
+  component: FormItemProps['children'],
+  dependencies?: FormItemProps['dependencies'],
+  rules?: FormItemProps['rules']
+}
+
+export const getFieldRules = (fieldName: string): FormItemProps['rules'] | undefined => {
+  const { $t } = getIntl()
+  const errorMessage = $t({
+    defaultMessage: 'Please enter SFTP password or private key'
+  })
+
+  return [
+    ({ getFieldValue }) => ({
+      validator (_, value: string) {
+        if (!value &&
+          !getFieldValue(fieldName)) {
+          return Promise.reject(errorMessage)
+        }
+        return Promise.resolve()
+      }
+    })
+  ]
+}
+
+const getStorageMap = (azureConnectionType: AzureConnectionType):
+Record<string, StorageFieldProps[]> => {
   const { $t } = getIntl()
   return {
-    azure: [{
-      id: 'azureConnectionType',
-      name: $t({ defaultMessage: 'Azure connection type' }),
-      component: <Select
-        options={[
-          { value: 'azureFiles', label: $t({ defaultMessage: 'Azure Files' }) },
-          { value: 'azureBlob', label: $t({ defaultMessage: 'Azure Blob' }) }
-        ]}
-      />
-    }, {
-      id: 'azureAccountName',
-      name: $t({ defaultMessage: 'Azure account name' }),
-      component: <Input data-testid='azureAccountName' />
-    }, {
-      id: 'azureAccountKey',
-      name: $t({ defaultMessage: 'Azure account key' }),
-      component: <Input data-testid='azureAccountKey' />
-    }, {
-      id: 'azureShareName',
-      name: $t({ defaultMessage: 'Azure share name' }),
-      component: <Input data-testid='azureShareName' />
-    }, {
-      id: 'azureCustomerName',
-      name: $t({ defaultMessage: 'Azure customer name' }),
-      component: <Input data-testid='azureCustomerName' />
-    }],
-    ftp: [{
-      id: 'ftpHost',
-      name: $t({ defaultMessage: 'FTP server IP/hostname' }),
-      component: <Input />
-    }, {
-      id: 'ftpPort',
-      name: $t({ defaultMessage: 'FTP port' }),
-      component: <Input />
-    }, {
-      id: 'ftpUserName',
-      name: $t({ defaultMessage: 'FTP username' }),
-      component: <Input />
-    }, {
-      id: 'ftpPassword',
-      name: $t({ defaultMessage: 'FTP password' }),
-      component: <Input type='password' />
-    }],
-    sftp: [{
-      id: 'sftpHost',
-      name: $t({ defaultMessage: 'SFTP server IP/hostname' }),
-      component: <Input />
-    }, {
-      id: 'sftpPort',
-      name: $t({ defaultMessage: 'SFTP port' }),
-      component: <Input />
-    }, {
-      id: 'sftpUserName',
-      name: $t({ defaultMessage: 'SFTP username' }),
-      component: <Input />
-    }, {
-      id: 'sftpPassword',
-      name: $t({ defaultMessage: 'SFTP password' }),
-      component: <Input type='password' />
-    }, {
-      id: 'sftpPrivateKey',
-      name: $t({ defaultMessage: 'SFTP private key' }),
-      component: <Input />
-    }]
+    azure: [
+      {
+        id: 'azureConnectionType',
+        name: $t({ defaultMessage: 'Azure connection type' }),
+        component: (
+          <Select
+            options={[
+              {
+                value: AzureConnectionType.Files,
+                label: $t({ defaultMessage: 'Azure Files' })
+              },
+              {
+                value: AzureConnectionType.Blob,
+                label: $t({ defaultMessage: 'Azure Blob' })
+              }
+            ]}
+          />
+        )
+      },
+      {
+        id: 'azureAccountName',
+        name: $t({ defaultMessage: 'Azure account name' }),
+        component: <Input data-testid='azureAccountName' />
+      },
+      {
+        id: 'azureAccountKey',
+        name: $t({ defaultMessage: 'Azure account key' }),
+        component: <Input data-testid='azureAccountKey' />
+      },
+      ...(azureConnectionType === AzureConnectionType.Files
+        ? [{
+          id: 'azureShareName',
+          name: $t({ defaultMessage: 'Azure share name' }),
+          component: <Input data-testid='azureShareName' />
+        }]
+        : []
+      ),
+      ...(azureConnectionType === AzureConnectionType.Blob
+        ? [{
+          id: 'azureContainerName',
+          name: $t({ defaultMessage: 'Azure container name' }),
+          component: <Input data-testid='azureContainerName' />
+        }]
+        : []
+      ),
+      {
+        id: 'azureStoragePath',
+        name: $t({ defaultMessage: 'Azure storage path' }),
+        component: <Input data-testid='azureStoragePath' />
+      }
+    ],
+    ftp: [
+      {
+        id: 'ftpHost',
+        name: $t({ defaultMessage: 'FTP server IP/hostname' }),
+        component: <Input />
+      },
+      {
+        id: 'ftpPort',
+        name: $t({ defaultMessage: 'FTP port' }),
+        component: <Input />
+      },
+      {
+        id: 'ftpUserName',
+        name: $t({ defaultMessage: 'FTP username' }),
+        component: <Input />
+      },
+      {
+        id: 'ftpPassword',
+        name: $t({ defaultMessage: 'FTP password' }),
+        component: <Input type='password' />
+      },
+      {
+        id: 'ftpStoragePath',
+        name: $t({ defaultMessage: 'FTP storage path' }),
+        component: <Input />
+      }
+    ],
+    sftp: [
+      {
+        id: 'sftpHost',
+        name: $t({ defaultMessage: 'SFTP server IP/hostname' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpPort',
+        name: $t({ defaultMessage: 'SFTP port' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpUserName',
+        name: $t({ defaultMessage: 'SFTP username' }),
+        component: <Input />
+      },
+      {
+        id: 'sftpPassword',
+        name: $t({ defaultMessage: 'SFTP password' }),
+        component: <Input type='password' />,
+        dependencies: ['sftpPrivateKey'],
+        rules: getFieldRules('sftpPrivateKey')
+      },
+      {
+        id: 'sftpPrivateKey',
+        name: $t({ defaultMessage: 'SFTP private key' }),
+        component: <Input.TextArea rows={5} />,
+        dependencies: ['sftpPassword'],
+        rules: getFieldRules('sftpPassword')
+      },
+      {
+        id: 'sftpStoragePath',
+        name: $t({ defaultMessage: 'SFTP storage path' }),
+        component: <Input />
+      }
+    ]
   }
 }
+
 const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const storageMap = getStorageMap()
+  const [form] = Form.useForm()
+  const azureConnectionType = Form.useWatch('azureConnectionType', form)
+  const storageMap = useMemo(() => getStorageMap(azureConnectionType), [azureConnectionType])
   const storage = useGetStorageQuery({}, { skip: !editMode })
   const selectedCloudStorage = storage.data?.config
-  const [form] = Form.useForm()
   const selectedConnectionType: string = Form.useWatch('connectionType', form)
   const connectionType = selectedConnectionType || selectedCloudStorage?.connectionType
   const [updateStorage, { isLoading }] = useSaveStorageMutation()
@@ -124,10 +206,7 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   return <>
     <PageHeader
       title={editMode
-        ? $t(
-          { defaultMessage: 'Cloud Storage: {type}' },
-          { type: selectedCloudStorage?.connectionType }
-        )
+        ? $t({ defaultMessage: 'Cloud Storage' })
         : $t({ defaultMessage: 'New Cloud Storage' })
       }
       breadcrumb={generateBreadcrumb()}
@@ -150,12 +229,13 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
               />
             </Form.Item>
             {storageMap[connectionType as keyof typeof storageMap]
-              ?.map((item: { id: string, name: string, component: ReactElement }) =>
+              ?.map((item: StorageFieldProps) =>
                 <Form.Item
                   key={item.id}
                   name={item.id}
                   label={item.name}
-                  rules={[{
+                  dependencies={item.dependencies}
+                  rules={item.rules ?? [{
                     required: true,
                     message: $t({ defaultMessage: '{label} is required!' }, { label: item.name })
                   }]}

@@ -378,10 +378,10 @@ export const handlePortSpeedFor765048F = (selectedPorts: SwitchPortViewModel[]) 
 export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
   const nonePoeClassModels = [
     'ICX8200-24', 'ICX8200-24F', 'ICX8200-24FX', 'ICX8200-48', 'ICX8200-48F',
-    'ICX8100-24', 'ICX8100-48'
+    'ICX8100-24', 'ICX8100-48', 'ICX8100-24-X', 'ICX8100-48-X'
   ]
   const supportPoe5to8Models = [
-    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP'
+    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP', 'ICX7550-24XZP'
   ]
 
   const poeClassOptions = [

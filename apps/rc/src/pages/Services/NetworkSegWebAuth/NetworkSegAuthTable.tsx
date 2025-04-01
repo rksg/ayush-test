@@ -15,7 +15,8 @@ import {
   WebAuthTemplateTableData,
   isDefaultWebAuth,
   getScopeKeyByService,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -99,6 +100,7 @@ export default function NetworkSegAuthTable () {
   const rowActions: TableProps<WebAuthTemplateTableData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -113,6 +115,7 @@ export default function NetworkSegAuthTable () {
       }
     }, {
       scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.DELETE),
       visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -134,6 +137,7 @@ export default function NetworkSegAuthTable () {
       }
     }, {
       scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows, clearSelection) => {
@@ -168,6 +172,8 @@ export default function NetworkSegAuthTable () {
             type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
           })}
           scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+          rbacOpsIds={
+            getServiceAllowedOperation(ServiceType.WEBAUTH_SWITCH, ServiceOperation.CREATE)}
         >
           <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>

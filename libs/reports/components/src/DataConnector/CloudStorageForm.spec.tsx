@@ -19,8 +19,8 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
 }))
-describe('CloudStorageForm', () => {
 
+describe('CloudStorageForm', () => {
   const store = configureStore({
     reducer: {
       [dataConnectorApis.reducerPath]: dataConnectorApis.reducer
@@ -46,11 +46,10 @@ describe('CloudStorageForm', () => {
       data: {
         config: {
           connectionType: 'azure',
-          azureConnectionType: 'Azure Files',
+          azureConnectionType: 'azureFiles',
           azureAccountName: 'some name',
           azureAccountKey: 'key',
-          azureShareName: 'share name',
-          azureCustomerName: 'name'
+          azureShareName: 'share name'
         },
         id: 'id'
       }
@@ -59,18 +58,18 @@ describe('CloudStorageForm', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
+    expect(await screen.findByText('Cloud Storage')).toBeVisible()
   })
   it('should save on apply click for edit', async () => {
     mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
       data: {
         config: {
           connectionType: 'azure',
-          azureConnectionType: 'Azure Files',
+          azureConnectionType: 'azureFiles',
           azureAccountName: 'some name',
           azureAccountKey: 'key',
           azureShareName: 'share name',
-          azureCustomerName: 'name'
+          azureStoragePath: 'storage/path'
         },
         id: 'id'
       }
@@ -82,7 +81,7 @@ describe('CloudStorageForm', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
+    expect(await screen.findByText('Cloud Storage')).toBeVisible()
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
     fireEvent.click(applyBtn)
@@ -109,8 +108,8 @@ describe('CloudStorageForm', () => {
     fireEvent.change(azureAccountKey, { target: { value: 'key' } })
     const azureShareName = await screen.findByTestId('azureShareName')
     fireEvent.change(azureShareName, { target: { value: 'share name' } })
-    const azureCustomerName = await screen.findByTestId('azureCustomerName')
-    fireEvent.change(azureCustomerName, { target: { value: 'name' } })
+    const azureStoragePath = await screen.findByTestId('azureStoragePath')
+    fireEvent.change(azureStoragePath, { target: { value: 'name' } })
 
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
@@ -132,16 +131,32 @@ describe('CloudStorageForm', () => {
       expect(mockNavigate).not.toHaveBeenCalled()
     })
   })
+  it('should trigger password and private key validation for SFTP', async () => {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'post', {
+      data: { id: 'id' }
+    }, false, true)
+    render(<CloudStorageForm />, {
+      route: {},
+      wrapper: Provider
+    })
+    expect(await screen.findByText('New Cloud Storage')).toBeVisible()
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Connection type' }))
+    await userEvent.click(await screen.findByText('SFTP'))
+    const applyBtn = await screen.findByRole('button', { name: 'Save' })
+    expect(applyBtn).toBeVisible()
+    fireEvent.click(applyBtn)
+    expect(await screen.findAllByText('Please enter SFTP password or private key')).toHaveLength(2)
+  })
   it('should show error on apply click', async () => {
     mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'get', {
       data: {
         config: {
           connectionType: 'azure',
-          azureConnectionType: 'Azure Files',
+          azureConnectionType: 'azureBlob',
           azureAccountName: 'some name',
           azureAccountKey: 'key',
-          azureShareName: 'share name',
-          azureCustomerName: 'name'
+          azureContainerName: 'name',
+          azureStoragePath: 'some/path'
         },
         id: 'id'
       }
@@ -153,7 +168,7 @@ describe('CloudStorageForm', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Cloud Storage: azure')).toBeVisible()
+    expect(await screen.findByText('Cloud Storage')).toBeVisible()
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
     fireEvent.click(applyBtn)

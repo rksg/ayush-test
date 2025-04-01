@@ -20,7 +20,8 @@ export enum GuestNetworkTypeEnum {
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
   Cloudpath = 'Cloudpath',
-  Directory = 'Directory'
+  Directory = 'Directory',
+  SAML = 'SAML'
 }
 
 export enum WlanSecurityEnum {
@@ -983,8 +984,14 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL },
         { portLabel: PortLabelType.GENERAL }
       ]
+    },
+    '24XZP': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
     }
-
   },
   ICX7650: {
     '48P': {
@@ -1172,6 +1179,36 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
       ]
     },
     'C08PF': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24-X': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24P-X': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48-X': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48P-X': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    'C08PF-X': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
         { portLabel: PortLabelType.GENERAL }

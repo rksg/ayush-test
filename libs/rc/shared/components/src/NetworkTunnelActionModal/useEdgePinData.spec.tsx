@@ -64,8 +64,8 @@ describe('NetworkTunnelActionModal - useEdgePinData', () => {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
-      await waitFor(() => expect(result.current).not.toBeUndefined())
-      expect(result.current).toStrictEqual(mockPinStatsList.data)
+      await waitFor(() => expect(result.current.venuePins).not.toBeUndefined())
+      expect(result.current.venuePins).toStrictEqual(mockPinStatsList.data)
     })
 
     it('should not trigger API when FF is not on', () => {
@@ -74,7 +74,8 @@ describe('NetworkTunnelActionModal - useEdgePinData', () => {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
-      expect(result.current).toStrictEqual(undefined)
+      expect(result.current.venuePins).toStrictEqual(undefined)
+      expect(result.current.isUninitialized).toStrictEqual(true)
       expect(mockedReqFn).toBeCalledTimes(0)
     })
     it('should not trigger API when skip is true', () => {
@@ -83,7 +84,8 @@ describe('NetworkTunnelActionModal - useEdgePinData', () => {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
-      expect(result.current).toStrictEqual(undefined)
+      expect(result.current.venuePins).toStrictEqual(undefined)
+      expect(result.current.isUninitialized).toStrictEqual(true)
       expect(mockedReqFn).toBeCalledTimes(0)
     })
   })

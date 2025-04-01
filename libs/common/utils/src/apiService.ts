@@ -78,11 +78,12 @@ export const isShowApiError = (request?: Request) => {
 export const isShowImprovedErrorSuggestion = (errors: any) => {
   const hasErrors = _.isArray(errors.errors) && errors.errors.length > 0
     && (errors.errors[0].suggestion || errors.errors[0].reason)
-  return (getEnabledDialogImproved()) && hasErrors
+  const hasError = errors.error && (errors.error.suggestion || errors.error.reason)
+  return Boolean((getEnabledDialogImproved()) && (hasErrors || hasError))
 }
 
 export const getEnabledDialogImproved = () => {
-  return isLocalHost() || isIntEnv()
+  return isLocalHost() || isIntEnv() || isDev()
 }
 
 export const createHttpRequest = (

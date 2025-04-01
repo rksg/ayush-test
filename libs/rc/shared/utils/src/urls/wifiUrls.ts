@@ -519,7 +519,8 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   activateCertificateTemplate: {
     method: 'PUT',
     newApi: true,
-    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId',
+    opsApi: 'PUT:/wifiNetworks/{id}/certificateTemplates/{id}'
   },
   bindClientIsolation: {
     method: 'PUT',
@@ -563,6 +564,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    opsApi: 'PUT:/wifiNetworks/{id}/dpskServices/{id}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'

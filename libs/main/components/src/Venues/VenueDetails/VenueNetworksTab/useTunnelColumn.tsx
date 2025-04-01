@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { Space }   from 'antd'
 import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Table }       from '@acx-ui/components'
+import { Table }                  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   NetworkTunnelActionForm,
@@ -16,6 +17,7 @@ import {
   tansformSdLanScopedVenueMap,
   useDeactivateNetworkTunnelByType,
   useEdgeAllPinData,
+  useGetIpsecScopeVenueMap,
   useGetSoftGreScopeVenueMap,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -28,21 +30,32 @@ export interface useTunnelColumnProps {
   venueId: string
   sdLanScopedNetworks: SdLanScopedVenueNetworksData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
+  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>,
+  setIsTableUpdating: React.Dispatch<React.SetStateAction<boolean>>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
-  const { venueId, sdLanScopedNetworks, setTunnelModalState } = props
+  const {
+    venueId, sdLanScopedNetworks, setTunnelModalState,
+    refetchFnRef,
+    setIsTableUpdating
+  } = props
   const { isTemplate } = useConfigTemplate()
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgePinEnhanceReady = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
-  const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const softGreVenueMap = useGetSoftGreScopeVenueMap(refetchFnRef)
+  const ipsecVenueMap = useGetIpsecScopeVenueMap(refetchFnRef)
+
   // eslint-disable-next-line max-len
   const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const allPins = useEdgeAllPinData({}, isTemplate)
+  const { venuePins: allPins, refetch } = useEdgeAllPinData({}, isTemplate)
+  refetchFnRef.current.pin = refetch
+
   const venuePinInfo = find(allPins, p => p.venueId === venueId)
   const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))
 
@@ -77,13 +90,13 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   if (isTemplate) return []
 
-  return isEdgePinEnhanceReady
+  return isEdgePinEnhanceReady || isIpSecOverNetworkEnabled
     ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Network Tunneling' }),
       dataIndex: 'tunneledInfo',
-      width: 180,
-      align: 'center' as const,
+      width: 200,
+      align: 'left' as const,
       render: function (_: ReactNode, row: Network) {
         if (!venueId || !row.activated?.isActivated) return null
 
@@ -96,16 +109,18 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         const venueSdLanInfo = sdLanVenueMap[venueId]
         const venueSoftGre = softGreVenueMap[venueId]
         const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        const venueIpsec = ipsecVenueMap[venueId]
+        const targetIpsec = venueIpsec?.filter(sg => sg.networkIds.includes(row.id))
 
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
         const isPinNetwork = !!pinNetworkIds?.includes(row.id)
 
-        return <StepsForm.FieldLabel width='50px'>
+        return <Space>
           <div><NetworkTunnelSwitchBtn
             tunnelType={tunnelType}
             venueSdLanInfo={venueSdLanInfo}
-            onClick={(checked) => {
+            onClick={async (checked) => {
               if (checked) {
                 handleClickNetworkTunnel({
                   id: venueId,
@@ -119,12 +134,19 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   tunnelType: NetworkTunnelTypeEnum.None,
                   softGre: {
                     oldProfileId: targetSoftGre?.[0].profileId
+                  },
+                  ipsec: {
+                    enableIpsec: targetIpsec && targetIpsec.length > 0,
+                    oldProfileId: (targetIpsec && targetIpsec.length > 0) ?
+                      targetIpsec?.[0]?.profileId: undefined
                   }
                 } as NetworkTunnelActionForm
 
+                setIsTableUpdating(true)
                 // deactivate depending on current tunnel type
                 // eslint-disable-next-line max-len
-                deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                await deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                setIsTableUpdating(false)
               }
             }}
           /></div>
@@ -134,8 +156,9 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             venueSdLan={venueSdLanInfo}
             venueSoftGre={targetSoftGre?.[0]}
             venuePin={venuePinInfo}
+            venueIpSec={targetIpsec?.[0]}
           />
-        </StepsForm.FieldLabel>
+        </Space>
 
       }
     }]

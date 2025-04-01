@@ -4,14 +4,15 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import {
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { LicenseCompliance, PendingActivations }             from '@acx-ui/msp/components'
-import { SpaceWrapper }                                      from '@acx-ui/rc/components'
-import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
-import { useGetAccountTierQuery }                            from '@acx-ui/user'
-import { AccountTier, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { LicenseCompliance, PendingActivations }                                     from '@acx-ui/msp/components'
+import { MspRbacUrlsInfo }                                                           from '@acx-ui/msp/utils'
+import { SpaceWrapper }                                                              from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, LicenseUrlsInfo }                                   from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { hasAllowedOperations, useGetAccountTierQuery }                              from '@acx-ui/user'
+import { AccountTier, AccountType, getJwtTokenPayload, getOpsApi, isDelegationMode } from '@acx-ui/utils'
 
-import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 // import MySubscriptions            from './MySubscriptions'
 import { RbacSubscriptionsTabHeader } from './RbacSubscriptionsTabHeader'
 import { RbacSubscriptionTable }      from './RbacSubscriptionTable'
@@ -19,8 +20,9 @@ import { SubscriptionsTabHeader }     from './SubscriptionsTabHeader'
 
 import { SubscriptionTable } from '.'
 
-export const SubscriptionTabs = () => {
+export const SubscriptionTabs = (props: { tenantType: string }) => {
   const { $t } = useIntl()
+  const { tenantType } = props
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/subscriptions')
@@ -48,17 +50,20 @@ export const SubscriptionTabs = () => {
           {isEntitlementRbacApiEnabled
             ? <RbacSubscriptionTable /> : <SubscriptionTable />}
         </SpaceWrapper>,
-        visible: true
+        visible: hasAllowedOperations([getOpsApi(LicenseUrlsInfo.getMspEntitlement)])
       },
       pendingActivations: {
         title: $t({ defaultMessage: 'Pending Activations' }),
         content: <PendingActivations />,
-        visible: true
+        visible: (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC) &&
+          hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.getEntitlementsActivations)])
       },
       compliance: {
         title: $t({ defaultMessage: 'Compliance' }),
         content: <LicenseCompliance isMsp={false}/>,
-        visible: showCompliance
+        visible: showCompliance &&
+          (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC) &&
+          hasAllowedOperations([getOpsApi(MspRbacUrlsInfo.getEntitlementsCompliances)])
       }
     }
 
@@ -80,7 +85,6 @@ export const SubscriptionTabs = () => {
             }}
           />
         </Typography.Text>
-        <ConvertNonVARMSPButton />
       </SpaceWrapper>
       <Tabs
         defaultActiveKey='users'

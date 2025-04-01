@@ -121,6 +121,7 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   deleteMdnsProxyApsRbac: {
     method: 'delete',
     url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
+    opsApi: 'DELETE:/venues/{id}/aps/{id}/multicastDnsProxyProfiles/{id}',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

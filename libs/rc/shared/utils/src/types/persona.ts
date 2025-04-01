@@ -10,6 +10,10 @@ export interface PersonaGroup {
   personalIdentityNetworkId?: string,
   createdAt?: string,
   updatedAt?: string,
+  /** @deprecated('identities')
+   * Only support identityCount in the future
+   * Please use `useSearchPersonaListQuery` to get related identities
+   * */
   identities?: Persona[],
   identityCount?: number,
   certificateTemplateId?: string,
@@ -38,9 +42,34 @@ export interface Persona {
   createdAt?: string,
   updatedAt?: string,
   switches?: PersonaSwitch[],
-  meteringProfileId?: string | null,
+  meteringProfileId?: string,
   expirationEpoch?: number | null,
-  expirationDate?: string | null
+  expirationDate?: string | null,
+  unit?: string | null,
+  phoneNumber?: string
+}
+
+export interface IdentityClient {
+  id: string,
+  tenantId: string,
+  groupId: string,
+  identityId: string,
+  clientMac: string,
+  networkId?: string,
+  sessionId?: string,
+  apMac?: string,
+  ssid?: string,
+  username?: string,
+  onboardType?: string,
+
+  // Below fields are from ES client-index
+  lastSeenAt?: string,
+  os?: string,
+  ip?: string,
+  deviceName?: string, // aka hostname
+  venueInformation?: { id: string,name: string },
+  apInformation?: { serialNumber: string, name: string },
+  networkInformation?: { id: string, type: string,ssid: string }
 }
 
 export interface PersonaErrorResponse {

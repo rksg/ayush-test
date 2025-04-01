@@ -1,8 +1,7 @@
-import { unitOfTime } from 'moment-timezone'
 
-import { granularityToHours, type Incident } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { type Incident }          from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }       from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }             from '../../DescriptionSection/styledComponents'
 import { SwitchDetail,
@@ -12,7 +11,8 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import { IncidentHeader } from './IncidentHeader'
+import { IncidentHeader }      from './IncidentHeader'
+import { getTimeseriesBuffer } from './portCountTimeseriesHelper'
 
 export const SwitchPortCongestion = (incident: Incident) => {
   const attributeList = [
@@ -25,12 +25,6 @@ export const SwitchPortCongestion = (incident: Incident) => {
     Attributes.EventEndTime
   ]
 
-  const granularities: typeof granularityToHours = [
-    { granularity: 'PT30M', hours: 24 * 3 }, // 30 mins for 3 days and above
-    { granularity: 'PT15M', hours: 24 * 1 }, // 15 mins for 1 day and above
-    { granularity: 'PT5M', hours: 0 } // 5 mins for less than 1 day
-  ]
-
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE)
@@ -40,10 +34,10 @@ export const SwitchPortCongestion = (incident: Incident) => {
     TimeSeriesChartTypes.SwitchImpactedPortsCount
   ]
 
-  const buffer = {
-    front: { value: 0, unit: 'seconds' as unitOfTime.Base },
-    back: { value: 0, unit: 'seconds' as unitOfTime.Base }
-  }
+  const start = incident.impactedStart || incident.startTime
+  const end = incident.impactedEnd || incident.endTime
+
+  const buffer = getTimeseriesBuffer(start, end)
 
   return isEnabled ? <>
     <IncidentHeader incident={incident} />
@@ -65,8 +59,6 @@ export const SwitchPortCongestion = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={'PT5M'}
-          granularities={granularities}
           buffer={buffer}
         />
       </GridCol>

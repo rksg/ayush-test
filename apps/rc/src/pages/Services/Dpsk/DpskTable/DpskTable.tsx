@@ -12,7 +12,7 @@ import {
   TableColumn
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { SimpleListTooltip, useEnforcedStatus }     from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskMutation,
@@ -37,7 +37,8 @@ import {
   displayDefaultAccess,
   getScopeKeyByService,
   filterDpskOperationsByPermission,
-  getServiceAllowedOperation
+  getServiceAllowedOperation,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
@@ -57,6 +58,7 @@ export default function DpskTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.DPSK)
 
   const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
@@ -95,6 +97,8 @@ export default function DpskTable () {
       rbacOpsIds: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
+      disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+      tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
       onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {

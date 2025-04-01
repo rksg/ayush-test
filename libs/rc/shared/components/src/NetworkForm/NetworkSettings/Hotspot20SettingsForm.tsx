@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Input, Space } from 'antd'
 import {
@@ -27,6 +27,7 @@ import {
   PolicyOperation,
   PolicyType,
   SecurityOptionsDescription,
+  useConfigTemplate,
   WifiNetworkMessages,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
@@ -41,6 +42,7 @@ import { NetworkMoreSettingsForm }                              from '../Network
 import { NETWORK_IDENTITY_PROVIDER_MAX_COUNT } from './Hotspot20/constants'
 import IdentityProviderDrawer                  from './Hotspot20/IdentityProviderDrawer'
 import WifiOperatorDrawer                      from './Hotspot20/WifiOperatorDrawer'
+import { IdentityGroup }                       from './SharedComponent/IdentityGroup/IdentityGroup'
 
 
 const { Option } = Select
@@ -83,6 +85,9 @@ function Hotspot20Form () {
   const { $t } = useIntl()
   const { useWatch } = Form
   const { editMode, cloneMode } = useContext(NetworkFormContext)
+  // eslint-disable-next-line max-len
+  const isWifiIdentityManagementEnable = useIsSplitOn(Features.WIFI_IDENTITY_AND_IDENTITY_GROUP_MANAGEMENT_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
@@ -146,6 +151,7 @@ function Hotspot20Form () {
       </Form.Item>
 
       <Hotspot20Service />
+      { (isWifiIdentityManagementEnable && !isTemplate) && <IdentityGroup />}
     </>
   )
 

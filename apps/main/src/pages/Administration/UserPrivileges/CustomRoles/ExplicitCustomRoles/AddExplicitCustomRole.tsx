@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react'
 
 import {
   Form,
-  Input,
-  TreeDataNode
-} from 'antd'
+  Input } from 'antd'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
@@ -26,7 +24,8 @@ import {
   systemDefinedNameValidator,
   ScopePermission,
   PermissionType,
-  ScopeFeature
+  ScopeFeature,
+  ScopeTreeDataNode
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -39,10 +38,15 @@ import { RolesEnum } from '@acx-ui/types'
 import { AdvancedPermissionsTab } from './AdvancedPermissionsTab'
 import { PermissionsTab }         from './PermissionsTab'
 
-export function Flat (parent: TreeDataNode | undefined) {
+const TandemFeatureList = [
+  'ai.business_insights.data_studio',
+  'ai.business_insights.reports'
+]
+
+export function Flat (parent: ScopeTreeDataNode | undefined) {
   if (parent) {
-    const result: TreeDataNode[] = []
-    result.push({ ...parent, children: undefined })
+    const result: ScopeTreeDataNode[] = []
+    result.push(parent)
     if (parent.children) {
       const flatChildren = parent.children.flatMap(child => { return Flat(child) })
       result.push(...flatChildren)
@@ -55,10 +59,14 @@ export function Flat (parent: TreeDataNode | undefined) {
 function getHierarchy ($t: IntlShape['$t'], scopeList: ScopeFeature[] | undefined) {
   if (scopeList) {
     return scopeList.map(s => {
+      const featureId = s.name.split('-')[0]
       const result = {
         title: $t({ defaultMessage: '{title}' }, { title: s.description }),
-        key: s.name.split('-')[0]
-      } as TreeDataNode
+        key: featureId,
+        inTandem: TandemFeatureList.includes(featureId)
+        // key: s.name.split('-')[0],
+        // inTandem: s.inTandem
+      } as ScopeTreeDataNode
       const childrenList = getHierarchy($t, s.subFeatures)
       if (childrenList.length > 0) {
         result.children = childrenList
@@ -87,6 +95,9 @@ export function AddExplicitCustomRole () {
 
   const scopeHierarchy =
     getHierarchy(intl.$t, scopeTree?.filter(s => s.name.split('-')[1] === PermissionType.read))
+  // const scopeHierarchy =
+  //   getHierarchy(intl.$t,
+  //     useHardCodedScopeTree().filter(s => s.name.split('-')[1] === PermissionType.read))
 
   const initialPermissionList: ScopePermission[] = scopeHierarchy.flatMap(s => Flat(s)).map(s => {
     return {
@@ -121,7 +132,7 @@ export function AddExplicitCustomRole () {
       : undefined)
 
   const getSelectedScopesForPermission =
-  (scope: TreeDataNode[], scopePerms: ScopePermission[], permission: string) => {
+  (scope: ScopeTreeDataNode[], scopePerms: ScopePermission[], permission: string) => {
     const selectedScopes: string[] = []
     scope.forEach(s => {
       const scopePermission = scopePerms.find(p => p.id === s.key)
@@ -148,43 +159,67 @@ export function AddExplicitCustomRole () {
 
   const updateRelatedPermissions =
   (key: string, permission: string, enabled: boolean, permissionList: ScopePermission[]) => {
-    const scope = scopeHierarchy.find(sc => sc.key === key) ||
+    const scope: ScopeTreeDataNode | undefined = scopeHierarchy.find(sc => sc.key === key) ||
       scopeHierarchy.flatMap(sc => sc.children).find(c => c?.key === key) ||
       scopeHierarchy.flatMap(sc => sc.children).flatMap(c => c?.children)
         .find(cc => cc?.key === key)
     if (!scope || permission === '') {
       return []
     }
-    const scopeAndChildren = scope.children ? Flat(scope) : [scope]
+    // children array = lowest level child nodes related to this scope
+    // parents array = all other nodes related to this scope that have children
+    // ex: If scope has children, put scope in parents array. Otherwise, set scope as children array
+    const scopeAndChildren = Flat(scope)
+    const children = scopeAndChildren.filter(sc => !sc.children)
     const globalParent = scopeHierarchy.find(sc => sc.key === key ||
-        sc.children?.some(c => c.key === key || c.children?.some(cc => cc.key === key)))
+        sc.children?.some(c => c.key === key
+          || c.children?.some(cc => cc.key === key))) as ScopeTreeDataNode
     const parent = scopeHierarchy.flatMap(sc => sc.children)
-      .find(c => c?.children?.some(cc => cc.key === key))
-    const parents = [ parent, globalParent ].filter(p => p !== undefined && p.key !== key)
+      .find(c => c?.children?.some(cc => cc.key === key)) as ScopeTreeDataNode
+    const parents = scope.children ? scopeAndChildren.filter(sc => sc.key !== key && sc.children)
+      .concat([scope]).concat([globalParent].filter(p => p !== undefined && p.key !== key))
+      : [parent, globalParent].filter(p => p !== undefined && p.key !== key)
 
     const permissions: ScopePermission[] = []
+
     // Everything except this scope, its children, and its parents are unchanged
     permissions.push(...permissionList.filter(p =>
-      !scopeAndChildren.map(sc => sc.key).includes(p.id)
+      scope.key !== p.id
+      && !children.map(c => c.key).includes(p.id)
       && !parents.map(sc => sc?.key).includes(p.id)))
-    // Set permission for this scope and all its children if any
-    permissions.push(...permissionList.filter(p =>scopeAndChildren.map(s => s.key).includes(p.id))
-      .map(perm => { return { ...perm, [permission]: enabled } }))
-    // Set permission as true for any parents if all their children have that permission enabled
+
+    // Set permission for children
+    const permissionType = PermissionType[permission as keyof typeof PermissionType]
+    permissions.push(...permissionList.filter(p => children.map(s => s.key).includes(p.id))
+      .map(perm => {
+        const inTandem = children.find(s => s.key === perm.id)?.inTandem
+        // If permissions are in tandem, then set create, update, delete together
+        // (Note: only lowest level of children can have inTandem = true)
+        if (inTandem && permissionType !== PermissionType.read) {
+          return { ...perm, create: enabled, update: enabled, delete: enabled }
+        }
+        return { ...perm, [permission]: enabled }
+      }))
+
+    // Set each permission type as true for parent(s) if all their children have that permission type enabled
     // and set as false if not
-    // (Important that parent comes before globalParent in the parents array so that parent permission is set first)
+    // (Important that lowest level comes first, i.e. parent comes before globalParent in the parents array so that lowest level permission is set first)
     parents.forEach(parent => {
       const perm = permissionList.find(p => p.id === parent?.key)
       if (!parent || !perm) {
         return
       }
+      const permTypesArray = Object.keys(PermissionType).map(permKey => {
+        return {
+          [permKey]: permissions.filter(p =>
+            Flat(parent).map(sc => sc.key).includes(p.id) && p.id !== parent.key)
+            .every(p => p[permKey])
+        }
+      })
+      const permTypesObject = Object.assign({}, ...permTypesArray)
       permissions.push({
         ...perm,
-        [permission]: !enabled
-          ? enabled
-          : permissions.filter(p =>
-            Flat(parent).map(sc => sc.key).includes(p.id) && p.id !== parent.key)
-            .every(p => p[permission])
+        ...permTypesObject
       })
     })
     return permissions
@@ -216,6 +251,7 @@ export function AddExplicitCustomRole () {
   }
 
   useEffect(() => {
+    form.setFieldValue('permissions', initialPermissionList)
     if (location && (isEditMode || isClone)) {
       form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
@@ -312,7 +348,8 @@ export function AddExplicitCustomRole () {
     </div>
   }
 
-  const PermissionsTabsContent = (initialScopes: TreeDataNode[], permissionList: ScopePermission[],
+  const PermissionsTabsContent = (initialScopes: ScopeTreeDataNode[],
+    permissionList: ScopePermission[],
     updatePermissionList?: (key: string, permission: string, enabled: boolean) => void) => {
     const { $t } = useIntl()
     const [currentTab, setCurrentTab] = useState('global')

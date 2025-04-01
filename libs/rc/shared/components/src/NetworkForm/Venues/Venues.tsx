@@ -31,23 +31,31 @@ import {
   IsNetworkSupport6g,
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { useEnforcedStatus }                                                                   from '../../configTemplates'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                                from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                             from '../../NetworkTunnelActionModal/types'
-import { NetworkVenueScheduleDialog }                                                          from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                                  from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                               from '../../useEdgeActions'
-import NetworkFormContext                                                                      from '../NetworkFormContext'
+import { useEnforcedStatus }                                                    from '../../configTemplates'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import {
+  NetworkTunnelActionDrawer,
+  NetworkTunnelActionModal,
+  NetworkTunnelActionModalProps,
+  useGetSoftGreScopeVenueMap,
+  useGetIpsecScopeVenueMap
+} from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                            from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                         from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                              from '../../useEdgeActions'
+import NetworkFormContext                                     from '../NetworkFormContext'
+import { hasControlnetworkVenuePermission }                   from '../utils'
 
-import { useTunnelColumn }                                    from './TunnelColumn/useTunnelColumn'
-import { handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
+import { useTunnelColumn }                                                       from './TunnelColumn/useTunnelColumn'
+import { handleIpsecAction, handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -100,8 +108,7 @@ const defaultRbacPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'venueApGroups',
-    'isEnforced',
-    'isManagedByTemplate'
+    'isEnforced'
   ],
   searchTargetFields: ['name']
 }
@@ -166,11 +173,13 @@ interface VenuesProps {
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
-  // const { isTemplate } = useConfigTemplate()
+  const { isTemplate } = useConfigTemplate()
+
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+  const isIpSecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
 
   const form = Form.useFormInstance()
@@ -189,6 +198,13 @@ export function Venues (props: VenuesProps) {
 
   const [tableData, setTableData] = useState<Venue[]>([])
 
+  const {
+    addNetworkVenueOpsAPi,
+    deleteNetworkVenueOpsAPi,
+    hasActivateNetworkVenuePermission,
+    hasUpdateNetworkVenuePermission
+  } = hasControlnetworkVenuePermission(isTemplate)
+
   // AP group form
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -206,15 +222,17 @@ export function Venues (props: VenuesProps) {
   // hooks for tunnel column - start
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const ipsecVenueMap = useGetIpsecScopeVenueMap()
   const tunnelColumn = useTunnelColumn({
     network: data,
     sdLanScopedNetworkVenues,
     softGreVenueMap,
-    setTunnelModalState
+    setTunnelModalState,
+    ipsecVenueMap
   })
   // hooks for tunnel column - end
 
-  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus(ConfigTemplateType.VENUE)
 
   useEffect(() => {
     // need to make sure table data is ready.
@@ -274,6 +292,7 @@ export function Venues (props: VenuesProps) {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      rbacOpsIds: [addNetworkVenueOpsAPi],
       visible: (selectedRows) => {
         const enabled = selectedRows.some((item)=>{
           return item.mesh && item.mesh.enabled && data && data.enableDhcp
@@ -288,6 +307,7 @@ export function Venues (props: VenuesProps) {
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      rbacOpsIds: [deleteNetworkVenueOpsAPi],
       visible: (selectedRows) => {
         const enabled = selectedRows.some((item)=>{
           return item.mesh && item.mesh.enabled && data && data.enableDhcp
@@ -458,20 +478,24 @@ export function Venues (props: VenuesProps) {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (_, row) {
-        const isDhcpDisabled = data && data.enableDhcp && row.mesh && row.mesh.enabled
-        const dhcpDisabledMsg = isDhcpDisabled
-          // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
-          : ''
-
-        const isEnforcedByTemplate = hasEnforcedItem([row])
-        const enforcedActionMsg = getEnforcedActionMsg([row])
+        let disabled = false
+        let title = ''
+        if (hasActivateNetworkVenuePermission) {
+          if (data && data.enableDhcp && row.mesh && row.mesh.enabled){
+            disabled = true
+            // eslint-disable-next-line max-len
+            title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          } else if (hasEnforcedItem([row])) {
+            disabled = true
+            title = getEnforcedActionMsg([row])
+          }
+        }
 
         return <Tooltip
-          title={dhcpDisabledMsg || enforcedActionMsg}
+          title={title}
           placement='bottom'>
           <Switch
-            disabled={isDhcpDisabled || isEnforcedByTemplate}
+            disabled={!hasActivateNetworkVenuePermission || disabled}
             checked={Boolean(row.activated?.isActivated)}
             onClick={(checked, event) => {
               event.stopPropagation()
@@ -499,7 +523,7 @@ export function Venues (props: VenuesProps) {
           getCurrentVenue(row),
           data as NetworkSaveData,
           (e) => handleClickApGroups(row, e),
-          false,
+          !hasUpdateNetworkVenuePermission,
           row?.incompatible
         )
       }
@@ -510,8 +534,12 @@ export function Venues (props: VenuesProps) {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row),
-          data as NetworkSaveData, (e) => handleClickApGroups(row, e))
+        return transformRadios(
+          getCurrentVenue(row),
+          data as NetworkSaveData,
+          (e) => handleClickApGroups(row, e),
+          !hasUpdateNetworkVenuePermission
+        )
       }
     },
     {
@@ -520,7 +548,11 @@ export function Venues (props: VenuesProps) {
       dataIndex: 'scheduling',
       render: function (_, row) {
         return transformScheduling(
-          getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
+          getCurrentVenue(row),
+          scheduleSlotIndexMap[row.id],
+          (e) => handleClickScheduling(row, e),
+          !hasUpdateNetworkVenuePermission
+        )
       }
     },
     ...tunnelColumn
@@ -648,8 +680,12 @@ export function Venues (props: VenuesProps) {
         networkInfo: otherData.network,
         otherData
       }
-      if (isSoftGreEnabled)
+      if (isSoftGreEnabled) {
         handleSoftGreTunnelAction(args)
+        if (isIpSecEnabled) {
+          handleIpsecAction(args)
+        }
+      }
 
       const networkVenueId = otherData.network?.venueId ?? ''
       // eslint-disable-next-line max-len
@@ -663,6 +699,8 @@ export function Venues (props: VenuesProps) {
     }
   }
 
+  const allowedRowActions = filterByAccess(rowActions)
+
   return (
     <>
       <StepsFormLegacy.Title>
@@ -675,8 +713,8 @@ export function Venues (props: VenuesProps) {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            rowActions={filterByAccess(rowActions)}
-            rowSelection={{
+            rowActions={allowedRowActions}
+            rowSelection={(allowedRowActions.length > 0) &&{
               type: 'checkbox'
             }}
             columns={columns}
@@ -705,16 +743,25 @@ export function Venues (props: VenuesProps) {
             />
           </Form.Provider>
           {(isEdgeSdLanMvEnabled || isSoftGreEnabled) && tunnelModalState.visible &&
+          <>
+            {!isIpSecEnabled &&
             <NetworkTunnelActionModal
               {...tunnelModalState}
               onFinish={handleNetworkTunnelActionFinish}
-              onClose={handleCloseTunnelModal}
-            />
+              onClose={handleCloseTunnelModal}/>}
+            {isIpSecEnabled &&
+            <NetworkTunnelActionDrawer
+              {...tunnelModalState}
+              onFinish={handleNetworkTunnelActionFinish}
+              onClose={handleCloseTunnelModal}/>}
+          </>
           }
         </Loader>
       </Form.Item>
       {isEdgePinEnabled && <Form.Item hidden name={['sdLanAssociationUpdate']}></Form.Item>}
       {isSoftGreEnabled && <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>}
+      {isSoftGreEnabled && isIpSecEnabled &&
+        <Form.Item hidden name={['ipsecAssociationUpdate']}></Form.Item>}
     </>
   )
 }

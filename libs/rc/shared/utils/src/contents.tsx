@@ -604,3 +604,25 @@ export const ClientIsolationMessages = {
     defaultMessage: 'Switching client isolation requires a manual device reboot to take effect. You can select the specific AP devices from the AP list and click the ‘Reboot’ button to restart them.'
   })
 }
+
+export const SamlIdpMessages = {
+  /* eslint-disable max-len */
+  METADATA_TEXTAREA: defineMessage({
+    defaultMessage: 'Enter the metadata required for authentication with your identity provider. You can upload an XML file, provide a metadata URL, or enter the codes.' +
+                    'Note: Importing metadata from a file will overwrite any existing configuration.'
+  }),
+  /* eslint-disable max-len */
+  SAML_REQUEST_SIGNATURE_TOGGLE: defineMessage({
+    defaultMessage: 'When enabled, SAML authentication requests from RUCKUS One will be digitally signed for enhanced security.'
+  }),
+  /* eslint-disable max-len */
+  SAML_RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
+    defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
+  }),
+  DOWNLOAD_SAML_METADATA: defineMessage({
+    defaultMessage: 'Download SAML metadata'
+  }),
+  UPLOAD_SAML_METADATA: defineMessage({
+    defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
+  })
+}

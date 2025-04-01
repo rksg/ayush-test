@@ -81,13 +81,6 @@ const defaultSelectedFilters: Filter = {
   status: ['VALID', 'FUTURE']
 }
 
-const entitlementSummaryPayload = {
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'ASSIGNED'
-  }
-}
-
 const entitlementRefreshPayload = {
   status: 'synchronize',
   usageType: 'ASSIGNED'
@@ -416,11 +409,20 @@ export function Subscriptions () {
     const queryResults = useMspAssignmentSummaryQuery({
       params: useParams()
     },{
+      skip: isEntitlementRbacApiEnabled,
       selectFromResult: ({ data, ...rest }) => ({
         data,
         ...rest
       })
     })
+
+    const entitlementSummaryPayload = {
+      filters: {
+        licenseType: solutionTokenFFToggled ? ['APSW', 'SLTN_TOKEN'] : ['APSW'],
+        usageType: 'ASSIGNED'
+      }
+    }
+
     const rbacSummaryResults =
       useRbacEntitlementSummaryQuery(
         { params: useParams(), payload: entitlementSummaryPayload },
@@ -465,10 +467,13 @@ export function Subscriptions () {
               const summary = summaryData[item.value]
               const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
                   (![EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP,
-                    EntitlementDeviceType.MSP_APSW_TEMP]
+                    EntitlementDeviceType.MSP_APSW_TEMP,
+                    EntitlementDeviceType.SLTN_TOKEN]
                     .includes(item.value) || isAssignedActive))
 
-              if (isvSmartEdgeEnabled && ![EntitlementDeviceType.MSP_SLTN_TOKEN,
+              if (isvSmartEdgeEnabled && ![
+                EntitlementDeviceType.SLTN_TOKEN,
+                EntitlementDeviceType.MSP_SLTN_TOKEN,
                 EntitlementDeviceType.MSP_SLTN_TOKEN_TEMP].includes(item.value)) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }

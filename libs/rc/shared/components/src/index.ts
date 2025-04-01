@@ -147,8 +147,6 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
-export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
-export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
 export { EdgeHaSettingsForm } from './EdgeFormItem/EdgeHaSettingsForm'
 export type { EdgeHaSettingsFormType } from './EdgeFormItem/EdgeHaSettingsForm'
 export {
@@ -194,7 +192,11 @@ export {
   useEdgePinDetailsCompatibilitiesData,
   useEdgePinsCompatibilityData,
   useEdgeMdnsDetailsCompatibilitiesData,
-  useEdgeMdnssCompatibilityData
+  useEdgeMdnssCompatibilityData,
+  useEdgeHqosDetailsCompatibilitiesData,
+  useEdgeHqosCompatibilityData,
+  useEdgeDhcpDetailsCompatibilitiesData,
+  useEdgeDhcpCompatibilityData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
 export * from './EdgeMdns/EdgeMdnsProxyForm'
@@ -271,7 +273,6 @@ export {
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
-export { usePersonaListQuery } from './usePersonaListQuery'
 export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
 export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 export { EdgeLagTable } from './EdgeLagTable'
@@ -284,7 +285,6 @@ export type {
 } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
-export { EditContext } from './EdgeFormItem/EdgeEditContext'
 export type { EditEdgeFormControlType, EditEdgeContextType } from './EdgeFormItem/EdgeEditContext'
 export {
   getFieldFullPath,
@@ -336,3 +336,4 @@ export * from './WorkflowActionPreviewModal'
 export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
 export * from './WorkflowDrawer'
 export * from './SoftGRETunnelSettings'
+export { ResourceBanner } from './ResourceBanner'

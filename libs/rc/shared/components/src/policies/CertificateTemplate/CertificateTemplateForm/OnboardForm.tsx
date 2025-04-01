@@ -6,13 +6,15 @@ import { useIntl }                    from 'react-intl'
 import { GridCol, GridRow, Modal, ModalType, Select, SelectionControl }                                       from '@acx-ui/components'
 import { useAdaptivePolicySetListQuery, useLazyGetCertificateTemplatesQuery, useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 import {
-  checkObjectNotExists,
-  PersonaGroup,
+  CertificateUrls,
+  checkObjectNotExists, getPolicyAllowedOperation,
+  PersonaGroup, PolicyOperation, PolicyType,
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
-import { hasRoles }  from '@acx-ui/user'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                      from '@acx-ui/types'
+import { hasAllowedOperations, hasRoles } from '@acx-ui/user'
+import { getOpsApi }                      from '@acx-ui/utils'
 
 import { AdaptivePolicySetForm }            from '../../../AdaptivePolicySetForm'
 import { hasCreateIdentityGroupPermission } from '../../../useIdentityGroupUtils'
@@ -38,6 +40,10 @@ export default function OnboardForm ({ editMode = false }) {
     data: {} as PersonaGroup | undefined
   })
 
+  /* eslint-disable max-len */
+  const allowUpdatePolicySetting = (!editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet)])) ||
+  /* eslint-disable max-len */
+  (editMode && hasAllowedOperations([getOpsApi(CertificateUrls.bindCertificateTemplateWithPolicySet), getOpsApi(CertificateUrls.unbindCertificateTemplateWithPolicySet)]))
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
 
   useEffect(() => {
@@ -106,7 +112,7 @@ export default function OnboardForm ({ editMode = false }) {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 32 },
+                { max: 64 },
                 { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               validateTrigger={'onBlur'}
@@ -170,6 +176,7 @@ export default function OnboardForm ({ editMode = false }) {
               ]}
               children={
                 <Select
+                  disabled={!allowUpdatePolicySetting}
                   allowClear
                   placeholder={$t({ defaultMessage: 'Select ...' })}
                   options={
@@ -179,7 +186,9 @@ export default function OnboardForm ({ editMode = false }) {
             />
           </GridCol>
           {
-            hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+            (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+              // eslint-disable-next-line max-len
+              hasAllowedOperations(getPolicyAllowedOperation(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE) ?? [])) &&
             <>
               <Space align='center'>
                 <Button

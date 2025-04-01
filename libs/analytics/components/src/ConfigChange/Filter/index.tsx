@@ -9,7 +9,8 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   TableProps,
-  Tooltip
+  Tooltip,
+  useLayoutContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                 from '@acx-ui/icons'
@@ -95,13 +96,17 @@ export const ResetZoom = () => {
   const {
     chartZoom, initialZoom, setChartZoom
   } = useContext(ConfigChangeContext)
-  const canResetZoom =
-    (initialZoom?.start !== undefined || initialZoom?.end !== undefined) &&
-    (chartZoom?.start !== initialZoom?.start || chartZoom?.end !== initialZoom?.end)
-  return canResetZoom ?
-    <Button onClick={() => setChartZoom(initialZoom)}>
-      {$t({ defaultMessage: 'Reset Zoom' })}
-    </Button> : null
+  if (initialZoom === undefined || chartZoom === undefined) {
+    return null
+  }
+  const startDiff = initialZoom.start - chartZoom.start
+  const endDiff = initialZoom.end - chartZoom.end
+  if ((startDiff === 0 && endDiff === 0) || (startDiff !== 0 && startDiff === endDiff)) {
+    return null
+  }
+  return <Button onClick={() => setChartZoom(initialZoom)}>
+    {$t({ defaultMessage: 'Reset Zoom' })}
+  </Button>
 }
 
 function useDownload () {
@@ -153,7 +158,7 @@ export const Download = () => {
 }
 
 export const Filter = () => {
-  return <UI.Wrapper>
+  return <UI.Wrapper $offsetTop={useLayoutContext().pageHeaderY}>
     <UI.Space>
       <Search/>
       <EntityTypeFilter/>

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                         from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
+import { Brand360 }                                                                                 from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                                                      from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, NewManageCustomer, NewManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                                                                from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -22,7 +22,10 @@ import {
   SyslogForm,
   SyslogDetailView,
   ConfigurationProfileForm,
-  CliProfileForm, ApGroupDetails, ApGroupEdit
+  CliProfileForm, ApGroupDetails, ApGroupEdit,
+  AddEthernetPortProfile,
+  EditEthernetPortProfile,
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -168,13 +171,16 @@ export default function MspRoutes () {
 }
 
 function CustomersRoutes () {
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
   return rootRoutes(
     <Route>
       <Route path='*' element={<PageNotFound />} />
       <Route path=':tenantId/v/dashboard/mspCustomers'>
         <Route index element={<MspCustomers />} />
-        <Route path='create' element={<ManageCustomer />} />
-        <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} />
+        <Route path='create'
+          element={solutionTokenFFToggled ? <NewManageCustomer /> : <ManageCustomer />} />
+        <Route path=':action/:status/:mspEcTenantId'
+          element={solutionTokenFFToggled ? <NewManageCustomer /> : <ManageCustomer />} />
       </Route>
       <Route path=':tenantId/v/dashboard/mspRecCustomers'>
         <Route index element={<MspRecCustomers />} />
@@ -183,8 +189,14 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/integrators'>
         <Route index element={<Integrators />} />
-        <Route path='create' element={<ManageIntegrator />} />
-        <Route path=':action/:type/:mspEcTenantId' element={<ManageIntegrator />} />
+        <Route path='create'
+          element={solutionTokenFFToggled
+            ? <NewManageIntegrator />
+            : <ManageIntegrator />} />
+        <Route path=':action/:type/:mspEcTenantId'
+          element={solutionTokenFFToggled
+            ? <NewManageIntegrator />
+            : <ManageIntegrator />} />
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
@@ -342,6 +354,29 @@ export function ConfigTemplatesRoutes () {
               oper: PolicyOperation.DETAIL
             })}
             element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ETHERNET_PORT_PROFILE] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<AddEthernetPortProfile />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<EditEthernetPortProfile />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ETHERNET_PORT_PROFILE,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<EthernetPortProfileDetail />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>

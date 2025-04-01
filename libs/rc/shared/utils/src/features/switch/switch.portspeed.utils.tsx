@@ -259,6 +259,19 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
   }],
 
+  'ICX7550-24XZP': [{
+    start: '1/1/1', end: '1/1/24',
+    capacity: ['NONE', 'AUTO', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE', 'TWO_POINT_FIVE_G_FULL',
+      'TWO_POINT_FIVE_G_FULL_MASTER', 'TWO_POINT_FIVE_G_FULL_SLAVE', 'FIVE_G_FULL', 'FIVE_G_FULL_MASTER', 'FIVE_G_FULL_SLAVE',
+      'TEN_G_FULL', 'TEN_G_FULL_MASTER', 'TEN_G_FULL_SLAVE']
+  }, {
+    start: '1/2/1', end: '1/2/2',
+    capacity: ['NONE', 'FORTY_G_FULL'] // TBD: ONE_HUNDRED_G_FULL
+  }, {
+    start: '1/3/1', end: '1/3/4',
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL']
+  }],
+
   'ICX7150-C12P': [{
     start: '1/1/1', end: '1/1/12',
     capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL', 'ONE_HUNDRED_M_HALF',
@@ -779,6 +792,61 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     }, {
       start: '1/2/1', end: '1/2/2',
       capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL']
+    }
+  ],
+
+  'ICX8100-24-X': [
+    {
+      start: '1/1/1', end: '1/1/24',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-24P-X': [
+    {
+      start: '1/1/1', end: '1/1/24',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-48-X': [
+    {
+      start: '1/1/1', end: '1/1/48',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-48P-X': [
+    {
+      start: '1/1/1', end: '1/1/48',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/4',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
+    }
+  ],
+
+  'ICX8100-C08PF-X': [
+    {
+      start: '1/1/1', end: '1/1/8',
+      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+    }, {
+      start: '1/2/1', end: '1/2/2',
+      capacity: ['NONE', 'ONE_HUNDRED_M_FULL', 'ONE_G_FULL', 'TEN_G_FULL']
     }
   ]
 }

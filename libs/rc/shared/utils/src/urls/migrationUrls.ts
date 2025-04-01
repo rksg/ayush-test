@@ -36,6 +36,7 @@ export const MigrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/zdConfigurations/query',
     oldUrl: '/zdConfigurations/query',
+    opsApi: 'POST:/zdConfigurations/query',
     newApi: true
   },
   getZdConfiguration: {
