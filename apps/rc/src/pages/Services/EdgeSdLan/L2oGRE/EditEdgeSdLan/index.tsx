@@ -5,7 +5,6 @@ import { Loader, PageHeader }                 from '@acx-ui/components'
 import { useEdgeSdLanActions }                from '@acx-ui/edge/components'
 import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {
-  EdgeSdLanServiceProfile,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
@@ -16,7 +15,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
 import { GeneralForm }                               from '../Form/GeneralForm'
 import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
-import { transformToFormData }                       from '../Form/utils'
+import { transformToApiData, transformToFormData }   from '../Form/utils'
 
 export const EditEdgeSdLan = () => {
   const { $t } = useIntl()
@@ -65,7 +64,7 @@ export const EditEdgeSdLan = () => {
       }
 
       await new Promise(async (resolve, reject) => {
-        await updateEdgeSdLan(data as unknown as EdgeSdLanServiceProfile, {
+        await updateEdgeSdLan(transformToApiData(data), {
           payload,
           callback: (result) => {
             // callback is after all RBAC related APIs sent
