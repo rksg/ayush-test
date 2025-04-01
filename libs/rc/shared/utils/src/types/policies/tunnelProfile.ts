@@ -36,8 +36,6 @@ export interface TunnelProfileViewData {
   keepAliveInterval: number // unit is milliseconds
   natTraversalEnabled?: boolean
   tunnelType?: TunnelTypeEnum
-  destinationEdgeClusterId?: string
-  destinationEdgeClusterName?: string
   destinationIpAddress?: string
   destinationEdgeClusterId?: string
   destinationEdgeClusterName?: string
