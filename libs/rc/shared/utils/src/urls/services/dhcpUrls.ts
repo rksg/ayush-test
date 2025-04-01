@@ -133,7 +133,8 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   bindVenueDhcpProfile: {
     method: 'PUT',
     url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/venues/{id}/dhcpConfigServiceProfiles/{id}'
   },
   unbindVenueDhcpProfile: {
     method: 'delete',
