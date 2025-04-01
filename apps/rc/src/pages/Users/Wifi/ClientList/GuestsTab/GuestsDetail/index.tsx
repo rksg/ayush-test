@@ -53,7 +53,8 @@ export const isEnabledGeneratePassword = (guestDetail:Guest) => {
   // self-sign in & host approval should to use forget password
   const isValidType = guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
   guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
-  guestDetail.guestType !== GuestTypesEnum.DIRECTORY
+  guestDetail.guestType !== GuestTypesEnum.DIRECTORY &&
+  guestDetail.guestType !== GuestTypesEnum.SAML
   const isOnline = guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1
   const isOffline = guestDetail.guestStatus === GuestStatusEnum.OFFLINE &&
   guestDetail.wifiNetworkId
