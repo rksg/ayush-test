@@ -114,6 +114,12 @@ describe('ScheduleStep', () => {
     await userEvent.click(icx82Radio10010rc3, { delay: null })
     expect(icx82Radio10010rc3).toBeEnabled()
 
+    const icx81Radio10010fCd2rc3 = within(form).getByRole('radio', {
+      name: /10\.0\.10f_cd2_rc3/i
+    })
+    await userEvent.click(icx81Radio10010fCd2rc3, { delay: null })
+    expect(icx81Radio10010fCd2rc3).toBeEnabled()
+
 
     const icx7XRadio10010rc3 = within(form).getByRole('radio', {
       name: /10010_rc3_ICX7/i
