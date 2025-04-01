@@ -222,12 +222,12 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
   const isConnectionTypeChanged = selectedConnectionType !== selectedCloudStorage?.connectionType
     || (selectedCloudStorage?.connectionType === 'azure'
       && azureConnectionType !== (selectedCloudStorage as AzureStoragePayload)?.azureConnectionType)
-  const isValidateSecretFields = !editMode || isConnectionTypeChanged
+  const shouldValidateSecretFields = !editMode || isConnectionTypeChanged
   const storageMap = useMemo(
-    () => getStorageMap(isValidateSecretFields,
+    () => getStorageMap(shouldValidateSecretFields,
       selectedConnectionType as ConnectionType,
       azureConnectionType),
-    [isValidateSecretFields, selectedConnectionType, azureConnectionType]
+    [shouldValidateSecretFields, selectedConnectionType, azureConnectionType]
   )
 
   const saveStorage = useCallback(() => {
