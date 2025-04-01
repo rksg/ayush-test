@@ -131,18 +131,20 @@ export default function CertificateTemplateDetail () {
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
+        footer={<>
+          <Section style={{ paddingTop: '12px' }}>
+            <SummaryCard data={summaryInfo} />
+          </Section>
+          <Tabs activeKey={activeTab} onChange={(key: string) => setActiveTab(key as TabKeyType)}>
+            {Object.values(TabKeyType).map((key) => (
+              <Tabs.TabPane
+                tab={tabTitle[key]}
+                key={key}
+              />
+            ))}
+          </Tabs>
+        </>}
       />
-      <Section>
-        <SummaryCard data={summaryInfo} />
-      </Section>
-      <Tabs activeKey={activeTab} onChange={(key: string) => setActiveTab(key as TabKeyType)}>
-        {Object.values(TabKeyType).map((key) => (
-          <Tabs.TabPane
-            tab={tabTitle[key]}
-            key={key}
-          />
-        ))}
-      </Tabs>
       {tabMapping[activeTab]}
     </Loader>
   )

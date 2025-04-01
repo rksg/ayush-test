@@ -37,6 +37,8 @@ export interface TunnelProfileViewData {
   natTraversalEnabled?: boolean
   tunnelType?: TunnelTypeEnum
   destinationIpAddress?: string
+  destinationEdgeClusterId?: string
+  destinationEdgeClusterName?: string
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {
