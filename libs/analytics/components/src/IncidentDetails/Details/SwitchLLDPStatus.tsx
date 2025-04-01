@@ -3,6 +3,8 @@ import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
+import { ImpactedSwitchesByParamDonut }   from '../Charts/ImpactedSwitchesDonut/byParam'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
@@ -37,6 +39,15 @@ export const SwitchLLDPStatus = (incident: Incident) => {
       </GridCol>
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
+      </GridCol>
+      <GridCol col={{ offset: 4, span: 6 }} style={{ minHeight: '249px' }}>
+        <ImpactedSwitchesDonut incident={incident}/>
+      </GridCol>
+      <GridCol col={{ span: 6 }} style={{ minHeight: '249px' }}>
+        <ImpactedSwitchesByParamDonut incident={incident} param='model'/>
+      </GridCol>
+      <GridCol col={{ span: 6 }} style={{ minHeight: '249px' }}>
+        <ImpactedSwitchesByParamDonut incident={incident} param='firmware'/>
       </GridCol>
     </GridRow>
   </> : null
