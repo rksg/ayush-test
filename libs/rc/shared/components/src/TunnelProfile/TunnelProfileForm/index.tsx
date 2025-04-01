@@ -19,7 +19,7 @@ import { Features, TierFeatures, useIsBetaEnabled }                      from '@
 import { useGetEdgeClusterListQuery, useGetEdgeClusterServiceListQuery } from '@acx-ui/rc/services'
 import {
   AgeTimeUnit,
-  EdgeClsuterProfileTypeEnum,
+  EdgeClusterProfileTypeEnum,
   EdgeServiceTypeEnum,
   IncompatibilityFeatures,
   MtuRequestTimeoutUnit,
@@ -139,11 +139,11 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
     item.serviceType === EdgeServiceTypeEnum.MV_SD_LAN ||
     // eslint-disable-next-line max-len
-    (item.serviceId !== formId && item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
+    (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
   clusterServiceData
     // eslint-disable-next-line max-len
-    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)
+    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)
     .some(item => {
       form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
       return true

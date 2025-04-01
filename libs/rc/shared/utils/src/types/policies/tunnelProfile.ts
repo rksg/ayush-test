@@ -39,6 +39,8 @@ export interface TunnelProfileViewData {
   destinationEdgeClusterId?: string
   destinationEdgeClusterName?: string
   destinationIpAddress?: string
+  destinationEdgeClusterId?: string
+  destinationEdgeClusterName?: string
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {
