@@ -24,13 +24,6 @@ export const expectedFactsResult = {
           labels: []
         },
         {
-          key: 'userTrafficThroughAPs',
-          values: [
-            0.9653855715231734
-          ],
-          labels: []
-        },
-        {
           key: 'topIncidentsZones',
           values: [],
           labels: [
@@ -53,15 +46,6 @@ export const expectedFactsResult = {
           ],
           labels: [
             'CIOT_WPA2'
-          ]
-        },
-        {
-          key: 'busiestSsidByTraffic',
-          values: [
-            0.2561407629845357
-          ],
-          labels: [
-            'wp3'
           ]
         },
         {

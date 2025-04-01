@@ -335,7 +335,7 @@ describe('TunnelProfileList', () => {
 
     beforeEach(() => {
       jest.mocked(useIsEdgeFeatureReady)
-        .mockImplementation(ff => ff === Features.EDGE_L2GRE_TOGGLE
+        .mockImplementation(ff => ff === Features.EDGE_L2OGRE_TOGGLE
           || ff === Features.EDGES_SD_LAN_TOGGLE
           || ff === Features.EDGES_SD_LAN_HA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE

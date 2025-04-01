@@ -15,7 +15,17 @@ import {
   NetworkHotspot20Settings,
   SmsProviderType,
   SoftGreViewData,
-  MtuTypeEnum
+  MtuTypeEnum,
+  EspProposal,
+  IkeProposal,
+  IpsecActivation,
+  IpSecAuthEnum,
+  IpSecDhGroupEnum,
+  IpSecEncryptionAlgorithmEnum,
+  IpSecIntegrityAlgorithmEnum,
+  IpSecProposalTypeEnum,
+  IpSecPseudoRandomFunctionEnum,
+  IpsecViewData
 } from '@acx-ui/rc/utils'
 
 export const networksResponse = {
@@ -2642,6 +2652,99 @@ export const mockSoftGreTable = {
   ] as SoftGreViewData[]
 }
 
+export const mockIpSecTable = {
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      id: '67d5c0eed90f4ed0b664a3f7b13604d8',
+      name: 'ipsecProfileName1',
+      serverAddress: '1.2.3.4',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.DEFAULT,
+      ikeProposals: [] as IkeProposal[],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: [
+            '9b33509cc0a1464cad9447778a72006f',
+            '797a1f499c254260b7a1aedafba524a3',
+            'b946294426b8413d819751cb3d320a20'
+          ]
+        }
+      ]
+    },
+    {
+      id: '1fd70d0dc56443e7b9e3f6e0ec75c153',
+      name: 'ipsecProfileName2',
+      serverAddress: '1.2.3.4',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+      ikeProposals: [
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        }
+      ],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [] as IpsecActivation[]
+    },
+    {
+      id: '07146f7c5b2c41f2a6227ed902a1cdac',
+      name: 'ipsecProfileName3',
+      serverAddress: '1.2.3.4',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+      ikeProposals: [
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        },
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+          dhGroup: IpSecDhGroupEnum.MODP2048
+        }
+      ],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [] as IpsecActivation[]
+    },
+    {
+      id: '380043b71ed7411d8e95a41af65d0f50',
+      name: 'ipsecProfileName4',
+      serverAddress: '7.7.7.7',
+      authenticationType: IpSecAuthEnum.PSK,
+      ikeProposalType: IpSecProposalTypeEnum.SPECIFIC,
+      ikeProposals: [
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.THREE_DES,
+          authAlg: IpSecIntegrityAlgorithmEnum.MD5,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_MD5,
+          dhGroup: IpSecDhGroupEnum.MODP768
+        },
+        {
+          encAlg: IpSecEncryptionAlgorithmEnum.AES128,
+          authAlg: IpSecIntegrityAlgorithmEnum.AEX_XBC,
+          prfAlg: IpSecPseudoRandomFunctionEnum.PRF_SHA256,
+          dhGroup: IpSecDhGroupEnum.MODP2048
+        }
+      ],
+      espProposalType: IpSecProposalTypeEnum.DEFAULT,
+      espProposals: [] as EspProposal[],
+      activations: [] as IpsecActivation[]
+    }
+  ] as IpsecViewData[]
+}
+
 export const mockedDirectoryServerProfiles = {
   fields: [
     'wifiNetworkIds',
@@ -2876,4 +2979,84 @@ export const mockIdentityGroupQuery = {
   first: true,
   numberOfElements: 4,
   empty: false
+}
+
+export const mockSAMLIdpQuery = {
+  fields: null,
+  totalCount: 9,
+  page: 1,
+  data: [
+    {
+      id: 'cbe337e7917f48878f6feb1982199430',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A7',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'c55f0a3bc2e44db5b3e55641dcbb0bfc',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A4',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '846c1033256b4bd98e513193f415a0f2',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-1',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'eb9b1b54aaa646dda2f457b54d645b22',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A1',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '5e75c9ae21a64ac78e067c6076d0bc43',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A5',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'f71491f6164448d986e9d1defbb0b584',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A6',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '571f87b3bb3344c59d13102de7b0f376',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-2',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: 'a7bc844b82724af5bfad3586f82d74b1',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A2',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    },
+    {
+      id: '07977919a7a34e29a1c2169c2bd2d044',
+      tenantId: '412b9d39bcd14fd286c3c195eef2c952',
+      name: 'SAML-A6',
+      signingCertificateEnabled: false,
+      encryptionCertificateEnabled: false,
+      wifiNetworkIds: []
+    }
+  ]
 }

@@ -297,14 +297,15 @@ describe('RangePicker', () => {
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
   })
   it('should limit to 3months sliding window within 12months for reports', async () => {
+    const staticDate = '20250402'
     render(
       <IntlProvider locale='en'>
         <RangePicker
           isReport
           selectionType={DateRange.custom}
           selectedRange={{
-            startDate: moment().subtract(7, 'months').seconds(0),
-            endDate: moment().subtract(6, 'months').seconds(0)
+            startDate: moment(staticDate).subtract(7, 'months').seconds(0),
+            endDate: moment(staticDate).subtract(6, 'months').seconds(0)
           }}
           onDateApply={() => {}}
         />
@@ -313,10 +314,10 @@ describe('RangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    const yesterday = moment().subtract(7, 'months').subtract(1, 'day')
+    const yesterday = moment(staticDate).subtract(7, 'months').subtract(1, 'day')
     const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    const today = formatter(DateFormatEnum.DateFormat)(moment().subtract(6, 'months'))
+    const today = formatter(DateFormatEnum.DateFormat)(moment(staticDate).subtract(6, 'months'))
     const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
     expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
   })
