@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
 
 import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
-import { ConfigTemplateEnforcementContext }                    from '@acx-ui/rc/components'
+import { ConfigTemplateEnforcementContext, useEnforcedStatus } from '@acx-ui/rc/components'
 import { useGetVenueQuery }                                    from '@acx-ui/rc/services'
 import {
   VenueSwitchConfiguration,
@@ -12,7 +12,8 @@ import {
   VeuneApAntennaTypeSettings,
   CommonUrlsInfo,
   useConfigTemplate,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
@@ -182,10 +183,8 @@ export function VenueEdit () {
     }
   }, [activeTab, basePath, enablePropertyManagement, navigate])
 
-  const { isTemplate } = useConfigTemplate()
-  const { data: venueInstance } = useGetVenueQuery(
-    { params: { venueId } }, { skip: !venueId || isTemplate }
-  )
+
+  const isEnforced = useIsVenueEnforced(venueId)
 
   return (
     <VenueEditContext.Provider value={{
@@ -204,7 +203,7 @@ export function VenueEdit () {
       previousPath,
       setPreviousPath
     }}>
-      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced: venueInstance?.isEnforced }}>
+      <ConfigTemplateEnforcementContext.Provider value={{ isEnforced }}>
         <VenueEditPageHeader />
         { Tab && <Tab /> }
       </ConfigTemplateEnforcementContext.Provider>
@@ -463,4 +462,14 @@ export function createAnchorSectionItem (title: string, titleId: string, content
       {content}
     </>
   }
+}
+
+function useIsVenueEnforced (venueId?: string): boolean {
+  const { isTemplate } = useConfigTemplate()
+  const { isEnforcedAvailable } = useEnforcedStatus(ConfigTemplateType.VENUE)
+  const { data } = useGetVenueQuery(
+    { params: { venueId } }, { skip: !venueId || isTemplate || !isEnforcedAvailable() }
+  )
+
+  return data?.isEnforced ?? false
 }

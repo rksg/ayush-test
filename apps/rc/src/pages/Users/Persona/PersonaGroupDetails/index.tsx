@@ -261,7 +261,7 @@ function PersonaGroupDetails () {
                 name: { searchable: true },
                 email: { searchable: true },
                 description: { searchable: true },
-                groupId: { show: false, filterable: false },
+                groupId: { disable: true, show: false, filterable: false },
                 ...!propertyEnabled
                   ? { identityId: { disable: true, show: false } } : {}
               }}/>
