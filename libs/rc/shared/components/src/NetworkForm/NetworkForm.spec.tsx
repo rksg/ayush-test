@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { networkApi, policyApi, serviceApi, softGreApi, venueApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, serviceApi, softGreApi, venueApi, ipSecApi } from '@acx-ui/rc/services'
 import {
   AccessControlUrls,
   AdministrationUrlsInfo,
@@ -50,6 +50,7 @@ import {
   layer2PolicyListResponse,
   layer3PolicyListResponse,
   mockSoftGreTable,
+  mockIpSecTable,
   mockAAAPolicyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
@@ -78,6 +79,7 @@ describe('NetworkForm', () => {
     store.dispatch(serviceApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(softGreApi.util.resetApiState())
+    store.dispatch(ipSecApi.util.resetApiState())
 
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation((ff) => (
@@ -135,6 +137,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockIpSecTable))),
       rest.post(AaaUrls.queryAAAPolicyList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,

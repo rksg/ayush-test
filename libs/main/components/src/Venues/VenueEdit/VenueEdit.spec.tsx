@@ -9,7 +9,9 @@ import {
   AdministrationUrlsInfo,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  IpsecUrls,
   LanPortsUrls,
+  SoftGreUrls,
   SwitchUrlsInfo,
   SyslogUrls,
   WifiRbacUrlsInfo,
@@ -179,6 +181,12 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.post(CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
