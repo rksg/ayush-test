@@ -73,9 +73,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }                  from '@acx-ui/types'
-import { useUserProfileContext }      from '@acx-ui/user'
-import { AccountType, noDataDisplay } from '@acx-ui/utils'
+import { RolesEnum }                                                       from '@acx-ui/types'
+import { useUserProfileContext }                                           from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, noDataDisplay } from '@acx-ui/utils'
 
 import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
 import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
@@ -234,6 +234,7 @@ export function NewManageCustomer () {
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
   const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
+  const isMDU = getJwtTokenPayload().acx_account_vertical === AccountVertical.MDU
 
   const entitlementSummaryPayload = {
     filters: {
@@ -369,7 +370,7 @@ export function NewManageCustomer () {
           solutionTokenLicense: solutionTokenLic,
           solutionTokenTrialLicense: solutionTokenTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: data?.tier ?? MspEcTierEnum.Professional,
+          tier: isMDU ? MspEcTierEnum.Core : (data?.tier ?? MspEcTierEnum.Professional),
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
@@ -967,28 +968,51 @@ export function NewManageCustomer () {
   }
 
   const EcTierForm = () => {
-    return <Form.Item
-      name='tier'
-      label={intl.$t({ defaultMessage: 'Service Tier' })}
-      style={{ width: '300px' }}
-      rules={[{ required: true }]}
-      children={
-        <Radio.Group>
-          <Space direction='vertical'>
-            {
-              Object.entries(MspEcTierEnum).map(([label, value]) => {
-                return <Radio
-                  onChange={handleServiceTierChange}
-                  key={value}
-                  value={value}
-                  children={intl.$t({
-                    defaultMessage: '{label}' }, { label })} />
-              })
-            }
-          </Space>
-        </Radio.Group>
-      }
-    />
+    return isMDU
+      ? <Form.Item
+        name='tier'
+        label={intl.$t({ defaultMessage: 'Service Tier' })}
+        style={{ width: '300px' }}
+        rules={[{ required: true }]}
+        initialValue={MspEcTierEnum.Core}
+        children={
+          <Radio.Group>
+            <Space direction='vertical'>
+              {
+                Object.entries(MspEcTierEnum).map(([label, value]) => {
+                  return (value === MspEcTierEnum.Core) && <Radio
+                    key={value}
+                    value={value}
+                    children={intl.$t({
+                      defaultMessage: '{label}' }, { label })} />
+                })
+              }
+            </Space>
+          </Radio.Group>
+        }
+      />
+      : <Form.Item
+        name='tier'
+        label={intl.$t({ defaultMessage: 'Service Tier' })}
+        style={{ width: '300px' }}
+        rules={[{ required: true }]}
+        children={
+          <Radio.Group>
+            <Space direction='vertical'>
+              {
+                Object.entries(MspEcTierEnum).map(([label, value]) => {
+                  return (value !== MspEcTierEnum.Core) && <Radio
+                    onChange={handleServiceTierChange}
+                    key={value}
+                    value={value}
+                    children={intl.$t({
+                      defaultMessage: '{label}' }, { label })} />
+                })
+              }
+            </Space>
+          </Radio.Group>
+        }
+      />
   }
 
   const CustomerAdminsForm = () => {

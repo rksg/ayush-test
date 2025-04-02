@@ -499,6 +499,7 @@ export interface MspRecCustomer {
 }
 
 export enum MspEcTierEnum {
+  Core = 'Silver',
   Essentials = 'Gold',
   Professional = 'Platinum'
 }
