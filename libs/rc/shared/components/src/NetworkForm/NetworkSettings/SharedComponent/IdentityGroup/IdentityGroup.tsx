@@ -45,8 +45,9 @@ export function IdentityGroup () {
 
   const [identityGroupListTrigger] = useLazySearchPersonaGroupListQuery()
   const [identityListTrigger] = useLazySearchPersonaListQuery()
-  const noDisplayUnderSpecificNetwork = ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20]
-    .includes(data?.type ?? NetworkTypeEnum.PSK)
+  const noDisplayUnderSpecificNetwork =
+    ![NetworkTypeEnum.AAA, NetworkTypeEnum.HOTSPOT20, NetworkTypeEnum.CAPTIVEPORTAL]
+      .includes(data?.type ?? NetworkTypeEnum.PSK)
   const handleClose = (identity?: Persona) => {
     setIdentitySelectorDrawerVisible(false)
     if (identity) {
@@ -74,7 +75,8 @@ export function IdentityGroup () {
         if (
           data.type === NetworkTypeEnum.PSK ||
           data.type === NetworkTypeEnum.AAA ||
-          data.type === NetworkTypeEnum.HOTSPOT20
+          data.type === NetworkTypeEnum.HOTSPOT20 ||
+          data.type === NetworkTypeEnum.CAPTIVEPORTAL
         ) {
           const retrievedIdentityGroupsData = await identityGroupListTrigger(
             { payload: { networkId: data.id } }

@@ -20,8 +20,10 @@ import {
   SwitchFirmwareV1002,
   invalidVersionFor82Av,
   invalidVersionFor81X,
+  invalidVersionFor75Zippy,
   isRodanAv,
-  isBabyRodanX
+  isBabyRodanX,
+  is7550Zippy
 } from '@acx-ui/rc/utils'
 
 import * as UI                   from '../../styledComponents'
@@ -47,6 +49,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
   const isSupport8100X = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100X)
   const isSupport81Or81X = isSupport8100 || isSupport8100X
+  const isSupport7550Zippy = useIsSplitOn(Features.SWITCH_SUPPORT_ICX7550Zippy)
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
@@ -55,6 +58,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   const [switch82AvNoteEnable, setSwitch82AvNoteEnable] = useState(false)
   const [switch81XNoteEnable, setSwitch81XNoteEnable] = useState(false)
+  const [switch75ZippyNoteEnable, setSwitch75ZippyNoteEnable] = useState(false)
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
@@ -98,6 +102,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     { payload: {
       ...payload,
       searchFilter: 'ICX8100-C08PF-X'
+    } },
+    { payload: {
+      ...payload,
+      searchFilter: 'ICX7550-24XZP'
     } } ]
     , { skip: upgradeVenueList.length === 0 })
 
@@ -125,6 +133,18 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     }
   }
 
+  const icx75ZippyGroupedData = (): SwitchFirmwareV1002[][] => {
+    const upgradeSwitchListOf75Zippy = upgradeSwitchList.filter(s => is7550Zippy(s.model))
+    const switch75ZippyFirmwareList = getSwitchFirmwareList?.data.filter(s => is7550Zippy(s.model))
+    if (upgradeVenueList.length === 0 || switch75ZippyFirmwareList) {
+      const switchList = upgradeSwitchListOf75Zippy.concat(switch75ZippyFirmwareList || [])
+      const groupedObject = _.groupBy(switchList, 'venueId')
+      return Object.values(groupedObject)
+    } else {
+      return []
+    }
+  }
+
   const exist82AvAndInvalidVersion = (version: string): boolean => {
     return invalidVersionFor82Av(version) && icxRodanAvGroupedData().length > 0
   }
@@ -133,12 +153,20 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     return invalidVersionFor81X(version) && icxBabyRodanXGroupedData().length > 0
   }
 
+  const exist75ZippyAndInvalidVersion = (version: string): boolean => {
+    return invalidVersionFor75Zippy(version) && icx75ZippyGroupedData().length > 0
+  }
+
   const updateSwitch82AvNoteEnable = (version: string) => {
     setSwitch82AvNoteEnable(exist82AvAndInvalidVersion(version))
   }
 
   const updateSwitch81XNoteEnable = (version: string) => {
     setSwitch81XNoteEnable(exist81XAndInvalidVersion(version))
+  }
+
+  const updateSwitch75ZippyNoteEnable = (version: string) => {
+    setSwitch75ZippyNoteEnable(exist75ZippyAndInvalidVersion(version))
   }
 
   const setVersionFieldValue = function () {
@@ -158,6 +186,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     if (isSupport8100X) {
       updateSwitch81XNoteEnable(form.getFieldValue('selectedICX81Version'))
     }
+    if (isSupport7550Zippy) {
+      updateSwitch75ZippyNoteEnable(form.getFieldValue('selectedICX7XVersion'))
+    }
   }, [current])
 
   const handleICX71Change = (value: RadioChangeEvent) => {
@@ -169,6 +200,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     setSelecteedICX7XVersion(value.target.value)
     form.setFieldValue('selectedICX7XVersion', value.target.value)
     form.validateFields()
+    if (isSupport7550Zippy) {
+      updateSwitch75ZippyNoteEnable(value.target.value)
+    }
   }
   const handleICX81Change = (value: RadioChangeEvent) => {
     setSelecteedICX81Version(value.target.value)
@@ -305,13 +339,18 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             ({ICX7XCount} {intl.$t({ defaultMessage: 'switches' })})
           </Subtitle>
           <Radio.Group
-            style={{ margin: '5px 0 40px 0', fontSize: 'var(--acx-body-3-font-size)' }}
+            style={{
+              // eslint-disable-next-line max-len
+              margin: (isSupport7550Zippy && switch75ZippyNoteEnable) ? '5px 0 12px 0' : '5px 0 40px 0',
+              fontSize: 'var(--acx-body-3-font-size)'
+            }}
             onChange={handleICX7XChange}
             value={selectedICX7XVersion}>
             <Space direction={'vertical'}>
               {getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                 <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                  {getVersionOptionV1002(intl, v)}
+                  {getVersionOptionV1002(intl, v,
+                    (isSupport7550Zippy && exist75ZippyAndInvalidVersion(v.id) ? ' *' : null))}
                 </Radio>)}
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
@@ -320,6 +359,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </Radio.Group>
         </>}
 
+        {isSupport7550Zippy && switch75ZippyNoteEnable && <SwitchNote
+          type={NotesEnum.NOTE7550_1}
+          data={icx75ZippyGroupedData()} />}
 
         {(hasVenue || ICX71Count > 0) && <>
           <Subtitle level={4}>

@@ -12,12 +12,13 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileLimitedSelection
+  useSoftGreProfileLimitedSelection,
+  useIpsecProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
 import {
@@ -61,7 +62,8 @@ import {
   WifiNetworkMessages,
   SoftGreDuplicationChangeState,
   Voter,
-  mergeLanPortSettings
+  mergeLanPortSettings,
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -228,6 +230,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    ipsecOptionList, ipsecOptionDispatch, usedProfileData
+  } = useIpsecProfileLimitedSelection({
+    venueId: venueId!,
+    isVenueOperation: true,
+    duplicationChangeDispatch: duplicationChangeDispatch })
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -681,6 +689,12 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
       voters: voters
     })
 
+    if (isIpSecOverNetworkEnabled) {
+      ipsecOptionDispatch({
+        state: IpsecOptionChangeState.ResetToDefault,
+        voters: voters
+      })
+    }
 
     customGuiChagedRef.current = true
   }
@@ -840,6 +854,9 @@ export function LanPorts (props: VenueWifiConfigItemProps) {
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
                     validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+                    ipsecOptionDispatch={isIpSecOverNetworkEnabled ? ipsecOptionDispatch : undefined}
+                    ipsecOptionList={isIpSecOverNetworkEnabled ? ipsecOptionList : undefined}
+                    usedProfileData={isIpSecOverNetworkEnabled ? usedProfileData : undefined}
                   />
                 </Col>
               </Row>
