@@ -17,6 +17,7 @@ jest.mock('@acx-ui/config', () => ({
 const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 describe.each(['model', 'firmware'])('ImpactedSwitchesByParamDonut',(param)=>{
+  const capitalizeParam = param.charAt(0).toUpperCase() + param.slice(1)
   const sample1:ImpactedSwitch[] = [{
     name: 'ICX7150-C12 Router',
     mac: '58:FB:96:0B:12:CA',
@@ -48,7 +49,7 @@ describe.each(['model', 'firmware'])('ImpactedSwitchesByParamDonut',(param)=>{
         <ImpactedSwitchesByParamDonut incident={fakeIncidentDDoS}
           param={param as DonutChartByParamProps['param']}/>
       </Provider>)
-      await screen.findByText(`Impacted Switch ${param}s`)
+      await screen.findByText(`Impacted Switch ${capitalizeParam}s`)
       expect(asFragment()
         .querySelector('div.ant-card-body > div:nth-child(1) > div > div > div > div:nth-child(1)'))
         .toMatchSnapshot()
@@ -60,7 +61,7 @@ describe.each(['model', 'firmware'])('ImpactedSwitchesByParamDonut',(param)=>{
         <ImpactedSwitchesByParamDonut incident={fakeIncidentDDoS}
           param={param as DonutChartByParamProps['param']}/>
       </Provider>)
-      await screen.findByText(`Impacted Switch ${param}`)
+      await screen.findByText(`Impacted Switch ${capitalizeParam}`)
       await screen.findByText('Data granularity at this level is not available')
       jest.mocked(mockOverlapsRollup).mockReturnValue(false)
     })
