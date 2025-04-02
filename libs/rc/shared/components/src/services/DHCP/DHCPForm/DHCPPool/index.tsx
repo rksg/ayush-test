@@ -5,7 +5,8 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }      from '@acx-ui/components'
+import { Drawer }                 from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   DHCPPool,
   LeaseUnit,
@@ -105,6 +106,7 @@ export default function DHCPPoolTable ({
   isDefaultService
 }: DHCPPoolTableProps) {
   const { $t } = useIntl()
+  const showDatePicker = useIsSplitOn(Features.ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT)
   const [form] = Form.useForm<DHCPPool>()
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
@@ -253,8 +255,13 @@ export default function DHCPPoolTable ({
             { validator: (_, value) => {
               if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
                 if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
-                  // eslint-disable-next-line max-len
-                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                  if (showDatePicker) {
+                    // eslint-disable-next-line max-len
+                    return Promise.reject($t({ defaultMessage: 'An additional 10 IPs on top of the number of clients desired are needed for the DCHP servers and gateways used in multiple mode' }))
+                  } else {
+                    // eslint-disable-next-line max-len
+                    return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                  }
                 }
               }
               else if(dhcpMode===DHCPConfigTypeEnum.HIERARCHICAL){

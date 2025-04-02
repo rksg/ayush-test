@@ -7,6 +7,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
 import { defaultSort, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
 import { filterByAccess }                             from '@acx-ui/user'
 
@@ -20,6 +21,7 @@ export function PoolTable (props:{
 }) {
   const { $t } = useIntl()
   const { data, readonly } = props
+  const showDatePicker = useIsSplitOn(Features.ACX_UI_HISTORICAL_CLIENTS_DATE_RANGE_LIMIT)
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -105,7 +107,14 @@ export function PoolTable (props:{
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
       dataIndex: 'numberOfHosts',
-      sorter: { compare: sortProp('numberOfHosts', defaultSort) }
+      sorter: { compare: sortProp('numberOfHosts', defaultSort) },
+      render: (_, row) => {
+        if (showDatePicker && !!row.numberOfHosts) {
+          return row.numberOfHosts - 10
+        } else  {
+          return row.numberOfHosts
+        }
+      }
     }
   ]
   let actions = [{
