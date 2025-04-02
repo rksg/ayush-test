@@ -71,7 +71,8 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         setEspReplayWindowEnabled(false)
         form.setFieldValue('espReplayWindowEnabledCheckbox', false)
       }
-      if (initIpSecData.advancedOption?.dpdDelay) {
+      if (initIpSecData.advancedOption?.dpdDelay
+        || initIpSecData.advancedOption?.dpdDelay !== 0) {
         setDeadPeerDetectionDelayEnabled(true)
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
       } else {
@@ -316,7 +317,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
-                    initialValue={1}
+                    initialValue={30}
                     children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>

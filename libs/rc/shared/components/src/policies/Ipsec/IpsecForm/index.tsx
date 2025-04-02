@@ -62,7 +62,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
           replayWindow: 32,
           ipcompEnable: IpSecAdvancedOptionEnum.DISABLED,
           enforceNatt: IpSecAdvancedOptionEnum.DISABLED,
-          dpdDelay: 1,
+          dpdDelay: 30,
           keepAliveInterval: 20,
           failoverRetryInterval: 1,
           failoverMode: IpSecFailoverModeEnum.NON_REVERTIVE,
@@ -80,7 +80,7 @@ export const IpsecForm = (props: IpsecFormProps) => {
         espRekeyTimeEnabledCheckbox: true,
         retryLimitEnabledCheckbox: true,
         espReplayWindowEnabledCheckbox: true,
-        deadPeerDetectionDelayEnabledCheckbox: false,
+        deadPeerDetectionDelayEnabledCheckbox: true,
         nattKeepAliveIntervalEnabledCheckbox: true
       })
     }
