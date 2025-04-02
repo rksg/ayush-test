@@ -86,9 +86,8 @@ export const LegendWrapper = styled.div`
 export const LegendItems = styled.div`
   display: flex;
   grid-template-columns: auto 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  padding: 10px 0px;
+  grid-column-gap: 5px;
+  padding-bottom: 20px;
   align-items: start;
   justify-items: start;
   flex-direction: row;
@@ -115,6 +114,7 @@ export const LegendSquare = styled.span<{ $color: string }>`
   width: 12px;
   height: 12px;
   margin-top: 2px;
+  margin-left: 10px;
 `
 
 export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link' })`
