@@ -2660,6 +2660,7 @@ export function EditPortDrawer ({
                   field: 'switchMacAcl', ...commonRequiredProps
                 }) ? <MultipleText />
                   : <Select
+                    data-testid='switchMacAclSelectList'
                     options={macAclsOptions}
                     disabled={getFieldDisabled('switchMacAcl')}
                   />

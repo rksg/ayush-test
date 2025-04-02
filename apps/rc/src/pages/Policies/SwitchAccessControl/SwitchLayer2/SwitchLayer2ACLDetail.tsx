@@ -55,12 +55,20 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
       {
         key: 'action',
         title: $t({ defaultMessage: 'Action' }),
-        dataIndex: 'action'
+        dataIndex: 'action',
+        render: (_, row) => {
+          return row.action === 'permit' ?
+            $t({ defaultMessage: 'Permit' }) : $t({ defaultMessage: 'Deny' })
+        }
       },
       {
         key: 'sourceAddress',
         title: $t({ defaultMessage: 'Source MAC Address' }),
-        dataIndex: 'sourceAddress'
+        dataIndex: 'sourceAddress',
+        render: (_, row) => {
+          return row.sourceAddress === 'any' ?
+            $t({ defaultMessage: 'Any' }) : row.sourceAddress
+        }
       },
       {
         key: 'sourceMask',
@@ -70,7 +78,11 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
       {
         key: 'destinationAddress',
         title: $t({ defaultMessage: 'Dest.  MAC Address' }),
-        dataIndex: 'destinationAddress'
+        dataIndex: 'destinationAddress',
+        render: (_, row) => {
+          return row.destinationAddress === 'any' ?
+            $t({ defaultMessage: 'Any' }) : row.destinationAddress
+        }
       },
       {
         key: 'destinationMask',
