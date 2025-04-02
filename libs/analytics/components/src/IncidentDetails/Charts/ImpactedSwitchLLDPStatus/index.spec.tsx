@@ -6,7 +6,7 @@ import { findTBody, mockGraphqlQuery, render,
 
 import { ImpactedSwitch } from '../ImpactedSwitchesTable/services'
 
-import { ImpactedSwitchDDoSTable } from '.'
+import { ImpactedSwitchLLDPTable } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -23,11 +23,12 @@ Object.assign(navigator, {
   }
 })
 
-describe('ImpactedSwitchDDoS',()=>{
+describe('ImpactedSwitchLLDP',()=>{
   const sample1:ImpactedSwitch[] = [{
     name: 'ICX7150-C12 Router',
     mac: '58:FB:96:0B:12:CA',
     serial: 'FEK3215S0H7',
+    reasonCodes: 'LLDP Disabled',
     ports: [
       {
         portNumber: '1/1/1'
@@ -38,6 +39,7 @@ describe('ImpactedSwitchDDoS',()=>{
     name: 'ICX7650-48ZP Router',
     mac: 'D4:C1:9E:14:C3:99',
     serial: 'EZC3307P01H',
+    reasonCodes: 'LLDP Disabled',
     ports: [
       {
         portNumber: '1/1/1'
@@ -67,7 +69,7 @@ describe('ImpactedSwitchDDoS',()=>{
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
-          <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
+          <ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} />
         </Provider>, {
           route: {
             path: '/tenantId/t/analytics/incidents',
@@ -78,8 +80,8 @@ describe('ImpactedSwitchDDoS',()=>{
       const body = within(await findTBody())
       const rows = await body.findAllByRole('row')
       expect(rows).toHaveLength(2)
-      expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('58:FB:96:0B:12:CA')
-      expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
+      expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('FEK3215S0H7')
+      expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('LLDP Disabled')
     })
     it('should copy the port numbers to clipboard', async () => {
       const writeText = jest.fn()
@@ -89,7 +91,7 @@ describe('ImpactedSwitchDDoS',()=>{
         }
       })
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
-      render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
+      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} /></Provider>, {
         route: {
           path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
@@ -108,7 +110,7 @@ describe('ImpactedSwitchDDoS',()=>{
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
       render(
         <Provider>
-          <ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} />
+          <ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} />
         </Provider>, {
           route: {
             path: '/tenantId/t/analytics/incidents',
@@ -119,14 +121,14 @@ describe('ImpactedSwitchDDoS',()=>{
       const body = within(await findTBody())
       const rows = await body.findAllByRole('row')
       expect(rows).toHaveLength(2)
-      expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('58:FB:96:0B:12:CA')
-      expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
+      expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('FEK3215S0H7')
+      expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('LLDP Disabled')
 
     })
     it('should hide table when under druidRollup', async () => {
       jest.mocked(mockOverlapsRollup).mockReturnValue(true)
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response() })
-      render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
+      render(<Provider><ImpactedSwitchLLDPTable incident={fakeIncidentDDoS} /></Provider>, {
         route: {
           path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
