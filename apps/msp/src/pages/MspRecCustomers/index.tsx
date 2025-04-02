@@ -53,7 +53,6 @@ export function MspRecCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
-     && isPrimeAdmin
 
   const MAX_ALLOWED_SELECTED_EC = 200
 
