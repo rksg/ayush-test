@@ -20,8 +20,8 @@ import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
-import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
+import { IntentAIRRMGraph }      from './RRMGraph/indexLegacy'
 
 export function createUseValuesText () {
   return function useValuesText () {

@@ -24,7 +24,7 @@ export const DownloadWrapper = styled.div`
 export const GraphWrapper = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: 3fr 0.6fr 3fr 1.8fr;
+  grid-template-columns: 3fr 0.6fr 3fr;
   width: 100%;
   height: 100%;
 `
@@ -32,10 +32,18 @@ export const GraphWrapper = styled.div`
 export const GraphTitleWrapper = styled.div`
   width: 100%;
   position: absolute;
+  top: 30px;
+  left: 0px;
+  display: grid;
+  grid-template-columns: 3.6fr 3fr;
+`
+
+export const GraphLegendWrapper = styled.div`
+  width: 100%;
+  position: absolute;
   top: 0px;
   left: 0px;
   display: grid;
-  grid-template-columns: 3.6fr 4.8fr;
 `
 
 export const GraphTitle = styled.div`
@@ -76,13 +84,15 @@ export const LegendWrapper = styled.div`
 `
 
 export const LegendItems = styled.div`
-  display: grid;
+  display: flex;
   grid-template-columns: auto 1fr;
   grid-column-gap: 10px;
   grid-row-gap: 10px;
   padding: 10px 0px;
   align-items: start;
   justify-items: start;
+  flex-direction: row;
+  justify-content: flex-end;
 `
 
 export const LegendTitle = styled.div`
@@ -116,4 +126,31 @@ export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link'
 export const GraphFooterWrapper = styled(Space)`
   justify-content: space-between;
   align-items: flex-start;
+`
+
+export const GraphWrapperLegacy = styled.div`
+  position: relative;
+  display: grid;
+  grid-template-columns: 3fr 0.6fr 3fr 1.8fr;
+  width: 100%;
+  height: 100%;
+`
+
+export const GraphTitleWrapperLegacy = styled.div`
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: grid;
+  grid-template-columns: 3.6fr 4.8fr;
+`
+
+export const LegendItemsLegacy = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  padding: 10px 0px;
+  align-items: start;
+  justify-items: start;
 `
