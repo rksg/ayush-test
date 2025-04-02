@@ -10,7 +10,7 @@ import {
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockCertId2, mockCertId3, mockCertName2, mockCertName3, mockedMetadata, mockSamlIdpProfileId, mockSamlIdpProfileName } from '../__tests__/fixtures'
+import { certList, mockCertId2, mockCertId3, mockCertName2, mockCertName3, mockedMetadata, mockedMetadata2, mockSamlIdpProfileId, mockSamlIdpProfileName } from '../__tests__/fixtures'
 
 import { AddSamlIdp } from '.'
 
@@ -135,10 +135,14 @@ describe('Add SAML IDP Profile', () => {
 
     // Find metadata textarea and input
     const metadataField = screen.getByTestId('metadata-textarea')
-    await user.type(metadataField, 'xmlContent')
+    await user.click(metadataField)
+    await user.type(metadataField, 'Invalid Content')
 
     await user.click(screen.getByRole('button', { name: 'Clear' }))
-    await user.type(metadataField, 'xmlContent2')
+    await user.type(metadataField, mockedMetadata2)
+
+    await user.click(screen.getByRole('button', { name: 'Clear' }))
+    await user.type(metadataField, 'https://www.valid.samlxml.com')
 
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -194,7 +198,7 @@ describe('Add SAML IDP Profile', () => {
 
     // Find metadata textarea and input
     const metadataField = screen.getByTestId('metadata-textarea')
-    await user.type(metadataField, 'xmlContent')
+    await user.type(metadataField, mockedMetadata)
 
     await user.click(screen.getByRole('switch', { name: 'Enable SAML Response Encryption' }))
 
@@ -211,7 +215,7 @@ describe('Add SAML IDP Profile', () => {
     await user.click(screen.getByRole('button', { name: 'Add' }))
 
     await waitFor(() => expect(mockedMainSamlIdpProfile).toBeCalledWith({
-      metadata: Buffer.from('xmlContent').toString('base64'),
+      metadata: Buffer.from(mockedMetadata).toString('base64'),
       name: mockSamlIdpProfileName,
       encryptionCertificateEnabled: true,
       encryptionCertificateId: mockCertId2,

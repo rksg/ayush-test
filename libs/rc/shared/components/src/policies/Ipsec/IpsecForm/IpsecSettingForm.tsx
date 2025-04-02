@@ -184,7 +184,7 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             validateFirst
             hasFeedback
             children={
-              readMode ? ipsecData?.serverAddress : <Input />
+              readMode ? <div>{ipsecData?.serverAddress}</div> : <Input />
             }
           />
           <Form.Item
@@ -195,8 +195,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
             children={
               readMode ?
                 (ipsecData?.authenticationType=== IpSecAuthEnum.PSK ?
-                  $t({ defaultMessage: 'Pre-shared Key' }) :
-                  $t({ defaultMessage: 'Certificate' })) :
+                  <div>{$t({ defaultMessage: 'Pre-shared Key' })}</div> :
+                  <div>{$t({ defaultMessage: 'Certificate' })}</div>) :
                 <Select
                   style={{ width: '380px' }}
                   placeholder={$t({ defaultMessage: 'Select...' })}

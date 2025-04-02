@@ -141,7 +141,7 @@ describe('useTunnelProfileActions', () => {
 
   it('should create and activate cluster and handle callback', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff =>(ff === Features.EDGE_L2GRE_TOGGLE))
+      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
 
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
@@ -164,7 +164,7 @@ describe('useTunnelProfileActions', () => {
 
   it('should update and activate cluster and handle callback', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff =>(ff === Features.EDGE_L2GRE_TOGGLE))
+      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
 
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>
@@ -188,7 +188,7 @@ describe('useTunnelProfileActions', () => {
 
   it('should update and deactivate cluster and handle callback', async () => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff =>(ff === Features.EDGE_L2GRE_TOGGLE))
+      .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
 
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>

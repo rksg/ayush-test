@@ -17,6 +17,8 @@ export const portalViewTypes: Record<PortalViewEnum, MessageDescriptor> = {
     defineMessage({ defaultMessage: 'Host Approval - Register/Confirm' }),
   [PortalViewEnum.Directory]:
     defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
+  [PortalViewEnum.SAML]:
+    defineMessage({ defaultMessage: 'SSO via SAML Identity Provider (IdP)' }),
   [PortalViewEnum.ConnectionConfirmed]: defineMessage({ defaultMessage: 'Connection confirmed' }),
   [PortalViewEnum.TermCondition]: defineMessage({ defaultMessage: 'Terms & Conditions' })
 }

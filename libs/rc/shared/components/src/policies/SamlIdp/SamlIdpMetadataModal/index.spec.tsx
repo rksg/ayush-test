@@ -8,7 +8,11 @@ import {
 import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockSamlIdpProfileId, mockedMetadata } from '../__tests__/fixtures'
+import {
+  mockSamlIdpProfileId,
+  mockedMetadata,
+  mockedSamlIdpProfileWithRelations
+} from '../__tests__/fixtures'
 
 import { SamlIdpMetadataModal } from '.'
 
@@ -34,7 +38,7 @@ describe('CertificateInfoItem', () => {
     render(
       <Provider>
         <SamlIdpMetadataModal
-          metadata={mockedMetadata}
+          samlIdpData={mockedSamlIdpProfileWithRelations}
           visible={true}
           setVisible={mockedSetVisible}
         />
@@ -46,6 +50,26 @@ describe('CertificateInfoItem', () => {
 
     const okButton = screen.getByRole('button', { name: 'OK' })
     user.click(okButton)
+    await waitFor(() => expect(mockedSetVisible).toBeCalledWith(false))
+  })
+
+  it('should call visible false when click Close button', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <SamlIdpMetadataModal
+          samlIdpData={mockedSamlIdpProfileWithRelations}
+          visible={true}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>
+      , { route: { path: detailViewPath, params } }
+    )
+
+    expect(screen.getByText(mockedMetadata)).toBeInTheDocument()
+
+    const cancelButton = screen.getByRole('button', { name: 'Close' })
+    user.click(cancelButton)
     await waitFor(() => expect(mockedSetVisible).toBeCalledWith(false))
   })
 })
