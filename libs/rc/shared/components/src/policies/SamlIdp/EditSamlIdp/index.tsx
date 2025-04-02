@@ -31,13 +31,6 @@ export const EditSamlIdp = () => {
 
   const { data: samlIdpProfileData, isLoading } =
     useGetSamlIdpProfileWithRelationsByIdQuery({
-      payload: {
-        sortField: 'name',
-        sortOrder: 'ASC',
-        filters: {
-          id: [policyId]
-        }
-      },
       params: {
         id: policyId
       }
@@ -95,9 +88,11 @@ export const EditSamlIdp = () => {
     if(!samlIdpProfileData) {
       return
     }
-
     const sourceData = cloneDeep(samlIdpProfileData) as SamlIdpProfileFormType
     form.setFieldsValue(sourceData)
+    if (sourceData.metadataUrl) {
+      form.setFieldValue('metadataContent', sourceData.metadataUrl)
+    }
 
   }, [samlIdpProfileData])
 

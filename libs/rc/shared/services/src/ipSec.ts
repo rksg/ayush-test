@@ -56,7 +56,11 @@ export const ipSecApi = baseIpSecApi.injectEndpoints({
             'UpdateIpsecProfile',
             'DeleteIpsecProfile',
             'ActivateSoftGreIpsecProfileOnVenueWifiNetwork',
-            'DeactivateSoftGreIpsecProfileOnVenueWifiNetwork'
+            'DeactivateSoftGreIpsecProfileOnVenueWifiNetwork',
+            'ActivateSoftGreIpsecProfileOnVenueApModelLanPort',
+            'DeactivateSoftGreIpsecProfileOnVenueApModelLanPort',
+            'ActivateSoftGreIpsecProfileOnVenueApLanPort',
+            'DeactivateSoftGreIpsecProfileOnVenueApLanPort'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(

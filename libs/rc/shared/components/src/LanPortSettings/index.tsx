@@ -14,6 +14,7 @@ import {
   checkVlanMember,
   EthernetPortAuthType,
   EthernetPortProfileViewData,
+  IpsecOptionChangeDispatcher,
   LanPort,
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState,
@@ -31,6 +32,7 @@ import {
 } from '../ApCompatibility'
 import { DhcpOption82Settings }  from '../DhcpOption82Settings'
 import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
+import { SoftGreIpsecProfile }   from '../SoftGRETunnelSettings/useIpsecProfileLimitedSelection'
 
 import ClientIsolationSettingsFields from './ClientIsolationSettingsFields'
 import EthernetPortProfileFields     from './EthernetPortProfileFields'
@@ -72,6 +74,9 @@ export function LanPortSettings (props: {
   softGREProfileOptionList?: DefaultOptionType[]
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
   validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
+  usedProfileData?: { data: SoftGreIpsecProfile[], operations: SoftGreIpsecProfile[] },
+  ipsecOptionList?: DefaultOptionType[],
+  ipsecOptionDispatch?: React.Dispatch<IpsecOptionChangeDispatcher>
 }) {
   const { $t } = useIntl()
   const {
@@ -89,7 +94,10 @@ export function LanPortSettings (props: {
     serialNumber,
     softGREProfileOptionList,
     optionDispatch,
-    validateIsFQDNDuplicate
+    validateIsFQDNDuplicate,
+    usedProfileData,
+    ipsecOptionList,
+    ipsecOptionDispatch
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -269,6 +277,9 @@ export function LanPortSettings (props: {
             isUnderAPNetworking={isUnderAPNetworking}
             optionDispatch={optionDispatch}
             validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+            usedProfileData={usedProfileData}
+            ipsecOptionList={ipsecOptionList}
+            ipsecOptionDispatch={ipsecOptionDispatch}
           />
           {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
             <DhcpOption82Settings

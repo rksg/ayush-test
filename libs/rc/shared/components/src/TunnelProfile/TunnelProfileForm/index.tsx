@@ -88,7 +88,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
