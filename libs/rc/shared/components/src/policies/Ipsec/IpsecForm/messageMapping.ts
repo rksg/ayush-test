@@ -18,5 +18,6 @@ export const messageMapping = {
   enc_alg_all_tooltip: defineMessage({ defaultMessage: '3DES,AES128,AES192, and AES256' }),
   auth_alg_all_tooltip: defineMessage({ defaultMessage: 'MD5,SHA1,SHA256,SHA384, and SHA512' }),
   prf_alg_all_tooltip: defineMessage({ defaultMessage: 'USE-INTEGRITY-ALG,PRF-MD5,PRF-SHA1,PRF-SHA256,PRF-SHA384, and PRF-SHA512' }),
-  dh_group_all_tooltip: defineMessage({ defaultMessage: 'MODP768,MODP1024,MODP1536,MODP2048,MODP3072,MODP4096,MODP6144, and MODP8192' })
+  dh_group_all_tooltip: defineMessage({ defaultMessage: 'MODP768,MODP1024,MODP1536,MODP2048,MODP3072,MODP4096,MODP6144, and MODP8192' }),
+  psk_invalid_message: defineMessage({ defaultMessage: 'The preshared key must contain 44 ~ 128 HEX characters or  8 ~ 64 ACSII characters, including characters from space (char 32) to ~(char 126) except " or ` or $(, or Base64 characters.' })
 }
