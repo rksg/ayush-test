@@ -20,4 +20,17 @@ describe('Banner Component', () => {
     expect(screen.getByText('subTitle2')).toBeVisible()
     openSpy.mockClear()
   })
+
+  it('should disabled learn more button when disabled prop is true', () => {
+    const helpUrl = 'http://test.com'
+
+    render(<Banner
+      title='Test'
+      subTitles={['subTitle1', 'subTitle2']}
+      helpUrl={helpUrl}
+      disabled/>)
+
+    const button = screen.getByRole('button', { name: /Learn More/i })
+    expect(button).toBeDisabled()
+  })
 })

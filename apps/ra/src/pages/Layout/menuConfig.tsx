@@ -228,9 +228,10 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'Data Studio' })
     },
     ...(isDataConnectorEnabled ? [{
-      permission: 'READ_DATA_CONNECTOR' as RaiPermission,
+      canAccess: canAccess('READ_DATA_CONNECTOR'),
       uri: '/dataConnector',
-      label: $t({ defaultMessage: 'Data Connector' })
+      label: $t({ defaultMessage: 'Data Connector' }),
+      superscript: $t({ defaultMessage: 'beta' })
     }] : []),
     {
       canAccess: canAccess('READ_REPORTS'),

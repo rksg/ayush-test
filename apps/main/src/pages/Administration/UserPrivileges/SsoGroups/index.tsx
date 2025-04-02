@@ -55,6 +55,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   const [membersGroupId, setMemberGroupId] = useState('')
   const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
+  const MAX_SSO_GROUP_ALLOWED = 20
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
 
@@ -183,7 +184,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   }
 
   const tableActions = []
-  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
+  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC &&
+    (adminList && adminList.length < MAX_SSO_GROUP_ALLOWED)) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add SSO Group' }),
       onClick: handleClickAdd
