@@ -170,6 +170,132 @@ describe('SwitchAccessControlDrawer', () => {
     })
   })
 
+  it('submits the form with specific source and destination format(-) MAC addresses', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <Provider>
+          <SwitchAccessControlDrawer {...defaultProps} />
+        </Provider>
+      </IntlProvider>
+    )
+
+    const actionSelect = screen.getByRole('combobox')
+    fireEvent.mouseDown(actionSelect)
+    const denyOption = await screen.findByText('Deny', {
+      selector: '.ant-select-item-option-content'
+    })
+    fireEvent.click(denyOption)
+
+    const sourceMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(sourceMacRadios[1])
+
+    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    await userEvent.type(sourceMacInput, '00-11-22-33-44-55')
+
+    const destMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(destMacRadios[3])
+
+    const destMacInput = screen.getAllByRole('textbox')[2]
+    await userEvent.type(destMacInput, '66-77-88-99-AA-BB')
+
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    await userEvent.click(addButton)
+
+    await waitFor(() => {
+      expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
+        action: 'deny',
+        sourceAddress: '00-11-22-33-44-55',
+        sourceMask: 'ff-ff-ff-ff-ff-ff',
+        destinationAddress: '66-77-88-99-AA-BB',
+        destinationMask: 'ff-ff-ff-ff-ff-ff'
+      }))
+    })
+  })
+
+  it('submits the form with specific source and destination format(.) MAC addresses', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <Provider>
+          <SwitchAccessControlDrawer {...defaultProps} />
+        </Provider>
+      </IntlProvider>
+    )
+
+    const actionSelect = screen.getByRole('combobox')
+    fireEvent.mouseDown(actionSelect)
+    const denyOption = await screen.findByText('Deny', {
+      selector: '.ant-select-item-option-content'
+    })
+    fireEvent.click(denyOption)
+
+    const sourceMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(sourceMacRadios[1])
+
+    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    await userEvent.type(sourceMacInput, '0011.2233.4455')
+
+    const destMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(destMacRadios[3])
+
+    const destMacInput = screen.getAllByRole('textbox')[2]
+    await userEvent.type(destMacInput, '6677.8899.AABB')
+
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    await userEvent.click(addButton)
+
+    await waitFor(() => {
+      expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
+        action: 'deny',
+        sourceAddress: '0011.2233.4455',
+        sourceMask: 'ffff.ffff.ffff',
+        destinationAddress: '6677.8899.AABB',
+        destinationMask: 'ffff.ffff.ffff'
+      }))
+    })
+  })
+
+  it('submits the form with specific source and dest no delimiter MAC addresses', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <Provider>
+          <SwitchAccessControlDrawer {...defaultProps} />
+        </Provider>
+      </IntlProvider>
+    )
+
+    const actionSelect = screen.getByRole('combobox')
+    fireEvent.mouseDown(actionSelect)
+    const denyOption = await screen.findByText('Deny', {
+      selector: '.ant-select-item-option-content'
+    })
+    fireEvent.click(denyOption)
+
+    const sourceMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(sourceMacRadios[1])
+
+    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    await userEvent.type(sourceMacInput, '001122334455')
+
+    const destMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(destMacRadios[3])
+
+    const destMacInput = screen.getAllByRole('textbox')[2]
+    await userEvent.type(destMacInput, '66778899AABB')
+
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    await userEvent.click(addButton)
+
+    await waitFor(() => {
+      expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
+        action: 'deny',
+        sourceAddress: '001122334455',
+        sourceMask: 'ffffffffffff',
+        destinationAddress: '66778899AABB',
+        destinationMask: 'ffffffffffff'
+      }))
+    })
+  })
+
   it('handles rule with "any" for destination MAC and specific source MAC', async () => {
     render(
       <IntlProvider locale='en'>
@@ -220,6 +346,89 @@ describe('SwitchAccessControlDrawer', () => {
     const addButton = await screen.findByRole('button', { name: 'Add' })
     await userEvent.click(addButton)
 
+    expect(mockHandleSaveRule).not.toHaveBeenCalled()
+  })
+
+  it('correctly sets form values in edit mode with "any" addresses', async () => {
+    const mockData = {
+      action: 'permit',
+      sourceAddress: 'any',
+      sourceMask: '',
+      destinationAddress: 'any',
+      destinationMask: ''
+    }
+
+    render(
+      <IntlProvider locale='en'>
+        <Provider>
+          <SwitchAccessControlDrawer
+            visible={true}
+            setVisible={jest.fn()}
+            data={mockData}
+            handleSaveRule={jest.fn()}
+          />
+        </Provider>
+      </IntlProvider>
+    )
+
+    // Check that the source and destination type radios are set to 'any'
+    const radios = screen.getAllByRole('radio')
+    expect(radios[0]).toBeChecked() // Source 'any' radio
+    expect(radios[2]).toBeChecked() // Destination 'any' radio
+
+    // Verify the MAC address fields are empty
+    const macInputs = screen.getAllByRole('textbox')
+    expect(macInputs[0]).toHaveValue('')
+    expect(macInputs[1]).toHaveValue('')
+  })
+
+  it('shows error when submitting a duplicate rule', async () => {
+    const dataSource = [
+      {
+        id: 'existing-rule',
+        key: 'existing-key',
+        action: 'deny',
+        sourceAddress: '001122334455',
+        sourceMask: 'ffffffffffff',
+        destinationAddress: '66778899AABB',
+        destinationMask: 'ffffffffffff'
+      }
+    ]
+
+    render(
+      <IntlProvider locale='en'>
+        <Provider>
+          <SwitchAccessControlDrawer
+            {...defaultProps}
+            dataSource={dataSource}
+          />
+        </Provider>
+      </IntlProvider>
+    )
+
+    const actionSelect = screen.getByRole('combobox')
+    fireEvent.mouseDown(actionSelect)
+    const denyOption = await screen.findByText('Deny', {
+      selector: '.ant-select-item-option-content'
+    })
+    fireEvent.click(denyOption)
+
+    const sourceMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(sourceMacRadios[1])
+
+    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    await userEvent.type(sourceMacInput, '001122334455')
+
+    const destMacRadios = screen.getAllByRole('radio')
+    await userEvent.click(destMacRadios[3])
+
+    const destMacInput = screen.getAllByRole('textbox')[2]
+    await userEvent.type(destMacInput, '66778899AABB')
+
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    await userEvent.click(addButton)
+
+    expect(await screen.findByText('Rule is duplicated')).toBeInTheDocument()
     expect(mockHandleSaveRule).not.toHaveBeenCalled()
   })
 })

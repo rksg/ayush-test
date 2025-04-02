@@ -174,9 +174,11 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
               {$t({ defaultMessage: 'Any' })}
             </Radio>
             <Radio
+              data-testid='sourceMac'
               value={'sourceMac'}
             >
               <Form.Item
+                data-testid='sourceAddress'
                 name='sourceAddress'
                 label={$t({ defaultMessage: 'Source Mac Address' })}
                 rules={[
@@ -222,9 +224,11 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
               {$t({ defaultMessage: 'Any' })}
             </Radio>
             <Radio
+              data-testid='destinationMac'
               value={'destinationMac'}
             >
               <Form.Item
+                data-testid='destinationAddress'
                 name='destinationAddress'
                 label={$t({ defaultMessage: 'Destination MAC Address' })}
                 rules={[

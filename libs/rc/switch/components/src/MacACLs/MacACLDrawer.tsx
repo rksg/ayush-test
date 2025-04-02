@@ -394,6 +394,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
       </Drawer>
 
       <SwitchAccessControlDrawer
+        data-testid='SwitchAccessControlDrawer'
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         data={selectedRow}
