@@ -383,7 +383,7 @@ describe('EditTunnelProfile', () => {
     })
 
     it('should lock disabed fields when it is used in SD-LAN HA case', async () => {
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_L2GRE)
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
