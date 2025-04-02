@@ -64,6 +64,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
   const [ enableIpsec, setEnableIpsec ] = useState<boolean>(false)
   const [ enableOption, setEnableOption ] = useState<boolean>(true)
+  const [ ipsecDisabled, setIpsecDisabled ] = useState<boolean>(false)
 
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
@@ -135,6 +136,14 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   useEffect(() => {
     reloadIpsecOptions(softGreProfileId)
   }, [softGreProfileId])
+
+  useEffect(() => {
+    if (ipsecOption.length > 0 && ipsecOption.filter(opt => opt.disabled === false).length === 0) {
+      setIpsecDisabled(true)
+      return
+    }
+    setIpsecDisabled(false)
+  }, [ipsecOption])
 
   const reloadIpsecOptions = async (value: string) => {
     const queryData = await getIpsecOptions(
@@ -315,7 +324,9 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
         <Form.Item noStyle
           name={['ipsec', 'enableIpsec']}
           valuePropName='checked'
-          children={<Switch onChange={setEnableIpsec} />}
+          children={<Switch
+            disabled={ipsecDisabled}
+            onChange={setEnableIpsec} />}
         />
       </span>
     </div></Space></Row>}
@@ -332,6 +343,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
           initialValue=''
           children={<Select
             style={{ width: '220px' }}
+            disabled={ipsecDisabled}
             onChange={onChangeIpsec}
             options={[
               {
