@@ -16,8 +16,7 @@ import {
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
   Loader,
-  Tooltip,
-  categoryStyles
+  Tooltip
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { InformationOutlined }       from '@acx-ui/icons'
@@ -32,7 +31,7 @@ import {
   Actions
 } from '../../utils'
 
-import { Legend }               from './Legend'
+import { Legend }               from './LegendLegacy'
 import { useIntentAICRRMQuery } from './services'
 import * as UI                  from './styledComponents'
 
@@ -60,6 +59,7 @@ const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: st
       maxHeight: '100%'
     }}
   />}
+  <Legend />
 </>
 
 export function DataGraph (props: {
@@ -115,6 +115,7 @@ export function DataGraph (props: {
       zoomScale={props.zoomScale}
       backgroundColor='transparent'
     />}</AutoSizer></div>
+    <Legend />
   </>
 }
 
@@ -129,7 +130,7 @@ const drawerZoomScale = scalePow()
 
 const GraphTitle = ({ details }: { details: IntentDetail }) => {
   const { $t } = useIntl()
-  return <UI.GraphTitleWrapper>
+  return <UI.GraphTitleWrapperLegacy>
     <div>
       <UI.GraphTitle>{$t({ defaultMessage: 'Before' })}</UI.GraphTitle>
       <UI.GraphSubTitle>
@@ -139,7 +140,7 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
       </UI.GraphSubTitle>
     </div>
     <UI.GraphTitle>{$t({ defaultMessage: 'Recommended' })}</UI.GraphTitle>
-  </UI.GraphTitleWrapper>
+  </UI.GraphTitleWrapperLegacy>
 }
 
 const rrmGraphTooltip = (intent: IntentDetail) => {
@@ -218,7 +219,7 @@ export const IntentAIRRMGraph = ({
     </div>}
     <Loader states={[queryResult]}>
       <Card>
-        <UI.GraphWrapper data-testid='graph-wrapper'
+        <UI.GraphWrapperLegacy data-testid='graph-wrapper'
           key={'graph-details'}
         >
           <ImageGraph
@@ -226,8 +227,7 @@ export const IntentAIRRMGraph = ({
             afterSrc={summaryUrlAfter}
           />
           <GraphTitle details={intent} />
-          <UI.GraphLegendWrapper><Legend {...categoryStyles}/></UI.GraphLegendWrapper>
-        </UI.GraphWrapper>
+        </UI.GraphWrapperLegacy>
         <UI.GraphFooterWrapper>
           {showTooltip ? (<Space align='start'>
             <Tooltip
@@ -253,11 +253,10 @@ export const IntentAIRRMGraph = ({
         visible={visible}
         onClose={closeDrawer}
         children={
-          <UI.GraphWrapper>
+          <UI.GraphWrapperLegacy>
             <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
             <GraphTitle details={intent} />
-            <UI.GraphLegendWrapper><Legend {...categoryStyles}/></UI.GraphLegendWrapper>
-          </UI.GraphWrapper>
+          </UI.GraphWrapperLegacy>
         }
       />
     </Loader>
@@ -308,6 +307,32 @@ export const GraphImage = (
   )
 }
 
+export const SliderGraphBefore = (
+  { crrmData, setUrl }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
+) => {
+  return <GraphImage
+    crrmData={crrmData}
+    data={0}
+    setUrl={setUrl}
+    justifyContent='start'
+    backgroundColor='#333333'
+    width={300}
+  />
+}
+
+export const SliderGraphAfter = (
+  { crrmData, setUrl }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
+) => {
+  return <GraphImage
+    crrmData={crrmData}
+    data={1}
+    setUrl={setUrl}
+    justifyContent='end'
+    width={300}
+  />
+}
 export const SummaryGraphBefore = (
   { crrmData, setUrl, width }:
   { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, width: number }
