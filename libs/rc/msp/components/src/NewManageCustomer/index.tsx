@@ -234,7 +234,10 @@ export function NewManageCustomer () {
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
   const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
-  const isMDU = getJwtTokenPayload().acx_account_vertical === AccountVertical.MDU
+  const { acx_account_vertical } = getJwtTokenPayload()
+
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY
+  const isMDU = acx_account_vertical === AccountVertical.MDU
 
   const entitlementSummaryPayload = {
     filters: {
@@ -973,14 +976,23 @@ export function NewManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={isMDU ? MspEcTierEnum.Core : undefined}
+      initialValue={isMDU ? MspEcTierEnum.Core
+        : (isHospitality ? MspEcTierEnum.Professional : undefined)}
       children={
         <Radio.Group>
           <Space direction='vertical'>
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
-                return ((isMDU && value === MspEcTierEnum.Core)
-                       || (!isMDU && value !== MspEcTierEnum.Core)) &&
+                // isMDU : show only Core
+                // isHospitality: show only Professional
+                // everything else: show both Professional and Essentials
+                return (
+                  (isMDU && value === MspEcTierEnum.Core) ||
+                  (isHospitality && value === MspEcTierEnum.Professional) ||
+                  ((!isMDU && value !== MspEcTierEnum.Core) &&
+                  (!isMDU && !isHospitality &&
+                  (value === MspEcTierEnum.Essentials || value === MspEcTierEnum.Professional)))
+                ) &&
                 <Radio
                   onChange={handleServiceTierChange}
                   key={value}
