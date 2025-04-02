@@ -13,6 +13,7 @@ import { hasRaiPermission, hasRoles }                                           
 import { StorageOptions }     from './CloudStorageForm'
 import { QuotaUsageBar }      from './QuotaUsageBar'
 import { useGetStorageQuery } from './services'
+import * as UI                from './styledComponents'
 import { DataConnectorTable } from './Table'
 
 const DataConnectorContent: React.FC<{}> = () => {
@@ -76,6 +77,9 @@ const DataConnectorContent: React.FC<{}> = () => {
             { connectionType: StorageLabel }
           )
           : $t({ defaultMessage: 'New Cloud Storage' })}
+        {storage?.isConnected
+          ? <UI.ConnectedDot data-testid='connected-dot' />
+          : <UI.DisconnectedDot data-testid='disconnected-dot' />}
       </Button>
     )
   }
@@ -100,7 +104,8 @@ const DataConnectorContent: React.FC<{}> = () => {
             defaultMessage: `Seamlessly transfer data between RUCKUS AI
             and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
-          helpUrl={helpUrl} />
+          helpUrl={helpUrl}
+          disabled />
         <QuotaUsageBar />
       </GridCol>
     </GridRow>
