@@ -1,21 +1,20 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                            from '@acx-ui/components'
-import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/rc/components'
+import { PageHeader }          from '@acx-ui/components'
+import { useEdgeSdLanActions } from '@acx-ui/edge/components'
 import {
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType,
-  EdgeMvSdLanFormModel
+  ServiceType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { EdgeSdLanFormContainer } from '../Form'
-import { SettingsForm }           from '../Form/SettingsForm'
-import { SummaryForm }            from '../Form/SummaryForm'
-import { TunnelNetworkForm }      from '../Form/TunnelNetworkForm'
+import { EdgeSdLanFormContainer, EdgeSdLanFormType } from '../Form'
+import { GeneralForm }                               from '../Form/GeneralForm'
+import { NetworkSelectionForm }                      from '../Form/NetworkSelectionForm'
+import { SummaryForm }                               from '../Form/SummaryForm'
 
 export const AddEdgeSdLan = () => {
   const { $t } = useIntl()
@@ -27,18 +26,17 @@ export const AddEdgeSdLan = () => {
   })
 
   const linkToServiceList = useTenantLink(cfListRoute)
-  const { addEdgeSdLan } = useEdgeMvSdLanActions()
-
+  const { createEdgeSdLan } = useEdgeSdLanActions()
   const [form] = Form.useForm()
 
   const steps = [
     {
-      title: $t({ defaultMessage: 'Settings' }),
-      content: SettingsForm
+      title: $t({ defaultMessage: 'General' }),
+      content: GeneralForm
     },
     {
-      title: $t({ defaultMessage: 'Tunnel & Network' }),
-      content: TunnelNetworkForm
+      title: $t({ defaultMessage: 'Wi-Fi Network Selection' }),
+      content: NetworkSelectionForm
     },
     {
       title: $t({ defaultMessage: 'Summary' }),
@@ -46,13 +44,20 @@ export const AddEdgeSdLan = () => {
     }
   ]
 
-  const handleFinish = async (formData: EdgeMvSdLanFormModel) => {
+  const handleFinish = async (formData: EdgeSdLanFormType) => {
     try {
-      const payload = edgeSdLanFormRequestPreProcess(formData)
-
       await new Promise(async (resolve, reject) => {
-        await addEdgeSdLan({
-          payload,
+        await createEdgeSdLan({
+          payload: {
+            name: formData.name,
+            tunnelProfileId: formData.tunnelProfileId,
+            activeNetwork: Object.entries(formData.activatedNetworks)
+              .map(([venueId, networks]) => networks.map(({ networkId, tunnelProfileId }) => ({
+                venueId,
+                networkId,
+                tunnelProfileId
+              }))).flat()
+          },
           callback: (result) => {
             // callback is after all RBAC related APIs sent
             if (Array.isArray(result)) {

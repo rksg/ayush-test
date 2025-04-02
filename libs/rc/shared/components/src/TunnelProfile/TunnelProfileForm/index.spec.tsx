@@ -360,7 +360,7 @@ describe('TunnelProfileForm', () => {
           || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
           || ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE
-          || ff === Features.EDGE_L2GRE_TOGGLE
+          || ff === Features.EDGE_L2OGRE_TOGGLE
         )
       mockServer.use(
         rest.post(

@@ -156,17 +156,18 @@ const AuditLogTable: FC<AuditLogTableProps> = ({ dataConnectorId }) => {
         render: (_, { size }) => formats.bytesFormat(size)
       },
       {
-        title: $t({ defaultMessage: 'Export start date' }),
+        title: $t({ defaultMessage: 'Export start' }),
         dataIndex: 'start',
         key: 'start',
         render: (_, { start }) =>
-          formatter(DateFormatEnum.DateTimeFormat)(start)
+          formatter(DateFormatEnum.DateTimeFormat)(moment.utc(start).format())
       },
       {
-        title: $t({ defaultMessage: 'Export end date' }),
+        title: $t({ defaultMessage: 'Export end' }),
         dataIndex: 'end',
         key: 'end',
-        render: (_, { end }) => formatter(DateFormatEnum.DateTimeFormat)(end)
+        render: (_, { end }) =>
+          formatter(DateFormatEnum.DateTimeFormat)(moment.utc(end).format())
       }
     ],
     [$t]

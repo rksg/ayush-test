@@ -1,17 +1,20 @@
-import { Modal, Button } from 'antd'
-import TextArea          from 'antd/lib/input/TextArea'
-import { useIntl }       from 'react-intl'
+import { Modal, Button, Form } from 'antd'
+import TextArea                from 'antd/lib/input/TextArea'
+import { useIntl }             from 'react-intl'
+
+import { SamlIdpProfileFormType } from '@acx-ui/rc/utils'
 
 interface SamlIdpMetadataModalProps {
-    metadata: string
-    visible: boolean
-    setVisible: (visible: boolean) => void
+  samlIdpData: SamlIdpProfileFormType
+  visible: boolean
+  setVisible: (visible: boolean) => void
 }
 
 export const SamlIdpMetadataModal = (props: SamlIdpMetadataModalProps) => {
   const { $t } = useIntl()
-  const { metadata, visible, setVisible } = props
+  const { samlIdpData, visible, setVisible } = props
   return (
+
     <Modal
       title={$t({ defaultMessage: 'IdP Metadata' })}
       visible={visible}
@@ -32,9 +35,17 @@ export const SamlIdpMetadataModal = (props: SamlIdpMetadataModalProps) => {
     >
       <TextArea
         style={{ width: '100%', height: 500 }}
-        value={metadata}
+        value={samlIdpData.metadataContent}
         readOnly
       ></TextArea>
+      {samlIdpData.metadataUrl&&
+        <Form.Item
+          label={$t({ defaultMessage: 'Metadata Source URL' })}
+          children={
+            <span>{samlIdpData.metadataUrl}</span>
+          }
+        />
+      }
     </Modal>
   )
 }

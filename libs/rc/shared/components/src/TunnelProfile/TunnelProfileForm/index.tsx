@@ -19,7 +19,7 @@ import { Features, TierFeatures, useIsBetaEnabled }                      from '@
 import { useGetEdgeClusterListQuery, useGetEdgeClusterServiceListQuery } from '@acx-ui/rc/services'
 import {
   AgeTimeUnit,
-  EdgeClsuterProfileTypeEnum,
+  EdgeClusterProfileTypeEnum,
   EdgeServiceTypeEnum,
   IncompatibilityFeatures,
   MtuRequestTimeoutUnit,
@@ -88,7 +88,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
@@ -139,11 +139,11 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
     ?.filter(item => item.serviceType === EdgeServiceTypeEnum.PIN ||
     item.serviceType === EdgeServiceTypeEnum.MV_SD_LAN ||
     // eslint-disable-next-line max-len
-    (item.serviceId !== formId && item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
+    (item.serviceId !== formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)).map(item => item.edgeClusterId)
 
   clusterServiceData
     // eslint-disable-next-line max-len
-    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClsuterProfileTypeEnum.TUNNEL_PROFILE)
+    ?.filter(item => item.serviceId === formId && item.serviceType === EdgeClusterProfileTypeEnum.TUNNEL_PROFILE)
     .some(item => {
       form.setFieldsValue({ edgeClusterId: item.edgeClusterId })
       return true
