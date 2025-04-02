@@ -11,7 +11,7 @@ export enum AgeTimeUnit {
 
 export enum NetworkSegmentTypeEnum {
   VXLAN='VXLAN',
-  VLAN_VXLAN='VLAN_VXLAN'
+  VLAN_VXLAN='VLAN_VXLAN',
 }
 
 export enum MtuRequestTimeoutUnit {

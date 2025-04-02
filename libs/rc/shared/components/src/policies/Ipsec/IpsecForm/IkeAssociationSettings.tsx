@@ -99,7 +99,6 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
         name={['ikeSecurityAssociation', 'ikeProposalType']}
         label={$t({ defaultMessage: 'Internet Key Exchange (IKE) Proposal' })}
         style={{ width: '300px' }}
-        initialValue={ikeProposalType}
         children={
           <Select
             onChange={onProposalTypeChange}
@@ -156,9 +155,9 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
           {(fields, { add, remove }) => (
             <>
               {fields?.map((field, index) =>
-                <>
+                <Space direction='vertical' key={`proposal_${index}`}>
                   <Subtitle level={4}>{`Proposal #${index + 1}`}</Subtitle>
-                  <Space key={`proposal_${index}`}>
+                  <Space>
                     {<Form.Item
                       name={[field.name, 'encAlg']}
                       label={$t({ defaultMessage: 'Encryption Mode' })}
@@ -226,7 +225,7 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
                 />
                     }
                   </Space>
-                </>
+                </Space>
               )}
               {(fields.length < MAX_PROPOSALS) &&
                 <Button type='link'
@@ -241,7 +240,9 @@ export default function IkeAssociationSettings (props: IkeAssociationSettingsFor
               {fields.length === MAX_PROPOSALS &&
                 <Form.Item name='combinationValidator'
                   style={{ textAlign: 'left', marginTop: '-15px', minHeight: '0px' }}
-                  rules={[{ validator: () => algorithmValidator() }]} />
+                  rules={[{ validator: () => algorithmValidator() }]}
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  children={<></>} />
               }
             </>
           )}

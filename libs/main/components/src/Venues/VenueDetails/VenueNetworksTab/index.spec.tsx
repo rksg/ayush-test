@@ -9,6 +9,7 @@ import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksDataV2,
   edgeSdLanApi,
+  ipSecApi,
   networkApi,
   softGreApi,
   venueApi
@@ -22,6 +23,7 @@ import {
   EdgeSdLanFixtures,
   EdgeSdLanTunneledWlan,
   EdgeSdLanUrls,
+  IpsecUrls,
   MtuTypeEnum,
   SoftGreUrls,
   VlanPoolRbacUrls,
@@ -140,6 +142,7 @@ describe('VenueNetworksTab', () => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
       store.dispatch(softGreApi.util.resetApiState())
+      store.dispatch(ipSecApi.util.resetApiState())
       store.dispatch(edgeSdLanApi.util.resetApiState())
     })
 
@@ -180,7 +183,10 @@ describe('VenueNetworksTab', () => {
       ),
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.post(
+        IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json([])))
     )
   })
 

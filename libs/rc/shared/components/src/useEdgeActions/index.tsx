@@ -29,7 +29,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeArpTerminationEnabled = useIsTierAllowed(TierFeatures.EDGE_ARPT)
   const isEdgeMdnsProxyEnabled = useIsTierAllowed(TierFeatures.EDGE_MDNS_PROXY)
   const isEdgeHqosEnabled = useIsTierAllowed(TierFeatures.EDGE_HQOS)
-  const isEdgeL2greEnabled = useIsTierAllowed(TierFeatures.EDGE_L2GRE)
+  const isEdgeL2oGREEnabled = useIsTierAllowed(TierFeatures.EDGE_L2OGRE)
 
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
@@ -46,8 +46,8 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
       return isEnabledWithBooleanFlag && isEdgeMdnsProxyEnabled
     case Features.EDGE_QOS_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeHqosEnabled
-    case Features.EDGE_L2GRE_TOGGLE:
-      return isEnabledWithBooleanFlag && isEdgeL2greEnabled
+    case Features.EDGE_L2OGRE_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeL2oGREEnabled
     default:
       return isEnabledWithBooleanFlag
   }
