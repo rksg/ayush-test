@@ -4,7 +4,7 @@ import { getUserProfile as getUserProfileRA, Roles as RolesEnumRA } from '@acx-u
 import { RadioBand }                                                from '@acx-ui/components'
 import { showActionModal }                                          from '@acx-ui/components'
 import * as config                                                  from '@acx-ui/config'
-import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }                                   from '@acx-ui/feature-toggle'
 import {  ReportUrlsInfo, reportsApi }                              from '@acx-ui/reports/services'
 import type { GuestToken, EmbeddedResponse }                        from '@acx-ui/reports/services'
 import { Provider, store, rbacApiURL, refreshJWT }                  from '@acx-ui/store'
@@ -29,17 +29,25 @@ import {
   getSupersetRlsClause,
   getRLSClauseForSA } from '.'
 
+import type { EmbedDashboardParams } from '@superset-ui/embedded-sdk'
 
 // Mocking embeddedObj and its methods
 const mockUnmount = jest.fn()
 const mockGetScrollSize = jest.fn()
-jest.mock('@superset-ui/embedded-sdk', () => ({
-  embedDashboard: () => {
+
+const mockSdk = {
+  embedDashboardSpy: jest.fn(),
+  embedDashboard: function (props: EmbedDashboardParams) {
+    this.embedDashboardSpy(props)
     return Promise.resolve({
       getScrollSize: mockGetScrollSize,
       unmount: mockUnmount
     })
   }
+}
+
+jest.mock('@superset-ui/embedded-sdk', () => ({
+  embedDashboard: (props: EmbedDashboardParams) => mockSdk.embedDashboard(props)
 }))
 
 jest.mock('@acx-ui/utils', () => ({
@@ -125,16 +133,12 @@ describe('convertDateTimeToSqlFormat', () => {
 
 describe('EmbeddedDashboard', () => {
   const oldEnv = process.env
-  const embedDashboardSpy = jest.fn()
 
   beforeEach(() => {
     mockServer.use(
       rest.post(
         ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-        (_, res, ctx) => {
-          embedDashboardSpy()
-          return res(ctx.json(embeddedResponse1))
-        }
+        (_, res, ctx) => res(ctx.json(embeddedResponse1))
       ),
       rest.post(
         ReportUrlsInfo.getEmbeddedReportToken.url,
@@ -162,46 +166,70 @@ describe('EmbeddedDashboard', () => {
     process.env = oldEnv
     store.dispatch(reportsApi.util.resetApiState())
     jest.clearAllMocks()
-    embedDashboardSpy.mockClear()
+    mockSdk.embedDashboardSpy.mockClear()
   })
 
   const params = { tenantId: 'tenant-id' }
   it.each([
-    RolesEnumRA.PRIME_ADMINISTRATOR, RolesEnumRA.ADMINISTRATOR, RolesEnumRA.READ_ONLY
-  ])('should render the dashboard for SA', async (role) => {
-    get.mockReturnValue('true')
-    userProfileRA.mockReturnValue({
-      accountId: 'account-id',
-      tenants: [],
-      invitations: [],
-      selectedTenant: {
-        id: 'tenant-id',
-        permissions: {},
-        role
-      }
-    })
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    localeContext.mockReturnValue({
-      messages: { locale: null as unknown as string },
-      lang: 'en-US',
-      setLang: () => {}
-    })
+    [RolesEnumRA.PRIME_ADMINISTRATOR, false],
+    [RolesEnumRA.ADMINISTRATOR, false],
+    [RolesEnumRA.READ_ONLY, true]
+  ])(
+    'should render the dashboard for SA with correct read-only state',
+    async (role, isReadOnly) => {
+      get.mockReturnValue('true')
+      userProfileRA.mockReturnValue({
+        accountId: 'account-id',
+        tenants: [],
+        invitations: [],
+        selectedTenant: {
+          id: 'tenant-id',
+          permissions: {},
+          role
+        }
+      })
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      localeContext.mockReturnValue({
+        messages: { locale: null as unknown as string },
+        lang: 'en-US',
+        setLang: () => {}
+      })
 
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.AP_DETAIL} />
-    </Provider>, { route: { params } })
+      render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
 
-    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
-  })
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(isReadOnly)
+    }
+  )
 
   it('should render AP dashboard for ALTO with custom scopes', async () => {
     get.mockReturnValue('')
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // Mock useIsSplitOn to return true for RBAC_PHASE3_TOGGLE and I18N_DATA_STUDIO_TOGGLE
+    jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+      if (feature === Features.RBAC_PHASE3_TOGGLE) return true
+      if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return true
+      return false
+    })
     localeContext.mockReturnValue({
       messages: { locale: null as unknown as string },
       lang: 'en-US',
       setLang: () => {}
+    })
+
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: ['bi.reports-c', 'bi.reports-u', 'bi.reports-d'],
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'n9bKZ@example.com',
+        roles: [],
+        externalId: '1234',
+        tenantId: '1234'
+      }
     })
 
     render(<Provider>
@@ -209,16 +237,35 @@ describe('EmbeddedDashboard', () => {
         reportName={ReportType.AP_DETAIL} />
     </Provider>, { route: { params } })
 
-    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+    const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+    expect(embedDashboardCall.isReadOnly).toBe(false)
   })
 
   it('should render SWITCH dashboard for ALTO with custom scopes', async () => {
     get.mockReturnValue('')
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // Mock useIsSplitOn to return true for RBAC_PHASE3_TOGGLE and I18N_DATA_STUDIO_TOGGLE
+    jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+      if (feature === Features.RBAC_PHASE3_TOGGLE) return true
+      if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return true
+      return false
+    })
     localeContext.mockReturnValue({
       messages: { locale: null as unknown as string },
       lang: 'en-US',
       setLang: () => {}
+    })
+
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: ['bi.reports-c', 'bi.reports-u', 'bi.reports-d'],
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'n9bKZ@example.com',
+        roles: [],
+        externalId: '1234',
+        tenantId: '1234'
+      }
     })
 
     render(<Provider>
@@ -226,10 +273,12 @@ describe('EmbeddedDashboard', () => {
         reportName={ReportType.SWITCH} />
     </Provider>, { route: { params } })
 
-    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+    const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+    expect(embedDashboardCall.isReadOnly).toBe(false)
   })
 
-  it('should render OVERVIEW dashboard for ALTO wihout custom scopes', async () => {
+  it('should render OVERVIEW dashboard for ALTO without custom scopes', async () => {
     userProfileR1.mockReturnValue({
       profile: {
         scopes: undefined,
@@ -249,7 +298,9 @@ describe('EmbeddedDashboard', () => {
         reportName={ReportType.OVERVIEW} />
     </Provider>, { route: { params } })
 
-    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+    const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+    expect(embedDashboardCall.isReadOnly).toBe(false)
   })
 
   it('should render OVERVIEW dashboard for ALTO without scopes and custom system role',
@@ -275,7 +326,9 @@ describe('EmbeddedDashboard', () => {
           reportName={ReportType.OVERVIEW} />
       </Provider>, { route: { params } })
 
-      await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(false)
     })
 
   it('should call getScroll and set height on mount and cleanup state on unmount',
@@ -292,7 +345,7 @@ describe('EmbeddedDashboard', () => {
           reportName={ReportType.AP_DETAIL} />
       </Provider>, { route: { params } })
 
-      await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       await waitFor(() => expect(mockGetScrollSize).toHaveBeenCalledTimes(1))
 
       expect(mockIframeElement.style.height).toBe('100px')
@@ -400,6 +453,300 @@ describe('EmbeddedDashboard', () => {
       expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
       expect(refreshJWTMock).toHaveBeenCalledWith(
         { headers: { 'login-token': 'token' }, type: 'refreshToken' })
+    })
+  })
+
+  describe('Read-only scope functionality', () => {
+    beforeEach(() => {
+      get.mockReturnValue('') // Set to non-SA mode
+      // Mock useIsSplitOn to return true for all features
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      localeContext.mockReturnValue({
+        messages: { locale: null as unknown as string },
+        lang: 'en-US',
+        setLang: () => {}
+      })
+    })
+
+    it('should be read-only when user has only read scope in RBAC Phase 3', async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: ['bi.reports-r'],
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(true)
+    })
+
+    it('should have write access when user has write scope in RBAC Phase 3', async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: ['bi.reports-c', 'bi.reports-u', 'bi.reports-d'],
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(false)
+    })
+
+    it('should be read-only when user has system role without write permissions', async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: undefined,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: RolesEnumR1.READ_ONLY,
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(true)
+    })
+
+    it('should have write access when user has system role with write permissions', async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: undefined,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: RolesEnumR1.ADMINISTRATOR,
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(false)
+    })
+
+    it('should be read-only when user has no scopes and no write permissions in roles',
+      async () => {
+        userProfileR1.mockReturnValue({
+          profile: {
+            scopes: undefined,
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'n9bKZ@example.com',
+            roles: [RolesEnumR1.READ_ONLY],
+            externalId: '1234',
+            tenantId: '1234'
+          }
+        })
+
+        render(<Provider>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>, { route: { params } })
+
+        await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+        const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+        expect(embedDashboardCall.isReadOnly).toBe(true)
+      })
+
+    it('should have write access when user has no scopes but has write permissions in roles',
+      async () => {
+        userProfileR1.mockReturnValue({
+          profile: {
+            scopes: undefined,
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'n9bKZ@example.com',
+            roles: [RolesEnumR1.ADMINISTRATOR],
+            externalId: '1234',
+            tenantId: '1234'
+          }
+        })
+
+        render(<Provider>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>, { route: { params } })
+
+        await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+        const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+        expect(embedDashboardCall.isReadOnly).toBe(false)
+      })
+  })
+
+  describe('Error handling and edge cases', () => {
+    beforeEach(() => {
+      get.mockReturnValue('') // Set to non-SA mode
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === Features.RBAC_PHASE3_TOGGLE) return true
+        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return true
+        return false
+      })
+      localeContext.mockReturnValue({
+        messages: { locale: null as unknown as string },
+        lang: 'en-US',
+        setLang: () => {}
+      })
+    })
+
+    it('should handle guest token fetch error', async () => {
+      mockServer.use(
+        rest.post(
+          ReportUrlsInfo.getEmbeddedReportToken.url,
+          (_, res, ctx) => res(ctx.status(500))
+        )
+      )
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+    })
+
+    it('should handle mixed scopes in RBAC Phase 3', async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: ['bi.reports-r', 'bi.reports-c'],
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(false)
+    })
+
+    it('should handle custom role type with unknown role name', async () => {
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: undefined,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: 'UNKNOWN_ROLE',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(true)
+    })
+
+    it('should handle legacy read-only scopes when RBAC Phase 3 is disabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === Features.RBAC_PHASE3_TOGGLE) return false
+        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return true
+        return false
+      })
+
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: ['wifi-r', 'switch-r'],
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(true)
+    })
+
+    it('should handle locale from context when I18N is enabled', async () => {
+      localeContext.mockReturnValue({
+        messages: { locale: 'fr' },
+        lang: 'fr-FR',
+        setLang: () => {}
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.locale).toBe('fr')
+    })
+
+    it('should use default locale when I18N is disabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === Features.RBAC_PHASE3_TOGGLE) return true
+        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return false
+        return false
+      })
+
+      localeContext.mockReturnValue({
+        messages: { locale: 'fr' },
+        lang: 'fr-FR',
+        setLang: () => {}
+      })
+
+      render(<Provider>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>, { route: { params } })
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.locale).toBe('en')
     })
   })
 })

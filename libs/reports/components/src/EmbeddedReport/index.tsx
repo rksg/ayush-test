@@ -207,6 +207,7 @@ export function EmbeddedReport (props: ReportProps) {
   const embedDashboardName = reportTypeDataStudioMapping[reportName]
   const systems = useSystems()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
+  const isRbacPhase3ToggleEnabled = useIsSplitOn(Features.RBAC_PHASE3_TOGGLE)
 
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
@@ -367,12 +368,18 @@ export function EmbeddedReport (props: ReportProps) {
       })
   }
 
-  const isRoleReadOnly = () => {
+  const isR1RoleReadOnly = () => {
     const systemRolesWithWritePermissions = [RolesEnumR1.PRIME_ADMIN, RolesEnumR1.ADMINISTRATOR]
     if (customRoleType === CustomRoleType.SYSTEM) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
     }
     if (scopes) {
+      if (isRbacPhase3ToggleEnabled) {
+        // Check if user has any write scopes (c, u, d) or only read scope (r)
+        const hasWriteScope = scopes.some(scope => /^bi\.reports-[cud]$/.test(scope))
+        return !hasWriteScope
+      }
+      // TODO - Remove this once RBAC Phase 3 is fully deployed
       const { isApReport, isSwitchReport } = getReportType(reportName)
       const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
       const hasWriteScope = scopes.some(scope => regex.test(scope))
@@ -405,7 +412,7 @@ export function EmbeddedReport (props: ReportProps) {
       isReadOnly: isRA
         ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
             || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
-        : isRoleReadOnly(),
+        : isR1RoleReadOnly(),
       locale // i18n locale from R1
     })
     embeddedObj.then(async (embObj) => {
