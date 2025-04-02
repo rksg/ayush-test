@@ -26,7 +26,7 @@ const EditTunnelProfile = () => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }
