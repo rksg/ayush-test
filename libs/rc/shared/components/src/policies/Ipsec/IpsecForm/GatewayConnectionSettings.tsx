@@ -268,7 +268,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','ipcompEnable']}
             style={{ marginTop: '-19px' }}
-            initialValue={ipCompressionEnabled}
             children={
               <Switch
                 checked={ipCompressionEnabled === IpSecAdvancedOptionEnum.ENABLED ? true : false}
@@ -348,7 +347,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','enforceNatt']}
             style={{ marginTop: '-17px' }}
-            initialValue={forceNATTEnabled}
             children={
               <Switch
                 // eslint-disable-next-line max-len

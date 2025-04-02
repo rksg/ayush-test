@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react'
 import { act }        from 'react-dom/test-utils'
 
-import { fakeIncidentLoopDetection, fakeIncidentLoopDetectionOnSzCluster,
+import { fakeIncidentLoopDetection, fakeIncidentLoopDetectionOnDomain,
+  fakeIncidentLoopDetectionOnSzCluster,
   overlapsRollup } from '@acx-ui/analytics/utils'
 import { get }                                                            from '@acx-ui/config'
 import { dataApi, dataApiURL, Provider, store }                           from '@acx-ui/store'
@@ -30,7 +31,8 @@ describe('ImpactedVlanTable',()=>{
           name: 'babyrdn_24p',
           mac: '5C:83:6C:3F:B2:C2',
           serial: 'FNY4828V00B',
-          switchGroup: 'switch grp 0'
+          switchGroup: 'switch grp 0',
+          domains: ['domain1||Domain 1']
         }
       ]
     },
@@ -41,13 +43,15 @@ describe('ImpactedVlanTable',()=>{
           name: 'ROD-135',
           mac: 'C0:C5:20:82:57:AE',
           serial: 'FNL4308T00K',
-          switchGroup: 'switch grp 1'
+          switchGroup: 'switch grp 1',
+          domains: ['domain2||Domain 2']
         },
         {
           name: 'MM-126',
           mac: 'D4:C1:9E:17:90:97',
           serial: 'FLW3331P01Z',
-          switchGroup: 'switch grp 2'
+          switchGroup: 'switch grp 2',
+          domains: ['domain3||Domain 3']
         }
       ]
     }
@@ -192,6 +196,60 @@ describe('ImpactedVlanTable',()=>{
       fireEvent.click(await screen.findByRole('button', { name: /98/i }))
       expect(await screen.findByText(/2 impacted switches/i)).toBeVisible()
       expect(await screen.findByText(/switch group/i)).toBeVisible()
+    })
+
+    it('should show domain information in switch group tooltip for system slice type', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+      render(
+        <Provider>
+          <ImpactedVlanTable incident={fakeIncidentLoopDetectionOnSzCluster} />
+        </Provider>,
+        {
+          route: {
+            path: '/tenantId/t/analytics/incidents',
+            wrapRoutes: false
+          }
+        }
+      )
+
+      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
+      const switchGroupCell = await screen.findByText('switch grp 0')
+      expect(switchGroupCell).toBeVisible()
+      // Hover over the switch group cell to trigger the tooltip
+      fireEvent.mouseEnter(switchGroupCell)
+      // Wait for the tooltip to appear and check its content
+      const tooltip = await screen.findByRole('tooltip', { hidden: true })
+      // Wait for the tooltip to be visible
+      await screen.findByRole('tooltip')
+      expect(tooltip).toHaveTextContent('Domain 1')
+      expect(tooltip).toHaveTextContent('switch grp 0')
+    })
+
+    it('should show domain information in switch group tooltip for domain slice type', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedVLANs', { data: response() })
+      render(
+        <Provider>
+          <ImpactedVlanTable incident={fakeIncidentLoopDetectionOnDomain} />
+        </Provider>,
+        {
+          route: {
+            path: '/tenantId/t/analytics/incidents',
+            wrapRoutes: false
+          }
+        }
+      )
+
+      fireEvent.click(await screen.findByRole('button', { name: /1/i }))
+      const switchGroupCell = await screen.findByText('switch grp 0')
+      expect(switchGroupCell).toBeVisible()
+      // Hover over the switch group cell to trigger the tooltip
+      fireEvent.mouseEnter(switchGroupCell)
+      // Wait for the tooltip to appear and check its content
+      const tooltip = await screen.findByRole('tooltip', { hidden: true })
+      // Wait for the tooltip to be visible
+      await screen.findByRole('tooltip')
+      expect(tooltip).toHaveTextContent('Some Domain')
+      expect(tooltip).toHaveTextContent('switch grp 0')
     })
 
     describe('useDrawer', () => {
