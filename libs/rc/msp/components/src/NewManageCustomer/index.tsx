@@ -968,51 +968,31 @@ export function NewManageCustomer () {
   }
 
   const EcTierForm = () => {
-    return isMDU
-      ? <Form.Item
-        name='tier'
-        label={intl.$t({ defaultMessage: 'Service Tier' })}
-        style={{ width: '300px' }}
-        rules={[{ required: true }]}
-        initialValue={MspEcTierEnum.Core}
-        children={
-          <Radio.Group>
-            <Space direction='vertical'>
-              {
-                Object.entries(MspEcTierEnum).map(([label, value]) => {
-                  return (value === MspEcTierEnum.Core) && <Radio
-                    key={value}
-                    value={value}
-                    children={intl.$t({
-                      defaultMessage: '{label}' }, { label })} />
-                })
-              }
-            </Space>
-          </Radio.Group>
-        }
-      />
-      : <Form.Item
-        name='tier'
-        label={intl.$t({ defaultMessage: 'Service Tier' })}
-        style={{ width: '300px' }}
-        rules={[{ required: true }]}
-        children={
-          <Radio.Group>
-            <Space direction='vertical'>
-              {
-                Object.entries(MspEcTierEnum).map(([label, value]) => {
-                  return (value !== MspEcTierEnum.Core) && <Radio
-                    onChange={handleServiceTierChange}
-                    key={value}
-                    value={value}
-                    children={intl.$t({
-                      defaultMessage: '{label}' }, { label })} />
-                })
-              }
-            </Space>
-          </Radio.Group>
-        }
-      />
+    return <Form.Item
+      name='tier'
+      label={intl.$t({ defaultMessage: 'Service Tier' })}
+      style={{ width: '300px' }}
+      rules={[{ required: true }]}
+      initialValue={isMDU ? MspEcTierEnum.Core : undefined}
+      children={
+        <Radio.Group>
+          <Space direction='vertical'>
+            {
+              Object.entries(MspEcTierEnum).map(([label, value]) => {
+                return ((isMDU && value === MspEcTierEnum.Core)
+                       || (!isMDU && value !== MspEcTierEnum.Core)) &&
+                <Radio
+                  onChange={handleServiceTierChange}
+                  key={value}
+                  value={value}
+                  children={intl.$t({
+                    defaultMessage: '{label}' }, { label })} />
+              })
+            }
+          </Space>
+        </Radio.Group>
+      }
+    />
   }
 
   const CustomerAdminsForm = () => {
