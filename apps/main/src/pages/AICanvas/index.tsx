@@ -13,7 +13,6 @@ import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
@@ -87,8 +86,6 @@ export default function AICanvas () {
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
-  const linkToDashboard = useTenantLink('/dashboard')
-  const navigate = useNavigate()
   const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
   const [getChats] = useGetChatsMutation()
@@ -104,6 +101,7 @@ export default function AICanvas () {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
+  // const [displayMode, setDisplayMode] = useState('canvas')
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -292,7 +290,7 @@ export default function AICanvas () {
   }
 
   const onClose = () => {
-    navigate(linkToDashboard)
+    setIsModalOpen(false)
   }
 
   const onClickChat = (id: string) => {
@@ -321,14 +319,24 @@ export default function AICanvas () {
       </Button>
       <UI.ChatModal
         visible={isModalOpen}
-        onCancel={()=>{setIsModalOpen(false)}}
+        onCancel={onClose}
         width='calc(100vw - 80px)'
         style={{ top: 40, height: 'calc(100vh - 40px)' }}
         footer={null}
+        closable={false}
       >
         <DndProvider backend={HTML5Backend}>
           <UI.Wrapper>
             <div className='chat-wrapper'>
+              {
+                historyVisible && <HistoryDrawer
+                  visible={historyVisible}
+                  onClose={onHistoryDrawer}
+                  historyData={historyData as ChatHistory[]}
+                  sessionId={sessionId}
+                  onClickChat={onClickChat}
+                />
+              }
               <div className='chat'>
                 <div className='header'>
                   <div className='actions'>
@@ -422,15 +430,7 @@ export default function AICanvas () {
               groups={groups}
               setGroups={setGroups}
             />
-            {
-              historyVisible && <HistoryDrawer
-                visible={historyVisible}
-                onClose={onHistoryDrawer}
-                historyData={historyData as ChatHistory[]}
-                sessionId={sessionId}
-                onClickChat={onClickChat}
-              />
-            }
+
           </UI.Wrapper>
         </DndProvider>
       </UI.ChatModal>

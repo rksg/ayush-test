@@ -47,6 +47,7 @@ export const History = styled.div`
     padding: 10px 70px 25px 40px;
     margin-left: -20px;
     background: var(--acx-neutrals-10);
+    border-bottom-left-radius: 24px;
   }
   .duration {
     margin: 0 -20px;
@@ -65,7 +66,7 @@ export const History = styled.div`
       padding: 12px 16px 6px 16px;
       cursor: default;
     }
-    .chat {
+    .chat-title {
       padding: 6px 8px 6px 16px;
       display: flex;
       justify-content: space-between;
@@ -126,17 +127,10 @@ export const History = styled.div`
 `
 
 export const Wrapper = styled.div`
-// animation: fadeIn 0.1s linear 0s both;
-// position: fixed; /* Stay in place */
-// z-index: 101; /* Sit on top */
-// padding-top: 100px; /* Location of the box */
-// left: 0;
-// top: 0;
-// background-color: transparent;
-// border-top: 75px solid rgba(255,255,255, 0.4);
 display: flex;
 .chat-wrapper {
-  // height: calc(100vh - 50px);
+  overflow: hidden;
+  position: relative;
 }
 .chat {
   border-top-left-radius: 24px;
@@ -145,13 +139,10 @@ display: flex;
   background-image: url(${WaveBackground});
   background-repeat: no-repeat;
   background-size: 401px 659px;
-  // position: fixed;
   width: 400px;
-  // height: calc(100vh - 50px);
   top: 60px;
-  // z-index: 2;
   .header {
-    background-color: rgba(255, 255, 255, .4);
+    // background-color: rgba(255, 255, 255, .4);
     border-top-left-radius: 24px;
     height: 50px;
     padding: 15px 20px;
@@ -165,7 +156,7 @@ display: flex;
       span {
         padding-left: 10px;
         font-family: var(--acx-accent-brand-font);
-        font-weight: 700;
+        font-weight: 600;
         font-size: var(--acx-headline-4-font-size);
       }
     }
@@ -191,7 +182,6 @@ display: flex;
     background: transparent;
     height: calc(100vh - 130px);
     width: 400px;
-    // position: fixed;
     top: 110px;
     overflow: auto;
     .input {
@@ -245,7 +235,7 @@ display: flex;
         background: var(--acx-neutrals-30);
         border-radius: 4px;
       }
-      height: calc(100vh - 250px);
+      height: calc(100vh - 260px);
       overflow: auto;
       position: relative;
       margin-right: 4px;
@@ -345,11 +335,7 @@ display: flex;
 `
 
 export const Canvas = styled.div`
-  // position: fixed;
   width: calc(100vw - 450px);
-  // top: 60px;
-  // z-index: 2;
-  // left: 400px;
   .header {
     border: 1px solid #E5E5E5;
     border-top-right-radius: 24px;
@@ -362,7 +348,7 @@ export const Canvas = styled.div`
       cursor: default;
       padding: 10px 0;
       font-family: var(--acx-accent-brand-font);
-      font-weight: 700;
+      font-weight: 600;
       font-size: var(--acx-headline-4-font-size);
     }
     .actions{
@@ -380,33 +366,34 @@ export const Canvas = styled.div`
     background-image: url(${CanvasBackground});
     border-left: 1px solid #E5E5E5;
     border-bottom-right-radius: 24px;
-    // height: calc(100vh - 110px);
-    overflow: auto;
-    /* width */
-    &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    /* Track */
-    &::-webkit-scrollbar-track {
-      border-radius: 6px;
-      background: transparent; 
-    }
-
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-      background: var(--acx-neutrals-30);
-      border-radius: 4px;
-    }
+    height: calc(100vh - 130px);
   }
 `
 
 export const Grid = styled.div`
+height: calc(100vh - 150px);
+overflow: auto;
+/* width */
+&::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track */
+&::-webkit-scrollbar-track {
+  border-radius: 6px;
+  background: #000 //transparent; 
+  padding-bottom: 10px;
+}
+
+/* Handle */
+&::-webkit-scrollbar-thumb {
+  background: var(--acx-neutrals-30);
+  border-radius: 4px;
+}
 .rglb_group-item {
   width: 100%;
   margin-bottom: 30px;
-  // cursor: move;
   position: relative;
   transition: all 0.2s ease-out;
 }
