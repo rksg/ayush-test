@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                           from '@acx-ui/store'
-import { mockServer, render, waitFor, screen }                from '@acx-ui/test-utils'
+import { PersonaUrls, PropertyUnit, PropertyUnitStatus, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
+import { mockServer, render, waitFor, screen }                             from '@acx-ui/test-utils'
 
 import { mockPersona, mockPersonaGroup } from '../__tests__/fixtures'
 
@@ -31,9 +31,11 @@ const personaIds = { content: [
 const getPropertyIdentities = jest.fn()
 
 const getUnitFn = jest.fn()
+const searchClientQueryFn = jest.fn()
 
 describe('PersonaOverview', () => {
   getUnitFn.mockClear()
+  searchClientQueryFn.mockClear()
 
   beforeEach(() => {
     mockServer.use(
@@ -48,7 +50,14 @@ describe('PersonaOverview', () => {
         (req, res, ctx) => {
           getPropertyIdentities()
           return res(ctx.json(personaIds))
-        })
+        }),
+      rest.post(
+        PersonaUrls.searchIdentityClients.url.split('?')[0],
+        (_, res, ctx) => {
+          searchClientQueryFn()
+          return res(ctx.json({}))
+        }
+      )
     )
   })
   it('should render overview correctly', async () => {
@@ -75,5 +84,8 @@ describe('PersonaOverview', () => {
     expect(screen.getByRole('link', { name: mockPersonaGroup.name })).toBeInTheDocument()
 
     await waitFor(() => expect(getUnitFn).toBeCalled())
+    await waitFor(() => expect(searchClientQueryFn).toBeCalled())
+
+    expect(screen.getByText('Associated Devices')).toBeInTheDocument()
   })
 })

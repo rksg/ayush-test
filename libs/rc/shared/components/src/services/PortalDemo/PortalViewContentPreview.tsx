@@ -9,6 +9,7 @@ import PortalViewGoThrough        from './PortalViewGoThrough'
 import PortalViewGuestConnect     from './PortalViewGuestConnect'
 import PortalViewGuestForget      from './PortalViewGuestForget'
 import PortalViewHostApproval     from './PortalViewHostApproval'
+import PortalViewSAMLLogin        from './PortalViewSAMLLogin'
 import PortalViewSelfSignConnect  from './PortalViewSelfSignConnect'
 import PortalViewSelfSignRegister from './PortalViewSelfSignRegister'
 import PortalViewTerms            from './PortalViewTerms'
@@ -135,6 +136,13 @@ export default function PortalViewContentPreview (props:{
         isPreview={true}
         portalLang={portalLang}
       />}
+      {((view === PortalViewEnum.SAML && !networkViewType) ||
+          networkViewType === GuestNetworkTypeEnum.SAML) &&
+        <PortalViewSAMLLogin
+          demoValue={demoValue}
+          isPreview={true}
+          portalLang={portalLang}
+        />}
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm portalLang={portalLang}/>}
       {view === PortalViewEnum.TermCondition &&

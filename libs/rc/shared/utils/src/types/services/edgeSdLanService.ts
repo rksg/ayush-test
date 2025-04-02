@@ -87,7 +87,8 @@ export interface EdgeSdLanViewDataP2 {
 }
 
 export interface EdgeSdLanActivateNetworkPayload {
-  isGuestTunnelUtilized?: boolean
+  isGuestTunnelUtilized?: boolean // To be deprecated
+  forwardingTunnelProfileId?: string
 }
 
 export interface EdgeSdLanToggleDmzPayload {
@@ -119,11 +120,12 @@ export interface EdgeMvSdLanExtended extends PartiallyOptional<EdgeMvSdLanRespon
 }
 
 export interface EdgeSdLanTunneledWlan {
-  venueId: string,
-  venueName: string,
-  networkId: string,
-  networkName: string,
-  wlanId: string,
+  venueId: string
+  venueName: string
+  networkId: string
+  networkName: string
+  wlanId: string
+  forwardingTunnelProfileId?: string
 }
 
 export interface EdgeMvSdLanViewData {
@@ -187,4 +189,15 @@ export interface EdgeSdLanDmzTunnelInfo {
   serialNumber: string
   activeNodeCount: number
   allocatedNodeCount: number
+}
+
+export interface EdgeSdLanServiceProfile {
+  id?: string
+  name: string
+  tunnelProfileId: string
+  activeNetwork: {
+    venueId: string
+    networkId: string
+    tunnelProfileId?: string
+  }[]
 }
