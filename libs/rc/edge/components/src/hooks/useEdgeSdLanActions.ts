@@ -120,19 +120,19 @@ export const useEdgeSdLanActions = () => {
       pick(originData, ['name']),
       pick(payload, ['name']))
 
-    if(needUpdateSdLan && payload.id) {
+    if(needUpdateSdLan && originData.id) {
       actions.push(updateEdgeSdLanMutation({
         customHeaders: {
           'Content-Type': 'application/vnd.ruckus.v1.1+json'
         },
-        params: { serviceId: payload.id },
+        params: { serviceId: originData.id },
         payload: pick(payload, ['name'])
       }).unwrap())
     }
 
     try {
       const networkResults = await handleNetworkChanges(
-        payload.id || '',
+        originData.id || '',
         payload.activeNetwork,
         originData.activeNetwork
       )
