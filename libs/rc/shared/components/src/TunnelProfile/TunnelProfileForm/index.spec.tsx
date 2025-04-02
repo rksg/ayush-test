@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { Features, useIsBetaEnabled }                                               from '@acx-ui/feature-toggle'
@@ -440,6 +441,28 @@ describe('TunnelProfileForm', () => {
       await user.click(screen.getByRole('radio', { name: 'VNI' }))
       expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
       expect(screen.getByRole('radio', { name: 'L2GRE' })).toBeDisabled()
+    })
+
+    it('should lock disabed fields L2GRE ff enabled', async () => {
+      const formInitValues = _.clone(defaultValues)
+      formInitValues.disabledFields = []
+      formInitValues.disabledFields.push('type')
+      formInitValues.disabledFields.push('tunnelType')
+      formInitValues.disabledFields.push('destinationIpAddress')
+      formInitValues.disabledFields.push('edgeClusterId')
+      render(
+        <Provider><Form initialValues={formInitValues}>
+          <TunnelProfileForm />
+        </Form></Provider>
+      )
+      expect(screen.getByRole('radio', { name: 'VLAN to VNI map' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'VNI' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeDisabled()
+      expect(screen.getByRole('radio', { name: 'L2GRE' })).toBeDisabled()
+
+      expect(screen.getByRole('radio', { name: 'VxLAN GPE' })).toBeChecked()
+      expect(screen.getByRole('combobox', { name: 'Destination RUCKUS Edge cluster' }))
+        .toBeDisabled()
     })
 
   })
