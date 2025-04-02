@@ -23,12 +23,15 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const EditEthernetPortProfile = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const [form] = Form.useForm()
+
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const { data: ethernetPortProfileData, isLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEthernetPortProfileWithRelationsByIdQuery,
@@ -55,7 +58,7 @@ export const EditEthernetPortProfile = () => {
 
   const handleEditEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
-      const payload = requestPreProcess(data)
+      const payload = requestPreProcess(isWiredClientVisibilityEnabled, data)
 
       await updateEthernetPortProfile({
         payload,
