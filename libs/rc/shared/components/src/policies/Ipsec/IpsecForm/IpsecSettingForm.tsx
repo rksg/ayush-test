@@ -97,6 +97,39 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'IPsec' }))
   }
 
+  const pskValidator = (value: string) => {
+    let pass = false
+    if (value.startsWith('0x')) { // HEX
+      pass = new RegExp('0x[A-Fa-f0-9]{44,128}$').test(value)
+    } else if (value.startsWith('0s') || value.indexOf('"') !== -1) { // No base64 and exclude double-quote
+      pass = false
+    } else if (value.length >= 8 && value.length <= 64) { // ASCII
+      pass = validateASCII(value) && validateAPConfigInput(value)
+    }
+
+    return pass? Promise.resolve() :
+      Promise.reject($t(messageMapping.psk_invalid_message))
+  }
+
+  //A valid ascii character must from (space)(char 32) to ~(char 126)
+  const validateASCII = (v: string) => {
+    for (let i = 0; i < v.length; i++) {
+      let character = v.charCodeAt(i)
+      if (character < 32 || character > 126) {
+        return false
+      }
+    }
+    return true
+  }
+
+  //AP's configuration will reject any input containing ` or $(
+  const validateAPConfigInput = (v: string) => {
+    if(v && v.indexOf('`') === -1 && v.indexOf('$(') === -1) {
+      return true
+    }
+    return false
+  }
+
   const onAuthTypeChange = (value: IpSecAuthEnum) => {
     setAuthType(value)
   }
@@ -223,7 +256,8 @@ export const IpsecSettingForm = (props: IpsecSettingFormProps) => {
               data-testid='pre-shared-key'
               name='preSharedKey'
               label={$t({ defaultMessage: 'Pre-shared Key' })}
-              rules={[{ required: true }]}
+              rules={[{ required: true },
+                { validator: (_, value) => pskValidator(value) }]}
               children={
                 <PasswordInput value={preSharedKey} />
               }
