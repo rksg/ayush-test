@@ -4,8 +4,6 @@ import { useIntl }           from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-const placeholder = 'Leave blank to remain unchanged'
-
 const SecretFieldInput = ({
   hasPlaceholder,
   ...props
@@ -16,7 +14,9 @@ const SecretFieldInput = ({
     <Input.Password
       {...props}
       placeholder={
-        hasPlaceholder ? $t({ defaultMessage: placeholder }) : undefined
+        hasPlaceholder
+          ? $t({ defaultMessage: 'Leave blank to remain unchanged' })
+          : undefined
       }
     />
   )
@@ -31,7 +31,9 @@ SecretFieldInput.TextArea = ({
     <Input.TextArea
       {...props}
       placeholder={
-        hasPlaceholder ? $t({ defaultMessage: placeholder }) : undefined
+        hasPlaceholder
+          ? $t({ defaultMessage: 'Leave blank to remain unchanged' })
+          : undefined
       }
     />
   )
