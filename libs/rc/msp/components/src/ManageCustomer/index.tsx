@@ -365,7 +365,7 @@ export function ManageCustomer () {
           apswLicense: apswLic,
           apswTrialLicense: apswTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: isMDU ? MspEcTierEnum.Core : (data?.tier ?? MspEcTierEnum.Professional),
+          tier: data?.tier ?? MspEcTierEnum.Professional,
           subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
             : ServiceType.PAID
         })
