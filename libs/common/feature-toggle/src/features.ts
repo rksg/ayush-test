@@ -319,6 +319,8 @@ export enum Features {
   PTENANT_TO_COMMON_ACCOUNT_MANAGEMENT_TOGGLE = 'ptenant-to-common-account-management-toggle',
   ENTITLEMENT_PIN_FOR_IDENTITY_TOGGLE = 'entitlement-pin-for-identity-toggle',
   MSP_APP_VISIBILITY = 'mspservice-app-visibility',
+  AI_DRIVEN_RRM_METRICS_TOGGLE = 'acx-ui-ai-driven-rrm-metrics-toggle',
+  RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE = 'ruckus-ai-ai-driven-rrm-metrics-toggle',
   SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle'
 }
 

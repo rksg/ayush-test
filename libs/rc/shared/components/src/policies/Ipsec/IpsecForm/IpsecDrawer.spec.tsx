@@ -93,7 +93,7 @@ describe('IpsecDrawer', () => {
         await screen.findAllByRole('option', { name: /pre-shared key/i })
       )
       const pskField = await screen.findByLabelText(/Pre-shared Key/i)
-      await user.type(pskField, 'testPSK')
+      await user.type(pskField, 'testPSK123')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
       await waitFor(() => expect(addFn).toHaveBeenCalledTimes(1))
@@ -101,7 +101,7 @@ describe('IpsecDrawer', () => {
         expect(addFn).toHaveBeenCalledWith(expect.objectContaining({
           name: 'createIpSec',
           authType: 'PSK',
-          preSharedKey: 'testPSK',
+          preSharedKey: 'testPSK123',
           serverAddress: '128.0.0.1'
         }))
       })
@@ -163,7 +163,7 @@ describe('IpsecDrawer', () => {
         await screen.findAllByRole('option', { name: /pre-shared key/i })
       )
       const pskField = await screen.findByLabelText(/Pre-shared Key/i)
-      await user.type(pskField, 'testPSK')
+      await user.type(pskField, 'testPSK123')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
       await waitFor(() => expect(createFn).toHaveBeenCalledTimes(1))
