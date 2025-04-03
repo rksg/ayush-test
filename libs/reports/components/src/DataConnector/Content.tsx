@@ -1,5 +1,4 @@
-import React from 'react'
-
+import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, Banner, Button, PageHeader, Loader, DisabledButton } from '@acx-ui/components'
@@ -59,28 +58,32 @@ const DataConnectorContent: React.FC<{}> = () => {
   }
   if (hasDCStoragePermission) {
     headerButtons.push(
-      <Button
-        key='cloud-storage-button'
-        size='middle'
-        icon={<SettingsOutlined />}
-        type='default'
-        onClick={() => navigate({
-          ...basePath,
-          pathname: storage?.id
-            ? `${basePath.pathname}/cloudStorage/edit/${storage.id}`
-            : `${basePath.pathname}/cloudStorage/create`
-        })}
-      >
-        {storage?.config
-          ? $t(
-            { defaultMessage: 'Cloud Storage: {connectionType}' },
-            { connectionType: StorageLabel }
-          )
-          : $t({ defaultMessage: 'New Cloud Storage' })}
-        {storage?.isConnected
-          ? <UI.ConnectedDot data-testid='connected-dot' />
-          : <UI.DisconnectedDot data-testid='disconnected-dot' />}
-      </Button>
+      <Tooltip title={storage?.error}>
+        <Button
+          key='cloud-storage-button'
+          size='middle'
+          icon={<SettingsOutlined />}
+          type='default'
+          onClick={() => navigate({
+            ...basePath,
+            pathname: storage?.id
+              ? `${basePath.pathname}/cloudStorage/edit/${storage.id}`
+              : `${basePath.pathname}/cloudStorage/create`
+          })}
+        >
+          {storage?.config
+            ? $t(
+              { defaultMessage: 'Cloud Storage: {connectionType}' },
+              { connectionType: StorageLabel }
+            )
+            : $t({ defaultMessage: 'New Cloud Storage' })}
+          {storage != null && (
+            storage.isConnected
+              ? <UI.ConnectedDot data-testid='connected-dot' />
+              : <UI.DisconnectedDot data-testid='disconnected-dot' />
+          )}
+        </Button>
+      </Tooltip>
     )
   }
 
