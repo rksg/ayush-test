@@ -292,7 +292,24 @@ export function WISPrForm () {
           }
           initialValue=''
           label={$t({ defaultMessage: 'Region' })}
-          children={<Select>
+          children={<Select
+            onChange={(value)=>{
+              const region = _.find(regionOption,{ name: value })
+              const resolvedCaptivePortalUrl = region?.captivePortalUrl
+                ? region.captivePortalUrl
+                : ''
+              const resolvedRedirectUrl = region?.redirectUrl
+                ? region?.redirectUrl
+                : null
+
+              form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'],
+                resolvedCaptivePortalUrl)
+              if (resolvedRedirectUrl) {
+                form.setFieldValue(['guestPortal','redirectUrl'], resolvedRedirectUrl)
+              }
+              form.setFieldValue('redirectCheckbox', !!resolvedRedirectUrl)
+            }}
+          >
             <Select.Option value={''}>
               {$t({ defaultMessage: 'Select Region' })}
             </Select.Option>
