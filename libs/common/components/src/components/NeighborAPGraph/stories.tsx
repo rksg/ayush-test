@@ -5,7 +5,7 @@ import { nodes, nodeSize, nodesWithZeroValue, rootNode } from './__tests__/fixtu
 import { NeighborAPGraph } from '.'
 
 const base = 120
-storiesOf('Neighbor APGraph', module)
+storiesOf('NeighborAPGraph', module)
   .add('Default Graph', () => (
     <NeighborAPGraph
       title='Default Graph'

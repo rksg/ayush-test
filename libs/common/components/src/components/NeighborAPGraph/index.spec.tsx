@@ -4,6 +4,7 @@ import { nodes, nodeSize, nodesWithZeroValue, rootNode } from './__tests__/fixtu
 
 import { NeighborAPGraph } from '.'
 
+const base = 120
 describe('Graph', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
@@ -15,6 +16,8 @@ describe('Graph', () => {
       root={rootNode}
       nodeSize={nodeSize}
       nodes={nodes}
+      width={base * 3}
+      height={base * 4}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
@@ -28,6 +31,8 @@ describe('Graph', () => {
       root={rootNode}
       nodeSize={nodeSize}
       nodes={nodesWithZeroValue}
+      width={base * 3}
+      height={base * 4}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
@@ -42,6 +47,8 @@ describe('Graph', () => {
       nodeSize={nodeSize}
       root={rootNode}
       nodes={nodes}
+      width={base * 3}
+      height={base * 4}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
