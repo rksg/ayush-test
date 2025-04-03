@@ -15,9 +15,10 @@ import {
   ImpactedSwitchPortRow
 } from '../ImpactedSwitchesTable/services'
 
+
 import type { ChartProps } from '../types'
 
-export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
+export function ImpactedSwitchLLDPTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const isMLISA = get('IS_MLISA_SA')
 
@@ -33,17 +34,9 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
         {highlightFn(name)}
       </TenantLink>,
     fixed: 'left',
-    width: 100,
+    width: 120,
     sorter: { compare: sortProp('name', defaultSort) },
     defaultSortOrder: 'ascend',
-    searchable: true
-  }, {
-    key: 'mac',
-    dataIndex: 'mac',
-    title: $t({ defaultMessage: 'Switch MAC' }),
-    fixed: 'left',
-    width: 100,
-    sorter: { compare: sortProp('mac', defaultSort) },
     searchable: true
   }, {
     key: 'serial',
@@ -54,11 +47,27 @@ export function ImpactedSwitchDDoSTable ({ incident }: ChartProps) {
     sorter: { compare: sortProp('serial', defaultSort) },
     searchable: true
   }, {
+    key: 'mac',
+    dataIndex: 'mac',
+    title: $t({ defaultMessage: 'Switch MAC' }),
+    fixed: 'left',
+    width: 90,
+    sorter: { compare: sortProp('mac', defaultSort) },
+    searchable: true
+  }, {
+    key: 'reasonCodes',
+    dataIndex: 'reasonCodes',
+    title: $t({ defaultMessage: 'Impacted Reason' }),
+    fixed: 'left',
+    width: 100,
+    sorter: { compare: sortProp('reasonCodes', defaultSort) },
+    searchable: true
+  }, {
     key: 'portNumbers',
     dataIndex: 'portNumbers',
-    title: $t({ defaultMessage: 'Port Numbers' }),
+    title: $t({ defaultMessage: 'Port Details' }),
     fixed: 'left',
-    width: 250,
+    width: 240,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
     searchable: true
   }, {

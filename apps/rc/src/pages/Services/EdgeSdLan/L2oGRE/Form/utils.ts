@@ -4,6 +4,7 @@ import { EdgeSdLanFormType } from '.'
 
 export const transformToApiData = (formData: EdgeSdLanFormType): EdgeSdLanServiceProfile => {
   return {
+    id: formData.id,
     name: formData.name,
     tunnelProfileId: formData.tunnelProfileId,
     activeNetwork: Object.entries(formData.activatedNetworks)
