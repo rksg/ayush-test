@@ -1,14 +1,16 @@
-import { rest } from 'msw'
+import { rest }        from 'msw'
+import { setupServer } from 'msw/node'
+import { Provider }    from 'react-redux'
 
 import { getUserProfile as getUserProfileRA, Roles as RolesEnumRA } from '@acx-ui/analytics/utils'
 import { RadioBand }                                                from '@acx-ui/components'
 import { showActionModal }                                          from '@acx-ui/components'
 import * as config                                                  from '@acx-ui/config'
 import { useIsSplitOn, Features }                                   from '@acx-ui/feature-toggle'
-import {  ReportUrlsInfo, reportsApi }                              from '@acx-ui/reports/services'
+import { ReportUrlsInfo, reportsApi }                               from '@acx-ui/reports/services'
 import type { GuestToken, EmbeddedResponse }                        from '@acx-ui/reports/services'
-import { Provider, store, rbacApiURL, refreshJWT }                  from '@acx-ui/store'
-import { render, mockServer, act, waitFor }                         from '@acx-ui/test-utils'
+import { store, refreshJWT }                                        from '@acx-ui/store'
+import { render, waitFor, act }                                     from '@acx-ui/test-utils'
 import { RolesEnum as RolesEnumR1 }                                 from '@acx-ui/types'
 import { CustomRoleType, getUserProfile as getUserProfileR1 }       from '@acx-ui/user'
 import { NetworkPath, useLocaleContext }                            from '@acx-ui/utils'
@@ -133,20 +135,33 @@ describe('convertDateTimeToSqlFormat', () => {
 
 describe('EmbeddedDashboard', () => {
   const oldEnv = process.env
+  const path = '/:tenantId'
+  const params = { tenantId: 'tenant-id' }
+  const mockServer = setupServer()
 
   beforeEach(() => {
+    // Set up base URL for API calls
+    process.env.NODE_ENV = 'development'
+    process.env.API_BASE_URL = 'http://localhost/api'
+
     mockServer.use(
       rest.post(
-        ReportUrlsInfo.getEmbeddedDashboardMeta.url,
+        `${process.env.API_BASE_URL}/a4rc/explorer/api/v1/dashboard/embedded`,
         (_, res, ctx) => res(ctx.json(embeddedResponse1))
       ),
       rest.post(
-        ReportUrlsInfo.getEmbeddedReportToken.url,
+        `${process.env.API_BASE_URL}/a4rc/explorer/api/v1/dashboard/embedded/token`,
         (_, res, ctx) => res(ctx.json(guestTokenReponse))
       ),
-      rest.get(`${rbacApiURL}/systems`,
-        (_req, res, ctx) => res(ctx.json(systems)))
+      rest.get(
+        `${process.env.API_BASE_URL}/a4rc/rbac/api/v1/systems`,
+        (_, res, ctx) => res(ctx.json(systems))
+      )
     )
+
+    // Start the mock server
+    mockServer.listen()
+
     userProfileR1.mockReturnValue({
       profile: {
         scopes: [
@@ -162,14 +177,16 @@ describe('EmbeddedDashboard', () => {
       }
     })
   })
+
   afterEach(() => {
     process.env = oldEnv
     store.dispatch(reportsApi.util.resetApiState())
     jest.clearAllMocks()
     mockSdk.embedDashboardSpy.mockClear()
+    mockServer.resetHandlers()
+    mockServer.close()
   })
 
-  const params = { tenantId: 'tenant-id' }
   it.each([
     [RolesEnumRA.PRIME_ADMINISTRATOR, false],
     [RolesEnumRA.ADMINISTRATOR, false],
@@ -195,10 +212,12 @@ describe('EmbeddedDashboard', () => {
         setLang: () => {}
       })
 
-      render(<Provider>
-        <EmbeddedReport
-          reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -232,10 +251,12 @@ describe('EmbeddedDashboard', () => {
       }
     })
 
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.AP_DETAIL} />
-    </Provider>, { route: { params } })
+    render(
+      <Provider store={store}>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>,
+      { route: { path, params } }
+    )
 
     await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
     const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -268,10 +289,12 @@ describe('EmbeddedDashboard', () => {
       }
     })
 
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.SWITCH} />
-    </Provider>, { route: { params } })
+    render(
+      <Provider store={store}>
+        <EmbeddedReport reportName={ReportType.SWITCH} />
+      </Provider>,
+      { route: { path, params } }
+    )
 
     await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
     const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -293,10 +316,12 @@ describe('EmbeddedDashboard', () => {
       setLang: () => {}
     })
 
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.OVERVIEW} />
-    </Provider>, { route: { params } })
+    render(
+      <Provider store={store}>
+        <EmbeddedReport reportName={ReportType.OVERVIEW} />
+      </Provider>,
+      { route: { path, params } }
+    )
 
     await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
     const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -321,10 +346,12 @@ describe('EmbeddedDashboard', () => {
         setLang: () => {}
       })
 
-      render(<Provider>
-        <EmbeddedReport
-          reportName={ReportType.OVERVIEW} />
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.OVERVIEW} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -340,10 +367,12 @@ describe('EmbeddedDashboard', () => {
       const mockQuerySelector = jest.spyOn(document, 'querySelector') as jest.Mock
       mockQuerySelector.mockReturnValue(mockIframeElement)
 
-      const { unmount } = render(<Provider>
-        <EmbeddedReport
-          reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      const { unmount } = render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       await waitFor(() => expect(mockGetScrollSize).toHaveBeenCalledTimes(1))
@@ -358,19 +387,23 @@ describe('EmbeddedDashboard', () => {
 
   it('should set the Host name to devalto for dev', () => {
     process.env = { NODE_ENV: 'development' }
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.AP_DETAIL} />
-    </Provider>, { route: { params } })
+    render(
+      <Provider store={store}>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>,
+      { route: { path, params } }
+    )
   })
 
   it('should set the Host name to staging for SA in dev', () => {
     process.env = { NODE_ENV: 'development' }
     get.mockReturnValue('true')
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.AP_DETAIL} />
-    </Provider>, { route: { params } })
+    render(
+      <Provider store={store}>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+      </Provider>,
+      { route: { path, params } }
+    )
   })
 
   it('should render the dashboard rls clause', async () => {
@@ -385,12 +418,15 @@ describe('EmbeddedDashboard', () => {
       rest.post(
         ReportUrlsInfo.getEmbeddedDashboardMeta.url,
         (_, res, ctx) => res(ctx.json(embeddedResponse2))
-      ))
-    render(<Provider>
-      <EmbeddedReport
-        reportName={ReportType.AP_DETAIL}
-        rlsClause='venue filter'/>
-    </Provider>, { route: { params } })
+      )
+    )
+
+    render(
+      <Provider store={store}>
+        <EmbeddedReport reportName={ReportType.AP_DETAIL} rlsClause='venue filter' />
+      </Provider>,
+      { route: { path, params } }
+    )
   })
 
   describe('Event listener', () => {
@@ -409,29 +445,36 @@ describe('EmbeddedDashboard', () => {
     })
 
     it('should call showExpiredSessionModal when event type is unauthorized', () => {
-      render(<Provider>
-        <EmbeddedReport
-          reportName={ReportType.OVERVIEW}
-          rlsClause='venue filter'/>
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.OVERVIEW} rlsClause='venue filter' />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       act(() => {
-        window.dispatchEvent(new MessageEvent('message', { data: { type: 'unauthorized' } }))
+        window.dispatchEvent(new MessageEvent('message', {
+          data: { type: 'unauthorized' }
+        }))
       })
       expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
       expect(actionModal).toHaveBeenCalled()
 
       actionModal.mock.calls[0][0].onOk!()
     })
+
     it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {
-      const { unmount } = render(<Provider>
-        <EmbeddedReport
-          reportName={ReportType.AP_DETAIL}
-          rlsClause='venue filter'/>
-      </Provider>, { route: { params } })
+      const { unmount } = render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} rlsClause='venue filter' />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       act(() => {
-        window.dispatchEvent(new MessageEvent('message', { data: { type: 'something' } }))
+        window.dispatchEvent(new MessageEvent('message', {
+          data: { type: 'something' }
+        }))
       })
       expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
       expect(actionModal).not.toHaveBeenCalled()
@@ -439,20 +482,28 @@ describe('EmbeddedDashboard', () => {
       unmount()
       expect(removeEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
     })
+
     it('should call refreshJWT when event type is refreshToken', () => {
-      render(<Provider>
-        <EmbeddedReport
-          reportName={ReportType.OVERVIEW}
-          rlsClause='venue filter'/>
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.OVERVIEW} rlsClause='venue filter' />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       act(() => {
-        window.dispatchEvent(new MessageEvent('message',
-          { data: { type: 'refreshToken', headers: { 'login-token': 'token' } } }))
+        window.dispatchEvent(new MessageEvent('message', {
+          data: {
+            type: 'refreshToken',
+            headers: { 'login-token': 'token' }
+          }
+        }))
       })
       expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
-      expect(refreshJWTMock).toHaveBeenCalledWith(
-        { headers: { 'login-token': 'token' }, type: 'refreshToken' })
+      expect(refreshJWTMock).toHaveBeenCalledWith({
+        headers: { 'login-token': 'token' },
+        type: 'refreshToken'
+      })
     })
   })
 
@@ -481,9 +532,15 @@ describe('EmbeddedDashboard', () => {
         }
       })
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      // Mock hasPermission to return false for write permissions
+      jest.spyOn(require('@acx-ui/user'), 'hasPermission').mockReturnValue(false)
+
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -503,9 +560,15 @@ describe('EmbeddedDashboard', () => {
         }
       })
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      // Mock hasPermission to return true for write permissions
+      jest.spyOn(require('@acx-ui/user'), 'hasPermission').mockReturnValue(true)
+
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -527,9 +590,12 @@ describe('EmbeddedDashboard', () => {
         }
       })
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -551,9 +617,12 @@ describe('EmbeddedDashboard', () => {
         }
       })
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -574,9 +643,12 @@ describe('EmbeddedDashboard', () => {
           }
         })
 
-        render(<Provider>
-          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-        </Provider>, { route: { params } })
+        render(
+          <Provider store={store}>
+            <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+          </Provider>,
+          { route: { path, params } }
+        )
 
         await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
         const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -597,14 +669,95 @@ describe('EmbeddedDashboard', () => {
           }
         })
 
-        render(<Provider>
-          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-        </Provider>, { route: { params } })
+        render(
+          <Provider store={store}>
+            <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+          </Provider>,
+          { route: { path, params } }
+        )
 
         await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
         const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
         expect(embedDashboardCall.isReadOnly).toBe(false)
       })
+
+    it('should handle legacy read-only scopes when RBAC Phase 3 is disabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === Features.RBAC_PHASE3_TOGGLE) return false
+        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return true
+        return false
+      })
+
+      userProfileR1.mockReturnValue({
+        profile: {
+          scopes: ['wifi-r', 'switch-r'],
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'n9bKZ@example.com',
+          roles: [],
+          externalId: '1234',
+          tenantId: '1234'
+        }
+      })
+
+      // Mock hasPermission to return false for write permissions
+      jest.spyOn(require('@acx-ui/user'), 'hasPermission').mockReturnValue(false)
+
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.isReadOnly).toBe(true)
+    })
+
+    it('should handle locale from context when I18N is enabled', async () => {
+      localeContext.mockReturnValue({
+        messages: { locale: 'fr' },
+        lang: 'fr-FR',
+        setLang: () => {}
+      })
+
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.locale).toBe('fr')
+    })
+
+    it('should use default locale when I18N is disabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+        if (feature === Features.RBAC_PHASE3_TOGGLE) return true
+        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return false
+        return false
+      })
+
+      localeContext.mockReturnValue({
+        messages: { locale: 'fr' },
+        lang: 'fr-FR',
+        setLang: () => {}
+      })
+
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
+
+      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
+      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
+      expect(embedDashboardCall.locale).toBe('en')
+    })
   })
 
   describe('Error handling and edge cases', () => {
@@ -630,9 +783,12 @@ describe('EmbeddedDashboard', () => {
         )
       )
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
     })
@@ -650,9 +806,15 @@ describe('EmbeddedDashboard', () => {
         }
       })
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      // Mock hasPermission to return true since user has create scope
+      jest.spyOn(require('@acx-ui/user'), 'hasPermission').mockReturnValue(true)
+
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
@@ -674,79 +836,16 @@ describe('EmbeddedDashboard', () => {
         }
       })
 
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
+      render(
+        <Provider store={store}>
+          <EmbeddedReport reportName={ReportType.AP_DETAIL} />
+        </Provider>,
+        { route: { path, params } }
+      )
 
       await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
       const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
       expect(embedDashboardCall.isReadOnly).toBe(true)
-    })
-
-    it('should handle legacy read-only scopes when RBAC Phase 3 is disabled', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
-        if (feature === Features.RBAC_PHASE3_TOGGLE) return false
-        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return true
-        return false
-      })
-
-      userProfileR1.mockReturnValue({
-        profile: {
-          scopes: ['wifi-r', 'switch-r'],
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'n9bKZ@example.com',
-          roles: [],
-          externalId: '1234',
-          tenantId: '1234'
-        }
-      })
-
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
-
-      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
-      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
-      expect(embedDashboardCall.isReadOnly).toBe(true)
-    })
-
-    it('should handle locale from context when I18N is enabled', async () => {
-      localeContext.mockReturnValue({
-        messages: { locale: 'fr' },
-        lang: 'fr-FR',
-        setLang: () => {}
-      })
-
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
-
-      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
-      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
-      expect(embedDashboardCall.locale).toBe('fr')
-    })
-
-    it('should use default locale when I18N is disabled', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation((feature) => {
-        if (feature === Features.RBAC_PHASE3_TOGGLE) return true
-        if (feature === Features.I18N_DATA_STUDIO_TOGGLE) return false
-        return false
-      })
-
-      localeContext.mockReturnValue({
-        messages: { locale: 'fr' },
-        lang: 'fr-FR',
-        setLang: () => {}
-      })
-
-      render(<Provider>
-        <EmbeddedReport reportName={ReportType.AP_DETAIL} />
-      </Provider>, { route: { params } })
-
-      await waitFor(() => expect(mockSdk.embedDashboardSpy).toHaveBeenCalledTimes(1))
-      const embedDashboardCall = mockSdk.embedDashboardSpy.mock.calls[0][0]
-      expect(embedDashboardCall.locale).toBe('en')
     })
   })
 })

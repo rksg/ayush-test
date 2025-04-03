@@ -19,11 +19,12 @@ import {
   useEmbeddedIdMutation,
   EmbeddedResponse
 } from '@acx-ui/reports/services'
-import { useReportsFilter }                      from '@acx-ui/reports/utils'
-import { REPORT_BASE_RELATIVE_URL, refreshJWT }  from '@acx-ui/store'
-import { RolesEnum as RolesEnumR1 }              from '@acx-ui/types'
+import { useReportsFilter }                                   from '@acx-ui/reports/utils'
+import { REPORT_BASE_RELATIVE_URL, refreshJWT }               from '@acx-ui/store'
+import { RolesEnum as RolesEnumR1, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile as getUserProfileR1,
-  UserProfile as UserProfileR1, CustomRoleType }                     from '@acx-ui/user'
+  UserProfile as UserProfileR1, CustomRoleType, hasPermission,
+  aiOpsApis } from '@acx-ui/user'
 import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext } from '@acx-ui/utils'
 
 import {
@@ -194,12 +195,6 @@ export const getRLSClauseForSA = (
   }
 }
 
-const scopeRegexMapping = {
-  both: /^((switch|wifi)-(c|d|u))$/,
-  ap: /^((wifi)-(c|d|u))$/,
-  switch: /^((switch)-(c|d|u))$/
-}
-
 export function EmbeddedReport (props: ReportProps) {
   const { reportName, rlsClause, hideHeader } = props
 
@@ -207,7 +202,6 @@ export function EmbeddedReport (props: ReportProps) {
   const embedDashboardName = reportTypeDataStudioMapping[reportName]
   const systems = useSystems()
   const showResetMsg = useIsSplitOn(Features.ACX_UI_DATE_RANGE_RESET_MSG) && !isRA
-  const isRbacPhase3ToggleEnabled = useIsSplitOn(Features.RBAC_PHASE3_TOGGLE)
 
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
@@ -374,16 +368,13 @@ export function EmbeddedReport (props: ReportProps) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
     }
     if (scopes) {
-      if (isRbacPhase3ToggleEnabled) {
-        // Check if user has any write scopes (c, u, d) or only read scope (r)
-        const hasWriteScope = scopes.some(scope => /^bi\.reports-[cud]$/.test(scope))
-        return !hasWriteScope
-      }
-      // TODO - Remove this once RBAC Phase 3 is fully deployed
-      const { isApReport, isSwitchReport } = getReportType(reportName)
-      const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
-      const hasWriteScope = scopes.some(scope => regex.test(scope))
-      return !hasWriteScope
+      const { isSwitchReport } = getReportType(reportName)
+      const scopeType = isSwitchReport ? SwitchScopes : WifiScopes
+      return !hasPermission({
+        permission: 'WRITE_REPORT_SCHEDULES',
+        scopes: [scopeType.CREATE, scopeType.UPDATE, scopeType.DELETE],
+        rbacOpsIds: [aiOpsApis.updateReportSchedules]
+      })
     }
     return !systemRolesWithWritePermissions.some(role => roles.includes(role))
   }

@@ -18,7 +18,10 @@ export const opsApis = {
   deleteServiceValidation: 'DELETE:/serviceValidation/{id}',
   createVideoCallQoe: 'POST:/videoCallQoe',
   updateVideoCallQoe: 'PATCH:/videoCallQoe/{id}',
-  deleteVideoCallQoe: 'DELETE:/videoCallQoe/{id}'
+  deleteVideoCallQoe: 'DELETE:/videoCallQoe/{id}',
+  createReportSchedules: 'POST:/reportSchedules',
+  updateReportSchedules: 'PATCH:/reportSchedules/{id}',
+  deleteReportSchedules: 'DELETE:/reportSchedules/{id}'
 }
 
 // Operations available for each scope
@@ -50,6 +53,24 @@ const aiOperations = [
     uri: [
       opsApis.deleteServiceValidation,
       opsApis.deleteVideoCallQoe
+    ]
+  },
+  {
+    scope: ['bi.reports-c'],
+    uri: [
+      opsApis.createReportSchedules
+    ]
+  },
+  {
+    scope: ['bi.reports-u'],
+    uri: [
+      opsApis.updateReportSchedules
+    ]
+  },
+  {
+    scope: ['bi.reports-d'],
+    uri: [
+      opsApis.deleteReportSchedules
     ]
   }
 ]
