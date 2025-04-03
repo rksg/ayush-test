@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 
 import { cssNumber, cssStr } from '../../theme/helper'
+import { graphStyles }       from '../CloudRRMGraph'
 
 interface NodeSize {
   max: number
@@ -80,27 +81,12 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
     backgroundColor: cssStr('--acx-neutrals-10'),
     title: {
       text: props.title,
-      textStyle: {
-        color: cssStr('--acx-primary-black'),
-        fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: cssNumber('--acx-subtitle-4-font-size'),
-        lineHeight: cssNumber('--acx-subtitle-4-line-height'),
-        fontWeight: cssNumber('--acx-subtitle-4-font-weight')
-      },
+      textStyle: graphStyles.textStyle,
       ...(props.subtext ? {
         subtext: props.subtext,
-        subtextStyle: {
-          color: cssStr('--acx-primary-black'),
-          fontFamily: cssStr('--acx-neutral-brand-font'),
-          fontSize: cssNumber('--acx-body-4-font-size'),
-          lineHeight: cssNumber('--acx-body-4-line-height'),
-          fontWeight: cssNumber('--acx-body-font-weight'),
-          overflow: 'break'
-        }
+        subtextStyle: graphStyles.subtextStyle
       } : {}),
-      itemGap: 3,
-      top: 15,
-      left: 15
+      ...graphStyles.positionStyles
     },
     series: [{
       type: 'graph',
