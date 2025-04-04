@@ -3,11 +3,8 @@ import React from 'react'
 import {
   AccountManagement,
   AccountManagementTabEnum,
-  RecommendationDetails,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
-  CrrmDetails,
-  UnknownDetails,
   VideoCallQoe,
   VideoCallQoeForm,
   VideoCallQoeDetails,
@@ -31,7 +28,6 @@ import ConfigChange                          from './pages/ConfigChange'
 import IncidentDetails                       from './pages/IncidentDetails'
 import Layout                                from './pages/Layout'
 import { canAccessOnboardedSystems }         from './pages/Layout/menuConfig'
-import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
 import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
 import ApDetails                             from './pages/Wifi/ApDetails'
@@ -94,12 +90,6 @@ function AllRoutes () {
       <Route path='dashboard' element={check('READ_DASHBOARD', <Dashboard />)} />
       <Route path='profile'>
         <Route path=':activeTab' element={<Profile />} />
-      </Route>
-      <Route path='recommendations'>
-        <Route path=':activeTab' element={<Recommendations/>} />
-        <Route path='aiOps/:id' element={check('READ_AI_OPERATIONS', <RecommendationDetails/>)}/>
-        <Route path='crrm/:id' element={check('READ_AI_DRIVEN_RRM', <CrrmDetails />)}/>
-        <Route path='crrm/unknown/*' element={check('READ_AI_DRIVEN_RRM', <UnknownDetails />)}/>
       </Route>
       <Route path='incidents' element={check('READ_INCIDENTS')}>
         <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />} />

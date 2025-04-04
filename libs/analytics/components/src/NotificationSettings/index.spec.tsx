@@ -39,8 +39,6 @@ describe('NotificationSettings', () => {
   beforeEach(() => {
     setRaiPermissions({
       READ_INCIDENTS: true,
-      READ_AI_OPERATIONS: true,
-      READ_AI_DRIVEN_RRM: true,
       READ_LICENSES: true,
       READ_INTENT_AI: true
     } as RaiPermissions)
@@ -52,16 +50,13 @@ describe('NotificationSettings', () => {
       data: {
         incident: {
           P1: ['email']
-        },
-        configRecommendation: {
-          aiOps: ['email']
         }
       }
     }, true)
   })
-  it('renders without license / emails / intents', async () => {
+  it('renders without license / emails', async () => {
     mockedUnwrap.mockImplementation(async () => ({ success: true }))
-    mockGet.mockImplementationOnce(() => '')
+    mockGet.mockReturnValue('')
     mockedUseIsSplitOn.mockImplementation(() => false)
     const apply = {}
     render(<NotificationSettings
@@ -70,9 +65,8 @@ describe('NotificationSettings', () => {
     />, { wrapper: Provider })
     expect(screen.queryByText('Licenses')).toBeNull()
     expect(screen.queryByText('Recipients')).toBeNull()
-    expect(screen.queryByText('IntentAI')).toBeNull()
     const inputs = await screen.findAllByRole('checkbox')
-    expect(inputs).toHaveLength(6)
+    expect(inputs).toHaveLength(5)
     await userEvent.click(inputs[0])
     await userEvent.click(inputs[1])
     await userEvent.click(inputs[5])
@@ -94,7 +88,6 @@ describe('NotificationSettings', () => {
       apply={apply}
     />, { wrapper: Provider })
     expect(await screen.findByText('Licenses')).toBeVisible()
-    expect(await screen.findByText('All config recommendations')).toBeVisible()
     expect(await screen.findByText('Recipients')).toBeVisible()
     const input = await screen.findByRole('combobox')
     await userEvent.type(input, 'test@email.com')
@@ -104,7 +97,6 @@ describe('NotificationSettings', () => {
       expect(mockedPrefMutation).toHaveBeenLastCalledWith({
         tenantId: 'test',
         preferences: {
-          configRecommendation: { aiOps: ['email'] },
           incident: { P1: ['email'] },
           recipients: ['test1@email.com', 'test@email.com']
         }
@@ -131,6 +123,5 @@ describe('NotificationSettings', () => {
       apply={apply}
     />, { wrapper: Provider })
     expect(await screen.findByText('IntentAI')).toBeVisible()
-    expect(screen.queryByText('All config recommendations')).toBeNull()
   })
 })
