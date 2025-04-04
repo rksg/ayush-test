@@ -1,6 +1,6 @@
 import { storiesOf } from '@storybook/react'
 
-import { nodes, nodeSize, nodesWithZeroValue, rootNode } from './__tests__/fixtures'
+import { nodes, nodeSize, nodesWithZeroValue } from './__tests__/fixtures'
 
 import { NeighborAPGraph } from '.'
 
@@ -10,7 +10,6 @@ storiesOf('NeighborAPGraph', module)
     <NeighborAPGraph
       title='Default Graph'
       nodeSize={nodeSize}
-      root={rootNode}
       nodes={nodes}
       width={base * 3}
       height={base * 4}
@@ -20,7 +19,6 @@ storiesOf('NeighborAPGraph', module)
     <NeighborAPGraph
       title='Graph with More Nodes'
       nodeSize={nodeSize}
-      root={rootNode}
       nodes={nodesWithZeroValue}
       width={base * 3}
       height={base * 4}
@@ -31,7 +29,6 @@ storiesOf('NeighborAPGraph', module)
       title='Default Graph'
       subtext='Subtext'
       nodeSize={nodeSize}
-      root={rootNode}
       nodes={nodes}
       width={base * 3}
       height={base * 4}

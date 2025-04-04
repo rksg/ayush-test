@@ -1,6 +1,6 @@
 import { mockDOMSize, render } from '@acx-ui/test-utils'
 
-import { nodes, nodeSize, nodesWithZeroValue, rootNode } from './__tests__/fixtures'
+import { nodes, nodeSize, nodesWithZeroValue } from './__tests__/fixtures'
 
 import { NeighborAPGraph } from '.'
 
@@ -13,7 +13,6 @@ describe('Graph', () => {
   it('should match snapshot', () => {
     const { asFragment } = render(<NeighborAPGraph
       title='Before'
-      root={rootNode}
       nodeSize={nodeSize}
       nodes={nodes}
       width={base * 3}
@@ -28,7 +27,6 @@ describe('Graph', () => {
   it('should match snapshot when there nodes with zero value', () => {
     const { asFragment } = render(<NeighborAPGraph
       title='Current'
-      root={rootNode}
       nodeSize={nodeSize}
       nodes={nodesWithZeroValue}
       width={base * 3}
@@ -45,7 +43,6 @@ describe('Graph', () => {
       title='Before'
       subtext='Subtext'
       nodeSize={nodeSize}
-      root={rootNode}
       nodes={nodes}
       width={base * 3}
       height={base * 4}
