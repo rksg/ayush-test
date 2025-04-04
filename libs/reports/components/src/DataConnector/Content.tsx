@@ -58,9 +58,8 @@ const DataConnectorContent: React.FC<{}> = () => {
   }
   if (hasDCStoragePermission) {
     headerButtons.push(
-      <Tooltip title={storage?.error}>
+      <Tooltip title={storage?.error} key='cloud-storage-button'>
         <Button
-          key='cloud-storage-button'
           size='middle'
           icon={<SettingsOutlined />}
           type='default'

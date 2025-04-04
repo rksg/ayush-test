@@ -140,7 +140,7 @@ describe('DataConnectorContent', () => {
       expect(connectorButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
       expect(screen.queryByTestId('connected-dot')).toBeNull()
-      expect(screen.getByTestId('disconnected-dot')).toBeVisible()
+      expect(screen.queryByTestId('disconnected-dot')).toBeNull()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: '/ai/dataConnector/cloudStorage/create',
