@@ -354,7 +354,8 @@ export function useMenuConfig () {
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
         ...(isDataConnectorEnabled && isAdmin ? [{
           uri: '/dataConnector',
-          label: $t({ defaultMessage: 'Data Connector' })
+          label: $t({ defaultMessage: 'Data Connector' }),
+          superscript: $t({ defaultMessage: 'beta' })
         }] : []),
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]

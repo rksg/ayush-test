@@ -43,7 +43,10 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SamlIdpProfile', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'DETAIL' }
+      ]
     }),
 
     deleteSamlIdpProfile: build.mutation<CommonResult, RequestPayload>({
@@ -74,7 +77,7 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
 
     getSamlIdpProfileWithRelationsById:
     build.query<SamlIdpProfileFormType | null, RequestPayload>({
-      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
@@ -83,18 +86,30 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         const viewDataReq = createHttpRequest(
           SamlIdpProfileUrls.getSamlIdpProfileViewDataList, params)
 
-        const idPListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        const idPListQuery = await fetchWithBQ(
+          { ...viewDataReq,
+            body: JSON.stringify({
+              sortField: 'name',
+              sortOrder: 'ASC',
+              filters: {
+                id: [params.id]
+              }
+            })
+          })
         let idPList = idPListQuery.data as TableResult<SamlIdpProfileViewData>
 
         const samlIdpProfile = await fetchWithBQ(
           createHttpRequest(SamlIdpProfileUrls.getSamlIdpProfile, params)
         )
+
         const samlIdpProfileData = samlIdpProfile.data as SamlIdpProfileFormType
 
-        samlIdpProfileData.metadataContent =
-          Buffer.from(samlIdpProfileData.metadata, 'base64').toString('ascii')
+        samlIdpProfileData.metadataContent = Buffer
+          .from(samlIdpProfileData.metadata, 'base64')
+          .toString('utf-8')
 
         if (samlIdpProfileData && idPList?.data) {
+          samlIdpProfileData.id = params.id
           const viewData = idPList.data.find(item => item.id === params.id)
 
           if(viewData) {
@@ -112,7 +127,21 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           : { error: samlIdpProfile.error } as QueryReturnValue<
           SamlIdpProfileFormType, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
       },
-      providesTags: [{ type: 'SamlIdpProfile', id: 'DETAIL' }]
+      providesTags: [{ type: 'SamlIdpProfile', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'SamlIdpProfileAction'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              samlIdpProfileApi.util.invalidateTags([
+                { type: 'SamlIdpProfile', id: 'DETAIL' }
+              ])
+            )
+          })
+        })
+      }
     }),
 
     getSamlIdpProfileViewDataList:
@@ -210,6 +239,20 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         // eslint-disable-next-line max-len
         return createHttpRequest(SamlIdpProfileUrls.activateIdentityProviderProfileOnNetwork, params)
       }
+    }),
+
+    refreshSamlServiceProviderMetadata: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SamlIdpProfileUrls.refreshSamlServiceProviderMetadata, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'DETAIL' }
+      ]
     })
   })
 })
@@ -228,5 +271,6 @@ export const {
   useActivateSamlSigningCertificateMutation,
   useDeactivateSamlSigningCertificateMutation,
   useDownloadSamlServiceProviderMetadataMutation,
-  useActivateIdentityProviderProfileOnNetworkMutation
+  useActivateIdentityProviderProfileOnNetworkMutation,
+  useRefreshSamlServiceProviderMetadataMutation
 } = samlIdpProfileApi

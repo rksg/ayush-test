@@ -16,7 +16,8 @@ import {
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
   Loader,
-  Tooltip
+  Tooltip,
+  categoryStyles
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { InformationOutlined }       from '@acx-ui/icons'
@@ -59,7 +60,6 @@ const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: st
       maxHeight: '100%'
     }}
   />}
-  <Legend />
 </>
 
 export function DataGraph (props: {
@@ -115,7 +115,6 @@ export function DataGraph (props: {
       zoomScale={props.zoomScale}
       backgroundColor='transparent'
     />}</AutoSizer></div>
-    <Legend />
   </>
 }
 
@@ -227,6 +226,7 @@ export const IntentAIRRMGraph = ({
             afterSrc={summaryUrlAfter}
           />
           <GraphTitle details={intent} />
+          <UI.GraphLegendWrapper><Legend {...categoryStyles}/></UI.GraphLegendWrapper>
         </UI.GraphWrapper>
         <UI.GraphFooterWrapper>
           {showTooltip ? (<Space align='start'>
@@ -256,6 +256,7 @@ export const IntentAIRRMGraph = ({
           <UI.GraphWrapper>
             <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
             <GraphTitle details={intent} />
+            <UI.GraphLegendWrapper><Legend {...categoryStyles}/></UI.GraphLegendWrapper>
           </UI.GraphWrapper>
         }
       />
@@ -307,32 +308,6 @@ export const GraphImage = (
   )
 }
 
-export const SliderGraphBefore = (
-  { crrmData, setUrl }:
-  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
-) => {
-  return <GraphImage
-    crrmData={crrmData}
-    data={0}
-    setUrl={setUrl}
-    justifyContent='start'
-    backgroundColor='#333333'
-    width={300}
-  />
-}
-
-export const SliderGraphAfter = (
-  { crrmData, setUrl }:
-  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
-) => {
-  return <GraphImage
-    crrmData={crrmData}
-    data={1}
-    setUrl={setUrl}
-    justifyContent='end'
-    width={300}
-  />
-}
 export const SummaryGraphBefore = (
   { crrmData, setUrl, width }:
   { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, width: number }

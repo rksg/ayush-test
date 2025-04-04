@@ -1,14 +1,17 @@
 import { useState } from 'react'
 
-import { Space }     from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { SyncOutlined } from '@ant-design/icons'
+import { Space }        from 'antd'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
 import { Button, PageHeader, SummaryCard, Tooltip } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                from '@acx-ui/formatter'
 import {
   useDownloadSamlServiceProviderMetadataMutation,
   useGetSamlIdpProfileWithRelationsByIdQuery,
-  useGetServerCertificatesQuery
+  useGetServerCertificatesQuery,
+  useRefreshSamlServiceProviderMetadataMutation
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -20,6 +23,7 @@ import {
   usePolicyListBreadcrumb,
   useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { CertificateInfoItem }              from '../CertificateInfoItem'
@@ -32,14 +36,8 @@ export const SamlIdpDetail = () => {
   const { policyId } = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SAML_IDP)
   const [samlIdpMetadataModalVisible, setSamlIdpMetadataModalVisible] = useState(false)
+  const [isSyncingMetadata, setIsSyncingMetadata] = useState(false)
   const { data: samlIdpData } = useGetSamlIdpProfileWithRelationsByIdQuery({
-    payload: {
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: {
-        id: [policyId]
-      }
-    },
     params: {
       id: policyId
     }
@@ -63,18 +61,59 @@ export const SamlIdpDetail = () => {
     })
   })
 
+  const [ refreshSamlServiceProviderMetadata ] = useRefreshSamlServiceProviderMetadataMutation()
+
+  const handleSyncMetadata = async () => {
+    setIsSyncingMetadata(true)
+    await refreshSamlServiceProviderMetadata({
+      params: { id: samlIdpData?.id },
+      payload: {
+        action: 'REFRESH_METADATA'
+      }
+    })
+      .unwrap()
+      .finally(() => {
+        setIsSyncingMetadata(false)
+      })
+  }
+
   const samlIdpProfileInfo =[
     {
       title: $t({ defaultMessage: 'Identity Provider (IdP) Metadata' }),
       content: () => {
         return (
-          <Button
-            type='link'
-            size={'small'}
-            onClick={() => setSamlIdpMetadataModalVisible(true)}
-          >
-            {$t({ defaultMessage: 'View Metadata' })}
-          </Button>
+          <Space direction='vertical' size={1} style={{ lineHeight: 1 }}>
+            <Space size={1}>
+              <Button
+                type='link'
+                size={'small'}
+                onClick={() => setSamlIdpMetadataModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'View Metadata' })}
+              </Button>
+              {(samlIdpData?.metadataUrl) && (
+                <Button
+                  data-testid='sync-metadata-button'
+                  style={{ borderStyle: 'none' }}
+                  icon={<SyncOutlined spin={isSyncingMetadata} />}
+                  type='link'
+                  onClick={() => handleSyncMetadata()}
+                >
+                </Button>
+              )}
+            </Space>
+            {(samlIdpData?.metadataUrl) && (
+              <span style={{ fontSize: '12px' }}>
+                {$t({ defaultMessage: 'Last Update:' })} {
+                  (samlIdpData?.updatedData )
+                    ? formatter(DateFormatEnum.DateFormat)(
+                      samlIdpData?.updatedData
+                    )
+                    : noDataDisplay
+                }
+              </span>
+            )}
+          </Space>
         )
       }
     }, {
@@ -141,11 +180,13 @@ export const SamlIdpDetail = () => {
         networkIds={samlIdpData?.wifiNetworkIds ?? []}
       />
     </Space>
-    <SamlIdpMetadataModal
-      metadata={samlIdpData?.metadataContent ?? ''}
-      visible={samlIdpMetadataModalVisible}
-      setVisible={setSamlIdpMetadataModalVisible}
-    />
+    {samlIdpData && (
+      <SamlIdpMetadataModal
+        samlIdpData={samlIdpData}
+        visible={samlIdpMetadataModalVisible}
+        setVisible={setSamlIdpMetadataModalVisible}
+      />
+    )}
   </>
   )
 }

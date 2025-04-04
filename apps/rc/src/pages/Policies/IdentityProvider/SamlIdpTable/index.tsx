@@ -28,7 +28,8 @@ import {
   useTableQuery,
   Network,
   KeyValue,
-  ServerCertificate
+  ServerCertificate,
+  SamlIdpProfileFormType
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -42,7 +43,8 @@ const SamlIdpTable = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [idpMetadataModalVisible, setIdpMetadataModalVisible] = useState(false)
-  const [idpMetadata, setIdpMetadata] = useState('')
+  const [samlIdpData, setSamlIdpData] =
+    useState<SamlIdpProfileFormType>({} as SamlIdpProfileFormType)
 
   const [deleteSamlIdpProfile] = useDeleteSamlIdpProfileMutation()
   const [lazyGetSamlIdpProfile] = useLazyGetSamlIdpProfileByIdQuery()
@@ -99,7 +101,11 @@ const SamlIdpTable = () => {
     const data = await lazyGetSamlIdpProfile({
       params: { id: id }
     }).unwrap()
-    setIdpMetadata(Buffer.from(data?.metadata, 'base64').toString('ascii'))
+    const samlIdpData = {
+      ...data,
+      metadataContent: Buffer.from(data?.metadata, 'base64').toString('utf-8')
+    } as SamlIdpProfileFormType
+    setSamlIdpData(samlIdpData)
     setIdpMetadataModalVisible(true)
   }
 
@@ -124,7 +130,7 @@ const SamlIdpTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Idp Metadata' }),
+      title: $t({ defaultMessage: 'IdP Metadata' }),
       key: 'metadata',
       dataIndex: 'metadata',
       render: (_, row) => {
@@ -246,7 +252,7 @@ const SamlIdpTable = () => {
         enableApiFilter={true}
       />
       <SamlIdpMetadataModal
-        metadata={idpMetadata}
+        samlIdpData={samlIdpData}
         visible={idpMetadataModalVisible}
         setVisible={setIdpMetadataModalVisible}
       />

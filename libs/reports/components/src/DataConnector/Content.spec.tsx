@@ -96,7 +96,8 @@ describe('DataConnectorContent', () => {
             azureAccountKey: 'key',
             azureContainerName: 'name'
           },
-          id: 'id'
+          id: 'id',
+          isConnected: true
         }
       })
       render(<DataConnectorContent />, {
@@ -116,6 +117,8 @@ describe('DataConnectorContent', () => {
         search: ''
       })
       expect(screen.getByText(/Cloud Storage: Azure/)).toBeVisible()
+      expect(screen.getByTestId('connected-dot')).toBeVisible()
+      expect(screen.queryByTestId('disconnected-dot')).toBeNull()
       await userEvent.click(screen.getByRole('button', { name: /Cloud Storage: Azure/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: '/ai/dataConnector/cloudStorage/edit/id',
@@ -136,6 +139,8 @@ describe('DataConnectorContent', () => {
       expect(connectorButton).toBeVisible()
       expect(connectorButton).toBeDisabled()
       expect(screen.getByText(/New Cloud Storage/)).toBeVisible()
+      expect(screen.queryByTestId('connected-dot')).toBeNull()
+      expect(screen.getByTestId('disconnected-dot')).toBeVisible()
       await userEvent.click(screen.getByRole('button', { name: /New Cloud Storage/ }))
       expect(mockedUsedNavigate).toHaveBeenCalledWith({
         pathname: '/ai/dataConnector/cloudStorage/create',
