@@ -111,6 +111,14 @@ function useColumns (
       }
     },
     {
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'description',
+      sorter: true,
+      show: false,
+      searchable: searchable
+    },
+    {
       title: $t({ defaultMessage: 'Address' }),
       width: Infinity,
       key: 'addressLine',
@@ -277,9 +285,10 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id',
       'isEnforced',
-      'addressLine'
+      'addressLine',
+      'tags'
     ],
-    searchTargetFields: ['name', 'addressLine'],
+    searchTargetFields: ['name', 'addressLine', 'description', 'tags'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
