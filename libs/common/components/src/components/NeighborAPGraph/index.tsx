@@ -99,6 +99,7 @@ export const NeighborAPGraph = (props: NeighborAPGraphProps) => {
     series: [{
       type: 'graph',
       layout: 'force',
+      cursor: 'default',
       data: [rootNode, ...graphNodes],
       links,
       top: '20%',
