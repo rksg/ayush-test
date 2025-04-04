@@ -373,7 +373,11 @@ export function EmbeddedReport (props: ReportProps) {
       return !hasPermission({
         permission: 'WRITE_REPORT_SCHEDULES',
         scopes: [scopeType.CREATE, scopeType.UPDATE, scopeType.DELETE],
-        rbacOpsIds: [aiOpsApis.updateReportSchedules]
+        rbacOpsIds: [
+          aiOpsApis.createReportSchedules,
+          aiOpsApis.updateReportSchedules,
+          aiOpsApis.deleteReportSchedules
+        ]
       })
     }
     return !systemRolesWithWritePermissions.some(role => roles.includes(role))
