@@ -64,6 +64,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   const [ getIpsecOptions ] = useLazyGetIpsecOptionsQuery()
   const [ enableIpsec, setEnableIpsec ] = useState<boolean>(false)
   const [ enableOption, setEnableOption ] = useState<boolean>(true)
+  const [ softGreDisabled, setSoftGreDisabled ] = useState<boolean>(false)
   const [ ipsecDisabled, setIpsecDisabled ] = useState<boolean>(false)
 
   const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
@@ -138,12 +139,26 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
   }, [softGreProfileId])
 
   useEffect(() => {
-    if (ipsecOption.length > 0 && ipsecOption.filter(opt => opt.disabled === false).length === 0) {
-      setIpsecDisabled(true)
-      return
-    }
+    setSoftGreDisabled(false)
     setIpsecDisabled(false)
-  }, [ipsecOption])
+    form.setFieldValue(['ipsec', 'enableIpsec'], false)
+    setEnableIpsec(false)
+    if (ipsecOption.length > 0) {
+      const enabledIpsecOption = ipsecOption.filter(opt => opt.disabled === false).length
+      if (ipsecOption.length > 1 && enabledIpsecOption === 1) {
+        setSoftGreDisabled(true)
+        setIpsecDisabled(true)
+        form.setFieldValue(['ipsec', 'enableIpsec'], true)
+        setEnableIpsec(true)
+        const option = ipsecOption.find(item => item.disabled === false)
+        form.setFieldValue(['ipsec', 'newProfileId'], option?.value
+        )
+        form.setFieldValue(['ipsec', 'newProfileName'], option?.label)
+      } else if (enabledIpsecOption === 0) {
+        setIpsecDisabled(true)
+      }
+    }
+  }, [ipsecOption, softGreOption])
 
   const reloadIpsecOptions = async (value: string) => {
     const queryData = await getIpsecOptions(
@@ -291,6 +306,7 @@ export default function WifiSoftGreSelectOption (props: WiFISoftGreRadioOptionPr
           label={$t({ defaultMessage: 'SoftGRE Profile' })}
           initialValue=''
           children={<Select
+            disabled={softGreDisabled}
             style={{ width: '220px' }}
             onChange={onChange}
             options={[
