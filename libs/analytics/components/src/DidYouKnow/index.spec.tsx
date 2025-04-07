@@ -29,7 +29,9 @@ const sample = [
       'google_api',
       'google_gen'
     ]
-  },
+  }
+]
+const sample2 = [
   {
     key: 'airtimeUtilization',
     values: [
@@ -41,26 +43,6 @@ const sample = [
       -0.026368198420163663
     ],
     labels: []
-  }
-]
-const sample2 = [
-  {
-    key: 'busiestSsidByClients',
-    values: [
-      0.7853403141361257
-    ],
-    labels: [
-      'DENSITY'
-    ]
-  },
-  {
-    key: 'busiestSsidByTraffic',
-    values: [
-      0.7156916786073376
-    ],
-    labels: [
-      'DENSITY'
-    ]
   }
 ]
 const availableFacts = [
@@ -102,7 +84,7 @@ describe('DidYouKnowWidget', () => {
       data: { network: { hierarchyNode: { availableFacts } } }
     })
     mockGraphqlQuery(dataApiURL, 'Facts', (req, res, ctx) => {
-      set = _.isEqual(req.body?.variables!.requestedList, availableFacts.slice(0, 2)) ? 1 : 2
+      set = _.isEqual(req.body?.variables!.requestedList, availableFacts.slice(0, 1)) ? 1 : 2
       const facts = set === 1 ? sample : sample2
       return res(ctx.data({ network: { hierarchyNode: { facts } } }))
     })
@@ -115,7 +97,7 @@ describe('DidYouKnowWidget', () => {
       if (!slice) throw new Error('slide not rendered')
       const pattern = set === 1
         ? /Top 3 applications in terms of users last week were/
-        : /Busiest WLAN in terms of users last/
+        : /Average daily airtime utilization last week/
       expect(await within(slice as HTMLElement).findByText(pattern)).toBeVisible()
       set = 0
     })

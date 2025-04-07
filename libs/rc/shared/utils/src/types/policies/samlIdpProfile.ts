@@ -12,7 +12,7 @@ export interface SamlIdpProfile {
     id: string
     name: string
     metadata: string,
-    metadataUrl: string
+    metadataUrl: string,
 }
 
 export interface SamlIdpProfileFormType extends SamlIdpProfile {
@@ -21,5 +21,6 @@ export interface SamlIdpProfileFormType extends SamlIdpProfile {
     signingCertificateEnabled: boolean
     signingCertificateId?: string
     metadataContent?: string // store The content converted from base64 format
-    wifiNetworkIds: string[]
+    wifiNetworkIds: string[],
+    updatedData?: string
 }

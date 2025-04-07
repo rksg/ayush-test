@@ -9,7 +9,7 @@ import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export const useTunnelProfileActions = () => {
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   // eslint-disable-next-line max-len
   const [createTunnelProfile, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
   // eslint-disable-next-line max-len

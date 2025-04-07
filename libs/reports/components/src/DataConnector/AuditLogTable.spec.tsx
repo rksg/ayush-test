@@ -36,7 +36,7 @@ jest.mock('@acx-ui/config', () => ({
 const mockGet = jest.mocked(get)
 jest.mock('moment', () => {
   const moment = jest.requireActual('moment')
-  return jest.fn((...args) => {
+  const m = jest.fn((...args) => {
     if (args.length === 0) {
       // Return the fixed date-time for moment()
       return moment('2025-01-20T02:48:40.069Z')
@@ -44,6 +44,8 @@ jest.mock('moment', () => {
     // Use the original moment function for moment(params)
     return moment(...args)
   })
+  m.utc = m
+  return m
 })
 
 describe('AuditLogTable', () => {
@@ -87,8 +89,8 @@ describe('AuditLogTable', () => {
       'Last update',
       'Status',
       'Size transferred',
-      'Export start date',
-      'Export end date'
+      'Export start',
+      'Export end'
     ])
 
     const firstRow = (await tbody.findAllByRole('row'))[0]

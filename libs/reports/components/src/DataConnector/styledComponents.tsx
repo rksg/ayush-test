@@ -44,3 +44,19 @@ export const QuotaUsageButton = styled(Button)`
    }
   }
 `
+
+export const ConnectedDot = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--acx-semantics-green-50);
+  border-radius: 50%;
+`
+
+export const DisconnectedDot = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--acx-neutrals-50);
+  border-radius: 50%;
+`
