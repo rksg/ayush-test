@@ -113,14 +113,21 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
       }
 
       const payload = {
-        id, key, action, sourceAddress, sourceMask, destinationAddress, destinationMask }
+        id,
+        key,
+        action,
+        sourceAddress: sourceAddress?.toLowerCase(),
+        sourceMask: sourceMask?.toLowerCase(),
+        destinationAddress: destinationAddress?.toLowerCase(),
+        destinationMask: destinationMask?.toLowerCase()
+      }
 
       const isDuplicate = dataSource?.some(rule =>
         rule.action === payload.action &&
-          rule.sourceAddress === payload.sourceAddress &&
-          rule.sourceMask === payload.sourceMask &&
-          rule.destinationAddress === payload.destinationAddress &&
-          rule.destinationMask === payload.destinationMask &&
+          rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
+          rule.sourceMask?.toLowerCase() === payload.sourceMask &&
+          rule.destinationAddress?.toLowerCase() === payload.destinationAddress &&
+          rule.destinationMask?.toLowerCase() === payload.destinationMask &&
           (editMode ? rule.key !== payload.key : true)
       )
 

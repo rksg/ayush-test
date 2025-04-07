@@ -262,26 +262,44 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
               name='name'
               label={$t({ defaultMessage: 'MAC ACL Name' })}
               rules={[
-                { required: true, message: 'Please enter MAC ACL name' },
+                { required: true, message: $t({ defaultMessage: 'Please enter MAC ACL name' }) },
                 { validator: validateMacAclName }
               ]}
               validateTrigger='onBlur'
             >
               <Input disabled={editMode} style={{ width: '400px' }} maxLength={255} />
             </Form.Item>
-            <Table
-              dataSource={dataSource}
-              columns={columns}
-              rowActions={rowActions}
-              rowSelection={{
-                type: 'checkbox'
-              }}
-              actions={[{
-                label: $t({ defaultMessage: 'Add Rule' }),
-                onClick: () => handleAddRule()
-              }]}
-              pagination={{ pageSize: 10000 }}
-              rowKey='key' />
+            <Form.Item
+              name='macAclRules'
+              label={<>
+                {$t({ defaultMessage: 'Rules' })}
+                <span style={{ color: 'var(--acx-accents-orange-50)', marginLeft: '4px' }}>*</span>
+              </>}
+              rules={[
+                {
+                  validator: () => {
+                    if (!dataSource || dataSource.length === 0) {
+                      return Promise.reject($t({ defaultMessage: 'Please add at least one rule' }))
+                    }
+                    return Promise.resolve()
+                  }
+                }
+              ]}
+            >
+              <Table
+                dataSource={dataSource}
+                columns={columns}
+                rowActions={rowActions}
+                rowSelection={{
+                  type: 'checkbox'
+                }}
+                actions={[{
+                  label: $t({ defaultMessage: 'Add Rule' }),
+                  onClick: () => handleAddRule()
+                }]}
+                pagination={{ pageSize: 10000 }}
+                rowKey='key' />
+            </Form.Item>
           </StepsForm.StepForm>
         </StepsForm>
       </Loader>

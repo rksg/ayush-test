@@ -113,14 +113,21 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
       }
 
       const payload = {
-        id, key, action, sourceAddress, sourceMask, destinationAddress, destinationMask }
+        id,
+        key,
+        action,
+        sourceAddress: sourceAddress?.toLowerCase(),
+        sourceMask: sourceMask?.toLowerCase(),
+        destinationAddress: destinationAddress?.toLowerCase(),
+        destinationMask: destinationMask?.toLowerCase()
+      }
 
       const isDuplicate = dataSource?.some(rule =>
         rule.action === payload.action &&
-            rule.sourceAddress === payload.sourceAddress &&
-            rule.sourceMask === payload.sourceMask &&
-            rule.destinationAddress === payload.destinationAddress &&
-            rule.destinationMask === payload.destinationMask &&
+            rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
+            rule.sourceMask?.toLowerCase() === payload.sourceMask &&
+            rule.destinationAddress?.toLowerCase() === payload.destinationAddress &&
+            rule.destinationMask?.toLowerCase() === payload.destinationMask &&
             (editMode ? rule.key !== payload.key : true)
       )
 
@@ -169,6 +176,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         <Radio.Group>
           <Space direction='vertical'>
             <Radio
+              data-testid='sourceAny'
               value={'any'}
             >
               {$t({ defaultMessage: 'Any' })}
@@ -178,7 +186,6 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
               value={'sourceMac'}
             >
               <Form.Item
-                data-testid='sourceAddress'
                 name='sourceAddress'
                 label={$t({ defaultMessage: 'Source Mac Address' })}
                 rules={[
@@ -187,6 +194,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                     'sourceAddress', isAnySrcAddress, 'sourceMask') }
                 ]}
                 children={<Input
+                  data-testid='sourceAddress'
                   disabled={isAnySrcAddress}
                   placeholder={'HHHH.HHHH.HHHH'}
                   style={{ width: '300px' }}
@@ -200,7 +208,10 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                   { required: !isAnySrcAddress },
                   { validator: (_, value) => MacAddressFilterRegExp(value) }
                 ]}
-                children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnySrcAddress} />}
+                children={<Input
+                  data-testid='sourceMask'
+                  placeholder={'HHHH.HHHH.HHHH'}
+                  disabled={isAnySrcAddress} />}
                 validateFirst
               />
             </Radio>
@@ -219,6 +230,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         <Radio.Group>
           <Space direction='vertical'>
             <Radio
+              data-testid='destinationAny'
               value={'any'}
             >
               {$t({ defaultMessage: 'Any' })}
@@ -228,7 +240,6 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
               value={'destinationMac'}
             >
               <Form.Item
-                data-testid='destinationAddress'
                 name='destinationAddress'
                 label={$t({ defaultMessage: 'Destination MAC Address' })}
                 rules={[
@@ -237,6 +248,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                     'destinationAddress', isAnyDestAddress, 'destinationMask') }
                 ]}
                 children={<Input
+                  data-testid='destinationAddress'
                   disabled={isAnyDestAddress}
                   placeholder={'HHHH.HHHH.HHHH'}
                   style={{ width: '300px' }}
@@ -250,7 +262,10 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
                   { required: !isAnyDestAddress },
                   { validator: (_, value) => MacAddressFilterRegExp(value) }
                 ]}
-                children={<Input placeholder={'HHHH.HHHH.HHHH'} disabled={isAnyDestAddress} />}
+                children={<Input
+                  data-testid='destinationMask'
+                  placeholder={'HHHH.HHHH.HHHH'}
+                  disabled={isAnyDestAddress} />}
                 validateFirst
               />
             </Radio>

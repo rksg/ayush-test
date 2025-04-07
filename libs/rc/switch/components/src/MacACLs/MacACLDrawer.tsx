@@ -66,6 +66,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
   const [globalDataSource, setGlobalDataSource] = useState<MacAclRule[]>()
   const [selectedRow, setSelectedRow] = useState<MacAclRule>()
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [errRuleMessage, setErrRuleMessage] = useState(false)
 
   const switchAccessControlPage = '/policies/accessControl/switch'
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SWITCH_ACCESS_CONTROL)
@@ -194,6 +195,13 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     try {
       await form.validateFields()
 
+      if((!dataSource || dataSource.length === 0) ||
+      (!globalDataSource || globalDataSource.length === 0)){
+        setErrRuleMessage(true)
+        return
+      }
+      setErrRuleMessage(false)
+
       const formValues = form.getFieldsValue()
 
       const switchMacAclRules = dataSource?.map(row => {
@@ -269,6 +277,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
       <Button
+        data-testid='addButton'
         key='okBtn'
         type='primary'
         onClick={onApply}
@@ -350,7 +359,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
               name='name'
               label={$t({ defaultMessage: 'MAC ACL Name' })}
               rules={[
-                { required: true, message: 'Please enter MAC ACL name' },
+                { required: true, message: $t({ defaultMessage: 'Please enter MAC ACL name' }) },
                 { validator: validateMacAclName }
               ]}
             >
@@ -377,6 +386,17 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           <Form.Item name='customized' />
           <Form.Item name='usePolicyAndProfileSetting' />
         </Form>
+
+        <Form.Item
+          name='macAclRules'
+          label={<>
+            {$t({ defaultMessage: 'Rules' })}
+            <span style={{ color: 'var(--acx-accents-orange-50)', marginLeft: '4px' }}>*</span>
+          </>}
+        />
+        <span style={{ color: 'var(--acx-semantics-red-50)',
+          display: `${errRuleMessage ? 'block' : 'none'}` }} >
+          {$t({ defaultMessage: 'Please add at least one rule' })}</span>
         <Table
           dataSource={customized || !editMode ? dataSource : globalDataSource}
           columns={columns}

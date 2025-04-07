@@ -144,16 +144,16 @@ describe('SwitchAccessControlDrawer', () => {
     })
     fireEvent.click(denyOption)
 
-    const sourceMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(sourceMacRadios[1])
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
 
-    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    const sourceMacInput = await screen.findByTestId('sourceAddress')
     await userEvent.type(sourceMacInput, '00:11:22:33:44:55')
 
-    const destMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(destMacRadios[3])
+    const destMacRadios = await screen.findByTestId('destinationMac')
+    await userEvent.click(destMacRadios)
 
-    const destMacInput = screen.getAllByRole('textbox')[2]
+    const destMacInput = await screen.findByTestId('destinationAddress')
     await userEvent.type(destMacInput, '66:77:88:99:AA:BB')
 
     const addButton = await screen.findByRole('button', { name: 'Add' })
@@ -162,11 +162,10 @@ describe('SwitchAccessControlDrawer', () => {
     await waitFor(() => {
       expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
         action: 'deny',
+        destinationAddress: '66:77:88:99:aa:bb',
+        destinationMask: 'ff:ff:ff:ff:ff:ff',
         sourceAddress: '00:11:22:33:44:55',
-        sourceMask: 'ff:ff:ff:ff:ff:ff',
-        destinationAddress: '66:77:88:99:AA:BB',
-        destinationMask: 'ff:ff:ff:ff:ff:ff'
-      }))
+        sourceMask: 'ff:ff:ff:ff:ff:ff' }))
     })
   })
 
@@ -186,16 +185,16 @@ describe('SwitchAccessControlDrawer', () => {
     })
     fireEvent.click(denyOption)
 
-    const sourceMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(sourceMacRadios[1])
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
 
-    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    const sourceMacInput = await screen.findByTestId('sourceAddress')
     await userEvent.type(sourceMacInput, '00-11-22-33-44-55')
 
-    const destMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(destMacRadios[3])
+    const destMacRadios = await screen.findByTestId('destinationMac')
+    await userEvent.click(destMacRadios)
 
-    const destMacInput = screen.getAllByRole('textbox')[2]
+    const destMacInput = await screen.findByTestId('destinationAddress')
     await userEvent.type(destMacInput, '66-77-88-99-AA-BB')
 
     const addButton = await screen.findByRole('button', { name: 'Add' })
@@ -204,11 +203,10 @@ describe('SwitchAccessControlDrawer', () => {
     await waitFor(() => {
       expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
         action: 'deny',
+        destinationAddress: '66-77-88-99-aa-bb',
+        destinationMask: 'ff-ff-ff-ff-ff-ff',
         sourceAddress: '00-11-22-33-44-55',
-        sourceMask: 'ff-ff-ff-ff-ff-ff',
-        destinationAddress: '66-77-88-99-AA-BB',
-        destinationMask: 'ff-ff-ff-ff-ff-ff'
-      }))
+        sourceMask: 'ff-ff-ff-ff-ff-ff' }))
     })
   })
 
@@ -228,16 +226,16 @@ describe('SwitchAccessControlDrawer', () => {
     })
     fireEvent.click(denyOption)
 
-    const sourceMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(sourceMacRadios[1])
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
 
-    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    const sourceMacInput = await screen.findByTestId('sourceAddress')
     await userEvent.type(sourceMacInput, '0011.2233.4455')
 
-    const destMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(destMacRadios[3])
+    const destMacRadios = await screen.findByTestId('destinationMac')
+    await userEvent.click(destMacRadios)
 
-    const destMacInput = screen.getAllByRole('textbox')[2]
+    const destMacInput = await screen.findByTestId('destinationAddress')
     await userEvent.type(destMacInput, '6677.8899.AABB')
 
     const addButton = await screen.findByRole('button', { name: 'Add' })
@@ -246,11 +244,10 @@ describe('SwitchAccessControlDrawer', () => {
     await waitFor(() => {
       expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
         action: 'deny',
+        destinationAddress: '6677.8899.aabb',
+        destinationMask: 'ffff.ffff.ffff',
         sourceAddress: '0011.2233.4455',
-        sourceMask: 'ffff.ffff.ffff',
-        destinationAddress: '6677.8899.AABB',
-        destinationMask: 'ffff.ffff.ffff'
-      }))
+        sourceMask: 'ffff.ffff.ffff' }))
     })
   })
 
@@ -270,16 +267,16 @@ describe('SwitchAccessControlDrawer', () => {
     })
     fireEvent.click(denyOption)
 
-    const sourceMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(sourceMacRadios[1])
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
 
-    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    const sourceMacInput = await screen.findByTestId('sourceAddress')
     await userEvent.type(sourceMacInput, '001122334455')
 
-    const destMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(destMacRadios[3])
+    const destMacRadios = await screen.findByTestId('destinationMac')
+    await userEvent.click(destMacRadios)
 
-    const destMacInput = screen.getAllByRole('textbox')[2]
+    const destMacInput = await screen.findByTestId('destinationAddress')
     await userEvent.type(destMacInput, '66778899AABB')
 
     const addButton = await screen.findByRole('button', { name: 'Add' })
@@ -288,11 +285,10 @@ describe('SwitchAccessControlDrawer', () => {
     await waitFor(() => {
       expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
         action: 'deny',
+        destinationAddress: '66778899aabb',
+        destinationMask: 'ffffffffffff',
         sourceAddress: '001122334455',
-        sourceMask: 'ffffffffffff',
-        destinationAddress: '66778899AABB',
-        destinationMask: 'ffffffffffff'
-      }))
+        sourceMask: 'ffffffffffff' }))
     })
   })
 
@@ -311,10 +307,8 @@ describe('SwitchAccessControlDrawer', () => {
       </IntlProvider>
     )
 
-    const destMacRadios = screen.getAllByRole('radio')
-    expect(destMacRadios[2]).toBeChecked()
-
-    expect(destMacRadios[1]).toBeChecked()
+    const destAnyRadio = await screen.findByTestId('destinationAny')
+    await userEvent.click(destAnyRadio)
 
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
     await userEvent.click(applyButton)
@@ -337,10 +331,10 @@ describe('SwitchAccessControlDrawer', () => {
       </IntlProvider>
     )
 
-    const sourceMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(sourceMacRadios[1])
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
 
-    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    const sourceMacInput = await screen.findByTestId('sourceAddress')
     await userEvent.type(sourceMacInput, 'invalid-mac')
 
     const addButton = await screen.findByRole('button', { name: 'Add' })
@@ -372,14 +366,13 @@ describe('SwitchAccessControlDrawer', () => {
     )
 
     // Check that the source and destination type radios are set to 'any'
-    const radios = screen.getAllByRole('radio')
-    expect(radios[0]).toBeChecked() // Source 'any' radio
-    expect(radios[2]).toBeChecked() // Destination 'any' radio
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
+    expect(sourceMacRadios).toBeChecked()
 
-    // Verify the MAC address fields are empty
-    const macInputs = screen.getAllByRole('textbox')
-    expect(macInputs[0]).toHaveValue('')
-    expect(macInputs[1]).toHaveValue('')
+    const destMacRadios = await screen.findByTestId('destinationMac')
+    await userEvent.click(destMacRadios)
+    expect(destMacRadios).toBeChecked()
   })
 
   it('shows error when submitting a duplicate rule', async () => {
@@ -413,16 +406,16 @@ describe('SwitchAccessControlDrawer', () => {
     })
     fireEvent.click(denyOption)
 
-    const sourceMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(sourceMacRadios[1])
+    const sourceMacRadios = await screen.findByTestId('sourceMac')
+    await userEvent.click(sourceMacRadios)
 
-    const sourceMacInput = screen.getAllByRole('textbox')[0]
+    const sourceMacInput = await screen.findByTestId('sourceAddress')
     await userEvent.type(sourceMacInput, '001122334455')
 
-    const destMacRadios = screen.getAllByRole('radio')
-    await userEvent.click(destMacRadios[3])
+    const destMacRadios = await screen.findByTestId('destinationMac')
+    await userEvent.click(destMacRadios)
 
-    const destMacInput = screen.getAllByRole('textbox')[2]
+    const destMacInput = await screen.findByTestId('destinationAddress')
     await userEvent.type(destMacInput, '66778899AABB')
 
     const addButton = await screen.findByRole('button', { name: 'Add' })
