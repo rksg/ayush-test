@@ -11,6 +11,7 @@ import { ClientRateLimit }   from './ClientRateLimit'
 import { DeviceOSDrawer }    from './DeviceOSDrawer'
 import { Layer2Drawer }      from './Layer2Drawer'
 import { Layer3Drawer }      from './Layer3Drawer'
+import { getUserProfile, isCoreTier } from '@acx-ui/user'
 const { useWatch } = Form
 
 const AccessComponentWrapper = styled.div`
@@ -38,6 +39,8 @@ const AccessFormItem = (props: FormItemProps<AccessControlProfile>) => {
 
 const AccessControlComponent = () => {
   const { $t } = useIntl()
+  const { accountTier } = getUserProfile()
+  const isCore = isCoreTier(accountTier)
 
   const [
     enableLayer2,
@@ -79,13 +82,14 @@ const AccessControlComponent = () => {
         </AccessComponentWrapper>
       </FieldLabel>
 
-      <FieldLabel>
+      {!isCore && (<FieldLabel>
         {$t({ defaultMessage: 'Applications' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableApplications'} />
           {enableApplications && <ApplicationDrawer />}
         </AccessComponentWrapper>
       </FieldLabel>
+      )}
 
       <FieldLabel>
         {$t({ defaultMessage: 'Client Rate Limit' })}
