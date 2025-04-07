@@ -1,8 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import userEvent                              from '@testing-library/user-event'
-import { IntlProvider }                       from 'react-intl'
+import userEvent from '@testing-library/user-event'
 
-import { Provider } from '@acx-ui/store'
+import { Provider }                           from '@acx-ui/store'
+import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { SwitchAccessControlDrawer } from './SwitchAccessControlDrawer'
 
@@ -32,11 +31,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('renders the drawer with add rule form', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     expect(await screen.findByText('Add Rule')).toBeInTheDocument()
@@ -49,14 +46,12 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('renders the drawer with edit rule form', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer
-            {...defaultProps}
-            data={mockRuleData}
-          />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer
+          {...defaultProps}
+          data={mockRuleData}
+        />
+      </Provider>
     )
 
     expect(await screen.findByText('Edit Rule')).toBeInTheDocument()
@@ -76,11 +71,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('closes the drawer when clicking the cancel button', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
@@ -91,11 +84,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('submits the form with "any" source MAC when selected', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const actionSelect = screen.getByRole('combobox')
@@ -130,11 +121,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('submits the form with specific source and destination MAC addresses', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const actionSelect = screen.getByRole('combobox')
@@ -171,11 +160,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('submits the form with specific source and destination format(-) MAC addresses', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const actionSelect = screen.getByRole('combobox')
@@ -212,11 +199,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('submits the form with specific source and destination format(.) MAC addresses', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const actionSelect = screen.getByRole('combobox')
@@ -253,11 +238,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('submits the form with specific source and dest no delimiter MAC addresses', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const actionSelect = screen.getByRole('combobox')
@@ -294,17 +277,15 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('handles rule with "any" for destination MAC and specific source MAC', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer
-            {...defaultProps}
-            data={{
-              ...mockRuleData,
-              destinationAddress: 'any'
-            }}
-          />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer
+          {...defaultProps}
+          data={{
+            ...mockRuleData,
+            destinationAddress: 'any'
+          }}
+        />
+      </Provider>
     )
 
     const destAnyRadio = await screen.findByTestId('destinationAny')
@@ -324,11 +305,9 @@ describe('SwitchAccessControlDrawer', () => {
 
   it('validates MAC address format', async () => {
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer {...defaultProps} />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer {...defaultProps} />
+      </Provider>
     )
 
     const sourceMacRadios = await screen.findByTestId('sourceMac')
@@ -353,16 +332,14 @@ describe('SwitchAccessControlDrawer', () => {
     }
 
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer
-            visible={true}
-            setVisible={jest.fn()}
-            data={mockData}
-            handleSaveRule={jest.fn()}
-          />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          data={mockData}
+          handleSaveRule={jest.fn()}
+        />
+      </Provider>
     )
 
     // Check that the source and destination type radios are set to 'any'
@@ -389,14 +366,12 @@ describe('SwitchAccessControlDrawer', () => {
     ]
 
     render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <SwitchAccessControlDrawer
-            {...defaultProps}
-            dataSource={dataSource}
-          />
-        </Provider>
-      </IntlProvider>
+      <Provider>
+        <SwitchAccessControlDrawer
+          {...defaultProps}
+          dataSource={dataSource}
+        />
+      </Provider>
     )
 
     const actionSelect = screen.getByRole('combobox')

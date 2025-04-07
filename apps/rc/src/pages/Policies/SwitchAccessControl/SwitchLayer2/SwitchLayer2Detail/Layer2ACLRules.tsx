@@ -84,7 +84,7 @@ export default function Layer2ACLRules () {
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
-            rowKey='switchId'
+            rowKey='id'
             onFilterChange={tableQuery.handleFilterChange}
           />
         </Loader>

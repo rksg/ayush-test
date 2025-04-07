@@ -120,7 +120,7 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
               dataSource={tableQuery.data?.data}
               pagination={tableQuery.pagination}
               onChange={tableQuery.handleTableChange}
-              rowKey='switchId'
+              rowKey='id'
               onFilterChange={tableQuery.handleFilterChange}
             />
           </Form.Item>

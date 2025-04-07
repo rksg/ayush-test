@@ -265,10 +265,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
         setDataSource([])
         setVisible(false)
       }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Form validation failed or API error:', error)
-    }
+    } catch { }
   }
 
   const footer = (

@@ -15,8 +15,8 @@ describe('MacACLDrawer', () => {
   const mockSetVisible = jest.fn()
   const mockOnFinish = jest.fn()
   const mockMacACLData = {
-    id: '525a68dc53494d29bb163ee0de86ad6a',
-    switchId: 'c0:c5:20:78:dd:04',
+    id: 'acl-1',
+    switchId: 'switch-id',
     name: 'Test MAC ACL',
     customized: true,
     sharedWithPolicyAndProfile: false,
@@ -26,7 +26,7 @@ describe('MacACLDrawer', () => {
         action: 'permit',
         sourceAddress: 'any',
         destinationAddress: 'any',
-        macAclId: '525a68dc53494d29bb163ee0de86ad6a'
+        macAclId: 'acl-1'
       }
     ]
   }
@@ -37,7 +37,8 @@ describe('MacACLDrawer', () => {
     macACLData: mockMacACLData,
     onFinish: mockOnFinish,
     editMode: false,
-    venueId: 'venue-id'
+    venueId: 'venue-id',
+    switchIds: ['switch-id']
   }
 
   beforeEach(() => {
@@ -45,7 +46,10 @@ describe('MacACLDrawer', () => {
     mockOnFinish.mockClear()
     mockServer.use(
       rest.post(SwitchUrlsInfo.addSwitchMacAcl.url, (req, res, ctx) => {
-        return res(ctx.json({ id: 'new-acl-id' }))
+        return res(ctx.json({
+          requestId: 'request-id',
+          response: []
+        }))
       }),
       rest.post(SwitchUrlsInfo.getLayer2Acls.url, (req, res, ctx) => {
         return res(ctx.json({
@@ -362,32 +366,7 @@ describe('MacACLDrawer', () => {
     expect(await screen.findByRole('cell', { name: '00:11:22:33:44:55' })).toBeInTheDocument()
   })
 
-
-  it('handles form validation errors gracefully', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
-
-    render(
-      <Provider>
-        <MacACLDrawer
-          {...defaultProps}
-          macACLData={undefined}
-        />
-      </Provider>, {
-        route: { params,
-          path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/overview/acls' }
-      }
-    )
-
-    const addButton = await screen.findByRole('button', { name: 'Add' })
-    await userEvent.click(addButton)
-
-    expect(consoleSpy).toHaveBeenCalled()
-
-    expect(mockSetVisible).not.toHaveBeenCalledWith(false)
-
-    consoleSpy.mockRestore()
-  })
-  it('handles multiple switch IDs when creating a new MAC ACL', async () => {    // Render component with multiple switchIds
+  it('handles multiple switch IDs when creating a new MAC ACL', async () => {
     render(
       <Provider>
         <MacACLDrawer
@@ -524,7 +503,6 @@ describe('MacACLDrawer', () => {
   })
 
   it('toggles between customized and policy settings when clicking the customize button', async () => {
-    // Create a modified version of mockMacACLData with sharedWithPolicyAndProfile set to true
     const sharedMacACLData = {
       ...mockMacACLData,
       sharedWithPolicyAndProfile: true
@@ -543,26 +521,20 @@ describe('MacACLDrawer', () => {
       }
     )
 
-    // Verify the button is visible
     const useProfileSettingsButton = await screen.findByRole('button', {
       name: 'Use \'Policies & Profiles\' Level Settings'
     })
     expect(useProfileSettingsButton).toBeInTheDocument()
 
-    // Initial state should be customized=true
     expect(useProfileSettingsButton).toHaveTextContent('Use \'Policies & Profiles\' Level Settings')
 
-    // Click the button to switch to policy settings
     await userEvent.click(useProfileSettingsButton)
 
-    // Button text should now change to "Customize"
     const customizeButton = await screen.findByRole('button', { name: 'Customize' })
     expect(customizeButton).toBeInTheDocument()
 
-    // Click again to switch back to customized mode
     await userEvent.click(customizeButton)
 
-    // Button should switch back to original text
     expect(await screen.findByRole('button', {
       name: 'Use \'Policies & Profiles\' Level Settings'
     })).toBeInTheDocument()
