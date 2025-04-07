@@ -66,6 +66,21 @@ describe('getDescription', () => {
       expect(await within(links[1]).findByText('R750-11-40')).toBeVisible()
     })
   })
+
+  describe('event message with %%transactionId', () => {
+    const eventWithTransactionId = {
+      ...events[5],
+      ...eventsMeta.find(meta => meta.id === events[5].id)
+    } as Event
+
+    it('renders transactionId as "Configuration Update"', async () => {
+      render(<>{getDescription(eventWithTransactionId)}</>, { route: true })
+
+      const content = screen.getByText(/completed successfully/, { exact: false })
+      expect(content).toBeVisible()
+      expect(content).toHaveTextContent('ICX7150-C12 Router: Configuration Update completed successfully.') // eslint-disable-line max-len
+    })
+  })
 })
 
 describe('valueFrom', () => {
