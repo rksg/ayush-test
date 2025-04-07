@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { SortOrder } from 'antd/lib/table/interface'
+import { useIntl }   from 'react-intl'
 
 import { Loader, Table }                                         from '@acx-ui/components'
 import { useRbacClientTableColumns }                             from '@acx-ui/rc/components'
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
-  ClientInfo,
-  IdentityClient,
+  ClientInfo, defaultSort,
+  IdentityClient, sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
 
@@ -120,6 +121,23 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       })
   }, [clientMacs])
 
+  const useClientTableColumns = () => {
+    return useRbacClientTableColumns(useIntl(), false).map(c => {
+      if (c.key === 'macAddress') {
+        return { ...c, searchable: true, filterable: false }
+      } else if (c.key === 'hostname') {
+        return {
+          ...c,
+          searchable: true,
+          defaultSortOrder: 'descend' as SortOrder,
+          filterable: false
+        }
+      } else {
+        return { ...c, filterable: false }
+      }
+    })
+  }
+
   return <Loader
     states={[
       tableQuery,
@@ -128,10 +146,17 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   >
     <Table<ClientInfo>
       rowKey={'clientMac'}
-      columns={useRbacClientTableColumns(useIntl(), false)
-        .map(col =>
-          col.key === 'hostname' ? { ...col, defaultSortOrder: 'descend' } : col
-        )}
+      columns={[
+        ...useClientTableColumns(),
+        {
+          key: 'onboardType',
+          dataIndex: 'onboardType',
+          align: 'center',
+          title: $t({ defaultMessage: 'Onboarding Mechanism' }),
+          sorter: { compare: sortProp('onboardType', defaultSort) },
+          render: (_, row) => getOnboardingTerm((row as unknown as IdentityClient).onboardType)
+        }
+      ]}
       settingsId={settingsId}
       dataSource={datasource}
       pagination={{ pageSize: 10, defaultPageSize: 10 }}
