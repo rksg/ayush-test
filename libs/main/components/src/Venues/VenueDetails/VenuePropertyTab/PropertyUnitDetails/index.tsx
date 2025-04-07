@@ -18,13 +18,13 @@ import {
   useUpdatePersonaMutation,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PersonaUrls, PropertyUnit, PropertyUnitFormFields, PropertyUnitStatus, PropertyUrlsInfo, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { filterByAccess, hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }             from '@acx-ui/utils'
 
 import { PropertyUnitDrawer }         from '../PropertyUnitDrawer'
 import { PropertyUnitIdentityDrawer } from '../PropertyUnitIdentityDrawer/PropertyUnitIdentityDrawer'
@@ -78,7 +78,11 @@ export function PropertyUnitDetails () {
   const copyButtonTooltipDefaultText = $t({ defaultMessage: 'Copy Passphrase' })
   const copyButtonTooltipCopiedText = $t({ defaultMessage: 'Passphrase Copied' })
   const [ copyButtonTooltip, setCopyTooltip ] = useState(copyButtonTooltipDefaultText)
-  const [ guestCopyButtonTooltip, setGuestCopyTooltip ] = useState(copyButtonTooltipDefaultText)
+  const [guestCopyButtonTooltip, setGuestCopyTooltip] = useState(copyButtonTooltipDefaultText)
+  const hasUpdateUnitsPermission =
+    hasAllowedOperations([getOpsApi(PropertyUrlsInfo.updatePropertyUnit)])
+  const hasAddUnitsPermission =
+    hasAllowedOperations([getOpsApi(PropertyUrlsInfo.addPropertyUnit)])
 
   useEffect(() => {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
@@ -305,6 +309,7 @@ export function PropertyUnitDetails () {
       [
         {
           label: $t({ defaultMessage: 'Block' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           visible: (selectedItems => selectedItems.length > 0 &&
             selectedItems.some(p => !p.revoked)),
           onClick: (identities, clearSelection) => {
@@ -335,6 +340,7 @@ export function PropertyUnitDetails () {
         },
         {
           label: $t({ defaultMessage: 'Unblock' }),
+          rbacOpsIds: [getOpsApi(PersonaUrls.updatePersona)],
           visible: (selectedItems => selectedItems.length > 0 &&
             selectedItems.some(p => p.revoked)),
           onClick: (identities, clearSelection) => {
@@ -348,6 +354,7 @@ export function PropertyUnitDetails () {
         },
         {
           label: $t({ defaultMessage: 'Remove Association' }),
+          rbacOpsIds: [getOpsApi(PropertyUrlsInfo.removeUnitLinkedIdenity)],
           visible: (selectedItems => selectedItems.length > 0),
           onClick: (identities, clearSelection) => {
             showActionModal({
@@ -378,6 +385,7 @@ export function PropertyUnitDetails () {
   const actions: TableProps<PropertyUnit>['actions'] =
       [{
         label: $t({ defaultMessage: 'Add Identity Association' }),
+        rbacOpsIds: [getOpsApi(PropertyUrlsInfo.addUnitLinkedIdentity)],
         onClick: () => {setAddIdentityAssociationDrawerVisible(true)}
       }]
 
@@ -394,6 +402,7 @@ export function PropertyUnitDetails () {
       title={unitResult.data?.name || ''}
       breadcrumb={breadcrumb}
       extra={[
+        hasUpdateUnitsPermission &&
         <Button
           onClick={handleSuspend}
         >{unitData?.status === PropertyUnitStatus.ENABLED
@@ -403,6 +412,7 @@ export function PropertyUnitDetails () {
             window.open(residentPortalUrl, '_blank')
           }}
         >{$t({ defaultMessage: 'View Portal' })} </Button>,
+        hasAddUnitsPermission &&
         <Button
           type='primary'
           onClick={() => {setConfigurePropertyUnitDrawerVisible(true)}}
