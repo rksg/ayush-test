@@ -26,12 +26,12 @@ import {
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010g2Or10020b
 } from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
-import { ErrorDisableRecoveryDrawer }                   from '@acx-ui/switch/components'
-import { SwitchScopes }                                 from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
-import { getOpsApi, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import { getIntl }                                      from '@acx-ui/utils'
+import { useParams }                                                   from '@acx-ui/react-router-dom'
+import { ErrorDisableRecoveryDrawer }                                  from '@acx-ui/switch/components'
+import { SwitchScopes }                                                from '@acx-ui/types'
+import { filterByAccess, hasPermission }                               from '@acx-ui/user'
+import { getOpsApi, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                                                     from '@acx-ui/utils'
 
 import { SimpleListTooltip }    from '../SimpleListTooltip'
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
@@ -279,7 +279,7 @@ export function SwitchPortTable (props: {
             />
           )
         }
-        return '--'
+        return noDataDisplay
       }
     }] : [])
   ,

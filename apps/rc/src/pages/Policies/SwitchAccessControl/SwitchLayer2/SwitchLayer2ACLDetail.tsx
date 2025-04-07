@@ -110,14 +110,10 @@ export const SwitchLayer2ACLDetail: React.FC<MacACLDrawerProps> = ({
           layout='vertical'
           form={form}
         >
-          <Form.Item name='name'>
+          <Form.Item>
             <div>{aclName}</div>
           </Form.Item>
-          <Form.Item
-            name='switchMacAclRules'
-            label={$t({ defaultMessage: 'Rules' })}
-          >
-
+          <Form.Item label={$t({ defaultMessage: 'Rules' })}>
             <Table<MacAclRule>
               settingsId={settingsId}
               columns={useColumns()}

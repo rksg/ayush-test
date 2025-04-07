@@ -91,18 +91,12 @@ export const MacACLDetail: React.FC<MacACLDrawerProps> = ({
         layout='vertical'
         form={form}
       >
-        <Form.Item
-          name='name'
-          label={$t({ defaultMessage: 'MAC ACL Name' })}
-        >
+        <Form.Item label={$t({ defaultMessage: 'MAC ACL Name' })}>
           <div>
             {macACLData?.name || ''}
           </div>
         </Form.Item>
-        <Form.Item
-          name='switchMacAclRules'
-          label={$t({ defaultMessage: 'Rules' })}
-        >
+        <Form.Item label={$t({ defaultMessage: 'Rules' })}>
           <Table
             dataSource={dataSource}
             columns={useColumns()}

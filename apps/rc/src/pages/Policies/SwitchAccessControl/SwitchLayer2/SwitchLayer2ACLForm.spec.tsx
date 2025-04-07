@@ -43,6 +43,14 @@ describe('SwitchLayer2ACLForm', () => {
       }),
       rest.put(SwitchUrlsInfo.updateLayer2Acl.url, (req, res, ctx) => {
         return res(ctx.json({ id: 'layer2-acl-id' }))
+      }),
+      rest.post(SwitchUrlsInfo.getLayer2Acls.url, (req, res, ctx) => {
+        return res(ctx.json({
+          data: [
+            { id: 'acl-1', name: 'ACL 1' },
+            { id: 'acl-2', name: 'ACL 2' }
+          ]
+        }))
       })
     )
   })

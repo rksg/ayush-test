@@ -383,12 +383,11 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           <label style={{ color: 'var(--acx-neutrals-60)' }}>{
           // eslint-disable-next-line max-len
             customized && $t({ defaultMessage: 'By customizing here, changes to the same ACL under the \'Policies & Profiles\' level settings\' will no longer be applied to this switch.' })}</label>
-          <Form.Item name='customized' />
-          <Form.Item name='usePolicyAndProfileSetting' />
+          <Form.Item name='customized' children={<Input type='hidden' />} />
+          <Form.Item name='usePolicyAndProfileSetting' children={<Input type='hidden' />} />
         </Form>
 
         <Form.Item
-          name='macAclRules'
           label={<>
             {$t({ defaultMessage: 'Rules' })}
             <span style={{ color: 'var(--acx-accents-orange-50)', marginLeft: '4px' }}>*</span>

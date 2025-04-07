@@ -270,7 +270,6 @@ export const SwitchLayer2ACLForm = (props: SwitchLayer2ACLFormProps) => {
               <Input disabled={editMode} style={{ width: '400px' }} maxLength={255} />
             </Form.Item>
             <Form.Item
-              name='macAclRules'
               label={<>
                 {$t({ defaultMessage: 'Rules' })}
                 <span style={{ color: 'var(--acx-accents-orange-50)', marginLeft: '4px' }}>*</span>

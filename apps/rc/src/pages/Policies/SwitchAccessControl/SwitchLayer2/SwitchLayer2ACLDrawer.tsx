@@ -89,7 +89,6 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
 
   const handleSave = async () => {
     form.validateFields().then(() => {
-      form.submit()
       let {
         id,
         key,
@@ -117,17 +116,14 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
         key,
         action,
         sourceAddress: sourceAddress?.toLowerCase(),
-        sourceMask: sourceMask?.toLowerCase(),
+        sourceMask: sourceMask ? sourceMask.toLowerCase() : '',
         destinationAddress: destinationAddress?.toLowerCase(),
-        destinationMask: destinationMask?.toLowerCase()
+        destinationMask: destinationMask ? destinationMask.toLowerCase() : ''
       }
 
       const isDuplicate = dataSource?.some(rule =>
-        rule.action === payload.action &&
-          rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
-          rule.sourceMask?.toLowerCase() === payload.sourceMask &&
+        rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
           rule.destinationAddress?.toLowerCase() === payload.destinationAddress &&
-          rule.destinationMask?.toLowerCase() === payload.destinationMask &&
           (editMode ? rule.key !== payload.key : true)
       )
 
@@ -138,6 +134,8 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
         }])
         return
       }
+
+      form.submit()
 
       if(editMode){
         handleSaveRule(payload)
@@ -271,7 +269,7 @@ export const SwitchLayer2ACLDrawer = (props: SwitchLayer2ACLDrawerProps) => {
         </Radio.Group>
       }
     />
-    <Form.Item name='key' />
+    <Form.Item name='key' children={<Input type='hidden' />} />
   </Form>
 
   const footer = (

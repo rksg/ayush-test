@@ -89,7 +89,6 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
 
   const handleSave = async () => {
     form.validateFields().then(() => {
-      form.submit()
       let {
         id,
         key,
@@ -117,17 +116,14 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         key,
         action,
         sourceAddress: sourceAddress?.toLowerCase(),
-        sourceMask: sourceMask?.toLowerCase(),
+        sourceMask: sourceMask ? sourceMask.toLowerCase() : '',
         destinationAddress: destinationAddress?.toLowerCase(),
-        destinationMask: destinationMask?.toLowerCase()
+        destinationMask: destinationMask ? destinationMask.toLowerCase() : ''
       }
 
       const isDuplicate = dataSource?.some(rule =>
-        rule.action === payload.action &&
-            rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
-            rule.sourceMask?.toLowerCase() === payload.sourceMask &&
+        rule.sourceAddress?.toLowerCase() === payload.sourceAddress &&
             rule.destinationAddress?.toLowerCase() === payload.destinationAddress &&
-            rule.destinationMask?.toLowerCase() === payload.destinationMask &&
             (editMode ? rule.key !== payload.key : true)
       )
 
@@ -138,6 +134,8 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         }])
         return
       }
+
+      form.submit()
 
       if(editMode){
         handleSaveRule(payload)
