@@ -16,14 +16,14 @@ import {
   getSuggestedIpRange,
   isAllPortsLagMember,
   isInterfaceInVRRPSetting,
-  lanPortsubnetValidator,
+  lanPortSubnetValidator,
   optionSorter,
   validateClusterInterface,
   validateEdgeGateway,
   validateSubnetIsConsistent,
   validateUniqueIp,
   convertEdgePortsConfigToApiPayload,
-  convertEdgeSubinterfaceToApiPayload
+  convertEdgeSubInterfaceToApiPayload
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -114,7 +114,7 @@ describe('Edge utils', () => {
     expect(optionSorter(mockOptions[0], mockOptions[0])).toBe(0)
   })
 
-  it('Test lanPortsubnetValidator success', async () => {
+  it('Test lanPortSubnetValidator success', async () => {
     const currentSubnetInfo = {
       ip: '1.1.1.1',
       subnetMask: '255.255.255.0'
@@ -131,14 +131,14 @@ describe('Edge utils', () => {
     ]
     const mockErrorFn = jest.fn()
     try {
-      await lanPortsubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+      await lanPortSubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
     } catch (ex) {
       mockErrorFn()
     }
     expect(mockErrorFn).not.toBeCalled()
   })
 
-  it('Test lanPortsubnetValidator failed', async () => {
+  it('Test lanPortSubnetValidator failed', async () => {
     const currentSubnetInfo = {
       ip: '1.1.1.1',
       subnetMask: '255.255.255.0'
@@ -155,7 +155,7 @@ describe('Edge utils', () => {
     ]
     const mockErrorFn = jest.fn()
     try {
-      await lanPortsubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+      await lanPortSubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
     } catch (ex) {
       mockErrorFn(ex)
     }
@@ -1024,14 +1024,14 @@ describe('convertEdgePortsConfigToApiPayload', () => {
   })
 })
 
-describe('convertEdgeSubinterfaceToApiPayload', () => {
+describe('convertEdgeSubInterfaceToApiPayload', () => {
   it('returns original formData when ipMode is not DHCP', () => {
     const formData = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '192.168.1.1',
       subnet: '255.255.255.0'
     } as EdgeSubInterface
-    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result).toEqual(formData)
   })
 
@@ -1041,14 +1041,14 @@ describe('convertEdgeSubinterfaceToApiPayload', () => {
       ip: '192.168.1.1',
       subnet: '255.255.255.0'
     } as EdgeSubInterface
-    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
   })
 
   it('handles undefined formData', () => {
     const formData: EdgeSubInterface | null | undefined = undefined
-    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result).toEqual({})
   })
 })
