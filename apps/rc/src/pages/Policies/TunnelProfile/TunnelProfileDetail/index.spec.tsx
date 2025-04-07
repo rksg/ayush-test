@@ -1,12 +1,11 @@
 import { rest } from 'msw'
 
-import { Features }                                                                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
-import { networkApi, tunnelProfileApi }                                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { EdgeTunnelProfileFixtures }                                                          from '@acx-ui/rc/utils'
-import { Provider, store }                                                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                     from '@acx-ui/test-utils'
+import { Features, TierFeatures, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                         from '@acx-ui/rc/components'
+import { networkApi, tunnelProfileApi }                                                                                  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeTunnelProfileFixtures, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                from '@acx-ui/test-utils'
 
 import { mockedNetworkViewData } from '../__tests__/fixtures'
 
@@ -206,6 +205,27 @@ describe('TunnelProfileDetail', () => {
         })
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(screen.getByText('NAT-T Support')).toBeInTheDocument()
+    })
+  })
+
+  describe('when L2GRE is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGE_L2OGRE_TOGGLE))
+      jest.mocked(useIsTierAllowed)
+        .mockImplementation(ff => ff === TierFeatures.EDGE_L2OGRE)
+    })
+
+    it('should display "Tunnel Type" and "Destination" field', async () => {
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText('Tunnel Type')).toBeInTheDocument()
+      expect(screen.getByText('Destination')).toBeInTheDocument()
     })
   })
 
