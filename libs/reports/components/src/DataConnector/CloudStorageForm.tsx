@@ -4,10 +4,11 @@ import { Form, Input }   from 'antd'
 import { FormItemProps } from 'antd/lib/form'
 import { useIntl }       from 'react-intl'
 
-import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast, Tooltip } from '@acx-ui/components'
-import { useNavigate }                                                                                from '@acx-ui/react-router-dom'
-import { getIntl  }                                                                                   from '@acx-ui/utils'
+import { Select, PageHeader, GridRow, GridCol, Button, ActionsContainer, Loader, showToast } from '@acx-ui/components'
+import { useNavigate }                                                                       from '@acx-ui/react-router-dom'
+import { getIntl  }                                                                          from '@acx-ui/utils'
 
+import SecretFieldInput                                             from './SecretFieldInput'
 import { useSaveStorageMutation, useGetStorageQuery }               from './services'
 import { AzureConnectionType, AzureStoragePayload, ConnectionType } from './types'
 import { generateBreadcrumb }                                       from './utils'
@@ -75,20 +76,7 @@ const getStorageMap = (
   azureConnectionType: AzureConnectionType
 ): Record<string, StorageFieldProps[]> => {
   const { $t } = getIntl()
-  const getFieldNameWithTooltip = (
-    needValidation: boolean,
-    fieldName: string
-  ): React.ReactNode => {
-    return needValidation
-      ? fieldName
-      : <>
-        {fieldName}
-        <Tooltip.Question title={$t({
-          defaultMessage: 'If you want to update this field, '
-            + 'please enter a new value. Otherwise, leave this field empty.'
-        })} />
-      </>
-  }
+
   return {
     azure: [
       {
@@ -116,8 +104,12 @@ const getStorageMap = (
       },
       {
         id: 'azureAccountKey',
-        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'Azure account key' })),
-        component: <Input data-testid='azureAccountKey' />,
+        name: $t({ defaultMessage: 'Azure account key' }),
+        component:
+          <SecretFieldInput
+            data-testid='azureAccountKey'
+            hasPlaceholder={!needValidation}
+          />,
         rules: getFieldRules(needValidation, selectedConnectionType)
       },
       ...(azureConnectionType === AzureConnectionType.Files
@@ -160,8 +152,8 @@ const getStorageMap = (
       },
       {
         id: 'ftpPassword',
-        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'FTP password' })),
-        component: <Input type='password' />,
+        name: $t({ defaultMessage: 'FTP password' }),
+        component: <SecretFieldInput type='password' hasPlaceholder={!needValidation} />,
         rules: getFieldRules(needValidation, selectedConnectionType)
       },
       {
@@ -188,15 +180,24 @@ const getStorageMap = (
       },
       {
         id: 'sftpPassword',
-        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'SFTP password' })),
-        component: <Input type='password' data-testid='sftpPassword' />,
+        name: $t({ defaultMessage: 'SFTP password' }),
+        component:
+          <SecretFieldInput
+            data-testid='sftpPassword'
+            hasPlaceholder={!needValidation}
+          />,
         dependencies: ['sftpPrivateKey'],
         rules: getFieldRules(needValidation, selectedConnectionType, 'sftpPrivateKey')
       },
       {
         id: 'sftpPrivateKey',
-        name: getFieldNameWithTooltip(needValidation, $t({ defaultMessage: 'SFTP private key' })),
-        component: <Input.TextArea rows={5} data-testid='sftpPrivateKey' />,
+        name: $t({ defaultMessage: 'SFTP private key' }),
+        component:
+          <SecretFieldInput.TextArea
+            rows={5}
+            data-testid='sftpPrivateKey'
+            hasPlaceholder={!needValidation}
+          />,
         dependencies: ['sftpPassword'],
         rules: getFieldRules(needValidation, selectedConnectionType, 'sftpPassword')
       },
