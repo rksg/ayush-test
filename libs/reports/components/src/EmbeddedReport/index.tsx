@@ -371,7 +371,6 @@ export function EmbeddedReport (props: ReportProps) {
       const { isSwitchReport } = getReportType(reportName)
       const scopeType = isSwitchReport ? SwitchScopes : WifiScopes
       return !hasPermission({
-        permission: 'WRITE_REPORT_SCHEDULES',
         scopes: [scopeType.CREATE, scopeType.UPDATE, scopeType.DELETE],
         rbacOpsIds: [
           aiOpsApis.createReportSchedules,
