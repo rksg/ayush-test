@@ -757,7 +757,8 @@ export function SwitchForm () {
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                   {readOnly && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                  {switchDetail && <SwitchStackSetting
+                  {switchData && switchDetail && <SwitchStackSetting
+                    switchData={switchData}
                     switchDetail={switchDetail}
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}

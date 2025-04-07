@@ -21,7 +21,9 @@ import {
   SwitchUrlsInfo,
   VlanPoolRbacUrls,
   WifiUrlsInfo,
-  EthernetPortProfileUrls
+  EthernetPortProfileUrls,
+  RulesManagementUrlsInfo,
+  MacRegListUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -31,6 +33,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
+  macRegistrationPools,
   mockedClientIsolationQueryData,
   mockedRogueApPoliciesList,
   mockedVlanPoolProfilesQueryData,
@@ -146,6 +149,27 @@ describe('MyPolicies', () => {
           totalCount: 1,
           data: []
         }))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({
+          paging: {
+            totalCount: 1,
+            page: 0,
+            pageSize: 0,
+            pageCount: 1
+          },
+          content: [],
+          links: []
+        }))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macRegistrationPools))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getAccessControlCount.url,
+        (req, res, ctx) => res(ctx.json(5))
       )
     )
   })
@@ -322,5 +346,20 @@ describe('MyPolicies', () => {
     )
 
     expect(await screen.findByText('Port Profiles (2)')).toBeVisible()
+  })
+  it('should render Access Control combined count when switch MAC ACL is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE
+    )
+
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Access Control (5)')).toBeVisible()
   })
 })
