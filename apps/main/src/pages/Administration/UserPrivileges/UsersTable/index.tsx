@@ -21,10 +21,10 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType, noDataDisplay }                           from '@acx-ui/utils'
+import { Administrator, sortProp, defaultSort, AdministrationUrlsInfo }                               from '@acx-ui/rc/utils'
+import { RolesEnum }                                                                                  from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, roleStringMap, getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { AccountType, getOpsApi, noDataDisplay }                                                      from '@acx-ui/utils'
 
 
 import * as UI from '../../Administrators/styledComponents'
@@ -52,6 +52,7 @@ const UsersTable = (props: UsersTableProps) => {
   const [editData, setEditData] = useState<Administrator>({} as Administrator)
   const [editNameOnly, setEditNameOnly] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const mspUtils = MSPUtils()
   const currentUserMail = userProfileData?.email
   const currentUserDetailLevel = userProfileData?.detailLevel
@@ -202,6 +203,7 @@ const UsersTable = (props: UsersTableProps) => {
           return false
         }
       },
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateAdmin)],
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         // show edit dialog
@@ -221,6 +223,7 @@ const UsersTable = (props: UsersTableProps) => {
         if (selfSelected) return false
         return allPrimeAdminSelected === false
       },
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteAdmin)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -246,8 +249,11 @@ const UsersTable = (props: UsersTableProps) => {
     }
   ]
 
+  const hasAddPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([getOpsApi(AdministrationUrlsInfo.addAdmin)])
+    : isPrimeAdminUser
   const tableActions = []
-  if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
+  if (hasAddPermission && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
       label: $t({ defaultMessage: 'Add User' }),
       onClick: handleClickAdd
@@ -267,6 +273,9 @@ const UsersTable = (props: UsersTableProps) => {
       </Tooltip>
       : <tr {...props} />
   }
+
+  const hasRowPermissions = rbacOpsApiEnabled ? filterByAccess(rowActions).length > 0
+    : isPrimeAdminUser
 
   return (
     <Loader states={[
@@ -288,10 +297,10 @@ const UsersTable = (props: UsersTableProps) => {
             row: TooltipRow
           }
         }}
-        rowActions={isPrimeAdminUser
+        rowActions={hasRowPermissions
           ? filterByAccess(rowActions)
           : undefined}
-        rowSelection={isPrimeAdminUser ? {
+        rowSelection={hasRowPermissions ? {
           type: 'checkbox',
           getCheckboxProps: (record: Administrator) => ({
             // only prime-admin cannot edit/delete itself
