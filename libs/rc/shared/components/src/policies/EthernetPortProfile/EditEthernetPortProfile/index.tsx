@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
 import { Loader }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useDeleteEthernetPortProfileRadiusIdMutation,
   useGetEthernetPortProfileTemplateQuery,
@@ -23,7 +24,6 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const EditEthernetPortProfile = () => {
   const { $t } = useIntl()
@@ -116,11 +116,14 @@ export const EditEthernetPortProfile = () => {
 
     const sourceData = cloneDeep(ethernetPortProfileData) as EthernetPortProfileFormType
     if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
-      sourceData.authEnabled = true
+      sourceData.authEnabled = sourceData.authType !== EthernetPortAuthType.OPEN
       sourceData.accountingEnabled = false
       sourceData.authTypeRole = sourceData.authType
 
       sourceData.accountingEnabled = Boolean(sourceData.accountingRadiusId)
+    }
+    if (sourceData.authType === EthernetPortAuthType.OPEN) {
+      form.setFieldValue('clientVisibilityEnabled', true)
     }
     form.setFieldsValue(sourceData)
 

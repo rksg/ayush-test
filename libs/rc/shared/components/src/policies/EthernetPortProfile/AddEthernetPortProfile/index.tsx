@@ -1,6 +1,7 @@
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   useAddEthernetPortProfileTemplateMutation,
   useCreateEthernetPortProfileMutation,
@@ -9,7 +10,6 @@ import {
 import { EthernetPortProfileFormType, useConfigTemplate, useConfigTemplateMutationFnSwitcher } from '@acx-ui/rc/utils'
 
 import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 interface AddEthernetPortProfileFormProps {
   isEmbedded?: boolean
