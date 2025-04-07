@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }                               from '@acx-ui/components'
 import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
-import { filterByAccess, getUserProfile, isFoundationTier }                                 from '@acx-ui/user'
+import { filterByAccess, getUserProfile, isCoreTier }     from '@acx-ui/user'
 
 import useNetworksTable from './NetworksTable'
 
@@ -30,8 +30,8 @@ function isElementArray (data: JSX.Element | JSX.Element[]
 const useTabs = () : NetworkTab[] => {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
-  const isFoundation = isFoundationTier(accountTier)
- 
+  const isCore = isCoreTier(accountTier)
+
   const listTab = {
     key: NetworkTabsEnum.LIST,
     ...useNetworksTable()
@@ -64,9 +64,9 @@ const useTabs = () : NetworkTab[] => {
     headerExtra: usePageHeaderExtra(ReportType.WIRELESS)
   }
   return [
-    listTab, 
-    wlanReportTab, 
-    ...(isFoundation ? [] : [applicationsReportTab]), 
+    listTab,
+    wlanReportTab,
+    ...(isCore ? [] : [applicationsReportTab]),
     wirelessReportTab
   ]
 }

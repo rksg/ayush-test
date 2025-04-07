@@ -5,12 +5,12 @@ import { PageHeader, GridRow, GridCol, RadioCard, Subtitle } from '@acx-ui/compo
 import { Features }                                          from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
 import { useNavigate, useTenantLink }                        from '@acx-ui/react-router-dom'
-import { getUserProfile, isFoundationTier } from '@acx-ui/user'
+import { getUserProfile, isCoreTier }                        from '@acx-ui/user'
 
 export function ReportList () {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
-  const isFoundation = isFoundationTier(accountTier)
+  const isCore = isCoreTier(accountTier)
 
   const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
 
@@ -31,7 +31,7 @@ export function ReportList () {
       description: $t({ defaultMessage: 'Top access points by airtime utilization, by radio band and trend' }),
       path: 'airtime'
     },
-    ...(!isFoundation ? [{
+    ...(!isCore ? [{
       title: $t({ defaultMessage: 'Applications' }),
       description: $t({ defaultMessage: 'Top applications and traffic distribution by clients and trend' }),
       path: 'applications'
@@ -99,8 +99,9 @@ export function ReportList () {
   return (
     <>
       <PageHeader
-        title={isFoundation ? $t({ defaultMessage: 'Business Insights' }) : $t({ defaultMessage: 'Reports' })}
-        breadcrumb={isFoundation ? [] : [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
+        title={isCore ? $t({ defaultMessage: 'Business Insights' }) :
+          $t({ defaultMessage: 'Reports' })}
+        breadcrumb={isCore ? [] : [{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
         {reports.map(({ title, description, path, disabled }) => (

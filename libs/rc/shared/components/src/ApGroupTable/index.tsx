@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                 from '@acx-ui/types'
-import { filterByAccess, getUserProfile, hasPermission, isFoundationTier }                                              from '@acx-ui/user'
+import { filterByAccess, getUserProfile, hasPermission, isCoreTier }                  from '@acx-ui/user'
 import { DateRange, getDateRangeFilter, getOpsApi, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import {  CountAndNamesTooltip } from '../'
@@ -63,7 +63,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const intl = useIntl()
   const { $t } = intl
   const { accountTier } = getUserProfile()
-  const isFoundation = isFoundationTier(accountTier)
+  const isCore = isCoreTier(accountTier)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const toggles = useIncidentToggles()
@@ -120,7 +120,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     }
 
     if (apGroupsData.length > 0) {
-      isFoundation ? setTableData(apGroupsData) : addIncidentsData()
+      isCore ? setTableData(apGroupsData) : addIncidentsData()
     } else {
       setTableData([])
     }
@@ -157,7 +157,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   }
 
   const columns = getTableColumns(intl, props, params?.venueId, isWifiRbacEnabled)
-    .filter(column => !(column.key === 'incidents' && isFoundation))
+    .filter(column => !(column.key === 'incidents' && isCore))
 
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),

@@ -45,7 +45,7 @@ import {
   useUserProfileContext,
   RaiPermission,
   hasAllowedOperations,
-  isFoundationTier
+  isCoreTier
 } from '@acx-ui/user'
 import { getOpsApi, useTenantId } from '@acx-ui/utils'
 
@@ -78,7 +78,7 @@ export function useMenuConfig () {
   const isDataConnectorEnabled = useIsSplitOn(Features.ACX_UI_DATA_SUBSCRIPTIONS_TOGGLE)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isCustomRoleCheck = rbacOpsApiEnabled ? false : isCustomRole
-  const isFoundation = isFoundationTier(accountTier)
+  const isCore = isCoreTier(accountTier)
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -116,7 +116,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    ...(!isFoundation ? [{
+    ...(!isCore ? [{
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -252,7 +252,7 @@ export function useMenuConfig () {
               uri: '/networks/wireless/reports/wlans',
               label: $t({ defaultMessage: 'WLANs Report' })
             },
-            ...(!isFoundation ? [{
+            ...(!isCore ? [{
               uri: '/networks/wireless/reports/applications',
               label: $t({ defaultMessage: 'Applications Report' })
             }] : []),
@@ -354,7 +354,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(isFoundation ? [{
+    ...(isCore ? [{
       uri: '/reports',
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: SpeedIndicatorOutlined,

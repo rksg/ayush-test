@@ -7,7 +7,7 @@ import { Features, TierFeatures, useIsBetaEnabled }                             
 import { useIsEdgeFeatureReady, useIsEdgeReady }                                                                         from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgePinViewDataListQuery, useGetEdgeSdLanP2ViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                        from '@acx-ui/rc/utils'
-
+import { getUserProfile, isCoreTier }                                                                                    from '@acx-ui/user'
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
 import DHCPInstance             from './DHCPInstance'
@@ -18,13 +18,12 @@ import { EdgeMdnsTab }          from './MdnsProxyInstances/Edge'
 import { EdgePin }              from './Pin'
 import EdgeSdLan                from './SdLan'
 import { VenueRogueAps }        from './VenueRogueAps'
-import { getUserProfile, isFoundationTier } from '@acx-ui/user'
 
 export function VenueServicesTab () {
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const { accountTier } = getUserProfile()
-  const isFoundation = isFoundationTier(accountTier)
+  const isCore = isCoreTier(accountTier)
   const isEdgeEnabled = useIsEdgeReady() && !isTemplate
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
@@ -184,7 +183,7 @@ export function VenueServicesTab () {
             >
               <ClientIsolationAllowList />
             </Tabs.TabPane>
-            {!isFoundation && <Tabs.TabPane
+            {!isCore && <Tabs.TabPane
               tab={$t({ defaultMessage: 'Rogue APs' })}
               key={PolicyType.ROGUE_AP_DETECTION}
             >
