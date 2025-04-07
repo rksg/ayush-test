@@ -72,7 +72,7 @@ describe('Recovery Network Passphrase', () => {
   })
 })
 
-describe('when use it not permmited role', () => {
+describe('when use it not permitted role', () => {
   it('change button should not disappear', async () => {
     (hasRoles as jest.Mock).mockReturnValueOnce(false)
 

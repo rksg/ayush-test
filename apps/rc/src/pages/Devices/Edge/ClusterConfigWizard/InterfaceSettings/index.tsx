@@ -1,24 +1,30 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Form, Typography }       from 'antd'
-import _                          from 'lodash'
+import _, { get }                 from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps }        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { CompatibilityStatusBar, CompatibilityStatusEnum, EdgeHaSettingsForm, TypeForm } from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps }                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                               from '@acx-ui/feature-toggle'
+import { CompatibilityStatusBar, CompatibilityStatusEnum, EdgeHaSettingsForm, TypeForm, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
-import { ClusterHighAvailabilityModeEnum, convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                                   from '@acx-ui/react-router-dom'
-import { hasPermission }                                                                                                                                   from '@acx-ui/user'
-import { getOpsApi }                                                                                                                                       from '@acx-ui/utils'
+import {
+  ClusterHighAvailabilityModeEnum,
+  convertEdgePortsConfigToApiPayload,
+  EdgeIpModeEnum, EdgeLag, EdgePort, EdgePortTypeEnum, EdgeSerialNumber, EdgeUrlsInfo,
+  getEdgeWanInterfaceCount
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getOpsApi }     from '@acx-ui/utils'
 
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import { DualWanForm }        from './DualWan'
 import { LagForm }            from './LagForm'
 import { PortForm }           from './PortForm'
 import { Summary }            from './Summary'
@@ -43,6 +49,7 @@ const portCompatibleErrorFields = getPortFormCompatibilityFields()
 const enum InterfaceSettingsTypeEnum {
   LAGS = 'lagSettings',
   PORTS = 'portSettings',
+  DUAL_WAN = 'dualWanSettings',
   VIRTUAL_IP = 'virtualIpSettings',
   HA_SETTING = 'haSettings'
 }
@@ -50,6 +57,8 @@ const enum InterfaceSettingsTypeEnum {
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
   const isEdgeHaAaOn = useIsSplitOn(Features.EDGE_HA_AA_TOGGLE)
+  const isEdgeDualWanEnabled = useIsEdgeFeatureReady(Features.EDGE_DUAL_WAN_TOGGLE)
+
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
@@ -64,6 +73,9 @@ export const InterfaceSettings = () => {
       type={CompatibilityStatusEnum.PASS}
     />
   })
+  // eslint-disable-next-line max-len
+  const [dynamicStepsVisible, setDynamicStepsVisible] = useState<{ [k in string]: boolean }>({ dualWanSettings: false })
+
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
@@ -155,12 +167,30 @@ export const InterfaceSettings = () => {
     }
   }
 
+  // only active-standby cluster and 2 WAN ports are configured
+  const getShouldRenderDualWan = () => {
+    const shouldDualWanVisible = get(dynamicStepsVisible, 'dualWanSettings')
+    return shouldDualWanVisible && isSingleNode
+  }
+
   const handleValuesChange = useCallback(_.debounce((
     typeKey: string,
     changedValues: Partial<InterfaceSettingsFormType>
   ) => {
     if (typeKey === InterfaceSettingsTypeEnum.PORTS) {
       handlePortValueChange(changedValues)
+    }
+
+    // check if has multi WAN
+    if (isSingleNode) {
+      const nodeSn = Object.keys(configWizardForm.getFieldValue('portSettings'))[0]
+      // eslint-disable-next-line max-len
+      const ports = Object.values((configWizardForm.getFieldValue('portSettings')[nodeSn]) as { [portId:string]: EdgePort[] })
+        .flat()
+      const lags = configWizardForm.getFieldValue('lagSettings')[0].lags ?? []
+      // eslint-disable-next-line max-len
+      const wanCount = getEdgeWanInterfaceCount(ports as EdgePort[], lags as EdgeLag[])
+      setDynamicStepsVisible({ dualWanSettings: wanCount > 1 })
     }
 
     configWizardForm.validateFields()
@@ -171,6 +201,13 @@ export const InterfaceSettings = () => {
   const haSettingHeader = <Typography.Title level={2}>
     {$t({ defaultMessage: 'HA Settings' })}
   </Typography.Title>
+
+  // initial Dual WAN check when clusterNetworkSettingsFormData is ready
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    const wanCount = getEdgeWanInterfaceCount(clusterNetworkSettings?.portSettings[0].ports as EdgePort[], clusterNetworkSettings?.lagSettings[0].lags as EdgeLag[])
+    setDynamicStepsVisible({ dualWanSettings: wanCount > 1 })
+  }, [clusterNetworkSettings])
 
   const steps = useMemo(() => [
     {
@@ -234,6 +271,14 @@ export const InterfaceSettings = () => {
       }
     },
     ...(
+      (isEdgeDualWanEnabled && getShouldRenderDualWan()) ?
+        [{
+          title: $t({ defaultMessage: 'Dual WAN' }),
+          id: InterfaceSettingsTypeEnum.DUAL_WAN,
+          content: <DualWanForm />
+        }]:[]
+    ),
+    ...(
       isEdgeHaAaOn &&
       clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
         [{
@@ -255,7 +300,7 @@ export const InterfaceSettings = () => {
       id: 'summary',
       content: <Summary />
     }
-  ], [configWizardForm, getCompatibleCheckResult, handleValuesChange])
+  ], [configWizardForm, getCompatibleCheckResult, handleValuesChange, dynamicStepsVisible])
 
   const invokeUpdateApi = async (
     value: InterfaceSettingsFormType,
@@ -349,7 +394,7 @@ export const InterfaceSettings = () => {
               : undefined}
             onValuesChange={
               item.onValuesChange
-              // eslint-disable-next-line max-len
+                // eslint-disable-next-line max-len
                 ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
                 : undefined
             }

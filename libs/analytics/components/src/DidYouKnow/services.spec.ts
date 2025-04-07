@@ -80,7 +80,7 @@ describe('availableFacts', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.customAvailableFacts.initiate(pathFilter)
     )
-    const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 2)
+    const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 1)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expected)
     expect(error).toBe(undefined)
@@ -92,7 +92,7 @@ describe('availableFacts', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.customAvailableFacts.initiate(dashboardFilter)
     )
-    const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 2)
+    const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 1)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expected)
     expect(error).toBe(undefined)
