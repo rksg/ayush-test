@@ -294,7 +294,6 @@ export const failureCodes = {
   'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' })
 }
 
-//For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {
     aiFeature: AiFeatures.AIOps,

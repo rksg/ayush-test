@@ -34,6 +34,28 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   backgroundColor?: string | undefined
 }
 
+export const graphStyles = {
+  textStyle: {
+    color: cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-subtitle-4-font-size'),
+    lineHeight: cssNumber('--acx-subtitle-4-line-height'),
+    fontWeight: cssNumber('--acx-subtitle-4-font-weight')
+  },
+  subtextStyle: {
+    color: cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-4-font-size'),
+    lineHeight: cssNumber('--acx-body-4-line-height'),
+    fontWeight: cssNumber('--acx-body-font-weight')
+  },
+  positionStyles: {
+    itemGap: 3,
+    top: 15,
+    left: 15
+  }
+}
+
 export function Graph (props: GraphProps) {
   const highlightColor = cssStr('--acx-semantics-red-50')
   const normalColor = cssStr('--acx-neutrals-50')
@@ -56,28 +78,12 @@ export function Graph (props: GraphProps) {
     backgroundColor: backgroundColor ?? cssStr('--acx-neutrals-10'),
     title: {
       text: props.title,
-      textStyle: {
-        color: cssStr('--acx-primary-black'),
-        fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: cssNumber('--acx-subtitle-4-font-size'),
-        lineHeight: cssNumber('--acx-subtitle-4-line-height'),
-        fontWeight: cssNumber('--acx-subtitle-4-font-weight')
-      },
+      textStyle: graphStyles.textStyle,
       ...(props.subtext ? {
         subtext: props.subtext,
-        subtextStyle: {
-          color: cssStr('--acx-primary-black'),
-          fontFamily: cssStr('--acx-neutral-brand-font'),
-          fontSize: cssNumber('--acx-body-4-font-size'),
-          lineHeight: cssNumber('--acx-body-4-line-height'),
-          fontWeight: cssNumber('--acx-body-font-weight'),
-          width: 500,
-          overflow: 'break'
-        }
+        subtextStyle: graphStyles.subtextStyle
       } : {}),
-      itemGap: 3,
-      top: 15,
-      left: 15
+      ...graphStyles.positionStyles
     },
     color: props.data.categories?.map(category => categoryStyles[category.name].color),
     tooltip: {

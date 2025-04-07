@@ -41,7 +41,7 @@ export const SummaryForm = () => {
 
 
 
-  const banwidthColumns: TableProps<TrafficClassSetting>['columns'] = [
+  const bandwidthColumns: TableProps<TrafficClassSetting>['columns'] = [
     {
       title: $t({ defaultMessage: 'Traffic Class' }),
       key: 'trafficClass',
@@ -110,7 +110,7 @@ export const SummaryForm = () => {
         </Subtitle>
         <Table
           rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
-          columns={banwidthColumns}
+          columns={bandwidthColumns}
           dataSource={formValues?.trafficClassSettings}
           pagination={false}
         />
@@ -124,8 +124,8 @@ export const SummaryForm = () => {
           <Descriptions.NoLabel>
             <SpaceWrapper direction='vertical' size='small'>
               {activateEdgeClusterNames
-                .map(clusteName => <React.Fragment key={clusteName}>
-                  {clusteName}
+                .map(clusterName => <React.Fragment key={clusterName}>
+                  {clusterName}
                 </React.Fragment>)}
             </SpaceWrapper>
           </Descriptions.NoLabel>

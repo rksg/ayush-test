@@ -26,6 +26,7 @@ const EditTunnelProfile = () => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }
@@ -92,11 +93,18 @@ const EditTunnelProfile = () => {
     updateTunnelProfileOperation(policyId || '', data)
 
   const isSdLanUsed = isSdLanHaUsed || isSdLanP1Used
-  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
+  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData) && !isEdgeL2greReady
   const formInitValues = getTunnelProfileFormDefaultValues(tunnelProfileData)
   formInitValues.disabledFields = []
-  if (pinId || isSdLanUsed)
+  if (pinId || isSdLanUsed){
     formInitValues.disabledFields.push('type')
+    if (isEdgeL2greReady) {
+      formInitValues.disabledFields.push('tunnelType')
+      formInitValues.disabledFields.push('destinationIpAddress')
+      formInitValues.disabledFields.push('edgeClusterId')
+    }
+  }
+
 
   if (isDMZUsed)
     formInitValues.disabledFields.push('mtuType')

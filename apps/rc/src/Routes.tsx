@@ -101,6 +101,8 @@ import Wired                                        from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControl                                from './pages/Policies/AccessControl'
+import CreateAccessControl                          from './pages/Policies/AccessControl/create'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
@@ -144,6 +146,10 @@ import SnmpAgentForm                                from './pages/Policies/SnmpA
 import SnmpAgentTable                               from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SoftGreDetail                                from './pages/Policies/SoftGre/SoftGreDetail'
 import SoftGreTable                                 from './pages/Policies/SoftGre/SoftGreTable'
+import { SwitchAccessControlSetDetail }             from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetDetail'
+import { SwitchAccessControlSetForm }               from './pages/Policies/SwitchAccessControl/SwitchAccessControlSetForm'
+import { SwitchLayer2ACLForm }                      from './pages/Policies/SwitchAccessControl/SwitchLayer2/SwitchLayer2ACLForm'
+import { SwitchLayer2Detail }                       from './pages/Policies/SwitchAccessControl/SwitchLayer2/SwitchLayer2Detail'
 import SyslogTable                                  from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                             from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                            from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -896,6 +902,8 @@ function PolicyRoutes () {
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
+
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -1028,30 +1036,35 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })}
         element={<VLANPoolTable/>}
       />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
-            <AccessControlForm editMode={false}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
-        element={
-          <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.EDIT}>
-            <AccessControlForm editMode={true}/>
-          </PolicyAuthRoute>
-        }
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
-        element={<AccessControlDetail />}
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
-        element={<AccessControlTable />}
-      />
+      {!isSwitchMacAclEnabled && <>
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.CREATE}>
+              <AccessControlForm editMode={false}/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.EDIT}>
+              <AccessControlForm editMode={true}/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getPolicyRoutePath(
+            { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+          element={<AccessControlDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+          element={<AccessControlTable />}
+        />
+      </>
+      }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={
@@ -1535,6 +1548,74 @@ function PolicyRoutes () {
         />
       </>
       }
+      {isSwitchMacAclEnabled && <>
+        <Route
+          path='policies/accessControl/create'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <CreateAccessControl />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/:activeTab/'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/:activeTab/:activeSubTab'
+          element={<AccessControl />}
+        />
+        <Route
+          path='policies/accessControl/wifi/create'
+          element={
+            // eslint-disable-next-line max-len
+            <AuthRoute scopes={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}>
+              <AccessControlForm editMode={false}/>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/add'
+          element={
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <SwitchAccessControlSetForm editMode={false} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/edit'
+          element={
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <SwitchAccessControlSetForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/:accessControlId/:activeTab'
+          element={<SwitchAccessControlSetDetail />}
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/add'
+          element={
+            <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <SwitchLayer2ACLForm editMode={false} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/:accessControlId/edit'
+          element={
+            <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <SwitchLayer2ACLForm editMode={true} />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='policies/accessControl/switch/layer2/:accessControlId/:activeTab'
+          element={<SwitchLayer2Detail />}
+        />
+      </>}
       {isDirectoryServerEnabled && <>
         <Route
           path={getPolicyRoutePath({

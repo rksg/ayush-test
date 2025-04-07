@@ -138,6 +138,12 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.DELETE]: ['DELETE:/accessControlProfiles/{id}'],
     [PolicyOperation.LIST]: ['POST:/accessControlProfiles/query']
   },
+  [PolicyType.SWITCH_ACCESS_CONTROL]: {
+    [PolicyOperation.CREATE]: ['POST:/switchAccessControlProfiles'],
+    [PolicyOperation.EDIT]: ['PUT:/switchAccessControlProfiles/{id}'],
+    [PolicyOperation.DELETE]: ['DELETE:/switchAccessControlProfiles/{id}'],
+    [PolicyOperation.LIST]: ['POST:/switchAccessControlProfiles/query']
+  },
   [PolicyType.LAYER_2_POLICY]: {
     [PolicyOperation.CREATE]: ['POST:/l2AclPolicies'],
     [PolicyOperation.EDIT]: ['PUT:/l2AclPolicies/{id}'],

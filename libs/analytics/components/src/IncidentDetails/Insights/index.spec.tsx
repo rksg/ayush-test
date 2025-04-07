@@ -103,7 +103,12 @@ describe('Insights Component', () => {
             { isHighLegacyWifiDevicesCount: false }
           ],
           params: {
-            recommendationId: '123456'
+            aclb: {
+              code: 'c-aclb-enable',
+              root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
+              sliceId: 'dff976ca-a4ea-4f6c-ab63-cb8e4a886df6',
+              intentId: '49033f10-eeae-4318-bae2-5cf52ebc0319'
+            }
           }
         }
       },
@@ -130,6 +135,7 @@ describe('Insights Component', () => {
     const link = screen.getByRole('link', {
       name: /Explore more/i
     })
-    expect(link).toHaveAttribute('href', '/undefined/t/recommendations/aiOps/123456')
+    // eslint-disable-next-line max-len
+    expect(link).toHaveAttribute('href', '/undefined/t/intentAI?intentTableFilters=%7B%22aiFeature%22%3A%5B%22AI+Operations%22%5D%2C%22intent%22%3A%5B%22Distributed+Wi-Fi+Load+vs+Client+Stability%22%5D%2C%22category%22%3A%5B%22Wi-Fi+Experience%22%5D%2C%22sliceValue%22%3A%5B%22dff976ca-a4ea-4f6c-ab63-cb8e4a886df6%22%5D%7D')
   })
 })

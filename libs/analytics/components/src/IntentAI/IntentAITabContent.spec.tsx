@@ -73,7 +73,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useRaiR1HelpPageLink: () => ''
 }))
 setUpIntl({ locale: 'en-US', messages: {} })
-//Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
+
 describe('IntentAITabContent', () => {
   const filters = {
     startDate: '2022-01-01T00:00:00+08:00',
@@ -86,7 +86,7 @@ describe('IntentAITabContent', () => {
   const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
 
   beforeEach(() => {
-    setRaiPermissions({ WRITE_AI_OPERATIONS: true, WRITE_INTENT_AI: true } as RaiPermissions)
+    setRaiPermissions({ WRITE_INTENT_AI: true } as RaiPermissions)
     store.dispatch(api.util.resetApiState())
     jest.spyOn(Date, 'now').mockReturnValue(now)
     const pathFilters = { ...filters, path: defaultNetworkPath }
