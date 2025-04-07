@@ -169,8 +169,8 @@ export const InterfaceSettings = () => {
 
   // only active-standby cluster and 2 WAN ports are configured
   const getShouldRenderDualWan = () => {
-    const shouddDualWanVisible = get(dynamicStepsVisible, 'dualWanSettings')
-    return shouddDualWanVisible && isSingleNode
+    const shouldDualWanVisible = get(dynamicStepsVisible, 'dualWanSettings')
+    return shouldDualWanVisible && isSingleNode
   }
 
   const handleValuesChange = useCallback(_.debounce((

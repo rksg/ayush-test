@@ -16,14 +16,14 @@ import {
   getSuggestedIpRange,
   isAllPortsLagMember,
   isInterfaceInVRRPSetting,
-  lanPortsubnetValidator,
+  lanPortSubnetValidator,
   optionSorter,
   validateClusterInterface,
   validateEdgeGateway,
   validateSubnetIsConsistent,
   validateUniqueIp,
   convertEdgePortsConfigToApiPayload,
-  convertEdgeSubinterfaceToApiPayload
+  convertEdgeSubInterfaceToApiPayload
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -114,7 +114,7 @@ describe('Edge utils', () => {
     expect(optionSorter(mockOptions[0], mockOptions[0])).toBe(0)
   })
 
-  it('Test lanPortsubnetValidator success', async () => {
+  it('Test lanPortSubnetValidator success', async () => {
     const currentSubnetInfo = {
       ip: '1.1.1.1',
       subnetMask: '255.255.255.0'
@@ -131,14 +131,14 @@ describe('Edge utils', () => {
     ]
     const mockErrorFn = jest.fn()
     try {
-      await lanPortsubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+      await lanPortSubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
     } catch (ex) {
       mockErrorFn()
     }
     expect(mockErrorFn).not.toBeCalled()
   })
 
-  it('Test lanPortsubnetValidator failed', async () => {
+  it('Test lanPortSubnetValidator failed', async () => {
     const currentSubnetInfo = {
       ip: '1.1.1.1',
       subnetMask: '255.255.255.0'
@@ -155,7 +155,7 @@ describe('Edge utils', () => {
     ]
     const mockErrorFn = jest.fn()
     try {
-      await lanPortsubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+      await lanPortSubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
     } catch (ex) {
       mockErrorFn(ex)
     }
@@ -273,8 +273,8 @@ describe('Edge utils', () => {
 
 describe('validateEdgeGateway', () => {
   // 3 ports
-  const mockUnconfgiuredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))
-  mockUnconfgiuredPorts.forEach(item => {
+  const mockUnconfiguredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))
+  mockUnconfiguredPorts.forEach(item => {
     item.enabled = true
     item.portType = EdgePortTypeEnum.UNCONFIGURED
     item.ipMode = EdgeIpModeEnum.DHCP
@@ -288,7 +288,7 @@ describe('validateEdgeGateway', () => {
     lacpMode: 'ACTIVE',
     lacpTimeout: 'SHORT',
     lagMembers: [{
-      portId: mockUnconfgiuredPorts[0].id,
+      portId: mockUnconfiguredPorts[0].id,
       portEnabled: true
     }],
     portType: 'LAN',
@@ -307,7 +307,7 @@ describe('validateEdgeGateway', () => {
 
     describe('invalid case', () => {
       it('when all ports unconfigured with empty lag', async () => {
-        const allPorts = mockUnconfgiuredPorts
+        const allPorts = mockUnconfiguredPorts
         let result
         try {
           result = await validateEdgeGateway(allPorts, noLags, false)
@@ -320,7 +320,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with LAN lag', async () => {
-        const mockPorts = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockPorts = _.cloneDeep(mockUnconfiguredPorts)
         mockPorts.forEach((item, idx) => {
           if (idx === 0) return // lag member
           item.enabled = true
@@ -345,12 +345,12 @@ describe('validateEdgeGateway', () => {
         mockData.portType = EdgePortTypeEnum.LAN
         mockData.ipMode = EdgeIpModeEnum.STATIC
         mockData.corePortEnabled = false
-        mockData.lagMembers = mockUnconfgiuredPorts.map(p => ({
+        mockData.lagMembers = mockUnconfiguredPorts.map(p => ({
           portId: p.id,
           portEnabled: true
         }))
 
-        const allPorts = mockUnconfgiuredPorts
+        const allPorts = mockUnconfiguredPorts
         let result
         try {
           result = await validateEdgeGateway(allPorts, [mockData], false)
@@ -367,12 +367,12 @@ describe('validateEdgeGateway', () => {
         mockData.portType = EdgePortTypeEnum.WAN
         mockData.ipMode = EdgeIpModeEnum.DHCP
         mockData.corePortEnabled = false
-        mockData.lagMembers = mockUnconfgiuredPorts.map(p => ({
+        mockData.lagMembers = mockUnconfiguredPorts.map(p => ({
           portId: p.id,
           portEnabled: false
         }))
 
-        const allPorts = mockUnconfgiuredPorts
+        const allPorts = mockUnconfiguredPorts
         let result
         try {
           result = await validateEdgeGateway(allPorts, [mockData], false)
@@ -385,7 +385,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when Cluster port with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.CLUSTER
         let result
         try {
@@ -399,7 +399,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with Cluster LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].ipMode = EdgeIpModeEnum.STATIC
 
@@ -425,7 +425,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when WAN port with LAN core port LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.WAN
         mockData[0].ipMode = EdgeIpModeEnum.DHCP
 
@@ -453,7 +453,7 @@ describe('validateEdgeGateway', () => {
     describe('valid case', () => {
 
       it('a WAN port with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.WAN
 
         let result
@@ -467,7 +467,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN core port with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].corePortEnabled = true
 
@@ -482,7 +482,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with WAN LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].ipMode = EdgeIpModeEnum.STATIC
 
@@ -506,7 +506,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with LAN core port LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].ipMode = EdgeIpModeEnum.STATIC
 
@@ -535,7 +535,7 @@ describe('validateEdgeGateway', () => {
   describe('Dual WAN enabled', () => {
     describe('invalid case', () => {
       it('when all ports unconfigured with empty lag', async () => {
-        const allPorts = mockUnconfgiuredPorts
+        const allPorts = mockUnconfiguredPorts
         let result
         try {
           result = await validateEdgeGateway(allPorts, noLags, true)
@@ -548,7 +548,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with LAN lag', async () => {
-        const mockPorts = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockPorts = _.cloneDeep(mockUnconfiguredPorts)
         mockPorts.forEach((item, idx) => {
           if (idx === 0) return // lag member
           item.enabled = true
@@ -573,12 +573,12 @@ describe('validateEdgeGateway', () => {
         mockData.portType = EdgePortTypeEnum.LAN
         mockData.ipMode = EdgeIpModeEnum.STATIC
         mockData.corePortEnabled = false
-        mockData.lagMembers = mockUnconfgiuredPorts.map(p => ({
+        mockData.lagMembers = mockUnconfiguredPorts.map(p => ({
           portId: p.id,
           portEnabled: true
         }))
 
-        const allPorts = mockUnconfgiuredPorts
+        const allPorts = mockUnconfiguredPorts
         let result
         try {
           result = await validateEdgeGateway(allPorts, [mockData], true)
@@ -595,12 +595,12 @@ describe('validateEdgeGateway', () => {
         mockData.portType = EdgePortTypeEnum.WAN
         mockData.ipMode = EdgeIpModeEnum.DHCP
         mockData.corePortEnabled = false
-        mockData.lagMembers = mockUnconfgiuredPorts.map(p => ({
+        mockData.lagMembers = mockUnconfiguredPorts.map(p => ({
           portId: p.id,
           portEnabled: false
         }))
 
-        const allPorts = mockUnconfgiuredPorts
+        const allPorts = mockUnconfiguredPorts
         let result
         try {
           result = await validateEdgeGateway(allPorts, [mockData], true)
@@ -613,7 +613,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when Cluster port with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.CLUSTER
         let result
         try {
@@ -627,7 +627,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with Cluster LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].ipMode = EdgeIpModeEnum.STATIC
 
@@ -653,7 +653,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when WAN port with LAN core port LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.WAN
         mockData[0].ipMode = EdgeIpModeEnum.DHCP
 
@@ -678,7 +678,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when WAN LAG + LAN core port LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
 
         const mockLags = _.cloneDeep(mockLanLags)
         mockLags[0].portType = EdgePortTypeEnum.LAN
@@ -712,7 +712,7 @@ describe('validateEdgeGateway', () => {
     describe('valid case', () => {
 
       it('a WAN port with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.WAN
 
         let result
@@ -726,7 +726,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN core port with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].corePortEnabled = true
 
@@ -741,7 +741,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with WAN LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].ipMode = EdgeIpModeEnum.STATIC
 
@@ -765,7 +765,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('when LAN port with LAN core port LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.LAN
         mockData[0].ipMode = EdgeIpModeEnum.STATIC
 
@@ -790,7 +790,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('2 WAN ports with empty lag', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.WAN
         mockData[1].portType = EdgePortTypeEnum.WAN
 
@@ -805,7 +805,7 @@ describe('validateEdgeGateway', () => {
       })
 
       it('WAN port + WAN LAG', async () => {
-        const mockData = _.cloneDeep(mockUnconfgiuredPorts)
+        const mockData = _.cloneDeep(mockUnconfiguredPorts)
         mockData[0].portType = EdgePortTypeEnum.WAN
 
         const mockLags = _.cloneDeep(mockLanLags[0])
@@ -832,15 +832,15 @@ describe('validateEdgeGateway', () => {
 
 describe('isAllPortsLagMember', () => {
   // 3 ports
-  const mockUnconfgiuredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))
-  mockUnconfgiuredPorts.forEach(item => {
+  const mockUnconfiguredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))
+  mockUnconfiguredPorts.forEach(item => {
     item.enabled = true
     item.portType = EdgePortTypeEnum.UNCONFIGURED
     item.ipMode = EdgeIpModeEnum.DHCP
     item.corePortEnabled = false
   })
 
-  const mockSinglePort = _.cloneDeep(mockUnconfgiuredPorts[0])
+  const mockSinglePort = _.cloneDeep(mockUnconfiguredPorts[0])
   mockSinglePort.portType = EdgePortTypeEnum.LAN
   mockSinglePort.ipMode = EdgeIpModeEnum.STATIC
 
@@ -851,7 +851,7 @@ describe('isAllPortsLagMember', () => {
     lacpMode: 'ACTIVE',
     lacpTimeout: 'SHORT',
     lagMembers: [{
-      portId: mockUnconfgiuredPorts[0].id,
+      portId: mockUnconfiguredPorts[0].id,
       portEnabled: true
     }],
     portType: 'LAN',
@@ -900,11 +900,11 @@ describe('isAllPortsLagMember', () => {
     it('when only partial port is lag member', async () => {
       const mockLags = _.cloneDeep(mockLanLags[0])
       mockLags.lagMembers = [{
-        portId: mockUnconfgiuredPorts[0].id,
+        portId: mockUnconfiguredPorts[0].id,
         portEnabled: true
       }]
 
-      expect(isAllPortsLagMember(mockUnconfgiuredPorts, [mockLags])).toBe(false)
+      expect(isAllPortsLagMember(mockUnconfiguredPorts, [mockLags])).toBe(false)
     })
   })
 })
@@ -1024,14 +1024,14 @@ describe('convertEdgePortsConfigToApiPayload', () => {
   })
 })
 
-describe('convertEdgeSubinterfaceToApiPayload', () => {
+describe('convertEdgeSubInterfaceToApiPayload', () => {
   it('returns original formData when ipMode is not DHCP', () => {
     const formData = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '192.168.1.1',
       subnet: '255.255.255.0'
     } as EdgeSubInterface
-    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result).toEqual(formData)
   })
 
@@ -1041,14 +1041,14 @@ describe('convertEdgeSubinterfaceToApiPayload', () => {
       ip: '192.168.1.1',
       subnet: '255.255.255.0'
     } as EdgeSubInterface
-    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result.ip).toBe('')
     expect(result.subnet).toBe('')
   })
 
   it('handles undefined formData', () => {
     const formData: EdgeSubInterface | null | undefined = undefined
-    const result = convertEdgeSubinterfaceToApiPayload(formData)
+    const result = convertEdgeSubInterfaceToApiPayload(formData)
     expect(result).toEqual({})
   })
 })

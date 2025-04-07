@@ -4,11 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AaaUrls, AccessControlUrls, CommonUrlsInfo, ExpirationType,
   MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
-  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo,PersonaUrls
+  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo,PersonaUrls,
+  IpsecUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -24,7 +25,8 @@ import {
   mockUpdatedMacRegistrationPoolList,
   mockAAAPolicyListResponse,
   mockSoftGreTable, mockedMacRegistrationPools,
-  mockIdentityGroupQuery
+  mockIdentityGroupQuery,
+  mockIpSecTable
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -223,6 +225,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ page: 1, totalCount: 0, data: [] }))),
       rest.post(SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockIpSecTable))),
       rest.post(WifiCallingUrls.queryWifiCalling.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.get(WifiRbacUrlsInfo.getRadiusServerSettings.url,
