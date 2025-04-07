@@ -118,11 +118,10 @@ describe('SwitchLayer2ACLDrawer', () => {
 
     expect(mockHandleSaveRule).toHaveBeenCalledWith(expect.objectContaining({
       action: 'deny',
+      destinationAddress: '66:77:88:99:aa:bb',
+      destinationMask: 'ff:ff:ff:ff:ff:ff',
       sourceAddress: '00:11:22:33:44:55',
-      sourceMask: 'ff:ff:ff:ff:ff:ff',
-      destinationAddress: '66:77:88:99:AA:BB',
-      destinationMask: 'ff:ff:ff:ff:ff:ff'
-    }))
+      sourceMask: 'ff:ff:ff:ff:ff:ff' }))
   })
 
   it('validates MAC address format', async () => {
