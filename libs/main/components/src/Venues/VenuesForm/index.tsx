@@ -200,13 +200,12 @@ export function VenuesForm (props: VenuesFormProps) {
   })
   const { saveEnforcementConfig } = useConfigTemplate()
   const { getEnforcedStepsFormProps } = useEnforcedStatus(ConfigTemplateType.VENUE)
-  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvalye Lab' ]
+  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvale Lab' ]
   const venueTagOptions =
-    Object.entries(venueTagList)
-      .map(([item])=>({
-        label: item,
-        value: item
-      }))
+    venueTagList.map((item) =>({
+      label: item,
+      value: item
+    }))
 
   useEffect(() => {
     if (data) {

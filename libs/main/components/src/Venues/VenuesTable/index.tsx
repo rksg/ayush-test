@@ -27,7 +27,7 @@ import {
   useDeleteVenueMutation,
   useEnhanceVenueTableQuery,
   useGetVenueCityListQuery,
-  useGetVenueTagListQuery,
+  // useGetVenueTagListQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery,
   useLazyGetVenueEdgeCompatibilitiesV1_1Query,
   useVenuesTableQuery
@@ -470,8 +470,9 @@ function useGetVenueTagList () {
   // let venueTagList = useGetVenueTagListQuery({
   //   params
   // })
-  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvalye Lab' ]
-
+  const venueTagList = ['tag1', 'tag2', 'west coast office', 'Sunnayvalye Lab' ].map(item => {
+    return { key: item, value: item }
+  })
   return { tagFilterOptions: venueTagList }
 }
 
