@@ -33,6 +33,9 @@ flaky-test-detector-results.xml
 *.sublime-workspace
 acx-ui.iml
 
+# Cursor
+/.cursor
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
