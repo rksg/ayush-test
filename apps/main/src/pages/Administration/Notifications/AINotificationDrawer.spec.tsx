@@ -114,8 +114,8 @@ describe('IncidentNotificationDrawer', () => {
       incident: {
         P1: ['email']
       },
-      configRecommendation: {
-        aiOps: ['email']
+      intentAI: {
+        all: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
@@ -124,11 +124,11 @@ describe('IncidentNotificationDrawer', () => {
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     fireEvent.click(drawerButton)
-    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'AI Operations' })).toBeChecked() })
+      expect(screen.getByRole('checkbox', { name: 'Intent status change' })).toBeChecked() })
   })
   it('should render correctly for notification channel enabled FF on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -136,8 +136,8 @@ describe('IncidentNotificationDrawer', () => {
       incident: {
         P1: ['email']
       },
-      configRecommendation: {
-        aiOps: ['email']
+      intentAI: {
+        all: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
@@ -168,8 +168,8 @@ describe('IncidentNotificationDrawer', () => {
       incident: {
         P1: ['email']
       },
-      configRecommendation: {
-        aiOps: ['email']
+      intentAI: {
+        all: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
@@ -184,21 +184,22 @@ describe('IncidentNotificationDrawer', () => {
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
     expect(applyButton).not.toBeDisabled()
-    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(screen.getByRole('checkbox', { name: 'P1 Incidents' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'P2 Incidents' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'P3 Incidents' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'AI-Driven RRM' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'AI Operations' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'P1 Incidents' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'P2 Incidents' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'P3 Incidents' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'Intent status change' }))
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'AI Operations' })).not.toBeChecked() })
+      expect(await screen.findByRole('checkbox', { name: 'Intent status change' }))
+        .not.toBeChecked()
+    })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyButton)} )
     await waitFor(() => {
@@ -208,9 +209,6 @@ describe('IncidentNotificationDrawer', () => {
           incident: {
             P2: ['email'],
             P3: ['email']
-          },
-          configRecommendation: {
-            crrm: ['email']
           }
         }
       })
@@ -241,21 +239,20 @@ describe('IncidentNotificationDrawer', () => {
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
     expect(applyButton).not.toBeDisabled()
-    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(screen.getByRole('checkbox', { name: 'P1 Incidents' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'P2 Incidents' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'P3 Incidents' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'AI-Driven RRM' }))
-      userEvent.click(screen.getByRole('checkbox', { name: 'AI Operations' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'P1 Incidents' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'P2 Incidents' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'P3 Incidents' }))
+      await userEvent.click(screen.getByRole('checkbox', { name: 'Intent status change' }))
     })
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked()})
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'AI Operations' })).toBeChecked() })
+      expect(screen.getByRole('checkbox', { name: 'Intent status change' })).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyButton)} )
     await waitFor(() => {
@@ -266,9 +263,8 @@ describe('IncidentNotificationDrawer', () => {
             P2: ['email'],
             P3: ['email']
           },
-          configRecommendation: {
-            crrm: ['email'],
-            aiOps: ['email']
+          intentAI: {
+            all: ['email']
           }
         }
       })
@@ -296,14 +292,14 @@ describe('IncidentNotificationDrawer', () => {
     fireEvent.click(drawerButton)
     const applyButton = await screen.findByRole('button', { name: /Apply/ })
     expect(applyButton).not.toBeDisabled()
-    expect(await screen.findAllByRole('checkbox')).toHaveLength(6)
-    const checkbox = await screen.findByRole('checkbox', { name: 'AI Operations' })
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+    const checkbox = await screen.findByRole('checkbox', { name: 'Intent status change' })
     await waitFor(async () => {
       expect(checkbox).not.toBeChecked()
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(checkbox)
+      await userEvent.click(checkbox)
     })
     await waitFor(async () => {
       expect(checkbox).toBeChecked()
@@ -314,8 +310,8 @@ describe('IncidentNotificationDrawer', () => {
       expect(mockedPrefMutation).toHaveBeenLastCalledWith({
         tenantId: 'test-tenant',
         preferences: {
-          configRecommendation: {
-            aiOps: ['email']
+          intentAI: {
+            all: ['email']
           }
         }
       })
@@ -334,8 +330,8 @@ describe('IncidentNotificationDrawer', () => {
       incident: {
         P1: ['email']
       },
-      configRecommendation: {
-        aiOps: ['email']
+      intentAI: {
+        all: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
@@ -354,9 +350,9 @@ describe('IncidentNotificationDrawer', () => {
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(await screen.findByRole('checkbox', { name: 'AP Firmware' }))
-      userEvent.click(await screen.findByRole('checkbox', { name: 'Switch Firmware' }))
-      userEvent.click(await screen.findByRole('checkbox', { name: 'API Changes' }))
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'AP Firmware' }))
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'Switch Firmware' }))
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'API Changes' }))
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
@@ -398,8 +394,8 @@ describe('IncidentNotificationDrawer', () => {
       incident: {
         P1: ['email']
       },
-      configRecommendation: {
-        aiOps: ['email']
+      intentAI: {
+        all: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
@@ -418,9 +414,9 @@ describe('IncidentNotificationDrawer', () => {
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(await screen.findByRole('checkbox', { name: 'AP Firmware' }))
-      userEvent.click(await screen.findByRole('checkbox', { name: 'Switch Firmware' }))
-      userEvent.click(await screen.findByRole('checkbox', { name: 'API Changes' }))
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'AP Firmware' }))
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'Switch Firmware' }))
+      await userEvent.click(await screen.findByRole('checkbox', { name: 'API Changes' }))
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
@@ -466,8 +462,8 @@ describe('IncidentNotificationDrawer', () => {
       incident: {
         P1: ['email']
       },
-      configRecommendation: {
-        aiOps: ['email']
+      intentAI: {
+        all: ['email']
       }
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {

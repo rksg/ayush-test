@@ -5,7 +5,6 @@ import { FormattedMessage }                          from 'react-intl'
 
 import { IncidentCode, Incident, IncidentMetadata } from '@acx-ui/analytics/utils'
 import { get }                                      from '@acx-ui/config'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { TenantLink }                               from '@acx-ui/react-router-dom'
 import { encodeParameter }                          from '@acx-ui/utils'
 
@@ -47,28 +46,19 @@ export const TenantLinkWrapper = ({ params, linkType }: {
     params: AirtimeParams,
     linkType: string
   }) => {
-  const isIntentAIEnabled = [
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
-    useIsSplitOn(Features.INTENT_AI_TOGGLE)
-  ].some(Boolean)
   let path =''
   const { $t } = useIntl()
   const intentData = linkType === 'crrm'
     ? params.crrm
     : params.aclb
-  if (isIntentAIEnabled) {
-    const intentFilter = {
-      aiFeature: [(codes[intentData!.code].aiFeature)],
-      intent: [$t(codes[intentData!.code].intent)],
-      category: [$t(codes[intentData!.code].category)],
-      sliceValue: [intentData!.sliceId]
-    }
-    const encodedParameters = encodeParameter(intentFilter)
-    path = `/intentAI?intentTableFilters=${encodedParameters}`
-  } else {
-    const id = intentData?.intentId ?? params.recommendationId
-    path = `/recommendations/${linkType}/${id}`
+  const intentFilter = {
+    aiFeature: [(codes[intentData!.code].aiFeature)],
+    intent: [$t(codes[intentData!.code].intent)],
+    category: [$t(codes[intentData!.code].category)],
+    sliceValue: [intentData!.sliceId]
   }
+  const encodedParameters = encodeParameter(intentFilter)
+  path = `/intentAI?intentTableFilters=${encodedParameters}`
   return (
     <TenantLink to={path}>
       <FormattedMessage defaultMessage={'Explore more'} />
