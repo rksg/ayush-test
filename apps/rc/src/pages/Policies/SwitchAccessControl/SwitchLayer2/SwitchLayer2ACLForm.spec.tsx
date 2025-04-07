@@ -2,9 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { SwitchUrlsInfo }                              from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { SwitchLayer2ACLForm } from './SwitchLayer2ACLForm'
 
@@ -104,9 +104,8 @@ describe('SwitchLayer2ACLForm', () => {
     const addRuleButton = await screen.findByText('Add Rule')
     await userEvent.click(addRuleButton)
 
-    expect(await screen.findByText('Add Rule')).toBeInTheDocument()
-
-    const saveButton = await screen.findByRole('button', { name: 'Add' })
+    const dialog = await screen.findByRole('dialog')
+    const saveButton = await within(dialog).findByRole('button', { name: 'Add' })
     await userEvent.click(saveButton)
   })
 

@@ -271,7 +271,7 @@ export const SwitchAccessControlDrawer = (props: SwitchAccessControlDrawerProps)
         </Radio.Group>
       }
     />
-    <Form.Item name='key' />
+    <Form.Item name='key' children={<Input type='hidden' />} />
   </Form>
 
   const footer = (
