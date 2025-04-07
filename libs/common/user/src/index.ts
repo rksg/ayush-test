@@ -1,3 +1,4 @@
+export { opsApis as aiOpsApis } from './aiAllowedOperations'
 export * from './services'
 export * from './types'
 export * from './UserProfileContext'

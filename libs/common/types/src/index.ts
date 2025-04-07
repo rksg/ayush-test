@@ -71,7 +71,7 @@ export enum EdgeScopes {
   DELETE = 'edge-d'
 }
 // eslint-disable-next-line max-len
-export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|(WifiScopes|SwitchScopes|EdgeScopes)[])[]
+export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|string|(WifiScopes|SwitchScopes|EdgeScopes|string)[])[]
 
 export type RbacOpsIds = (string | string[])[]
 
