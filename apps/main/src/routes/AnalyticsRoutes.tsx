@@ -9,15 +9,12 @@ import {
   IncidentDetails,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
-  RecommendationDetails,
   ServiceGuardDetails,
   ServiceGuardForm,
   ServiceGuardSpecGuard,
   ServiceGuardTestGuard,
   VideoCallQoeForm,
   VideoCallQoeDetails,
-  CrrmDetails,
-  UnknownDetails,
   IntentAIForm,
   IntentAIDetails
 } from '@acx-ui/analytics/components'
@@ -80,12 +77,6 @@ export default function AnalyticsRoutes () {
         </Route>
       }
 
-      <Route path='analytics/recommendations/'>
-        <Route path=':activeTab' element={<AIAnalytics />} />
-        <Route path='aiOps/:id' element={<RecommendationDetails />} />
-        {<Route path='crrm/:id' element={<CrrmDetails />} />}
-        {<Route path='crrm/unknown/*' element={<UnknownDetails />} />}
-      </Route>
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE} />} />}

@@ -62,6 +62,7 @@ export type StorageData = {
   config: StoragePayload,
   id: string
   isConnected: boolean
+  error?: string
 }
 
 type DataSource = { name: MessageDescriptor; value: string }
