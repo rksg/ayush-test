@@ -20,8 +20,8 @@ const DataConnectorContent: React.FC<{}> = () => {
   const helpUrl = useRaiR1HelpPageLink()
   const navigate = useNavigate()
   const basePath = useTenantLink('/dataConnector')
-  const { data: storage, isLoading: isStorageLoading } = useGetStorageQuery({})
-  const StorageLabel = StorageOptions.find(
+  const { data: storage, isLoading, isFetching } = useGetStorageQuery({})
+  const storageLabel = StorageOptions.find(
     (option) => option.value === storage?.config?.connectionType
   )?.label
   const hasDCStoragePermission = get('IS_MLISA_SA')
@@ -73,7 +73,7 @@ const DataConnectorContent: React.FC<{}> = () => {
           {storage?.config
             ? $t(
               { defaultMessage: 'Cloud Storage: {connectionType}' },
-              { connectionType: StorageLabel }
+              { connectionType: storageLabel }
             )
             : $t({ defaultMessage: 'New Cloud Storage' })}
           {storage != null && (
@@ -92,7 +92,7 @@ const DataConnectorContent: React.FC<{}> = () => {
       breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       extra={headerButtons.length > 0
         ? <Loader
-          states={[{ isLoading: isStorageLoading }]}
+          states={[{ isLoading, isFetching }]}
           style={{ flexDirection: 'row', gap: '10px' }}>
           {headerButtons}
         </Loader>
