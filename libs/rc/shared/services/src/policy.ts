@@ -78,9 +78,9 @@ import {
   ServerClientCertificateResult,
   NewAPModel
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }                                 from '@acx-ui/store'
-import { RequestPayload }                                from '@acx-ui/types'
-import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { basePolicyApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
