@@ -18,8 +18,11 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { defaultApGroupsFilterOptsPayload, GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  defaultApGroupsFilterOptsPayload,
+  GoogleMapWithPreference
+} from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -54,7 +57,10 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags, DhcpAp, AFCStatus
+  validateTags,
+  DhcpAp,
+  AFCStatus,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -62,7 +68,13 @@ import {
   useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { validationMessages, CatchErrorResponse, getEnabledDialogImproved } from '@acx-ui/utils'
+import { hasAllowedOperations } from '@acx-ui/user'
+import {
+  validationMessages,
+  CatchErrorResponse,
+  getEnabledDialogImproved,
+  getOpsApi
+} from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '../ApEdit/index'
 
@@ -538,6 +550,18 @@ export function ApForm () {
     }
   }
 
+  const hasChangeVenueApGroupPermission = hasAllowedOperations([
+    getOpsApi(WifiRbacUrlsInfo.moveApToTargetApGroup)
+  ])
+
+  const disableVenueCombobox = apMeshRoleDisabled
+    || dhcpRoleDisabled
+    || !hasChangeVenueApGroupPermission
+
+  const disableApGroupCombobox = !selectedVenue
+    || apGroupOption?.length < 2
+    || !hasChangeVenueApGroupPermission
+
   return <>
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
@@ -620,7 +644,7 @@ export function ApForm () {
                   message: $t(validationMessages.cellularApDhcpLimitation)
                 }]}
                 children={<Select
-                  disabled={apMeshRoleDisabled || dhcpRoleDisabled}
+                  disabled={disableVenueCombobox}
                   options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
@@ -649,7 +673,7 @@ export function ApForm () {
                 label={$t({ defaultMessage: 'AP Group' })}
                 initialValue={null}
                 children={<Select
-                  disabled={!selectedVenue || apGroupOption?.length < 2}
+                  disabled={disableApGroupCombobox}
                   options={selectedVenue?.id ? apGroupOption : []}
                 />}
               />

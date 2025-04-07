@@ -122,7 +122,8 @@ export enum GuestTypesEnum {
     MANAGED = 'GuestPass',
     SELF_SIGN_IN = 'SelfSign',
     HOST_GUEST = 'HostGuest',
-    DIRECTORY = 'Directory'
+    DIRECTORY = 'Directory',
+    SAML = 'SAML'
 }
 
 export enum GuestStatusEnum {

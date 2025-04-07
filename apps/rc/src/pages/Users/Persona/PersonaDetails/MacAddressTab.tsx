@@ -76,6 +76,7 @@ function MacAddressTab (props: { personaGroupData?: PersonaGroup }) {
         tableQuery={macRegistrationTableQuery}
         defaultIdentityId={personaId}
         settingsId={'identity-macregistration-table'}
+        disabledFeatures={{ import: true }}
       />
     </> : <></>)
 }

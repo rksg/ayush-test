@@ -23,7 +23,22 @@ const defaultClientPayload = {
   pageSize: 10000
 }
 
+const onboardingTypesMapping: { [key: string]: string } = {
+  'dpsk': 'DPSK',
+  'OpenNetwork': 'Open Network',
+  'mac-auth': 'Mac Auth',
+  'AAANetwork': 'AAA Network',
+  'PSKNetwork': 'PSK Network',
+  'eap': 'EAP/TLS'
+}
+
+const getOnboardingTerm = (type?: string): string => {
+  if (!type) return ''
+  return onboardingTypesMapping[type] || type.toUpperCase()
+}
+
 function IdentityClientTable (props: { personaId?: string, personaGroupId?: string }) {
+  const { $t } = useIntl()
   const { personaId, personaGroupId } = props
 
   const { setDeviceCount } = useContext(IdentityDetailsContext)
@@ -38,12 +53,12 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
   ] = useLazyGetClientsQuery()
   const tableQuery = useTableQuery<IdentityClient>({
     useQuery: useSearchIdentityClientsQuery,
-    apiParams: { pageSize: '100' },
+    apiParams: { },
+    pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
     sorter: {
       sortField: 'updatedAt',
       sortOrder: 'DESC'
     },
-    pagination: { pageSize: 100 },
     defaultPayload: { identityIds: [personaId] },
     option: { skip: !personaId || !personaGroupId }
   })
@@ -119,6 +134,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
         )}
       settingsId={settingsId}
       dataSource={datasource}
+      pagination={{ pageSize: 10, defaultPageSize: 10 }}
     />
   </Loader>
 }

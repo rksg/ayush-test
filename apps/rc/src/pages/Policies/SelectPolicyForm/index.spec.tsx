@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { policyApi }              from '@acx-ui/rc/services'
+import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { policyApi }                                from '@acx-ui/rc/services'
 import {
   PolicyType,
   ApSnmpUrls,
@@ -130,5 +130,21 @@ describe('SelectPolicyForm', () => {
     )
 
     await screen.findByText(/Port Profile/)
+  })
+
+  it('should render LBS Server Profile when FF is enabled', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_EDA_LBS_TOGGLE)
+
+    render(
+      <Provider>
+        <SelectPolicyForm />
+      </Provider>, {
+        route: { params, path: selectPolicyPath }
+      }
+    )
+
+    await screen.findByText(/Location Based Service Server/)
   })
 })

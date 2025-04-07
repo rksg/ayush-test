@@ -12,9 +12,6 @@ export const IntentDetailsHeader = () => {
       { text: $t({ defaultMessage: 'AI Analytics' }) },
       { text: $t({ defaultMessage: 'Intent AI' }), link: 'analytics/intentAI' }
     ]}
-    // extra={hasPermission({ permission: 'WRITE_AI_DRIVEN_RRM', scopes: [WifiScopes.UPDATE] })
-    //   ? [] // TODO: Action buttom
-    //   : []
-    // }
+    // extra={hasUpdateIntentPermission ? [] // TODO: Action buttom : [] }
   />
 }
