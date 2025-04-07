@@ -8,7 +8,7 @@ import { useIntl }   from 'react-intl'
 import { Button, Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { EditOutlined }                                                   from '@acx-ui/icons-new'
-import { tansformSdLanScopedVenueMap }                                    from '@acx-ui/rc/components'
+import { transformSdLanScopedVenueMap }                                   from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                             from '@acx-ui/rc/services'
 import {
   arraySizeSort,
@@ -47,7 +47,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
 
   // venue list should filter out the venues that already tied to other SDLAN services and PIN services.
   const usedVenueIds = useMemo(() => {
-    const sdlanVenueIds = Object.entries(tansformSdLanScopedVenueMap(allSdLans))
+    const sdlanVenueIds = Object.entries(transformSdLanScopedVenueMap(allSdLans))
       .map(([venueId, sdlan]) => {
         return (!!serviceId && sdlan.id === serviceId) ? undefined : venueId
       })

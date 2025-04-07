@@ -132,8 +132,8 @@ const EdgeHqosBandwidthTable = () => {
     {
       title: $t({ defaultMessage: 'HQoS Bandwidth Control' }),
       align: 'center',
-      key: 'tracfficClass',
-      dataIndex: 'tracfficClass',
+      key: 'trafficClass',
+      dataIndex: 'trafficClass',
       render: function (_, row) {
         return <Tooltip title={
           <TrafficClassSettingsTable

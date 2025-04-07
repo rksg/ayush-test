@@ -245,7 +245,7 @@ export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   isSdLanGuestUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
   showSdLanVenueDissociateModal
