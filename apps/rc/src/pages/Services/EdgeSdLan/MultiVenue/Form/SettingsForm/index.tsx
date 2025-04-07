@@ -129,10 +129,10 @@ export const SettingsForm = () => {
   }
 
   const dmzHaModeCheck = (dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
-    const isDmzClusteAAMode = find(clusterData, { clusterId: dmzClusterId })
+    const isDmzClusterAAMode = find(clusterData, { clusterId: dmzClusterId })
       ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
-    if (clusterData && isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
+    if (clusterData && isGuestTunnelOn && dmzClusterId && isDmzClusterAAMode) {
       return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
     } else {
       return Promise.resolve()

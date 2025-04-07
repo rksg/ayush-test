@@ -91,7 +91,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
     venueId: props.venueList.map(v => v.venueId)
   })
 
-  const getTunnelStatusDiaplayText = (tunStatus?: VxlanTunnelStatus) => {
+  const getTunnelStatusDisplayText = (tunStatus?: VxlanTunnelStatus) => {
     return tunStatus ? {
       [VxlanTunnelStatus.CONNECTED]: $t({ defaultMessage: 'Connected' }),
       [VxlanTunnelStatus.DISCONNECTED]: $t({ defaultMessage: 'Disconnected' })
@@ -175,7 +175,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       dataIndex: 'apStatusData.vxlanStatus.tunStatus',
       sorter: false,
       render: (_, row) => {
-        return getTunnelStatusDiaplayText(row?.apStatusData?.vxlanStatus?.tunStatus)
+        return getTunnelStatusDisplayText(row?.apStatusData?.vxlanStatus?.tunStatus)
       }
     },
     {
