@@ -289,6 +289,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addCustomRole: {
     method: 'post',
     url: '/roleAuthentications/customRoles',
+    opsApi: 'POST:/roleAuthentications/customRoles',
     newApi: true
   },
   updateCustomRole: {
@@ -326,16 +327,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addPrivilegeGroup: {
     method: 'post',
     url: '/roleAuthentications/privilegeGroups',
+    opsApi: 'POST:/roleAuthentications/privilegeGroups',
     newApi: true
   },
   updatePrivilegeGroup: {
     method: 'put',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    opsApi: 'PUT:/roleAuthentications/privilegeGroups/{id}',
     newApi: true
   },
   deletePrivilegeGroup: {
     method: 'delete',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    opsApi: 'DELETE:/roleAuthentications/privilegeGroups/{id}',
     newApi: true
   },
   getNotificationSms: {
