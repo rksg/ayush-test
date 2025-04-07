@@ -21,10 +21,6 @@ interface CompatibilityStatusBarProps<RecordType> {
   errors?: CompatibilityNodeError<RecordType>[]
 }
 
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * @typedef {import("../CompatibilityErrorDetails/types").CompatibilityNodeError<RecordType>[]} CompatibilityNodeErrorArray
-/******  d8d508df-eada-4d6a-9519-0c8da89187b5  *******/
 export const CompatibilityStatusBar = <RecordType,>
   (props: CompatibilityStatusBarProps<RecordType>) => {
   const { type, fields, errors } = props
