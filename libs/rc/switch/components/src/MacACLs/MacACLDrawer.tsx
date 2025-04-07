@@ -195,7 +195,7 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
     try {
       await form.validateFields()
 
-      if((!dataSource || dataSource.length === 0) ||
+      if((!dataSource || dataSource.length === 0) &&
       (!globalDataSource || globalDataSource.length === 0)){
         setErrRuleMessage(true)
         return
@@ -394,9 +394,6 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
             <span style={{ color: 'var(--acx-accents-orange-50)', marginLeft: '4px' }}>*</span>
           </>}
         />
-        <span style={{ color: 'var(--acx-semantics-red-50)',
-          display: `${errRuleMessage ? 'block' : 'none'}` }} >
-          {$t({ defaultMessage: 'Please add at least one rule' })}</span>
         <Table
           dataSource={customized || !editMode ? dataSource : globalDataSource}
           columns={columns}
@@ -411,6 +408,9 @@ export const MacACLDrawer =(props: SwitchAccessControlFormProps) => {
           pagination={{ pageSize: 10000 }}
           rowKey='key'
         />
+        <span style={{ color: 'var(--acx-semantics-red-50)',
+          display: `${errRuleMessage ? 'block' : 'none'}` }} >
+          {$t({ defaultMessage: 'Please add at least one rule' })}</span>
       </Drawer>
 
       <SwitchAccessControlDrawer
