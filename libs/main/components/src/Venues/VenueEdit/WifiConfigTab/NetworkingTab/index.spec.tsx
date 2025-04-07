@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                           from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
+import { venueApi }                                                                                   from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, IpsecUrls, SoftGreUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                             from '@acx-ui/test-utils'
 
 import {
   venueApsList,
@@ -61,6 +61,16 @@ describe('NetworkingTab', () => {
         (_, res, ctx) => {
           mockGetApsList()
           return res(ctx.json(venueApsList))
+        }),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => {
+          mockGetApsList()
+          return res(ctx.json([]))
+        }),
+      rest.post(IpsecUrls.getIpsecViewDataList.url,
+        (_, res, ctx) => {
+          mockGetApsList()
+          return res(ctx.json([]))
         }),
       rest.get(WifiUrlsInfo.getVenueDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockDirectedMulticast))

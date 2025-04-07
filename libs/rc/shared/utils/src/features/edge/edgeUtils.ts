@@ -352,15 +352,6 @@ export const isAllPortsLagMember = (portsData: EdgePort[], lagData: EdgeLag[]) =
   return isAllPortsLagMember
 }
 
-export const getLagGatewayCount = (lagData: EdgeLag[]) => {
-  const lagWithGateway = lagData.filter(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
-    && (lag.portType === EdgePortTypeEnum.WAN
-      || (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
-  ).length
-  return lagWithGateway
-}
-
 export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: EdgeLag[]) => {
   const { $t } = getIntl()
 
@@ -564,4 +555,40 @@ export const genExpireTimeString = (seconds?: number) => {
       time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
     }
   )
+}
+
+export const getLagGateways = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
+  if (!lagData) return []
+
+  const lagWithGateways = lagData.filter(lag =>
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    && (lag.portType === EdgePortTypeEnum.WAN
+      || (includeCorePort && lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+  )
+  return lagWithGateways
+}
+
+// eslint-disable-next-line max-len
+export const getLagGatewayCount = (lagData: EdgeLag[] | undefined, includeCorePort: boolean = true) => {
+  return getLagGateways(lagData, includeCorePort).length
+}
+
+// eslint-disable-next-line max-len
+export const getEdgeWanInterfaces = (portsData: EdgePort[] | undefined, lagData: EdgeLag[] | undefined) => {
+  const physicalWans= portsData ? portsData.filter(port =>
+    port.enabled && port.portType === EdgePortTypeEnum.WAN
+  ) : []
+
+  const lagWans = getLagGateways(lagData, false)
+
+  const wans: (EdgePort | EdgeLag)[] = lagWans
+  wans.push(...physicalWans)
+
+  return wans
+}
+
+// eslint-disable-next-line max-len
+export const getEdgeWanInterfaceCount = (portsData: EdgePort[] | undefined, lagData: EdgeLag[] | undefined) => {
+  const wans = getEdgeWanInterfaces(portsData, lagData)
+  return wans.length
 }

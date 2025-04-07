@@ -61,4 +61,9 @@ export const BannerButton = styled(Button)`
   font-size: var(--acx-subtitle-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   font-weight: var(--acx-subtitle-4-font-weight);
+  svg {
+    path {
+      fill: currentColor;
+    }  
+  }
 `

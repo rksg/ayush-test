@@ -52,10 +52,11 @@ export enum EdgeServiceTypeEnum {
   SD_LAN = 'SDLAN',
   SD_LAN_P2 = 'SDLAN_P2',
   MV_SD_LAN = 'MV_SDLAN',
-  MDNS_PROXY = 'MDNS_PROXY'
+  MDNS_PROXY = 'MDNS_PROXY',
+  TUNNEL_PROFILE = 'TUNNEL_PROFILE'
 }
 
-export enum EdgeClsuterProfileTypeEnum {
+export enum EdgeClusterProfileTypeEnum {
   TUNNEL_PROFILE = 'TUNNEL_PROFILE'
 }
 
@@ -121,3 +122,21 @@ export enum CompatibilityEntityTypeEnum {
   CLUSTER = 'cluster',
   DEVICE = 'device'
 }
+
+// ========== Multi WAN ===========
+export enum EdgeMultiWanModeEnum {
+  NONE = 'NONE',
+  ACTIVE_BACKUP = 'ACTIVE_BACKUP'
+}
+
+export enum EdgeMultiWanProtocolEnum {
+  NONE = 'NONE',
+  PING = 'PING'
+}
+
+export enum EdgeLinkDownCriteriaEnum {
+  INVALID = 'INVALID',
+  ALL_TARGETS_DOWN = 'ALL_TARGETS_DOWN',
+  ANY_TARGET_DOWN = 'ANY_TARGET_DOWN'
+}
+// ========== Multi WAN ===========

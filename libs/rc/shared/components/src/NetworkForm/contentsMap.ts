@@ -118,8 +118,8 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
     description: 'Guest network type - Active Directory/ LDAP Server'
   }),
   [GuestNetworkTypeEnum.SAML]: defineMessage({
-    defaultMessage: 'SAML',
-    description: 'Guest network type - SAML'
+    defaultMessage: 'SSO via SAML Identity Provider (IdP)',
+    description: 'Guest network type - SSO via SAML Identity Provider (IdP)'
   })
 }
 
@@ -142,8 +142,7 @@ export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
   [GuestNetworkTypeEnum.GuestPass]: 'Guest Pass',
   [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)',
   [GuestNetworkTypeEnum.Directory]: 'Active Directory/ LDAP Server',
-  [GuestNetworkTypeEnum.SAML]: 'SAML'
-
+  [GuestNetworkTypeEnum.SAML]: 'SSO via SAML Identity Provider (IdP)'
 }
 
 export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
@@ -202,8 +201,7 @@ export const captiveTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
   [GuestNetworkTypeEnum.GuestPass]: defineMessage({ defaultMessage: 'Guest Pass' }),
   [GuestNetworkTypeEnum.WISPr]: defineMessage({ defaultMessage: '3rd Party Captive Portal(WISPr)' }),
   [GuestNetworkTypeEnum.Directory]: defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
-  [GuestNetworkTypeEnum.SAML]: defineMessage({ defaultMessage: 'SAML' })
-
+  [GuestNetworkTypeEnum.SAML]: defineMessage({ defaultMessage: 'SSO via SAML Identity Provider (IdP)' })
 }
 
 /* eslint-disable max-len */
@@ -238,7 +236,7 @@ export const captiveTypesDescription: Record<GuestNetworkTypeEnum, MessageDescri
   }),
   [GuestNetworkTypeEnum.SAML]: defineMessage({
     defaultMessage: 'Users authenticate through the organization\'s SAML Identity Provider (IdP) for secure Single Sign-On (SSO) using their credentials.',
-    description: 'Description for SAML'
+    description: 'Description for SSO via SAML Identity Provider (IdP)'
   })
 }
 
