@@ -31,7 +31,7 @@ export const HqosBandwidthDetailDrawer = (props: HqosBandwidthDetailDrawerProps)
     return bandwidth ? bandwidth + ' %' : ''
   }
 
-  const banwidthColumns: TableProps<TrafficClassSetting>['columns'] = [
+  const bandwidthColumns: TableProps<TrafficClassSetting>['columns'] = [
     {
       title: $t({ defaultMessage: 'Traffic Class' }),
       key: 'trafficClass',
@@ -86,7 +86,7 @@ export const HqosBandwidthDetailDrawer = (props: HqosBandwidthDetailDrawerProps)
     }]}>
       <Table
         rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
-        columns={banwidthColumns}
+        columns={bandwidthColumns}
         dataSource={detailData?.trafficClassSettings}
         pagination={false}
       />

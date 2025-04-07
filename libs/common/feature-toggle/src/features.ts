@@ -320,7 +320,8 @@ export enum Features {
   RUCKUS_AI_AI_DRIVEN_RRM_METRICS_TOGGLE = 'ruckus-ai-ai-driven-rrm-metrics-toggle',
   SWITCH_SUPPORT_ICX7550Zippy = 'switch-support-icx7550-zippy-toggle',
   LOGIN_SSO_SAML_MSPEC = 'login-sso-saml-mspec',
-  DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec'
+  DURGA_TENANT_CONVERSION_REC_TO_MSP_REC = 'durga-tenant-conversion-rec-to-msp-rec',
+  SWITCH_SUPPORT_MAC_ACL_TOGGLE = 'switch-support-mac-acl-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

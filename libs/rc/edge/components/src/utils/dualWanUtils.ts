@@ -6,7 +6,7 @@ export const getDualWanModeString = (type: EdgeMultiWanModeEnum) => {
 
   switch (type) {
     case EdgeMultiWanModeEnum.ACTIVE_BACKUP:
-      return $t({ defaultMessage: 'Aactive / Backup' })
+      return $t({ defaultMessage: 'Active / Backup' })
     case EdgeMultiWanModeEnum.NONE:
     default:
       return ''

@@ -67,7 +67,10 @@ export const SwitchPortViewModelQueryFields = [
   'vsixEgressAclName',
   'vsixIngressAclName',
   'authDefaultVlan',
-  'errorDisableStatus'
+  'errorDisableStatus',
+  'stickyMacAclAllowList',
+  'stickyMacAclAllowCount',
+  'switchMacAcl'
 ]
 
 export enum IP_ADDRESS_TYPE {
@@ -162,6 +165,8 @@ export class Switch {
   authEnable?: boolean
   authDefaultVlan?: number
   guestVlan?: number
+  portSecurity?: boolean
+  portSecurityMaxEntries?: number
 
   constructor () {
     this.name = ''
@@ -541,10 +546,13 @@ export interface SwitchPortViewModel extends GridDataRow {
 	restrictedVlan?: number
 	criticalVlan?: number
 	authFailAction?: string
-	authTimeoutAction?: string,
-  switchPortProfileName?: string,
+	authTimeoutAction?: string
+  switchPortProfileName?: string
   switchPortProfileType?: string
   errorDisableStatus?: string
+  stickyMacAclAllowList?: string[]
+  stickyMacAclAllowCount?: number
+  switchMacAcl?: string
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -1083,6 +1091,11 @@ export enum PortProfileTabsEnum {
   SWITCH = 'switch',
 }
 
+export enum NetworkTypeTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+}
+
 export interface PortDisableRecoverySetting {
   bpduGuard: boolean,
   loopDetection: boolean,
@@ -1097,4 +1110,45 @@ export interface PortDisableRecoverySetting {
 export interface PortDisableRecoverySettingForm {
   recoveryInterval: number,
   recoverySetting: PortDisableRecoverySetting,
+}
+
+export interface SwitchAccessControl {
+  id: string,
+  policyName?: string,
+  description?: string,
+  accessControlPolicyName?: string,
+  layer2AclPolicyId?: string,
+  layer2AclPolicyName?: string
+}
+
+export interface MacAclRule {
+	id?: string,
+  key?: string,
+	action: string,
+	sourceAddress?: string,
+	sourceMask?: string,
+	destinationAddress?: string,
+	destinationMask?: string
+}
+
+export interface MacAclOverview {
+	id: string,
+	switchId: string,
+  switchName: string,
+  serialNumber: string,
+  model: string,
+  venueId: string,
+  venueName: string,
+  ports: string[]
+}
+
+export interface MacAcl {
+	id: string,
+	name: string,
+	appliedSwitchesInfo?: MacAclOverview[],
+	switchMacAclRules?: MacAclRule[],
+  macAclRules?: MacAclRule[],
+	switchId?: string,
+  customized?: boolean,
+  sharedWithPolicyAndProfile?: boolean
 }
