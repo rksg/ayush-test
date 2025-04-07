@@ -91,6 +91,9 @@ export const History = styled.div`
         }
         .ant-form-item {
           margin-bottom: 0;
+          input {
+            font-size: 12px;
+          }
         }
         .action {
           display: flex;

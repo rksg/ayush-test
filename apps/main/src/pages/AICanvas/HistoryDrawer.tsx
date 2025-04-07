@@ -143,7 +143,7 @@ export default function HistoryDrawer (props: DrawerProps) {
   }
 
   const editChatTitle = (j: ChatHistory) =>
-    <div className={'chat' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
+    <div className={'chat-title' + (sessionId === j.id ? ' active' : '') + ' edit'} key={j.id}>
       <div className='edit-input'>
         <Form.Item
           name='chatTitle'
