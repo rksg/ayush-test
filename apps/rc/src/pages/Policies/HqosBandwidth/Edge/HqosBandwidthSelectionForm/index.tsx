@@ -37,7 +37,7 @@ export const EdgeHqosProfileSelectionForm = () => {
 
 
   const content = <Form.Item
-    label={$t({ defaultMessage: 'HQoS Bandwitdth Profile' })}
+    label={$t({ defaultMessage: 'HQoS Bandwidth Profile' })}
     data-testid='edge-cluster-qos-select-form-label'>
     <Space>
       <Form.Item
