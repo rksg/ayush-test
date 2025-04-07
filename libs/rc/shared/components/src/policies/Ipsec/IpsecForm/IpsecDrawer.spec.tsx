@@ -23,14 +23,17 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
-      role='combobox'
-      onChange={e => onChange(e.target.value)}
-      {...otherProps}>
-      {children}
-    </select>
-
+  const Select = ({ children, onChange, ...otherProps }) => {
+    delete otherProps.dropdownClassName
+    return (
+      <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {children}
+      </select>
+    )
+  }
   // @ts-ignore
   Select.Option = ({ children, ...otherProps }) =>
     <option role='option' {...otherProps}>{children}</option>
@@ -90,7 +93,7 @@ describe('IpsecDrawer', () => {
         await screen.findAllByRole('option', { name: /pre-shared key/i })
       )
       const pskField = await screen.findByLabelText(/Pre-shared Key/i)
-      await user.type(pskField, 'testPSK')
+      await user.type(pskField, 'testPSK123')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
       await waitFor(() => expect(addFn).toHaveBeenCalledTimes(1))
@@ -98,7 +101,7 @@ describe('IpsecDrawer', () => {
         expect(addFn).toHaveBeenCalledWith(expect.objectContaining({
           name: 'createIpSec',
           authType: 'PSK',
-          preSharedKey: 'testPSK',
+          preSharedKey: 'testPSK123',
           serverAddress: '128.0.0.1'
         }))
       })
@@ -160,7 +163,7 @@ describe('IpsecDrawer', () => {
         await screen.findAllByRole('option', { name: /pre-shared key/i })
       )
       const pskField = await screen.findByLabelText(/Pre-shared Key/i)
-      await user.type(pskField, 'testPSK')
+      await user.type(pskField, 'testPSK123')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
       await waitFor(() => expect(createFn).toHaveBeenCalledTimes(1))

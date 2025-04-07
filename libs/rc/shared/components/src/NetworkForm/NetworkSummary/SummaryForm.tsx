@@ -139,6 +139,13 @@ export function SummaryForm (props: {
               label={$t({ defaultMessage: 'Directory Server:' })}
               children={extraData?.directoryServer?.name ?? ''}
             />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal &&
+            summaryData.guestPortal.guestNetworkType === GuestNetworkTypeEnum.SAML &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Identity Provider (IdP) via SAML:' })}
+              children={summaryData.samlIdpProfilesName ?? ''}
+            />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
             summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
             summaryData.type !== NetworkTypeEnum.DPSK &&

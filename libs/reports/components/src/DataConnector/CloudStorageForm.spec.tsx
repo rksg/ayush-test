@@ -48,7 +48,6 @@ describe('CloudStorageForm', () => {
           connectionType: 'azure',
           azureConnectionType: 'azureFiles',
           azureAccountName: 'some name',
-          azureAccountKey: 'key',
           azureShareName: 'share name'
         },
         id: 'id'
@@ -67,7 +66,6 @@ describe('CloudStorageForm', () => {
           connectionType: 'azure',
           azureConnectionType: 'azureFiles',
           azureAccountName: 'some name',
-          azureAccountKey: 'key',
           azureShareName: 'share name',
           azureStoragePath: 'storage/path'
         },
@@ -99,17 +97,18 @@ describe('CloudStorageForm', () => {
     })
     expect(await screen.findByText('New Cloud Storage')).toBeVisible()
     //set feilds
-    const dd = (await screen.findAllByRole('combobox')).at(1) as HTMLElement
-    await userEvent.click(dd)
-    await userEvent.click(screen.getByText('Azure Files'))
-    const azureAccountName = await screen.findByTestId('azureAccountName')
-    fireEvent.change(azureAccountName, { target: { value: 'some name' } })
-    const azureAccountKey = await screen.findByTestId('azureAccountKey')
-    fireEvent.change(azureAccountKey, { target: { value: 'key' } })
-    const azureShareName = await screen.findByTestId('azureShareName')
-    fireEvent.change(azureShareName, { target: { value: 'share name' } })
-    const azureStoragePath = await screen.findByTestId('azureStoragePath')
-    fireEvent.change(azureStoragePath, { target: { value: 'name' } })
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Connection type' }))
+    await userEvent.click(await screen.findByText('SFTP'))
+    const sftpHost = await screen.findByTestId('sftpHost')
+    fireEvent.change(sftpHost, { target: { value: 'some sftpHost' } })
+    const sftpPort = await screen.findByTestId('sftpPort')
+    fireEvent.change(sftpPort, { target: { value: '22' } })
+    const sftpUsername = await screen.findByTestId('sftpUserName')
+    fireEvent.change(sftpUsername, { target: { value: 'some sftpUsername' } })
+    const sftpPassword = await screen.findByTestId('sftpPassword')
+    fireEvent.change(sftpPassword, { target: { value: 'some sftpPassword' } })
+    const sftpStoragePath = await screen.findByTestId('sftpStoragePath')
+    fireEvent.change(sftpStoragePath, { target: { value: 'some sftpStoragePath' } })
 
     const applyBtn = await screen.findByRole('button', { name: 'Save' })
     expect(applyBtn).toBeVisible()
@@ -130,6 +129,38 @@ describe('CloudStorageForm', () => {
     await waitFor(() => {
       expect(mockNavigate).not.toHaveBeenCalled()
     })
+  })
+  it('should trigger password validation for Azure', async () => {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'post', {
+      data: { id: 'id' }
+    }, false, true)
+    render(<CloudStorageForm />, {
+      route: {},
+      wrapper: Provider
+    })
+    expect(await screen.findByText('New Cloud Storage')).toBeVisible()
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Connection type' }))
+    await userEvent.click((await screen.findAllByText('Azure'))[0])
+    const applyBtn = await screen.findByRole('button', { name: 'Save' })
+    expect(applyBtn).toBeVisible()
+    fireEvent.click(applyBtn)
+    expect(await screen.findAllByText('Please enter Azure account key')).toHaveLength(1)
+  })
+  it('should trigger password validation for FTP', async () => {
+    mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'post', {
+      data: { id: 'id' }
+    }, false, true)
+    render(<CloudStorageForm />, {
+      route: {},
+      wrapper: Provider
+    })
+    expect(await screen.findByText('New Cloud Storage')).toBeVisible()
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Connection type' }))
+    await userEvent.click(await screen.findByText('FTP'))
+    const applyBtn = await screen.findByRole('button', { name: 'Save' })
+    expect(applyBtn).toBeVisible()
+    fireEvent.click(applyBtn)
+    expect(await screen.findAllByText('Please enter FTP password')).toHaveLength(1)
   })
   it('should trigger password and private key validation for SFTP', async () => {
     mockRestApiQuery(`${notificationApiURL}/dataConnector/storage`, 'post', {
@@ -154,7 +185,6 @@ describe('CloudStorageForm', () => {
           connectionType: 'azure',
           azureConnectionType: 'azureBlob',
           azureAccountName: 'some name',
-          azureAccountKey: 'key',
           azureContainerName: 'name',
           azureStoragePath: 'some/path'
         },

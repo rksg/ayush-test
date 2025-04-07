@@ -12,10 +12,13 @@ type BannerProps = {
     helpUrl?: string
     closable?: boolean
     title: string
-    subTitles: string[]
+    subTitles: string[],
+    disabled?: boolean
 }
 
-export const Banner: React.FC<BannerProps> = ({ helpUrl, title, subTitles, closable=false }) => {
+export const Banner: React.FC<BannerProps> = ({
+  helpUrl, title, subTitles, closable=false, disabled=false
+}) => {
   const { $t } = useIntl()
 
   return (<UI.BannerAlert
@@ -28,6 +31,7 @@ export const Banner: React.FC<BannerProps> = ({ helpUrl, title, subTitles, closa
         {subTitles.map((subTitle, i) =>
           <UI.BannerSubTitle key={`bannerSub_${i}`}>{subTitle}</UI.BannerSubTitle>)}
         <UI.BannerButton
+          disabled={disabled}
           onClick={() => {
             helpUrl && window.open(helpUrl, '_blank')
           }}>

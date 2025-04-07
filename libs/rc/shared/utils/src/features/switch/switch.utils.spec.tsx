@@ -30,7 +30,9 @@ import {
   isFirmwareVersionAbove10010f,
   isFirmwareVersionAbove10020b,
   isFirmwareVersionAbove10010g2Or10020b,
-  vlanPortsParser
+  vlanPortsParser,
+  getFamilyAndModel,
+  createSwitchSerialPattern
 } from '.'
 
 const switchRow ={
@@ -329,7 +331,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       })).toBe('--')
 
       expect(getAdminPassword({
@@ -340,7 +343,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       })).toBe('--')
 
       expect(getAdminPassword({
@@ -351,7 +355,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       })).toBe('--')
 
       expect(getAdminPassword({
@@ -363,7 +368,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       })).toBe('Custom')
 
       expect(getAdminPassword({
@@ -377,7 +383,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       }, Input.Password)).not.toBe('Custom')
 
       expect(getAdminPassword({
@@ -389,7 +396,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       })).toBe('Custom')
 
       expect(getAdminPassword({
@@ -401,7 +409,8 @@ describe('switch.utils', () => {
       },
       { isSupport8200AV: false,
         isSupport8100: false,
-        isSupport8100X: false
+        isSupport8100X: false,
+        isSupport7550Zippy: false
       })).toBe('Custom')
 
     })
@@ -519,5 +528,134 @@ describe('Test vlanPortsParser function', () => {
     const maxRangesToShow = 5
     const title = 'Tagged VLANs'
     expect(vlanPortsParser(vlans, maxRangesToShow, title)).toBe('22, 24, 26, 60, 62, and 4 Tagged VLANs more...')
+  })
+})
+
+describe('Test createSwitchSerialPattern function', () => {
+  it('support all models', async () => {
+    const supportModels = {
+      isSupport8200AV: true,
+      isSupport8100: true,
+      isSupport8100X: true,
+      isSupport7550Zippy: true
+    }
+
+    const patten = createSwitchSerialPattern(supportModels)
+    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
+    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
+    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
+    expect(patten.test('FPG4324V00H')).toBe(true) //ICX8200-AV
+    expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
+    expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
+    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+  })
+
+  it('ICX8200-AV not supported', async () => {
+    const supportModels = {
+      isSupport8200AV: false,
+      isSupport8100: true,
+      isSupport8100X: true,
+      isSupport7550Zippy: true
+    }
+    const patten = createSwitchSerialPattern(supportModels)
+
+    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
+    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
+    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
+    expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
+    expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
+    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+
+    expect(patten.test('FPG4324V00H')).toBe(false) //ICX8200-AV
+  })
+
+  it('ICX8100 not supported', async () => {
+    const supportModels = {
+      isSupport8200AV: true,
+      isSupport8100: false,
+      isSupport8100X: true,
+      isSupport7550Zippy: true
+    }
+    const patten = createSwitchSerialPattern(supportModels)
+
+    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
+    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
+    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
+    expect(patten.test('FPG4324V00H')).toBe(true) //ICX8200-AV
+    expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
+    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+
+    expect(patten.test('FNX4830V014')).toBe(false) //ICX8100
+  })
+
+  it('ICX8100-X not supported', async () => {
+    const supportModels = {
+      isSupport8200AV: true,
+      isSupport8100: true,
+      isSupport8100X: false,
+      isSupport7550Zippy: true
+    }
+    const patten = createSwitchSerialPattern(supportModels)
+
+    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
+    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
+    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
+    expect(patten.test('FPG4324V00H')).toBe(true) //ICX8200-AV
+    expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
+    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+
+    expect(patten.test('FPQ4828V00X')).toBe(false) //ICX8100-X
+  })
+
+  it('ICX8100 and ICX8100-X not supported', async () => {
+    const supportModels = {
+      isSupport8200AV: true,
+      isSupport8100: false,
+      isSupport8100X: false,
+      isSupport7550Zippy: true
+    }
+    const patten = createSwitchSerialPattern(supportModels)
+
+    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
+    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
+    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
+    expect(patten.test('FPG4324V00H')).toBe(true) //ICX8200-AV
+    expect(patten.test('FPH4439V00X')).toBe(true) //ICX7550 Zippy
+
+    expect(patten.test('FPQ4828V00X')).toBe(false) //ICX8100-X
+    expect(patten.test('FNX4830V014')).toBe(false) //ICX8100
+  })
+
+  it('ICX7550 Zippy not supported', async () => {
+    const supportModels = {
+      isSupport8200AV: true,
+      isSupport8100: true,
+      isSupport8100X: true,
+      isSupport7550Zippy: false
+    }
+    const patten = createSwitchSerialPattern(supportModels)
+
+    expect(patten.test('FEA3237U209')).toBe(true) //ICX7150
+    expect(patten.test('EZC3319R006')).toBe(true) //ICX7650
+    expect(patten.test('FNC4352S01D')).toBe(true) //ICX8200
+    expect(patten.test('FPG4324V00H')).toBe(true) //ICX8200-AV
+    expect(patten.test('FPQ4828V00X')).toBe(true) //ICX8100-X
+    expect(patten.test('FNX4830V014')).toBe(true) //ICX8100
+
+    expect(patten.test('FPH4439V00X')).toBe(false) //ICX7550 Zippy
+  })
+})
+
+describe('Test getFamilyAndModel function', () => {
+  it('should render correctly', async () => {
+    expect(getFamilyAndModel('ICX7150-24P')).toEqual(['ICX7150', '24P'])
+    expect(getFamilyAndModel('ICX7550-48ZP')).toEqual(['ICX7550', '48ZP'])
+    expect(getFamilyAndModel('ICX7550-24XZP')).toEqual(['ICX7550', '24XZP'])
+    expect(getFamilyAndModel('ICX7650-48P')).toEqual(['ICX7650', '48P'])
+    expect(getFamilyAndModel('ICX8100-24P')).toEqual(['ICX8100', '24P'])
+    expect(getFamilyAndModel('ICX8100-24P-X')).toEqual(['ICX8100', '24P-X'])
+    expect(getFamilyAndModel('ICX8100-48-X')).toEqual(['ICX8100', '48-X'])
+    expect(getFamilyAndModel('ICX8200-48PF2')).toEqual(['ICX8200', '48PF2'])
+    expect(getFamilyAndModel('ICX8200-24PV')).toEqual(['ICX8200', '24PV'])
   })
 })
