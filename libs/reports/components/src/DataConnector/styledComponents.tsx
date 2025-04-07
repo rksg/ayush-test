@@ -57,6 +57,6 @@ export const DisconnectedDot = styled.span`
   display: inline-block;
   width: 8px;
   height: 8px;
-  background-color: var(--acx-neutrals-50);
+  background-color: var(--acx-semantics-red-50);
   border-radius: 50%;
 `
