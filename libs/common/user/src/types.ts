@@ -76,7 +76,7 @@ export interface UserProfile {
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: [],
+  scopes?: string[],
   preferredNotifications?: {
     emailPreferences: boolean,
     smsPreferences: boolean
