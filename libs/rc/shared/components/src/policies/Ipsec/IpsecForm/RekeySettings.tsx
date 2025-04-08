@@ -53,6 +53,32 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
     setLoadReKeySettings(false)
   }, [initIpSecData])
 
+  const handleIkeRekeyTimeChange = async (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked
+    setIkeRekeyTimeEnabled(e.target.checked)
+    form.setFieldValue('ikeRekeyTimeEnabledCheckbox', e.target.checked)
+    if (isChecked) {
+      let originalValue = form.getFieldValue(['ikeRekeyTime'])
+      if (originalValue === 0) {
+        form.setFieldValue(['ikeRekeyTime'], 4) // Set default value when checkbox is checked
+        form.setFieldValue(['ikeRekeyTimeUnit'], IpSecRekeyTimeUnitEnum.HOUR)
+      }
+    }
+  }
+
+  const handleEspRekeyTimeChange = async (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked
+    setEspRekeyTimeEnabled(e.target.checked)
+    form.setFieldValue('espRekeyTimeEnabledCheckbox', e.target.checked)
+    if (isChecked) {
+      let originalValue = form.getFieldValue(['espRekeyTime'])
+      if (originalValue === 0) {
+        form.setFieldValue(['espRekeyTime'], 1) // Set default value when checkbox is checked
+        form.setFieldValue(['espRekeyTimeUnit'], IpSecRekeyTimeUnitEnum.HOUR)
+      }
+    }
+  }
+
   return (
     <>
       <GridRow style={{ height: '60px', marginTop: '10px' }}>
@@ -64,10 +90,7 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
                 <Checkbox
                   checked={ikeRekeyTimeEnabled}
                   data-testid='ikeRekeyTimeEnabled'
-                  onChange={async (e: CheckboxChangeEvent) => {
-                    setIkeRekeyTimeEnabled(e.target.checked)
-                    form.setFieldValue('ikeRekeyTimeEnabledCheckbox', e.target.checked)
-                  }}
+                  onChange={handleIkeRekeyTimeChange}
                   children={
                     <div style={{ color: 'var(--acx-neutrals-60)' }}>
                       {$t({ defaultMessage: 'Internet Key Exchange (IKE)' })}
@@ -122,10 +145,7 @@ export default function RekeySettings (props: ReKeySettingsFormProps) {
                 <Checkbox
                   checked={espRekeyTimeEnabled}
                   data-testid='espRekeyTimeEnabled'
-                  onChange={async (e: CheckboxChangeEvent) => {
-                    setEspRekeyTimeEnabled(e.target.checked)
-                    form.setFieldValue('espRekeyTimeEnabledCheckbox', e.target.checked)
-                  }}
+                  onChange={handleEspRekeyTimeChange}
                   children={
                     <div style={{ color: 'var(--acx-neutrals-60)' }}>
                       {$t({ defaultMessage: 'Encapsulating Security Payload (ESP)' })}

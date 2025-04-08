@@ -346,14 +346,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }
     },
     {
-      key: 'activeSerial',
+      key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
-      dataIndex: 'activeSerial',
+      dataIndex: 'serialNumber',
       sorter: true,
       show: !!showAllColumns,
       searchable: searchable,
-      render: (_, { activeSerial }, __, highlightFn) => {
-        return searchable ? highlightFn(activeSerial) : activeSerial
+      render: (_, { serialNumber }, __, highlightFn) => {
+        return searchable ? highlightFn(serialNumber) : serialNumber
       }
     }, {
       key: 'switchMac',
