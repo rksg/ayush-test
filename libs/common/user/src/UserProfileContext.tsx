@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { RolesEnum as Role } from '@acx-ui/types'
 import { useTenantId }       from '@acx-ui/utils'
 
+import { getAIAllowedOperations } from './aiAllowedOperations'
 import {
   useGetAccountTierQuery,
   useGetBetaStatusQuery,
@@ -82,8 +83,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const { data: rcgAllowedOperations } = useGetAllowedOperationsQuery(
     undefined,
     { skip: !rbacOpsApiEnabled })
-  const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op=>op?.uri) || []
-  const allowedOperations = [...new Set(rcgOpsUri)]
+  const rcgOpsUri = rcgAllowedOperations?.allowedOperations.flatMap(op => op?.uri) || []
+  const aiOpsUri = rbacOpsApiEnabled ? getAIAllowedOperations(profile).flatMap(op => op.uri) : []
+  const allowedOperations = [...new Set([...rcgOpsUri, ...aiOpsUri])]
 
   const getHasAllVenues = () => {
     if(abacEnabled && profile?.scopes?.includes('venue' as never)) {

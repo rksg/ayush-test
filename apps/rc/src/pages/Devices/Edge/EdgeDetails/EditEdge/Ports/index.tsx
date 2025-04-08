@@ -51,7 +51,7 @@ const Ports = () => {
   } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
 
   const handleFormChange = async (changedValues: Object) => {
-    // due to form.List, must use the trailling 0
+    // due to form.List, must use the trailing 0
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
       const changedPortName = Object.keys(changedValues)?.[0]

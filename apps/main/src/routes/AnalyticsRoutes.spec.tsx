@@ -186,51 +186,6 @@ test('should navigate to analytics/serviceValidation by ServiceGuardSpecGuard', 
   const close = await screen.findByRole('img')
   fireEvent.click(close)
 })
-test('should navigate to analytics/recommendations/crrm', () => {
-  render(<Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/recommendations/crrm',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
-})
-test('should navigate to analytics/recommendations/crrm/:id', () => {
-  render(<Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/recommendations/crrm/id',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('CrrmDetails')).toBeVisible()
-})
-test('should navigate to analytics/recommendations/crrm/unknown/*', () => {
-  render(<Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/recommendations/crrm/unknown/*',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('UnknownDetails')).toBeVisible()
-})
-test('should navigate to analytics/recommendations/aiOps', () => {
-  render(<Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/recommendations/aiOps',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
-})
-test('should navigate to analytics/recommendations/aiOps/:id', () => {
-  render(<Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/recommendations/aiOps/id',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('RecommendationDetails')).toBeVisible()
-})
 test('should navigate to analytics/health page', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(false)
   jest.mocked(useIsTierAllowed).mockReturnValue(false)

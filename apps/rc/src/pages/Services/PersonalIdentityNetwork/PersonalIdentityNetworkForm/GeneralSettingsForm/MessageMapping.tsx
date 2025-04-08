@@ -45,7 +45,7 @@ export const MessageMapping = {
     defaultMessage={'For Switch clients segmentation'}
   />,
   pin_preparation_list_for_switch_desc_1: <FormattedMessage
-    defaultMessage={'Configure the <b>Static routes</b> on RUCKUS Edge for the distribution switch lookback IP addresses to establish the connection'}
+    defaultMessage={'Configure the <b>Static routes</b> on RUCKUS Edge for the distribution switch loopback IP addresses to establish the connection'}
     values={{
       b: (content) => <b >{content}</b>
     }}

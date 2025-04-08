@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
 import { cloneDeep, isObject }                  from 'lodash'
@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                                           from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useIpsecProfileLimitedSelection, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useDeactivateIpsecOnAPLanPortMutation,
@@ -39,7 +39,9 @@ import {
   VenueLanPorts,
   WifiApSetting,
   isEqualLanPort,
-  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState
+  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState,
+  SoftGreDuplicationChangeDispatcher,
+  IpsecOptionChangeState
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -161,6 +163,15 @@ export function LanPorts (props: ApEditItemProps) {
     duplicationChangeDispatch,
     validateIsFQDNDuplicate
   } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    ipsecOptionList, ipsecOptionDispatch, usedProfileData
+  } = useIpsecProfileLimitedSelection({
+    venueId: venueId!, isVenueOperation: false,
+    duplicationChangeDispatch: duplicationChangeDispatch,
+    formRef: formRef
+  } as { venueId: string, isVenueOperation: boolean,
+    duplicationChangeDispatch: React.Dispatch<SoftGreDuplicationChangeDispatcher>,
+    formRef?: MutableRefObject<StepsFormLegacyInstance<WifiApSetting>> })
 
   const isAllowUpdate = isAllowEdit // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = isAllowEdit // this.rbacService.isRoleAllowed('ResetWifiApSetting');
@@ -513,6 +524,13 @@ export function LanPorts (props: ApEditItemProps) {
         state: SoftGreDuplicationChangeState.ResetToDefault,
         voters: voters
       })
+
+      if (isIpSecOverNetworkEnabled) {
+        ipsecOptionDispatch({
+          state: IpsecOptionChangeState.ResetToDefault,
+          voters: voters
+        })
+      }
     }
   }
 
@@ -576,6 +594,7 @@ export function LanPorts (props: ApEditItemProps) {
               <Tabs
                 type='third'
                 onChange={onTabChange}
+                activeKey={`lan-${activeTabIndex + 1}`}
                 animated={true}
               >
                 {selectedModel?.lanPorts?.map((lan: LanPort, index: number) =>
@@ -602,6 +621,10 @@ export function LanPorts (props: ApEditItemProps) {
                           softGREProfileOptionList={softGREProfileOptionList}
                           optionDispatch={duplicationChangeDispatch}
                           validateIsFQDNDuplicate={validateIsFQDNDuplicate}
+                          ipsecOptionList={isIpSecOverNetworkEnabled ? ipsecOptionList : undefined}
+                          ipsecOptionDispatch={isIpSecOverNetworkEnabled ?
+                            ipsecOptionDispatch : undefined}
+                          usedProfileData={isIpSecOverNetworkEnabled ? usedProfileData : undefined}
                         />
                       </Col>
                     </Row>

@@ -468,7 +468,7 @@ describe('UserProfileContext', () => {
       fakedVenueList.data.map(item => item.id))}`)).toBeVisible()
   })
 
-  it('should generate allowedOpeartions correctly when rbacOpsApiFF enabled', async () => {
+  it('should generate allowedOperations correctly when rbacOpsApiFF enabled', async () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return {
         data: {
@@ -499,6 +499,8 @@ describe('UserProfileContext', () => {
     })
     await checkDataRendered()
     expect(screen.queryByText('rbacOpsApiEnabled:true')).toBeVisible()
+    expect(screen.queryByText(/POST:\/tenants\/chatbot\/idtoken/)).toBeVisible()
+    expect(screen.queryByText(/PATCH:\/incidents\/{id}/)).toBeVisible()
   })
 })
 

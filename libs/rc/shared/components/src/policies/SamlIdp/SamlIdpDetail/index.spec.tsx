@@ -7,13 +7,19 @@ import {
   PolicyOperation,
   PolicyType,
   SamlIdpProfileUrls,
-  getPolicyRoutePath } from '@acx-ui/rc/utils'
+  getPolicyRoutePath,
+  downloadFile } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockSamlIdpProfileId, mockSamlIdpProfileName, mockedSamlIdpProfile, mockedsamlIpdProfileList, samlNetworkList } from '../__tests__/fixtures'
+import { certList, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockSamlIdpProfileName, mockSamlIdpProfileName2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedsamlIpdProfileList, samlNetworkList } from '../__tests__/fixtures'
 
 import {  SamlIdpDetail } from '.'
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  downloadFile: jest.fn()
+}))
 
 const mockedUsedNavigate = jest.fn()
 
@@ -28,35 +34,37 @@ const detailViewPath = '/:tenantId/' + getPolicyRoutePath({
   oper: PolicyOperation.DETAIL
 })
 
-const mockedMainSamlIdpProfile = jest.fn()
-const mockedViewDataList = jest.fn()
+const mockedGetSamlIdpProfile = jest.fn()
+const mockedQueryViewDataList = jest.fn()
 const mockedDownloadMetadata = jest.fn()
+const mockedSyncMetadata = jest.fn()
 
-describe('SSO/SAML Detail', () => {
+describe('SAML IdP Detail', () => {
   beforeEach(() => {
-
+    jest.clearAllMocks()
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       policyId: mockSamlIdpProfileId
     }
 
-    mockedMainSamlIdpProfile.mockClear()
-    mockedViewDataList.mockClear()
-    mockedDownloadMetadata.mockClear()
+    jest.clearAllMocks()
 
     mockServer.use(
       rest.get(
         SamlIdpProfileUrls.getSamlIdpProfile.url,
         (req, res, ctx) => {
-          mockedMainSamlIdpProfile()
-          return res(ctx.json(mockedSamlIdpProfile))
+          mockedGetSamlIdpProfile()
+          if (req.params.id === mockSamlIdpProfileId) {
+            return res(ctx.json(mockedSamlIdpProfile))
+          }
+          return res(ctx.json(mockedSamlIdpProfileByURL))
         }
       ),
 
       rest.post(
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (req, res, ctx) => {
-          mockedViewDataList()
+          mockedQueryViewDataList()
           return res(ctx.json(mockedsamlIpdProfileList))
         }
       ),
@@ -76,6 +84,16 @@ describe('SSO/SAML Detail', () => {
         (req, res, ctx) => {
           mockedDownloadMetadata()
           return res(ctx.status(202))
+        }
+      ),
+
+      rest.patch(
+        SamlIdpProfileUrls.refreshSamlServiceProviderMetadata.url,
+        (req, res, ctx) => {
+          mockedSyncMetadata()
+          return res(ctx.json({
+            action: 'REFRESH_METADATA'
+          }))
         }
       )
     )
@@ -101,12 +119,35 @@ describe('SSO/SAML Detail', () => {
       , { route: { path: detailViewPath, params } }
     )
 
-    await waitFor(() => expect(mockedViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalled())
 
     expect(await screen.findByText(mockSamlIdpProfileName)).toBeInTheDocument()
     const downloadButton = screen.getByRole('button', { name: 'Download SAML Metadata' })
     await user.click(downloadButton)
     await waitFor(() => expect(mockedDownloadMetadata).toBeCalled())
+    await waitFor(() => expect(downloadFile).toBeCalled())
   })
 
+  it('Should call sync metadata api when click sync metadata button', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <SamlIdpDetail />
+      </Provider>
+      , { route: {
+        path: detailViewPath,
+        params: { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', policyId: mockSamlIdpProfileId2 }
+      } }
+    )
+
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalled())
+
+    expect(await screen.findByText(mockSamlIdpProfileName2)).toBeInTheDocument()
+    const syncMetadataButton = screen.getByTestId('sync-metadata-button')
+    await user.click(syncMetadataButton)
+    await waitFor(() => expect(mockedSyncMetadata).toBeCalled())
+
+    await waitFor(() => expect(mockedQueryViewDataList).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalledTimes(2))
+  })
 })

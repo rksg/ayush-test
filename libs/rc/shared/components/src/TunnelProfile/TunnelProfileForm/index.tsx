@@ -88,7 +88,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
-  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2GRE_TOGGLE)
+  const isEdgeL2greReady = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
@@ -294,7 +294,8 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               label={$t({ defaultMessage: 'Tunnel Type' })}
               initialValue={TunnelTypeEnum.VXLAN_GPE}
               children={
-                <Radio.Group disabled={isDefaultTunnelProfile}
+                <Radio.Group
+                  disabled={!!disabledFields?.includes('tunnelType')}
                   onChange={handleTunnelTypeChange}
                 >
                   <Space direction='vertical'>
@@ -315,7 +316,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             <Form.Item
               name='destinationIpAddress'
               label={$t({ defaultMessage: 'Destination IP Address' })}
-              children={<Input />}
+              children={<Input
+                disabled={!!disabledFields?.includes('destinationIpAddress')}
+              />}
               rules={[
                 {
                   required: true,
@@ -347,6 +350,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                     options={clusterOptions}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
                     onChange={onEdgeClusterChange}
+                    disabled={!!disabledFields?.includes('edgeClusterId')}
                   />
                 </Form.Item>
               </Col>

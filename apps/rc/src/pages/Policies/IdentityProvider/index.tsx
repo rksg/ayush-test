@@ -80,7 +80,7 @@ const IdentityProvider = (props: IdentityProviderProps) => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Idnetity Provider' })}
+        title={$t({ defaultMessage: 'Identity Provider' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {

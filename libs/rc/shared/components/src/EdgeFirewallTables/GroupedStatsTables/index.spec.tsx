@@ -172,8 +172,8 @@ describe('Edge firewall service grouped rule tables with stats', () => {
     expect(aclOutRows.length).toBe(8) // 5 + 1(header) + 2 rows in info table
 
     // check permitted session data
-    expect(screen.queryByText('Permmited by ACL Sessions')).toBeValid()
-    expect(within(aclPane).queryByRole('row', { name: 'Permmited by ACL Sessions 150' })).toBeValid()
+    expect(screen.queryByText('Permitted by ACL Sessions')).toBeValid()
+    expect(within(aclPane).queryByRole('row', { name: 'Permitted by ACL Sessions 150' })).toBeValid()
   })
 
   it('should correctly render when ddos use All rule', async () => {
