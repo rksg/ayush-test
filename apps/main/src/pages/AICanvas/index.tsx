@@ -10,7 +10,7 @@ import { v4 as uuidv4 }        from 'uuid'
 
 import { Button, Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import { SendMessageOutlined,
-  HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
+  HistoricalOutlined, Plus, Close, ChatCanvas }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 
@@ -95,6 +95,7 @@ export default function AICanvasModal (props: {
   const [aiBotLoading, setAiBotLoading] = useState(false)
   const [moreloading, setMoreLoading] = useState(false)
   const [isChatsLoading, setIsChatsLoading] = useState(true)
+  const [reload, setReload] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [canvasHasChanges, setCanvasHasChanges] = useState(false)
   const [sessionId, setSessionId] = useState('')
@@ -139,6 +140,7 @@ export default function AICanvasModal (props: {
       const latestId = historyData[historyData.length - 1].id
       if(sessionId !== latestId) {
         setSessionId(latestId)
+        setReload(true)
       }
     } else if(historyData?.length === 0) {
       setIsChatsLoading(false)
@@ -153,8 +155,11 @@ export default function AICanvasModal (props: {
   }
 
   useEffect(() => {
-    if(!isNewChat && sessionId) {
+    if((!isNewChat && sessionId) || reload) {
       getLatestPageChats()
+      if(reload) {
+        setReload(false)
+      }
     }
   }, [sessionId])
 
@@ -359,6 +364,7 @@ export default function AICanvasModal (props: {
                           onClick={onNewChat}
                         />
                       </Tooltip>
+                      <ChatCanvas />
                     </> : null
                   }
                 </div>
