@@ -171,6 +171,7 @@ export function ManageIntegrator () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
   const isAppMonitoringEnabled = useIsSplitOn(Features.MSP_APP_MONITORING)
+  const isViewmodleAPIsMigrateEnabled = useIsSplitOn(Features.VIEWMODEL_APIS_MIGRATE_MSP_TOGGLE)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -226,7 +227,8 @@ export function ManageIntegrator () {
       filters: { tenantType: [AccountType.MSP_EC] },
       fields: [ 'id', 'name' ]
     },
-    option: { skip: action !== 'edit' }
+    option: { skip: action !== 'edit' },
+    enableRbac: isViewmodleAPIsMigrateEnabled
   })
   const assignedEcs =
   useGetAssignedMspEcToIntegratorQuery(

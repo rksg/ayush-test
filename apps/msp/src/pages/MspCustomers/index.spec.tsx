@@ -321,6 +321,10 @@ describe('MspCustomers', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
+        MspRbacUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
         MspUrlsInfo.getSupportMspCustomersList.url.split('?').at(0) as Path,
         (req, res, ctx) => res(ctx.json({ ...list }))
       ),
