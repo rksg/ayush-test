@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { Form, Input }   from 'antd'
 import { FormItemProps } from 'antd/lib/form'
@@ -250,8 +250,14 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
         showToast({ type: 'error', content: error })
       })
   }, [form, editMode, storage.data?.id, navigate, updateStorage, $t])
-  const initialValues =
-    editMode ? selectedCloudStorage : { connectionType: 'azure' }
+
+  useEffect(() => {
+    if (editMode) {
+      // set as initial values here when cloud storage is loaded
+      form.setFieldsValue(selectedCloudStorage)
+    }
+  }, [editMode, form, selectedCloudStorage])
+
   return <>
     <PageHeader
       title={editMode
@@ -260,11 +266,14 @@ const CloudStorage: React.FC<CloudStorageFormProps> = ({ editMode=false }) => {
       }
       breadcrumb={generateBreadcrumb()}
     />
-    <Loader states={[{ isLoading: isLoading || storage.isLoading }]}>
+    <Loader states={[{
+      isLoading: isLoading || storage.isLoading,
+      isFetching: storage.isFetching
+    }]}>
       <GridRow>
         <GridCol col={{ span: 12 }} style={{ minHeight: '180px' }}>
           <Form
-            initialValues={initialValues}
+            initialValues={{ connectionType: 'azure' }}
             layout='vertical'
             form={form}
           >

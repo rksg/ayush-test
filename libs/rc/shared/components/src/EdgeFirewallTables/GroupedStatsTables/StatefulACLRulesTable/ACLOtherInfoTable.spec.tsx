@@ -34,7 +34,7 @@ describe('Edge firewall service other stats data table', () => {
       </Provider>)
 
 
-    expect(screen.queryByRole('row', { name: /Permmited by ACL Sessions 160/ })).toBeValid()
+    expect(screen.queryByRole('row', { name: /Permitted by ACL Sessions 160/ })).toBeValid()
   })
 
   it('should correctly render when data is NaN', async () => {
@@ -50,6 +50,6 @@ describe('Edge firewall service other stats data table', () => {
         />
       </Provider>)
 
-    expect(screen.queryByRole('row', { name: 'Permmited by ACL Sessions --' })).toBeValid()
+    expect(screen.queryByRole('row', { name: 'Permitted by ACL Sessions --' })).toBeValid()
   })
 })

@@ -21,6 +21,7 @@ export { ApGroupNetworksTable } from './ApGroupNetworkTable'
 export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
+export { useRbacClientTableColumns } from './ConnectedClientsTable/RbacClientsTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
@@ -244,7 +245,7 @@ export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   isSdLanGuestUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
   showSdLanVenueDissociateModal

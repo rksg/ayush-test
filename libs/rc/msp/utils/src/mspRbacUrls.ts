@@ -118,11 +118,10 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   resendEcInvitation: {
-    // method: 'post',
-    method: 'get',
+    method: 'put',
     url: '/tenants/:mspEcTenantId/invitations',
     oldUrl: '/mspCustomers/:mspEcTenantId/invitations',
-    opsApi: 'GET:/tenants/{id}/invitations',
+    opsApi: 'PUT:/tenants/{id}/invitations',
     newApi: true
   },
   // getMspCustomersListDropdown: {
