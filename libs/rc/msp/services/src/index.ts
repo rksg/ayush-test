@@ -213,9 +213,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const deviceInventoryListReq =
-          createHttpRequest(MspUrlsInfo.getMspDeviceInventory, params)
+          createHttpRequest(mspUrlsInfo.getMspDeviceInventory, params)
         return {
           ...deviceInventoryListReq,
           body: payload
@@ -225,9 +226,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const deviceInventoryListReq =
-          createHttpRequest(MspUrlsInfo.getIntegratorDeviceInventory, params)
+          createHttpRequest(mspUrlsInfo.getIntegratorDeviceInventory, params)
         return {
           ...deviceInventoryListReq,
           body: payload
