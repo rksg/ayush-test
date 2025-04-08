@@ -55,9 +55,6 @@ jest.mock('./pages/Dashboard', () => () => {
 jest.mock('./pages/AICanvas/archived/AICanvasQ1', () => () => {
   return <div data-testid='canvas' />
 })
-jest.mock('./pages/AICanvas', () => () => {
-  return <div data-testid='canvasQ2' />
-})
 jest.mock('./routes/AnalyticsRoutes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
@@ -186,16 +183,6 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('networks')
-  })
-
-  test('should navigate to canvas Q2', async () => {
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/canvas2',
-        wrapRoutes: false
-      }
-    })
-    expect(await screen.findByTestId('canvasQ2')).toBeInTheDocument()
   })
 
   test('should navigate to canvas if the feature flag is on', async () => {
