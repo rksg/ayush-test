@@ -14,7 +14,7 @@ import {
   NetworkTunnelTypeEnum,
   SdLanScopedVenueNetworksData,
   getNetworkTunnelType,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   useDeactivateNetworkTunnelByType,
   useEdgeAllPinData,
   useGetIpsecScopeVenueMap,
@@ -30,10 +30,16 @@ export interface useTunnelColumnProps {
   venueId: string
   sdLanScopedNetworks: SdLanScopedVenueNetworksData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
+  refetchFnRef: React.MutableRefObject<{ [key: string]: () => void }>,
+  setIsTableUpdating: React.Dispatch<React.SetStateAction<boolean>>
 }
 export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { $t } = useIntl()
-  const { venueId, sdLanScopedNetworks, setTunnelModalState } = props
+  const {
+    venueId, sdLanScopedNetworks, setTunnelModalState,
+    refetchFnRef,
+    setIsTableUpdating
+  } = props
   const { isTemplate } = useConfigTemplate()
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -42,11 +48,14 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const isIpSecOverNetworkEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
-  const softGreVenueMap = useGetSoftGreScopeVenueMap()
-  const ipsecVenueMap = useGetIpsecScopeVenueMap()
+  const softGreVenueMap = useGetSoftGreScopeVenueMap(refetchFnRef)
+  const ipsecVenueMap = useGetIpsecScopeVenueMap(refetchFnRef)
+
   // eslint-disable-next-line max-len
-  const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const allPins = useEdgeAllPinData({}, isTemplate)
+  const sdLanVenueMap = transformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
+  const { venuePins: allPins, refetch } = useEdgeAllPinData({}, isTemplate)
+  refetchFnRef.current.pin = refetch
+
   const venuePinInfo = find(allPins, p => p.venueId === venueId)
   const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))
 
@@ -111,7 +120,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
           <div><NetworkTunnelSwitchBtn
             tunnelType={tunnelType}
             venueSdLanInfo={venueSdLanInfo}
-            onClick={(checked) => {
+            onClick={async (checked) => {
               if (checked) {
                 handleClickNetworkTunnel({
                   id: venueId,
@@ -133,9 +142,11 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                   }
                 } as NetworkTunnelActionForm
 
+                setIsTableUpdating(true)
                 // deactivate depending on current tunnel type
                 // eslint-disable-next-line max-len
-                deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                await deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                setIsTableUpdating(false)
               }
             }}
           /></div>

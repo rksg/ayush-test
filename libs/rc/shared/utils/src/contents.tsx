@@ -333,6 +333,15 @@ export const EditPortMessages = {
   }),
   STP_BPDU_GUARD: defineMessage({
     defaultMessage: 'When STP BPDU Guard is turned on, the system will automatically enable the BPDU Guard in the Error Disable Recovery settings at the switch level : Applicable to firmware versions FI 10.0.10g and later (or) FI 10.0.20b and later'
+  }),
+  CANNOT_ENABLE_PORT_MAC_SECURITY_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'Port MAC Security cannot be enabled if Authentication is turned ON.'
+  }),
+  CANNOT_ENABLE_SWITCH_MAC_ACL_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'MAC ACL cannot be enabled if Authentication is turned ON.'
+  }),
+  CANNOT_ENABLE_FLEX_AUTH_WHEN_PORT_MAC_SECURITY_ENABLED: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled if Port MAC Security is turned ON.'
   })
 }
 
@@ -603,11 +612,17 @@ export const SamlIdpMessages = {
                     'Note: Importing metadata from a file will overwrite any existing configuration.'
   }),
   /* eslint-disable max-len */
-  AUTHN_REQUEST_TOGGLE: defineMessage({
-    defaultMessage: 'If this option is enabled, the public certificate for IDP needs to be configured with adding the R1 SAML metadata, which can be found on the SSO/SAML list page.'
+  SAML_REQUEST_SIGNATURE_TOGGLE: defineMessage({
+    defaultMessage: 'When enabled, SAML authentication requests from RUCKUS One will be digitally signed for enhanced security.'
   }),
   /* eslint-disable max-len */
-  RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
+  SAML_RESPONSE_ENCRYPTION_TOGGLE: defineMessage({
     defaultMessage: 'Use a server certificate to enable encrypted SAML responses from identity provider (IdP).'
+  }),
+  DOWNLOAD_SAML_METADATA: defineMessage({
+    defaultMessage: 'Download SAML metadata'
+  }),
+  UPLOAD_SAML_METADATA: defineMessage({
+    defaultMessage: 'Download the SAML metadata file and provide it to the identity provider you are using.'
   })
 }

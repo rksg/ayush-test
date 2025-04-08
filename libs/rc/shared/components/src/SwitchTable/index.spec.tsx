@@ -502,6 +502,7 @@ describe('SwitchTable', () => {
       )
     )
 
+    expect(await screen.findByRole('table')).toBeVisible()
     const tbody = await findTBody()
     const rows = await within(tbody).findAllByRole('row')
     expect(within(rows[0]).getByRole('cell', { name: 'FEK4224R19X' })).toBeVisible() // select ap 1: operational
@@ -706,8 +707,8 @@ describe('SwitchTable', () => {
       route: { params, path: '/:tenantId/t' }
     })
 
-    const input = await screen.findByPlaceholderText('Search Switch, Model,' +
-      ' Serial Number, MAC Address, IP Address, Ext. IP Address')
+    // eslint-disable-next-line max-len
+    const input = await screen.findByPlaceholderText(/Search Switch, Model, Serial Number, MAC Address, IP Address/i)
 
     expect(input).toBeVisible()
   })

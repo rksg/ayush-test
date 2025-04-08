@@ -7,6 +7,7 @@ import { useIntl }                          from 'react-intl'
 import { GridCol, GridRow, Subtitle, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }          from '@acx-ui/icons'
 import { Ipsec, IpSecAdvancedOptionEnum }      from '@acx-ui/rc/utils'
+import { validationMessages }                  from '@acx-ui/utils'
 
 import { messageMapping } from './messageMapping'
 
@@ -55,24 +56,36 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
         setForceNATTEnabled(initIpSecData.advancedOption?.enforceNatt)
       }
       if (initIpSecData.advancedOption?.retryLimit
-          && initIpSecData.advancedOption?.retryLimit !== 0) {
+          || initIpSecData.advancedOption?.retryLimit !== 0) {
         setRetryLimitEnabled(true)
         form.setFieldValue('retryLimitEnabledCheckbox', true)
+      } else {
+        setRetryLimitEnabled(false)
+        form.setFieldValue('retryLimitEnabledCheckbox', false)
       }
       if (initIpSecData.advancedOption?.replayWindow
-        && initIpSecData.advancedOption?.replayWindow !== 0) {
+        || initIpSecData.advancedOption?.replayWindow !== 0) {
         setEspReplayWindowEnabled(true)
         form.setFieldValue('espReplayWindowEnabledCheckbox', true)
+      } else {
+        setEspReplayWindowEnabled(false)
+        form.setFieldValue('espReplayWindowEnabledCheckbox', false)
       }
       if (initIpSecData.advancedOption?.dpdDelay
-        && initIpSecData.advancedOption?.dpdDelay !== 0) {
+        || initIpSecData.advancedOption?.dpdDelay !== 0) {
         setDeadPeerDetectionDelayEnabled(true)
         form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', true)
+      } else {
+        setDeadPeerDetectionDelayEnabled(false)
+        form.setFieldValue('deadPeerDetectionDelayEnabledCheckbox', false)
       }
       if (initIpSecData.advancedOption?.keepAliveInterval
-        && initIpSecData.advancedOption?.keepAliveInterval !== 0) {
+        || initIpSecData.advancedOption?.keepAliveInterval !== 0) {
         setNattKeepAliveIntervalEnabled(true)
         form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', true)
+      } else {
+        setNattKeepAliveIntervalEnabled(false)
+        form.setFieldValue('nattKeepAliveIntervalEnabledCheckbox', false)
       }
 
     }
@@ -99,6 +112,13 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
     }
   }
 
+  const dhcp43ValueValidator = (value: number) => {
+    if (value === 6) {
+      return Promise.reject($t(validationMessages.IpsecProfileDhcpOpion43InvalidValue))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <>
       <Subtitle level={3} style={{ height: '40px' }}>
@@ -122,6 +142,10 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
           <Form.Item name={['advancedOption','dhcpOpt43Subcode']}
             style={{ marginTop: '-4px' }}
             initialValue={7}
+            rules={[
+              { type: 'number', min: 3, max: 243 },
+              { validator: (_, value) => dhcp43ValueValidator(value) }
+            ]}
             children={
               <InputNumber min={3} max={243} />
             }
@@ -245,7 +269,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','ipcompEnable']}
             style={{ marginTop: '-19px' }}
-            initialValue={ipCompressionEnabled}
             children={
               <Switch
                 checked={ipCompressionEnabled === IpSecAdvancedOptionEnum.ENABLED ? true : false}
@@ -294,7 +317,7 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
                     label={' '}
                     data-testid='advOpt-dpdDelay'
                     name={['advancedOption','dpdDelay']}
-                    initialValue={1}
+                    initialValue={30}
                     children={<InputNumber min={1} max={65536} />} />
                   <span> {$t({ defaultMessage: 'second(s)' })} </span>
                 </Space>
@@ -325,7 +348,6 @@ export default function GatewayConnectionSettings (props: GatewayConnectionSetti
             label={' '}
             name={['advancedOption','enforceNatt']}
             style={{ marginTop: '-17px' }}
-            initialValue={forceNATTEnabled}
             children={
               <Switch
                 // eslint-disable-next-line max-len

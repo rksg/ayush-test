@@ -93,7 +93,7 @@ export const isSdLanGuestUtilizedOnDiffVenue = (
 }
 
 // eslint-disable-next-line max-len
-export const tansformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
+export const transformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
   const resultMap:Record<string, EdgeMvSdLanViewData> = {}
 
   sdLans?.forEach(sdlan => {

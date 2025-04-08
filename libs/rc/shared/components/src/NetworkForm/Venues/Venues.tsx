@@ -32,14 +32,10 @@ import {
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
   NetworkTunnelSoftGreAction,
-  ConfigTemplateType,
-  ConfigTemplateUrlsInfo,
-  WifiRbacUrlsInfo
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                          from '@acx-ui/types'
-import { filterByAccess, getUserProfile, hasAllowedOperations, hasPermission } from '@acx-ui/user'
-import { getOpsApi }                                                           from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { useEnforcedStatus }                                                    from '../../configTemplates'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
@@ -56,6 +52,7 @@ import { NetworkVenueScheduleDialog }                         from '../../Networ
 import { transformAps, transformRadios, transformScheduling } from '../../pipes/apGroupPipes'
 import { useIsEdgeFeatureReady }                              from '../../useEdgeActions'
 import NetworkFormContext                                     from '../NetworkFormContext'
+import { hasControlnetworkVenuePermission }                   from '../utils'
 
 import { useTunnelColumn }                                                       from './TunnelColumn/useTunnelColumn'
 import { handleIpsecAction, handleSdLanTunnelAction, handleSoftGreTunnelAction } from './TunnelColumn/utils'
@@ -177,8 +174,6 @@ export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
   const { isTemplate } = useConfigTemplate()
-  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
-  const { rbacOpsApiEnabled } = getUserProfile()
 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -203,25 +198,12 @@ export function Venues (props: VenuesProps) {
 
   const [tableData, setTableData] = useState<Venue[]>([])
 
-  const addNetworkVenueOpsAPi = getOpsApi(isTemplate
-    ? ConfigTemplateUrlsInfo.addNetworkVenueTemplateRbac
-    : WifiRbacUrlsInfo.addNetworkVenue)
-
-  const updateNetworkVenueOpsAPi = getOpsApi(isTemplate
-    ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac
-    : WifiRbacUrlsInfo.updateNetworkVenue)
-
-  const deleteNetworkVenueOpsAPi = getOpsApi(isTemplate
-    ? ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac
-    : WifiRbacUrlsInfo.deleteNetworkVenue)
-
-  const hasActivateNetworkVenuePermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([[ addNetworkVenueOpsAPi, deleteNetworkVenueOpsAPi]])
-    : (hasUpdatePermission)
-
-  const hasUpdateNetworkVenuePermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([updateNetworkVenueOpsAPi])
-    : (hasUpdatePermission)
+  const {
+    addNetworkVenueOpsAPi,
+    deleteNetworkVenueOpsAPi,
+    hasActivateNetworkVenuePermission,
+    hasUpdateNetworkVenuePermission
+  } = hasControlnetworkVenuePermission(isTemplate)
 
   // AP group form
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({

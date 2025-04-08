@@ -1,16 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { samlIdpProfileApi } from '@acx-ui/rc/services'
 import {
   CertificateUrls,
   PolicyOperation,
   PolicyType,
   SamlIdpProfileUrls,
   getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { certList, mockCertName1, mockCertName2, mockSamlIdpProfileId, mockedSamlIdpProfile, mockedsamlIpdProfileList } from '../__tests__/fixtures'
+import { certList, mockCertName1, mockCertName2, mockCertName3, mockSamlIdpProfileId, mockSamlIdpProfileId2, mockedSamlIdpProfile, mockedSamlIdpProfileByURL, mockedsamlIpdProfileList } from '../__tests__/fixtures'
 
 import { EditSamlIdp } from '.'
 
@@ -26,11 +27,15 @@ const editViewPath = '/:tenantId/' + getPolicyRoutePath({
   oper: PolicyOperation.EDIT
 })
 
+const mockedGetSamlIdpProfile = jest.fn()
+const mockedGetSamlIdpProfileViewDataList = jest.fn()
 const mockedMainSamlIdpProfile = jest.fn()
-const mockedActivateCertificate = jest.fn()
-const mockedDeactivateCertificate = jest.fn()
+const mockedActivateEncryptionCertificate = jest.fn()
+const mockedDeactivateEncryptionCertificate = jest.fn()
+const mockedActivateSigningCertificate = jest.fn()
+const mockedDeactivateSigningCertificate = jest.fn()
 
-describe('Edit SSO/SAML', () => {
+describe('Edit SAML IdP Profile', () => {
   beforeEach(() => {
 
     params = {
@@ -38,21 +43,26 @@ describe('Edit SSO/SAML', () => {
       policyId: mockSamlIdpProfileId
     }
 
-    mockedMainSamlIdpProfile.mockClear()
-    mockedActivateCertificate.mockClear()
-    mockedDeactivateCertificate.mockClear()
+    jest.clearAllMocks()
+
+    store.dispatch(samlIdpProfileApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
         SamlIdpProfileUrls.getSamlIdpProfile.url,
         (req, res, ctx) => {
-          return res(ctx.json(mockedSamlIdpProfile))
+          mockedGetSamlIdpProfile()
+          if (req.params.id === mockSamlIdpProfileId) {
+            return res(ctx.json(mockedSamlIdpProfile))
+          }
+          return res(ctx.json(mockedSamlIdpProfileByURL))
         }
       ),
 
       rest.post(
         SamlIdpProfileUrls.getSamlIdpProfileViewDataList.url,
         (req, res, ctx) => {
+          mockedGetSamlIdpProfileViewDataList()
           return res(ctx.json(mockedsamlIpdProfileList))
         }
       ),
@@ -66,17 +76,33 @@ describe('Edit SSO/SAML', () => {
       ),
 
       rest.put(
-        SamlIdpProfileUrls.activateSamlIdpProfileCertificate.url,
+        SamlIdpProfileUrls.activateEncryptionCertificate.url,
         (req, res, ctx) => {
-          mockedActivateCertificate()
+          mockedActivateEncryptionCertificate()
           return res(ctx.status(202))
         }
       ),
 
       rest.delete(
-        SamlIdpProfileUrls.deactivateSamlIdpProfileCertificate.url,
+        SamlIdpProfileUrls.deactivateEncryptionCertificate.url,
         (req, res, ctx) => {
-          mockedDeactivateCertificate()
+          mockedDeactivateEncryptionCertificate()
+          return res(ctx.status(202))
+        }
+      ),
+
+      rest.put(
+        SamlIdpProfileUrls.activateSigningCertificate.url,
+        (req, res, ctx) => {
+          mockedActivateSigningCertificate()
+          return res(ctx.status(202))
+        }
+      ),
+
+      rest.delete(
+        SamlIdpProfileUrls.deactivateSigningCertificate.url,
+        (req, res, ctx) => {
+          mockedDeactivateSigningCertificate()
           return res(ctx.status(202))
         }
       ),
@@ -95,6 +121,7 @@ describe('Edit SSO/SAML', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
+
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -133,13 +160,77 @@ describe('Edit SSO/SAML', () => {
       ,{ route: { path: editViewPath, params } }
     )
 
-    const certCombo = await screen.findByText(mockCertName1)
-    await user.click(certCombo)
+    const encryptionCertCombo = await screen.findByText(mockCertName1)
+    await user.click(encryptionCertCombo)
     await user.click(await screen.findByText(mockCertName2))
+
+    const signingCertCombo = (await screen.findAllByText(mockCertName3))[0]
+    await user.click(signingCertCombo)
+    await user.click((await screen.findAllByText(mockCertName1))[1])
 
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
-    await waitFor(() => expect(mockedActivateCertificate).toBeCalled())
-    await waitFor(() => expect(mockedDeactivateCertificate).toBeCalled())
+    await waitFor(() => expect(mockedActivateEncryptionCertificate).toBeCalled())
+    await waitFor(() => expect(mockedDeactivateEncryptionCertificate).toBeCalled())
+    await waitFor(() => expect(mockedActivateSigningCertificate).toBeCalled())
+    await waitFor(() => expect(mockedDeactivateSigningCertificate).toBeCalled())
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/policies/samlIdp/list`,
+      hash: '',
+      search: ''
+    })
+
+    await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalledTimes(2))
+  })
+
+
+  it('turn off encryption and signing certificate', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EditSamlIdp />
+      </Provider>
+      ,{ route: { path: editViewPath, params } }
+    )
+    await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
+
+    //get the Enable SAML Response Encryption switch
+    const encryptionSwitch = screen.getByRole('switch', { name: 'Enable SAML Response Encryption' })
+    expect(encryptionSwitch).toBeChecked()
+
+    //get the Enable SAML Request Signature switch
+    const signingSwitch = screen.getByRole('switch', { name: 'Enable SAML Request Signature' })
+    expect(signingSwitch).toBeChecked()
+
+    await user.click(screen.getByRole('switch', { name: 'Enable SAML Response Encryption' }))
+    await user.click(screen.getByRole('switch', { name: 'Enable SAML Request Signature' }))
+
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => expect(mockedDeactivateEncryptionCertificate).toBeCalled())
+    await waitFor(() => expect(mockedDeactivateSigningCertificate).toBeCalled())
+
+
+    await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalledTimes(2))
+  })
+
+  it('should show metadataUrl in metadataContent', async () => {
+    render(
+      <Provider>
+        <EditSamlIdp />
+      </Provider>
+      , { route: { path: editViewPath, params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+        policyId: mockSamlIdpProfileId2
+      } } }
+    )
+    await waitFor(() => expect(mockedGetSamlIdpProfileViewDataList).toBeCalled())
+    await waitFor(() => expect(mockedGetSamlIdpProfile).toBeCalled())
+
+    expect(screen.getByText(mockedSamlIdpProfileByURL.metadataUrl)).toBeVisible()
   })
 })

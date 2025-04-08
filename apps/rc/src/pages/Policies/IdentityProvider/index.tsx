@@ -11,10 +11,11 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyRoutePath,
-  IdentityProviderTabType
+  IdentityProviderTabType,
+  getPolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { ScopeKeys }                                    from '@acx-ui/types'
+import { RbacOpsIds, ScopeKeys }                        from '@acx-ui/types'
 
 import IdentityProviderTable from './IdentityProviderTable/IdentityProviderTable'
 import SamlIdpTable          from './SamlIdpTable'
@@ -65,6 +66,13 @@ const IdentityProvider = (props: IdentityProviderProps) => {
       getScopeKeyByPolicy(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)
   }
 
+  const rbacOpsIdMapping: Record<IdentityProviderTabType, RbacOpsIds | undefined> = {
+    [IdentityProviderTabType.SAML]:
+      getPolicyAllowedOperation(PolicyType.SAML_IDP, PolicyOperation.CREATE),
+    [IdentityProviderTabType.Hotspot20]:
+      getPolicyAllowedOperation(PolicyType.IDENTITY_PROVIDER, PolicyOperation.CREATE)
+  }
+
   const onTabChange = (tab: string) => {
     navigate(tabsPathMapping[tab as IdentityProviderTabType])
   }
@@ -72,7 +80,7 @@ const IdentityProvider = (props: IdentityProviderProps) => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Idnetity Provider' })}
+        title={$t({ defaultMessage: 'Identity Provider' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
@@ -84,6 +92,7 @@ const IdentityProvider = (props: IdentityProviderProps) => {
           <TenantLink
             to={buttonLinkMapping[currentTabType]}
             scopeKey={scopeKeyMapping[currentTabType]}
+            rbacOpsIds={rbacOpsIdMapping[currentTabType]}
           >
             <Button key='configure' type='primary'>{buttonTextMapping[currentTabType]}</Button>
           </TenantLink>

@@ -179,39 +179,6 @@ describe('AllRoutes', () => {
     expect(await screen.findByAltText('Logo')).toBeVisible()
     expect(await screen.findByTestId('VideoCallQoeForm')).toBeVisible()
   })
-  it('should render crrm correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/crrm' }, wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
-  })
-  it('should render aiOps correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/aiOps' }, wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
-  })
-  it('should render crrm details correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/crrm/test-recommendation-id' },
-      wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('CrrmDetails')).toBeVisible()
-  })
-  it('should render unknown details correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/crrm/unknown/*' },
-      wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('UnknownDetails')).toBeVisible()
-  })
-  it('should render aiOps details correctly', async () => {
-    render(<AllRoutes />, {
-      route: { path: '/ai/recommendations/aiOps/test-recommendation-id' },
-      wrapper: Provider })
-    expect(await screen.findByAltText('Logo')).toBeVisible()
-    expect(await screen.findByTestId('RecommendationDetails')).toBeVisible()
-  })
   it('should render Dashboard', async () => {
     const path = '/ai/dashboard'
     render(<AllRoutes />, { route: { path } })

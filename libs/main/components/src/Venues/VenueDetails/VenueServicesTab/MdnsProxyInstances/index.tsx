@@ -114,7 +114,10 @@ export default function MdnsProxyInstances () {
       render: function (_, row) {
         return <Switch
           checked={true}
-          disabled={!hasPermission({ scopes: [WifiScopes.UPDATE] })}
+          disabled={!hasPermission({
+            scopes: [WifiScopes.UPDATE],
+            rbacOpsIds: [getOpsApi(MdnsProxyUrls.addMdnsProxyApsRbac)]
+          })}
           onChange={checked => {
             if (checked) return
 

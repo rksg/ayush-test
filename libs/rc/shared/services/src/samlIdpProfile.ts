@@ -1,4 +1,6 @@
 
+import { Buffer } from 'buffer'
+
 import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query'
 
 import {
@@ -41,7 +43,10 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'SamlIdpProfile', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'DETAIL' }
+      ]
     }),
 
     deleteSamlIdpProfile: build.mutation<CommonResult, RequestPayload>({
@@ -72,7 +77,7 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
 
     getSamlIdpProfileWithRelationsById:
     build.query<SamlIdpProfileFormType | null, RequestPayload>({
-      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
@@ -81,18 +86,39 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         const viewDataReq = createHttpRequest(
           SamlIdpProfileUrls.getSamlIdpProfileViewDataList, params)
 
-        const idPListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
+        const idPListQuery = await fetchWithBQ(
+          { ...viewDataReq,
+            body: JSON.stringify({
+              sortField: 'name',
+              sortOrder: 'ASC',
+              filters: {
+                id: [params.id]
+              }
+            })
+          })
         let idPList = idPListQuery.data as TableResult<SamlIdpProfileViewData>
+
         const samlIdpProfile = await fetchWithBQ(
           createHttpRequest(SamlIdpProfileUrls.getSamlIdpProfile, params)
         )
+
         const samlIdpProfileData = samlIdpProfile.data as SamlIdpProfileFormType
 
+        samlIdpProfileData.metadataContent = Buffer
+          .from(samlIdpProfileData.metadata, 'base64')
+          .toString('utf-8')
+
         if (samlIdpProfileData && idPList?.data) {
+          samlIdpProfileData.id = params.id
           const viewData = idPList.data.find(item => item.id === params.id)
+
           if(viewData) {
-            samlIdpProfileData.responseEncryptionEnabled = viewData.responseEncryptionEnabled
+            samlIdpProfileData.signingCertificateEnabled = viewData.signingCertificateEnabled
+            samlIdpProfileData.signingCertificateId = viewData.signingCertificateId
+            samlIdpProfileData.encryptionCertificateEnabled = viewData.encryptionCertificateEnabled
             samlIdpProfileData.encryptionCertificateId = viewData.encryptionCertificateId
+
+            samlIdpProfileData.wifiNetworkIds = viewData.wifiNetworkIds
           }
         }
 
@@ -101,7 +127,21 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           : { error: samlIdpProfile.error } as QueryReturnValue<
           SamlIdpProfileFormType, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
       },
-      providesTags: [{ type: 'SamlIdpProfile', id: 'DETAIL' }]
+      providesTags: [{ type: 'SamlIdpProfile', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'SamlIdpProfileAction'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              samlIdpProfileApi.util.invalidateTags([
+                { type: 'SamlIdpProfile', id: 'DETAIL' }
+              ])
+            )
+          })
+        })
+      }
     }),
 
     getSamlIdpProfileViewDataList:
@@ -132,24 +172,47 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
         },
         extraOptions: { maxRetries: 5 }
       }),
-    activateSamlIdpProfileCertificate: build.mutation<CommonResult, RequestPayload>({
+
+    activateSamlEncryptionCertificate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(SamlIdpProfileUrls.activateSamlIdpProfileCertificate, params)
+        return createHttpRequest(SamlIdpProfileUrls.activateEncryptionCertificate, params)
       },
       invalidatesTags: [
         { type: 'SamlIdpProfile', id: 'LIST' },
         { type: 'SamlIdpProfile', id: 'Options' }
       ]
     }),
-    deactivateSamlIdpProfileCertificate: build.mutation<CommonResult, RequestPayload>({
+
+    deactivateSamlEncryptionCertificate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(SamlIdpProfileUrls.deactivateSamlIdpProfileCertificate, params)
+        return createHttpRequest(SamlIdpProfileUrls.deactivateEncryptionCertificate, params)
       },
       invalidatesTags: [
         { type: 'SamlIdpProfile', id: 'LIST' },
         { type: 'SamlIdpProfile', id: 'Options' }
       ]
     }),
+
+    activateSamlSigningCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SamlIdpProfileUrls.activateSigningCertificate, params)
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'Options' }
+      ]
+    }),
+
+    deactivateSamlSigningCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SamlIdpProfileUrls.deactivateSigningCertificate, params)
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'Options' }
+      ]
+    }),
+
     downloadSamlServiceProviderMetadata: build.mutation<Blob, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -170,6 +233,26 @@ export const samlIdpProfileApi = baseSamlIdpProfileApi.injectEndpoints({
           }
         }
       }
+    }),
+    activateIdentityProviderProfileOnNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(SamlIdpProfileUrls.activateIdentityProviderProfileOnNetwork, params)
+      }
+    }),
+
+    refreshSamlServiceProviderMetadata: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SamlIdpProfileUrls.refreshSamlServiceProviderMetadata, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [
+        { type: 'SamlIdpProfile', id: 'LIST' },
+        { type: 'SamlIdpProfile', id: 'DETAIL' }
+      ]
     })
   })
 })
@@ -183,7 +266,11 @@ export const {
   useGetSamlIdpProfileWithRelationsByIdQuery,
   useGetSamlIdpProfileViewDataListQuery,
   useLazyGetSamlIdpProfileViewDataListQuery,
-  useActivateSamlIdpProfileCertificateMutation,
-  useDeactivateSamlIdpProfileCertificateMutation,
-  useDownloadSamlServiceProviderMetadataMutation
+  useActivateSamlEncryptionCertificateMutation,
+  useDeactivateSamlEncryptionCertificateMutation,
+  useActivateSamlSigningCertificateMutation,
+  useDeactivateSamlSigningCertificateMutation,
+  useDownloadSamlServiceProviderMetadataMutation,
+  useActivateIdentityProviderProfileOnNetworkMutation,
+  useRefreshSamlServiceProviderMetadataMutation
 } = samlIdpProfileApi

@@ -518,8 +518,12 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       }
     }),
     addEdgeMvSdLan: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.addEdgeSdLan, params, versionHeader)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createHttpRequest(
+          EdgeSdLanUrls.addEdgeSdLan,
+          params,
+          customHeaders || versionHeader
+        )
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -561,9 +565,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     activateEdgeMvSdLanNetwork: build.mutation<CommonResult, RequestPayload<EdgeSdLanActivateNetworkPayload>>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, customHeaders }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(EdgeSdLanUrls.activateEdgeMvSdLanNetwork, params, versionHeader)
+        const req = createHttpRequest(
+          EdgeSdLanUrls.activateEdgeMvSdLanNetwork,
+          params,
+          customHeaders || versionHeader
+        )
         return { ...req, body: JSON.stringify(payload) }
       },
       async onCacheEntryAdded (requestArgs, api) {
@@ -576,9 +584,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     deactivateEdgeMvSdLanNetwork: build.mutation<CommonResult, RequestPayload<EdgeSdLanActivateNetworkPayload>>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, customHeaders }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork, params, versionHeader)
+        const req = createHttpRequest(
+          EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork,
+          params,
+          customHeaders || versionHeader
+        )
         return { ...req, body: JSON.stringify(payload) }
       },
       async onCacheEntryAdded (requestArgs, api) {

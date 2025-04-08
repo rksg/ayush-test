@@ -21,6 +21,7 @@ export { ApGroupNetworksTable } from './ApGroupNetworkTable'
 export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
+export { useRbacClientTableColumns } from './ConnectedClientsTable/RbacClientsTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
@@ -244,7 +245,7 @@ export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
-  tansformSdLanScopedVenueMap,
+  transformSdLanScopedVenueMap,
   isSdLanGuestUtilizedOnDiffVenue,
   isSdLanLastNetworkInVenue,
   showSdLanVenueDissociateModal
@@ -273,7 +274,6 @@ export {
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
-export { usePersonaListQuery } from './usePersonaListQuery'
 export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
 export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 export { EdgeLagTable } from './EdgeLagTable'
