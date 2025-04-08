@@ -13,7 +13,6 @@ import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useGetAllChatsQuery, useGetChatsMutation } from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import Canvas, { CanvasRef, Group } from './Canvas'
 import { DraggableChart }           from './components/WidgetChart'
@@ -82,12 +81,14 @@ const Messages = memo((props:{
     {aiBotLoading && <div className='loading'><Spin /></div>}
   </div>})
 
-export default function AICanvas () {
+export default function AICanvasModal (props: {
+  isModalOpen: boolean,
+  setIsModalOpen: (p: boolean) => void
+}) {
+  const { isModalOpen, setIsModalOpen } = props
   const canvasRef = useRef<CanvasRef>(null)
   const { $t } = useIntl()
   const scrollRef = useRef(null)
-  const linkToDashboard = useTenantLink('/dashboard')
-  const navigate = useNavigate()
   const [form] = Form.useForm()
   const [chatAi] = useChatAiMutation()
   const [getChats] = useGetChatsMutation()
@@ -103,6 +104,7 @@ export default function AICanvas () {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(2)
   const [groups, setGroups] = useState([] as Group[])
+  // const [displayMode, setDisplayMode] = useState('canvas')
 
   const maxSearchTextNumber = 300
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment!
@@ -291,8 +293,9 @@ export default function AICanvas () {
   }
 
   const onClose = () => {
-    navigate(linkToDashboard)
+    setIsModalOpen(false)
   }
+
 
   const onClickChat = (id: string) => {
     setIsNewChat(false)
@@ -314,64 +317,83 @@ export default function AICanvas () {
   }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <UI.Wrapper>
-        <div className='chat-wrapper'>
-          <div className='chat'>
-            <div className='header'>
-              <div className='actions'>
-                {historyData?.length ?
-                  <>
-                    <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
-                    <Tooltip
-                      placement='right'
-                      title={historyData && historyData.length >= 10
-                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
+    <UI.ChatModal
+      visible={isModalOpen}
+      onCancel={onClose}
+      width='calc(100vw - 80px)'
+      style={{ top: 40, height: 'calc(100vh - 40px)' }}
+      footer={null}
+      closable={false}
+    >
+      <DndProvider backend={HTML5Backend}>
+        <UI.Wrapper>
+          <div className='chat-wrapper'>
+            {
+              historyVisible && <HistoryDrawer
+                visible={historyVisible}
+                onClose={onHistoryDrawer}
+                historyData={historyData as ChatHistory[]}
+                sessionId={sessionId}
+                onClickChat={onClickChat}
+              />
+            }
+            <div className='chat'>
+              <div className='header'>
+                <div className='actions'>
+                  {historyData?.length ?
+                    <>
+                      <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
+                      <Tooltip
+                        placement='right'
+                        title={historyData && historyData.length >= 10
+                          ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10).
                       Please delete an existing chat to add a new one.` })
-                        : ''}
-                    >
-                      <Plus
-                        data-testid='newChatIcon'
-                        className={
-                          'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
-                        }
-                        onClick={onNewChat}
-                      />
-                    </Tooltip>
-                  </> : null
-                }
-              </div>
-              <div className='title'>
-                <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
-              </div>
-              <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <Close data-testid='close-icon' onClick={onClickClose}/>
-              </div>
-            </div>
-            <div className='content'>
-              <Loader states={[{ isLoading: isChatsLoading }]}>
-                <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
-                  <Messages
-                    moreloading={moreloading}
-                    aiBotLoading={aiBotLoading}
-                    chats={chats}
-                    sessionId={sessionId}
-                    canvasRef={canvasRef}
-                    groups={groups} />
-                  {
-                    !chats?.length && <div className='placeholder'>
-                      {
-                        questions.map(question => <div
-                          key={question}
-                          onClick={()=> {
-                            handleSearch(question)
-                          }}
-                        >
-                          {question}
-                        </div>)
-                      }
-                    </div>
+                          : ''}
+                      >
+                        <Plus
+                          data-testid='newChatIcon'
+                          className={
+                            'newChat' + (historyData && historyData.length >= 10 ?
+                              ' disabled' : '')
+                          }
+                          onClick={onNewChat}
+                        />
+                      </Tooltip>
+                    </> : null
                   }
+                </div>
+                <div className='title'>
+                  <span>{$t({ defaultMessage: 'RUCKUS DSE' })}</span>
+                </div>
+                <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
+                  <Close data-testid='close-icon' onClick={onClickClose}/>
+                </div>
+              </div>
+              <div className='content'>
+                <Loader states={[{ isLoading: isChatsLoading }]}>
+                  <div className='chatroom' ref={scrollRef} onScroll={handleScroll}>
+                    <Messages
+                      moreloading={moreloading}
+                      aiBotLoading={aiBotLoading}
+                      chats={chats}
+                      sessionId={sessionId}
+                      canvasRef={canvasRef}
+                      groups={groups} />
+                    {
+                      !chats?.length && <div className='placeholder'>
+                        {
+                          questions.map(question => <div
+                            key={question}
+                            onClick={()=> {
+                              handleSearch(question)
+                            }}
+                          >
+                            {question}
+                          </div>)
+                        }
+                      </div>
+                    }
+                  </div>
                   <div className='input'>
                     <Form form={form} >
                       <Form.Item
@@ -398,27 +420,19 @@ export default function AICanvas () {
                       onClick={()=> { handleSearch() }}
                     />
                   </div>
-                </div>
-              </Loader>
+                </Loader>
+              </div>
             </div>
           </div>
-        </div>
-        <Canvas
-          ref={canvasRef}
-          onCanvasChange={handleCanvasChange}
-          groups={groups}
-          setGroups={setGroups}
-        />
-        {
-          historyVisible && <HistoryDrawer
-            visible={historyVisible}
-            onClose={onHistoryDrawer}
-            historyData={historyData as ChatHistory[]}
-            sessionId={sessionId}
-            onClickChat={onClickChat}
+          <Canvas
+            ref={canvasRef}
+            onCanvasChange={handleCanvasChange}
+            groups={groups}
+            setGroups={setGroups}
           />
-        }
-      </UI.Wrapper>
-    </DndProvider>
+
+        </UI.Wrapper>
+      </DndProvider>
+    </UI.ChatModal>
   )
 }
