@@ -19,6 +19,7 @@ export enum Features {
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   BULK_VLAN_PROVISIONING = 'acx-ui-bulk-vlan-provisioning-toggle',
   CANVAS = 'ruckus-gen-ai-customized-canvas',
+  CANVAS_Q2 = 'ruckus-gen-ai-customized-canvas-phase2',
   CLOUDPATH_BETA = 'BETA-CP',
   IDENTITY_UI_REFACTOR = 'identity-client-enabled',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
