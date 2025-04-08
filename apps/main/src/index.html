@@ -55,9 +55,9 @@
         "qa.ruckus.cloud", 
         "int.ruckus.cloud"
       ];
-      const env = window.location.hostname;
+      const host = window.location.hostname;
 
-      if (supportEnvs.includes(env)) {
+      if (supportEnvs.some(env => host.includes(env))) {
         !function(t,e){var
       
         o,n,p,r;e.__SV||(window.contextqa=e,e._i=[],e.init=function(i){
