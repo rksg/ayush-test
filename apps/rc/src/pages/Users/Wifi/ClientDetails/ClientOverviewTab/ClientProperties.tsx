@@ -532,7 +532,7 @@ function WiFiCallingDetails ({ client }: { client: ClientExtended }) {
         }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Recieved Traffic' })}
+        label={$t({ defaultMessage: 'Received Traffic' })}
         children={
           (client?.wifiCallingRx && bytesFormatter(client?.wifiCallingRx)) || '--'
         }
