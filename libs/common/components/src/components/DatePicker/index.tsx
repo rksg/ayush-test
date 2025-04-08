@@ -102,12 +102,15 @@ export const RangePicker = ({
   const rangeRef = useRef<RangeRef>(null)
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const allowedDateRange = (showResetMsg && allowedMonthRange)
+  let allowedDateRange = (showResetMsg && allowedMonthRange)
     ? dateRangeForLast(allowedMonthRange,'months')
     : (accountTier === AccountTier.GOLD
       ? dateRangeForLast(1, 'month')
       : dateRangeForLast(isReport ? 12 : 3, 'months'))
 
+  if (isCoreTier(accountTier)) {
+    allowedDateRange = dateRangeForLast(14, 'days')
+  }
 
   const disabledDate = useCallback(
     (current: Moment) => (
