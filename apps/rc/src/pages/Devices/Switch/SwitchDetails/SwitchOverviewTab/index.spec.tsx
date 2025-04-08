@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
 import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -14,6 +15,30 @@ import { SwitchDetailsContext }                                            from 
 import { switchDetailData, switchDetailsContextData, venueData, vlanList } from '../__tests__/fixtures'
 
 import { SwitchOverviewTab } from '.'
+
+const macAclList ={
+  data: [
+    {
+      id: '525a68dc53494d29bb163ee0de86ad6a',
+      switchId: 'c0:c5:20:78:dd:04',
+      name: 'switch_acl1',
+      customized: true,
+      sharedWithPolicyAndProfile: false,
+      switchMacAclRules: [
+        {
+          id: '5526d685265144cb9908aea2136a77b7',
+          action: 'permit',
+          sourceAddress: 'any',
+          destinationAddress: 'any',
+          macAclId: '525a68dc53494d29bb163ee0de86ad6a'
+        }
+      ]
+    }
+  ],
+  page: 1,
+  totalCount: 1,
+  totalPages: 1
+}
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -63,7 +88,9 @@ describe('SwitchOverviewTab', () => {
       ),
 
       rest.post(SwitchUrlsInfo.getVlanListBySwitchLevel.url,
-        (_, res, ctx) => res(ctx.json(vlanList)))
+        (_, res, ctx) => res(ctx.json(vlanList))),
+      rest.post(SwitchUrlsInfo.getSwitchMacAcls.url,
+        (_, res, ctx) => res(ctx.json(macAclList)))
     )
   })
 
@@ -169,6 +196,88 @@ describe('SwitchOverviewTab', () => {
       }
     })
     expect(await screen.findByTestId('rc-SwitchOverviewACLs')).toBeVisible()
+  })
+  // eslint-disable-next-line max-len
+  it('should render Layer 2 and Layer 3 tabs when MAC ACL feature is enabled and firmware version is supported', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+      if (feature === Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE) return true
+      return false
+    })
+
+    jest.mock('@acx-ui/rc/utils', () => ({
+      ...jest.requireActual('@acx-ui/rc/utils'),
+      isFirmwareVersionAbove10010g2Or10020b: jest.fn(() => true)
+    }))
+
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'overview',
+      activeSubTab: 'acls',
+      categoryTab: 'layer2'
+    }
+
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData: {
+          ...switchDetailsContextData,
+          switchDetailHeader: {
+            ...switchDetailsContextData.switchDetailHeader,
+            firmware: 'SPS10020b'
+          }
+        },
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchOverviewTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
+      route: {
+        params,
+        // eslint-disable-next-line max-len
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+      }
+    })
+
+    expect(await screen.findByRole('tab',
+      { name: 'Layer 2' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Layer 3' })).toBeVisible()
+
+    expect(await screen.findByTestId('MacACLsTabs')).toBeInTheDocument()
+  })
+
+  it('should render only Layer 3 ACLs when MAC ACL feature is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((feature) => {
+      if (feature === Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE) return false
+      return false
+    })
+
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'overview',
+      activeSubTab: 'acls'
+    }
+
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchOverviewTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+      }
+    })
+
+    expect(screen.queryByRole('tab', { name: 'Layer 2' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Layer 3' })).not.toBeInTheDocument()
+
+    expect(await screen.findByTestId('rc-SwitchOverviewACLs')).toBeInTheDocument()
   })
 }
 )

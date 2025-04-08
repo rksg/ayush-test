@@ -41,7 +41,8 @@ function ImpactedSwitchTable (props: {
   const rows = props.data
 
   return <Table
-    rowKey='mac'
+    rowKey={(record) => (props.columns.find((column) => column.key === 'reasonCodes') ?
+      `${record.mac}_${record.reasonCodes}` : record.mac)}
     columns={props.columns}
     dataSource={rows}
     pagination={{ defaultPageSize: 5, pageSize: 5 }}

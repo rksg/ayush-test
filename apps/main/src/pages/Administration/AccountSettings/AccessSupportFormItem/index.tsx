@@ -15,9 +15,9 @@ import {
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 }                                    from '@acx-ui/rc/services'
-import { AdminRbacUrlsInfo }                                              from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission, hasPermission, useUserProfileContext } from '@acx-ui/user'
-import { getOpsApi }                                                      from '@acx-ui/utils'
+import { AdminRbacUrlsInfo }                                                              from '@acx-ui/rc/utils'
+import { getUserProfile, hasCrossVenuesPermission, hasPermission, useUserProfileContext } from '@acx-ui/user'
+import { getOpsApi }                                                                      from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -46,13 +46,13 @@ const getDisplayDateString = (data: string | undefined) => {
 const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { data: userProfileData } = useUserProfileContext()
   const { className, hasMSPEcLabel, canMSPDelegation } = props
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const isRevokeExpired = useRef<boolean>(false)
   const isMspDelegatedEC = hasMSPEcLabel && userProfileData?.varTenantId
                               && canMSPDelegation === false
-
 
   const [ enableAccessSupport,
     { isLoading: isEnableAccessSupportUpdating }]
@@ -110,16 +110,20 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   || isEnableAccessSupportUpdating
   || isDisableAccessSupportUpdating
 
-  const isRksSupportAllowed = hasPermission({
-    rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.enableAccessSupport)]
-  })
-  const isSupportUser = Boolean(userProfileData?.support)
-  // eslint-disable-next-line max-len
-  const isDisabled = !hasCrossVenuesPermission() || isSupportUser || !isRksSupportAllowed || isUpdating
-
   const supportInfo = isMspDelegatedEC ? ecTenantDelegationData : tenantDelegationData
   const { createdDate, expiryDate, expiryDateString, isAccessSupported } = supportInfo
   const isSupportAccessEnabled = Boolean(isAccessSupported)
+
+  const hasRbacOpsPermission =
+    (hasPermission({ rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.enableAccessSupport)] })
+     && !isSupportAccessEnabled) ||
+    (hasPermission({ rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.disableAccessSupport)] })
+     && isSupportAccessEnabled)
+
+  const isRksSupportAllowed = rbacOpsApiEnabled ? hasRbacOpsPermission : hasPermission()
+  const isSupportUser = Boolean(userProfileData?.support)
+  // eslint-disable-next-line max-len
+  const isDisabled = !hasCrossVenuesPermission() || isSupportUser || !isRksSupportAllowed || isUpdating
 
   useEffect(() => {
     if (isRksSupportAllowed && expiryDate && !isUpdating && !isRevokeExpired.current) {

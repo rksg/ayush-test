@@ -236,7 +236,7 @@ export function NetworkDetailForm () {
             </Form.Item>
           }
         </Form.Item>
-        <ProtectedEnforceTemplateToggle templateId={data?.id} />
+        <ProtectedEnforceTemplateToggle initValue={data?.isEnforced} />
       </Col>
 
       <Col span={14}>
