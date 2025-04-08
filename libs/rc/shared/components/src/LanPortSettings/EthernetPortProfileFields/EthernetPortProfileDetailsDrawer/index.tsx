@@ -113,7 +113,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
             (ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN ||
             ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED ||
             ethernetDataForDisplay?.authType === EthernetPortAuthType.PORT_BASED)?
-            'On' : 'Off'
+              'On' : 'Off'
           }
         />
       }

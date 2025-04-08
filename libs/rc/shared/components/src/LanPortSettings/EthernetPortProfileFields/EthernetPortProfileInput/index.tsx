@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 import { Form, Space  } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Alert, StepsForm } from '@acx-ui/components'
+import { Alert, StepsForm }       from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EthernetPortAuthType,
   EthernetPortProfileMessages,
@@ -15,7 +16,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 import EthernetPortProfileOverwriteItem from './EthernetPortProfileOverwriteItem'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 interface EthernetPortProfileInputProps {
     currentEthernetPortData?: EthernetPortProfileViewData,
