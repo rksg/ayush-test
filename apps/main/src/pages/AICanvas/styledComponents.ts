@@ -531,6 +531,30 @@ export const Widget = styled(Card)`
   .chart {
     margin: 5px;
   }
+  .ant-card-head-title {
+    display: flex;
+    .ant-space {
+      display: flex;
+      max-width: 100%;
+      .ant-space-item:first-child {
+        flex: 1;
+        max-width: calc(100% - 10px);
+      }
+      .ant-space-item:last-child {
+        flex: 10px; 
+        max-width: auto;
+      }
+    }
+  }
+  .update-indicator {
+    display: inline-block;
+    position: relative;
+    top: -4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--acx-semantics-red-50);
+  }
 `
 
 export const Badge = styled(AntBadge)`

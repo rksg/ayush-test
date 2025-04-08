@@ -378,11 +378,15 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data, visible, setVisib
   //   }
   // }
   const chartData = data.type === 'card' ? queryResults.data : data
+  const widgetTitle = chartData?.name && chartData?.updated //TODO
+    ? { title: chartData?.name, icon: <span className='update-indicator' /> }
+    : chartData?.name
+
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
         key={data.id}
-        title={data.type === 'card' ? chartData?.name : ''}
+        title={data.type === 'card' ? widgetTitle : ''}
         className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
