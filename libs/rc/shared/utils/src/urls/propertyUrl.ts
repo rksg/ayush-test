@@ -179,7 +179,7 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/venues/:venueId/units/:unitId/identities/:identityId',
-    opsApi: 'PUT:/venues/{id}/units/{id}/identities/{id}',
+    opsApi: 'PUT:/venues/{venueId}/units/{unitId}/identities/{identityId}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
@@ -188,7 +188,7 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   removeUnitLinkedIdenity: {
     method: 'delete',
     url: '/venues/:venueId/units/:unitId/identities/:identityId',
-    opsApi: 'DELETE:/venues/{id}/units/{id}/identities/{id}',
+    opsApi: 'DELETE:/venues/{venueId}/units/{unitId}/identities/{identityId}',
     newApi: true,
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
