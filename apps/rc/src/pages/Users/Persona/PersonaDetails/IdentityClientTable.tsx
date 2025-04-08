@@ -1,22 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { SortOrder } from 'antd/lib/table/interface'
+import { useIntl }   from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }                    from '@acx-ui/components'
-import { OSIconContainer }                                       from '@acx-ui/rc/components'
+import { Loader, Table }                                         from '@acx-ui/components'
+import { useRbacClientTableColumns }                             from '@acx-ui/rc/components'
 import { useLazyGetClientsQuery, useSearchIdentityClientsQuery } from '@acx-ui/rc/services'
 import {
-  ClientInfo,
-  dateSort,
-  defaultSort,
-  getOsTypeIcon,
-  IdentityClient,
-  sortProp,
+  ClientInfo, defaultSort,
+  IdentityClient, sortProp,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
 
 import { IdentityDetailsContext } from './index'
 
@@ -50,7 +44,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
 
   const { setDeviceCount } = useContext(IdentityDetailsContext)
   const settingsId = 'identity-client-table'
-  const [ datasource, setDatasource ] = useState<IdentityClient[]>([])
+  const [ datasource, setDatasource ] = useState<ClientInfo[]>([])
   const [ clientMacs, setClientMacs ] = useState<Set<string>>(new Set())
   // const addClientMac = (mac: string) => setClientMacs(prev => new Set(prev.add(mac)))
 
@@ -64,7 +58,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     pagination: { pageSize: 100 },  // Design intent: Only show 100 clients
     sorter: {
       sortField: 'updatedAt',
-      sortOrder: 'desc'
+      sortOrder: 'DESC'
     },
     defaultPayload: { identityIds: [personaId] },
     option: { skip: !personaId || !personaGroupId }
@@ -79,7 +73,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     if (tableQuery.data) {
       const macs = tableQuery.data.data.map((client) => toClientMacFormat(client.clientMac))
       setClientMacs(new Set(macs))
-      setDatasource(tableQuery.data.data)
+      setDatasource(tableQuery.data.data as unknown as ClientInfo[])
       setDeviceCount(new Set(macs).size)
     }
   }, [tableQuery.data])
@@ -90,7 +84,7 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     const aggregateClientInfo = (
       identityClients: IdentityClient[],
       esClients: ClientInfo[]
-    ) : IdentityClient[] => {
+    ) : ClientInfo[] => {
       const esClientMap = new Map<string, ClientInfo>()
       esClients.forEach(esClient =>
         esClientMap.set(toClientMacFormat(esClient.macAddress), esClient))
@@ -100,17 +94,14 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
         if (existingClient && existingClient.networkInformation.id === identityClient.networkId) {
           return {
             ...identityClient,
-            os: existingClient.osType,
-            username: existingClient.username,
-            ip: existingClient.ipAddress,
-            lastSeenAt: existingClient.lastUpdatedTime,
-            apInformation: existingClient.apInformation,
-            venueInformation: existingClient.venueInformation,
-            networkInformation: existingClient.networkInformation,
-            deviceName: existingClient.hostname
-          }
+            ...existingClient
+          } as ClientInfo
         } else {
-          return identityClient
+          return {
+            ...identityClient,
+            macAddress: identityClient.clientMac,
+            signalStatus: { health: 'Default' } // disconnected icon
+          } as unknown as ClientInfo
         }
       })
     }
@@ -123,113 +114,29 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
     })
       .then(result => {
         if (!result.data?.data) return
-        setDatasource(aggregateClientInfo(datasource, result.data.data))
+        setDatasource(aggregateClientInfo(
+          datasource as unknown as IdentityClient[],
+          result.data.data
+        ))
       })
   }, [clientMacs])
 
-  const columns: TableProps<IdentityClient>['columns'] = [
-    {
-      key: 'deviceName',
-      dataIndex: 'deviceName',
-      searchable: true,
-      fixed: 'left',
-      title: $t({ defaultMessage: 'Device Name' }),
-      sorter: { compare: sortProp('deviceName', defaultSort) }
-    },
-    {
-      key: 'os',
-      dataIndex: 'os',
-      align: 'center',
-      title: $t({ defaultMessage: 'OS' }),
-      render: (_, { os }) => {
-        return <OSIconContainer>
-          <Tooltip title={os}>
-            { getOsTypeIcon(os as string) }
-          </Tooltip>
-        </OSIconContainer>
-      },
-      sorter: { compare: sortProp('os', defaultSort) }
-    },
-    {
-      key: 'clientMac',
-      dataIndex: 'clientMac',
-      searchable: true,
-      fixed: 'left',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      sorter: { compare: sortProp('clientMac', defaultSort) },
-      render: (_, row) => row.clientMac.replaceAll(':', '-').toUpperCase()
-    },
-    {
-      key: 'ip',
-      dataIndex: 'ip',
-      searchable: true,
-      align: 'center',
-      title: $t({ defaultMessage: 'IP Address' }),
-      sorter: { compare: sortProp('ip', defaultSort) },
-      render: (_, row) => row.ip ?? noDataDisplay
-    },
-    {
-      key: 'username',
-      dataIndex: 'username',
-      searchable: true,
-      align: 'center',
-      title: $t({ defaultMessage: 'Username' }),
-      sorter: { compare: sortProp('username', defaultSort) },
-      render: (_, row) => row.username ?? noDataDisplay
-    },
-    {
-      key: 'venueInformation.id',
-      dataIndex: ['venueInformation', 'name'],
-      align: 'center',
-      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      sorter: { compare: sortProp('venueInformation.name', defaultSort) },
-      render: (_, { venueInformation }) => {
-        const { id, name } = venueInformation ?? {}
-        if (!id || !name) return name ?? id ?? noDataDisplay
-
-        return <TenantLink to={`/venues/${id}/venue-details/overview`}>
-          {name}
-        </TenantLink>
+  const useClientTableColumns = () => {
+    return useRbacClientTableColumns(useIntl(), false).map(c => {
+      if (c.key === 'macAddress') {
+        return { ...c, searchable: true, filterable: false }
+      } else if (c.key === 'hostname') {
+        return {
+          ...c,
+          searchable: true,
+          defaultSortOrder: 'descend' as SortOrder,
+          filterable: false
+        }
+      } else {
+        return { ...c, filterable: false }
       }
-    },
-    {
-      key: 'apInformation.serialNumber',
-      dataIndex: ['apInformation', 'name'],
-      align: 'center',
-      title: $t({ defaultMessage: 'AP' }),
-      sorter: { compare: sortProp('apInformation.name', defaultSort) },
-      render: (_, { apInformation }) => {
-        const { serialNumber, name } = apInformation ?? {}
-        if (!serialNumber || !name) return name ?? serialNumber ?? noDataDisplay
-
-        return (
-          <TenantLink to={`/devices/wifi/${serialNumber}/details/overview`}>
-            {name}
-          </TenantLink>
-        )
-      }
-    },
-    {
-      key: 'onboardType',
-      dataIndex: 'onboardType',
-      searchable: true,
-      align: 'center',
-      title: $t({ defaultMessage: 'Onboarding Mechanism' }),
-      sorter: { compare: sortProp('onboardType', defaultSort) },
-      render: (_, row) => getOnboardingTerm(row.onboardType)
-    },
-    {
-      key: 'lastSeenAt',
-      dataIndex: 'lastSeenAt',
-      title: $t({ defaultMessage: 'Last Seen' }),
-      render: (_, { lastSeenAt }) => {
-        return lastSeenAt
-          ? moment(lastSeenAt!).format('YYYY/MM/DD HH:mm A')
-          : noDataDisplay
-      },
-      sorter: { compare: sortProp('lastSeenAt', dateSort) }
-    }
-  ]
+    })
+  }
 
   return <Loader
     states={[
@@ -237,9 +144,19 @@ function IdentityClientTable (props: { personaId?: string, personaGroupId?: stri
       { isLoading: isEsClientLoading, isFetching: isEsClientFetching }
     ]}
   >
-    <Table<IdentityClient>
+    <Table<ClientInfo>
       rowKey={'clientMac'}
-      columns={columns}
+      columns={[
+        ...useClientTableColumns(),
+        {
+          key: 'onboardType',
+          dataIndex: 'onboardType',
+          align: 'center',
+          title: $t({ defaultMessage: 'Onboarding Mechanism' }),
+          sorter: { compare: sortProp('onboardType', defaultSort) },
+          render: (_, row) => getOnboardingTerm((row as unknown as IdentityClient).onboardType)
+        }
+      ]}
       settingsId={settingsId}
       dataSource={datasource}
       pagination={{ pageSize: 10, defaultPageSize: 10 }}
