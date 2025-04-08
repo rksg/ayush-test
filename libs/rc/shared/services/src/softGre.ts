@@ -58,7 +58,11 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             'UpdateSoftGreProfile',
             'DeleteSoftGreProfile',
             'ActivateSoftGreProfileOnVenueWifiNetwork',
-            'DeactivateSoftGreProfileOnVenueWifiNetwork'
+            'DeactivateSoftGreProfileOnVenueWifiNetwork',
+            'ActivateSoftGreProfileOnVenueApModelLanPort',
+            'DeactivateSoftGreProfileOnVenueApModelLanPort',
+            'ActivateSoftGreProfileOnVenueApLanPort',
+            'DeactivateSoftGreProfileOnVenueApLanPort'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(
