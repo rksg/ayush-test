@@ -190,6 +190,7 @@ type LayoutContextType = {
   setPageHeaderY: (y: number) => void
   showMessageBanner?: boolean
   setShowMessageBanner: (isShow?: boolean) => void
+  menuCollapsed?: boolean
 }
 const LayoutContext = createContext({
   pageHeaderY: 0,
@@ -239,8 +240,10 @@ export function Layout ({
   }, [window.innerWidth])
 
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
+  const isDashboardPage = location.pathname.includes('dashboard')
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
+    greyBg={isDashboardPage}
     style={{
       '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
       '--acx-pageheader-height': pageHeaderY + 'px'
@@ -271,9 +274,10 @@ export function Layout ({
         pageHeaderY,
         setPageHeaderY,
         showMessageBanner,
-        setShowMessageBanner
+        setShowMessageBanner,
+        menuCollapsed: collapsed
       }}>
-        {(display || subOptimalDisplay) ? <Content>{content}</Content> :
+        {(display || subOptimalDisplay) ? <Content greyBg={isDashboardPage}>{content}</Content> :
           <UI.ResponsiveContent>
             <ResponsiveContent setShowScreen={onSubOptimalDisplay} />
           </UI.ResponsiveContent>}

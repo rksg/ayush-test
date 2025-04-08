@@ -10,7 +10,7 @@ import {
 import _            from 'lodash'
 import { useIntl  } from 'react-intl'
 
-import { TenantLink, TenantType } from '@acx-ui/react-router-dom'
+import { TenantLink, TenantType, useLocation } from '@acx-ui/react-router-dom'
 
 import { useLayoutContext } from '../Layout'
 
@@ -38,8 +38,10 @@ PageHeader.defaultProps = {
 
 function PageHeader (props: PageHeaderProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const location = useLocation()
   const layout = useLayoutContext()
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
+  const isDashboardPage = location.pathname.includes('dashboard')
   const { $t } = useIntl()
 
   useLayoutEffect(() => {
@@ -108,7 +110,7 @@ function PageHeader (props: PageHeaderProps) {
     </Breadcrumb>
   }
 
-  return <UI.Wrapper ref={ref}>
+  return <UI.Wrapper ref={ref} greyBg={isDashboardPage}>
     <AntPageHeader {...pageHeaderProps} extra={extra}>
       {props.subTitle && <Typography.Text ellipsis>{subTitle as React.ReactNode}</Typography.Text>}
     </AntPageHeader>

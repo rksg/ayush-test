@@ -1,5 +1,5 @@
 import { Input as AntInput, Badge as AntBadge, Modal } from 'antd'
-import styled                                          from 'styled-components/macro'
+import styled, { css }                                 from 'styled-components/macro'
 
 import { Card } from '@acx-ui/components'
 
@@ -373,7 +373,7 @@ export const Canvas = styled.div`
   }
 `
 
-export const Grid = styled.div`
+export const Grid = styled.div<{ $type?: string }>`
 height: calc(100vh - 150px);
 overflow: auto;
 /* width */
@@ -504,6 +504,16 @@ overflow: auto;
 // .section {
 //   background-color: var(--acx-accents-blue-10);
 // }
+
+${props => props.$type === 'pageview' && css`
+  height: auto;
+  overflow: hidden;
+  .rglb_group-item .group-item-container {
+    padding: 0;
+    margin: 0 -20px;
+  }
+`}
+
 `
 
 export const Widget = styled(Card)`
