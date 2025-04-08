@@ -5,7 +5,8 @@ import { FormattedMessage, useIntl }                              from 'react-in
 import { useNavigate, useParams }                                 from 'react-router-dom'
 
 import { Alert, Button, StepsForm, useStepFormContext }     from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                          from '@acx-ui/rc/components'
+import { Features }                                         from '@acx-ui/feature-toggle'
+import { AddEdgeDhcpServiceModal, useIsEdgeFeatureReady }   from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
 import {
   EdgeDhcpUrls,
@@ -26,6 +27,7 @@ import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
 export const SmartEdgeForm = () => {
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const { $t } = useIntl()
 
@@ -38,10 +40,11 @@ export const SmartEdgeForm = () => {
     isClusterOptionsLoading,
     dhcpList,
     dhcpOptions,
-    isDhcpOptionsLoading
+    isDhcpOptionsLoading,
+    getClusterName
   } = useContext(PersonalIdentityNetworkFormContext)
 
-  const edgeClusterId = Form.useWatch('edgeClusterId', form)
+  const edgeClusterId = Form.useWatch('edgeClusterId', form) || form.getFieldValue('edgeClusterId')
   const dhcpId = Form.useWatch('dhcpId', form) || form.getFieldValue('dhcpId')
   const poolId = form.getFieldValue('poolId')
   const dhcpRelay = form.getFieldValue('dhcpRelay')
@@ -198,29 +201,40 @@ export const SmartEdgeForm = () => {
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'RUCKUS Edge Settings' })}</StepsForm.Title>
-          <Row>
-            <Col span={24}>
-              <Form.Item
-                name='edgeClusterId'
-                label={$t({ defaultMessage: 'Cluster' })}
-                rules={[{
-                  required: true,
-                  message: $t({ defaultMessage: 'Please select Cluster' })
-                }]}
-                children={
-                  <Select
-                    loading={isClusterOptionsLoading}
-                    disabled={editMode}
-                    placeholder={$t({ defaultMessage: 'Select...' })}
-                    onChange={onEdgeChange}
-                    options={[
-                      ...(clusterOptions || [])
-                    ]}
+          {
+            isL2GreEnabled ?
+              <Row>
+                <Col span={24}>
+                  <Form.Item
+                    label={$t({ defaultMessage: 'Edge Cluster' })}
+                    children={getClusterName(edgeClusterId)}
                   />
-                }
-              />
-            </Col>
-          </Row>
+                </Col>
+              </Row> :
+              <Row>
+                <Col span={24}>
+                  <Form.Item
+                    name='edgeClusterId'
+                    label={$t({ defaultMessage: 'Cluster' })}
+                    rules={[{
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select Cluster' })
+                    }]}
+                    children={
+                      <Select
+                        loading={isClusterOptionsLoading}
+                        disabled={editMode}
+                        placeholder={$t({ defaultMessage: 'Select...' })}
+                        onChange={onEdgeChange}
+                        options={[
+                          ...(clusterOptions || [])
+                        ]}
+                      />
+                    }
+                  />
+                </Col>
+              </Row>
+          }
         </Col>
       </Row>
       <Row gutter={0} style={{ marginBottom: '10px' }}>

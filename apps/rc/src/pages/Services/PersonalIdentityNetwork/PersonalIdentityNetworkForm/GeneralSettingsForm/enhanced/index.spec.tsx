@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }             from '@acx-ui/components'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { pinApi }                from '@acx-ui/rc/services'
 import {
   EdgePinFixtures, EdgePinUrls
@@ -41,6 +43,10 @@ jest.mock('antd', () => {
 
 jest.mock('./PropertyManagementInfo', () => ({
   PropertyManagementInfo: () => <div data-testid='PropertyManagementInfo' />
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -120,5 +126,36 @@ describe('PersonalIdentityNetworkForm - EnhancedGeneralSettingsForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     expect(await screen.findByText('Please enter Service Name')).toBeVisible()
     expect(await screen.findByText('Please select a Venue')).toBeVisible()
+  })
+
+  describe('test L2GRE case', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation((ff) => ff === Features.EDGE_L2OGRE_TOGGLE)
+    })
+    afterEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReset()
+    })
+
+    it('should render tunnel profile dropdown', async () => {
+      render(
+        <Provider>
+          <PersonalIdentityNetworkFormContext.Provider
+            value={mockContextData}
+          >
+            <StepsForm>
+              <StepsForm.StepForm>
+                <EnhancedGeneralSettingsForm />
+              </StepsForm.StepForm>
+            </StepsForm>
+          </PersonalIdentityNetworkFormContext.Provider>
+        </Provider>,
+        { route: { params, path: createPinPath } }
+      )
+
+      const tunnelProfileDropdown = await screen.findByRole('combobox', { name: 'Tunnel Profile' })
+      expect(tunnelProfileDropdown).toBeVisible()
+      await userEvent.selectOptions(tunnelProfileDropdown, 'tunnelProfileId1')
+    })
   })
 })

@@ -356,7 +356,8 @@ export const mockContextData = {
   requiredFw_DS: '10.0.10f',
   requiredFw_AS: '10.0.10f',
   requiredSwitchModels: ['ICX7650', 'ICX7850', 'ICX7550'],
-  addNetworkCallback: jest.fn()
+  addNetworkCallback: jest.fn(),
+  getClusterInfoByTunnelProfileId: jest.fn()
 }
 
 export const mockSwitchFeatureSet = {

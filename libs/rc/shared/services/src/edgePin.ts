@@ -54,11 +54,11 @@ const getEdgePinUrls = (enableRbac?: boolean | unknown) => {
 export const pinApi = basePinApi.injectEndpoints({
   endpoints: (build) => ({
     createEdgePin: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgePinUrls.createEdgePin)
+      query: ({ payload, customHeaders }) => {
+        const req = createHttpRequest(EdgePinUrls.createEdgePin, undefined, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgePin', id: 'LIST' }],
@@ -119,11 +119,11 @@ export const pinApi = basePinApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgePin', id: 'LIST' }]
     }),
     updateEdgePin: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgePinUrls.updateEdgePin, params)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createHttpRequest(EdgePinUrls.updateEdgePin, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgePin', id: 'LIST' }],

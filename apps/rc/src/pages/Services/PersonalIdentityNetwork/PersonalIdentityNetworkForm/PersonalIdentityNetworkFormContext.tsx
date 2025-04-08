@@ -5,6 +5,9 @@ import { DefaultOptionType }                                      from 'antd/lib
 import { find, isNil, union, uniq }                               from 'lodash'
 import { useParams }                                              from 'react-router-dom'
 
+import { useGetAvailableTunnelProfile } from '@acx-ui/edge/components'
+import { Features }                     from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }        from '@acx-ui/rc/components'
 import {
   useGetAvailableSwitchesQuery,
   useGetDhcpStatsQuery,
@@ -30,6 +33,7 @@ import {
   NetworkTypeEnum,
   PersonaGroup,
   SwitchLite,
+  TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
   isDsaeOnboardingNetwork
 } from '@acx-ui/rc/utils'
@@ -67,6 +71,7 @@ export interface PersonalIdentityNetworkFormContextType {
   requiredFw_DS?: string
   requiredFw_AS?: string
   requiredSwitchModels?: string[]
+  getClusterInfoByTunnelProfileId: (tunnelId: string) => EdgeClusterStatus | undefined
 }
 
 // eslint-disable-next-line max-len
@@ -115,6 +120,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const params = useParams()
   const [venueId, setVenueId] = useState('')
   const [dpskData, setDpskData] = useState<DpskSaveData | undefined>(undefined)
+  const isL2GreEnabled = useIsEdgeFeatureReady(Features.EDGE_L2OGRE_TOGGLE)
 
   const [getDpsk] = useLazyGetDpskQuery()
 
@@ -206,17 +212,34 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+  const { oldTunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
+    skip: isL2GreEnabled,
     selectFromResult: ({ data, isLoading }) => {
       return {
         // eslint-disable-next-line max-len
-        tunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, NetworkSegmentTypeEnum.VXLAN),
+        oldTunnelProfileOptions: getTunnelProfileOptsWithDefault(data?.data, NetworkSegmentTypeEnum.VXLAN),
         isTunnelLoading: isLoading
       }
     }
   })
+
+  const {
+    availableTunnelProfiles,
+    isDataLoading: isAvailableTunnelProfilesLoading
+  } = useGetAvailableTunnelProfile({ serviceIds: [params.serviceId] })
+
+  const { tunnelProfileOptions } = useMemo(() => {
+    const availableTunnelProfileOptions = availableTunnelProfiles.filter(item =>
+      item.tunnelType === TunnelTypeEnum.VXLAN_GPE)?.map(item => ({
+      label: item.name,
+      value: item.id
+    }))
+    return {
+      tunnelProfileOptions: isL2GreEnabled ? availableTunnelProfileOptions : oldTunnelProfileOptions
+    }
+  }, [availableTunnelProfiles, isL2GreEnabled, oldTunnelProfileOptions])
 
   const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
@@ -286,7 +309,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
+  // eslint-disable-next-line max-len
+  const { clusterData, allClusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
     { params, payload: { ...clusterDataDefaultPayload } },
     {
       skip: !requiredFw,
@@ -295,6 +319,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
           clusterData: data?.data
             .filter(item => isPinSupportCluster(item, requiredFw!))
             .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
+          allClusterData: data?.data,
           isLoading
         }
       }
@@ -367,6 +392,12 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       .map(item => item.label) ?? []
   }
 
+  const getClusterInfoByTunnelProfileId = (value: string) => {
+    // eslint-disable-next-line max-len
+    const targetClusterId = availableTunnelProfiles?.find(item => item.id === value)?.destinationEdgeClusterId ?? ''
+    return allClusterData?.find(item => item.clusterId === targetClusterId)
+  }
+
   const addNetworkCallback = useCallback((dpskPoolId?: string) => {
     getDpsk({ params: { serviceId: dpskPoolId } }).unwrap()
       .then(data => {
@@ -393,7 +424,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,
         tunnelProfileOptions,
-        isTunnelLoading,
+        isTunnelLoading: isTunnelLoading || isAvailableTunnelProfilesLoading,
         networkOptions,
         isNetworkOptionsLoading: isNetworkLoading || isUsedNetworkIdsLoading || isDpskLoading
           || isSdlanLoading,
@@ -407,7 +438,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         addNetworkCallback,
         requiredFw_DS,
         requiredFw_AS,
-        requiredSwitchModels
+        requiredSwitchModels,
+        getClusterInfoByTunnelProfileId
       }}
     >
       {props.children}
