@@ -162,7 +162,7 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
       searchable: true
     },
     {
-      title: $t({ defaultMessage: 'Prvilege Group' }),
+      title: $t({ defaultMessage: 'Privilege Group' }),
       dataIndex: 'role',
       key: 'role',
       sorter: false,
