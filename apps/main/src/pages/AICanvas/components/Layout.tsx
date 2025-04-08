@@ -23,12 +23,13 @@ export interface LayoutProps {
   setLayout: React.Dispatch<React.SetStateAction<LayoutConfig>>
   shadowCard: CardInfo
   setShadowCard: React.Dispatch<React.SetStateAction<CardInfo>>
+  readOnly?: boolean
 }
 
 export default function Layout (props: LayoutProps) {
   const defaultLayout = props.layout
   // eslint-disable-next-line max-len
-  const { groups, setGroups, sections, canvasId, layout, setLayout, shadowCard, setShadowCard } = props
+  const { groups, setGroups, sections, canvasId, layout, setLayout, shadowCard, setShadowCard, readOnly } = props
   const [resizeWaiter, setResizeWaiter] = useState(false)
   const [createWidget] = useCreateWidgetMutation()
 
@@ -253,6 +254,7 @@ export default function Layout (props: LayoutProps) {
               updateGroupList={setGroups}
               handleLoad={handleLoad}
               deleteCard={deleteCard}
+              draggable={!readOnly}
             /> : <></>)
           }
           {/* </>

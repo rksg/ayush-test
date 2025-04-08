@@ -21,7 +21,8 @@ export interface GroupProps {
   groups: Group[]
   layout: LayoutConfig
   defaultLayout: LayoutConfig
-  shadowCard:CardInfo
+  shadowCard: CardInfo
+  draggable?: boolean
   moveCardInGroupItem:(hoverItem: GroupProps, x: number, y: number) => void
   onCardDropInGroupItem:() => void
   updateShadowCard:Dispatch<SetStateAction<CardInfo>>
@@ -32,7 +33,8 @@ export interface GroupProps {
 
 export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
-  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem } = props
+  // eslint-disable-next-line max-len
+  const { id, cards, index, groups, layout, shadowCard, handleLoad, moveCardInGroupItem, draggable = true } = props
   // const sectionRef = useRef(null)
   useEffect(() => {
     let clientWidth
@@ -61,9 +63,11 @@ export default function GroupItem (props: GroupProps) {
 
   const [, dropRef] = useDrop({
     accept: ItemTypes.CARD,
+    canDrop: () => draggable,
     drop: (item: CardInfo) => {
       const dragItem = item
       const dropItem = props
+      if (!draggable) return
       dropCard(dragItem, dropItem)
     },
     hover: (item: CardInfo, monitor) => {
@@ -111,6 +115,7 @@ export default function GroupItem (props: GroupProps) {
               groups={groups}
               layout={props.layout}
               dropCard={dropCard}
+              draggable={draggable}
               updateShadowCard={props.updateShadowCard}
               updateGroupList={props.updateGroupList}
               deleteCard={props.deleteCard}
