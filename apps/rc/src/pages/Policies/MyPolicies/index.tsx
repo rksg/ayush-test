@@ -30,7 +30,8 @@ import {
   useGetDirectoryServerViewDataListQuery,
   useSwitchPortProfilesCountQuery,
   useGetIpsecViewDataListQuery,
-  useGetSamlIdpProfileViewDataListQuery
+  useGetSamlIdpProfileViewDataListQuery,
+  useAccessControlsCountQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -178,6 +179,7 @@ function useCardData (): PolicyCardData[] {
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const isIpsecEnabled = useIsSplitOn(Features.WIFI_IPSEC_PSK_OVER_NETWORK_TOGGLE)
   const isCaptivePortalSsoSamlEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_SSO_SAML_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
 
   return [
     {
@@ -198,7 +200,22 @@ function useCardData (): PolicyCardData[] {
         }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })),
+      disabled: isSwitchMacAclEnabled
+    },
+    {
+      type: PolicyType.ACCESS_CONTROL,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      totalCount: Number(useGetEnhancedAccessControlProfileListQuery({
+        params, payload: {
+          ...defaultPayload,
+          noDetails: true
+        }, enableRbac
+      }).data?.totalCount ?? 0) + Number(useAccessControlsCountQuery({
+        params }, { skip: !isSwitchMacAclEnabled }).data ?? 0),
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink('/policies/accessControl/wifi'),
+      disabled: !isSwitchMacAclEnabled
     },
     {
       type: PolicyType.CLIENT_ISOLATION,

@@ -23,7 +23,7 @@ const defaultPayload = {
   ]
 }
 
-function AccessControlTabs () {
+export function AccessControlTabs () {
   const { $t } = useIntl()
   const { accountTier } = getUserProfile()
   const isCore = isCoreTier(accountTier)
@@ -48,7 +48,7 @@ function AccessControlTabs () {
   })
 
   return (
-    <Tabs onChange={onTabChange} activeKey={currentTab}>
+    <Tabs onChange={onTabChange} activeKey={currentTab} type='card'>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Access Control Set ({aclCount})' }, {
           aclCount: tableQuery?.data?.totalCount

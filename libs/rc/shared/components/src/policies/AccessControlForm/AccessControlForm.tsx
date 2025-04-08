@@ -143,11 +143,12 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
-  const linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
+  let linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
   const { editMode } = props
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isSwitchMacAclEnabled = useIsSplitOn(Features.SWITCH_SUPPORT_MAC_ACL_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
@@ -192,13 +193,31 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   }
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
+  let breadcrumbWithSwitchMacAcl = [...breadcrumb]
+  if (isSwitchMacAclEnabled) {
+    // Modify the breadcrumb
+    if (breadcrumbWithSwitchMacAcl.length >= 3) {
+      breadcrumbWithSwitchMacAcl[2] = {
+        ...breadcrumbWithSwitchMacAcl[2],
+        link: 'policies/accessControl/wifi'
+      }
+    }
+
+    // Modify the linkToInstanceList to point to wifi path instead of list
+    if (typeof linkToInstanceList === 'object' && linkToInstanceList.pathname) {
+      linkToInstanceList = {
+        ...linkToInstanceList,
+        pathname: linkToInstanceList.pathname.replace('/accessControl/list', '/accessControl/wifi')
+      }
+    }
+  }
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.ACCESS_CONTROL)
 
   return (
     <>
       <PageHeader
         title={pageTitle}
-        breadcrumb={breadcrumb}
+        breadcrumb={isSwitchMacAclEnabled ? breadcrumbWithSwitchMacAcl : breadcrumb}
       />
       <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
