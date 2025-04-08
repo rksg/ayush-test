@@ -3,8 +3,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Form, Switch, Button, Space, Input, Col, Row } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-
-import { Modal, ModalType, Drawer } from '@acx-ui/components'
+import { Drawer }                  from '@acx-ui/components'
 import {
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetDpskQuery,
@@ -19,8 +18,8 @@ import {
   MacRegistrationPoolLink,
   PolicySetLink
 } from '../../../../CommonLinkHelper'
-import { IdentityGroupForm }   from '../../../../users/IdentityGroupForm'
 import { SelectPersonaDrawer } from '../../../../users/IdentitySelector/SelectPersonaDrawer'
+import { PersonaGroupDrawer }  from '../../../../users/PersonaGroupDrawer'
 import { PersonaGroupSelect }  from '../../../../users/PersonaGroupSelect'
 import NetworkFormContext      from '../../../NetworkFormContext'
 import * as UI                 from '../../../NetworkMoreSettings/styledComponents'
@@ -38,7 +37,7 @@ export function IdentityGroup () {
   const [display, setDisplay] = useState({ display: 'none' })
   const [detailDrawerVisible, setDetailDrawerVisible] = useState<boolean>(false)
   const [identitySelectorDrawerVisible, setIdentitySelectorDrawerVisible] = useState(false)
-  const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
+  const [identityGroupDrawerVisible, setidentityGroupDrawerVisible] = useState(false)
   const [identityGroups, setIdentityGroups] = useState<PersonaGroup[]>([])
   const [selectedIdentityGroup, setSelectedIdentityGroup] = useState<PersonaGroup>()
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
@@ -151,7 +150,7 @@ export function IdentityGroup () {
             </Button>
             <Button type='link'
               onClick={() => {
-                setIdentityGroupModelVisible(true)
+                setidentityGroupDrawerVisible(true)
               }}>
               {$t({ defaultMessage: 'Add' })}
             </Button>
@@ -220,22 +219,16 @@ export function IdentityGroup () {
         hidden
         children={<Input hidden />}
       />
-      <Modal
-        title={$t({ defaultMessage: 'Add Identity Group' })}
-        visible={identityGroupModelVisible}
-        type={ModalType.ModalStepsForm}
-        children={<IdentityGroupForm
-          modalMode={true}
-          callback={(identityGroupId?: string) => {
-            if (identityGroupId) {
-              form.setFieldValue('identityGroupId', identityGroupId)
-            }
-            setIdentityGroupModelVisible(false)
-          }}
-        />}
-        onCancel={() => setIdentityGroupModelVisible(false)}
-        width={1200}
-        destroyOnClose={true}
+      <PersonaGroupDrawer
+        requiredDpsk
+        isEdit={false}
+        visible={identityGroupDrawerVisible}
+        onClose={(result) => {
+          if (result) {
+            form.setFieldValue('identityGroupId', result?.id)
+          }
+          setidentityGroupDrawerVisible(false)
+        }}
       />
       <IdentityGroupDrawer
         visible={detailDrawerVisible}
