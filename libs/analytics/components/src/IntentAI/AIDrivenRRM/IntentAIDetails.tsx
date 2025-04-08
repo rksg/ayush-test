@@ -19,6 +19,7 @@ import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getKPIData }           from '../useIntentDetailsQuery'
 
+import { NeighborAPGraph }       from './NeighborAPGraph'
 import { IntentAIRRMGraph }      from './RRMGraph'
 import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
@@ -105,6 +106,9 @@ export function IntentAIDetails () {
             <Tabs>
               <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
                 <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+                <NeighborAPGraph width={350} />
               </Tabs.TabPane>
             </Tabs>
           </DetailsSection>

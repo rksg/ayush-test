@@ -8,6 +8,7 @@ import { StepsForm, Tabs } from '@acx-ui/components'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { useIntentContext }     from '../../IntentContext'
+import { NeighborAPGraph }      from '../NeighborAPGraph'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
@@ -46,7 +47,10 @@ export function Introduction () {
         <StepsForm.Subtitle children={<FormattedMessage defaultMessage='Projection'/>}/>
         <Tabs>
           <Tabs.TabPane tab='Interfering Links' key='interfering-links'>
-            <IntentAIRRMGraph isFullOptimization={isFullOptimization}/>
+            <IntentAIRRMGraph isFullOptimization={isFullOptimization} />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab='Neighbor AP Graph' key='neighbor-ap-graph'>
+            <NeighborAPGraph />
           </Tabs.TabPane>
         </Tabs>
       </StepsForm.TextContent>
