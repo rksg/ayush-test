@@ -561,6 +561,12 @@ export const EthernetPortProfileMessages = {
   }),
   CLIENT_VISIBILITY: defineMessage({
     defaultMessage: 'Enables visibility for wired port clients, making them discoverable'
+  }),
+  ALERT_CLIENT_VISIBILITY: defineMessage({
+    defaultMessage: 'Enabling on the uplink will disconnect AP(s)'
+  }),
+  WARN_CLIENT_VISIBILITY: defineMessage({
+    defaultMessage: 'Applying this port profile to the uplink will disconnect this AP due to Client Visibility being enabled in this profile.'
   })
   /* eslint-enable */
 }

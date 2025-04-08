@@ -343,16 +343,10 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                   </Form.Item>
                 </StepsForm.FieldLabel>
                 {clientVisibilityEnabled &&
-                  <Row>
-                    <Col span={12}>
-                      <Alert
-                        showIcon={true}
-                        style={{ verticalAlign: 'middle' }}
-                        message={$t({
-                          defaultMessage: 'Enabling on the uplink will disconnect AP(s)'
-                        })} />
-                    </Col>
-                  </Row>
+                  <Alert
+                    showIcon={true}
+                    style={{ verticalAlign: 'middle', width: '16vw' }}
+                    message={$t(EthernetPortProfileMessages.ALERT_CLIENT_VISIBILITY)} />
                 }
               </>
             }

@@ -3,9 +3,10 @@ import { useEffect } from 'react'
 import { Form, Space  } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { Alert, StepsForm } from '@acx-ui/components'
 import {
   EthernetPortAuthType,
+  EthernetPortProfileMessages,
   EthernetPortProfileViewData,
   EthernetPortType,
   checkVlanMember,
@@ -14,6 +15,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import EthernetPortProfileOverwriteItem from './EthernetPortProfileOverwriteItem'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 interface EthernetPortProfileInputProps {
     currentEthernetPortData?: EthernetPortProfileViewData,
@@ -27,6 +29,8 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { currentIndex, currentEthernetPortData, isEditable=true,
     onGUIChanged } = props
 
+  const isWiredClientVisibilityEnabled = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
+
   const form = Form.useFormInstance()
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
@@ -38,6 +42,17 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
 
   return (
     <Space direction='vertical'>
+      {isWiredClientVisibilityEnabled &&
+       (currentEthernetPortData?.authType === EthernetPortAuthType.OPEN ||
+        currentEthernetPortData?.authType === EthernetPortAuthType.MAC_BASED ||
+        currentEthernetPortData?.authType === EthernetPortAuthType.PORT_BASED) &&
+        <Alert
+          data-testid={'client-visibility-banner'}
+          showIcon={true}
+          style={{ verticalAlign: 'middle', width: '36vw' }}
+          message={$t(EthernetPortProfileMessages.WARN_CLIENT_VISIBILITY)}
+        />
+      }
       <StepsForm.FieldLabel width={'200px'}>
         {$t({ defaultMessage: 'Port Type' })}
         <label>

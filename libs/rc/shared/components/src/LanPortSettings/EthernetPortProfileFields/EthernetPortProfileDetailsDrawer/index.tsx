@@ -40,6 +40,7 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
   const params = useParams()
   const { title, visible, setVisible, ethernetPortProfileData } = props
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableClientVisibility = useIsSplitOn(Features.WIFI_WIRED_CLIENT_VISIBILITY_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -105,6 +106,17 @@ const EthernetPortProfileDetailsDrawer = (props: EthernetPortProfileDetailsDrawe
             'Off': 'On'
         }
       />
+      {enableClientVisibility &&
+        <Form.Item
+          label={$t({ defaultMessage: 'Client Visibility' })}
+          children={
+            (ethernetDataForDisplay?.authType === EthernetPortAuthType.OPEN ||
+            ethernetDataForDisplay?.authType === EthernetPortAuthType.MAC_BASED ||
+            ethernetDataForDisplay?.authType === EthernetPortAuthType.PORT_BASED)?
+            'On' : 'Off'
+          }
+        />
+      }
       {!(ethernetDataForDisplay?.authType === EthernetPortAuthType.DISABLED) &&
       <>
         <Divider/>
