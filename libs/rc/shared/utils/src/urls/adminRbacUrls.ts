@@ -96,6 +96,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/delegations/support',
     oldUrl: '/tenants/supportDelegations',
+    opsApi: 'DELETE:/tenants/delegations/support',
     newApi: true
   },
   //   getPreferences: {

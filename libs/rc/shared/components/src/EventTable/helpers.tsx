@@ -19,7 +19,7 @@ const entityTypes
     'network',
     'switch',
     'venue',
-    'transaction',
+    'transactionId',
     'edge',
     'remoteedge',
     'unit',
@@ -62,7 +62,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       path: 'venues/:venueId/venue-details/overview',
       params: ['venueId']
     },
-    transaction: {
+    transactionId: {
       path: 'devices/switch/:switchMac/:serialNumber/details/configuration/history',
       params: ['switchMac', 'serialNumber']
     },
@@ -187,12 +187,12 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
 }
 
 const extraHandle = (entityType: EntityType) => {
-  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
+  return 'transactionId' === entityType ? configurationUpdate : noDataDisplay
 }
 
 const identifyExistKey = (entityType: EntityType) => {
   switch (entityType) {
-    case 'transaction':
+    case 'transactionId':
       return 'switch'
     case 'clientMldMac':
       return 'client'

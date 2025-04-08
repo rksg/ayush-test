@@ -25,7 +25,6 @@ export const mockIntentContext = (config: {
   return context
 }
 
-//Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {
   id: '19',
   code: 'c-bgscan24g-enable',

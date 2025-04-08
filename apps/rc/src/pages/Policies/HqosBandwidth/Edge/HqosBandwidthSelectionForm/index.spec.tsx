@@ -63,7 +63,7 @@ describe('EdgeHqosProfileSelectionForm', () => {
         </StepsForm>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('HQoS Bandwitdth Profile')).toBeVisible()
+    expect(await screen.findByText('HQoS Bandwidth Profile')).toBeVisible()
   })
 
   it('should show HQoS profile name when qosId is given', async () => {
